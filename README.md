@@ -32,13 +32,13 @@ python -m pip install rich-click
 ## Usage
 
 There are two main ways to set up `rich-click` formatting for your tool.
-Which you choose will depend on your use-case and your personal disposition.
+Which you choose will depend on your use-case and your personal disposition:
 
 ### The path of least typing
 
 Monkey patching is [probably bad](https://en.wikipedia.org/wiki/Monkey_patch#Pitfalls)
 and you should only use this method if you are a Responsible Developer.
-It's also useful if you're lazy, as it requires very little typing.
+It's also good if you're lazy, as it requires very little typing.
 In fact, the whole thing can be done in just four lines:
 
 ```python
