@@ -1,4 +1,4 @@
-kname: Publish rich-click to PyPI
+name: Publish rich-click to PyPI
 on:
   release:
     types: [published]
