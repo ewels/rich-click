@@ -8,6 +8,19 @@
 The intention of `rich-click` is to provide attractive help output from
 click, formatted with rich, with minimal customisation required.
 
+## Screenshots
+
+<table>
+    <tr>
+        <th>Native click help</th>
+        <th>With <code>rich-click</code></th>
+    </tr>
+    <tr>
+        <td><img src="docs/images/example_with_just_click.png"></td>
+        <td><img src="docs/images/example_with_rich-click.png"></td>
+    </tr>
+</table>
+
 ## Installation
 
 You can install `rich-click` from the Python Package Index (PyPI) with `pip` or equivalent.

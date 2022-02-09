@@ -49,7 +49,7 @@ def rich_format_help(obj, ctx, formatter):
     )
 
     # Print usage
-    console.print(Padding(highlighter(obj.get_usage(ctx)), (0, 1, 1, 1)), style="bold")
+    console.print(Padding(highlighter(obj.get_usage(ctx)), 1), style="bold")
 
     # Print command / group help if we have some
     if obj.help:
