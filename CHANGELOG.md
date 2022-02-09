@@ -1,6 +1,6 @@
 # Changelog: rich-click
 
-## Version 0.1
+## Version 0.1.0
 
 Initial development version of `rich-click`, mostly as a proof of concept.
 
