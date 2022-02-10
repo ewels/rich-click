@@ -31,22 +31,29 @@ python -m pip install rich-click
 
 ## Usage
 
-There are two main ways to set up `rich-click` formatting for your tool.
-Which you choose will depend on your use-case and your personal disposition:
+There are two main ways to set up `rich-click` formatting for your tool:
+monkey patching or declarative.
+Which you choose will depend on your use-case and your personal disposition!
+
+Note that the intention is to maintain most / all of the normal click functionality and arguments.
+If you spot something that is missing once you start using the plugin, please
+create an issue about it.
 
 ### The path of least typing
 
 Monkey patching is [probably bad](https://en.wikipedia.org/wiki/Monkey_patch#Pitfalls)
 and you should only use this method if you are a Responsible Developer.
 It's also good if you're lazy, as it requires very little typing.
-In fact, the whole thing can be done in just four lines:
+
+Assuming that you're already using click, you only need to add three lines:
 
 ```python
-import click
 import rich_click
-click.Group.format_help = rich_click.rich_format_help
 click.Command.format_help = rich_click.rich_format_help
+click.Group.format_help = rich_click.rich_format_help
 ```
+
+_(if you're not click groups, only 2 lines!)_
 
 This _overwrites_ the default `click` methods with those from the `rich-click` package.
 As such, no other changes are needed - just continue to use `click` as you would
@@ -87,12 +94,7 @@ We define our custom `format_help()` functions and then tell click to to use the
 ## Customisation
 
 There isn't really much you can customise yet, but this is planned.
-I'm thinking:
-
-- Colours
-- Whether to print positional arguments or not
-  - Could maybe provide custom args to give help text to these
-- The ability to break up commands and options into multiple named panels
+See [the issues](https://github.com/ewels/rich-click/issues) for details.
 
 ## Contributing
 

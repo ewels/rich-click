@@ -122,7 +122,9 @@ def rich_format_help(obj, ctx, formatter):
             help.append(param.help)
 
         # Default value
-        ## TODO: This is not as extensive as the original click source
+        ## TODO: This is not as extensive as the original click source and misses some cases
+        ## eg. --debug/--no-debug, default=False, show_default=True will show up as [default: False] instead of [default: --no-debug]
+        ## Need to think if we should copy and paste all of that code, or try to parse it from the function output somehow
         ## https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2662-L2696
         if param.show_default:
             help.append(f" [default: {param.default}]", style="dim")
