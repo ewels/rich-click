@@ -1,5 +1,11 @@
 # Changelog: rich-click
 
+## Version 0.2.0.dev0
+
+- Added support for more click parameters
+  - Showing default values, showing if required, showing if deprecated, epilog
+  - Option now hidden if set in click
+
 ## Version 0.1.2 (2022-02-10)
 
 - Seems to work fine on Python 3.6, so dropped the requirement down to this instead of Python 3.7

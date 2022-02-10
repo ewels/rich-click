@@ -53,15 +53,21 @@ def rich_format_help(obj, ctx, formatter):
 
     # Print command / group help if we have some
     if obj.help:
+        helptext = Text()
+
+        # Prepend deprecated status
+        if obj.deprecated:
+            helptext.append("(Deprecated) ", style="red")
+
         # Get the first line, remove single linebreaks
-        first_line = obj.help.split("\n\n")[0].replace("\n", " ")
-        helptext = Text(first_line)
+        first_line = obj.help.split("\n\n")[0].replace("\n", " ").strip()
+        helptext.append(first_line)
 
         # Get remaining lines, remove single line breaks and format as dim
         remaining_lines = obj.help.split("\n\n")[1:]
         if len(remaining_lines) > 0:
             remaining_lines = "\n" + "\n".join(
-                [x.replace("\n", " ") for x in remaining_lines]
+                [x.replace("\n", " ").strip() for x in remaining_lines]
             )
             helptext.append(remaining_lines, style="dim")
 
@@ -77,26 +83,32 @@ def rich_format_help(obj, ctx, formatter):
         if type(param) is click.core.Argument:
             continue
 
+        # Skip if option is hidden
+        if param.hidden:
+            continue
+
         # Short and long form
         if len(param.opts) == 2:
             # Always have the --long form first
             if "--" in param.opts[0]:
                 opt1 = highlighter(param.opts[0])
                 opt2 = highlighter(param.opts[1])
-                if len(param.secondary_opts) == 2:
+                # Secondary opts (eg. --debug/--no-debug)
+                if param.secondary_opts:
                     opt1 += highlighter("/" + param.secondary_opts[0])
                     opt2 += highlighter("/" + param.secondary_opts[1])
             else:
                 opt1 = highlighter(param.opts[1])
                 opt2 = highlighter(param.opts[0])
-                if len(param.secondary_opts) == 2:
+                # Secondary opts (eg. --debug/--no-debug)
+                if param.secondary_opts:
                     opt1 += highlighter("/" + param.secondary_opts[1])
                     opt2 += highlighter("/" + param.secondary_opts[1])
         # Just one form
         else:
             opt1 = highlighter(param.opts[0])
             opt2 = Text("")
-            if len(param.secondary_opts) > 0:
+            if param.secondary_opts:
                 opt1 += highlighter("/" + param.secondary_opts[0])
 
         # Column for a metavar, if we have one
@@ -105,14 +117,28 @@ def rich_format_help(obj, ctx, formatter):
             metavar = Text(f" {param.metavar}", style="bold yellow")
 
         # Help text
-        help_record = param.get_help_record(ctx)
-        if help_record is None:
-            help = ""
-        else:
-            help = Text.from_markup(param.get_help_record(ctx)[-1], emoji=False)
+        help = Text("")
+        if param.help:
+            help.append(param.help)
+
+        # Default value
+        ## TODO: This is not as extensive as the original click source
+        ## https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2662-L2696
+        if param.show_default:
+            help.append(f" [default: {param.default}]", style="dim")
+
+        ## TODO: Numeric ranges, extra
+        ## https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
+        ## https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2711-L2713
+
+        # Required?
+        required = ""
+        if param.required:
+            required = Text("*", style="red")
+            help.append(f" [required]", style="dim red")
 
         options_table.add_row(
-            highlighter(opt1), highlighter(opt2), metavar, highlighter(help)
+            required, highlighter(opt1), highlighter(opt2), metavar, highlighter(help)
         )
 
     if options_table.row_count > 0:
@@ -145,3 +171,10 @@ def rich_format_help(obj, ctx, formatter):
                 width=100,
             )
         )
+
+    # Epilogue if we have it
+    if obj.epilog:
+        # Remove single linebreaks, replace double with single
+        lines = obj.epilog.split("\n\n")
+        epilogue = "\n".join([x.replace("\n", " ").strip() for x in lines])
+        console.print(Padding(Align(epilogue, width=100, pad=False), 1))
