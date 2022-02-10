@@ -2,7 +2,7 @@
 
 ## Version 0.1.1
 
-* Fix a bug in `setup.cfg` that broke installation
+- Fix a bug in `setup.cfg` that broke installation
 
 ## Version 0.1.0
 
