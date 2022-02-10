@@ -106,7 +106,9 @@ def rich_format_help(obj, ctx, formatter):
 
         # Print with a max width and some padding
         console.print(
-            Padding(Align(helptext, width=MAX_WIDTH, pad=False), (0, 1, 1, 1))
+            Padding(
+                Align(highlighter(helptext), width=MAX_WIDTH, pad=False), (0, 1, 1, 1)
+            )
         )
 
     # Print the option flags
@@ -216,4 +218,6 @@ def rich_format_help(obj, ctx, formatter):
         # Remove single linebreaks, replace double with single
         lines = obj.epilog.split("\n\n")
         epilogue = "\n".join([x.replace("\n", " ").strip() for x in lines])
-        console.print(Padding(Align(epilogue, width=MAX_WIDTH, pad=False), 1))
+        console.print(
+            Padding(Align(highlighter(epilogue), width=MAX_WIDTH, pad=False), 1)
+        )
