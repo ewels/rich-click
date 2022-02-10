@@ -6,6 +6,6 @@ The intention is to provide attractive help output from
 click, formatted with rich, with minimal customisation required.
 """
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 from .core import rich_format_help
