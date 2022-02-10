@@ -1,6 +1,6 @@
 # Changelog: rich-click
 
-## Version 0.2.0.dev0
+## Version 0.2.0
 
 - Made most styling decisions configurable
 - Added support for more click parameters
