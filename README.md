@@ -94,7 +94,14 @@ We define our custom `format_help()` functions and then tell click to to use the
 ## Customisation
 
 You can customise most things that are related to formatting.
-For example, to print the option flags in a different colour, use:
+
+For example, to limit the maximum width of the help output to 100 characters:
+
+```python
+rich_click.core.MAX_WIDTH = 100
+```
+
+To print the option flags in a different colour, use:
 
 ```python
 rich_click.core.STYLE_OPTION = "magenta"
@@ -121,7 +128,7 @@ STYLE_OPTIONS_PANEL_BORDER = "dim"
 ALIGN_OPTIONS_PANEL = "left"
 STYLE_COMMANDS_PANEL_BORDER = "dim"
 ALIGN_COMMANDS_PANEL = "left"
-MAX_WIDTH = 100
+MAX_WIDTH = None # Set to an int to limit to that many characters
 
 # Fixed strings
 DEPRECATED_STRING = "(Deprecated) "
@@ -132,7 +139,7 @@ OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
 
 # Behaviours
-SKIP_ARGUMENTS = True
+SHOW_ARGUMENTS = False
 ```
 
 </details>

@@ -26,7 +26,7 @@ STYLE_OPTIONS_PANEL_BORDER = "dim"
 ALIGN_OPTIONS_PANEL = "left"
 STYLE_COMMANDS_PANEL_BORDER = "dim"
 ALIGN_COMMANDS_PANEL = "left"
-MAX_WIDTH = 100
+MAX_WIDTH = None  # Set to an int to limit to that many characters
 
 # Fixed strings
 DEPRECATED_STRING = "(Deprecated) "
@@ -37,7 +37,7 @@ OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
 
 # Behaviours
-SKIP_ARGUMENTS = True
+SHOW_ARGUMENTS = False
 
 
 def rich_format_help(obj, ctx, formatter):
@@ -59,8 +59,8 @@ def rich_format_help(obj, ctx, formatter):
 
     class OptionHighlighter(RegexHighlighter):
         highlights = [
-            r"(?P<switch>\-\w)(?!\S)",
-            r"(?P<option>\-\-[\w\-]+)(?!\S)",
+            r"(^|\W)(?P<switch>\-\w+)(?!\S)",
+            r"(^|\W)(?P<option>\-\-[\w\-]+)(?!\S)",
             r"(?P<metavar>\<[^\>]+\>)",
             r"(?P<usage>Usage: )",
         ]
@@ -117,7 +117,7 @@ def rich_format_help(obj, ctx, formatter):
 
         # Skip positional arguments - they don't have opts or helptext and are covered in usage
         # See https://click.palletsprojects.com/en/8.0.x/documentation/#documenting-arguments
-        if type(param) is click.core.Argument and SKIP_ARGUMENTS:
+        if type(param) is click.core.Argument and not SHOW_ARGUMENTS:
             continue
 
         # Skip if option is hidden

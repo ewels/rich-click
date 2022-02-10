@@ -2,6 +2,10 @@
 
 ## Version 0.3.0.dev0
 
+- Set default for `MAX_WIDTH` to `None` instead of `100`
+- Switch boolean option `SKIP_ARGUMENTS` to `SHOW_ARGUMENTS`
+- Improve regular expression for flags like `-bg`
+
 ## Version 0.2.0 (2022-02-10)
 
 - Made most styling decisions configurable
