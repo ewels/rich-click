@@ -93,8 +93,49 @@ We define our custom `format_help()` functions and then tell click to to use the
 
 ## Customisation
 
-There isn't really much you can customise yet, but this is planned.
-See [the issues](https://github.com/ewels/rich-click/issues) for details.
+You can customise most things that are related to formatting.
+For example, to print the option flags in a different colour, use:
+
+```python
+rich_click.core.STYLE_OPTION = "magenta"
+```
+
+<details><summary>Full list of config options</summary>
+
+```python
+# Default colours
+STYLE_OPTION = "bold cyan"
+STYLE_SWITCH = "bold green"
+STYLE_METAVAR = "bold yellow"
+STYLE_USAGE = "yellow"
+STYLE_USAGE_COMMAND = "bold"
+STYLE_DEPRECATED = "red"
+STYLE_HELPTEXT_FIRST_LINE = ""
+STYLE_HELPTEXT = "dim"
+STYLE_METAVAR = "bold yellow"
+STYLE_OPTION_HELP = ""
+STYLE_OPTION_DEFAULT = "dim"
+STYLE_REQUIRED_SHORT = "red"
+STYLE_REQUIRED_LONG = "dim red"
+STYLE_OPTIONS_PANEL_BORDER = "dim"
+ALIGN_OPTIONS_PANEL = "left"
+STYLE_COMMANDS_PANEL_BORDER = "dim"
+ALIGN_COMMANDS_PANEL = "left"
+MAX_WIDTH = 100
+
+# Fixed strings
+DEPRECATED_STRING = "(Deprecated) "
+DEFAULT_STRING = " [default: {}]"
+REQUIRED_SHORT_STRING = "*"
+REQUIRED_LONG_STRING = " [required]"
+OPTIONS_PANEL_TITLE = "Options"
+COMMANDS_PANEL_TITLE = "Commands"
+
+# Behaviours
+SKIP_ARGUMENTS = True
+```
+
+</details>
 
 ## Contributing
 

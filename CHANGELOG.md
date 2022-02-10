@@ -2,6 +2,7 @@
 
 ## Version 0.2.0.dev0
 
+- Made most styling decisions configurable
 - Added support for more click parameters
   - Showing default values, showing if required, showing if deprecated, epilog
   - Option now hidden if set in click
