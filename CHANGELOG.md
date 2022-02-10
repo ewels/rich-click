@@ -1,5 +1,9 @@
 # Changelog: rich-click
 
+## Version 0.1.1
+
+* Fix a bug in `setup.cfg` that broke installation
+
 ## Version 0.1.0
 
 Initial development version of `rich-click`, mostly as a proof of concept.
