@@ -152,6 +152,10 @@ def rich_format_help(obj, ctx, formatter):
         metavar = ""
         if param.metavar:
             metavar = Text(f" {param.metavar}", style=STYLE_METAVAR)
+        else:
+            metavar_str = param.type.get_metavar(param)
+            if metavar_str:
+                metavar = Text(f" {metavar_str}", style=STYLE_METAVAR)
 
         # Help text
         help = Text("")
