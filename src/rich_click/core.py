@@ -165,7 +165,7 @@ def rich_format_help(obj, ctx, formatter):
         )
 
     # Print the option flags
-    options_table = Table(highlight=True, box=None, show_header=False)
+    options_rows = []
     for param in obj.get_params(ctx):
 
         # Skip positional arguments - they don't have opts or helptext and are covered in usage
@@ -226,15 +226,23 @@ def rich_format_help(obj, ctx, formatter):
         if param.required:
             required = Text(REQUIRED_SHORT_STRING, style=STYLE_REQUIRED_SHORT)
 
-        options_table.add_row(
-            required,
-            highlighter(opt1),
-            highlighter(opt2),
-            metavar,
-            _get_parameter_help(param, ctx),
+        options_rows.append(
+            [
+                required,
+                highlighter(opt1),
+                highlighter(opt2),
+                metavar,
+                _get_parameter_help(param, ctx),
+            ]
         )
 
-    if options_table.row_count > 0:
+    if len(options_rows) > 0:
+        options_table = Table(highlight=True, box=None, show_header=False)
+        # Strip the required column if none are required
+        if all([x[0] == "" for x in options_rows]):
+            options_rows = [x[1:] for x in options_rows]
+        for row in options_rows:
+            options_table.add_row(*row)
         console.print(
             Panel(
                 options_table,
