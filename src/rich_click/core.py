@@ -1,6 +1,6 @@
 import click
 from rich.align import Align
-from rich.console import Console
+from rich.console import Console, group
 from rich.highlighter import RegexHighlighter
 from rich.markdown import Markdown
 from rich.padding import Padding
@@ -41,8 +41,82 @@ COMMANDS_PANEL_TITLE = "Commands"
 
 # Behaviours
 SHOW_ARGUMENTS = False
-USE_MARKDOWN = True
-USE_RICH_MARKUP = True
+USE_MARKDOWN = False
+USE_RICH_MARKUP = False
+
+
+# Rich regex highlighter
+class OptionHighlighter(RegexHighlighter):
+    highlights = [
+        r"(^|\W)(?P<switch>\-\w+)(?!\S)",
+        r"(^|\W)(?P<option>\-\-[\w\-]+)(?!\S)",
+        r"(?P<metavar>\<[^\>]+\>)",
+        r"(?P<usage>Usage: )",
+    ]
+
+
+highlighter = OptionHighlighter()
+
+
+def _make_rich_rext(text, style=""):
+    """
+    Return styled text, either as Markdown, rich markup or plain,
+    depending on user settings
+    """
+    # TODO: Doesn't work yet, not sure how to make a rich Markdown object into a Text object
+    # https://github.com/Textualize/rich/discussions/1951#discussioncomment-2156145
+    if USE_MARKDOWN:
+        return Markdown(text, style=style)
+    if USE_RICH_MARKUP:
+        return highlighter(Text.from_markup(text, style=style))
+    else:
+        return highlighter(Text(text, style=style))
+
+
+@group()
+def _get_help_text(obj):
+
+    # Prepend deprecated status
+    if obj.deprecated:
+        yield Text(DEPRECATED_STRING, style=STYLE_DEPRECATED)
+
+    # Get the first line
+    first_line = obj.help.split("\n\n")[0]
+    # Remove single linebreaks
+    first_line = first_line.replace("\n", " ").strip()
+    yield _make_rich_rext(first_line, STYLE_HELPTEXT_FIRST_LINE)
+
+    # Get remaining lines, remove single line breaks and format as dim
+    remaining_lines = obj.help.split("\n\n")[1:]
+    if len(remaining_lines) > 0:
+        # Remove single linebreaks
+        remaining_lines = [x.replace("\n", " ").strip() for x in remaining_lines]
+        # Join with double linebreaks if parsing as markdown, single otherwise
+        if USE_MARKDOWN:
+            remaining_lines = "\n\n" + "\n\n".join(remaining_lines)
+        else:
+            remaining_lines = "\n".join(remaining_lines)
+        yield _make_rich_rext(remaining_lines, STYLE_HELPTEXT)
+
+
+@group()
+def _get_parameter_help(param, ctx):
+    if getattr(param, "help", None):
+        yield _make_rich_rext(param.help, STYLE_OPTION_HELP)
+
+    # Default value
+    if getattr(param, "show_default", None):
+        # param.default is the value, but click is a bit clever in choosing what to show here
+        # eg. --debug/--no-debug, default=False will show up as [default: no-debug] instead of [default: False]
+        # To avoid duplicating loads of code, let's just pull out the string from click with a regex
+        default_str = re.search(
+            r"\[default: (.*)\]", param.get_help_record(ctx)[-1]
+        ).group(1)
+        yield Text(DEFAULT_STRING.format(default_str), style=STYLE_OPTION_DEFAULT)
+
+    # Required?
+    if param.required:
+        yield Text(REQUIRED_LONG_STRING, style=STYLE_REQUIRED_LONG)
 
 
 def rich_format_help(obj, ctx, formatter):
@@ -62,17 +136,6 @@ def rich_format_help(obj, ctx, formatter):
     https://github.com/Textualize/rich-cli/blob/8a2767c7a340715fc6fbf4930ace717b9b2fc5e5/src/rich_cli/__main__.py#L162-L236
     """
 
-    # Rich regex highlighter
-    class OptionHighlighter(RegexHighlighter):
-        highlights = [
-            r"(^|\W)(?P<switch>\-\w+)(?!\S)",
-            r"(^|\W)(?P<option>\-\-[\w\-]+)(?!\S)",
-            r"(?P<metavar>\<[^\>]+\>)",
-            r"(?P<usage>Usage: )",
-        ]
-
-    highlighter = OptionHighlighter()
-
     console = Console(
         theme=Theme(
             {
@@ -85,18 +148,6 @@ def rich_format_help(obj, ctx, formatter):
         highlighter=highlighter,
     )
 
-    # Handle text with rich markup or markdown
-    def make_rich_rext(text, style):
-        # TODO: Doesn't work yet, not sure how to make a rich Markdown object into a Text object
-        # https://github.com/Textualize/rich/discussions/1951#discussioncomment-2156145
-        # if USE_MARKDOWN:
-        #   text = Markdown(text)
-        if USE_RICH_MARKUP:
-            text = Text.from_markup(text, style=style)
-        else:
-            text = Text(text, style=style)
-        return text
-
     # Print usage
     console.print(
         Padding(highlighter(obj.get_usage(ctx)), 1), style=STYLE_USAGE_COMMAND
@@ -104,28 +155,12 @@ def rich_format_help(obj, ctx, formatter):
 
     # Print command / group help if we have some
     if obj.help:
-        helptext = Text()
-
-        # Prepend deprecated status
-        if obj.deprecated:
-            helptext.append(DEPRECATED_STRING, style=STYLE_DEPRECATED)
-
-        # Get the first line, remove single linebreaks
-        first_line = obj.help.split("\n\n")[0].replace("\n", " ").strip()
-        helptext.append(make_rich_rext(first_line, STYLE_HELPTEXT_FIRST_LINE))
-
-        # Get remaining lines, remove single line breaks and format as dim
-        remaining_lines = obj.help.split("\n\n")[1:]
-        if len(remaining_lines) > 0:
-            remaining_lines = "\n" + "\n".join(
-                [x.replace("\n", " ").strip() for x in remaining_lines]
-            )
-            helptext.append(make_rich_rext(remaining_lines, STYLE_HELPTEXT))
 
         # Print with a max width and some padding
         console.print(
             Padding(
-                Align(highlighter(helptext), width=MAX_WIDTH, pad=False), (0, 1, 1, 1)
+                Align(_get_help_text(obj), width=MAX_WIDTH, pad=False),
+                (0, 1, 1, 1),
             )
         )
 
@@ -186,29 +221,17 @@ def rich_format_help(obj, ctx, formatter):
             if range_str:
                 metavar.append(RANGE_STRING.format(range_str))
 
-        # Help text
-        help = Text("")
-        if getattr(param, "help", None):
-            help.append(make_rich_rext(param.help, STYLE_OPTION_HELP))
-
-        # Default value
-        if getattr(param, "show_default", None):
-            # param.default is the value, but click is a bit clever in choosing what to show here
-            # eg. --debug/--no-debug, default=False will show up as [default: no-debug] instead of [default: False]
-            # To avoid duplicating loads of code, let's just pull out the string from click with a regex
-            default_str = re.search(
-                r"\[default: (.*)\]", param.get_help_record(ctx)[-1]
-            ).group(1)
-            help.append(DEFAULT_STRING.format(default_str), style=STYLE_OPTION_DEFAULT)
-
-        # Required?
+        # Required asterisk
         required = ""
         if param.required:
             required = Text(REQUIRED_SHORT_STRING, style=STYLE_REQUIRED_SHORT)
-            help.append(REQUIRED_LONG_STRING, style=STYLE_REQUIRED_LONG)
 
         options_table.add_row(
-            required, highlighter(opt1), highlighter(opt2), metavar, highlighter(help)
+            required,
+            highlighter(opt1),
+            highlighter(opt2),
+            metavar,
+            _get_parameter_help(param, ctx),
         )
 
     if options_table.row_count > 0:

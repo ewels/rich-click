@@ -2,6 +2,7 @@
 
 ## Version 0.3.0.dev0
 
+- Add support for rich console markup or Markdown in help texts
 - Set default for `MAX_WIDTH` to `None` instead of `100`
 - Switch boolean option `SKIP_ARGUMENTS` to `SHOW_ARGUMENTS`
 - Improve regular expression for flags like `-bg`
