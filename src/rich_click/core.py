@@ -10,7 +10,7 @@ from rich.text import Text
 from rich.theme import Theme
 import re
 
-# Default colours
+# Default styles
 STYLE_OPTION = "bold cyan"
 STYLE_SWITCH = "bold green"
 STYLE_METAVAR = "bold yellow"
@@ -43,6 +43,8 @@ COMMANDS_PANEL_TITLE = "Commands"
 SHOW_ARGUMENTS = False
 USE_MARKDOWN = False
 USE_RICH_MARKUP = False
+COMMAND_GROUPS = {}
+OPTION_GROUPS = {}
 
 
 # Rich regex highlighter
@@ -217,7 +219,6 @@ def rich_format_help(obj, ctx, formatter):
             and not (param.count and param.type.min == 0 and param.type.max is None)
         ):
             range_str = param.type._describe_range()
-
             if range_str:
                 metavar.append(RANGE_STRING.format(range_str))
 
@@ -255,23 +256,39 @@ def rich_format_help(obj, ctx, formatter):
 
     # List click command groups
     if hasattr(obj, "list_commands"):
-        commands_table = Table(highlight=False, box=None, show_header=False)
-        # Define formatting in first column, as commands don't match highlighter regex
-        commands_table.add_column(style="bold cyan", no_wrap=True)
+        # Look through COMMAND_GROUPS for this command
+        # stick anything unmatched into a default group at the end
+        cmd_groups = COMMAND_GROUPS.get(ctx.command_path, []).copy()
+        cmd_groups.append({"commands": []})
         for command in obj.list_commands(ctx):
-            cmd = obj.get_command(ctx, command)
-            helptext = cmd.help or ""
-            commands_table.add_row(command, highlighter(helptext.split("\n")[0]))
+            for cmd_group in cmd_groups:
+                if command in cmd_group.get("commands", []):
+                    break
+            else:
+                cmd_groups[-1]["commands"].append(command)
 
-        console.print(
-            Panel(
-                commands_table,
-                border_style=STYLE_COMMANDS_PANEL_BORDER,
-                title=COMMANDS_PANEL_TITLE,
-                title_align=ALIGN_COMMANDS_PANEL,
-                width=MAX_WIDTH,
-            )
-        )
+        # Print each command group panel
+        for cmd_group in cmd_groups:
+            commands_table = Table(highlight=False, box=None, show_header=False)
+            # Define formatting in first column, as commands don't match highlighter regex
+            commands_table.add_column(style="bold cyan", no_wrap=True)
+            for command in obj.list_commands(ctx):
+                # Skip if command is not listed in this group
+                if command not in cmd_group.get("commands", []):
+                    continue
+                cmd = obj.get_command(ctx, command)
+                helptext = cmd.help or ""
+                commands_table.add_row(command, highlighter(helptext.split("\n")[0]))
+            if commands_table.row_count > 0:
+                console.print(
+                    Panel(
+                        commands_table,
+                        border_style=STYLE_COMMANDS_PANEL_BORDER,
+                        title=cmd_group.get("name", COMMANDS_PANEL_TITLE),
+                        title_align=ALIGN_COMMANDS_PANEL,
+                        width=MAX_WIDTH,
+                    )
+                )
 
     # Epilogue if we have it
     if obj.epilog:

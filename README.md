@@ -91,6 +91,78 @@ _(example based on the [click docs](https://click.palletsprojects.com/en/8.0.x/c
 Here we are making new `Group` and `Command` child classes that are based on click.
 We define our custom `format_help()` functions and then tell click to to use these classes with the `cls` argument.
 
+## Command groups
+
+Sometimes it can be useful to group subcommands into separate panels and choose a custom sorting order.
+
+For example, you can produce something that looks like this:
+![command groups](docs/images/command_groups.png)
+
+To do this, set `rich_click.core.COMMAND_GROUPS`.
+
+In this example, we create two groups of commands for the base command of `mytool`.
+Any subcommands not listed will automatically be printed in a panel at the end labelled "Commands" as usual.
+
+```python
+rich_click.core.COMMAND_GROUPS = {
+    "mytool": [
+        {
+            "name": "Commands for uploading",
+            "commands": [
+                "sync",
+                "upload",
+            ],
+        },
+        {
+            "name": "Download data",
+            "commands": [
+                "get",
+                "fetch",
+                "download",
+            ],
+        },
+    ]
+}
+```
+
+If you use nested subcommands, you can specify multiple base paths:
+
+```python
+rich_click.core.COMMAND_GROUPS = {
+    "mytool": [
+        "commands": [
+            "sync",
+            "auth",
+        ],
+    ],
+    "mytool sync": [
+        {
+            "name": "Commands for uploading",
+            "commands": [
+                "sync",
+                "upload",
+            ],
+        },
+        {
+            "name": "Download data",
+            "commands": [
+                "get",
+                "fetch",
+                "download",
+            ],
+        },
+    ],
+    "mytool auth":[
+        {
+            "commands": [
+                "login",
+                "logout",
+            ],
+        },
+    ],
+}
+```
+
 ## Customisation
 
 You can customise most things that are related to formatting.

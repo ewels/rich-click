@@ -2,12 +2,14 @@
 
 ## Version 0.3.0.dev0
 
+- Add ability to create groups of commands with separate panels
 - Add support for rich console markup or Markdown in help texts
 - Set default for `MAX_WIDTH` to `None` instead of `100`
 - Switch boolean option `SKIP_ARGUMENTS` to `SHOW_ARGUMENTS`
 - Improve regular expression for flags like `-bg`
 - Use click's string for default value, instead of the value directly
 - Show some previously missed metavar types (eg. choice and range options)
+- Stripped required-asterisk column from options table if none are required
 
 ## Version 0.2.0 (2022-02-10)
 
