@@ -35,6 +35,7 @@ DEPRECATED_STRING = "(Deprecated) "
 DEFAULT_STRING = " [default: {}]"
 REQUIRED_SHORT_STRING = "*"
 REQUIRED_LONG_STRING = " [required]"
+RANGE_STRING = " [{}]"
 OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
 
@@ -166,13 +167,24 @@ def rich_format_help(obj, ctx, formatter):
                 opt1 += highlighter("/" + param.secondary_opts[0])
 
         # Column for a metavar, if we have one
-        metavar = ""
+        metavar = Text(style=STYLE_METAVAR)
         if param.metavar:
-            metavar = Text(f" {param.metavar}", style=STYLE_METAVAR)
+            metavar.append(f" {param.metavar}")
         else:
             metavar_str = param.type.get_metavar(param)
             if metavar_str:
-                metavar = Text(f" {metavar_str}", style=STYLE_METAVAR)
+                metavar.append(f" {metavar_str}")
+
+        # Range - from https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
+        if (
+            isinstance(param.type, click.types._NumberRangeBase)
+            # skip count with default range type
+            and not (param.count and param.type.min == 0 and param.type.max is None)
+        ):
+            range_str = param.type._describe_range()
+
+            if range_str:
+                metavar.append(RANGE_STRING.format(range_str))
 
         # Help text
         help = Text("")
@@ -188,10 +200,6 @@ def rich_format_help(obj, ctx, formatter):
                 r"\[default: (.*)\]", param.get_help_record(ctx)[-1]
             ).group(1)
             help.append(DEFAULT_STRING.format(default_str), style=STYLE_OPTION_DEFAULT)
-
-        ## TODO: Numeric ranges, extra
-        ## https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
-        ## https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2711-L2713
 
         # Required?
         required = ""
