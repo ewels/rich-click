@@ -5,6 +5,8 @@
 - Set default for `MAX_WIDTH` to `None` instead of `100`
 - Switch boolean option `SKIP_ARGUMENTS` to `SHOW_ARGUMENTS`
 - Improve regular expression for flags like `-bg`
+- Use click's string for default value, instead of the value directly
+- Show some previously missed metavar types (eg. choice options)
 
 ## Version 0.2.0 (2022-02-10)
 

@@ -7,6 +7,7 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 from rich.theme import Theme
+import re
 
 # Default colours
 STYLE_OPTION = "bold cyan"
@@ -163,14 +164,14 @@ def rich_format_help(obj, ctx, formatter):
             help.append(param.help, style=STYLE_OPTION_HELP)
 
         # Default value
-        ## TODO: This is not as extensive as the original click source and misses some cases
-        ## eg. --debug/--no-debug, default=False, show_default=True will show up as [default: False] instead of [default: --no-debug]
-        ## Need to think if we should copy and paste all of that code, or try to parse it from the function output somehow
-        ## https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2662-L2696
         if getattr(param, "show_default", None):
-            help.append(
-                DEFAULT_STRING.format(param.default), style=STYLE_OPTION_DEFAULT
-            )
+            # param.default is the value, but click is a bit clever in choosing what to show here
+            # eg. --debug/--no-debug, default=False will show up as [default: no-debug] instead of [default: False]
+            # To avoid duplicating loads of code, let's just pull out the string from click with a regex
+            default_str = re.search(
+                r"\[default: (.*)\]", param.get_help_record(ctx)[-1]
+            ).group(1)
+            help.append(DEFAULT_STRING.format(default_str), style=STYLE_OPTION_DEFAULT)
 
         ## TODO: Numeric ranges, extra
         ## https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
