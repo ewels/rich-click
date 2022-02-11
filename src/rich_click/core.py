@@ -2,6 +2,7 @@ import click
 from rich.align import Align
 from rich.console import Console
 from rich.highlighter import RegexHighlighter
+from rich.markdown import Markdown
 from rich.padding import Padding
 from rich.panel import Panel
 from rich.table import Table
@@ -39,6 +40,8 @@ COMMANDS_PANEL_TITLE = "Commands"
 
 # Behaviours
 SHOW_ARGUMENTS = False
+USE_MARKDOWN = True
+USE_RICH_MARKUP = True
 
 
 def rich_format_help(obj, ctx, formatter):
@@ -58,6 +61,7 @@ def rich_format_help(obj, ctx, formatter):
     https://github.com/Textualize/rich-cli/blob/8a2767c7a340715fc6fbf4930ace717b9b2fc5e5/src/rich_cli/__main__.py#L162-L236
     """
 
+    # Rich regex highlighter
     class OptionHighlighter(RegexHighlighter):
         highlights = [
             r"(^|\W)(?P<switch>\-\w+)(?!\S)",
@@ -80,6 +84,18 @@ def rich_format_help(obj, ctx, formatter):
         highlighter=highlighter,
     )
 
+    # Handle text with rich markup or markdown
+    def make_rich_rext(text, style):
+        # TODO: Doesn't work yet, not sure how to make a rich Markdown object into a Text object
+        # https://github.com/Textualize/rich/discussions/1951#discussioncomment-2156145
+        # if USE_MARKDOWN:
+        #   text = Markdown(text)
+        if USE_RICH_MARKUP:
+            text = Text.from_markup(text, style=style)
+        else:
+            text = Text(text, style=style)
+        return text
+
     # Print usage
     console.print(
         Padding(highlighter(obj.get_usage(ctx)), 1), style=STYLE_USAGE_COMMAND
@@ -95,7 +111,7 @@ def rich_format_help(obj, ctx, formatter):
 
         # Get the first line, remove single linebreaks
         first_line = obj.help.split("\n\n")[0].replace("\n", " ").strip()
-        helptext.append(first_line, style=STYLE_HELPTEXT_FIRST_LINE)
+        helptext.append(make_rich_rext(first_line, STYLE_HELPTEXT_FIRST_LINE))
 
         # Get remaining lines, remove single line breaks and format as dim
         remaining_lines = obj.help.split("\n\n")[1:]
@@ -103,7 +119,7 @@ def rich_format_help(obj, ctx, formatter):
             remaining_lines = "\n" + "\n".join(
                 [x.replace("\n", " ").strip() for x in remaining_lines]
             )
-            helptext.append(remaining_lines, style=STYLE_HELPTEXT)
+            helptext.append(make_rich_rext(remaining_lines, STYLE_HELPTEXT))
 
         # Print with a max width and some padding
         console.print(
@@ -161,7 +177,7 @@ def rich_format_help(obj, ctx, formatter):
         # Help text
         help = Text("")
         if getattr(param, "help", None):
-            help.append(param.help, style=STYLE_OPTION_HELP)
+            help.append(make_rich_rext(param.help, STYLE_OPTION_HELP))
 
         # Default value
         if getattr(param, "show_default", None):
