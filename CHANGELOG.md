@@ -1,6 +1,6 @@
 # Changelog: rich-click
 
-## Version 0.3.0.dev0
+## Version 0.3.0 (2022-02-13)
 
 - Add ability to create groups of commands with separate panels
 - Add support for rich console markup or Markdown in help texts
