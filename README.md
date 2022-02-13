@@ -160,7 +160,7 @@ rich_click.core.STYLE_OPTION = "magenta"
 <details><summary>Full list of config options</summary>
 
 ```python
-# Default colours
+# Default styles
 STYLE_OPTION = "bold cyan"
 STYLE_SWITCH = "bold green"
 STYLE_METAVAR = "bold yellow"
@@ -178,18 +178,23 @@ STYLE_OPTIONS_PANEL_BORDER = "dim"
 ALIGN_OPTIONS_PANEL = "left"
 STYLE_COMMANDS_PANEL_BORDER = "dim"
 ALIGN_COMMANDS_PANEL = "left"
-MAX_WIDTH = None # Set to an int to limit to that many characters
+MAX_WIDTH = None  # Set to an int to limit to that many characters
 
 # Fixed strings
 DEPRECATED_STRING = "(Deprecated) "
 DEFAULT_STRING = " [default: {}]"
 REQUIRED_SHORT_STRING = "*"
 REQUIRED_LONG_STRING = " [required]"
+RANGE_STRING = " [{}]"
 OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
 
 # Behaviours
 SHOW_ARGUMENTS = False
+USE_MARKDOWN = False
+USE_RICH_MARKUP = False
+COMMAND_GROUPS = {}
+OPTION_GROUPS = {}
 ```
 
 </details>
