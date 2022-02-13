@@ -9,6 +9,6 @@ click, formatted with rich, with minimal customisation required.
 __version__ = "0.3.0.dev0"
 
 from click import *
-from .core import rich_format_help
-from .core import Group
-from .core import Command
+from .rich_click import rich_format_help
+from .rich_click import Group
+from .rich_click import Command

@@ -50,13 +50,13 @@ It accepts a list of commands which means you can also choose a custom sorting o
 For example, you can produce something that looks like this:
 ![command groups](docs/images/command_groups.png)
 
-To do this, set `rich_click.core.COMMAND_GROUPS`.
+To do this, set `click.rich_click.COMMAND_GROUPS`.
 
 In this example, we create two groups of commands for the base command of `mytool`.
 Any subcommands not listed will automatically be printed in a panel at the end labelled "Commands" as usual.
 
 ```python
-click.core.COMMAND_GROUPS = {
+click.rich_click.COMMAND_GROUPS = {
     "mytool": [
         {
             "name": "Commands for uploading",
@@ -76,7 +76,7 @@ If you use nested subcommands, you can specify multiple base paths using
 the base dictionary keys:
 
 ```python
-click.core.COMMAND_GROUPS = {
+click.rich_click.COMMAND_GROUPS = {
     "mytool": ["commands": ["sync", "auth"]],
     "mytool sync": [
         {
@@ -99,13 +99,13 @@ You can customise most things that are related to formatting.
 For example, to limit the maximum width of the help output to 100 characters:
 
 ```python
-click.core.MAX_WIDTH = 100
+click.rich_click.MAX_WIDTH = 100
 ```
 
 To print the option flags in a different colour, use:
 
 ```python
-click.core.STYLE_OPTION = "magenta"
+click.rich_click.STYLE_OPTION = "magenta"
 ```
 
 <details><summary>Full list of config options</summary>
