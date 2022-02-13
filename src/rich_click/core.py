@@ -298,3 +298,13 @@ def rich_format_help(obj, ctx, formatter):
         console.print(
             Padding(Align(highlighter(epilogue), width=MAX_WIDTH, pad=False), 1)
         )
+
+
+class Group(click.Group):
+    def format_help(self, ctx, formatter):
+        rich_format_help(self, ctx, formatter)
+
+
+class Command(click.Command):
+    def format_help(self, ctx, formatter):
+        rich_format_help(self, ctx, formatter)

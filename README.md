@@ -31,65 +31,16 @@ python -m pip install rich-click
 
 ## Usage
 
-There are two main ways to set up `rich-click` formatting for your tool:
-monkey patching or declarative.
-Which you choose will depend on your use-case and your personal disposition!
-
-Note that the intention is to maintain most / all of the normal click functionality and arguments.
-If you spot something that is missing once you start using the plugin, please
-create an issue about it.
-
-### The path of least typing
-
-Monkey patching is [probably bad](https://en.wikipedia.org/wiki/Monkey_patch#Pitfalls)
-and you should only use this method if you are a Responsible Developer.
-It's also good if you're lazy, as it requires very little typing.
-
-Assuming that you're already using click, you only need to add three lines:
+To use `rich-click`, import it instead of `click` but under the same namespace:
 
 ```python
-import rich_click
-click.Command.format_help = rich_click.rich_format_help
-click.Group.format_help = rich_click.rich_format_help
+import rich_click as click
 ```
 
-_(if you're not click groups, only 2 lines!)_
+That's it. Then continue to use `click` as you would normally.
 
-This _overwrites_ the default `click` methods with those from the `rich-click` package.
-As such, no other changes are needed - just continue to use `click` as you would
-normally and it will use these custom methods to print your help output.
-
-### The good and proper way
-
-If using monkey-patching in your project makes your palms sweaty and your pulse race,
-then you'll be pleased to know that you can also use `rich-click` in a nicely
-declarative and verbose manner:
-
-```python
-import click
-import rich_click
-
-class RichClickGroup(click.Group):
-    def format_help(self, ctx, formatter):
-        rich_click.rich_format_help(self, ctx, formatter)
-class RichClickCommand(click.Command):
-    def format_help(self, ctx, formatter):
-        rich_click.rich_format_help(self, ctx, formatter)
-
-@click.group(cls=RichClickGroup)
-@click.option('--debug/--no-debug', default=False)
-def cli(debug):
-    click.echo(f"Debug mode is {'on' if debug else 'off'}")
-
-@cli.command(cls=RichClickCommand)
-def sync():
-    click.echo('Syncing')
-```
-
-_(example based on the [click docs](https://click.palletsprojects.com/en/8.0.x/commands/))_
-
-Here we are making new `Group` and `Command` child classes that are based on click.
-We define our custom `format_help()` functions and then tell click to to use these classes with the `cls` argument.
+The intention is to maintain most / all of the normal click functionality and arguments.
+If you spot something that is missing once you start using the plugin, please create an issue about it.
 
 ## Command groups and sorting
 
@@ -105,7 +56,7 @@ In this example, we create two groups of commands for the base command of `mytoo
 Any subcommands not listed will automatically be printed in a panel at the end labelled "Commands" as usual.
 
 ```python
-rich_click.core.COMMAND_GROUPS = {
+click.core.COMMAND_GROUPS = {
     "mytool": [
         {
             "name": "Commands for uploading",
@@ -125,7 +76,7 @@ If you use nested subcommands, you can specify multiple base paths using
 the base dictionary keys:
 
 ```python
-rich_click.core.COMMAND_GROUPS = {
+click.core.COMMAND_GROUPS = {
     "mytool": ["commands": ["sync", "auth"]],
     "mytool sync": [
         {
@@ -148,13 +99,13 @@ You can customise most things that are related to formatting.
 For example, to limit the maximum width of the help output to 100 characters:
 
 ```python
-rich_click.core.MAX_WIDTH = 100
+click.core.MAX_WIDTH = 100
 ```
 
 To print the option flags in a different colour, use:
 
 ```python
-rich_click.core.STYLE_OPTION = "magenta"
+click.core.STYLE_OPTION = "magenta"
 ```
 
 <details><summary>Full list of config options</summary>
