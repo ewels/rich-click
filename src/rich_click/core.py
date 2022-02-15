@@ -166,8 +166,10 @@ def rich_format_help(obj, ctx, formatter):
             )
         )
 
-    # Print the option flags
-    options_rows = []
+    # Look through OPTION_GROUPS for this command
+    # stick anything unmatched into a default group at the end
+    option_groups = OPTION_GROUPS.get(ctx.command_path, []).copy()
+    option_groups.append({"options": []})
     for param in obj.get_params(ctx):
 
         # Skip positional arguments - they don't have opts or helptext and are covered in usage
@@ -179,80 +181,98 @@ def rich_format_help(obj, ctx, formatter):
         if getattr(param, "hidden", False):
             continue
 
-        # Short and long form
-        if len(param.opts) == 2:
-            # Always have the --long form first
-            if "--" in param.opts[0]:
+        # Already mentioned in a config option group
+        for option_group in option_groups:
+            if any([opt in option_group.get("options", []) for opt in param.opts]):
+                break
+        # No break, no mention - add to the default group
+        else:
+            option_groups[-1]["options"].append(param.opts[0])
+
+    # Print each command group panel
+    for option_group in option_groups:
+
+        options_rows = []
+        for param in obj.get_params(ctx):
+
+            # Skip if command is not listed in this group
+            if not any([opt in option_group.get("options", []) for opt in param.opts]):
+                continue
+
+            # Short and long form
+            if len(param.opts) == 2:
+                # Always have the --long form first
+                if "--" in param.opts[0]:
+                    opt1 = highlighter(param.opts[0])
+                    opt2 = highlighter(param.opts[1])
+                    # Secondary opts (eg. --debug/--no-debug)
+                    if param.secondary_opts:
+                        opt1 += highlighter("/" + param.secondary_opts[0])
+                        opt2 += highlighter("/" + param.secondary_opts[1])
+                else:
+                    opt1 = highlighter(param.opts[1])
+                    opt2 = highlighter(param.opts[0])
+                    # Secondary opts (eg. --debug/--no-debug)
+                    if param.secondary_opts:
+                        opt1 += highlighter("/" + param.secondary_opts[1])
+                        opt2 += highlighter("/" + param.secondary_opts[1])
+            # Just one form
+            else:
                 opt1 = highlighter(param.opts[0])
-                opt2 = highlighter(param.opts[1])
-                # Secondary opts (eg. --debug/--no-debug)
+                opt2 = Text("")
                 if param.secondary_opts:
                     opt1 += highlighter("/" + param.secondary_opts[0])
-                    opt2 += highlighter("/" + param.secondary_opts[1])
+
+            # Column for a metavar, if we have one
+            metavar = Text(style=STYLE_METAVAR)
+            if param.metavar:
+                metavar.append(f" {param.metavar}")
             else:
-                opt1 = highlighter(param.opts[1])
-                opt2 = highlighter(param.opts[0])
-                # Secondary opts (eg. --debug/--no-debug)
-                if param.secondary_opts:
-                    opt1 += highlighter("/" + param.secondary_opts[1])
-                    opt2 += highlighter("/" + param.secondary_opts[1])
-        # Just one form
-        else:
-            opt1 = highlighter(param.opts[0])
-            opt2 = Text("")
-            if param.secondary_opts:
-                opt1 += highlighter("/" + param.secondary_opts[0])
+                metavar_str = param.type.get_metavar(param)
+                if metavar_str:
+                    metavar.append(f" {metavar_str}")
 
-        # Column for a metavar, if we have one
-        metavar = Text(style=STYLE_METAVAR)
-        if param.metavar:
-            metavar.append(f" {param.metavar}")
-        else:
-            metavar_str = param.type.get_metavar(param)
-            if metavar_str:
-                metavar.append(f" {metavar_str}")
+            # Range - from https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
+            if (
+                isinstance(param.type, click.types._NumberRangeBase)
+                # skip count with default range type
+                and not (param.count and param.type.min == 0 and param.type.max is None)
+            ):
+                range_str = param.type._describe_range()
+                if range_str:
+                    metavar.append(RANGE_STRING.format(range_str))
 
-        # Range - from https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
-        if (
-            isinstance(param.type, click.types._NumberRangeBase)
-            # skip count with default range type
-            and not (param.count and param.type.min == 0 and param.type.max is None)
-        ):
-            range_str = param.type._describe_range()
-            if range_str:
-                metavar.append(RANGE_STRING.format(range_str))
+            # Required asterisk
+            required = ""
+            if param.required:
+                required = Text(REQUIRED_SHORT_STRING, style=STYLE_REQUIRED_SHORT)
 
-        # Required asterisk
-        required = ""
-        if param.required:
-            required = Text(REQUIRED_SHORT_STRING, style=STYLE_REQUIRED_SHORT)
-
-        options_rows.append(
-            [
-                required,
-                highlighter(opt1),
-                highlighter(opt2),
-                metavar,
-                _get_parameter_help(param, ctx),
-            ]
-        )
-
-    if len(options_rows) > 0:
-        options_table = Table(highlight=True, box=None, show_header=False)
-        # Strip the required column if none are required
-        if all([x[0] == "" for x in options_rows]):
-            options_rows = [x[1:] for x in options_rows]
-        for row in options_rows:
-            options_table.add_row(*row)
-        console.print(
-            Panel(
-                options_table,
-                border_style=STYLE_OPTIONS_PANEL_BORDER,
-                title=OPTIONS_PANEL_TITLE,
-                title_align=ALIGN_OPTIONS_PANEL,
-                width=MAX_WIDTH,
+            options_rows.append(
+                [
+                    required,
+                    highlighter(opt1),
+                    highlighter(opt2),
+                    metavar,
+                    _get_parameter_help(param, ctx),
+                ]
             )
-        )
+
+        if len(options_rows) > 0:
+            options_table = Table(highlight=True, box=None, show_header=False)
+            # Strip the required column if none are required
+            if all([x[0] == "" for x in options_rows]):
+                options_rows = [x[1:] for x in options_rows]
+            for row in options_rows:
+                options_table.add_row(*row)
+            console.print(
+                Panel(
+                    options_table,
+                    border_style=STYLE_OPTIONS_PANEL_BORDER,
+                    title=option_group.get("name", OPTIONS_PANEL_TITLE),
+                    title_align=ALIGN_OPTIONS_PANEL,
+                    width=MAX_WIDTH,
+                )
+            )
 
     # List click command groups
     if hasattr(obj, "list_commands"):

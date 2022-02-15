@@ -91,17 +91,41 @@ _(example based on the [click docs](https://click.palletsprojects.com/en/8.0.x/c
 Here we are making new `Group` and `Command` child classes that are based on click.
 We define our custom `format_help()` functions and then tell click to to use these classes with the `cls` argument.
 
-## Command groups and sorting
+## Groups and sorting
 
-`rich-click` gives functionality to list subcommands in groups, printed as separate panels.
-It accepts a list of commands which means you can also choose a custom sorting order.
+`rich-click` gives functionality to list options and subcommands in groups, printed as separate panels.
+It accepts a list of options / commands which means you can also choose a custom sorting order.
 
 For example, you can produce something that looks like this:
 ![command groups](docs/images/command_groups.png)
 
-To do this, set `rich_click.core.COMMAND_GROUPS`.
+- To do this with options (flags), set `rich_click.core.OPTION_GROUPS`.
+- To do this with subcommands (groups), set `rich_click.core.COMMAND_GROUPS`.
 
-In this example, we create two groups of commands for the base command of `mytool`.
+### Options
+
+To group command flags into two sections with custom names, you could do the following:
+
+```python
+rich_click.core.OPTION_GROUPS = {
+    "mytool": [
+        {
+            "name": "Simple options",
+            "options": ["--name", "--description", "--version", "--help"],
+        },
+        {
+            "name": "Advanced options",
+            "options": ["--force", "--yes", "--delete"],
+        },
+    ]
+}
+```
+
+If you omit `name` it will use `Commands` (can be configured with `OPTIONS_PANEL_TITLE`, see _Customisation_ below).
+
+### Commands
+
+Here we create two groups of commands for the base command of `mytool`.
 Any subcommands not listed will automatically be printed in a panel at the end labelled "Commands" as usual.
 
 ```python
@@ -119,10 +143,11 @@ rich_click.core.COMMAND_GROUPS = {
 }
 ```
 
-If you omit `name` it will use `Commands` (can be configured with `COMMANDS_PANEL_TITLE`, see below).
+If you omit `name` it will use `Commands` (can be configured with `COMMANDS_PANEL_TITLE`, see _Customisation_ below).
 
-If you use nested subcommands, you can specify multiple base paths using
-the base dictionary keys:
+### Multiple commands
+
+If you use multiple nested subcommands, you can specify their commands using the top-level dictionary keys:
 
 ```python
 rich_click.core.COMMAND_GROUPS = {

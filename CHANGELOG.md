@@ -2,6 +2,8 @@
 
 ## Version 0.4.0.dev0
 
+- Add ability to create groups of options with separate panels
+
 ## Version 0.3.0 (2022-02-13)
 
 - Add ability to create groups of commands with separate panels
