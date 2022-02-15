@@ -36,11 +36,13 @@ DEFAULT_STRING = " [default: {}]"
 REQUIRED_SHORT_STRING = "*"
 REQUIRED_LONG_STRING = " [required]"
 RANGE_STRING = " [{}]"
+ARGUMENTS_PANEL_TITLE = "Arguments"
 OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
 
 # Behaviours
 SHOW_ARGUMENTS = False
+GROUP_ARGUMENTS_OPTIONS = False
 USE_MARKDOWN = False
 USE_RICH_MARKUP = False
 COMMAND_GROUPS = {}
@@ -170,6 +172,7 @@ def rich_format_help(obj, ctx, formatter):
     # stick anything unmatched into a default group at the end
     option_groups = OPTION_GROUPS.get(ctx.command_path, []).copy()
     option_groups.append({"options": []})
+    argument_groups = {"name": ARGUMENTS_PANEL_TITLE, "options": []}
     for param in obj.get_params(ctx):
 
         # Skip positional arguments - they don't have opts or helptext and are covered in usage
@@ -187,7 +190,14 @@ def rich_format_help(obj, ctx, formatter):
                 break
         # No break, no mention - add to the default group
         else:
-            option_groups[-1]["options"].append(param.opts[0])
+            if type(param) is click.core.Argument and not GROUP_ARGUMENTS_OPTIONS:
+                argument_groups["options"].append(param.opts[0])
+            else:
+                option_groups[-1]["options"].append(param.opts[0])
+
+    # If we're not grouping arguments and we got some, prepend before default options
+    if len(argument_groups["options"]) > 0:
+        option_groups.insert(len(option_groups) - 1, argument_groups)
 
     # Print each command group panel
     for option_group in option_groups:
