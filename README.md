@@ -45,15 +45,15 @@ Monkey patching is [probably bad](https://en.wikipedia.org/wiki/Monkey_patch#Pit
 and you should only use this method if you are a Responsible Developer.
 It's also good if you're lazy, as it requires very little typing.
 
-Assuming that you're already using click, you only need to add three lines:
+Assuming that you're already using click, you only need to add a few lines:
 
 ```python
 import rich_click
 click.Command.format_help = rich_click.rich_format_help
 click.Group.format_help = rich_click.rich_format_help
+click.ClickException.show = rich_click.rich_format_error
+click.UsageError.show = rich_click.rich_format_error
 ```
-
-_(if you're not click groups, only 2 lines!)_
 
 This _overwrites_ the default `click` methods with those from the `rich-click` package.
 As such, no other changes are needed - just continue to use `click` as you would
@@ -203,6 +203,8 @@ STYLE_OPTIONS_PANEL_BORDER = "dim"
 ALIGN_OPTIONS_PANEL = "left"
 STYLE_COMMANDS_PANEL_BORDER = "dim"
 ALIGN_COMMANDS_PANEL = "left"
+STYLE_ERRORS_PANEL_BORDER = "red"
+ALIGN_ERRORS_PANEL = "left"
 MAX_WIDTH = None  # Set to an int to limit to that many characters
 
 # Fixed strings
@@ -214,6 +216,7 @@ RANGE_STRING = " [{}]"
 ARGUMENTS_PANEL_TITLE = "Arguments"
 OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
+ERRORS_PANEL_TITLE = "Error"
 
 # Behaviours
 SHOW_ARGUMENTS = False

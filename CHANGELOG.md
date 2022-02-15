@@ -5,6 +5,7 @@
 - Add ability to create groups of options with separate panels
 - Show positional arguments in their own panel by default
 - Add config `GROUP_ARGUMENTS_OPTIONS` option to group with options
+- Add support for printing errors nicely
 
 ## Version 0.3.0 (2022-02-13)
 

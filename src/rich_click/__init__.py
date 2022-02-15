@@ -9,3 +9,4 @@ click, formatted with rich, with minimal customisation required.
 __version__ = "0.4.0.dev0"
 
 from .core import rich_format_help
+from .core import rich_format_error

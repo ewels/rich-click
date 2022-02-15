@@ -28,6 +28,8 @@ STYLE_OPTIONS_PANEL_BORDER = "dim"
 ALIGN_OPTIONS_PANEL = "left"
 STYLE_COMMANDS_PANEL_BORDER = "dim"
 ALIGN_COMMANDS_PANEL = "left"
+STYLE_ERRORS_PANEL_BORDER = "red"
+ALIGN_ERRORS_PANEL = "left"
 MAX_WIDTH = None  # Set to an int to limit to that many characters
 
 # Fixed strings
@@ -39,6 +41,7 @@ RANGE_STRING = " [{}]"
 ARGUMENTS_PANEL_TITLE = "Arguments"
 OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
+ERRORS_PANEL_TITLE = "Error"
 
 # Behaviours
 SHOW_ARGUMENTS = False
@@ -328,3 +331,32 @@ def rich_format_help(obj, ctx, formatter):
         console.print(
             Padding(Align(highlighter(epilogue), width=MAX_WIDTH, pad=False), 1)
         )
+
+
+def rich_format_error(self):
+    """
+    Custom function to overwrite default click error printing.
+    """
+    # TODO: The click function has more complex code for UsageErrors:
+    # https://github.com/pallets/click/blob/6411f425fae545f42795665af4162006b36c5e4a/src/click/exceptions.py#L62-L82
+    # Should bring this over too.
+    console = Console(
+        theme=Theme(
+            {
+                "option": STYLE_OPTION,
+                "switch": STYLE_SWITCH,
+                "metavar": STYLE_METAVAR,
+                "usage": STYLE_USAGE,
+            }
+        ),
+        highlighter=highlighter,
+    )
+    console.print(
+        Panel(
+            highlighter(self.format_message()),
+            border_style=STYLE_ERRORS_PANEL_BORDER,
+            title=ERRORS_PANEL_TITLE,
+            title_align=ALIGN_ERRORS_PANEL,
+            width=MAX_WIDTH,
+        )
+    )
