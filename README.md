@@ -42,17 +42,41 @@ That's it. Then continue to use `click` as you would normally.
 The intention is to maintain most / all of the normal click functionality and arguments.
 If you spot something that is missing once you start using the plugin, please create an issue about it.
 
-## Command groups and sorting
+## Groups and sorting
 
-`rich-click` gives functionality to list subcommands in groups, printed as separate panels.
-It accepts a list of commands which means you can also choose a custom sorting order.
+`rich-click` gives functionality to list options and subcommands in groups, printed as separate panels.
+It accepts a list of options / commands which means you can also choose a custom sorting order.
 
 For example, you can produce something that looks like this:
 ![command groups](docs/images/command_groups.png)
 
-To do this, set `click.rich_click.COMMAND_GROUPS`.
+- To do this with options (flags), set `click.rich_click.OPTION_GROUPS`.
+- To do this with subcommands (groups), set `click.rich_click.COMMAND_GROUPS`.
 
-In this example, we create two groups of commands for the base command of `mytool`.
+### Options
+
+To group command flags into two sections with custom names, you could do the following:
+
+```python
+rich_click.core.OPTION_GROUPS = {
+    "mytool": [
+        {
+            "name": "Simple options",
+            "options": ["--name", "--description", "--version", "--help"],
+        },
+        {
+            "name": "Advanced options",
+            "options": ["--force", "--yes", "--delete"],
+        },
+    ]
+}
+```
+
+If you omit `name` it will use `Commands` (can be configured with `OPTIONS_PANEL_TITLE`, see _Customisation_ below).
+
+### Commands
+
+Here we create two groups of commands for the base command of `mytool`.
 Any subcommands not listed will automatically be printed in a panel at the end labelled "Commands" as usual.
 
 ```python
@@ -70,10 +94,11 @@ click.rich_click.COMMAND_GROUPS = {
 }
 ```
 
-If you omit `name` it will use `Commands` (can be configured with `COMMANDS_PANEL_TITLE`, see below).
+If you omit `name` it will use `Commands` (can be configured with `COMMANDS_PANEL_TITLE`, see _Customisation_ below).
 
-If you use nested subcommands, you can specify multiple base paths using
-the base dictionary keys:
+### Multiple commands
+
+If you use multiple nested subcommands, you can specify their commands using the top-level dictionary keys:
 
 ```python
 click.rich_click.COMMAND_GROUPS = {
@@ -111,7 +136,7 @@ click.rich_click.STYLE_OPTION = "magenta"
 <details><summary>Full list of config options</summary>
 
 ```python
-# Default colours
+# Default styles
 STYLE_OPTION = "bold cyan"
 STYLE_SWITCH = "bold green"
 STYLE_METAVAR = "bold yellow"
@@ -129,18 +154,23 @@ STYLE_OPTIONS_PANEL_BORDER = "dim"
 ALIGN_OPTIONS_PANEL = "left"
 STYLE_COMMANDS_PANEL_BORDER = "dim"
 ALIGN_COMMANDS_PANEL = "left"
-MAX_WIDTH = None # Set to an int to limit to that many characters
+MAX_WIDTH = None  # Set to an int to limit to that many characters
 
 # Fixed strings
 DEPRECATED_STRING = "(Deprecated) "
 DEFAULT_STRING = " [default: {}]"
 REQUIRED_SHORT_STRING = "*"
 REQUIRED_LONG_STRING = " [required]"
+RANGE_STRING = " [{}]"
 OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
 
 # Behaviours
 SHOW_ARGUMENTS = False
+USE_MARKDOWN = False
+USE_RICH_MARKUP = False
+COMMAND_GROUPS = {}
+OPTION_GROUPS = {}
 ```
 
 </details>
