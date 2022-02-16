@@ -29,6 +29,3 @@ def command(*args, cls=RichCommand, **kwargs):
     from click import command as click_command
 
     return click_command(*args, cls=cls, **kwargs)
-
-    ## TODO: This works for simple top-level commands,
-    # but not commands nested within a group
