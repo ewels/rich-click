@@ -362,12 +362,14 @@ def rich_format_error(self):
     )
 
 
-class RichGroup(click.Group):
+class RichCommand(click.Command):
     def format_help(self, ctx, formatter):
         rich_format_help(self, ctx, formatter)
 
 
-class RichCommand(click.Command):
+class RichGroup(click.Group):
+    command_class = RichCommand
+
     def format_help(self, ctx, formatter):
         rich_format_help(self, ctx, formatter)
 
