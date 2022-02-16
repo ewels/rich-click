@@ -9,7 +9,26 @@ click, formatted with rich, with minimal customisation required.
 __version__ = "0.4.0.dev0"
 
 from click import *
-from .rich_click import rich_format_help
+from .rich_click import RichGroup
+from .rich_click import RichCommand
 from .rich_click import rich_format_error
-from .rich_click import Group
-from .rich_click import Command
+
+## TODO: Replace with inheritance / custom function model as below
+# Monkey patch click error formatting function
+ClickException.show = rich_format_error
+UsageError.show = rich_format_error
+
+
+def group(*args, cls=RichGroup, **kwargs):
+    from click import group as click_group
+
+    return click_group(*args, cls=cls, **kwargs)
+
+
+def command(*args, cls=RichCommand, **kwargs):
+    from click import command as click_command
+
+    return click_command(*args, cls=cls, **kwargs)
+
+    ## TODO: This works for simple top-level commands,
+    # but not commands nested within a group

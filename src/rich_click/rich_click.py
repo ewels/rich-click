@@ -362,11 +362,21 @@ def rich_format_error(self):
     )
 
 
-class Group(click.Group):
+class RichGroup(click.Group):
     def format_help(self, ctx, formatter):
         rich_format_help(self, ctx, formatter)
 
 
-class Command(click.Command):
+class RichCommand(click.Command):
     def format_help(self, ctx, formatter):
         rich_format_help(self, ctx, formatter)
+
+
+class RichClickException(click.ClickException):
+    def show(self, file):
+        rich_format_error(self, file)
+
+
+class RichUsageError(click.UsageError):
+    def show(self, file):
+        rich_format_error(self, file)
