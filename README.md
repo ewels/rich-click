@@ -154,6 +154,8 @@ STYLE_OPTIONS_PANEL_BORDER = "dim"
 ALIGN_OPTIONS_PANEL = "left"
 STYLE_COMMANDS_PANEL_BORDER = "dim"
 ALIGN_COMMANDS_PANEL = "left"
+STYLE_ERRORS_PANEL_BORDER = "red"
+ALIGN_ERRORS_PANEL = "left"
 MAX_WIDTH = None  # Set to an int to limit to that many characters
 
 # Fixed strings
@@ -162,11 +164,14 @@ DEFAULT_STRING = " [default: {}]"
 REQUIRED_SHORT_STRING = "*"
 REQUIRED_LONG_STRING = " [required]"
 RANGE_STRING = " [{}]"
+ARGUMENTS_PANEL_TITLE = "Arguments"
 OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
+ERRORS_PANEL_TITLE = "Error"
 
 # Behaviours
 SHOW_ARGUMENTS = False
+GROUP_ARGUMENTS_OPTIONS = False
 USE_MARKDOWN = False
 USE_RICH_MARKUP = False
 COMMAND_GROUPS = {}

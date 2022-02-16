@@ -10,5 +10,6 @@ __version__ = "0.4.0.dev0"
 
 from click import *
 from .rich_click import rich_format_help
+from .rich_click import rich_format_error
 from .rich_click import Group
 from .rich_click import Command

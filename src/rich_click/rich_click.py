@@ -28,6 +28,8 @@ STYLE_OPTIONS_PANEL_BORDER = "dim"
 ALIGN_OPTIONS_PANEL = "left"
 STYLE_COMMANDS_PANEL_BORDER = "dim"
 ALIGN_COMMANDS_PANEL = "left"
+STYLE_ERRORS_PANEL_BORDER = "red"
+ALIGN_ERRORS_PANEL = "left"
 MAX_WIDTH = None  # Set to an int to limit to that many characters
 
 # Fixed strings
@@ -36,11 +38,14 @@ DEFAULT_STRING = " [default: {}]"
 REQUIRED_SHORT_STRING = "*"
 REQUIRED_LONG_STRING = " [required]"
 RANGE_STRING = " [{}]"
+ARGUMENTS_PANEL_TITLE = "Arguments"
 OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
+ERRORS_PANEL_TITLE = "Error"
 
 # Behaviours
 SHOW_ARGUMENTS = False
+GROUP_ARGUMENTS_OPTIONS = False
 USE_MARKDOWN = False
 USE_RICH_MARKUP = False
 COMMAND_GROUPS = {}
@@ -170,6 +175,7 @@ def rich_format_help(obj, ctx, formatter):
     # stick anything unmatched into a default group at the end
     option_groups = OPTION_GROUPS.get(ctx.command_path, []).copy()
     option_groups.append({"options": []})
+    argument_groups = {"name": ARGUMENTS_PANEL_TITLE, "options": []}
     for param in obj.get_params(ctx):
 
         # Skip positional arguments - they don't have opts or helptext and are covered in usage
@@ -187,7 +193,14 @@ def rich_format_help(obj, ctx, formatter):
                 break
         # No break, no mention - add to the default group
         else:
-            option_groups[-1]["options"].append(param.opts[0])
+            if type(param) is click.core.Argument and not GROUP_ARGUMENTS_OPTIONS:
+                argument_groups["options"].append(param.opts[0])
+            else:
+                option_groups[-1]["options"].append(param.opts[0])
+
+    # If we're not grouping arguments and we got some, prepend before default options
+    if len(argument_groups["options"]) > 0:
+        option_groups.insert(len(option_groups) - 1, argument_groups)
 
     # Print each command group panel
     for option_group in option_groups:
@@ -318,6 +331,35 @@ def rich_format_help(obj, ctx, formatter):
         console.print(
             Padding(Align(highlighter(epilogue), width=MAX_WIDTH, pad=False), 1)
         )
+
+
+def rich_format_error(self):
+    """
+    Custom function to overwrite default click error printing.
+    """
+    # TODO: The click function has more complex code for UsageErrors:
+    # https://github.com/pallets/click/blob/6411f425fae545f42795665af4162006b36c5e4a/src/click/exceptions.py#L62-L82
+    # Should bring this over too.
+    console = Console(
+        theme=Theme(
+            {
+                "option": STYLE_OPTION,
+                "switch": STYLE_SWITCH,
+                "metavar": STYLE_METAVAR,
+                "usage": STYLE_USAGE,
+            }
+        ),
+        highlighter=highlighter,
+    )
+    console.print(
+        Panel(
+            highlighter(self.format_message()),
+            border_style=STYLE_ERRORS_PANEL_BORDER,
+            title=ERRORS_PANEL_TITLE,
+            title_align=ALIGN_ERRORS_PANEL,
+            width=MAX_WIDTH,
+        )
+    )
 
 
 class Group(click.Group):
