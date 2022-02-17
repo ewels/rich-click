@@ -11,12 +11,6 @@ __version__ = "0.4.0.dev0"
 from click import *
 from .rich_click import RichGroup
 from .rich_click import RichCommand
-from .rich_click import rich_format_error
-
-## TODO: Replace with inheritance / custom function model as below
-# Monkey patch click error formatting function
-ClickException.show = rich_format_error
-UsageError.show = rich_format_error
 
 
 def group(*args, cls=RichGroup, **kwargs):

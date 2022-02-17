@@ -46,5 +46,5 @@ def original(all):
 
 
 if __name__ == "__main__":
-    # cli()  # Use rich-click, should be fancy output
-    original()  # Use vanilla click, should be simple output
+    cli()  # Use rich-click, should be fancy output
+    # original()  # Use vanilla click, should be simple output

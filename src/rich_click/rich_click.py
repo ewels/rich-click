@@ -9,6 +9,7 @@ from rich.table import Table
 from rich.text import Text
 from rich.theme import Theme
 import re
+import sys
 
 # Default styles
 STYLE_OPTION = "bold cyan"
@@ -337,9 +338,6 @@ def rich_format_error(self):
     """
     Custom function to overwrite default click error printing.
     """
-    # TODO: The click function has more complex code for UsageErrors:
-    # https://github.com/pallets/click/blob/6411f425fae545f42795665af4162006b36c5e4a/src/click/exceptions.py#L62-L82
-    # Should bring this over too.
     console = Console(
         theme=Theme(
             {
@@ -351,6 +349,16 @@ def rich_format_error(self):
         ),
         highlighter=highlighter,
     )
+    if self.ctx is not None:
+        console.print(self.ctx.get_usage())
+    if self.ctx is not None and self.ctx.command.get_help_option(self.ctx) is not None:
+        console.print(
+            "Try [blue]'{command} {option}'[/] for help.".format(
+                command=self.ctx.command_path, option=self.ctx.help_option_names[0]
+            ),
+            style="dim",
+        )
+
     console.print(
         Panel(
             highlighter(self.format_message()),
@@ -363,6 +371,17 @@ def rich_format_error(self):
 
 
 class RichCommand(click.Command):
+    standalone_mode = False
+
+    def main(self, *args, standalone_mode=True, **kwargs):
+        try:
+            return super().main(*args, standalone_mode=False, **kwargs)
+        except click.ClickException as e:
+            if not standalone_mode:
+                raise
+            rich_format_error(e)
+            sys.exit(e.exit_code)
+
     def format_help(self, ctx, formatter):
         rich_format_help(self, ctx, formatter)
 
@@ -370,15 +389,14 @@ class RichCommand(click.Command):
 class RichGroup(click.Group):
     command_class = RichCommand
 
+    def main(self, *args, standalone_mode=True, **kwargs):
+        try:
+            return super().main(*args, standalone_mode=False, **kwargs)
+        except click.ClickException as e:
+            if not standalone_mode:
+                raise
+            rich_format_error(e)
+            sys.exit(e.exit_code)
+
     def format_help(self, ctx, formatter):
         rich_format_help(self, ctx, formatter)
-
-
-class RichClickException(click.ClickException):
-    def show(self, file):
-        rich_format_error(self, file)
-
-
-class RichUsageError(click.UsageError):
-    def show(self, file):
-        rich_format_error(self, file)
