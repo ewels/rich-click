@@ -260,10 +260,14 @@ def rich_format_help(obj, ctx, formatter):
     for option_group in option_groups:
 
         options_rows = []
-        for param in obj.get_params(ctx):
+        for opt in option_group.get("options", []):
 
-            # Skip if command is not listed in this group
-            if not any([opt in option_group.get("options", []) for opt in param.opts]):
+            # Get the param
+            for param in obj.get_params(ctx):
+                if any([opt in param.opts]):
+                    break
+            # Skip if option is not listed in this group
+            else:
                 continue
 
             # Short and long form
@@ -362,9 +366,9 @@ def rich_format_help(obj, ctx, formatter):
             commands_table = Table(highlight=False, box=None, show_header=False)
             # Define formatting in first column, as commands don't match highlighter regex
             commands_table.add_column(style="bold cyan", no_wrap=True)
-            for command in obj.list_commands(ctx):
-                # Skip if command is not listed in this group
-                if command not in cmd_group.get("commands", []):
+            for command in cmd_group.get("commands", []):
+                # Skip if command does not exist
+                if command not in obj.list_commands(ctx):
                     continue
                 cmd = obj.get_command(ctx, command)
                 helptext = cmd.help or ""
