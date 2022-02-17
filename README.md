@@ -18,6 +18,8 @@ click, formatted with rich, with minimal customisation required.
 
 ![rich-click](docs/images/command_groups.png)
 
+_Screenshot from [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py)_
+
 ## Installation
 
 You can install `rich-click` from the Python Package Index (PyPI) with `pip` or equivalent.
