@@ -37,7 +37,7 @@ MAX_WIDTH = None  # Set to an int to limit to that many characters
 DEPRECATED_STRING = "(Deprecated) "
 DEFAULT_STRING = "[default: {}]"
 REQUIRED_SHORT_STRING = "*"
-REQUIRED_LONG_STRING = " [required]"
+REQUIRED_LONG_STRING = "[required]"
 RANGE_STRING = " [{}]"
 ARGUMENTS_PANEL_TITLE = "Arguments"
 OPTIONS_PANEL_TITLE = "Options"
@@ -168,8 +168,12 @@ def _get_parameter_help(param, ctx):
             )
 
     # Required?
-    if param.required:
-        yield Text(REQUIRED_LONG_STRING, style=STYLE_REQUIRED_LONG)
+    if param.required or getattr(param, "show_default", None):
+        # Add a space if we had help text or a default string
+        required_str_template = REQUIRED_LONG_STRING
+        if getattr(param, "help", None):
+            required_str_template = f" {REQUIRED_LONG_STRING} "
+        yield Text(required_str_template, style=STYLE_REQUIRED_LONG)
 
 
 def rich_format_help(obj, ctx, formatter):
