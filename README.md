@@ -28,7 +28,7 @@ python -m pip install rich-click
 
 ## Usage
 
-To use `rich-click`, import it _**instead of**_ `click` but under the same namespace:
+To use `rich-click`, switch out your normal `click` import with `rich-click`, using the same namespace:
 
 ```python
 import rich_click as click
