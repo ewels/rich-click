@@ -14,12 +14,20 @@ from .rich_click import RichCommand
 
 
 def group(*args, cls=RichGroup, **kwargs):
+    """group decorator function.
+
+    Defines the group() function so that it uses the RichGroup class by default
+    """
     from click import group as click_group
 
     return click_group(*args, cls=cls, **kwargs)
 
 
 def command(*args, cls=RichCommand, **kwargs):
+    """command decorator function.
+
+    Defines the command() function so that it uses the RichCommand class by default
+    """
     from click import command as click_command
 
     return click_command(*args, cls=cls, **kwargs)

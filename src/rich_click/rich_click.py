@@ -67,12 +67,22 @@ highlighter = OptionHighlighter()
 
 
 def _make_rich_rext(text, style=""):
+    """Take a string and return styled text
+
+    By default, return the text as a Rich Text with the request style.
+    If USE_RICH_MARKUP is True, also parse the text for Rich markup strings.
+    If USE_MARKDOWN is True, parse as Markdown.
+
+    Only one of USE_MARKDOWN or USE_RICH_MARKUP can be True.
+    If both are True, USE_MARKDOWN takes precedence.
+
+    Args:
+        text (str): Text to style
+        style (str): Rich style to apply
+
+    Returns:
+        MarkdownElement or Text: Styled text object
     """
-    Return styled text, either as Markdown, rich markup or plain,
-    depending on user settings
-    """
-    # TODO: Doesn't work yet, not sure how to make a rich Markdown object into a Text object
-    # https://github.com/Textualize/rich/discussions/1951#discussioncomment-2156145
     if USE_MARKDOWN:
         return Markdown(text, style=style)
     if USE_RICH_MARKUP:
@@ -83,6 +93,18 @@ def _make_rich_rext(text, style=""):
 
 @group()
 def _get_help_text(obj):
+    """Build primary help text for a click command or group.
+
+    Decorated to yield objects for a Group, this returns the prose help text
+    for a command or group, rendered either as a Rich Text object or as Markdown.
+    If the command is marked as depreciated, the depreciated string will be yielded first.
+
+    Args:
+        obj (click.Command or click.Group): Command or group to build help text for
+
+    Yields:
+        Text / MarkdownElement: Multiple styled objects (depreciated, usage)
+    """
 
     # Prepend deprecated status
     if obj.deprecated:
@@ -109,6 +131,19 @@ def _get_help_text(obj):
 
 @group()
 def _get_parameter_help(param, ctx):
+    """Build primary help text for a click option or argument.
+
+    Decorated to yield objects for a Group, this returns the prose help text
+    for an option or argument, rendered either as a Rich Text object or as Markdown.
+    Additional elements are returned to show the default and required status if applicable.
+
+    Args:
+        param (click.Option or click.Argument): Option or argument to build help text for
+        ctx (click.Context): Click Context object
+
+    Yields:
+        Text / MarkdownElement: Multiple styled objects (help text, default, required)
+    """
     if getattr(param, "help", None):
         yield _make_rich_rext(param.help, STYLE_OPTION_HELP)
 
@@ -129,20 +164,18 @@ def _get_parameter_help(param, ctx):
 
 
 def rich_format_help(obj, ctx, formatter):
-    """
-    Print nicely formatted help text using rich
+    """Print nicely formatted help text using rich
 
-    This code was shamelessly stolen from rich-cli, the
-    original author was @willmcgugan - thanks Will!
-
-    I've modified it a little to work with click groups
-    and to spit out output in a style that fits well with our tool.
-
-    If this the rich-click plugin gets made, we can probably strip
-    this out and just use that instead.
-
-    Original source:
+    Based on original code from rich-cli, by @willmcgugan.
     https://github.com/Textualize/rich-cli/blob/8a2767c7a340715fc6fbf4930ace717b9b2fc5e5/src/rich_cli/__main__.py#L162-L236
+
+    Replacement for the click function format_help().
+    Takes a command or group and builds the help text output.
+
+    Args:
+        obj (click.Command or click.Group): Command or group to build help text for
+        ctx (click.Context): Click Context object
+        formatter (click.HelpFormatter): Click HelpFormatter object
     """
 
     console = Console(
@@ -289,7 +322,10 @@ def rich_format_help(obj, ctx, formatter):
                 )
             )
 
+    #
+    # Groups only:
     # List click command groups
+    #
     if hasattr(obj, "list_commands"):
         # Look through COMMAND_GROUPS for this command
         # stick anything unmatched into a default group at the end
@@ -336,8 +372,13 @@ def rich_format_help(obj, ctx, formatter):
 
 
 def rich_format_error(self):
-    """
-    Custom function to overwrite default click error printing.
+    """Print richly formatted click errors.
+
+    Called by custom exception handler to print richly formatted click errors.
+    Mimics original click.ClickException.echo() function but with rich formatting.
+
+    Args:
+        click.ClickException: Click exception to format.
     """
     console = Console(
         theme=Theme(
@@ -372,6 +413,12 @@ def rich_format_error(self):
 
 
 class RichCommand(click.Command):
+    """Richly formatted click Command.
+
+    Inherits click.Command and overrides help and error methods
+    to print richly formatted output.
+    """
+
     standalone_mode = False
 
     def main(self, *args, standalone_mode=True, **kwargs):
@@ -388,6 +435,12 @@ class RichCommand(click.Command):
 
 
 class RichGroup(click.Group):
+    """Richly formatted click Group.
+
+    Inherits click.Group and overrides help and error methods
+    to print richly formatted output.
+    """
+
     command_class = RichCommand
 
     def main(self, *args, standalone_mode=True, **kwargs):
