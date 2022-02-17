@@ -39,7 +39,13 @@ click.rich_click.COMMAND_GROUPS = {
 @click.group()
 @click.option("--input", "-i", help="Input path")
 @click.option("--output", "-o", help="Output path")
-@click.option("--debug/--no-debug", "-d/-n", default=False, show_default=True)
+@click.option(
+    "--debug/--no-debug",
+    "-d/-n",
+    default=False,
+    show_default=True,
+    help="Show the debug log messages",
+)
 @click.version_option("1.23", prog_name="multiqc")
 def cli(input, output, debug):
     """

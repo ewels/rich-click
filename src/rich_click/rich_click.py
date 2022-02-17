@@ -1,6 +1,7 @@
 import click
 from rich.align import Align
-from rich.console import Console, group
+from rich.columns import Columns
+from rich.console import Console
 from rich.highlighter import RegexHighlighter
 from rich.markdown import Markdown
 from rich.padding import Padding
@@ -91,30 +92,31 @@ def _make_rich_rext(text, style=""):
         return highlighter(Text(text, style=style))
 
 
-@group()
 def _get_help_text(obj):
     """Build primary help text for a click command or group.
 
-    Decorated to yield objects for a Group, this returns the prose help text
-    for a command or group, rendered either as a Rich Text object or as Markdown.
-    If the command is marked as depreciated, the depreciated string will be yielded first.
+    Returns the prose help text for a command or group, rendered either as a
+    Rich Text object or as Markdown.
+    If the command is marked as depreciated, the depreciated string will be prepended.
 
     Args:
         obj (click.Command or click.Group): Command or group to build help text for
 
-    Yields:
-        Text / MarkdownElement: Multiple styled objects (depreciated, usage)
+    Returns:
+        Columns: A columns element with multiple styled objects (depreciated, usage)
     """
+
+    items = []
 
     # Prepend deprecated status
     if obj.deprecated:
-        yield Text(DEPRECATED_STRING, style=STYLE_DEPRECATED)
+        items.append(Text(DEPRECATED_STRING, style=STYLE_DEPRECATED))
 
     # Get the first line
     first_line = obj.help.split("\n\n")[0]
     # Remove single linebreaks
     first_line = first_line.replace("\n", " ").strip()
-    yield _make_rich_rext(first_line, STYLE_HELPTEXT_FIRST_LINE)
+    items.append(_make_rich_rext(first_line, STYLE_HELPTEXT_FIRST_LINE))
 
     # Get remaining lines, remove single line breaks and format as dim
     remaining_lines = obj.help.split("\n\n")[1:]
@@ -126,26 +128,32 @@ def _get_help_text(obj):
             remaining_lines = "\n\n" + "\n\n".join(remaining_lines)
         else:
             remaining_lines = "\n".join(remaining_lines)
-        yield _make_rich_rext(remaining_lines, STYLE_HELPTEXT)
+        items.append(_make_rich_rext(remaining_lines, STYLE_HELPTEXT))
+
+    # Use Columns - this allows us to group different renderable types
+    # (Text, Markdown) onto a single line.
+    return Columns(items)
 
 
-@group()
 def _get_parameter_help(param, ctx):
     """Build primary help text for a click option or argument.
 
-    Decorated to yield objects for a Group, this returns the prose help text
-    for an option or argument, rendered either as a Rich Text object or as Markdown.
-    Additional elements are returned to show the default and required status if applicable.
+    Returns the prose help text for an option or argument, rendered either
+    as a Rich Text object or as Markdown.
+    Additional elements are appended to show the default and required status if applicable.
 
     Args:
         param (click.Option or click.Argument): Option or argument to build help text for
         ctx (click.Context): Click Context object
 
-    Yields:
-        Text / MarkdownElement: Multiple styled objects (help text, default, required)
+    Returns:
+        Columns: A columns element with multiple styled objects (help, default, required)
     """
+
+    items = []
+
     if getattr(param, "help", None):
-        yield _make_rich_rext(param.help, STYLE_OPTION_HELP)
+        items.append(_make_rich_rext(param.help, STYLE_OPTION_HELP))
 
     # Default value
     if getattr(param, "show_default", None):
@@ -158,22 +166,20 @@ def _get_parameter_help(param, ctx):
         if default_str_match:
             # Don't show the required string, as we show that afterwards anyway
             default_str = default_str_match.group(1).replace("; required", "")
-            # Add a space if we had help text
-            default_str_template = DEFAULT_STRING
-            if getattr(param, "help", None):
-                default_str_template = f" {DEFAULT_STRING} "
-            yield Text(
-                default_str_template.format(default_str),
-                style=STYLE_OPTION_DEFAULT,
+            items.append(
+                Text(
+                    DEFAULT_STRING.format(default_str),
+                    style=STYLE_OPTION_DEFAULT,
+                )
             )
 
     # Required?
     if param.required or getattr(param, "show_default", None):
-        # Add a space if we had help text or a default string
-        required_str_template = REQUIRED_LONG_STRING
-        if getattr(param, "help", None):
-            required_str_template = f" {REQUIRED_LONG_STRING} "
-        yield Text(required_str_template, style=STYLE_REQUIRED_LONG)
+        items.append(Text(REQUIRED_LONG_STRING, style=STYLE_REQUIRED_LONG))
+
+    # Use Columns - this allows us to group different renderable types
+    # (Text, Markdown) onto a single line.
+    return Columns(items)
 
 
 def rich_format_help(obj, ctx, formatter):
