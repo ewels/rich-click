@@ -10,15 +10,13 @@ click, formatted with rich, with minimal customisation required.
 
 ## Features
 
-- Rich formatting of click help and error messages
-- Nice styles be default, with simple import
-- Ability to give custom sort order for options and commands
-- Group commands and options into named panels
-- Extensive styling and behaviour customisation available
+- 🌈 Rich command-line formatting of click help and error messages
+- 💫 Nice styles be default, usage is simply `import rich_click as click`
+- 🔢 Easily give custom sort order for options and commands
+- 🎁 Group commands and options into named panels
+- 🎨 Extensive customisation of styling and behaviour possible
 
-## Screenshots
-
-![rich-click](docs/images/example_with_rich-click.png)
+![rich-click](docs/images/command_groups.png)
 
 ## Installation
 
@@ -30,34 +28,38 @@ python -m pip install rich-click
 
 ## Usage
 
-To use `rich-click`, import it instead of `click` but under the same namespace:
+To use `rich-click`, import it _**instead of**_ `click` but under the same namespace:
 
 ```python
 import rich_click as click
 ```
 
 That's it. Then continue to use `click` as you would normally.
+See [`examples/01_simple.py`](examples/01_simple.py) for an example.
 
 The intention is to maintain most / all of the normal click functionality and arguments.
-If you spot something that is missing once you start using the plugin, please create an issue about it.
+If you spot something that breaks or is missing once you start using the plugin, please create an issue about it.
+
+Alternatively, if you prefer you can `RichGroup` or `RichCommand` with the `cls` argument in your click usage instead.
+This means that you can continue to use the unmodified `click` package in parallel.
+See [`examples/02_declarative.py`](examples/02_declarative.py) for an example.
 
 ## Groups and sorting
 
 `rich-click` gives functionality to list options and subcommands in groups, printed as separate panels.
 It accepts a list of options / commands which means you can also choose a custom sorting order.
 
-For example, you can produce something that looks like this:
-![command groups](docs/images/command_groups.png)
+- For options (flags), set `click.rich_click.OPTION_GROUPS`
+- For subcommands (groups), set `click.rich_click.COMMAND_GROUPS`
 
-- To do this with options (flags), set `click.rich_click.OPTION_GROUPS`.
-- To do this with subcommands (groups), set `click.rich_click.COMMAND_GROUPS`.
+See [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py) for a full example.
 
 ### Options
 
-To group command flags into two sections with custom names, you could do the following:
+To group option flags into two sections with custom names, see the following example:
 
 ```python
-rich_click.core.OPTION_GROUPS = {
+click.rich_click.OPTION_GROUPS = {
     "mytool": [
         {
             "name": "Simple options",
@@ -132,7 +134,7 @@ To print the option flags in a different colour, use:
 click.rich_click.STYLE_OPTION = "magenta"
 ```
 
-<details><summary>Full list of config options</summary>
+### Full list of config options
 
 ```python
 # Default styles
@@ -159,9 +161,9 @@ MAX_WIDTH = None  # Set to an int to limit to that many characters
 
 # Fixed strings
 DEPRECATED_STRING = "(Deprecated) "
-DEFAULT_STRING = " [default: {}]"
+DEFAULT_STRING = "[default: {}]"
 REQUIRED_SHORT_STRING = "*"
-REQUIRED_LONG_STRING = " [required]"
+REQUIRED_LONG_STRING = "[required]"
 RANGE_STRING = " [{}]"
 ARGUMENTS_PANEL_TITLE = "Arguments"
 OPTIONS_PANEL_TITLE = "Options"
@@ -177,8 +179,6 @@ COMMAND_GROUPS = {}
 OPTION_GROUPS = {}
 ```
 
-</details>
-
 ## Contributing
 
 Contributions and suggestions for new features are welcome, as are bug reports!
@@ -187,7 +187,5 @@ or better still, dive right in with a pull-request.
 
 ## Credits
 
-This package was put together hastily by Phil Ewels ([@ewels](http://github.com/ewels/)),
-but the hard work was really done by Will McGugan ([@willmcgugan](https://github.com/willmcgugan))
-who not only is the author of [Rich](https://github.com/Textualize/rich)
-but also wrote the original code that this package is based on.
+This package was written by Phil Ewels ([@ewels](http://github.com/ewels/)),
+based on initial code by Will McGugan ([@willmcgugan](https://github.com/willmcgugan)).
