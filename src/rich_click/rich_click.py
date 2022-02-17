@@ -117,10 +117,11 @@ def _get_parameter_help(param, ctx):
         # param.default is the value, but click is a bit clever in choosing what to show here
         # eg. --debug/--no-debug, default=False will show up as [default: no-debug] instead of [default: False]
         # To avoid duplicating loads of code, let's just pull out the string from click with a regex
-        default_str = re.search(
-            r"\[default: (.*)\]", param.get_help_record(ctx)[-1]
-        ).group(1)
-        yield Text(DEFAULT_STRING.format(default_str), style=STYLE_OPTION_DEFAULT)
+        default_str = re.search(r"\[default: (.*)\]", param.get_help_record(ctx)[-1])
+        if default_str:
+            yield Text(
+                DEFAULT_STRING.format(default_str.group(1)), style=STYLE_OPTION_DEFAULT
+            )
 
     # Required?
     if param.required:
