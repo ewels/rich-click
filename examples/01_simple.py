@@ -1,10 +1,8 @@
-import rich_click
+import rich_click as click
 
 
-@rich_click.group()
-@rich_click.option(
-    "--debug/--no-debug", "-d/-n", default=False, help="Enable debug mode"
-)
+@click.group()
+@click.option("--debug/--no-debug", "-d/-n", default=False, help="Enable debug mode")
 def cli(debug):
     """
     My amazing tool does all the things.
@@ -19,21 +17,21 @@ def cli(debug):
 
 
 @cli.command()
-@rich_click.option(
+@click.option(
     "--type",
     required=True,
     default="files",
     show_default=True,
     help="Type of file to sync",
 )
-@rich_click.option("--all", is_flag=True, help="Sync all the things?")
+@click.option("--all", is_flag=True, help="Sync all the things?")
 def sync(type, all):
     """Synchronise all your files between two places"""
     print("Syncing")
 
 
 @cli.command()
-@rich_click.option("--all", is_flag=True, help="Get everything")
+@click.option("--all", is_flag=True, help="Get everything")
 def download(all):
     """Pretend to download some files from somewhere"""
     print("Downloading")
