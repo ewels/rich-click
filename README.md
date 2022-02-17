@@ -8,18 +8,17 @@
 The intention of `rich-click` is to provide attractive help output from
 click, formatted with rich, with minimal customisation required.
 
+## Features
+
+- Rich formatting of click help and error messages
+- Nice styles be default, with simple import
+- Ability to give custom sort order for options and commands
+- Group commands and options into named panels
+- Extensive styling and behaviour customisation available
+
 ## Screenshots
 
-<table>
-    <tr>
-        <th>Native click help</th>
-        <th>With <code>rich-click</code></th>
-    </tr>
-    <tr>
-        <td><img src="docs/images/example_with_just_click.png"></td>
-        <td><img src="docs/images/example_with_rich-click.png"></td>
-    </tr>
-</table>
+![rich-click](docs/images/example_with_rich-click.png)
 
 ## Installation
 

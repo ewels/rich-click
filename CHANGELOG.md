@@ -2,6 +2,8 @@
 
 ## Version 0.4.0.dev0
 
+Major change: New usage, so that we can avoid having to do monkey patching [#10](https://github.com/ewels/rich-click/pull/10).
+
 - Add ability to create groups of options with separate panels
 - Show positional arguments in their own panel by default
 - Add config `GROUP_ARGUMENTS_OPTIONS` option to group with options
