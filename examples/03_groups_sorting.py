@@ -8,7 +8,7 @@ click.rich_click.OPTION_GROUPS = {
         },
         {
             "name": "Advanced options",
-            "options": ["--debug", "--version", "--help"],
+            "options": ["--help", "--version", "--debug"],
         },
     ],
     "03_groups_sorting.py sync": [
@@ -26,7 +26,7 @@ click.rich_click.COMMAND_GROUPS = {
     "03_groups_sorting.py": [
         {
             "name": "Main usage",
-            "commands": ["download", "sync"],
+            "commands": ["sync", "download"],
         },
         {
             "name": "Configuration",
@@ -41,6 +41,7 @@ click.rich_click.COMMAND_GROUPS = {
     "--type",
     default="files",
     show_default=True,
+    required=True,
     help="Type of file to sync",
 )
 @click.option(
