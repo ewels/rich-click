@@ -8,18 +8,17 @@
 The intention of `rich-click` is to provide attractive help output from
 click, formatted with rich, with minimal customisation required.
 
+## Features
+
+- Rich formatting of click help and error messages
+- Nice styles be default, with simple import
+- Ability to give custom sort order for options and commands
+- Group commands and options into named panels
+- Extensive styling and behaviour customisation available
+
 ## Screenshots
 
-<table>
-    <tr>
-        <th>Native click help</th>
-        <th>With <code>rich-click</code></th>
-    </tr>
-    <tr>
-        <td><img src="docs/images/example_with_just_click.png"></td>
-        <td><img src="docs/images/example_with_rich-click.png"></td>
-    </tr>
-</table>
+![rich-click](docs/images/example_with_rich-click.png)
 
 ## Installation
 
@@ -31,65 +30,16 @@ python -m pip install rich-click
 
 ## Usage
 
-There are two main ways to set up `rich-click` formatting for your tool:
-monkey patching or declarative.
-Which you choose will depend on your use-case and your personal disposition!
-
-Note that the intention is to maintain most / all of the normal click functionality and arguments.
-If you spot something that is missing once you start using the plugin, please
-create an issue about it.
-
-### The path of least typing
-
-Monkey patching is [probably bad](https://en.wikipedia.org/wiki/Monkey_patch#Pitfalls)
-and you should only use this method if you are a Responsible Developer.
-It's also good if you're lazy, as it requires very little typing.
-
-Assuming that you're already using click, you only need to add a few lines:
+To use `rich-click`, import it instead of `click` but under the same namespace:
 
 ```python
-import rich_click
-click.Command.format_help = rich_click.rich_format_help
-click.Group.format_help = rich_click.rich_format_help
-click.ClickException.show = rich_click.rich_format_error
-click.UsageError.show = rich_click.rich_format_error
+import rich_click as click
 ```
 
-This _overwrites_ the default `click` methods with those from the `rich-click` package.
-As such, no other changes are needed - just continue to use `click` as you would
-normally and it will use these custom methods to print your help output.
+That's it. Then continue to use `click` as you would normally.
 
-### The good and proper way
-
-If using monkey-patching in your project makes your palms sweaty and your pulse race,
-then you'll be pleased to know that you can also use `rich-click` in a nicely
-declarative and verbose manner:
-
-```python
-import click
-import rich_click
-
-class RichClickGroup(click.Group):
-    def format_help(self, ctx, formatter):
-        rich_click.rich_format_help(self, ctx, formatter)
-class RichClickCommand(click.Command):
-    def format_help(self, ctx, formatter):
-        rich_click.rich_format_help(self, ctx, formatter)
-
-@click.group(cls=RichClickGroup)
-@click.option('--debug/--no-debug', default=False)
-def cli(debug):
-    click.echo(f"Debug mode is {'on' if debug else 'off'}")
-
-@cli.command(cls=RichClickCommand)
-def sync():
-    click.echo('Syncing')
-```
-
-_(example based on the [click docs](https://click.palletsprojects.com/en/8.0.x/commands/))_
-
-Here we are making new `Group` and `Command` child classes that are based on click.
-We define our custom `format_help()` functions and then tell click to to use these classes with the `cls` argument.
+The intention is to maintain most / all of the normal click functionality and arguments.
+If you spot something that is missing once you start using the plugin, please create an issue about it.
 
 ## Groups and sorting
 
@@ -99,8 +49,8 @@ It accepts a list of options / commands which means you can also choose a custom
 For example, you can produce something that looks like this:
 ![command groups](docs/images/command_groups.png)
 
-- To do this with options (flags), set `rich_click.core.OPTION_GROUPS`.
-- To do this with subcommands (groups), set `rich_click.core.COMMAND_GROUPS`.
+- To do this with options (flags), set `click.rich_click.OPTION_GROUPS`.
+- To do this with subcommands (groups), set `click.rich_click.COMMAND_GROUPS`.
 
 ### Options
 
@@ -129,7 +79,7 @@ Here we create two groups of commands for the base command of `mytool`.
 Any subcommands not listed will automatically be printed in a panel at the end labelled "Commands" as usual.
 
 ```python
-rich_click.core.COMMAND_GROUPS = {
+click.rich_click.COMMAND_GROUPS = {
     "mytool": [
         {
             "name": "Commands for uploading",
@@ -150,7 +100,7 @@ If you omit `name` it will use `Commands` (can be configured with `COMMANDS_PANE
 If you use multiple nested subcommands, you can specify their commands using the top-level dictionary keys:
 
 ```python
-rich_click.core.COMMAND_GROUPS = {
+click.rich_click.COMMAND_GROUPS = {
     "mytool": ["commands": ["sync", "auth"]],
     "mytool sync": [
         {
@@ -173,13 +123,13 @@ You can customise most things that are related to formatting.
 For example, to limit the maximum width of the help output to 100 characters:
 
 ```python
-rich_click.core.MAX_WIDTH = 100
+click.rich_click.MAX_WIDTH = 100
 ```
 
 To print the option flags in a different colour, use:
 
 ```python
-rich_click.core.STYLE_OPTION = "magenta"
+click.rich_click.STYLE_OPTION = "magenta"
 ```
 
 <details><summary>Full list of config options</summary>

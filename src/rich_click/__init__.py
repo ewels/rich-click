@@ -8,5 +8,18 @@ click, formatted with rich, with minimal customisation required.
 
 __version__ = "0.4.0.dev0"
 
-from .core import rich_format_help
-from .core import rich_format_error
+from click import *
+from .rich_click import RichGroup
+from .rich_click import RichCommand
+
+
+def group(*args, cls=RichGroup, **kwargs):
+    from click import group as click_group
+
+    return click_group(*args, cls=cls, **kwargs)
+
+
+def command(*args, cls=RichCommand, **kwargs):
+    from click import command as click_command
+
+    return click_command(*args, cls=cls, **kwargs)

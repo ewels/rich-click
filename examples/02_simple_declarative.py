@@ -1,18 +1,8 @@
 import click
-import rich_click
+from rich_click import RichGroup, RichCommand
 
 
-class RichClickGroup(click.Group):
-    def format_help(self, ctx, formatter):
-        rich_click.rich_format_help(self, ctx, formatter)
-
-
-class RichClickCommand(click.Command):
-    def format_help(self, ctx, formatter):
-        rich_click.rich_format_help(self, ctx, formatter)
-
-
-@click.group(cls=RichClickGroup)
+@click.group(cls=RichGroup)
 @click.option("--debug/--no-debug", default=False)
 def cli(debug):
     """
@@ -27,7 +17,7 @@ def cli(debug):
     click.echo(f"Debug mode is {'on' if debug else 'off'}")
 
 
-@cli.command(cls=RichClickCommand)
+@cli.command(cls=RichCommand)
 def sync():
     """Synchronise all your files between two places"""
     click.echo("Syncing")
