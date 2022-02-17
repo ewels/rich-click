@@ -35,7 +35,7 @@ MAX_WIDTH = None  # Set to an int to limit to that many characters
 
 # Fixed strings
 DEPRECATED_STRING = "(Deprecated) "
-DEFAULT_STRING = " [default: {}]"
+DEFAULT_STRING = "[default: {}]"
 REQUIRED_SHORT_STRING = "*"
 REQUIRED_LONG_STRING = " [required]"
 RANGE_STRING = " [{}]"
@@ -152,10 +152,19 @@ def _get_parameter_help(param, ctx):
         # param.default is the value, but click is a bit clever in choosing what to show here
         # eg. --debug/--no-debug, default=False will show up as [default: no-debug] instead of [default: False]
         # To avoid duplicating loads of code, let's just pull out the string from click with a regex
-        default_str = re.search(r"\[default: (.*)\]", param.get_help_record(ctx)[-1])
-        if default_str:
+        default_str_match = re.search(
+            r"\[default: (.*)\]", param.get_help_record(ctx)[-1]
+        )
+        if default_str_match:
+            # Don't show the required string, as we show that afterwards anyway
+            default_str = default_str_match.group(1).replace("; required", "")
+            # Add a space if we had help text
+            default_str_template = DEFAULT_STRING
+            if getattr(param, "help", None):
+                default_str_template = f" {DEFAULT_STRING} "
             yield Text(
-                DEFAULT_STRING.format(default_str.group(1)), style=STYLE_OPTION_DEFAULT
+                default_str_template.format(default_str),
+                style=STYLE_OPTION_DEFAULT,
             )
 
     # Required?
