@@ -174,7 +174,7 @@ def _get_parameter_help(param, ctx):
             )
 
     # Required?
-    if param.required or getattr(param, "show_default", None):
+    if param.required:
         items.append(Text(REQUIRED_LONG_STRING, style=STYLE_REQUIRED_LONG))
 
     # Use Columns - this allows us to group different renderable types

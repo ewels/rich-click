@@ -3,8 +3,8 @@ import rich_click as click
 click.rich_click.OPTION_GROUPS = {
     "03_groups_sorting.py": [
         {
-            "name": "Inputs and Outputs",
-            "options": ["--input", "--output"],
+            "name": "Basic usage",
+            "options": ["--type", "--output"],
         },
         {
             "name": "Advanced options",
@@ -13,12 +13,12 @@ click.rich_click.OPTION_GROUPS = {
     ],
     "03_groups_sorting.py sync": [
         {
-            "name": "Basic usage",
-            "options": ["--type", "--all", "--help"],
+            "name": "Inputs and outputs",
+            "options": ["--input", "--output"],
         },
         {
             "name": "Advanced usage",
-            "options": ["--overwrite"],
+            "options": ["--overwrite", "--all", "--help"],
         },
     ],
 }
@@ -37,8 +37,12 @@ click.rich_click.COMMAND_GROUPS = {
 
 
 @click.group()
-@click.option("--input", "-i", help="Input path")
-@click.option("--output", "-o", help="Output path")
+@click.option(
+    "--type",
+    default="files",
+    show_default=True,
+    help="Type of file to sync",
+)
 @click.option(
     "--debug/--no-debug",
     "-d/-n",
@@ -47,7 +51,7 @@ click.rich_click.COMMAND_GROUPS = {
     help="Show the debug log messages",
 )
 @click.version_option("1.23", prog_name="multiqc")
-def cli(input, output, debug):
+def cli(type, debug):
     """
     My amazing tool does all the things.
 
@@ -61,16 +65,11 @@ def cli(input, output, debug):
 
 
 @cli.command()
-@click.option(
-    "--type",
-    required=True,
-    default="files",
-    show_default=True,
-    help="Type of file to sync",
-)
+@click.option("--input", "-i", required=True, help="Input path")
+@click.option("--output", "-o", help="Output path")
 @click.option("--all", is_flag=True, help="Sync all the things?")
 @click.option("--overwrite", is_flag=True, help="Overwrite local files")
-def sync(type, all, overwrite):
+def sync(input, output, all, overwrite):
     """Synchronise all your files between two places"""
     print("Syncing")
 
