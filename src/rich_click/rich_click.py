@@ -1,7 +1,7 @@
 import click
 from rich.align import Align
 from rich.columns import Columns
-from rich.console import Console
+from rich.console import Console, group
 from rich.highlighter import RegexHighlighter
 from rich.markdown import Markdown
 from rich.padding import Padding
@@ -99,6 +99,7 @@ def _make_rich_rext(text, style=""):
         return highlighter(Text(text, style=style))
 
 
+@group()
 def _get_help_text(obj):
     """Build primary help text for a click command or group.
 
@@ -109,21 +110,21 @@ def _get_help_text(obj):
     Args:
         obj (click.Command or click.Group): Command or group to build help text for
 
-    Returns:
-        Columns: A columns element with multiple styled objects (depreciated, usage)
+    Yields:
+        Text or Markdown: Multiple styled objects (depreciated, usage)
     """
 
     items = []
 
     # Prepend deprecated status
     if obj.deprecated:
-        items.append(Text(DEPRECATED_STRING, style=STYLE_DEPRECATED))
+        yield Text(DEPRECATED_STRING, style=STYLE_DEPRECATED)
 
     # Get the first line
     first_line = obj.help.split("\n\n")[0]
     # Remove single linebreaks
     first_line = first_line.replace("\n", " ").strip()
-    items.append(_make_rich_rext(first_line, STYLE_HELPTEXT_FIRST_LINE))
+    yield _make_rich_rext(first_line, STYLE_HELPTEXT_FIRST_LINE)
 
     # Get remaining lines, remove single line breaks and format as dim
     remaining_lines = obj.help.split("\n\n")[1:]
@@ -135,11 +136,7 @@ def _get_help_text(obj):
             remaining_lines = "\n\n" + "\n\n".join(remaining_lines)
         else:
             remaining_lines = "\n".join(remaining_lines)
-        items.append(_make_rich_rext(remaining_lines, STYLE_HELPTEXT))
-
-    # Use Columns - this allows us to group different renderable types
-    # (Text, Markdown) onto a single line.
-    return Columns(items)
+        yield _make_rich_rext(remaining_lines, STYLE_HELPTEXT)
 
 
 def _get_parameter_help(param, ctx):
