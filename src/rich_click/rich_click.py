@@ -32,6 +32,7 @@ STYLE_COMMANDS_PANEL_BORDER = "dim"
 ALIGN_COMMANDS_PANEL = "left"
 STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
+STYLE_ERRORS_SUGGESTION = "dim"
 MAX_WIDTH = None  # Set to an int to limit to that many characters
 COLOR_SYSTEM = "auto"  # Set to None to disable colors
 
@@ -46,6 +47,8 @@ ARGUMENTS_PANEL_TITLE = "Arguments"
 OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
 ERRORS_PANEL_TITLE = "Error"
+ERRORS_SUGGESTION = None  # Default: Try 'cmd -h' for help. Set to False to disable.
+ERRORS_EPILOGUE = None
 
 # Behaviours
 SHOW_ARGUMENTS = False  # Show positional arguments
@@ -437,12 +440,18 @@ def rich_format_error(self):
     )
     if self.ctx is not None:
         console.print(self.ctx.get_usage())
-    if self.ctx is not None and self.ctx.command.get_help_option(self.ctx) is not None:
+    if ERRORS_SUGGESTION:
+        console.print(ERRORS_SUGGESTION, style=STYLE_ERRORS_SUGGESTION)
+    elif (
+        ERRORS_SUGGESTION is None
+        and self.ctx is not None
+        and self.ctx.command.get_help_option(self.ctx) is not None
+    ):
         console.print(
             "Try [blue]'{command} {option}'[/] for help.".format(
                 command=self.ctx.command_path, option=self.ctx.help_option_names[0]
             ),
-            style="dim",
+            style=STYLE_ERRORS_SUGGESTION,
         )
 
     console.print(
@@ -454,6 +463,8 @@ def rich_format_error(self):
             width=MAX_WIDTH,
         )
     )
+    if ERRORS_EPILOGUE:
+        console.print(ERRORS_EPILOGUE)
 
 
 class RichCommand(click.Command):
