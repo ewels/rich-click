@@ -36,20 +36,24 @@ To use `rich-click`, switch out your normal `click` import with `rich-click`, us
 import rich_click as click
 ```
 
-That's it. Then continue to use `click` as you would normally.
-See [`examples/01_simple.py`](examples/01_simple.py) for an example.
+That's it ✨ Then continue to use `click` as you would normally.
+
+> See [`examples/01_simple.py`](examples/01_simple.py) for an example.
 
 The intention is to maintain most / all of the normal click functionality and arguments.
 If you spot something that breaks or is missing once you start using the plugin, please create an issue about it.
 
 Alternatively, if you prefer you can `RichGroup` or `RichCommand` with the `cls` argument in your click usage instead.
 This means that you can continue to use the unmodified `click` package in parallel.
-See [`examples/02_declarative.py`](examples/02_declarative.py) for an example.
+
+> See [`examples/02_declarative.py`](examples/02_declarative.py) for an example.
 
 ## Customisation
 
 There are a large number of customisation options in rich-click.
 These can be modified by changing variables in the `click.rich_click` namespace.
+
+Note that most normal click options should still work, such as `show_default=True`, `required=True` and `hidden=True`.
 
 ### Using rich markup
 
@@ -63,6 +67,10 @@ click.rich_click.USE_RICH_MARKUP = True
 
 Remember that you'll need to escape any regular square brackets using a back slash in your help texts,
 for example: `[dim]\[my-default: foo][\]`
+
+![Rich markup example](docs/images/rich_markup.png)
+
+> See [`examples/04_rich_markup.py`](examples/04_rich_markup.py) fo
 
 ### Using Markdown
 
@@ -86,7 +94,9 @@ click.rich_click.SHOW_ARGUMENTS = True
 click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
 ```
 
-See [`examples/04_arguments.py`](examples/04_arguments.py) for an example.
+![Positional arguments example](docs/images/arguments.png)
+
+> See [`examples/05_arguments.py`](examples/05_arguments.py) for an example.
 
 ### Metavars
 
@@ -103,8 +113,6 @@ For this, use the following:
 click.rich_click.SHOW_METAVARS_COLUMN = False
 click.rich_click.APPEND_METAVARS_HELP = True
 ```
-
-See [`examples/04_arguments.py`](examples/04_arguments.py) for an example.
 
 ### Help width
 
@@ -136,6 +144,8 @@ It accepts a list of options / commands which means you can also choose a custom
 
 - For options (flags), set `click.rich_click.OPTION_GROUPS`
 - For subcommands (groups), set `click.rich_click.COMMAND_GROUPS`
+
+![rich-click](docs/images/command_groups.png)
 
 See [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py) for a full example.
 
