@@ -372,7 +372,9 @@ def rich_format_help(obj, ctx, formatter):
                     continue
                 cmd = obj.get_command(ctx, command)
                 helptext = cmd.help or ""
-                commands_table.add_row(command, highlighter(helptext.split("\n")[0]))
+                commands_table.add_row(
+                    command, _make_rich_rext(helptext.split("\n")[0])
+                )
             if commands_table.row_count > 0:
                 console.print(
                     Panel(
