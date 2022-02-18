@@ -162,6 +162,10 @@ def _get_parameter_help(param, ctx):
     # Append metavar if requested
     if APPEND_METAVARS_HELP:
         metavar_str = param.make_metavar()
+        # Do it ourselves if this is a positional argument
+        if type(param) is click.core.Argument and metavar_str == param.name.upper():
+            metavar_str = param.type.name.upper()
+        # Skip booleans
         if metavar_str != "BOOLEAN":
             metavar_str = metavar_str.replace("[", "").replace("]", "")
             items.append(
@@ -314,6 +318,10 @@ def rich_format_help(obj, ctx, formatter):
             # Column for a metavar, if we have one
             metavar = Text(style=STYLE_METAVAR)
             metavar_str = param.make_metavar()
+            # Do it ourselves if this is a positional argument
+            if type(param) is click.core.Argument and metavar_str == param.name.upper():
+                metavar_str = param.type.name.upper()
+            # Skip booleans
             if metavar_str != "BOOLEAN":
                 metavar.append(metavar_str)
 
