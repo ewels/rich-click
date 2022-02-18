@@ -81,6 +81,10 @@ You must choose either Markdown or rich markup. If you specify both, Markdown ta
 click.rich_click.USE_MARKDOWN = True
 ```
 
+![Markdown example](docs/images/markdown.png)
+
+> See [`examples/05_markdown.py`](examples/05_markdown.py) fo
+
 ### Positional arguments
 
 The default click behaviour is to only show positional arguments in the top usage string,
@@ -96,7 +100,7 @@ click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
 
 ![Positional arguments example](docs/images/arguments.png)
 
-> See [`examples/05_arguments.py`](examples/05_arguments.py) for an example.
+> See [`examples/06_arguments.py`](examples/06_arguments.py) for an example.
 
 ### Metavars
 
