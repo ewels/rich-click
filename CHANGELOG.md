@@ -1,9 +1,9 @@
 # Changelog: rich-click
 
-## Version 0.4.0.dev0
+## Version 1.0.0 (2022-02-18)
 
-Major change: New usage, so that we can avoid having to do monkey patching [#10](https://github.com/ewels/rich-click/pull/10).
-
+- _**Major change:**_ New usage, so that we can avoid having to do monkey patching [#10](https://github.com/ewels/rich-click/pull/10).
+  - Now use with `import rich_click as click`
 - Add ability to create groups of options with separate panels
 - Show positional arguments in their own panel by default
 - Add config `GROUP_ARGUMENTS_OPTIONS` option to group with options
@@ -11,6 +11,7 @@ Major change: New usage, so that we can avoid having to do monkey patching [#10]
 - Add `COLOR_SYSTEM` option to add ability to disable colours
 - Add options to customise error message help texts
 - Add support for printing errors nicely
+- A lot of additional testing and tweaking
 
 ## Version 0.3.0 (2022-02-13)
 
