@@ -130,10 +130,18 @@ For example, to limit the maximum width of the help output to 100 characters:
 click.rich_click.MAX_WIDTH = 100
 ```
 
-To print the option flags in a different colour, use:
+To print the option flags in a different colour, and parse help text for `[red]rich markup[/]` use:
 
 ```python
 click.rich_click.STYLE_OPTION = "magenta"
+click.rich_click.USE_RICH_MARKUP = True
+```
+
+To show metavars appended to the help text instead of in their own column, use:
+
+```python
+click.rich_click.SHOW_METAVARS_COLUMN = False
+click.rich_click.APPEND_METAVARS_HELP = True
 ```
 
 ### Full list of config options
@@ -143,12 +151,12 @@ click.rich_click.STYLE_OPTION = "magenta"
 STYLE_OPTION = "bold cyan"
 STYLE_SWITCH = "bold green"
 STYLE_METAVAR = "bold yellow"
+STYLE_METAVAR_APPEND = "dim yellow"
 STYLE_USAGE = "yellow"
 STYLE_USAGE_COMMAND = "bold"
 STYLE_DEPRECATED = "red"
 STYLE_HELPTEXT_FIRST_LINE = ""
 STYLE_HELPTEXT = "dim"
-STYLE_METAVAR = "bold yellow"
 STYLE_OPTION_HELP = ""
 STYLE_OPTION_DEFAULT = "dim"
 STYLE_REQUIRED_SHORT = "red"
@@ -167,16 +175,19 @@ DEFAULT_STRING = "[default: {}]"
 REQUIRED_SHORT_STRING = "*"
 REQUIRED_LONG_STRING = "[required]"
 RANGE_STRING = " [{}]"
+APPEND_METAVARS_HELP_STRING = "[{}]"
 ARGUMENTS_PANEL_TITLE = "Arguments"
 OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
 ERRORS_PANEL_TITLE = "Error"
 
 # Behaviours
-SHOW_ARGUMENTS = False
-GROUP_ARGUMENTS_OPTIONS = False
-USE_MARKDOWN = False
-USE_RICH_MARKUP = False
+SHOW_ARGUMENTS = False  # Show positional arguments
+SHOW_METAVARS_COLUMN = True  # Show a column with the option metavar (eg. INTEGER)
+APPEND_METAVARS_HELP = False  # Append metavar (eg. [TEXT]) after the help text
+GROUP_ARGUMENTS_OPTIONS = False  # Show arguments with options instead of in own panel
+USE_MARKDOWN = False  # Parse help strings as markdown
+USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[/])
 COMMAND_GROUPS = {}
 OPTION_GROUPS = {}
 ```

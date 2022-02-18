@@ -16,12 +16,12 @@ import sys
 STYLE_OPTION = "bold cyan"
 STYLE_SWITCH = "bold green"
 STYLE_METAVAR = "bold yellow"
+STYLE_METAVAR_APPEND = "dim yellow"
 STYLE_USAGE = "yellow"
 STYLE_USAGE_COMMAND = "bold"
 STYLE_DEPRECATED = "red"
 STYLE_HELPTEXT_FIRST_LINE = ""
 STYLE_HELPTEXT = "dim"
-STYLE_METAVAR = "bold yellow"
 STYLE_OPTION_HELP = ""
 STYLE_OPTION_DEFAULT = "dim"
 STYLE_REQUIRED_SHORT = "red"
@@ -40,16 +40,19 @@ DEFAULT_STRING = "[default: {}]"
 REQUIRED_SHORT_STRING = "*"
 REQUIRED_LONG_STRING = "[required]"
 RANGE_STRING = " [{}]"
+APPEND_METAVARS_HELP_STRING = "({})"
 ARGUMENTS_PANEL_TITLE = "Arguments"
 OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
 ERRORS_PANEL_TITLE = "Error"
 
 # Behaviours
-SHOW_ARGUMENTS = False
-GROUP_ARGUMENTS_OPTIONS = False
-USE_MARKDOWN = False
-USE_RICH_MARKUP = False
+SHOW_ARGUMENTS = False  # Show positional arguments
+SHOW_METAVARS_COLUMN = True  # Show a column with the option metavar (eg. INTEGER)
+APPEND_METAVARS_HELP = False  # Append metavar (eg. [TEXT]) after the help text
+GROUP_ARGUMENTS_OPTIONS = False  # Show arguments with options instead of in own panel
+USE_MARKDOWN = False  # Parse help strings as markdown
+USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[/])
 COMMAND_GROUPS = {}
 OPTION_GROUPS = {}
 
@@ -155,6 +158,18 @@ def _get_parameter_help(param, ctx):
     if getattr(param, "help", None):
         items.append(_make_rich_rext(param.help, STYLE_OPTION_HELP))
 
+    # Append metavar if requested
+    if APPEND_METAVARS_HELP:
+        metavar_str = param.make_metavar()
+        if metavar_str != "BOOLEAN":
+            metavar_str = metavar_str.replace("[", "").replace("]", "")
+            items.append(
+                Text(
+                    APPEND_METAVARS_HELP_STRING.format(metavar_str),
+                    style=STYLE_METAVAR_APPEND,
+                )
+            )
+
     # Default value
     if getattr(param, "show_default", None):
         # param.default is the value, but click is a bit clever in choosing what to show here
@@ -256,7 +271,7 @@ def rich_format_help(obj, ctx, formatter):
     if len(argument_groups["options"]) > 0:
         option_groups.insert(len(option_groups) - 1, argument_groups)
 
-    # Print each command group panel
+    # Print each option group panel
     for option_group in option_groups:
 
         options_rows = []
@@ -296,12 +311,9 @@ def rich_format_help(obj, ctx, formatter):
 
             # Column for a metavar, if we have one
             metavar = Text(style=STYLE_METAVAR)
-            if param.metavar:
-                metavar.append(f" {param.metavar}")
-            else:
-                metavar_str = param.type.get_metavar(param)
-                if metavar_str:
-                    metavar.append(f" {metavar_str}")
+            metavar_str = param.make_metavar()
+            if metavar_str != "BOOLEAN":
+                metavar.append(metavar_str)
 
             # Range - from https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
             if (
@@ -318,15 +330,19 @@ def rich_format_help(obj, ctx, formatter):
             if param.required:
                 required = Text(REQUIRED_SHORT_STRING, style=STYLE_REQUIRED_SHORT)
 
-            options_rows.append(
-                [
-                    required,
-                    highlighter(opt1),
-                    highlighter(opt2),
-                    metavar,
-                    _get_parameter_help(param, ctx),
-                ]
-            )
+            rows = [
+                required,
+                highlighter(opt1),
+                highlighter(opt2),
+                metavar,
+                _get_parameter_help(param, ctx),
+            ]
+
+            # Remove metavar if specified in config
+            if not SHOW_METAVARS_COLUMN:
+                rows.pop(3)
+
+            options_rows.append(rows)
 
         if len(options_rows) > 0:
             options_table = Table(highlight=True, box=None, show_header=False)

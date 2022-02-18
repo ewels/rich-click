@@ -7,6 +7,7 @@ Major change: New usage, so that we can avoid having to do monkey patching [#10]
 - Add ability to create groups of options with separate panels
 - Show positional arguments in their own panel by default
 - Add config `GROUP_ARGUMENTS_OPTIONS` option to group with options
+- Improve handing of metavars, give option to show appended instead of in column
 - Add support for printing errors nicely
 
 ## Version 0.3.0 (2022-02-13)
