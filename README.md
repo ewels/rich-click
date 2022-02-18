@@ -168,6 +168,7 @@ ALIGN_COMMANDS_PANEL = "left"
 STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 MAX_WIDTH = None  # Set to an int to limit to that many characters
+COLOR_SYSTEM = "auto"
 
 # Fixed strings
 DEPRECATED_STRING = "(Deprecated) "

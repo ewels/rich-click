@@ -33,6 +33,7 @@ ALIGN_COMMANDS_PANEL = "left"
 STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 MAX_WIDTH = None  # Set to an int to limit to that many characters
+COLOR_SYSTEM = "auto"  # Set to None to disable colors
 
 # Fixed strings
 DEPRECATED_STRING = "(Deprecated) "
@@ -222,6 +223,7 @@ def rich_format_help(obj, ctx, formatter):
             }
         ),
         highlighter=highlighter,
+        color_system=COLOR_SYSTEM,
     )
 
     # Print usage
@@ -431,6 +433,7 @@ def rich_format_error(self):
             }
         ),
         highlighter=highlighter,
+        color_system=COLOR_SYSTEM,
     )
     if self.ctx is not None:
         console.print(self.ctx.get_usage())
