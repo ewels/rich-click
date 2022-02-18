@@ -12,8 +12,9 @@ click, formatted with rich, with minimal customisation required.
 
 - 🌈 Rich command-line formatting of click help and error messages
 - 💫 Nice styles be default, usage is simply `import rich_click as click`
-- 🔢 Easily give custom sort order for options and commands
 - 🎁 Group commands and options into named panels
+- ❌ Well formatted error messages
+- 🔢 Easily give custom sort order for options and commands
 - 🎨 Extensive customisation of styling and behaviour possible
 
 ![rich-click](docs/images/command_groups.png)
@@ -117,6 +118,25 @@ For this, use the following:
 click.rich_click.SHOW_METAVARS_COLUMN = False
 click.rich_click.APPEND_METAVARS_HELP = True
 ```
+
+### Error messages
+
+By default, rich-click gives some nice formatting to error messages:
+
+![error-message](docs/images/error.png)
+
+You can customise the _Try 'command --help' for help._ message with `ERRORS_SUGGESTION`
+using rich-click though, and add some text after the error with `ERRORS_EPILOGUE`.
+
+For example, from [`examples/07_custom_errors.py`](examples/07_custom_errors.py):
+
+```python
+click.rich_click.STYLE_ERRORS_SUGGESTION = "blue italic"
+click.rich_click.ERRORS_SUGGESTION = "Try running the '--help' flag for more information."
+click.rich_click.ERRORS_EPILOGUE = "To find out more, visit https://mytool.com"
+```
+
+![custom-error-message](docs/images/custom_error.png)
 
 ### Help width
 
@@ -242,8 +262,9 @@ STYLE_COMMANDS_PANEL_BORDER = "dim"
 ALIGN_COMMANDS_PANEL = "left"
 STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
+STYLE_ERRORS_SUGGESTION = "dim"
 MAX_WIDTH = None  # Set to an int to limit to that many characters
-COLOR_SYSTEM = "auto"
+COLOR_SYSTEM = "auto"  # Set to None to disable colors
 
 # Fixed strings
 DEPRECATED_STRING = "(Deprecated) "
@@ -251,11 +272,13 @@ DEFAULT_STRING = "[default: {}]"
 REQUIRED_SHORT_STRING = "*"
 REQUIRED_LONG_STRING = "[required]"
 RANGE_STRING = " [{}]"
-APPEND_METAVARS_HELP_STRING = "[{}]"
+APPEND_METAVARS_HELP_STRING = "({})"
 ARGUMENTS_PANEL_TITLE = "Arguments"
 OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
 ERRORS_PANEL_TITLE = "Error"
+ERRORS_SUGGESTION = None  # Default: Try 'cmd -h' for help. Set to False to disable.
+ERRORS_EPILOGUE = None
 
 # Behaviours
 SHOW_ARGUMENTS = False  # Show positional arguments
