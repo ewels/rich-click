@@ -17,6 +17,8 @@ STYLE_OPTION = "bold cyan"
 STYLE_SWITCH = "bold green"
 STYLE_METAVAR = "bold yellow"
 STYLE_METAVAR_APPEND = "dim yellow"
+STYLE_HEADER_TEXT = ""
+STYLE_FOOTER_TEXT = ""
 STYLE_USAGE = "yellow"
 STYLE_USAGE_COMMAND = "bold"
 STYLE_DEPRECATED = "red"
@@ -37,6 +39,8 @@ MAX_WIDTH = None  # Set to an int to limit to that many characters
 COLOR_SYSTEM = "auto"  # Set to None to disable colors
 
 # Fixed strings
+HEADER_TEXT = None
+FOOTER_TEXT = None
 DEPRECATED_STRING = "(Deprecated) "
 DEFAULT_STRING = "[default: {}]"
 REQUIRED_SHORT_STRING = "*"
@@ -233,6 +237,12 @@ def rich_format_help(obj, ctx, formatter):
         color_system=COLOR_SYSTEM,
     )
 
+    # Header text if we have it
+    if HEADER_TEXT:
+        console.print(
+            Padding(_make_rich_rext(HEADER_TEXT, STYLE_HEADER_TEXT), (1, 1, 0, 1))
+        )
+
     # Print usage
     console.print(
         Padding(highlighter(obj.get_usage(ctx)), 1), style=STYLE_USAGE_COMMAND
@@ -422,6 +432,12 @@ def rich_format_help(obj, ctx, formatter):
         epilogue = "\n".join([x.replace("\n", " ").strip() for x in lines])
         console.print(
             Padding(Align(highlighter(epilogue), width=MAX_WIDTH, pad=False), 1)
+        )
+
+    # Footer text if we have it
+    if FOOTER_TEXT:
+        console.print(
+            Padding(_make_rich_rext(FOOTER_TEXT, STYLE_FOOTER_TEXT), (1, 1, 0, 1))
         )
 
 

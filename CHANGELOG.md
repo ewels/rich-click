@@ -2,6 +2,8 @@
 
 ## Version 1.1.0.dev0
 
+- Added support for `HEADER_TEXT` and `FOOTER_TEXT` to go before and after help output
+
 ## Version 1.0.0 (2022-02-18)
 
 - _**Major change:**_ New usage, so that we can avoid having to do monkey patching [#10](https://github.com/ewels/rich-click/pull/10).

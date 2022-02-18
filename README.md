@@ -247,6 +247,8 @@ STYLE_OPTION = "bold cyan"
 STYLE_SWITCH = "bold green"
 STYLE_METAVAR = "bold yellow"
 STYLE_METAVAR_APPEND = "dim yellow"
+STYLE_HEADER_TEXT = ""
+STYLE_FOOTER_TEXT = ""
 STYLE_USAGE = "yellow"
 STYLE_USAGE_COMMAND = "bold"
 STYLE_DEPRECATED = "red"
@@ -267,6 +269,8 @@ MAX_WIDTH = None  # Set to an int to limit to that many characters
 COLOR_SYSTEM = "auto"  # Set to None to disable colors
 
 # Fixed strings
+HEADER_TEXT = None
+FOOTER_TEXT = None
 DEPRECATED_STRING = "(Deprecated) "
 DEFAULT_STRING = "[default: {}]"
 REQUIRED_SHORT_STRING = "*"
