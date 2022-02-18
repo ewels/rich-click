@@ -46,6 +46,89 @@ Alternatively, if you prefer you can `RichGroup` or `RichCommand` with the `cls`
 This means that you can continue to use the unmodified `click` package in parallel.
 See [`examples/02_declarative.py`](examples/02_declarative.py) for an example.
 
+## Customisation
+
+There are a large number of customisation options in rich-click.
+These can be modified by changing variables in the `click.rich_click` namespace.
+
+### Using rich markup
+
+In order to be as widely compatible as possible with a simple import, rich-click does _not_ parse rich formatting markup (eg. `[red]`) by default. You need to opt-in to this behaviour.
+
+To use rich markup in your help texts, add the following:
+
+```python
+click.rich_click.USE_RICH_MARKUP = True
+```
+
+Remember that you'll need to escape any regular square brackets using a back slash in your help texts,
+for example: `[dim]\[my-default: foo][\]`
+
+### Using Markdown
+
+If you prefer, you can use Markdown text.
+You must choose either Markdown or rich markup. If you specify both, Markdown takes preference.
+
+```python
+click.rich_click.USE_MARKDOWN = True
+```
+
+### Positional arguments
+
+The default click behaviour is to only show positional arguments in the top usage string,
+and not in the list below with the options.
+
+If you prefer, you can tell rich-click to show arguments with `SHOW_ARGUMENTS`.
+By default, they will get their own panel but you can tell rich-click to bundle them together with `GROUP_ARGUMENTS_OPTIONS`:
+
+```python
+click.rich_click.SHOW_ARGUMENTS = True
+click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
+```
+
+See [`examples/04_arguments.py`](examples/04_arguments.py) for an example.
+
+### Metavars
+
+Metavars are click's way of showing expected input types.
+For example, if you have an option that must be an integer, the metavar is `INTEGER`.
+If you have a choice, the metavar is a list of the possible values.
+
+By default, rich-click shows metavars in their own column.
+However, with some tools this column can be quite wide and result in a lot of white space.
+It may look better to show metavars appended to the help text, instead of in their own column.
+For this, use the following:
+
+```python
+click.rich_click.SHOW_METAVARS_COLUMN = False
+click.rich_click.APPEND_METAVARS_HELP = True
+```
+
+See [`examples/04_arguments.py`](examples/04_arguments.py) for an example.
+
+### Help width
+
+The default behaviour of rich-click is to use the full width of the terminal for output.
+However, if you've carefully crafted your help texts for the default narrow click output, you may find that you now have a lot of whitespace at the side of the panels.
+
+To limit the maximum width of the help output, set `MAX_WIDTH` in characters, as follows:
+
+```python
+click.rich_click.MAX_WIDTH = 100
+```
+
+### Styling
+
+Most aspects of rich-click formatting can be customised, from colours to alignment.
+
+For example, to print the option flags in a different colour, you can use:
+
+```python
+click.rich_click.STYLE_OPTION = "magenta"
+```
+
+See the [_Configuration options_](#configuration-options) section below for the full list of available optoins.
+
 ## Groups and sorting
 
 `rich-click` gives functionality to list options and subcommands in groups, printed as separate panels.
@@ -75,7 +158,7 @@ click.rich_click.OPTION_GROUPS = {
 }
 ```
 
-If you omit `name` it will use `Commands` (can be configured with `OPTIONS_PANEL_TITLE`, see _Customisation_ below).
+If you omit `name` it will use `Commands` (can be configured with `OPTIONS_PANEL_TITLE`).
 
 ### Commands
 
@@ -97,7 +180,7 @@ click.rich_click.COMMAND_GROUPS = {
 }
 ```
 
-If you omit `name` it will use `Commands` (can be configured with `COMMANDS_PANEL_TITLE`, see _Customisation_ below).
+If you omit `name` it will use `Commands` (can be configured with `COMMANDS_PANEL_TITLE`).
 
 ### Multiple commands
 
@@ -120,31 +203,9 @@ click.rich_click.COMMAND_GROUPS = {
 }
 ```
 
-## Customisation
+## Configuration options
 
-You can customise most things that are related to formatting.
-
-For example, to limit the maximum width of the help output to 100 characters:
-
-```python
-click.rich_click.MAX_WIDTH = 100
-```
-
-To print the option flags in a different colour, and parse help text for `[red]rich markup[/]` use:
-
-```python
-click.rich_click.STYLE_OPTION = "magenta"
-click.rich_click.USE_RICH_MARKUP = True
-```
-
-To show metavars appended to the help text instead of in their own column, use:
-
-```python
-click.rich_click.SHOW_METAVARS_COLUMN = False
-click.rich_click.APPEND_METAVARS_HELP = True
-```
-
-### Full list of config options
+Here is the full list of config options:
 
 ```python
 # Default styles
