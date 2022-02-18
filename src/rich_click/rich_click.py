@@ -465,6 +465,7 @@ class RichGroup(click.Group):
     """
 
     command_class = RichCommand
+    group_class = type
 
     def main(self, *args, standalone_mode=True, **kwargs):
         try:

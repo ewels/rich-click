@@ -51,7 +51,7 @@ click.rich_click.COMMAND_GROUPS = {
     show_default=True,
     help="Show the debug log messages",
 )
-@click.version_option("1.23", prog_name="multiqc")
+@click.version_option("1.23", prog_name="mytool")
 def cli(type, debug):
     """
     My amazing tool does all the things.
