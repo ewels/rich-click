@@ -123,19 +123,22 @@ def _get_help_text(obj):
     # Get the first line
     first_line = obj.help.split("\n\n")[0]
     # Remove single linebreaks
-    first_line = first_line.replace("\n", " ").strip()
-    yield _make_rich_rext(first_line, STYLE_HELPTEXT_FIRST_LINE)
+    if not USE_MARKDOWN:
+        first_line = first_line.replace("\n", " ")
+    yield _make_rich_rext(first_line.strip(), STYLE_HELPTEXT_FIRST_LINE)
 
     # Get remaining lines, remove single line breaks and format as dim
     remaining_lines = obj.help.split("\n\n")[1:]
     if len(remaining_lines) > 0:
-        # Remove single linebreaks
-        remaining_lines = [x.replace("\n", " ").strip() for x in remaining_lines]
-        # Join with double linebreaks if parsing as markdown, single otherwise
-        if USE_MARKDOWN:
-            remaining_lines = "\n\n" + "\n\n".join(remaining_lines)
-        else:
+        if not USE_MARKDOWN:
+            # Remove single linebreaks
+            remaining_lines = [x.replace("\n", " ").strip() for x in remaining_lines]
+            # Join back together
             remaining_lines = "\n".join(remaining_lines)
+        else:
+            # Join with single linebreaks if markdown
+            remaining_lines = "\n\n".join(remaining_lines)
+
         yield _make_rich_rext(remaining_lines, STYLE_HELPTEXT)
 
 
