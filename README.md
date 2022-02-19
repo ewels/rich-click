@@ -265,6 +265,7 @@ ALIGN_COMMANDS_PANEL = "left"
 STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 STYLE_ERRORS_SUGGESTION = "dim"
+STYLE_ABORTED = "red"
 MAX_WIDTH = None  # Set to an int to limit to that many characters
 COLOR_SYSTEM = "auto"  # Set to None to disable colors
 
@@ -283,6 +284,7 @@ COMMANDS_PANEL_TITLE = "Commands"
 ERRORS_PANEL_TITLE = "Error"
 ERRORS_SUGGESTION = None  # Default: Try 'cmd -h' for help. Set to False to disable.
 ERRORS_EPILOGUE = None
+ABORTED_TEXT = "Aborted."
 
 # Behaviours
 SHOW_ARGUMENTS = False  # Show positional arguments

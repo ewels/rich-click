@@ -1,3 +1,4 @@
+from turtle import st
 import click
 from rich.align import Align
 from rich.columns import Columns
@@ -35,6 +36,7 @@ ALIGN_COMMANDS_PANEL = "left"
 STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 STYLE_ERRORS_SUGGESTION = "dim"
+STYLE_ABORTED = "red"
 MAX_WIDTH = None  # Set to an int to limit to that many characters
 COLOR_SYSTEM = "auto"  # Set to None to disable colors
 
@@ -53,6 +55,7 @@ COMMANDS_PANEL_TITLE = "Commands"
 ERRORS_PANEL_TITLE = "Error"
 ERRORS_SUGGESTION = None  # Default: Try 'cmd -h' for help. Set to False to disable.
 ERRORS_EPILOGUE = None
+ABORTED_TEXT = "Aborted."
 
 # Behaviours
 SHOW_ARGUMENTS = False  # Show positional arguments
@@ -491,6 +494,23 @@ def rich_format_error(self):
         console.print(ERRORS_EPILOGUE)
 
 
+def rich_abort_error():
+    """Print richly formatted abort error."""
+    console = Console(
+        theme=Theme(
+            {
+                "option": STYLE_OPTION,
+                "switch": STYLE_SWITCH,
+                "metavar": STYLE_METAVAR,
+                "usage": STYLE_USAGE,
+            }
+        ),
+        highlighter=highlighter,
+        color_system=COLOR_SYSTEM,
+    )
+    console.print(ABORTED_TEXT, style=STYLE_ABORTED)
+
+
 class RichCommand(click.Command):
     """Richly formatted click Command.
 
@@ -508,6 +528,11 @@ class RichCommand(click.Command):
                 raise
             rich_format_error(e)
             sys.exit(e.exit_code)
+        except click.exceptions.Abort as e:
+            if not standalone_mode:
+                raise
+            rich_abort_error()
+            sys.exit(1)
 
     def format_help(self, ctx, formatter):
         rich_format_help(self, ctx, formatter)
@@ -531,6 +556,11 @@ class RichGroup(click.Group):
                 raise
             rich_format_error(e)
             sys.exit(e.exit_code)
+        except click.exceptions.Abort as e:
+            if not standalone_mode:
+                raise
+            rich_abort_error()
+            sys.exit(1)
 
     def format_help(self, ctx, formatter):
         rich_format_help(self, ctx, formatter)
