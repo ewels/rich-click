@@ -43,4 +43,4 @@ def main(args=None):
     module = import_module(module_path)
     function = getattr(module, function_name)
     # simply run it: it should be patched as well
-    return function(*args[1:])
+    return function(args[1:])
