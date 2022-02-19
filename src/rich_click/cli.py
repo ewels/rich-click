@@ -36,6 +36,7 @@ def main(args=None):
     if len(args) > 1:
         if args[1] == "--":
             del args[1]
+    sys.argv = [prog, *args[1:]]
     # patch click before importing the program function
     click.group = group
     click.command = command
@@ -43,4 +44,4 @@ def main(args=None):
     module = import_module(module_path)
     function = getattr(module, function_name)
     # simply run it: it should be patched as well
-    return function(args[1:])
+    return function()
