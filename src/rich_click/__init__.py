@@ -9,6 +9,8 @@ click, formatted with rich, with minimal customisation required.
 __version__ = "1.1.0.dev0"
 
 from click import *
+from click import group as click_group
+from click import command as click_command
 from .rich_click import RichGroup
 from .rich_click import RichCommand
 
@@ -18,8 +20,6 @@ def group(*args, cls=RichGroup, **kwargs):
 
     Defines the group() function so that it uses the RichGroup class by default
     """
-    from click import group as click_group
-
     return click_group(*args, cls=cls, **kwargs)
 
 
@@ -28,6 +28,4 @@ def command(*args, cls=RichCommand, **kwargs):
 
     Defines the command() function so that it uses the RichCommand class by default
     """
-    from click import command as click_command
-
     return click_command(*args, cls=cls, **kwargs)
