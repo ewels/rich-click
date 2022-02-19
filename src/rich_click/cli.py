@@ -15,7 +15,7 @@ def main(args=None):
     args = args or sys.argv[1:]
     if not args:
         # without args we assume we want to run rich-click on itself
-        # TODO: rewrite using argparse
+        # TODO: rewrite using click
         script_name = "rich-click"
     else:
         script_name = args[0]
