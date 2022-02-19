@@ -1,5 +1,5 @@
 """
-Entry-point module, in case you use `python -m griffe`.
+Entry-point module, in case you use `python -m rich_click`.
 
 Why does this file exist, and why `__main__`? For more info, read:
 
