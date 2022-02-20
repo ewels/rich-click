@@ -222,7 +222,7 @@ If you use multiple nested subcommands, you can specify their commands using the
 
 ```python
 click.rich_click.COMMAND_GROUPS = {
-    "mytool": ["commands": ["sync", "auth"]],
+    "mytool": [{"commands": ["sync", "auth"]}],
     "mytool sync": [
         {
             "name": "Commands for uploading",
