@@ -2,6 +2,7 @@
 
 import sys
 from importlib import import_module
+
 try:
     from importlib.metadata import entry_points
 except ImportError:
@@ -31,7 +32,10 @@ def main(args=None):
         module_path, function_name = args[0].split(":")
         prog = module_path.split(".", 1)[0]
     else:
-        print("usage: rich-click [SCRIPT | MODULE:FUNCTION] [-- SCRIPT_ARGS...]", file=sys.stderr)
+        print(
+            "usage: rich-click [SCRIPT | MODULE:FUNCTION] [-- SCRIPT_ARGS...]",
+            file=sys.stderr,
+        )
         sys.exit(1)
     if len(args) > 1:
         if args[1] == "--":
