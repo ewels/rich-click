@@ -12,4 +12,5 @@ import sys
 from rich_click.cli import main
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+    # main will run a Click command which will either exit or raise
+    main(sys.argv[1:])
