@@ -1,6 +1,9 @@
 # Changelog: rich-click
 
-## Version 1.2.0.dev0
+## Version 1.1.1
+
+Hotfix patch release to remove an accidental `from turtle import st` that crept in due to a pesky VSCode plugin.
+Many thanks to [@ashb](httpsd://github.com/ashb) for spotting.
 
 ## Version 1.1.0 (2022-02-28)
 

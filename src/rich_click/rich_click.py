@@ -1,4 +1,3 @@
-from turtle import st
 import click
 from rich.align import Align
 from rich.columns import Columns
