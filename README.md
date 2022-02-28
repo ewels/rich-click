@@ -12,7 +12,7 @@ click, formatted with rich, with minimal customisation required.
 
 - 🌈 Rich command-line formatting of click help and error messages
 - 💫 Nice styles be default, usage is simply `import rich_click as click`
-- 💻 CLI tool to run on other people's packages (prefix the command with `rich-click`)
+- 💻 CLI tool to run on _other people's_ tools (prefix the command with `rich-click`)
 - 🎁 Group commands and options into named panels
 - ❌ Well formatted error messages
 - 🔢 Easily give custom sort order for options and commands
