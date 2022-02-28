@@ -24,12 +24,11 @@ def main(args=None):
     if script_name in scripts:
         # a valid script was passed
         script = scripts[script_name]
-        module_path = script.module
-        function_name = script.attr
+        module_path, function_name = script.value.split(":", 1)
         prog = script_name
     elif ":" in script_name:
         # the path to a function was passed
-        module_path, function_name = args[0].split(":")
+        module_path, function_name = args[0].split(":", 1)
         prog = module_path.split(".", 1)[0]
     else:
         print(
