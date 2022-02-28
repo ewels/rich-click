@@ -4,6 +4,8 @@
 
 - Added support for `HEADER_TEXT` and `FOOTER_TEXT` to go before and after help output
 - Catch Abort exceptions from `cmd+c` and print nicely using `ABORTED_TEXT`
+- Handle missing `click.types._NumberRangeBase` in click 7x
+- Require at least click v7.0 (released 2018)
 
 ## Version 1.0.0 (2022-02-18)
 

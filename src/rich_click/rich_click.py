@@ -342,14 +342,18 @@ def rich_format_help(obj, ctx, formatter):
                 metavar.append(metavar_str)
 
             # Range - from https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
-            if (
+            try:
+                if (
                 isinstance(param.type, click.types._NumberRangeBase)
                 # skip count with default range type
                 and not (param.count and param.type.min == 0 and param.type.max is None)
             ):
-                range_str = param.type._describe_range()
-                if range_str:
-                    metavar.append(RANGE_STRING.format(range_str))
+                    range_str = param.type._describe_range()
+                    if range_str:
+                        metavar.append(RANGE_STRING.format(range_str))
+            except AttributeError:
+                # click.types._NumberRangeBase is only in Click 8x onwards
+                pass
 
             # Required asterisk
             required = ""
