@@ -146,7 +146,9 @@ def _get_help_text(obj):
         if not USE_MARKDOWN:
             # Remove single linebreaks
             remaining_lines = [
-                x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
+                x.replace("\n", " ").strip()
+                if not x.startswith("\b")
+                else "{}\n".format(x.strip("\b\n"))
                 for x in remaining_lines
             ]
             # Join back together
