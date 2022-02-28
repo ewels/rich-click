@@ -1,13 +1,12 @@
 """
-Entry-point module, in case you use `python -m rich_click`.
+Entry-point module for the command line prefixer,
+called in case you use `python -m rich_click`.
 
 Why does this file exist, and why `__main__`? For more info, read:
 
 - https://www.python.org/dev/peps/pep-0338/
 - https://docs.python.org/3/using/cmdline.html#cmdoption-m
 """
-
-import sys
 
 from rich_click.cli import main
 

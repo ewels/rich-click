@@ -7,6 +7,7 @@ from importlib import import_module
 try:
     from importlib.metadata import entry_points
 except ImportError:
+    # Support Python <3.8
     from importlib_metadata import entry_points
 
 import click
@@ -14,17 +15,10 @@ from rich.console import Console
 from rich.padding import Padding
 from rich.panel import Panel
 from rich.text import Text
-from rich.theme import Theme
 from rich_click import group as rich_group, command as rich_command
 from rich_click.rich_click import (
-    OptionHighlighter,
-    _make_rich_rext,
-    COLOR_SYSTEM,
     STYLE_HELPTEXT_FIRST_LINE,
     STYLE_HELPTEXT,
-    STYLE_METAVAR,
-    STYLE_OPTION,
-    STYLE_SWITCH,
     STYLE_USAGE_COMMAND,
     STYLE_USAGE,
     STYLE_ERRORS_PANEL_BORDER,
@@ -32,26 +26,14 @@ from rich_click.rich_click import (
     ALIGN_ERRORS_PANEL,
 )
 
-highlighter = OptionHighlighter()
-console = Console(
-    theme=Theme(
-        {
-            "option": STYLE_OPTION,
-            "switch": STYLE_SWITCH,
-            "metavar": STYLE_METAVAR,
-            "usage": STYLE_USAGE,
-        }
-    ),
-    highlighter=highlighter,
-    color_system=COLOR_SYSTEM,
-)
+console = Console()
 
 
 def _print_usage():
     console.print(
         Padding(
-            highlighter(
-                "Usage: rich-click [SCRIPT | MODULE:FUNCTION] [-- SCRIPT_ARGS...]"
+            Text.from_markup(
+                f"[{STYLE_USAGE}]Usage[/]: rich-click [SCRIPT | MODULE:FUNCTION] [-- SCRIPT_ARGS...]"
             ),
             1,
         ),
