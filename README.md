@@ -30,6 +30,13 @@ You can install `rich-click` from the Python Package Index (PyPI) with `pip` or 
 python -m pip install rich-click
 ```
 
+Conda users can find `rich-click` on [conda forge](https://anaconda.org/conda-forge/rich-click).
+Just set up conda to use conda-forge (see [docs](https://conda-forge.org/docs/user/introduction.html#how-can-i-install-packages-from-conda-forge)) then run:
+
+```bash
+conda install rich-click
+```
+
 ## Usage
 
 ### Import as click
@@ -56,9 +63,9 @@ This means that you can continue to use the unmodified `click` package in parall
 
 ### Command-line usage
 
-Rich-click comes with a CLI tool that allows you to format the click help output from _any_ package.
+`rich-click` comes with a CLI tool that allows you to format the click help output from _any_ package.
 As long as that tool is using click and isn't already passing custom `cls` objects, it should work.
-Hoever, please consider it an experimental feature at this point.
+However, please consider it an experimental feature at this point.
 
 To use, simply prefix to your normal command.
 For example, to get richified click help text from a package called `awesometool`, you could run:

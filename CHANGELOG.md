@@ -3,6 +3,7 @@
 ## Version 1.2.0.dev0
 
 - New CLI functionality to richifiy via prefix any other tool using click, by @pawamoy [[#13](https://github.com/ewels/rich-click/pull/13)]
+- Distribution now available via conda-forge
 
 ## Version 1.1.1 (2022-02-28)
 
