@@ -5,7 +5,9 @@
 - Added support for `HEADER_TEXT` and `FOOTER_TEXT` to go before and after help output
 - Catch Abort exceptions from `cmd+c` and print nicely using `ABORTED_TEXT`
 - Handle missing `click.types._NumberRangeBase` in click 7x [#16](https://github.com/ewels/rich-click/issues/16)
+- Fix compatibility issue for rich 10.6 (`group` vs `render_group` import) [#16](https://github.com/ewels/rich-click/issues/16)
 - Require at least click v7.0 (released 2018) [#16](https://github.com/ewels/rich-click/issues/16)
+- Require at least rich v10 (released March 2021) [#16](https://github.com/ewels/rich-click/issues/16)
 - Unwrap single newlines in option and group-command help texts [#23](https://github.com/ewels/rich-click/issues/23)
 - Add click `\b` escape marker functionality into help text rendering [#24](https://github.com/ewels/rich-click/issues/24)
 - Fix syntax in example in README file by @fridex [#15](https://github.com/ewels/rich-click/pull/15)
