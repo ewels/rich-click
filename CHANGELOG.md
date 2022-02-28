@@ -1,6 +1,6 @@
 # Changelog: rich-click
 
-## Version 1.1.0.dev0
+## Version 1.1.0 (2022-02-28)
 
 - Added support for `HEADER_TEXT` and `FOOTER_TEXT` to go before and after help output
 - Catch Abort exceptions from `cmd+c` and print nicely using `ABORTED_TEXT`
