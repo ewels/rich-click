@@ -173,7 +173,11 @@ def _get_parameter_help(param, ctx):
     items = []
 
     if getattr(param, "help", None):
-        items.append(_make_rich_rext(param.help, STYLE_OPTION_HELP))
+        paragraphs = param.help.split("\n\n")
+        # Remove single linebreaks
+        if not USE_MARKDOWN:
+            paragraphs = [p.replace("\n", " ").strip() for p in paragraphs]
+        items.append(_make_rich_rext("\n".join(paragraphs).strip(), STYLE_OPTION_HELP))
 
     # Append metavar if requested
     if APPEND_METAVARS_HELP:
@@ -216,6 +220,26 @@ def _get_parameter_help(param, ctx):
     # Use Columns - this allows us to group different renderable types
     # (Text, Markdown) onto a single line.
     return Columns(items)
+
+
+def _make_command_help(helptext):
+    """Build cli help text for a click group command.
+
+    Returns the first paragraph of help text for a command, rendered either as a
+    Rich Text object or as Markdown.
+    Ignores single newlines as paragraph markers, looks for double only.
+
+    Args:
+        helptext (str): Help text
+
+    Returns:
+        Text or Markdown: Styled object
+    """
+    paragraphs = helptext.split("\n\n")
+    # Remove single linebreaks
+    if not USE_MARKDOWN:
+        paragraphs[0] = paragraphs[0].replace("\n", " ")
+    return _make_rich_rext(paragraphs[0].strip(), STYLE_OPTION_HELP)
 
 
 def rich_format_help(obj, ctx, formatter):
@@ -426,9 +450,7 @@ def rich_format_help(obj, ctx, formatter):
                     continue
                 cmd = obj.get_command(ctx, command)
                 helptext = cmd.help or ""
-                commands_table.add_row(
-                    command, _make_rich_rext(helptext.split("\n")[0])
-                )
+                commands_table.add_row(command, _make_command_help(helptext))
             if commands_table.row_count > 0:
                 console.print(
                     Panel(

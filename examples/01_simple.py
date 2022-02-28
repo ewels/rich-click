@@ -2,7 +2,15 @@ import rich_click as click
 
 
 @click.group()
-@click.option("--debug/--no-debug", "-d/-n", default=False, help="Enable debug mode")
+@click.option(
+    "--debug/--no-debug",
+    "-d/-n",
+    default=False,
+    help="""Enable debug mode.
+    Newlines are removed by default.
+
+    Double newlines are preserved.""",
+)
 def cli(debug):
     """
     My amazing tool does all the things.
@@ -33,7 +41,14 @@ def sync(type, all):
 @cli.command()
 @click.option("--all", is_flag=True, help="Get everything")
 def download(all):
-    """Pretend to download some files from somewhere"""
+    """
+    Pretend to download some files from
+    somewhere. Multi-line help strings are unwrapped
+    until you use a double newline.
+
+    Only the first paragraph is used in group help texts.
+    Don't forget you can opt-in to rich and markdown formatting!
+    """
     print("Downloading")
 
 
