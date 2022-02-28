@@ -1,5 +1,7 @@
 # Changelog: rich-click
 
+## Version 1.3.0.dev0
+
 ## Version 1.2.0 (2022-02-28)
 
 - New CLI functionality to richifiy via prefix any other tool using click, by @pawamoy [[#13](https://github.com/ewels/rich-click/pull/13)]
