@@ -12,6 +12,7 @@ click, formatted with rich, with minimal customisation required.
 
 - 🌈 Rich command-line formatting of click help and error messages
 - 💫 Nice styles be default, usage is simply `import rich_click as click`
+- 💻 CLI tool to run on other people's packages (prefix the command with `rich-click`)
 - 🎁 Group commands and options into named panels
 - ❌ Well formatted error messages
 - 🔢 Easily give custom sort order for options and commands
@@ -31,6 +32,8 @@ python -m pip install rich-click
 
 ## Usage
 
+### Import as click
+
 To use `rich-click`, switch out your normal `click` import with `rich-click`, using the same namespace:
 
 ```python
@@ -44,10 +47,28 @@ That's it ✨ Then continue to use `click` as you would normally.
 The intention is to maintain most / all of the normal click functionality and arguments.
 If you spot something that breaks or is missing once you start using the plugin, please create an issue about it.
 
-Alternatively, if you prefer you can `RichGroup` or `RichCommand` with the `cls` argument in your click usage instead.
+### Declarative
+
+If you prefer, you can `RichGroup` or `RichCommand` with the `cls` argument in your click usage instead.
 This means that you can continue to use the unmodified `click` package in parallel.
 
 > See [`examples/02_declarative.py`](examples/02_declarative.py) for an example.
+
+### Command-line usage
+
+Rich-click comes with a CLI tool that allows you to format the click help output from _any_ package.
+As long as that tool is using click and isn't already passing custom `cls` objects, it should work.
+Hoever, please consider it an experimental feature at this point.
+
+To use, simply prefix to your normal command.
+For example, to get richified click help text from a package called `awesometool`, you could run:
+
+```console
+$ rich-click awesometool --help
+
+Usage: awesometool [OPTIONS]
+..more richified output below..
+```
 
 ## Customisation
 
