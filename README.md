@@ -49,6 +49,22 @@ This means that you can continue to use the unmodified `click` package in parall
 
 > See [`examples/02_declarative.py`](examples/02_declarative.py) for an example.
 
+## Typer support
+
+[`Typer`](https://github.com/tiangolo/typer) is also supported. You may want to change the installation to use the the `typer` extra:
+
+```bash
+python -m pip install rich-click[typer]
+```
+
+And replace your usual `typer` import by:
+
+```python
+import rich_click.typer as typer
+```
+
+That's it ✨ All the usual `typer` API should be available.
+
 ## Customisation
 
 There are a large number of customisation options in rich-click.
