@@ -1,5 +1,7 @@
 # Changelog: rich-click
 
+## Version 1.2.0.dev0
+
 ## Version 1.1.0 (2022-02-28)
 
 - Added support for `HEADER_TEXT` and `FOOTER_TEXT` to go before and after help output

@@ -6,7 +6,7 @@ The intention is to provide attractive help output from
 click, formatted with rich, with minimal customisation required.
 """
 
-__version__ = "1.1.0"
+__version__ = "1.2.0.dev0"
 
 from click import *
 from .rich_click import RichGroup
