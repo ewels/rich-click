@@ -8,6 +8,7 @@
 - Require at least click v7.0 (released 2018) [#16](https://github.com/ewels/rich-click/issues/16)
 - Unwrap single newlines in option and group-command help texts [#23](https://github.com/ewels/rich-click/issues/23)
 - Add click `\b` escape marker functionality into help text rendering [#24](https://github.com/ewels/rich-click/issues/24)
+- Fix syntax in example in README file by @fridex [#15](https://github.com/ewels/rich-click/pull/15)
 
 ## Version 1.0.0 (2022-02-18)
 
