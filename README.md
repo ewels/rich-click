@@ -17,7 +17,7 @@ click, formatted with rich, with minimal customisation required.
 - 🔢 Easily give custom sort order for options and commands
 - 🎨 Extensive customisation of styling and behaviour possible
 
-![rich-click](docs/images/command_groups.png)
+![rich-click](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/command_groups.png)
 
 _Screenshot from [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py)_
 
@@ -69,7 +69,7 @@ click.rich_click.USE_RICH_MARKUP = True
 Remember that you'll need to escape any regular square brackets using a back slash in your help texts,
 for example: `[dim]\[my-default: foo][\]`
 
-![Rich markup example](docs/images/rich_markup.png)
+![Rich markup example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich_markup.png)
 
 > See [`examples/04_rich_markup.py`](examples/04_rich_markup.py) fo
 
@@ -82,7 +82,7 @@ You must choose either Markdown or rich markup. If you specify both, Markdown ta
 click.rich_click.USE_MARKDOWN = True
 ```
 
-![Markdown example](docs/images/markdown.png)
+![Markdown example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/markdown.png)
 
 > See [`examples/05_markdown.py`](examples/05_markdown.py) fo
 
@@ -99,7 +99,7 @@ click.rich_click.SHOW_ARGUMENTS = True
 click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
 ```
 
-![Positional arguments example](docs/images/arguments.png)
+![Positional arguments example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/arguments.png)
 
 > See [`examples/06_arguments.py`](examples/06_arguments.py) for an example.
 
@@ -123,7 +123,7 @@ click.rich_click.APPEND_METAVARS_HELP = True
 
 By default, rich-click gives some nice formatting to error messages:
 
-![error-message](docs/images/error.png)
+![error-message](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/error.png)
 
 You can customise the _Try 'command --help' for help._ message with `ERRORS_SUGGESTION`
 using rich-click though, and add some text after the error with `ERRORS_EPILOGUE`.
@@ -136,7 +136,7 @@ click.rich_click.ERRORS_SUGGESTION = "Try running the '--help' flag for more inf
 click.rich_click.ERRORS_EPILOGUE = "To find out more, visit https://mytool.com"
 ```
 
-![custom-error-message](docs/images/custom_error.png)
+![custom-error-message](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/custom_error.png)
 
 ### Help width
 
@@ -169,7 +169,7 @@ It accepts a list of options / commands which means you can also choose a custom
 - For options (flags), set `click.rich_click.OPTION_GROUPS`
 - For subcommands (groups), set `click.rich_click.COMMAND_GROUPS`
 
-![rich-click](docs/images/command_groups.png)
+![rich-click](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/command_groups.png)
 
 See [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py) for a full example.
 
@@ -222,7 +222,7 @@ If you use multiple nested subcommands, you can specify their commands using the
 
 ```python
 click.rich_click.COMMAND_GROUPS = {
-    "mytool": ["commands": ["sync", "auth"]],
+    "mytool": [{"commands": ["sync", "auth"]}],
     "mytool sync": [
         {
             "name": "Commands for uploading",

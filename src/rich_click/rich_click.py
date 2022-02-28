@@ -1,8 +1,7 @@
-from turtle import st
 import click
 from rich.align import Align
 from rich.columns import Columns
-from rich.console import Console, group
+from rich.console import Console
 from rich.highlighter import RegexHighlighter
 from rich.markdown import Markdown
 from rich.padding import Padding
@@ -12,6 +11,12 @@ from rich.text import Text
 from rich.theme import Theme
 import re
 import sys
+
+# Support rich <= 10.6.0
+try:
+    from rich.console import group
+except ImportError:
+    from rich.console import render_group as group
 
 # Default styles
 STYLE_OPTION = "bold cyan"
@@ -127,10 +132,10 @@ def _get_help_text(obj):
     if obj.deprecated:
         yield Text(DEPRECATED_STRING, style=STYLE_DEPRECATED)
 
-    # Get the first line
+    # Get the first paragraph
     first_line = obj.help.split("\n\n")[0]
     # Remove single linebreaks
-    if not USE_MARKDOWN:
+    if not USE_MARKDOWN and not first_line.startswith("\b"):
         first_line = first_line.replace("\n", " ")
     yield _make_rich_rext(first_line.strip(), STYLE_HELPTEXT_FIRST_LINE)
 
@@ -139,7 +144,12 @@ def _get_help_text(obj):
     if len(remaining_lines) > 0:
         if not USE_MARKDOWN:
             # Remove single linebreaks
-            remaining_lines = [x.replace("\n", " ").strip() for x in remaining_lines]
+            remaining_lines = [
+                x.replace("\n", " ").strip()
+                if not x.startswith("\b")
+                else "{}\n".format(x.strip("\b\n"))
+                for x in remaining_lines
+            ]
             # Join back together
             remaining_lines = "\n".join(remaining_lines)
         else:
@@ -167,7 +177,16 @@ def _get_parameter_help(param, ctx):
     items = []
 
     if getattr(param, "help", None):
-        items.append(_make_rich_rext(param.help, STYLE_OPTION_HELP))
+        paragraphs = param.help.split("\n\n")
+        # Remove single linebreaks
+        if not USE_MARKDOWN:
+            paragraphs = [
+                x.replace("\n", " ").strip()
+                if not x.startswith("\b")
+                else "{}\n".format(x.strip("\b\n"))
+                for x in paragraphs
+            ]
+        items.append(_make_rich_rext("\n".join(paragraphs).strip(), STYLE_OPTION_HELP))
 
     # Append metavar if requested
     if APPEND_METAVARS_HELP:
@@ -210,6 +229,30 @@ def _get_parameter_help(param, ctx):
     # Use Columns - this allows us to group different renderable types
     # (Text, Markdown) onto a single line.
     return Columns(items)
+
+
+def _make_command_help(helptext):
+    """Build cli help text for a click group command.
+    That is, when calling help on groups with multiple subcommands
+    (not the main help text when calling the subcommand help).
+
+    Returns the first paragraph of help text for a command, rendered either as a
+    Rich Text object or as Markdown.
+    Ignores single newlines as paragraph markers, looks for double only.
+
+    Args:
+        helptext (str): Help text
+
+    Returns:
+        Text or Markdown: Styled object
+    """
+    paragraphs = helptext.split("\n\n")
+    # Remove single linebreaks
+    if not USE_MARKDOWN and not paragraphs[0].startswith("\b"):
+        paragraphs[0] = paragraphs[0].replace("\n", " ")
+    elif paragraphs[0].startswith("\b"):
+        paragraphs[0] = paragraphs[0].replace("\b\n", "")
+    return _make_rich_rext(paragraphs[0].strip(), STYLE_OPTION_HELP)
 
 
 def rich_format_help(obj, ctx, formatter):
@@ -342,14 +385,20 @@ def rich_format_help(obj, ctx, formatter):
                 metavar.append(metavar_str)
 
             # Range - from https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
-            if (
-                isinstance(param.type, click.types._NumberRangeBase)
-                # skip count with default range type
-                and not (param.count and param.type.min == 0 and param.type.max is None)
-            ):
-                range_str = param.type._describe_range()
-                if range_str:
-                    metavar.append(RANGE_STRING.format(range_str))
+            try:
+                if (
+                    isinstance(param.type, click.types._NumberRangeBase)
+                    # skip count with default range type
+                    and not (
+                        param.count and param.type.min == 0 and param.type.max is None
+                    )
+                ):
+                    range_str = param.type._describe_range()
+                    if range_str:
+                        metavar.append(RANGE_STRING.format(range_str))
+            except AttributeError:
+                # click.types._NumberRangeBase is only in Click 8x onwards
+                pass
 
             # Required asterisk
             required = ""
@@ -414,9 +463,7 @@ def rich_format_help(obj, ctx, formatter):
                     continue
                 cmd = obj.get_command(ctx, command)
                 helptext = cmd.help or ""
-                commands_table.add_row(
-                    command, _make_rich_rext(helptext.split("\n")[0])
-                )
+                commands_table.add_row(command, _make_command_help(helptext))
             if commands_table.row_count > 0:
                 console.print(
                     Panel(
