@@ -12,6 +12,7 @@ except ImportError:
 import click
 from rich.console import Console
 from rich.padding import Padding
+from rich.panel import Panel
 from rich.text import Text
 from rich.theme import Theme
 from rich_click import group as rich_group, command as rich_command
@@ -26,7 +27,55 @@ from rich_click.rich_click import (
     STYLE_SWITCH,
     STYLE_USAGE_COMMAND,
     STYLE_USAGE,
+    STYLE_ERRORS_PANEL_BORDER,
+    ERRORS_PANEL_TITLE,
+    ALIGN_ERRORS_PANEL,
 )
+
+highlighter = OptionHighlighter()
+console = Console(
+    theme=Theme(
+        {
+            "option": STYLE_OPTION,
+            "switch": STYLE_SWITCH,
+            "metavar": STYLE_METAVAR,
+            "usage": STYLE_USAGE,
+        }
+    ),
+    highlighter=highlighter,
+    color_system=COLOR_SYSTEM,
+)
+
+
+def _print_usage():
+    console.print(
+        Padding(
+            highlighter(
+                "Usage: rich-click [SCRIPT | MODULE:FUNCTION] [-- SCRIPT_ARGS...]"
+            ),
+            1,
+        ),
+        style=STYLE_USAGE_COMMAND,
+    )
+
+
+def _print_help():
+    help_paragraphs = dedent(main.__doc__).split("\n\n")
+    help_paragraphs = [x.replace("\n", " ").strip() for x in help_paragraphs]
+    console.print(
+        Padding(
+            Text.from_markup(help_paragraphs[0].strip()),
+            (0, 1),
+        ),
+        style=STYLE_HELPTEXT_FIRST_LINE,
+    )
+    console.print(
+        Padding(
+            Text.from_markup("\n\n".join(help_paragraphs[1:]).strip()),
+            (0, 1),
+        ),
+        style=STYLE_HELPTEXT,
+    )
 
 
 def main(args=None):
@@ -49,10 +98,11 @@ def main(args=None):
     tool natively - this will always give a better experience.
     """
     args = args or sys.argv[1:]
-    if not args:
-        # without args we assume we want to run rich-click on itself
-        # TODO: rewrite using click
-        script_name = "rich-click"
+    if not args or args == ["--help"]:
+        # Print usage if we got no args, or only --help
+        _print_usage()
+        _print_help()
+        sys.exit(0)
     else:
         script_name = args[0]
     scripts = {script.name: script for script in entry_points().get("console_scripts")}
@@ -66,43 +116,21 @@ def main(args=None):
         module_path, function_name = args[0].split(":", 1)
         prog = module_path.split(".", 1)[0]
     else:
-        highlighter = OptionHighlighter()
-        console = Console(
-            theme=Theme(
-                {
-                    "option": STYLE_OPTION,
-                    "switch": STYLE_SWITCH,
-                    "metavar": STYLE_METAVAR,
-                    "usage": STYLE_USAGE,
-                }
-            ),
-            highlighter=highlighter,
-            color_system=COLOR_SYSTEM,
+        _print_usage()
+        console.print(
+            Panel(
+                Text.from_markup(f"No such script: [bold]{script_name}[/]"),
+                border_style=STYLE_ERRORS_PANEL_BORDER,
+                title=ERRORS_PANEL_TITLE,
+                title_align=ALIGN_ERRORS_PANEL,
+            )
         )
         console.print(
             Padding(
-                highlighter(
-                    "Usage: rich-click [SCRIPT | MODULE:FUNCTION] [-- SCRIPT_ARGS...]"
-                ),
-                1,
-            ),
-            style=STYLE_USAGE_COMMAND,
-        )
-        help_paragraphs = dedent(main.__doc__).split("\n\n")
-        help_paragraphs = [x.replace("\n", " ").strip() for x in help_paragraphs]
-        console.print(
-            Padding(
-                Text.from_markup(help_paragraphs[0].strip()),
+                "Please run [yellow bold]rich-click --help[/] for usage information.",
                 (0, 1),
             ),
-            style=STYLE_HELPTEXT_FIRST_LINE,
-        )
-        console.print(
-            Padding(
-                Text.from_markup("\n\n".join(help_paragraphs[1:]).strip()),
-                (0, 1),
-            ),
-            style=STYLE_HELPTEXT,
+            style="dim",
         )
         sys.exit(1)
     if len(args) > 1:
