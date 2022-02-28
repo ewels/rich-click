@@ -4,6 +4,6 @@ setup(
     name="rich-click",
     install_requires=[
         "click>=7.0",
-        "rich",
+        "rich>=10",
     ],
 )

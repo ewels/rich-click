@@ -2,7 +2,7 @@ from turtle import st
 import click
 from rich.align import Align
 from rich.columns import Columns
-from rich.console import Console, group
+from rich.console import Console
 from rich.highlighter import RegexHighlighter
 from rich.markdown import Markdown
 from rich.padding import Padding
@@ -12,6 +12,12 @@ from rich.text import Text
 from rich.theme import Theme
 import re
 import sys
+
+# Support rich <= 10.6.0
+try:
+    from rich.console import group
+except ImportError:
+    from rich.console import render_group as group
 
 # Default styles
 STYLE_OPTION = "bold cyan"
@@ -344,10 +350,12 @@ def rich_format_help(obj, ctx, formatter):
             # Range - from https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
             try:
                 if (
-                isinstance(param.type, click.types._NumberRangeBase)
-                # skip count with default range type
-                and not (param.count and param.type.min == 0 and param.type.max is None)
-            ):
+                    isinstance(param.type, click.types._NumberRangeBase)
+                    # skip count with default range type
+                    and not (
+                        param.count and param.type.min == 0 and param.type.max is None
+                    )
+                ):
                     range_str = param.type._describe_range()
                     if range_str:
                         metavar.append(RANGE_STRING.format(range_str))
