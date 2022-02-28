@@ -48,6 +48,19 @@ def download(all):
 
     Only the first paragraph is used in group help texts.
     Don't forget you can opt-in to rich and markdown formatting!
+
+    \b
+    Click escape markers should still work.
+      * So you
+      * Can keep
+      * Your newlines
+
+    And this is a paragraph
+    that will be rewrapped again.
+
+    \f
+    Also if you want to write function help text that won't
+    be rendered to the terminal.
     """
     print("Downloading")
 

@@ -133,10 +133,10 @@ def _get_help_text(obj):
     if obj.deprecated:
         yield Text(DEPRECATED_STRING, style=STYLE_DEPRECATED)
 
-    # Get the first line
+    # Get the first paragraph
     first_line = obj.help.split("\n\n")[0]
     # Remove single linebreaks
-    if not USE_MARKDOWN:
+    if not USE_MARKDOWN and not first_line.startswith("\b"):
         first_line = first_line.replace("\n", " ")
     yield _make_rich_rext(first_line.strip(), STYLE_HELPTEXT_FIRST_LINE)
 
@@ -145,7 +145,10 @@ def _get_help_text(obj):
     if len(remaining_lines) > 0:
         if not USE_MARKDOWN:
             # Remove single linebreaks
-            remaining_lines = [x.replace("\n", " ").strip() for x in remaining_lines]
+            remaining_lines = [
+                x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
+                for x in remaining_lines
+            ]
             # Join back together
             remaining_lines = "\n".join(remaining_lines)
         else:
@@ -176,7 +179,12 @@ def _get_parameter_help(param, ctx):
         paragraphs = param.help.split("\n\n")
         # Remove single linebreaks
         if not USE_MARKDOWN:
-            paragraphs = [p.replace("\n", " ").strip() for p in paragraphs]
+            paragraphs = [
+                x.replace("\n", " ").strip()
+                if not x.startswith("\b")
+                else "{}\n".format(x.strip("\b\n"))
+                for x in paragraphs
+            ]
         items.append(_make_rich_rext("\n".join(paragraphs).strip(), STYLE_OPTION_HELP))
 
     # Append metavar if requested
@@ -224,6 +232,8 @@ def _get_parameter_help(param, ctx):
 
 def _make_command_help(helptext):
     """Build cli help text for a click group command.
+    That is, when calling help on groups with multiple subcommands
+    (not the main help text when calling the subcommand help).
 
     Returns the first paragraph of help text for a command, rendered either as a
     Rich Text object or as Markdown.
@@ -237,8 +247,10 @@ def _make_command_help(helptext):
     """
     paragraphs = helptext.split("\n\n")
     # Remove single linebreaks
-    if not USE_MARKDOWN:
+    if not USE_MARKDOWN and not paragraphs[0].startswith("\b"):
         paragraphs[0] = paragraphs[0].replace("\n", " ")
+    elif paragraphs[0].startswith("\b"):
+        paragraphs[0] = paragraphs[0].replace("\b\n", "")
     return _make_rich_rext(paragraphs[0].strip(), STYLE_OPTION_HELP)
 
 
