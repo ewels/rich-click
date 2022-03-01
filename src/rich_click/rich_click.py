@@ -1,3 +1,9 @@
+import inspect
+import re
+import sys
+import typing as t
+from io import StringIO
+
 import click
 from rich.align import Align
 from rich.columns import Columns
@@ -9,8 +15,6 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 from rich.theme import Theme
-import re
-import sys
 
 # Support rich <= 10.6.0
 try:
@@ -72,6 +76,8 @@ USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[
 COMMAND_GROUPS = {}
 OPTION_GROUPS = {}
 
+# Large terminal width for when Console() cannot determine max terminal width
+TERMINAL_WIDTH = 10_000
 
 # Rich regex highlighter
 class OptionHighlighter(RegexHighlighter):
@@ -611,3 +617,72 @@ class RichGroup(click.Group):
 
     def format_help(self, ctx, formatter):
         rich_format_help(self, ctx, formatter)
+
+
+def echo(
+    message: t.Optional[t.Any] = None,
+    **kwargs: t.Any,
+) -> None:
+    """
+    Echo text to the console with rich formatting.
+
+    This is a wrapper around click.echo that supports rich text formatting.
+
+    rich.print cannot be used directly as it doesn't work in all cases with pytest and click.testing.CliRunner()
+
+    Args:
+        message: The string or bytes to output. Other objects are converted to strings.
+        kwargs: any extra arguments are passed to rich.console.Console.print() and click.echo
+            if kwargs contains 'file', 'nl', 'err', 'color', these are passed to click.echo,
+            all other values passed to rich.console.Console.print()
+    """
+    # args for click.echo that may have been passed in kwargs
+    echo_args = {}
+    for arg in ("file", "nl", "err", "color"):
+        val = kwargs.pop(arg, None)
+        if val is not None:
+            echo_args[arg] = val
+
+    # click.echo will include "\n" so don't add it here unless specified
+    end = kwargs.pop("end", "")
+
+    # rich.console.Console defaults to 80 chars if it can't auto-detect, which in this case it won't
+    # so we need to set the width manually to a ridiculously large number
+    width = kwargs.pop("width", TERMINAL_WIDTH)
+    output = StringIO()
+    console = Console(force_terminal=True, file=output, width=width)
+    console.print(message, end=end, **kwargs)
+    click.echo(output.getvalue(), **echo_args)
+
+
+def echo_via_pager(
+    text_or_generator: t.Union[t.Iterable[str], t.Callable[[], t.Iterable[str]], str],
+    **kwargs,
+) -> None:
+    """This function takes a text and shows it via an environment specific
+    pager on stdout.
+
+    Args:
+        text_or_generator: the text to page, or alternatively, a generator emitting the text to page.
+        **kwargs: if "color" in kwargs, works the same as click.echo_via_pager(color=color)
+        otherwise any kwargs are passed to rich.Console.print()
+    """
+    if inspect.isgeneratorfunction(text_or_generator):
+        text_or_generator = t.cast(t.Callable[[], t.Iterable[str]], text_or_generator)()
+    elif isinstance(text_or_generator, str):
+        text_or_generator = [text_or_generator]
+    else:
+        try:
+            text_or_generator = iter(text_or_generator)
+        except TypeError:
+            text_or_generator = [text_or_generator]
+
+    console = Console()
+
+    color = kwargs.pop("color", None)
+    if color is None:
+        color = bool(console.color_system)
+
+    with console.pager(styles=color):
+        for x in text_or_generator:
+            console.print(x, **kwargs)

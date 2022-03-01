@@ -9,10 +9,10 @@ click, formatted with rich, with minimal customisation required.
 __version__ = "1.3.0.dev0"
 
 from click import *
-from click import group as click_group
 from click import command as click_command
-from .rich_click import RichGroup
-from .rich_click import RichCommand
+from click import group as click_group
+
+from .rich_click import RichCommand, RichGroup, echo, echo_via_pager
 
 
 def group(*args, cls=RichGroup, **kwargs):
