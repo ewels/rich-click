@@ -462,7 +462,7 @@ def rich_format_help(obj, ctx, formatter):
                 if command not in obj.list_commands(ctx):
                     continue
                 cmd = obj.get_command(ctx, command)
-                helptext = cmd.help or ""
+                helptext = cmd.short_help or cmd.help or ""
                 commands_table.add_row(command, _make_command_help(helptext))
             if commands_table.row_count > 0:
                 console.print(
