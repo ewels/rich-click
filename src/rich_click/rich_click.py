@@ -71,13 +71,10 @@ SHOW_ARGUMENTS = False  # Show positional arguments
 SHOW_METAVARS_COLUMN = True  # Show a column with the option metavar (eg. INTEGER)
 APPEND_METAVARS_HELP = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS = False  # Show arguments with options instead of in own panel
-USE_MARKDOWN = False  # Parse help strings as markdown
-USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[/])
+USE_MARKDOWN = False  # Parse strings as markdown
+USE_RICH_MARKUP = False  # Parse strings for rich markup (eg. [red]my text[/])
 COMMAND_GROUPS = {}
 OPTION_GROUPS = {}
-
-# Large terminal width for when Console() cannot determine max terminal width
-TERMINAL_WIDTH = 10_000
 
 # Rich regex highlighter
 class OptionHighlighter(RegexHighlighter):
@@ -646,11 +643,10 @@ def echo(
     # click.echo will include "\n" so don't add it here unless specified
     end = kwargs.pop("end", "")
 
-    # rich.console.Console defaults to 80 chars if it can't auto-detect, which in this case it won't
-    # so we need to set the width manually to a ridiculously large number
-    width = kwargs.pop("width", TERMINAL_WIDTH)
+    width = kwargs.pop("width", Console().width)
     output = StringIO()
     console = Console(force_terminal=True, file=output, width=width)
+    message = _make_rich_rext(message)
     console.print(message, end=end, **kwargs)
     click.echo(output.getvalue(), **echo_args)
 
@@ -685,4 +681,6 @@ def echo_via_pager(
 
     with console.pager(styles=color):
         for x in text_or_generator:
+            if isinstance(x, str):
+                x = _make_rich_rext(x)
             console.print(x, **kwargs)

@@ -1,15 +1,12 @@
 import rich_click as click
 from rich import print
 
-click.rich_click.USE_RICH_MARKUP = True
+click.rich_click.USE_MARKDOWN = True
 
 test_strings = [
-    "This is a test.",
-    "[bold]This is bold.[/bold]",
-    "[italic]This is italic.[/italic]",
-    "[bold][italic]This is bold and italic.[/italic][/bold]",
-    "[red]This is red[/red]",
-    "[green]This is green.[/green]",
+    "# This is a test.",
+    "**This is bold.**",
+    "*This is italic.*",
 ]
 
 print("[bold][underline]Use rich_click.echo just like click.echo")
@@ -26,7 +23,3 @@ print(
 print("[bold]end='\\n\\n'")
 for test_str in test_strings:
     click.echo(test_str, end="\n\n")
-
-
-click.rich_click.USE_RICH_MARKUP = False
-click.echo(f"[bold]This text is not bold because USE_RICH_MARKUP = False[/bold]")
