@@ -2,7 +2,8 @@
 
 ## Version 1.3.0.dev0
 
-- Support the command `short_help` argument.
+- Support the command `short_help` argument [[#28](https://github.com/ewels/rich-click/issues/28)]
+- Added `USE_CLICK_SHORT_HELP` global to enable default click shortening of help messages [[#28](https://github.com/ewels/rich-click/issues/28)]
 
 ## Version 1.2.0 (2022-02-28)
 

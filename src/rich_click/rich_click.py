@@ -69,8 +69,9 @@ APPEND_METAVARS_HELP = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS = False  # Show arguments with options instead of in own panel
 USE_MARKDOWN = False  # Parse help strings as markdown
 USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[/])
-COMMAND_GROUPS = {}
-OPTION_GROUPS = {}
+COMMAND_GROUPS = {}  # Define sorted groups of panels to display subcommands
+OPTION_GROUPS = {}  # Define sorted groups of panels to display options and arguments
+USE_CLICK_SHORT_HELP = False  # Use click's default function to truncate help text
 
 
 # Rich regex highlighter
@@ -462,7 +463,12 @@ def rich_format_help(obj, ctx, formatter):
                 if command not in obj.list_commands(ctx):
                     continue
                 cmd = obj.get_command(ctx, command)
-                helptext = cmd.short_help or cmd.help or ""
+                # Use the truncated short text as with vanilla text if requested
+                if USE_CLICK_SHORT_HELP:
+                    helptext = cmd.get_short_help_str()
+                else:
+                    # Use short_help function argument if used, or the full help
+                    helptext = cmd.short_help or cmd.help or ""
                 commands_table.add_row(command, _make_command_help(helptext))
             if commands_table.row_count > 0:
                 console.print(
