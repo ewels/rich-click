@@ -518,7 +518,7 @@ def rich_format_error(self):
         highlighter=highlighter,
         color_system=COLOR_SYSTEM,
     )
-    if self.ctx is not None:
+    if getattr(self, "ctx", None) is not None:
         console.print(self.ctx.get_usage())
     if ERRORS_SUGGESTION:
         console.print(ERRORS_SUGGESTION, style=STYLE_ERRORS_SUGGESTION)

@@ -4,6 +4,7 @@
 
 - Support the command `short_help` argument [[#28](https://github.com/ewels/rich-click/issues/28)]
 - Added `USE_CLICK_SHORT_HELP` global to enable default click shortening of help messages [[#28](https://github.com/ewels/rich-click/issues/28)]
+- Avoid `AttributeError` exceptions when using custom exception classes based on click that don't have `ctx` [[#27](https://github.com/ewels/rich-click/issues/27)]
 
 ## Version 1.2.0 (2022-02-28)
 
