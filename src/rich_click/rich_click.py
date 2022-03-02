@@ -367,7 +367,7 @@ def rich_format_help(obj, ctx, formatter):
                     # Secondary opts (eg. --debug/--no-debug)
                     if param.secondary_opts:
                         opt1 += highlighter("/" + param.secondary_opts[1])
-                        opt2 += highlighter("/" + param.secondary_opts[1])
+                        opt2 += highlighter("/" + param.secondary_opts[0])
             # Just one form
             else:
                 opt1 = highlighter(param.opts[0])
