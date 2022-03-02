@@ -77,8 +77,8 @@ USE_CLICK_SHORT_HELP = False  # Use click's default function to truncate help te
 # Rich regex highlighter
 class OptionHighlighter(RegexHighlighter):
     highlights = [
-        r"(^|\W)(?P<switch>\-\w+)(?!\S)",
-        r"(^|\W)(?P<option>\-\-[\w\-]+)(?!\S)",
+        r"(^|\W)(?P<switch>\-\w+)(?![a-zA-Z0-9])",
+        r"(^|\W)(?P<option>\-\-[\w\-]+)(?![a-zA-Z0-9])",
         r"(?P<metavar>\<[^\>]+\>)",
         r"(?P<usage>Usage: )",
     ]
@@ -352,28 +352,16 @@ def rich_format_help(obj, ctx, formatter):
                 continue
 
             # Short and long form
-            if len(param.opts) == 2:
-                # Always have the --long form first
-                if "--" in param.opts[0]:
-                    opt1 = highlighter(param.opts[0])
-                    opt2 = highlighter(param.opts[1])
-                    # Secondary opts (eg. --debug/--no-debug)
-                    if param.secondary_opts:
-                        opt1 += highlighter("/" + param.secondary_opts[0])
-                        opt2 += highlighter("/" + param.secondary_opts[1])
+            opt_long_strs = []
+            opt_short_strs = []
+            for idx, opt in enumerate(param.opts):
+                opt_str = opt
+                if param.secondary_opts and idx in param.secondary_opts:
+                    opt_str += "/" + param.secondary_opts[idx]
+                if "--" in opt:
+                    opt_long_strs.append(opt_str)
                 else:
-                    opt1 = highlighter(param.opts[1])
-                    opt2 = highlighter(param.opts[0])
-                    # Secondary opts (eg. --debug/--no-debug)
-                    if param.secondary_opts:
-                        opt1 += highlighter("/" + param.secondary_opts[1])
-                        opt2 += highlighter("/" + param.secondary_opts[0])
-            # Just one form
-            else:
-                opt1 = highlighter(param.opts[0])
-                opt2 = Text("")
-                if param.secondary_opts:
-                    opt1 += highlighter("/" + param.secondary_opts[0])
+                    opt_short_strs.append(opt_str)
 
             # Column for a metavar, if we have one
             metavar = Text(style=STYLE_METAVAR)
@@ -408,8 +396,8 @@ def rich_format_help(obj, ctx, formatter):
 
             rows = [
                 required,
-                highlighter(opt1),
-                highlighter(opt2),
+                highlighter(highlighter(",".join(opt_long_strs))),
+                highlighter(highlighter(",".join(opt_short_strs))),
                 metavar,
                 _get_parameter_help(param, ctx),
             ]

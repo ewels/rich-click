@@ -6,6 +6,7 @@
 - Added `USE_CLICK_SHORT_HELP` global to enable default click shortening of help messages [[#28](https://github.com/ewels/rich-click/issues/28)]
 - Avoid `AttributeError` exceptions when using custom exception classes based on click that don't have `ctx` [[#27](https://github.com/ewels/rich-click/issues/27)]
 - Fix bug in inverted secondary options [[#31](https://github.com/ewels/rich-click/issues/31)]
+- Refactor printing options to handle arbitrary numbers of flags [[#32](https://github.com/ewels/rich-click/issues/32)]
 
 ## Version 1.2.0 (2022-02-28)
 
