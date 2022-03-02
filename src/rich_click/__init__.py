@@ -6,7 +6,7 @@ The intention is to provide attractive help output from
 click, formatted with rich, with minimal customisation required.
 """
 
-__version__ = "1.2.1"
+__version__ = "1.2.2.dev0"
 
 from click import *
 from click import group as click_group

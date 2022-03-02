@@ -1,5 +1,7 @@
 # Changelog: rich-click
 
+## Version 1.2.2.dev0
+
 ## Version 1.2.1 (2022-03-02)
 
 - Support the command `short_help` argument [[#28](https://github.com/ewels/rich-click/issues/28)]
