@@ -524,7 +524,7 @@ def rich_format_error(self):
         console.print(ERRORS_SUGGESTION, style=STYLE_ERRORS_SUGGESTION)
     elif (
         ERRORS_SUGGESTION is None
-        and self.ctx is not None
+        and getattr(self, "ctx", None) is not None
         and self.ctx.command.get_help_option(self.ctx) is not None
     ):
         console.print(
