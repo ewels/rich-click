@@ -38,7 +38,7 @@ def sync(type, all):
     print("Syncing")
 
 
-@cli.command()
+@cli.command(short_help="Optionally use short-help for the group help text")
 @click.option("--all", is_flag=True, help="Get everything")
 def download(all):
     """

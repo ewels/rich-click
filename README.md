@@ -321,8 +321,9 @@ APPEND_METAVARS_HELP = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS = False  # Show arguments with options instead of in own panel
 USE_MARKDOWN = False  # Parse help strings as markdown
 USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[/])
-COMMAND_GROUPS = {}
-OPTION_GROUPS = {}
+COMMAND_GROUPS = {}  # Define sorted groups of panels to display subcommands
+OPTION_GROUPS = {}  # Define sorted groups of panels to display options and arguments
+USE_CLICK_SHORT_HELP = False  # Use click's default function to truncate help text
 ```
 
 ## Contributing
