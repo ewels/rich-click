@@ -1,6 +1,6 @@
 # Changelog: rich-click
 
-## Version 1.3.0 (2022-03-02)
+## Version 1.2.1 (2022-03-02)
 
 - Support the command `short_help` argument [[#28](https://github.com/ewels/rich-click/issues/28)]
 - Added `USE_CLICK_SHORT_HELP` global to enable default click shortening of help messages [[#28](https://github.com/ewels/rich-click/issues/28)]
