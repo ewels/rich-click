@@ -202,6 +202,7 @@ def _get_parameter_help(param, ctx):
                 Text(
                     APPEND_METAVARS_HELP_STRING.format(metavar_str),
                     style=STYLE_METAVAR_APPEND,
+                    overflow="fold",
                 )
             )
 
@@ -364,7 +365,7 @@ def rich_format_help(obj, ctx, formatter):
                     opt_short_strs.append(opt_str)
 
             # Column for a metavar, if we have one
-            metavar = Text(style=STYLE_METAVAR)
+            metavar = Text(style=STYLE_METAVAR, overflow="fold")
             metavar_str = param.make_metavar()
             # Do it ourselves if this is a positional argument
             if type(param) is click.core.Argument and metavar_str == param.name.upper():
