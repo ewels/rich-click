@@ -131,14 +131,17 @@ click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
 
 > See [`examples/06_arguments.py`](examples/06_arguments.py) for an example.
 
-### Metavars
+### Metavars and option choices
 
 Metavars are click's way of showing expected input types.
 For example, if you have an option that must be an integer, the metavar is `INTEGER`.
 If you have a choice, the metavar is a list of the possible values.
 
 By default, rich-click shows metavars in their own column.
-However, with some tools this column can be quite wide and result in a lot of white space.
+However, if you have a long list of choices, this column can be quite wide and result in a lot of white space:
+
+![Default metavar display](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/metavars_default.png)
+
 It may look better to show metavars appended to the help text, instead of in their own column.
 For this, use the following:
 
@@ -146,6 +149,10 @@ For this, use the following:
 click.rich_click.SHOW_METAVARS_COLUMN = False
 click.rich_click.APPEND_METAVARS_HELP = True
 ```
+
+![Appended metavar](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/metavars_appended.png)
+
+> See [`examples/08_metavars.py`](examples/08_metavars.py) for an example.
 
 ### Error messages
 
