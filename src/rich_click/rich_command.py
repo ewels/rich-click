@@ -11,6 +11,7 @@ class RichCommand(click.Command):
     Inherits click.Command and overrides help and error methods
     to print richly formatted output.
     """
+
     standalone_mode = False
 
     def main(self, *args, standalone_mode=True, **kwargs):

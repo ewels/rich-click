@@ -12,6 +12,7 @@ class RichGroup(click.Group):
     Inherits click.Group and overrides help and error methods
     to print richly formatted output.
     """
+
     command_class = RichCommand
     group_class = type
 
