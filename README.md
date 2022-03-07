@@ -12,12 +12,13 @@ click, formatted with rich, with minimal customisation required.
 
 - 🌈 Rich command-line formatting of click help and error messages
 - 💫 Nice styles be default, usage is simply `import rich_click as click`
+- 💻 CLI tool to run on _other people's_ tools (prefix the command with `rich-click`)
 - 🎁 Group commands and options into named panels
 - ❌ Well formatted error messages
 - 🔢 Easily give custom sort order for options and commands
 - 🎨 Extensive customisation of styling and behaviour possible
 
-![rich-click](docs/images/command_groups.png)
+![rich-click](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/command_groups.png)
 
 _Screenshot from [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py)_
 
@@ -29,7 +30,16 @@ You can install `rich-click` from the Python Package Index (PyPI) with `pip` or 
 python -m pip install rich-click
 ```
 
+Conda users can find `rich-click` on [conda forge](https://anaconda.org/conda-forge/rich-click).
+Just set up conda to use conda-forge (see [docs](https://conda-forge.org/docs/user/introduction.html#how-can-i-install-packages-from-conda-forge)) then run:
+
+```bash
+conda install rich-click
+```
+
 ## Usage
+
+### Import as click
 
 To use `rich-click`, switch out your normal `click` import with `rich-click`, using the same namespace:
 
@@ -44,7 +54,9 @@ That's it ✨ Then continue to use `click` as you would normally.
 The intention is to maintain most / all of the normal click functionality and arguments.
 If you spot something that breaks or is missing once you start using the plugin, please create an issue about it.
 
-Alternatively, if you prefer you can `RichGroup` or `RichCommand` with the `cls` argument in your click usage instead.
+### Declarative
+
+If you prefer, you can `RichGroup` or `RichCommand` with the `cls` argument in your click usage instead.
 This means that you can continue to use the unmodified `click` package in parallel.
 
 > See [`examples/02_declarative.py`](examples/02_declarative.py) for an example.
@@ -68,6 +80,22 @@ import rich_click.typer as typer
 
 That's it ✨ All the usual `typer` API should be available.
 
+### Command-line usage
+
+`rich-click` comes with a CLI tool that allows you to format the click help output from _any_ package.
+As long as that tool is using click and isn't already passing custom `cls` objects, it should work.
+However, please consider it an experimental feature at this point.
+
+To use, simply prefix to your normal command.
+For example, to get richified click help text from a package called `awesometool`, you could run:
+
+```console
+$ rich-click awesometool --help
+
+Usage: awesometool [OPTIONS]
+..more richified output below..
+```
+
 ## Customisation
 
 There are a large number of customisation options in rich-click.
@@ -88,7 +116,7 @@ click.rich_click.USE_RICH_MARKUP = True
 Remember that you'll need to escape any regular square brackets using a back slash in your help texts,
 for example: `[dim]\[my-default: foo][\]`
 
-![Rich markup example](docs/images/rich_markup.png)
+![Rich markup example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich_markup.png)
 
 > See [`examples/04_rich_markup.py`](examples/04_rich_markup.py) fo
 
@@ -101,7 +129,7 @@ You must choose either Markdown or rich markup. If you specify both, Markdown ta
 click.rich_click.USE_MARKDOWN = True
 ```
 
-![Markdown example](docs/images/markdown.png)
+![Markdown example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/markdown.png)
 
 > See [`examples/05_markdown.py`](examples/05_markdown.py) fo
 
@@ -118,18 +146,21 @@ click.rich_click.SHOW_ARGUMENTS = True
 click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
 ```
 
-![Positional arguments example](docs/images/arguments.png)
+![Positional arguments example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/arguments.png)
 
 > See [`examples/06_arguments.py`](examples/06_arguments.py) for an example.
 
-### Metavars
+### Metavars and option choices
 
 Metavars are click's way of showing expected input types.
 For example, if you have an option that must be an integer, the metavar is `INTEGER`.
 If you have a choice, the metavar is a list of the possible values.
 
 By default, rich-click shows metavars in their own column.
-However, with some tools this column can be quite wide and result in a lot of white space.
+However, if you have a long list of choices, this column can be quite wide and result in a lot of white space:
+
+![Default metavar display](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/metavars_default.png)
+
 It may look better to show metavars appended to the help text, instead of in their own column.
 For this, use the following:
 
@@ -138,11 +169,15 @@ click.rich_click.SHOW_METAVARS_COLUMN = False
 click.rich_click.APPEND_METAVARS_HELP = True
 ```
 
+![Appended metavar](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/metavars_appended.png)
+
+> See [`examples/08_metavars.py`](examples/08_metavars.py) for an example.
+
 ### Error messages
 
 By default, rich-click gives some nice formatting to error messages:
 
-![error-message](docs/images/error.png)
+![error-message](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/error.png)
 
 You can customise the _Try 'command --help' for help._ message with `ERRORS_SUGGESTION`
 using rich-click though, and add some text after the error with `ERRORS_EPILOGUE`.
@@ -155,7 +190,7 @@ click.rich_click.ERRORS_SUGGESTION = "Try running the '--help' flag for more inf
 click.rich_click.ERRORS_EPILOGUE = "To find out more, visit https://mytool.com"
 ```
 
-![custom-error-message](docs/images/custom_error.png)
+![custom-error-message](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/custom_error.png)
 
 ### Help width
 
@@ -188,7 +223,7 @@ It accepts a list of options / commands which means you can also choose a custom
 - For options (flags), set `click.rich_click.OPTION_GROUPS`
 - For subcommands (groups), set `click.rich_click.COMMAND_GROUPS`
 
-![rich-click](docs/images/command_groups.png)
+![rich-click](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/command_groups.png)
 
 See [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py) for a full example.
 
@@ -312,8 +347,9 @@ APPEND_METAVARS_HELP = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS = False  # Show arguments with options instead of in own panel
 USE_MARKDOWN = False  # Parse help strings as markdown
 USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[/])
-COMMAND_GROUPS = {}
-OPTION_GROUPS = {}
+COMMAND_GROUPS = {}  # Define sorted groups of panels to display subcommands
+OPTION_GROUPS = {}  # Define sorted groups of panels to display options and arguments
+USE_CLICK_SHORT_HELP = False  # Use click's default function to truncate help text
 ```
 
 ## Contributing
