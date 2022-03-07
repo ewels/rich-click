@@ -10,7 +10,6 @@ from rich.table import Table
 from rich.text import Text
 from rich.theme import Theme
 import re
-import sys
 
 # Support rich <= 10.6.0
 try:
@@ -85,6 +84,21 @@ class OptionHighlighter(RegexHighlighter):
 
 
 highlighter = OptionHighlighter()
+
+
+def _get_rich_console() -> Console:
+    return Console(
+        theme=Theme(
+            {
+                "option": STYLE_OPTION,
+                "switch": STYLE_SWITCH,
+                "metavar": STYLE_METAVAR,
+                "usage": STYLE_USAGE,
+            }
+        ),
+        highlighter=highlighter,
+        color_system=COLOR_SYSTEM,
+    )
 
 
 def _make_rich_rext(text, style=""):
@@ -271,20 +285,7 @@ def rich_format_help(obj, ctx, formatter):
         ctx (click.Context): Click Context object
         formatter (click.HelpFormatter): Click HelpFormatter object
     """
-
-    console = Console(
-        theme=Theme(
-            {
-                "option": STYLE_OPTION,
-                "switch": STYLE_SWITCH,
-                "metavar": STYLE_METAVAR,
-                "usage": STYLE_USAGE,
-            }
-        ),
-        highlighter=highlighter,
-        color_system=COLOR_SYSTEM,
-    )
-
+    console = _get_rich_console()
     # Header text if we have it
     if HEADER_TEXT:
         console.print(
@@ -495,18 +496,7 @@ def rich_format_error(self):
     Args:
         click.ClickException: Click exception to format.
     """
-    console = Console(
-        theme=Theme(
-            {
-                "option": STYLE_OPTION,
-                "switch": STYLE_SWITCH,
-                "metavar": STYLE_METAVAR,
-                "usage": STYLE_USAGE,
-            }
-        ),
-        highlighter=highlighter,
-        color_system=COLOR_SYSTEM,
-    )
+    console = _get_rich_console()
     if getattr(self, "ctx", None) is not None:
         console.print(self.ctx.get_usage())
     if ERRORS_SUGGESTION:
@@ -538,71 +528,5 @@ def rich_format_error(self):
 
 def rich_abort_error():
     """Print richly formatted abort error."""
-    console = Console(
-        theme=Theme(
-            {
-                "option": STYLE_OPTION,
-                "switch": STYLE_SWITCH,
-                "metavar": STYLE_METAVAR,
-                "usage": STYLE_USAGE,
-            }
-        ),
-        highlighter=highlighter,
-        color_system=COLOR_SYSTEM,
-    )
+    console = _get_rich_console()
     console.print(ABORTED_TEXT, style=STYLE_ABORTED)
-
-
-class RichCommand(click.Command):
-    """Richly formatted click Command.
-
-    Inherits click.Command and overrides help and error methods
-    to print richly formatted output.
-    """
-
-    standalone_mode = False
-
-    def main(self, *args, standalone_mode=True, **kwargs):
-        try:
-            return super().main(*args, standalone_mode=False, **kwargs)
-        except click.ClickException as e:
-            if not standalone_mode:
-                raise
-            rich_format_error(e)
-            sys.exit(e.exit_code)
-        except click.exceptions.Abort as e:
-            if not standalone_mode:
-                raise
-            rich_abort_error()
-            sys.exit(1)
-
-    def format_help(self, ctx, formatter):
-        rich_format_help(self, ctx, formatter)
-
-
-class RichGroup(click.Group):
-    """Richly formatted click Group.
-
-    Inherits click.Group and overrides help and error methods
-    to print richly formatted output.
-    """
-
-    command_class = RichCommand
-    group_class = type
-
-    def main(self, *args, standalone_mode=True, **kwargs):
-        try:
-            return super().main(*args, standalone_mode=False, **kwargs)
-        except click.ClickException as e:
-            if not standalone_mode:
-                raise
-            rich_format_error(e)
-            sys.exit(e.exit_code)
-        except click.exceptions.Abort as e:
-            if not standalone_mode:
-                raise
-            rich_abort_error()
-            sys.exit(1)
-
-    def format_help(self, ctx, formatter):
-        rich_format_help(self, ctx, formatter)

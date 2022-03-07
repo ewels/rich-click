@@ -11,8 +11,8 @@ __version__ = "1.2.2.dev0"
 from click import *
 from click import group as click_group
 from click import command as click_command
-from .rich_click import RichGroup
-from .rich_click import RichCommand
+from rich_click.rich_group import RichGroup
+from rich_click.rich_command import RichCommand
 
 
 def group(*args, cls=RichGroup, **kwargs):
