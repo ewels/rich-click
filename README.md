@@ -51,13 +51,16 @@ This means that you can continue to use the unmodified `click` package in parall
 
 ## Typer support
 
-[`Typer`](https://github.com/tiangolo/typer) is also supported. You may want to change the installation to use the the `typer` extra:
+[`Typer`](https://github.com/tiangolo/typer) is also supported.
+You need to use rich-click with the `typer` [extra](https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-setuptools-extras) in your package requirements: `rich-click[typer]`
+
+For example, to install locally:
 
 ```bash
 python -m pip install rich-click[typer]
 ```
 
-And replace your usual `typer` import by:
+Then just replace your usual `typer` import by:
 
 ```python
 import rich_click.typer as typer
