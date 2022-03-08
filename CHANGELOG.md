@@ -2,6 +2,7 @@
 
 ## Version 1.2.2.dev0
 
+- Distribution now available via MacPorts [[PR42](https://github.com/ewels/rich-click/pull/42)]
 - Add typing information [[PR39](https://github.com/ewels/rich-click/pull/39)]
 - Refactor RichCommand and RichGroup out of rich_click [[PR38](https://github.com/ewels/rich-click/pull/39)]
 - Change metavar overflow to `fold`, so that large numbers of choices flow onto new lines instead of being truncated with an ellipsis [[#33](https://github.com/ewels/rich-click/issues/33)]
