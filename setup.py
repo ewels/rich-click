@@ -10,4 +10,5 @@ setup(
     extras_require={
         "typer": "typer>=0.4",
     },
+    package_data={"rich-click": ["py.typed"]},
 )
