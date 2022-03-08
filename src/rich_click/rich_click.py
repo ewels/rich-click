@@ -1,4 +1,7 @@
+from typing import Union, Optional, List, Dict
+
 import click
+import rich.markdown
 from rich.align import Align
 from rich.columns import Columns
 from rich.console import Console
@@ -41,12 +44,12 @@ STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 STYLE_ERRORS_SUGGESTION = "dim"
 STYLE_ABORTED = "red"
-MAX_WIDTH = None  # Set to an int to limit to that many characters
+MAX_WIDTH: Optional[int] = None  # Set to an int to limit to that many characters
 COLOR_SYSTEM = "auto"  # Set to None to disable colors
 
 # Fixed strings
-HEADER_TEXT = None
-FOOTER_TEXT = None
+HEADER_TEXT: Optional[str] = None
+FOOTER_TEXT: Optional[str] = None
 DEPRECATED_STRING = "(Deprecated) "
 DEFAULT_STRING = "[default: {}]"
 REQUIRED_SHORT_STRING = "*"
@@ -57,8 +60,8 @@ ARGUMENTS_PANEL_TITLE = "Arguments"
 OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
 ERRORS_PANEL_TITLE = "Error"
-ERRORS_SUGGESTION = None  # Default: Try 'cmd -h' for help. Set to False to disable.
-ERRORS_EPILOGUE = None
+ERRORS_SUGGESTION: Optional[str] = None  # Default: Try 'cmd -h' for help. Set to False to disable.
+ERRORS_EPILOGUE: Optional[str] = None
 ABORTED_TEXT = "Aborted."
 
 # Behaviours
@@ -68,8 +71,10 @@ APPEND_METAVARS_HELP = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS = False  # Show arguments with options instead of in own panel
 USE_MARKDOWN = False  # Parse help strings as markdown
 USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[/])
-COMMAND_GROUPS = {}  # Define sorted groups of panels to display subcommands
-OPTION_GROUPS = {}  # Define sorted groups of panels to display options and arguments
+# Define sorted groups of panels to display subcommands
+COMMAND_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = {}
+# Define sorted groups of panels to display options and arguments
+OPTION_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = {}
 USE_CLICK_SHORT_HELP = False  # Use click's default function to truncate help text
 
 
@@ -101,7 +106,7 @@ def _get_rich_console() -> Console:
     )
 
 
-def _make_rich_rext(text, style=""):
+def _make_rich_rext(text: str, style: str = "") -> Union[rich.markdown.Markdown, rich.text.Text]:
     """Take a string and return styled text
 
     By default, return the text as a Rich Text with the request style.
@@ -127,7 +132,7 @@ def _make_rich_rext(text, style=""):
 
 
 @group()
-def _get_help_text(obj):
+def _get_help_text(obj: Union[click.Command, click.Group]) -> Union[rich.markdown.Markdown, rich.text.Text]:
     """Build primary help text for a click command or group.
 
     Returns the prose help text for a command or group, rendered either as a
@@ -174,7 +179,9 @@ def _get_help_text(obj):
         yield _make_rich_rext(remaining_lines, STYLE_HELPTEXT)
 
 
-def _get_parameter_help(param, ctx):
+def _get_parameter_help(
+    param: Union[click.Option, click.Argument], ctx: click.Context
+) -> rich.columns.Columns:
     """Build primary help text for a click option or argument.
 
     Returns the prose help text for an option or argument, rendered either
@@ -247,7 +254,7 @@ def _get_parameter_help(param, ctx):
     return Columns(items)
 
 
-def _make_command_help(helptext):
+def _make_command_help(help_text: str) -> Union[rich.text.Text, rich.markdown.Markdown]:
     """Build cli help text for a click group command.
     That is, when calling help on groups with multiple subcommands
     (not the main help text when calling the subcommand help).
@@ -257,12 +264,12 @@ def _make_command_help(helptext):
     Ignores single newlines as paragraph markers, looks for double only.
 
     Args:
-        helptext (str): Help text
+        help_text (str): Help text
 
     Returns:
         Text or Markdown: Styled object
     """
-    paragraphs = helptext.split("\n\n")
+    paragraphs = help_text.split("\n\n")
     # Remove single linebreaks
     if not USE_MARKDOWN and not paragraphs[0].startswith("\b"):
         paragraphs[0] = paragraphs[0].replace("\n", " ")
@@ -271,7 +278,9 @@ def _make_command_help(helptext):
     return _make_rich_rext(paragraphs[0].strip(), STYLE_OPTION_HELP)
 
 
-def rich_format_help(obj, ctx, formatter):
+def rich_format_help(
+    obj: Union[click.Command, click.Group], ctx: click.Context, formatter: click.HelpFormatter
+) -> None:
     """Print nicely formatted help text using rich
 
     Based on original code from rich-cli, by @willmcgugan.
@@ -487,7 +496,7 @@ def rich_format_help(obj, ctx, formatter):
         )
 
 
-def rich_format_error(self):
+def rich_format_error(self: click.ClickException):
     """Print richly formatted click errors.
 
     Called by custom exception handler to print richly formatted click errors.
@@ -526,7 +535,7 @@ def rich_format_error(self):
         console.print(ERRORS_EPILOGUE)
 
 
-def rich_abort_error():
+def rich_abort_error() -> None:
     """Print richly formatted abort error."""
     console = _get_rich_console()
     console.print(ABORTED_TEXT, style=STYLE_ABORTED)
