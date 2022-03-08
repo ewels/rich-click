@@ -2,6 +2,7 @@
 
 ## Version 1.2.2.dev0
 
+- Mark PEP 561 Compatibility [[PR41](https://github.com/ewels/rich-click/pull/41)]
 - Distribution now available via MacPorts [[PR42](https://github.com/ewels/rich-click/pull/42)]
 - Add typing information [[PR39](https://github.com/ewels/rich-click/pull/39)]
 - Refactor RichCommand and RichGroup out of rich_click [[PR38](https://github.com/ewels/rich-click/pull/39)]
