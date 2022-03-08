@@ -60,7 +60,8 @@ ARGUMENTS_PANEL_TITLE = "Arguments"
 OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
 ERRORS_PANEL_TITLE = "Error"
-ERRORS_SUGGESTION: Optional[str] = None  # Default: Try 'cmd -h' for help. Set to False to disable.
+# Default: Try 'cmd -h' for help. Set to False to disable.
+ERRORS_SUGGESTION: Optional[str] = None
 ERRORS_EPILOGUE: Optional[str] = None
 ABORTED_TEXT = "Aborted."
 
@@ -106,7 +107,9 @@ def _get_rich_console() -> Console:
     )
 
 
-def _make_rich_rext(text: str, style: str = "") -> Union[rich.markdown.Markdown, rich.text.Text]:
+def _make_rich_rext(
+    text: str, style: str = ""
+) -> Union[rich.markdown.Markdown, rich.text.Text]:
     """Take a string and return styled text
 
     By default, return the text as a Rich Text with the request style.
@@ -132,7 +135,9 @@ def _make_rich_rext(text: str, style: str = "") -> Union[rich.markdown.Markdown,
 
 
 @group()
-def _get_help_text(obj: Union[click.Command, click.Group]) -> Union[rich.markdown.Markdown, rich.text.Text]:
+def _get_help_text(
+    obj: Union[click.Command, click.Group]
+) -> Union[rich.markdown.Markdown, rich.text.Text]:
     """Build primary help text for a click command or group.
 
     Returns the prose help text for a command or group, rendered either as a
@@ -279,7 +284,9 @@ def _make_command_help(help_text: str) -> Union[rich.text.Text, rich.markdown.Ma
 
 
 def rich_format_help(
-    obj: Union[click.Command, click.Group], ctx: click.Context, formatter: click.HelpFormatter
+    obj: Union[click.Command, click.Group],
+    ctx: click.Context,
+    formatter: click.HelpFormatter,
 ) -> None:
     """Print nicely formatted help text using rich
 
