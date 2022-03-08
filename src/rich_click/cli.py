@@ -3,6 +3,7 @@
 import sys
 from textwrap import dedent
 from importlib import import_module
+from typing import Optional, List, Any
 
 try:
     from importlib.metadata import entry_points
@@ -29,7 +30,7 @@ from rich_click.rich_click import (
 console = Console()
 
 
-def _print_usage():
+def _print_usage() -> None:
     console.print(
         Padding(
             Text.from_markup(
@@ -41,7 +42,7 @@ def _print_usage():
     )
 
 
-def _print_help():
+def _print_help() -> None:
     help_paragraphs = dedent(main.__doc__).split("\n\n")
     help_paragraphs = [x.replace("\n", " ").strip() for x in help_paragraphs]
     console.print(
@@ -60,7 +61,7 @@ def _print_help():
     )
 
 
-def main(args=None):
+def main(args: Optional[List[str]] = None) -> Any:
     """
     The [link=https://github.com/ewels/rich-click]rich-click[/] CLI
     provides attractive help output from any tool using [link=https://click.palletsprojects.com/]click[/],

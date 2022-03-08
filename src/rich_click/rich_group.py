@@ -16,7 +16,7 @@ class RichGroup(click.Group):
     command_class = RichCommand
     group_class = type
 
-    def main(self, *args, standalone_mode=True, **kwargs):
+    def main(self, *args, standalone_mode: bool = True, **kwargs):
         try:
             return super().main(*args, standalone_mode=False, **kwargs)
         except click.ClickException as e:
@@ -30,5 +30,5 @@ class RichGroup(click.Group):
             rich_abort_error()
             sys.exit(1)
 
-    def format_help(self, ctx, formatter):
+    def format_help(self, ctx: click.Context, formatter: click.HelpFormatter):
         rich_format_help(self, ctx, formatter)
