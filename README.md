@@ -37,6 +37,12 @@ Just set up conda to use conda-forge (see [docs](https://conda-forge.org/docs/us
 conda install rich-click
 ```
 
+Users on macOS can install `rich-click` via [MacPorts](https://ports.macports.org/port/py-rich-click/).
+
+```bash
+sudo port install py-rich-click
+```
+
 ## Usage
 
 ### Import as click
