@@ -25,6 +25,7 @@ STYLE_OPTION = "bold cyan"
 STYLE_SWITCH = "bold green"
 STYLE_METAVAR = "bold yellow"
 STYLE_METAVAR_APPEND = "dim yellow"
+STYLE_CHOICE_SEPARATOR = "dim"
 STYLE_HEADER_TEXT = ""
 STYLE_FOOTER_TEXT = ""
 STYLE_USAGE = "yellow"
@@ -384,11 +385,26 @@ def rich_format_help(
             # Column for a metavar, if we have one
             metavar = Text(style=STYLE_METAVAR, overflow="fold")
             metavar_str = param.make_metavar()
+
+            # Make [ | ] dim in choices
+            if isinstance(param.type, click.types.Choice):
+                metavar.append("[", style=STYLE_CHOICE_SEPARATOR)
+                first = True
+                for choice in param.type.choices:
+                    if not first:
+                        metavar.append("|", style=STYLE_CHOICE_SEPARATOR)
+                    first = False
+                    metavar.append(choice)
+                metavar.append("]", style=STYLE_CHOICE_SEPARATOR)
+
             # Do it ourselves if this is a positional argument
             if type(param) is click.core.Argument and metavar_str == param.name.upper():
                 metavar_str = param.type.name.upper()
-            # Skip booleans
-            if metavar_str != "BOOLEAN":
+
+            # Skip booleans and choices (handled above)
+            if metavar_str != "BOOLEAN" and not isinstance(
+                param.type, click.types.Choice
+            ):
                 metavar.append(metavar_str)
 
             # Range - from https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
