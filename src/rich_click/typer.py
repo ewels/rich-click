@@ -27,6 +27,7 @@ class Typer(BaseTyper):
 
 
 def run(function: Callable[..., Any]) -> Any:
+    """Redefine typer.run() to use our custom Typer class."""
     app = Typer()
     app.command()(function)
     app()
