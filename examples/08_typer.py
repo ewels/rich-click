@@ -3,7 +3,7 @@ import rich_click.typer as typer
 app = typer.Typer()
 
 
-@app.command()
+@app.callback()
 def cli(debug: bool = typer.Option(False, help="Enable debug mode.")):
     """
     My amazing tool does all the things.
@@ -17,7 +17,7 @@ def cli(debug: bool = typer.Option(False, help="Enable debug mode.")):
     print(f"Debug mode is {'on' if debug else 'off'}")
 
 
-@cli.command()
+@app.command()
 def sync(
     type: str = typer.Option("files", help="Type of file to sync"),
     all: bool = typer.Option(False, help="Sync all the things?"),
@@ -26,7 +26,7 @@ def sync(
     print("Syncing")
 
 
-@cli.command()
+@app.command()
 def download(all: bool = typer.Option(False, help="Get everything")):
     """
     Pretend to download some files from
@@ -53,4 +53,4 @@ def download(all: bool = typer.Option(False, help="Get everything")):
 
 
 if __name__ == "__main__":
-    cli()
+    app()
