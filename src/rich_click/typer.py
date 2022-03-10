@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Any
 
 from rich_click import RichCommand, RichGroup
 from typer import Typer as BaseTyper
@@ -24,3 +24,9 @@ class Typer(BaseTyper):
         **kwargs,
     ) -> Callable[[CommandFunctionType], CommandFunctionType]:
         return super().command(*args, cls=cls, **kwargs)
+
+
+def run(function: Callable[..., Any]) -> Any:
+    app = Typer()
+    app.command()(function)
+    app()
