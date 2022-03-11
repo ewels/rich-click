@@ -22,13 +22,13 @@ def sync(
     type: str = typer.Option("files", help="Type of file to sync"),
     all: bool = typer.Option(False, help="Sync all the things?"),
 ):
-    """Synchronise all your files between two places"""
+    """Synchronise all your files between two places."""
     print("Syncing")
 
 
 @app.command()
 def download(all: bool = typer.Option(False, help="Get everything")):
-    """
+    r"""
     Pretend to download some files from
     somewhere. Multi-line help strings are unwrapped
     until you use a double newline.
@@ -48,7 +48,7 @@ def download(all: bool = typer.Option(False, help="Get everything")):
     \f
     Also if you want to write function help text that won't
     be rendered to the terminal.
-    """
+    """  # noqa: D400
     print("Downloading")
 
 

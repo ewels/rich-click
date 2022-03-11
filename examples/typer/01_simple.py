@@ -2,7 +2,7 @@ import rich_click.typer as typer
 
 
 def main():
-    """A CLI that says hello."""
+    """Launch a CLI that says hello."""
     typer.echo("Hello World")
 
 
