@@ -19,7 +19,6 @@ repos:
         name: iSort - Sorts imports.
         description: Sorts your import for you.
         entry: isort
-        args: ["--settings-path=pyproject.toml"]
         language: python
         types: [python]
         require_serial: true
@@ -49,7 +48,6 @@ repos:
         name: mypy - Static type checking
         description: Mypy helps ensure that we use our functions and variables correctly by checking the types.
         entry: mypy
-        args: ["--ignore-missing-imports", "--scripts-are-modules"]
         language: python
         types: [python]
         require_serial: true

@@ -353,6 +353,21 @@ or better still, dive right in with a pull-request.
 3. Install our the package as an editable including all dev dependencies with `pip3 install -e ."[dev]"`
 4. Install pre-commit with `pre-commit install`
 
+#### Pre-commit
+
+Our pre-commit hooks contain the following hooks:
+
+- prettier: formats our yaml files nicely.
+- no relative imports: prevents you from using relative imports.
+- iSort: will automatically sort the imports alphabetically.
+- black: will automatically format your code to be according to standardized python format.
+- flake8: will do linting checks to make sure all your code is correctly styled and used.
+- mypy: static type checker which verifies you are not using objects incorrectly.
+
+As mentioned, some of these tools automatically fix your code while other only highlight potential issues.
+Therefore, sometimes it enough to try to commit a second time, and it will pass, while others will require
+manual changes to your code.
+
 ## Credits
 
 This package was written by Phil Ewels ([@ewels](http://github.com/ewels/)),
