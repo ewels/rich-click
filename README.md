@@ -372,11 +372,13 @@ In rare cases it may be difficult or undesirable to change to code to pass the l
 If this happens, it's ok to add a flake8 `# noqa` or mypy `# type: ignore` comment to skip that line.
 For details of how to do this, please see the [flake8 docs](https://flake8.pycqa.org/en/3.1.1/user/ignoring-errors.html#in-line-ignoring-errors)
 and [mypy docs](https://mypy.readthedocs.io/en/stable/common_issues.html#spurious-errors-and-locally-silencing-the-checker).
+
 ## Credits
 
 This package was written by Phil Ewels ([@ewels](http://github.com/ewels/)),
 based on initial code by Will McGugan ([@willmcgugan](https://github.com/willmcgugan)).
 Furthermore, these contributors helped make the package what it is today:
+
 - [@harens](http://github.com/harens/)
 - [@fridex](http://github.com/fridex/)
 - [@pawamoy](http://github.com/pawamoy/)
