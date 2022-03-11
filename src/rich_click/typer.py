@@ -1,9 +1,10 @@
-from typing import Callable, Any
+from typing import Any, Callable
+
+from typer import *  # noqa
+from typer import Typer as BaseTyper
+from typer.models import CommandFunctionType
 
 from rich_click import RichCommand, RichGroup
-from typer import Typer as BaseTyper
-from typer import *  # noqa
-from typer.models import CommandFunctionType
 
 
 class Typer(BaseTyper):
