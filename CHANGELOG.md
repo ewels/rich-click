@@ -7,7 +7,7 @@
 - Add typing information [[PR39](https://github.com/ewels/rich-click/pull/39)]
 - Refactor RichCommand and RichGroup out of rich_click [[PR38](https://github.com/ewels/rich-click/pull/39)]
 - Change metavar overflow to `fold`, so that large numbers of choices flow onto new lines instead of being truncated with an ellipsis [[#33](https://github.com/ewels/rich-click/issues/33)]
-- Manually create the metavar for choices, with dim separators
+- Make metavar separators dim (`[]`,`<>`) (customise with `STYLE_METAVAR_SEPARATOR`)
 
 ## Version 1.2.1 (2022-03-02)
 

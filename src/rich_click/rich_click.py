@@ -25,7 +25,7 @@ STYLE_OPTION = "bold cyan"
 STYLE_SWITCH = "bold green"
 STYLE_METAVAR = "bold yellow"
 STYLE_METAVAR_APPEND = "dim yellow"
-STYLE_CHOICE_SEPARATOR = "dim"
+STYLE_METAVAR_SEPARATOR = "dim"
 STYLE_HEADER_TEXT = ""
 STYLE_FOOTER_TEXT = ""
 STYLE_USAGE = "yellow"
@@ -100,6 +100,7 @@ def _get_rich_console() -> Console:
                 "option": STYLE_OPTION,
                 "switch": STYLE_SWITCH,
                 "metavar": STYLE_METAVAR,
+                "metavar_sep": STYLE_METAVAR_SEPARATOR,
                 "usage": STYLE_USAGE,
             }
         ),
@@ -386,25 +387,12 @@ def rich_format_help(
             metavar = Text(style=STYLE_METAVAR, overflow="fold")
             metavar_str = param.make_metavar()
 
-            # Make [ | ] dim in choices
-            if isinstance(param.type, click.types.Choice):
-                metavar.append("[", style=STYLE_CHOICE_SEPARATOR)
-                first = True
-                for choice in param.type.choices:
-                    if not first:
-                        metavar.append("|", style=STYLE_CHOICE_SEPARATOR)
-                    first = False
-                    metavar.append(choice)
-                metavar.append("]", style=STYLE_CHOICE_SEPARATOR)
-
             # Do it ourselves if this is a positional argument
             if type(param) is click.core.Argument and metavar_str == param.name.upper():
                 metavar_str = param.type.name.upper()
 
             # Skip booleans and choices (handled above)
-            if metavar_str != "BOOLEAN" and not isinstance(
-                param.type, click.types.Choice
-            ):
+            if metavar_str != "BOOLEAN":
                 metavar.append(metavar_str)
 
             # Range - from https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
@@ -428,11 +416,21 @@ def rich_format_help(
             if param.required:
                 required = Text(REQUIRED_SHORT_STRING, style=STYLE_REQUIRED_SHORT)
 
+            # Highlighter to make [ | ] and <> dim
+            class MetavarHighlighter(RegexHighlighter):
+                highlights = [
+                    r"^(?P<metavar_sep>(\[|<))",
+                    r"(?P<metavar_sep>\|)",
+                    r"(?P<metavar_sep>(\]|>)$)",
+                ]
+
+            metavar_highlighter = MetavarHighlighter()
+
             rows = [
                 required,
                 highlighter(highlighter(",".join(opt_long_strs))),
                 highlighter(highlighter(",".join(opt_short_strs))),
-                metavar,
+                metavar_highlighter(metavar),
                 _get_parameter_help(param, ctx),
             ]
 
