@@ -376,3 +376,8 @@ and [mypy docs](https://mypy.readthedocs.io/en/stable/common_issues.html#spuriou
 
 This package was written by Phil Ewels ([@ewels](http://github.com/ewels/)),
 based on initial code by Will McGugan ([@willmcgugan](https://github.com/willmcgugan)).
+Furthermore, these contributors helped make the package what it is today:
+- [@harens](http://github.com/harens/)
+- [@fridex](http://github.com/fridex/)
+- [@pawamoy](http://github.com/pawamoy/)
+- [@jorrick](http://github.com/harens/)
