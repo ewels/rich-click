@@ -368,6 +368,10 @@ As mentioned, some of these tools automatically fix your code while other only h
 Therefore, sometimes it enough to try to commit a second time, and it will pass, while others will require
 manual changes to your code.
 
+In rare cases it may be difficult or undesirable to change to code to pass the linting rules.
+If this happens, it's ok to add a flake8 `# noqa` or mypy `# type: ignore` comment to skip that line.
+For details of how to do this, please see the [flake8 docs](https://flake8.pycqa.org/en/3.1.1/user/ignoring-errors.html#in-line-ignoring-errors)
+and [mypy docs](https://mypy.readthedocs.io/en/stable/common_issues.html#spurious-errors-and-locally-silencing-the-checker).
 ## Credits
 
 This package was written by Phil Ewels ([@ewels](http://github.com/ewels/)),
