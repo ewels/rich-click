@@ -1,9 +1,9 @@
 """The command line interface."""
 
 import sys
-from textwrap import dedent
 from importlib import import_module
-from typing import Optional, List, Any
+from textwrap import dedent
+from typing import Any, List, Optional
 
 try:
     from importlib.metadata import entry_points
@@ -16,15 +16,17 @@ from rich.console import Console
 from rich.padding import Padding
 from rich.panel import Panel
 from rich.text import Text
-from rich_click import group as rich_group, command as rich_command
+
+from rich_click import command as rich_command
+from rich_click import group as rich_group
 from rich_click.rich_click import (
-    STYLE_HELPTEXT_FIRST_LINE,
-    STYLE_HELPTEXT,
-    STYLE_USAGE_COMMAND,
-    STYLE_USAGE,
-    STYLE_ERRORS_PANEL_BORDER,
-    ERRORS_PANEL_TITLE,
     ALIGN_ERRORS_PANEL,
+    ERRORS_PANEL_TITLE,
+    STYLE_ERRORS_PANEL_BORDER,
+    STYLE_HELPTEXT,
+    STYLE_HELPTEXT_FIRST_LINE,
+    STYLE_USAGE,
+    STYLE_USAGE_COMMAND,
 )
 
 console = Console()
@@ -33,9 +35,7 @@ console = Console()
 def _print_usage() -> None:
     console.print(
         Padding(
-            Text.from_markup(
-                f"[{STYLE_USAGE}]Usage[/]: rich-click [SCRIPT | MODULE:FUNCTION] [-- SCRIPT_ARGS...]"
-            ),
+            Text.from_markup(f"[{STYLE_USAGE}]Usage[/]: rich-click [SCRIPT | MODULE:FUNCTION] [-- SCRIPT_ARGS...]"),
             1,
         ),
         style=STYLE_USAGE_COMMAND,
@@ -43,7 +43,7 @@ def _print_usage() -> None:
 
 
 def _print_help() -> None:
-    help_paragraphs = dedent(main.__doc__).split("\n\n")
+    help_paragraphs = dedent(main.__doc__ or "").split("\n\n")
     help_paragraphs = [x.replace("\n", " ").strip() for x in help_paragraphs]
     console.print(
         Padding(
@@ -63,9 +63,9 @@ def _print_help() -> None:
 
 def main(args: Optional[List[str]] = None) -> Any:
     """
-    The [link=https://github.com/ewels/rich-click]rich-click[/] CLI
-    provides attractive help output from any tool using [link=https://click.palletsprojects.com/]click[/],
-    formatted with [link=https://github.com/Textualize/rich]rich[/].
+    The [link=https://github.com/ewels/rich-click]rich-click[/] CLI provides attractive help output from any
+    tool using [link=https://click.palletsprojects.com/]click[/], formatted with
+    [link=https://github.com/Textualize/rich]rich[/].
 
     The rich-click command line tool can be prepended before any Python package
     using native click to provide attractive richified click help output.
@@ -79,7 +79,7 @@ def main(args: Optional[List[str]] = None) -> Any:
     or [cyan]command()[/] classes.
     If in doubt, please suggest to the authors that they use rich_click within their
     tool natively - this will always give a better experience.
-    """
+    """  # noqa: D400, D401
     args = args or sys.argv[1:]
     if not args or args == ["--help"]:
         # Print usage if we got no args, or only --help

@@ -34,7 +34,7 @@ def cli(debug):
 )
 @click.option("--all", is_flag=True, help="Sync all the things?")
 def sync(type, all):
-    """Synchronise all your files between two places"""
+    """Synchronise all your files between two places."""
     print("Syncing")
 
 
@@ -61,7 +61,7 @@ def download(all):
     \f
     Also if you want to write function help text that won't
     be rendered to the terminal.
-    """
+    """  # noqa: D301, D400
     print("Downloading")
 
 
