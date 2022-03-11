@@ -365,7 +365,7 @@ Our pre-commit hooks contain the following hooks:
 - [mypy](http://mypy-lang.org/): static type checker which verifies you are not using objects incorrectly.
 
 As mentioned, some of these tools automatically fix your code while other only highlight potential issues.
-Therefore, sometimes it enough to try to commit a second time, and it will pass, while others will require
+Sometimes it will be enough to try to commit a second time and it will pass, while other times it may require
 manual changes to your code.
 
 In rare cases it may be difficult or undesirable to change to code to pass the linting rules.
