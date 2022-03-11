@@ -1,0 +1,4 @@
+[flake8]
+# Default ignores that we can extend
+ignore=D100,D102,D205,E203,E231,E731,W504,I001,W503
+max-line-length=120

@@ -9,6 +9,7 @@ setup(
     ],
     extras_require={
         "typer": "typer>=0.4",
+        "dev": "pre-commit",
     },
     package_data={"rich-click": ["py.typed"]},
 )

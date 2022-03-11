@@ -2,8 +2,8 @@ import sys
 
 import click
 
+from rich_click.rich_click import rich_abort_error, rich_format_error, rich_format_help
 from rich_click.rich_command import RichCommand
-from rich_click.rich_click import rich_format_error, rich_abort_error, rich_format_help
 
 
 class RichGroup(click.Group):
@@ -24,7 +24,7 @@ class RichGroup(click.Group):
                 raise
             rich_format_error(e)
             sys.exit(e.exit_code)
-        except click.exceptions.Abort as e:
+        except click.exceptions.Abort:
             if not standalone_mode:
                 raise
             rich_abort_error()
