@@ -8,7 +8,7 @@ from rich_click import RichCommand, RichGroup
 
 
 class Typer(BaseTyper):
-    """A custom subclassed version of typer.Typer to allow rich help"""
+    """A custom subclassed version of typer.Typer to allow rich help."""
 
     def __init__(
         self,
@@ -16,6 +16,7 @@ class Typer(BaseTyper):
         cls=RichGroup,
         **kwargs,
     ) -> None:
+        """Initialise with a RichGroup class as the default."""
         super().__init__(*args, cls=cls, **kwargs)
 
     def command(
@@ -28,7 +29,7 @@ class Typer(BaseTyper):
 
 
 def run(function: Callable[..., Any]) -> Any:
-    """Redefine typer.run() to use our custom Typer class."""
+    """Redefine typer.run() to use our custom Typer class."""  # noqa D402
     app = Typer()
     app.command()(function)
     app()
