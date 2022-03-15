@@ -19,8 +19,7 @@ from rich.text import Text
 
 from rich_click import command as rich_command
 from rich_click import group as rich_group
-from rich_click import RichCommand
-from rich_click import RichGroup
+from rich_click import RichCommand, RichGroup
 from rich_click.rich_click import (
     ALIGN_ERRORS_PANEL,
     ERRORS_PANEL_TITLE,
