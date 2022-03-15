@@ -14,4 +14,4 @@ profile = "black"
 [tool.mypy]
 python_version = "3.6"
 ignore_missing_imports = "True"
-scripts-are-modules = "True"
+scripts_are_modules = "True"
