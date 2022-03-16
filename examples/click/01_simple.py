@@ -61,7 +61,7 @@ def download(all):
     \f
     Also if you want to write function help text that won't
     be rendered to the terminal.
-    """  # noqa: D301, D400
+    """
     print("Downloading")
 
 

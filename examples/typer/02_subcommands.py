@@ -48,7 +48,7 @@ def download(all: bool = typer.Option(False, help="Get everything")):
     \f
     Also if you want to write function help text that won't
     be rendered to the terminal.
-    """  # noqa: D400
+    """
     print("Downloading")
 
 

@@ -43,6 +43,7 @@ repos:
         args: ["--config=.flake8"]
         language: python
         types: [python]
+        exclude: ^examples/
         require_serial: true
         additional_dependencies:
           - flake8
@@ -53,6 +54,7 @@ repos:
         entry: mypy
         language: python
         types: [python]
+        exclude: ^examples/
         require_serial: true
         additional_dependencies:
           - mypy
