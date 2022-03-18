@@ -363,7 +363,7 @@ def rich_format_help(
             opt_short_strs = []
             for idx, opt in enumerate(param.opts):
                 opt_str = opt
-                if param.secondary_opts and idx in param.secondary_opts:
+                if param.secondary_opts:
                     opt_str += "/" + param.secondary_opts[idx]
                 if "--" in opt:
                     opt_long_strs.append(opt_str)
