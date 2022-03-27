@@ -6,6 +6,7 @@ import rich.markdown
 from rich.align import Align
 from rich.columns import Columns
 from rich.console import Console
+from rich.emoji import Emoji
 from rich.highlighter import RegexHighlighter
 from rich.markdown import Markdown
 from rich.padding import Padding
@@ -72,6 +73,7 @@ SHOW_METAVARS_COLUMN = True  # Show a column with the option metavar (eg. INTEGE
 APPEND_METAVARS_HELP = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS = False  # Show arguments with options instead of in own panel
 USE_MARKDOWN = False  # Parse help strings as markdown
+USE_MARKDOWN_EMOJI = False # Parse emoji codes in markdown
 USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[/])
 # Define sorted groups of panels to display subcommands
 COMMAND_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = {}
@@ -129,6 +131,8 @@ def _make_rich_rext(text: str, style: str = "") -> Union[rich.markdown.Markdown,
         MarkdownElement or Text: Styled text object
     """
     if USE_MARKDOWN:
+        if USE_MARKDOWN_EMOJI:
+            text = Emoji.replace(text)
         return Markdown(text, style=style)
     if USE_RICH_MARKUP:
         return highlighter(Text.from_markup(text, style=style))
