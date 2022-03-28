@@ -83,6 +83,7 @@ COMMAND_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = {}
 OPTION_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = {}
 USE_CLICK_SHORT_HELP = False  # Use click's default function to truncate help text
 
+
 # Rich regex highlighter
 class OptionHighlighter(RegexHighlighter):
     """Highlights our special options."""

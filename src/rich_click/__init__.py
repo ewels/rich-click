@@ -13,7 +13,7 @@ from click import *  # noqa: F401, F403
 from click import command as click_command
 from click import group as click_group
 
-from rich_click import echo, echo_via_pager
+from rich_click import echo, echo_via_pager  # noqa: F401
 from rich_click.rich_command import RichCommand
 from rich_click.rich_group import RichGroup
 
