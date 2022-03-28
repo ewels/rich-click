@@ -5,7 +5,7 @@ The intention is to provide attractive help output from click, formatted with ri
 customisation required.
 """
 
-__version__ = "1.2.2.dev1"
+__version__ = "1.3.0"
 
 from typing import TYPE_CHECKING
 
