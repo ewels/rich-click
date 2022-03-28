@@ -2,6 +2,7 @@
 
 ## Version 1.2.2.dev0
 
+- Added initial support for [Typer](https://typer.tiangolo.com/) [[#26](https://github.com/ewels/rich-click/pull/26)]
 - Mark PEP 561 Compatibility [[#41](https://github.com/ewels/rich-click/pull/41)]
 - Distribution now available via MacPorts [[#42](https://github.com/ewels/rich-click/pull/42)]
 - Add typing information [[#39](https://github.com/ewels/rich-click/pull/39)]
