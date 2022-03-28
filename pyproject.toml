@@ -1,6 +1,6 @@
 [tool.black]
 line-length=120
-target-version=['py36']
+target-version=['py37']
 
 [tool.isort]
 line_length = 120
@@ -12,6 +12,6 @@ sections=["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER", "RICHCL
 profile = "black"
 
 [tool.mypy]
-python_version = "3.6"
+python_version = "3.7"
 ignore_missing_imports = "True"
 scripts_are_modules = "True"

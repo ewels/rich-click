@@ -355,6 +355,7 @@ SHOW_METAVARS_COLUMN = True  # Show a column with the option metavar (eg. INTEGE
 APPEND_METAVARS_HELP = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS = False  # Show arguments with options instead of in own panel
 USE_MARKDOWN = False  # Parse help strings as markdown
+USE_MARKDOWN_EMOJI = True  # Parse emoji codes in markdown :smile:
 USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[/])
 COMMAND_GROUPS = {}  # Define sorted groups of panels to display subcommands
 OPTION_GROUPS = {}  # Define sorted groups of panels to display options and arguments
@@ -369,7 +370,7 @@ or better still, dive right in with a pull-request.
 
 ### Local setup
 
-1. Create a new venv with a python3.6+ interpreter using `python3 -m venv venv`
+1. Create a new venv with a python3.7+ interpreter using `python3 -m venv venv`
 2. Activate the venv with `source venv/bin/activate`
 3. Install our the package as an editable including all dev dependencies with `pip3 install -e ."[dev]"`
 4. Install pre-commit with `pre-commit install`
