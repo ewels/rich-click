@@ -1,12 +1,23 @@
-import rich_click as click
 from rich.__main__ import make_test_card
 
-click.rich_click.USE_MARKDOWN = True
+import rich_click as click
+
+click.rich_click.USE_RICH_MARKUP = True
+
+# default settings
+input("Press Enter to see default pager settings")
+click.echo_via_pager(make_test_card())
+
+# pass color param like click.echo_via_pager
+input("Press Enter to see pager with color=False")
+click.echo_via_pager(make_test_card(), color=False)
+
+# any other args are passed to rich.console.Console.print
+input("Press Enter to see pager with width=40")
+click.echo_via_pager(make_test_card(), width=40)
 
 # regular text
 sample_text = """
-# Lorem Ipsum
-
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sollicitudin tempor id eu nisl nunc mi ipsum. Consequat mauris nunc congue nisi vitae suscipit tellus mauris a. Dapibus ultrices in iaculis nunc sed augue lacus viverra vitae. Rutrum quisque non tellus orci ac auctor augue. Praesent tristique magna sit amet purus. Orci phasellus egestas tellus rutrum. Nibh praesent tristique magna sit amet purus gravida. Aliquam eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis. Tellus molestie nunc non blandit massa enim nec. Quam id leo in vitae turpis massa sed elementum tempus.
 
 Pulvinar neque laoreet suspendisse interdum consectetur libero id faucibus. Tellus id interdum velit laoreet id donec ultrices tincidunt arcu. Eros in cursus turpis massa tincidunt. Lorem dolor sed viverra ipsum nunc. Et tortor at risus viverra adipiscing at in tellus integer. Nulla malesuada pellentesque elit eget gravida cum sociis natoque. Tincidunt nunc pulvinar sapien et ligula. Amet venenatis urna cursus eget nunc. Et egestas quis ipsum suspendisse ultrices gravida. Tellus mauris a diam maecenas. Tellus elementum sagittis vitae et leo. Facilisis sed odio morbi quis commodo odio aenean sed adipiscing. Blandit massa enim nec dui nunc mattis enim ut tellus. Aenean sed adipiscing diam donec adipiscing. Sapien faucibus et molestie ac feugiat sed lectus. Aenean et tortor at risus viverra adipiscing. Odio euismod lacinia at quis. Proin libero nunc consequat interdum varius sit amet. Viverra tellus in hac habitasse platea dictumst vestibulum.
@@ -17,9 +28,9 @@ Augue mauris augue neque gravida in fermentum. Augue mauris augue neque gravida.
 
 Egestas dui id ornare arcu. Risus in hendrerit gravida rutrum. Sed lectus vestibulum mattis ullamcorper. Mauris a diam maecenas sed enim ut sem viverra aliquet. Et netus et malesuada fames ac turpis egestas maecenas. Odio eu feugiat pretium nibh ipsum consequat. Aliquet lectus proin nibh nisl condimentum id venenatis a condimentum. Sed cras ornare arcu dui. Turpis tincidunt id aliquet risus feugiat. Vel pretium lectus quam id leo in. Cras sed felis eget velit aliquet sagittis id consectetur purus. Vulputate enim nulla aliquet porttitor. Non curabitur gravida arcu ac tortor dignissim convallis. Rutrum quisque non tellus orci ac auctor. Mauris nunc congue nisi vitae suscipit tellus mauris a. Fringilla urna porttitor rhoncus dolor purus non enim praesent. Est pellentesque elit ullamcorper dignissim cras tincidunt lobortis. Mattis aliquam faucibus purus in. Euismod elementum nisi quis eleifend quam.
     """.replace(
-    "Lorem", "**Lorem**"
+    "Lorem", "[red]Lorem[/red]"
 ).replace(
-    "ipsum", "*ipsum*"
+    "ipsum", "[green]ipsum[/green]"
 )
 
 input("Press Enter to see pager with sample text")
