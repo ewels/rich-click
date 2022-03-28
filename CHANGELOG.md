@@ -1,5 +1,7 @@
 # Changelog: rich-click
 
+## Version 1.3.1.dev0
+
 ## Version 1.3.0 (2022-03-29)
 
 - Added initial support for [Typer](https://typer.tiangolo.com/) [[#26](https://github.com/ewels/rich-click/pull/26)]
