@@ -2,14 +2,15 @@
 
 ## Version 1.2.2.dev0
 
-- Mark PEP 561 Compatibility [[PR41](https://github.com/ewels/rich-click/pull/41)]
-- Distribution now available via MacPorts [[PR42](https://github.com/ewels/rich-click/pull/42)]
-- Add typing information [[PR39](https://github.com/ewels/rich-click/pull/39)]
-- Refactor `RichCommand` and `RichGroup` out of `rich_click` [[PR38](https://github.com/ewels/rich-click/pull/39)]
+- Mark PEP 561 Compatibility [[#41](https://github.com/ewels/rich-click/pull/41)]
+- Distribution now available via MacPorts [[#42](https://github.com/ewels/rich-click/pull/42)]
+- Add typing information [[#39](https://github.com/ewels/rich-click/pull/39)]
+- Refactor `RichCommand` and `RichGroup` out of `rich_click` [[#38](https://github.com/ewels/rich-click/pull/39)]
 - Change metavar overflow to `fold`, so that large numbers of choices flow onto new lines instead of being truncated with an ellipsis [[#33](https://github.com/ewels/rich-click/issues/33)]
 - Make metavar separators dim (`[]`,`<>`) (customise with `STYLE_METAVAR_SEPARATOR`)
-- Add pre-commit config and a lot more linters (iSort, mypy, Flake8) [[PR40](https://github.com/ewels/rich-click/pull/40)]
-- Monkey-patch `RichCommand` and `RichGroup` in CLI code for better `rich-click` compatability with more tools [[PR43](https://github.com/ewels/rich-click/pull/43)]
+- Add pre-commit config and a lot more linters (iSort, mypy, Flake8) [[#40](https://github.com/ewels/rich-click/pull/40)]
+- Monkey-patch `RichCommand` and `RichGroup` in CLI code for better `rich-click` compatability with more tools [[#43](https://github.com/ewels/rich-click/pull/43)]
+- Parse emoji shortcodes `:partying_face:` [[#51](https://github.com/ewels/rich-click/pull/51)]
 
 ## Version 1.2.1 (2022-03-02)
 
