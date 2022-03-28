@@ -13,9 +13,9 @@ from click import *  # noqa: F401, F403
 from click import command as click_command
 from click import group as click_group
 
+from rich_click import echo, echo_via_pager
 from rich_click.rich_command import RichCommand
 from rich_click.rich_group import RichGroup
-from rich_click import echo, echo_via_pager
 
 # MyPy does not like star imports. Therefore when we are type checking, we import each individual module
 # from click here. This way MyPy will recognize the import and not throw any errors. Furthermore, because of

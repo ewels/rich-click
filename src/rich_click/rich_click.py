@@ -1,7 +1,7 @@
 import inspect
 import re
 from io import StringIO
-from typing import Any, Dict, List, Optional, Union, Iterable, Callable, cast
+from typing import Any, Callable, cast, Dict, Iterable, List, Optional, Union
 
 import click
 import rich.markdown
