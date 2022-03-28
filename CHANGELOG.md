@@ -1,6 +1,21 @@
 # Changelog: rich-click
 
-## Version 1.3.0.dev0
+## Version 1.2.2.dev0
+
+- Added initial support for [Typer](https://typer.tiangolo.com/) [[#26](https://github.com/ewels/rich-click/pull/26)]
+- Mark PEP 561 Compatibility [[#41](https://github.com/ewels/rich-click/pull/41)]
+- Distribution now available via MacPorts [[#42](https://github.com/ewels/rich-click/pull/42)]
+- Add typing information [[#39](https://github.com/ewels/rich-click/pull/39)]
+- Refactor `RichCommand` and `RichGroup` out of `rich_click` [[#38](https://github.com/ewels/rich-click/pull/39)]
+- Change metavar overflow to `fold`, so that large numbers of choices flow onto new lines instead of being truncated with an ellipsis [[#33](https://github.com/ewels/rich-click/issues/33)]
+- Make metavar separators dim (`[]`,`<>`) (customise with `STYLE_METAVAR_SEPARATOR`)
+- Add pre-commit config and a lot more linters (iSort, mypy, Flake8) [[#40](https://github.com/ewels/rich-click/pull/40)]
+- Monkey-patch `RichCommand` and `RichGroup` in CLI code for better `rich-click` compatability with more tools [[#43](https://github.com/ewels/rich-click/pull/43)]
+- Parse emoji shortcodes `:partying_face:` [[#51](https://github.com/ewels/rich-click/pull/51)]
+- Pushed minimum version of Python up to 3.7, in line with [Click v8.1](https://click.palletsprojects.com/en/8.1.x/changes/#version-8-1-0)
+- Fixed bug where `--no-myflag` wasn't showing in the help [[#45](https://github.com/ewels/rich-click/issues/45)]
+
+## Version 1.2.1 (2022-03-02)
 
 - Support the command `short_help` argument [[#28](https://github.com/ewels/rich-click/issues/28)]
 - Added `USE_CLICK_SHORT_HELP` global to enable default click shortening of help messages [[#28](https://github.com/ewels/rich-click/issues/28)]

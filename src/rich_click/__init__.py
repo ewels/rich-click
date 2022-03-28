@@ -1,31 +1,42 @@
 """
-rich-click is a minimal Python module to combine the efforts
-of the excellent packages 'rich' and 'click'.
+rich-click is a minimal Python module to combine the efforts of the excellent packages 'rich' and 'click'.
 
-The intention is to provide attractive help output from
-click, formatted with rich, with minimal customisation required.
+The intention is to provide attractive help output from click, formatted with rich, with minimal
+customisation required.
 """
 
-__version__ = "1.3.0.dev0"
+__version__ = "1.2.2.dev1"
 
-from click import *
+from typing import TYPE_CHECKING
+
+from click import *  # noqa: F401, F403
 from click import command as click_command
 from click import group as click_group
 
-from .rich_click import RichCommand, RichGroup, echo, echo_via_pager
+from rich_click.rich_command import RichCommand
+from rich_click.rich_group import RichGroup
+from rich_click import echo, echo_via_pager
+
+# MyPy does not like star imports. Therefore when we are type checking, we import each individual module
+# from click here. This way MyPy will recognize the import and not throw any errors. Furthermore, because of
+# the TYPE_CHECKING check, it does not influence the start routine at all.
+if TYPE_CHECKING:
+    from click import argument, Choice, option, Path, version_option  # noqa: F401
 
 
 def group(*args, cls=RichGroup, **kwargs):
-    """group decorator function.
+    """
+    Group decorator function.
 
-    Defines the group() function so that it uses the RichGroup class by default
+    Defines the group() function so that it uses the RichGroup class by default.
     """
     return click_group(*args, cls=cls, **kwargs)
 
 
 def command(*args, cls=RichCommand, **kwargs):
-    """command decorator function.
+    """
+    Command decorator function.
 
-    Defines the command() function so that it uses the RichCommand class by default
+    Defines the command() function so that it uses the RichCommand class by default.
     """
     return click_command(*args, cls=cls, **kwargs)

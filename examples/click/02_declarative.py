@@ -1,5 +1,6 @@
 import click
-from rich_click import RichGroup, RichCommand
+
+from rich_click import RichCommand, RichGroup
 
 
 @click.group(cls=RichGroup)
@@ -19,7 +20,7 @@ def cli(debug):
 
 @cli.command(cls=RichCommand)
 def sync():
-    """Synchronise all your files between two places"""
+    """Synchronise all your files between two places."""
     click.echo("Syncing")
 
 

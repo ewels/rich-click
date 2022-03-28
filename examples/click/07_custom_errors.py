@@ -2,9 +2,7 @@ import rich_click as click
 
 # Show custom error messages
 click.rich_click.STYLE_ERRORS_SUGGESTION = "blue italic"
-click.rich_click.ERRORS_SUGGESTION = (
-    "Try running the '--help' flag for more information."
-)
+click.rich_click.ERRORS_SUGGESTION = "Try running the '--help' flag for more information."
 click.rich_click.ERRORS_EPILOGUE = "To find out more, visit https://mytool.com"
 
 

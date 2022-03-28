@@ -71,26 +71,26 @@ def cli(type, debug):
 @click.option("--all", is_flag=True, help="Sync all the things?")
 @click.option("--overwrite", is_flag=True, help="Overwrite local files")
 def sync(input, output, all, overwrite):
-    """Synchronise all your files between two places"""
+    """Synchronise all your files between two places."""
     print("Syncing")
 
 
 @cli.command()
 @click.option("--all", is_flag=True, help="Get everything")
 def download(all):
-    """Pretend to download some files from somewhere"""
+    """Pretend to download some files from somewhere."""
     print("Downloading")
 
 
 @cli.command()
 def auth():
-    """Authenticate the app"""
+    """Authenticate the app."""
     print("Downloading")
 
 
 @cli.command()
 def config():
-    """Set up the configuration"""
+    """Set up the configuration."""
     print("Downloading")
 
 
