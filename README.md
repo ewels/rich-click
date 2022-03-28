@@ -20,7 +20,7 @@ click, formatted with rich, with minimal customisation required.
 
 ![rich-click](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/command_groups.png)
 
-_Screenshot from [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py)_
+_Screenshot from [`examples/click/03_groups_sorting.py`](examples/click/03_groups_sorting.py)_
 
 ## Installation
 
@@ -55,7 +55,7 @@ import rich_click as click
 
 That's it ✨ Then continue to use `click` as you would normally.
 
-> See [`examples/01_simple.py`](examples/01_simple.py) for an example.
+> See [`examples/click/01_simple.py`](examples/click/01_simple.py) for an example.
 
 The intention is to maintain most / all of the normal click functionality and arguments.
 If you spot something that breaks or is missing once you start using the plugin, please create an issue about it.
@@ -65,7 +65,28 @@ If you spot something that breaks or is missing once you start using the plugin,
 If you prefer, you can `RichGroup` or `RichCommand` with the `cls` argument in your click usage instead.
 This means that you can continue to use the unmodified `click` package in parallel.
 
-> See [`examples/02_declarative.py`](examples/02_declarative.py) for an example.
+> See [`examples/click/02_declarative.py`](examples/click/02_declarative.py) for an example.
+
+## Typer support
+
+[`Typer`](https://github.com/tiangolo/typer) is also supported.
+You need to use rich-click with the `typer` [extra](https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-setuptools-extras) in your package requirements: `rich-click[typer]`
+
+For example, to install locally:
+
+```bash
+python -m pip install rich-click[typer]
+```
+
+Then just replace your usual `typer` import by:
+
+```python
+import rich_click.typer as typer
+```
+
+That's it ✨ All the usual `typer` API should be available.
+
+> See [`examples/typer/`](examples/typer/) for some example scripts.
 
 ### Command-line usage
 
@@ -105,7 +126,7 @@ for example: `[dim]\[my-default: foo][\]`
 
 ![Rich markup example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich_markup.png)
 
-> See [`examples/04_rich_markup.py`](examples/04_rich_markup.py) fo
+> See [`examples/click/04_rich_markup.py`](examples/click/04_rich_markup.py) fo
 
 ### Using Markdown
 
@@ -118,7 +139,7 @@ click.rich_click.USE_MARKDOWN = True
 
 ![Markdown example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/markdown.png)
 
-> See [`examples/05_markdown.py`](examples/05_markdown.py) fo
+> See [`examples/click/05_markdown.py`](examples/click/05_markdown.py) fo
 
 ### Positional arguments
 
@@ -135,7 +156,7 @@ click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
 
 ![Positional arguments example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/arguments.png)
 
-> See [`examples/06_arguments.py`](examples/06_arguments.py) for an example.
+> See [`examples/click/06_arguments.py`](examples/click/06_arguments.py) for an example.
 
 ### Metavars and option choices
 
@@ -158,7 +179,7 @@ click.rich_click.APPEND_METAVARS_HELP = True
 
 ![Appended metavar](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/metavars_appended.png)
 
-> See [`examples/08_metavars.py`](examples/08_metavars.py) for an example.
+> See [`examples/click/08_metavars.py`](examples/click/08_metavars.py) for an example.
 
 ### Error messages
 
@@ -169,7 +190,7 @@ By default, rich-click gives some nice formatting to error messages:
 You can customise the _Try 'command --help' for help._ message with `ERRORS_SUGGESTION`
 using rich-click though, and add some text after the error with `ERRORS_EPILOGUE`.
 
-For example, from [`examples/07_custom_errors.py`](examples/07_custom_errors.py):
+For example, from [`examples/click/07_custom_errors.py`](examples/click/07_custom_errors.py):
 
 ```python
 click.rich_click.STYLE_ERRORS_SUGGESTION = "blue italic"
@@ -212,7 +233,7 @@ It accepts a list of options / commands which means you can also choose a custom
 
 ![rich-click](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/command_groups.png)
 
-See [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py) for a full example.
+See [`examples/click/03_groups_sorting.py`](examples/click/03_groups_sorting.py) for a full example.
 
 ### Options
 
@@ -334,6 +355,7 @@ SHOW_METAVARS_COLUMN = True  # Show a column with the option metavar (eg. INTEGE
 APPEND_METAVARS_HELP = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS = False  # Show arguments with options instead of in own panel
 USE_MARKDOWN = False  # Parse help strings as markdown
+USE_MARKDOWN_EMOJI = True  # Parse emoji codes in markdown :smile:
 USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[/])
 COMMAND_GROUPS = {}  # Define sorted groups of panels to display subcommands
 OPTION_GROUPS = {}  # Define sorted groups of panels to display options and arguments
@@ -348,7 +370,7 @@ or better still, dive right in with a pull-request.
 
 ### Local setup
 
-1. Create a new venv with a python3.6+ interpreter using `python3 -m venv venv`
+1. Create a new venv with a python3.7+ interpreter using `python3 -m venv venv`
 2. Activate the venv with `source venv/bin/activate`
 3. Install our the package as an editable including all dev dependencies with `pip3 install -e ."[dev]"`
 4. Install pre-commit with `pre-commit install`
