@@ -349,7 +349,7 @@ or better still, dive right in with a pull-request.
 
 ### Local setup
 
-1. Create a new venv with a python3.6+ interpreter using `python3 -m venv venv`
+1. Create a new venv with a python3.7+ interpreter using `python3 -m venv venv`
 2. Activate the venv with `source venv/bin/activate`
 3. Install our the package as an editable including all dev dependencies with `pip3 install -e ."[dev]"`
 4. Install pre-commit with `pre-commit install`
