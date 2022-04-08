@@ -62,6 +62,14 @@ def _print_help() -> None:
     )
 
 
+def patch() -> None:
+    """Patch Click internals to use Rich-Click types."""
+    click.group = rich_group
+    click.command = rich_command
+    click.Group = RichGroup
+    click.Command = RichCommand
+
+
 def main(args: Optional[List[str]] = None) -> Any:
     """
     The [link=https://github.com/ewels/rich-click]rich-click[/] CLI provides attractive help output from any
@@ -122,10 +130,7 @@ def main(args: Optional[List[str]] = None) -> Any:
             del args[1]
     sys.argv = [prog, *args[1:]]
     # patch click before importing the program function
-    click.group = rich_group
-    click.command = rich_command
-    click.Group = RichGroup
-    click.Command = RichCommand
+    patch()
     # import the program function
     module = import_module(module_path)
     function = getattr(module, function_name)
