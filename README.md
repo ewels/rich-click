@@ -67,7 +67,7 @@ This means that you can continue to use the unmodified `click` package in parall
 
 > See [`examples/click/02_declarative.py`](examples/click/02_declarative.py) for an example.
 
-## Typer support
+### Typer support
 
 [`Typer`](https://github.com/tiangolo/typer) is also supported.
 You need to use rich-click with the `typer` [extra](https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-setuptools-extras) in your package requirements: `rich-click[typer]`
@@ -102,6 +102,40 @@ $ rich-click awesometool --help
 
 Usage: awesometool [OPTIONS]
 ..more richified output below..
+```
+
+### Patching
+
+In some situations, you might be registering a command from another Click CLI that does not use Rich-Click:
+
+```python
+import rich_click as click
+from some_library import another_cli
+
+@click.group("my-cli")
+def cli():
+    pass
+
+# `another_cli` will NOT have Rich-Click markup. :(
+cli.add_command(another_cli)
+```
+
+In this situation, `another_cli` retains its original behavior. In order to make `another_cli` work with Rick-Click, you need to patch `click` before you import `another_cli`. You can patch Click with `rich_click.cli.patch` like this:
+
+```python
+import rich_click as click
+from rich_click.cli import patch
+
+patch()
+
+from some_library import another_cli  # noqa: E402
+
+@click.group("my-cli")
+def cli():
+    pass
+
+# `another_cli` will have Rich-Click markup. :)
+cli.add_command(another_cli)
 ```
 
 ## Customisation
