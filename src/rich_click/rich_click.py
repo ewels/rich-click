@@ -1,3 +1,4 @@
+import inspect
 import re
 from typing import Dict, List, Optional, Union
 
@@ -114,7 +115,7 @@ def _get_rich_console() -> Console:
 
 
 def _make_rich_rext(text: str, style: str = "") -> Union[rich.markdown.Markdown, rich.text.Text]:
-    """Take a string and return styled text.
+    """Take a string, remove indentations, and return styled text.
 
     By default, return the text as a Rich Text with the request style.
     If USE_RICH_MARKUP is True, also parse the text for Rich markup strings.
@@ -130,6 +131,8 @@ def _make_rich_rext(text: str, style: str = "") -> Union[rich.markdown.Markdown,
     Returns:
         MarkdownElement or Text: Styled text object
     """
+    # Remove indentations from input text
+    text = inspect.cleandoc(text)
     if USE_MARKDOWN:
         if USE_MARKDOWN_EMOJI:
             text = Emoji.replace(text)
