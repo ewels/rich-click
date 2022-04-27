@@ -478,6 +478,8 @@ def rich_format_help(
                 if command not in obj.list_commands(ctx):
                     continue
                 cmd = obj.get_command(ctx, command)
+                if cmd.hidden:
+                    continue
                 # Use the truncated short text as with vanilla text if requested
                 if USE_CLICK_SHORT_HELP:
                     helptext = cmd.get_short_help_str()
