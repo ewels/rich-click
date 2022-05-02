@@ -5,6 +5,7 @@
 - Bumped minimum version of `rich` from `10` to `10.7.0` (when `Group` was introduced)
 - Refactored CLI's patching functionality to support `from rich_click.cli import patch`.
 - Make `_make_rich_rext` remove text indentations using `inspect.cleandoc` [[#55](https://github.com/ewels/rich-click/issues/55)]
+- Import `rich_click` into main namespace for Pylance [[#64](https://github.com/ewels/rich-click/issues/64)]
 
 ## Version 1.3.0 (2022-03-29)
 
