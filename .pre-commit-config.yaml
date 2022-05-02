@@ -13,11 +13,6 @@ repos:
       - id: prettier
   - repo: local
     hooks:
-      - id: no-relative-imports
-        name: No relative imports.
-        description: Use absolute imports only.
-        entry: "^\\s*from\\s+\\."
-        language: pygrep
       - id: isort
         name: iSort - Sorts imports.
         description: Sorts your import for you.
