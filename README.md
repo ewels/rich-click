@@ -160,7 +160,7 @@ for example: `[dim]\[my-default: foo][\]`
 
 ![Rich markup example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich_markup.png)
 
-> See [`examples/click/04_rich_markup.py`](examples/click/04_rich_markup.py) fo
+> See [`examples/click/04_rich_markup.py`](examples/click/04_rich_markup.py) for and example.
 
 ### Using Markdown
 
@@ -173,7 +173,7 @@ click.rich_click.USE_MARKDOWN = True
 
 ![Markdown example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/markdown.png)
 
-> See [`examples/click/05_markdown.py`](examples/click/05_markdown.py) fo
+> See [`examples/click/05_markdown.py`](examples/click/05_markdown.py) for an example.
 
 ### Positional arguments
 
@@ -255,7 +255,7 @@ For example, to print the option flags in a different colour, you can use:
 click.rich_click.STYLE_OPTION = "magenta"
 ```
 
-See the [_Configuration options_](#configuration-options) section below for the full list of available optoins.
+See the [_Configuration options_](#configuration-options) section below for the full list of available options.
 
 ## Groups and sorting
 
