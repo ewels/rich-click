@@ -18,7 +18,7 @@
 - Change metavar overflow to `fold`, so that large numbers of choices flow onto new lines instead of being truncated with an ellipsis [[#33](https://github.com/ewels/rich-click/issues/33)]
 - Make metavar separators dim (`[]`,`<>`) (customise with `STYLE_METAVAR_SEPARATOR`)
 - Add pre-commit config and a lot more linters (iSort, mypy, Flake8) [[#40](https://github.com/ewels/rich-click/pull/40)]
-- Monkey-patch `RichCommand` and `RichGroup` in CLI code for better `rich-click` compatability with more tools [[#43](https://github.com/ewels/rich-click/pull/43)]
+- Monkey-patch `RichCommand` and `RichGroup` in CLI code for better `rich-click` compatibility with more tools [[#43](https://github.com/ewels/rich-click/pull/43)]
 - Parse emoji shortcodes `:partying_face:` [[#51](https://github.com/ewels/rich-click/pull/51)]
 - Pushed minimum version of Python up to 3.7, in line with [Click v8.1](https://click.palletsprojects.com/en/8.1.x/changes/#version-8-1-0)
 - Fixed bug where `--no-myflag` wasn't showing in the help [[#45](https://github.com/ewels/rich-click/issues/45)]
