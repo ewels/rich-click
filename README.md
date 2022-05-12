@@ -120,7 +120,7 @@ def cli():
 cli.add_command(another_cli)
 ```
 
-In this situation, `another_cli` retains its original behavior. In order to make `another_cli` work with Rick-Click, you need to patch `click` before you import `another_cli`. You can patch Click with `rich_click.cli.patch` like this:
+In this situation, `another_cli` retains its original behavior. In order to make `another_cli` work with Rich-Click, you need to patch `click` before you import `another_cli`. You can patch Click with `rich_click.cli.patch` like this:
 
 ```python
 import rich_click as click
