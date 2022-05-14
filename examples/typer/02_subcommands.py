@@ -28,7 +28,7 @@ def sync(
 
 @app.command()
 def download(name: str, all: bool = typer.Option(False, help="Get everything")):
-    r"""
+    """
     Pretend to download some files from
     somewhere. Multi-line help strings are unwrapped
     until you use a double newline.

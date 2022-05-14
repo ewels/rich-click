@@ -161,27 +161,30 @@ def _get_help_text(obj: Union[click.Command, click.Group]) -> Union[rich.markdow
     if obj.deprecated:
         yield Text(DEPRECATED_STRING, style=STYLE_DEPRECATED)
 
+    # Fetch and dedent the help text
+    help_text = inspect.cleandoc(obj.help)
+
     # Get the first paragraph
-    first_line = obj.help.split("\n\n")[0]
+    first_line = help_text.split("\n\n")[0]
     # Remove single linebreaks
     if not USE_MARKDOWN and not first_line.startswith("\b"):
         first_line = first_line.replace("\n", " ")
     yield _make_rich_rext(first_line.strip(), STYLE_HELPTEXT_FIRST_LINE)
 
     # Get remaining lines, remove single line breaks and format as dim
-    remaining_lines = obj.help.split("\n\n")[1:]
-    if len(remaining_lines) > 0:
+    remaining_paragraphs = help_text.split("\n\n")[1:]
+    if len(remaining_paragraphs) > 0:
         if not USE_MARKDOWN:
             # Remove single linebreaks
-            remaining_lines = [
+            remaining_paragraphs = [
                 x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
-                for x in remaining_lines
+                for x in remaining_paragraphs
             ]
             # Join back together
-            remaining_lines = "\n".join(remaining_lines)
+            remaining_lines = "\n".join(remaining_paragraphs)
         else:
-            # Join with single linebreaks if markdown
-            remaining_lines = "\n\n".join(remaining_lines)
+            # Join with double linebreaks if markdown
+            remaining_lines = "\n\n".join(remaining_paragraphs)
 
         yield _make_rich_rext(remaining_lines, STYLE_HELPTEXT)
 
