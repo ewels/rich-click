@@ -4,6 +4,8 @@ from typer import *  # noqa
 from typer import Typer as BaseTyper
 from typer.models import CommandFunctionType
 
+from . import rich_click  # noqa: F401
+
 from rich_click import RichCommand, RichGroup
 
 

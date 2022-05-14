@@ -7,6 +7,7 @@
 - Make `_make_rich_rext` remove text indentations using `inspect.cleandoc` [[#55](https://github.com/ewels/rich-click/issues/55)]
 - Import `rich_click` into main namespace for Pylance [[#64](https://github.com/ewels/rich-click/issues/64)]
 - Add support of new click `hidden` command parameter [[#62](https://github.com/ewels/rich-click/pull/62)]
+- Don't show Typer positional arguments unless `SHOW_ARGUMENTS` is specified [[#59](https://github.com/ewels/rich-click/issues/59]
 
 ## Version 1.3.0 (2022-03-29)
 

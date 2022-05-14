@@ -328,6 +328,14 @@ def rich_format_help(
         # See https://click.palletsprojects.com/en/8.0.x/documentation/#documenting-arguments
         if type(param) is click.core.Argument and not SHOW_ARGUMENTS:
             continue
+        # Lazy-load typer in case it's not being used
+        try:
+            from typer.core import TyperArgument
+
+            if type(param) is TyperArgument and not SHOW_ARGUMENTS:
+                continue
+        except ImportError:
+            pass
 
         # Skip if option is hidden
         if getattr(param, "hidden", False):
