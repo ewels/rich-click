@@ -3,12 +3,12 @@
 ## Version 1.3.1 (2022-05-15)
 
 - Bumped minimum version of `rich` from `10` to `10.7.0` (when `Group` was introduced)
-- Refactored CLI's patching functionality to support `from rich_click.cli import patch`.
+- Refactored CLI's patching functionality to support `from rich_click.cli import patch` [[#53](https://github.com/ewels/rich-click/issues/53)]
 - Make `_make_rich_rext` remove text indentations using `inspect.cleandoc` [[#55](https://github.com/ewels/rich-click/issues/55)]
 - Import `rich_click` into main namespace for Pylance [[#64](https://github.com/ewels/rich-click/issues/64)]
 - Add support of new click `hidden` command parameter [[#62](https://github.com/ewels/rich-click/pull/62)]
-- Don't show Typer positional arguments unless `SHOW_ARGUMENTS` is specified [[#59](https://github.com/ewels/rich-click/issues/59]
-- Fix `\f` escape marker for new versions of Click, including in markdown [[#60](https://github.com/ewels/rich-click/issues/60]
+- Don't show Typer positional arguments unless `SHOW_ARGUMENTS` is specified [[#59](https://github.com/ewels/rich-click/issues/59)]
+- Fix `\f` escape marker for new versions of Click, including in markdown [[#60](https://github.com/ewels/rich-click/issues/60)]
 
 ## Version 1.3.0 (2022-03-29)
 
