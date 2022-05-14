@@ -164,6 +164,9 @@ def _get_help_text(obj: Union[click.Command, click.Group]) -> Union[rich.markdow
     # Fetch and dedent the help text
     help_text = inspect.cleandoc(obj.help)
 
+    # Trim off anything that comes after \f on its own line
+    help_text = help_text.partition("\f")[0]
+
     # Get the first paragraph
     first_line = help_text.split("\n\n")[0]
     # Remove single linebreaks
