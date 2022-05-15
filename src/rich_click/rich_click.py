@@ -276,7 +276,7 @@ def _make_command_help(help_text: str) -> Union[rich.text.Text, rich.markdown.Ma
     Returns:
         Text or Markdown: Styled object
     """
-    paragraphs = help_text.split("\n\n")
+    paragraphs = inspect.cleandoc(help_text).split("\n\n")
     # Remove single linebreaks
     if not USE_MARKDOWN and not paragraphs[0].startswith("\b"):
         paragraphs[0] = paragraphs[0].replace("\n", " ")
