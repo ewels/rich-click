@@ -1,5 +1,9 @@
 # Changelog: rich-click
 
+## Version 1.3.2dev
+
+- Fix missed indentation issue in subcommand help text with `inspect.cleandoc` [[#67](https://github.com/ewels/rich-click/pull/67)]
+
 ## Version 1.3.1 (2022-05-15)
 
 - Bumped minimum version of `rich` from `10` to `10.7.0` (when `Group` was introduced)
