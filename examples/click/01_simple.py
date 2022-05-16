@@ -32,9 +32,10 @@ def cli(debug):
     show_default=True,
     help="Type of file to sync",
 )
-@click.option("--all", is_flag=True, help="Sync all the things?")
+@click.option("--all", is_flag=True)
 def sync(type, all):
-    """Synchronise all your files between two places."""
+    """Synchronise all your files between two places.
+    Example command that doesn't do much except print to the terminal."""
     print("Syncing")
 
 
