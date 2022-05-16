@@ -37,6 +37,7 @@ STYLE_HELPTEXT_FIRST_LINE = ""
 STYLE_HELPTEXT = "dim"
 STYLE_OPTION_HELP = ""
 STYLE_OPTION_DEFAULT = "dim"
+STYLE_OPTION_ENVVAR = "dim yellow"
 STYLE_REQUIRED_SHORT = "red"
 STYLE_REQUIRED_LONG = "dim red"
 STYLE_OPTIONS_PANEL_BORDER = "dim"
@@ -55,6 +56,7 @@ HEADER_TEXT: Optional[str] = None
 FOOTER_TEXT: Optional[str] = None
 DEPRECATED_STRING = "(Deprecated) "
 DEFAULT_STRING = "[default: {}]"
+ENVVAR_STRING = "[env var: {}]"
 REQUIRED_SHORT_STRING = "*"
 REQUIRED_LONG_STRING = "[required]"
 RANGE_STRING = " [{}]"
@@ -63,8 +65,7 @@ ARGUMENTS_PANEL_TITLE = "Arguments"
 OPTIONS_PANEL_TITLE = "Options"
 COMMANDS_PANEL_TITLE = "Commands"
 ERRORS_PANEL_TITLE = "Error"
-# Default: Try 'cmd -h' for help. Set to False to disable.
-ERRORS_SUGGESTION: Optional[str] = None
+ERRORS_SUGGESTION: Optional[str] = None  # Default: Try 'cmd -h' for help. Set to False to disable.
 ERRORS_EPILOGUE: Optional[str] = None
 ABORTED_TEXT = "Aborted."
 
@@ -235,12 +236,28 @@ def _get_parameter_help(param: Union[click.Option, click.Argument], ctx: click.C
                 )
             )
 
+    # Environment variable
+    if getattr(param, "show_envvar", None):
+        envvar = param.envvar
+
+        # https://github.com/pallets/click/blob/0aec1168ac591e159baf6f61026d6ae322c53aaf/src/click/core.py#L2720-L2726
+        if envvar is None:
+            if param.allow_from_autoenv and ctx.auto_envvar_prefix is not None and param.name is not None:
+                envvar = f"{ctx.auto_envvar_prefix}_{param.name.upper()}"
+
+        if envvar is not None:
+            envvar = ", ".join(param.envvar) if type(envvar) is list else envvar
+            items.append(Text(ENVVAR_STRING.format(envvar), style=STYLE_OPTION_ENVVAR))
+
     # Default value
     if getattr(param, "show_default", None):
         # param.default is the value, but click is a bit clever in choosing what to show here
         # eg. --debug/--no-debug, default=False will show up as [default: no-debug] instead of [default: False]
         # To avoid duplicating loads of code, let's just pull out the string from click with a regex
-        default_str_match = re.search(r"\[default: (.*)\]", param.get_help_record(ctx)[-1])
+        # Example outputs from param.get_help_record(ctx)[-1] are:
+        #     [default: foo]
+        #     [env var: EMAIL, EMAIL_ADDRESS; default: foo]
+        default_str_match = re.search(r"\[(?:.+; )?default: (.*)\]", param.get_help_record(ctx)[-1])
         if default_str_match:
             # Don't show the required string, as we show that afterwards anyway
             default_str = default_str_match.group(1).replace("; required", "")

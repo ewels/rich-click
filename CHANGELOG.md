@@ -3,6 +3,7 @@
 ## Version 1.3.2dev
 
 - Fix missed indentation issue in subcommand help text with `inspect.cleandoc` [[#67](https://github.com/ewels/rich-click/pull/67)]
+- Add support for showing Click / Typer `envvar` environment variables [[#36](https://github.com/ewels/rich-click/issues/36)]
 
 ## Version 1.3.1 (2022-05-15)
 
