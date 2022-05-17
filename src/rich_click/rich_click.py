@@ -238,11 +238,15 @@ def _get_parameter_help(param: Union[click.Option, click.Argument], ctx: click.C
 
     # Environment variable
     if getattr(param, "show_envvar", None):
-        envvar = param.envvar
+        envvar = getattr(param, "envvar", None)
 
         # https://github.com/pallets/click/blob/0aec1168ac591e159baf6f61026d6ae322c53aaf/src/click/core.py#L2720-L2726
         if envvar is None:
-            if param.allow_from_autoenv and ctx.auto_envvar_prefix is not None and param.name is not None:
+            if (
+                getattr(param, "allow_from_autoenv", None)
+                and getattr(ctx, "auto_envvar_prefix", None) is not None
+                and param.name is not None
+            ):
                 envvar = f"{ctx.auto_envvar_prefix}_{param.name.upper()}"
 
         if envvar is not None:
