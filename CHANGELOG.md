@@ -1,5 +1,7 @@
 # Changelog: rich-click
 
+## Version 1.4.1.dev0
+
 ## Version 1.4 (2022-05-17)
 
 - Added support for styling the tables that options and commands are displayed in [[#69](https://github.com/ewels/rich-click/issues/69)]
