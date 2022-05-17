@@ -9,11 +9,9 @@ click.rich_click.OPTION_GROUPS = {
         {
             "name": "Advanced options",
             "options": ["--help", "--version", "--debug"],
+            # You can also set table styles at group-level instead of using globals if you want
             "table_styles": {
-                "show_lines": True,
-                "row_styles": ["magenta", "yellow", "cyan", "green"],
-                "border_style": "red",
-                "box": "DOUBLE",
+                "row_styles": ["bold", "yellow", "cyan"],
             },
         },
     ],
