@@ -2,6 +2,11 @@
 
 ## Version 1.4.1.dev0
 
+- Add new `FORCE_TERMINAL` config flag to force colours even when help output is piped
+  - Can also be enabled by setting environment variables `GITHUB_ACTIONS`, `FORCE_COLOR` or `PY_COLORS`
+- Refactor config flag `MAX_WIDTH` to set the console `width` and not individual panels
+  - Can now also be set with environment variable `TERMINAL_WIDTH`
+
 ## Version 1.4 (2022-05-17)
 
 - Added support for styling the tables that options and commands are displayed in [[#69](https://github.com/ewels/rich-click/issues/69)]

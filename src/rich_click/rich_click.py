@@ -1,5 +1,6 @@
 import inspect
 import re
+from os import getenv
 from typing import Dict, List, Optional, Union
 
 import click
@@ -63,8 +64,9 @@ STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 STYLE_ERRORS_SUGGESTION = "dim"
 STYLE_ABORTED = "red"
-MAX_WIDTH: Optional[int] = None  # Set to an int to limit to that many characters
+MAX_WIDTH = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None  # type: ignore
 COLOR_SYSTEM = "auto"  # Set to None to disable colors
+FORCE_TERMINAL = True if getenv("GITHUB_ACTIONS") or getenv("FORCE_COLOR") or getenv("PY_COLORS") else None
 
 # Fixed strings
 HEADER_TEXT: Optional[str] = None
@@ -127,6 +129,8 @@ def _get_rich_console() -> Console:
         ),
         highlighter=highlighter,
         color_system=COLOR_SYSTEM,
+        force_terminal=FORCE_TERMINAL,
+        width=MAX_WIDTH,
     )
 
 
@@ -350,10 +354,10 @@ def rich_format_help(
     # Print command / group help if we have some
     if obj.help:
 
-        # Print with a max width and some padding
+        # Print with some padding
         console.print(
             Padding(
-                Align(_get_help_text(obj), width=MAX_WIDTH, pad=False),
+                Align(_get_help_text(obj), pad=False),
                 (0, 1, 1, 1),
             )
         )
@@ -515,7 +519,6 @@ def rich_format_help(
                     border_style=STYLE_OPTIONS_PANEL_BORDER,
                     title=option_group.get("name", OPTIONS_PANEL_TITLE),
                     title_align=ALIGN_OPTIONS_PANEL,
-                    width=MAX_WIDTH,
                 )
             )
 
@@ -580,7 +583,6 @@ def rich_format_help(
                         border_style=STYLE_COMMANDS_PANEL_BORDER,
                         title=cmd_group.get("name", COMMANDS_PANEL_TITLE),
                         title_align=ALIGN_COMMANDS_PANEL,
-                        width=MAX_WIDTH,
                     )
                 )
 
@@ -589,7 +591,7 @@ def rich_format_help(
         # Remove single linebreaks, replace double with single
         lines = obj.epilog.split("\n\n")
         epilogue = "\n".join([x.replace("\n", " ").strip() for x in lines])
-        console.print(Padding(Align(highlighter(epilogue), width=MAX_WIDTH, pad=False), 1))
+        console.print(Padding(Align(highlighter(epilogue), pad=False), 1))
 
     # Footer text if we have it
     if FOOTER_TEXT:
@@ -628,7 +630,6 @@ def rich_format_error(self: click.ClickException):
             border_style=STYLE_ERRORS_PANEL_BORDER,
             title=ERRORS_PANEL_TITLE,
             title_align=ALIGN_ERRORS_PANEL,
-            width=MAX_WIDTH,
         )
     )
     if ERRORS_EPILOGUE:
