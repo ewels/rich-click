@@ -266,7 +266,7 @@ You can make some really ~horrible~ _colourful_ solutions using these styles if 
 
 ![Rich markup example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/style_tables.png)
 
-> See [`examples/click/04_rich_markup.py`](examples/click/10_table_styles.py) for and example.
+> See [`examples/click/10_table_styles.py`](examples/click/10_table_styles.py) for and example.
 
 See the [_Configuration options_](#configuration-options) section below for the full list of available options.
 
