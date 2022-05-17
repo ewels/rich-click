@@ -262,6 +262,12 @@ click.rich_click.STYLE_OPTIONS_TABLE_LEADING = 1
 click.rich_click.STYLE_OPTIONS_TABLE_BOX = "SIMPLE"
 ```
 
+You can make some really ~horrible~ _colourful_ solutions using these styles if you wish:
+
+![Rich markup example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/style_tables.png)
+
+> See [`examples/click/04_rich_markup.py`](examples/click/10_table_styles.py) for and example.
+
 See the [_Configuration options_](#configuration-options) section below for the full list of available options.
 
 ## Groups and sorting

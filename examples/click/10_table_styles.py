@@ -5,7 +5,6 @@ click.rich_click.STYLE_OPTIONS_TABLE_BOX = "SIMPLE"
 click.rich_click.STYLE_OPTIONS_TABLE_ROW_STYLES = ["bold", ""]
 click.rich_click.STYLE_COMMANDS_TABLE_SHOW_LINES = True
 click.rich_click.STYLE_COMMANDS_TABLE_PAD_EDGE = True
-click.rich_click.STYLE_COMMANDS_TABLE_PADDING = (1, 2)
 click.rich_click.STYLE_COMMANDS_TABLE_BOX = "DOUBLE"
 click.rich_click.STYLE_COMMANDS_TABLE_BORDER_STYLE = "red"
 click.rich_click.STYLE_COMMANDS_TABLE_ROW_STYLES = ["magenta", "yellow", "cyan", "green"]

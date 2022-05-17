@@ -2,6 +2,9 @@
 
 ## Version 1.3.3.dev0
 
+- Fixed `AttributeError` from `envvar` code in some Typer usage [[#70](https://github.com/ewels/rich-click/pull/70)]
+- Added support for styling the tables that options and commands are displayed in [[#69](https://github.com/ewels/rich-click/issues/69)]
+
 ## Version 1.3.2 (2022-05-16)
 
 - Fix missed indentation issue in subcommand help text with `inspect.cleandoc` [[#67](https://github.com/ewels/rich-click/pull/67)]
