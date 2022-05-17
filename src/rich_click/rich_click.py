@@ -4,6 +4,7 @@ from typing import Dict, List, Optional, Union
 
 import click
 import rich.markdown
+from rich import box
 from rich.align import Align
 from rich.columns import Columns
 from rich.console import Console
@@ -42,8 +43,22 @@ STYLE_REQUIRED_SHORT = "red"
 STYLE_REQUIRED_LONG = "dim red"
 STYLE_OPTIONS_PANEL_BORDER = "dim"
 ALIGN_OPTIONS_PANEL = "left"
+STYLE_OPTIONS_TABLE_SHOW_LINES = False
+STYLE_OPTIONS_TABLE_LEADING = 0
+STYLE_OPTIONS_TABLE_PAD_EDGE = False
+STYLE_OPTIONS_TABLE_PADDING = (0, 1)
+STYLE_OPTIONS_TABLE_BOX = ""
+STYLE_OPTIONS_TABLE_ROW_STYLES = None
+STYLE_OPTIONS_TABLE_BORDER_STYLE = None
 STYLE_COMMANDS_PANEL_BORDER = "dim"
 ALIGN_COMMANDS_PANEL = "left"
+STYLE_COMMANDS_TABLE_SHOW_LINES = False
+STYLE_COMMANDS_TABLE_LEADING = 0
+STYLE_COMMANDS_TABLE_PAD_EDGE = False
+STYLE_COMMANDS_TABLE_PADDING = (0, 1)
+STYLE_COMMANDS_TABLE_BOX = ""
+STYLE_COMMANDS_TABLE_ROW_STYLES = None
+STYLE_COMMANDS_TABLE_BORDER_STYLE = None
 STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 STYLE_ERRORS_SUGGESTION = "dim"
@@ -470,7 +485,25 @@ def rich_format_help(
             options_rows.append(rows)
 
         if len(options_rows) > 0:
-            options_table = Table(highlight=True, box=None, show_header=False)
+            t_styles = {
+                "show_lines": STYLE_OPTIONS_TABLE_SHOW_LINES,
+                "leading": STYLE_OPTIONS_TABLE_LEADING,
+                "box": STYLE_OPTIONS_TABLE_BOX,
+                "border_style": STYLE_OPTIONS_TABLE_BORDER_STYLE,
+                "row_styles": STYLE_OPTIONS_TABLE_ROW_STYLES,
+                "pad_edge": STYLE_OPTIONS_TABLE_PAD_EDGE,
+                "padding": STYLE_OPTIONS_TABLE_PADDING,
+            }
+            t_styles.update(option_group.get("table_styles", {}))  # type: ignore
+            box_style = getattr(box, t_styles.pop("box"), None)  # type: ignore
+
+            options_table = Table(
+                highlight=True,
+                show_header=False,
+                expand=True,
+                box=box_style,
+                **t_styles,
+            )
             # Strip the required column if none are required
             if all([x[0] == "" for x in options_rows]):
                 options_rows = [x[1:] for x in options_rows]
@@ -505,7 +538,25 @@ def rich_format_help(
 
         # Print each command group panel
         for cmd_group in cmd_groups:
-            commands_table = Table(highlight=False, box=None, show_header=False)
+            t_styles = {
+                "show_lines": STYLE_COMMANDS_TABLE_SHOW_LINES,
+                "leading": STYLE_COMMANDS_TABLE_LEADING,
+                "box": STYLE_COMMANDS_TABLE_BOX,
+                "border_style": STYLE_COMMANDS_TABLE_BORDER_STYLE,
+                "row_styles": STYLE_COMMANDS_TABLE_ROW_STYLES,
+                "pad_edge": STYLE_COMMANDS_TABLE_PAD_EDGE,
+                "padding": STYLE_COMMANDS_TABLE_PADDING,
+            }
+            t_styles.update(cmd_group.get("table_styles", {}))  # type: ignore
+            box_style = getattr(box, t_styles.pop("box"), None)  # type: ignore
+
+            commands_table = Table(
+                highlight=False,
+                show_header=False,
+                expand=True,
+                box=box_style,
+                **t_styles,
+            )
             # Define formatting in first column, as commands don't match highlighter regex
             commands_table.add_column(style="bold cyan", no_wrap=True)
             for command in cmd_group.get("commands", []):

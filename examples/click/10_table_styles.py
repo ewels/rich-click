@@ -1,45 +1,14 @@
 import rich_click as click
 
-click.rich_click.OPTION_GROUPS = {
-    "03_groups_sorting.py": [
-        {
-            "name": "Basic usage",
-            "options": ["--type", "--output"],
-        },
-        {
-            "name": "Advanced options",
-            "options": ["--help", "--version", "--debug"],
-            "table_styles": {
-                "show_lines": True,
-                "row_styles": ["magenta", "yellow", "cyan", "green"],
-                "border_style": "red",
-                "box": "DOUBLE",
-            },
-        },
-    ],
-    "03_groups_sorting.py sync": [
-        {
-            "name": "Inputs and outputs",
-            "options": ["--input", "--output"],
-        },
-        {
-            "name": "Advanced usage",
-            "options": ["--overwrite", "--all", "--help"],
-        },
-    ],
-}
-click.rich_click.COMMAND_GROUPS = {
-    "03_groups_sorting.py": [
-        {
-            "name": "Main usage",
-            "commands": ["sync", "download"],
-        },
-        {
-            "name": "Configuration",
-            "commands": ["config", "auth"],
-        },
-    ]
-}
+click.rich_click.STYLE_OPTIONS_TABLE_LEADING = 1
+click.rich_click.STYLE_OPTIONS_TABLE_BOX = "SIMPLE"
+click.rich_click.STYLE_OPTIONS_TABLE_ROW_STYLES = ["bold", ""]
+click.rich_click.STYLE_COMMANDS_TABLE_SHOW_LINES = True
+click.rich_click.STYLE_COMMANDS_TABLE_PAD_EDGE = True
+click.rich_click.STYLE_COMMANDS_TABLE_PADDING = (1, 2)
+click.rich_click.STYLE_COMMANDS_TABLE_BOX = "DOUBLE"
+click.rich_click.STYLE_COMMANDS_TABLE_BORDER_STYLE = "red"
+click.rich_click.STYLE_COMMANDS_TABLE_ROW_STYLES = ["magenta", "yellow", "cyan", "green"]
 
 
 @click.group()

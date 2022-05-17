@@ -255,6 +255,13 @@ For example, to print the option flags in a different colour, you can use:
 click.rich_click.STYLE_OPTION = "magenta"
 ```
 
+To add a blank line between rows of options, you can use:
+
+```python
+click.rich_click.STYLE_OPTIONS_TABLE_LEADING = 1
+click.rich_click.STYLE_OPTIONS_TABLE_BOX = "SIMPLE"
+```
+
 See the [_Configuration options_](#configuration-options) section below for the full list of available options.
 
 ## Groups and sorting
@@ -333,6 +340,29 @@ click.rich_click.COMMAND_GROUPS = {
 }
 ```
 
+### Table styling
+
+Typically you would style the option / command tables using the global config options.
+However, if you wish you may style tables on a per-group basis using the `table_styles` key:
+
+```python
+click.rich_click.COMMAND_GROUPS = {
+    "mytool": [
+        {
+            "commands": ["sync", "auth"],
+            "table_styles": {
+                "show_lines": True,
+                "row_styles": ["magenta", "yellow", "cyan", "green"],
+                "border_style": "red",
+                "box": "DOUBLE",
+            },
+        },
+    ],
+}
+```
+
+The available keys are: `show_lines`, `leading`, `box`, `border_style`, `row_styles`, `pad_edge`, `padding`.
+
 ## Configuration options
 
 Here is the full list of config options:
@@ -358,8 +388,22 @@ STYLE_REQUIRED_SHORT = "red"
 STYLE_REQUIRED_LONG = "dim red"
 STYLE_OPTIONS_PANEL_BORDER = "dim"
 ALIGN_OPTIONS_PANEL = "left"
+STYLE_OPTIONS_TABLE_SHOW_LINES = False
+STYLE_OPTIONS_TABLE_LEADING = 0
+STYLE_OPTIONS_TABLE_PAD_EDGE = False
+STYLE_OPTIONS_TABLE_PADDING = (0, 1)
+STYLE_OPTIONS_TABLE_BOX = ""
+STYLE_OPTIONS_TABLE_ROW_STYLES = None
+STYLE_OPTIONS_TABLE_BORDER_STYLE = None
 STYLE_COMMANDS_PANEL_BORDER = "dim"
 ALIGN_COMMANDS_PANEL = "left"
+STYLE_COMMANDS_TABLE_SHOW_LINES = False
+STYLE_COMMANDS_TABLE_LEADING = 0
+STYLE_COMMANDS_TABLE_PAD_EDGE = False
+STYLE_COMMANDS_TABLE_PADDING = (0, 1)
+STYLE_COMMANDS_TABLE_BOX = ""
+STYLE_COMMANDS_TABLE_ROW_STYLES = None
+STYLE_COMMANDS_TABLE_BORDER_STYLE = None
 STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 STYLE_ERRORS_SUGGESTION = "dim"
