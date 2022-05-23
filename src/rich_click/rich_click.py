@@ -91,9 +91,9 @@ SHOW_ARGUMENTS = False  # Show positional arguments
 SHOW_METAVARS_COLUMN = True  # Show a column with the option metavar (eg. INTEGER)
 APPEND_METAVARS_HELP = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS = False  # Show arguments with options instead of in own panel
-USE_MARKDOWN = False  # Parse help strings as markdown
+USE_MARKDOWN = False  # Parse strings as markdown
 USE_MARKDOWN_EMOJI = True  # Parse emoji codes in markdown :smile:
-USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[/])
+USE_RICH_MARKUP = False  # Parse strings for rich markup (eg. [red]my text[/])
 # Define sorted groups of panels to display subcommands
 COMMAND_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = {}
 # Define sorted groups of panels to display options and arguments
