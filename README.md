@@ -24,7 +24,7 @@ _Screenshot from [`examples/click/03_groups_sorting.py`](examples/click/03_group
 
 ## Installation
 
-You can install `rich-click` from the Python Package Index (PyPI) with `pip` or equivalent.
+You can install `rich-click` from the [Python Package Index (PyPI)](https://pypi.org/project/rich-click/) with `pip` or equivalent.
 
 ```bash
 python -m pip install rich-click

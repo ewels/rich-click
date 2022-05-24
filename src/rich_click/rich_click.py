@@ -91,6 +91,7 @@ SHOW_ARGUMENTS = False  # Show positional arguments
 SHOW_METAVARS_COLUMN = True  # Show a column with the option metavar (eg. INTEGER)
 APPEND_METAVARS_HELP = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS = False  # Show arguments with options instead of in own panel
+OPTION_ENVVAR_FIRST = False  # Show env vars before option help text instead of avert
 USE_MARKDOWN = False  # Parse help strings as markdown
 USE_MARKDOWN_EMOJI = True  # Parse emoji codes in markdown :smile:
 USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[/])
@@ -228,6 +229,24 @@ def _get_parameter_help(param: Union[click.Option, click.Argument], ctx: click.C
     """
     items = []
 
+    # Get the environment variable first
+    envvar = getattr(param, "envvar", None)
+    # https://github.com/pallets/click/blob/0aec1168ac591e159baf6f61026d6ae322c53aaf/src/click/core.py#L2720-L2726
+    if envvar is None:
+        if (
+            getattr(param, "allow_from_autoenv", None)
+            and getattr(ctx, "auto_envvar_prefix", None) is not None
+            and param.name is not None
+        ):
+            envvar = f"{ctx.auto_envvar_prefix}_{param.name.upper()}"
+    if envvar is not None:
+        envvar = ", ".join(param.envvar) if type(envvar) is list else envvar
+
+    # Environment variable BEFORE help text
+    if getattr(param, "show_envvar", None) and OPTION_ENVVAR_FIRST:
+        items.append(Text(ENVVAR_STRING.format(envvar), style=STYLE_OPTION_ENVVAR))
+
+    # Main help text
     if getattr(param, "help", None):
         paragraphs = param.help.split("\n\n")
         # Remove single linebreaks
@@ -255,22 +274,9 @@ def _get_parameter_help(param: Union[click.Option, click.Argument], ctx: click.C
                 )
             )
 
-    # Environment variable
-    if getattr(param, "show_envvar", None):
-        envvar = getattr(param, "envvar", None)
-
-        # https://github.com/pallets/click/blob/0aec1168ac591e159baf6f61026d6ae322c53aaf/src/click/core.py#L2720-L2726
-        if envvar is None:
-            if (
-                getattr(param, "allow_from_autoenv", None)
-                and getattr(ctx, "auto_envvar_prefix", None) is not None
-                and param.name is not None
-            ):
-                envvar = f"{ctx.auto_envvar_prefix}_{param.name.upper()}"
-
-        if envvar is not None:
-            envvar = ", ".join(param.envvar) if type(envvar) is list else envvar
-            items.append(Text(ENVVAR_STRING.format(envvar), style=STYLE_OPTION_ENVVAR))
+    # Environment variable AFTER help text
+    if getattr(param, "show_envvar", None) and not OPTION_ENVVAR_FIRST:
+        items.append(Text(ENVVAR_STRING.format(envvar), style=STYLE_OPTION_ENVVAR))
 
     # Default value
     if getattr(param, "show_default", None):

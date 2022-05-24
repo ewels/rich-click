@@ -4,6 +4,7 @@
 
 - Add new `FORCE_TERMINAL` config flag to force colours even when help output is piped
   - Can also be enabled by setting environment variables `GITHUB_ACTIONS`, `FORCE_COLOR` or `PY_COLORS`
+- Add new `OPTION_ENVVAR_FIRST` config flag to print environment variables before option help texts instead of after (nice for alignment if all options have an env var).
 - Refactor config flag `MAX_WIDTH` to set the console `width` and not individual panels
   - Can now also be set with environment variable `TERMINAL_WIDTH`
 
