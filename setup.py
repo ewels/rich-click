@@ -11,5 +11,5 @@ setup(
         "typer": "typer>=0.4",
         "dev": "pre-commit",
     },
-    package_data={"rich-click": ["py.typed"]},
+    package_data={"rich_click": ["py.typed"]},
 )
