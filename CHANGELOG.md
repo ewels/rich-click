@@ -1,6 +1,6 @@
 # Changelog: rich-click
 
-## Version 1.4.1.dev0
+## Version 1.5 (2022-06-21)
 
 - Add new `FORCE_TERMINAL` config flag to force colours even when help output is piped
   - Can also be enabled by setting environment variables `GITHUB_ACTIONS`, `FORCE_COLOR` or `PY_COLORS`
