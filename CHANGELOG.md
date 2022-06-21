@@ -1,5 +1,7 @@
 # Changelog: rich-click
 
+## Version 1.5.1.dev0
+
 ## Version 1.5 (2022-06-21)
 
 - Add new `FORCE_TERMINAL` config flag to force colours even when help output is piped
