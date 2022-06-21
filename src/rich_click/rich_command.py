@@ -16,7 +16,9 @@ class RichCommand(click.Command):
 
     def main(self, *args, standalone_mode: bool = True, **kwargs):
         try:
-            return super().main(*args, standalone_mode=False, **kwargs)
+            rv = super().main(*args, standalone_mode=False, **kwargs)
+            if not standalone_mode:
+                return rv
         except click.ClickException as e:
             if not standalone_mode:
                 raise
