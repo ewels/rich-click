@@ -2,6 +2,7 @@
 
 ## Version 1.5.1 (2022-06-22)
 
+- Updated pip release build CI [#78](https://github.com/ewels/rich-click/pull/78)
 - Added missed occurence of return values when `standalone_mode` set [#79](https://github.com/ewels/rich-click/pull/79)
 
 ## Version 1.5 (2022-06-21)
