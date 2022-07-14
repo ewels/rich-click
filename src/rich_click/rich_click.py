@@ -109,6 +109,7 @@ class OptionHighlighter(RegexHighlighter):
     highlights = [
         r"(^|\W)(?P<switch>\-\w+)(?![a-zA-Z0-9])",
         r"(^|\W)(?P<option>\-\-[\w\-]+)(?![a-zA-Z0-9])",
+        r"(^|\W)(?P<argument>[A-Z0-9\_]+)(?![_a-zA-Z0-9])",
         r"(?P<metavar>\<[^\>]+\>)",
         r"(?P<usage>Usage: )",
     ]
@@ -122,6 +123,7 @@ def _get_rich_console() -> Console:
         theme=Theme(
             {
                 "option": STYLE_OPTION,
+                "argument": STYLE_OPTION,
                 "switch": STYLE_SWITCH,
                 "metavar": STYLE_METAVAR,
                 "metavar_sep": STYLE_METAVAR_SEPARATOR,
@@ -261,10 +263,10 @@ def _get_parameter_help(param: Union[click.Option, click.Argument], ctx: click.C
     if APPEND_METAVARS_HELP:
         metavar_str = param.make_metavar()
         # Do it ourselves if this is a positional argument
-        if type(param) is click.core.Argument and metavar_str == param.name.upper():
+        if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
             metavar_str = param.type.name.upper()
         # Skip booleans
-        if metavar_str != "BOOLEAN":
+        if metavar_str != "BOOLEAN" or isinstance(param, click.core.Argument):
             metavar_str = metavar_str.replace("[", "").replace("]", "")
             items.append(
                 Text(
@@ -378,16 +380,8 @@ def rich_format_help(
 
         # Skip positional arguments - they don't have opts or helptext and are covered in usage
         # See https://click.palletsprojects.com/en/8.0.x/documentation/#documenting-arguments
-        if type(param) is click.core.Argument and not SHOW_ARGUMENTS:
+        if isinstance(param, click.core.Argument) and not SHOW_ARGUMENTS:
             continue
-        # Lazy-load typer in case it's not being used
-        try:
-            from typer.core import TyperArgument
-
-            if type(param) is TyperArgument and not SHOW_ARGUMENTS:
-                continue
-        except ImportError:
-            pass
 
         # Skip if option is hidden
         if getattr(param, "hidden", False):
@@ -400,7 +394,7 @@ def rich_format_help(
 
         # No break, no mention - add to the default group
         else:
-            if type(param) is click.core.Argument and not GROUP_ARGUMENTS_OPTIONS:
+            if isinstance(param, click.core.Argument) and not GROUP_ARGUMENTS_OPTIONS:
                 argument_group_options.append(param.opts[0])
             else:
                 list_of_option_groups: List = option_groups[-1]["options"]  # type: ignore
@@ -434,7 +428,10 @@ def rich_format_help(
                     opt_str += "/" + param.secondary_opts[idx]
                 except IndexError:
                     pass
-                if "--" in opt:
+
+                if isinstance(param, click.core.Argument):
+                    opt_long_strs.append(opt_str.upper())
+                elif "--" in opt:
                     opt_long_strs.append(opt_str)
                 else:
                     opt_short_strs.append(opt_str)
@@ -444,11 +441,11 @@ def rich_format_help(
             metavar_str = param.make_metavar()
 
             # Do it ourselves if this is a positional argument
-            if type(param) is click.core.Argument and metavar_str == param.name.upper():
+            if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
                 metavar_str = param.type.name.upper()
 
             # Skip booleans and choices (handled above)
-            if metavar_str != "BOOLEAN":
+            if metavar_str != "BOOLEAN" or isinstance(param, click.core.Argument):
                 metavar.append(metavar_str)
 
             # Range - from
