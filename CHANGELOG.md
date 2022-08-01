@@ -1,5 +1,7 @@
 # Changelog: rich-click
 
+## Version 1.5.3.dev0
+
 ## Version 1.5.2 (2022-08-01)
 
 > ⚠️ Important notice! ⚠️
