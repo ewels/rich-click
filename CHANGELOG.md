@@ -3,6 +3,9 @@
 ## Version 1.5.2.dev0
 
 - Pin Typer version to `<0.6`
+- Improve support for arguments [[#82](https://github.com/ewels/rich-click/pull/82)]
+  - Fixes error with Typer arguments [[#59](https://github.com/ewels/rich-click/issues/59)]
+  - Adds new style option `STYLE_ARGUMENT`
 
 ## Version 1.5.1 (2022-06-22)
 
