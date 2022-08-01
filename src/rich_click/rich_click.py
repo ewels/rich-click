@@ -246,7 +246,7 @@ def _get_parameter_help(param: Union[click.Option, click.Argument], ctx: click.C
         envvar = ", ".join(param.envvar) if type(envvar) is list else envvar
 
     # Environment variable BEFORE help text
-    if getattr(param, "show_envvar", None) and OPTION_ENVVAR_FIRST:
+    if getattr(param, "show_envvar", None) and OPTION_ENVVAR_FIRST and envvar is not None:
         items.append(Text(ENVVAR_STRING.format(envvar), style=STYLE_OPTION_ENVVAR))
 
     # Main help text
@@ -278,7 +278,7 @@ def _get_parameter_help(param: Union[click.Option, click.Argument], ctx: click.C
             )
 
     # Environment variable AFTER help text
-    if getattr(param, "show_envvar", None) and not OPTION_ENVVAR_FIRST:
+    if getattr(param, "show_envvar", None) and not OPTION_ENVVAR_FIRST and envvar is not None:
         items.append(Text(ENVVAR_STRING.format(envvar), style=STYLE_OPTION_ENVVAR))
 
     # Default value
