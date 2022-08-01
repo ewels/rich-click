@@ -4,7 +4,7 @@
 
 > ⚠️ Important notice! ⚠️
 >
-> Typer now supports rich help text natively.
+> As of [Typer v0.6.0](https://typer.tiangolo.com/release-notes/#060), Typer now supports rich help text natively.
 > Support for Typer in rich-click is now depreciated and will be removed in a future release.
 
 - Pin Typer version to `<0.6`
@@ -12,6 +12,7 @@
   - Fixes error with Typer arguments [[#59](https://github.com/ewels/rich-click/issues/59)]
   - Adds new style option `STYLE_ARGUMENT`
 - Don't show env vars if `None` [[#84](https://github.com/ewels/rich-click/issues/84)]
+- Specify `__all__` for type checkers [[#83](https://github.com/ewels/rich-click/pull/83)]
 
 ## Version 1.5.1 (2022-06-22)
 
