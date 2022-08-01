@@ -1,6 +1,8 @@
 # Changelog: rich-click
 
-## Version 1.5.3.dev0
+## Version 1.6.0.dev0
+
+- Removed support for Typer - please use the [native functionality](https://typer.tiangolo.com/tutorial/options/help/#cli-options-help-panels) instead.
 
 ## Version 1.5.2 (2022-08-01)
 

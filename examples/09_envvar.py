@@ -3,7 +3,7 @@ import rich_click as click
 # import click
 
 # Example test usage:
-# GREETER_DEBUG=1 GREETER_GREET_USERNAME="test" EMAIL_ADDRESS="foo@bar.com" python examples/click/09_envvar.py greet
+# GREETER_DEBUG=1 GREETER_GREET_USERNAME="test" EMAIL_ADDRESS="foo@bar.com" python examples/09_envvar.py greet
 
 
 @click.group()
