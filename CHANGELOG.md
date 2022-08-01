@@ -1,12 +1,17 @@
 # Changelog: rich-click
 
-## Version 1.5.2.dev0
+## Version 1.5.2 (2022-08-01)
 
-- Don't show env vars if `None` [[#84](https://github.com/ewels/rich-click/issues/84)]
+> ⚠️ Important notice! ⚠️
+>
+> Typer now supports rich help text natively.
+> Support for Typer in rich-click is now depreciated and will be removed in a future release.
+
 - Pin Typer version to `<0.6`
 - Improve support for arguments [[#82](https://github.com/ewels/rich-click/pull/82)]
   - Fixes error with Typer arguments [[#59](https://github.com/ewels/rich-click/issues/59)]
   - Adds new style option `STYLE_ARGUMENT`
+- Don't show env vars if `None` [[#84](https://github.com/ewels/rich-click/issues/84)]
 
 ## Version 1.5.1 (2022-06-22)
 
