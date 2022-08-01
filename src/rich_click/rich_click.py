@@ -26,6 +26,7 @@ except ImportError:
 
 # Default styles
 STYLE_OPTION = "bold cyan"
+STYLE_ARGUMENT = "bold cyan"
 STYLE_SWITCH = "bold green"
 STYLE_METAVAR = "bold yellow"
 STYLE_METAVAR_APPEND = "dim yellow"
@@ -123,7 +124,7 @@ def _get_rich_console() -> Console:
         theme=Theme(
             {
                 "option": STYLE_OPTION,
-                "argument": STYLE_OPTION,
+                "argument": STYLE_ARGUMENT,
                 "switch": STYLE_SWITCH,
                 "metavar": STYLE_METAVAR,
                 "metavar_sep": STYLE_METAVAR_SEPARATOR,
