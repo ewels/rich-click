@@ -24,6 +24,16 @@ from rich_click.rich_group import RichGroup
 if TYPE_CHECKING:
     from click import argument, Choice, option, Path, version_option  # noqa: F401
 
+    __all__ = [
+        "argument",
+        "Choice",
+        "option",
+        "Path",
+        "version_option",
+        "group",
+        "command",
+    ]
+
 
 def group(*args, cls=RichGroup, **kwargs):
     """

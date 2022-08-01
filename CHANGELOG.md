@@ -2,6 +2,8 @@
 
 ## Version 1.5.2.dev0
 
+- Pin Typer version to `<0.6`
+
 ## Version 1.5.1 (2022-06-22)
 
 - Updated pip release build CI [#78](https://github.com/ewels/rich-click/pull/78)
