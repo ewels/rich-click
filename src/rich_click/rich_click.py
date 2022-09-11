@@ -613,31 +613,43 @@ def rich_format_error(self: click.ClickException):
     """
     console = _get_rich_console()
     if getattr(self, "ctx", None) is not None:
-        console.print(self.ctx.get_usage())
+        console.print(Padding(self.ctx.get_usage(), 1))
     if ERRORS_SUGGESTION:
-        console.print(ERRORS_SUGGESTION, style=STYLE_ERRORS_SUGGESTION)
+        console.print(
+            Padding(
+                ERRORS_SUGGESTION,
+                (0, 1, 0, 1),
+            ),
+            style=STYLE_ERRORS_SUGGESTION,
+        )
     elif (
         ERRORS_SUGGESTION is None
         and getattr(self, "ctx", None) is not None
         and self.ctx.command.get_help_option(self.ctx) is not None
     ):
         console.print(
-            "Try [blue]'{command} {option}'[/] for help.".format(
-                command=self.ctx.command_path, option=self.ctx.help_option_names[0]
+            Padding(
+                "Try [blue]'{command} {option}'[/] for help.".format(
+                    command=self.ctx.command_path, option=self.ctx.help_option_names[0]
+                ),
+                (0, 1, 0, 1),
             ),
             style=STYLE_ERRORS_SUGGESTION,
         )
 
     console.print(
-        Panel(
-            highlighter(self.format_message()),
-            border_style=STYLE_ERRORS_PANEL_BORDER,
-            title=ERRORS_PANEL_TITLE,
-            title_align=ALIGN_ERRORS_PANEL,
+        Padding(
+            Panel(
+                highlighter(self.format_message()),
+                border_style=STYLE_ERRORS_PANEL_BORDER,
+                title=ERRORS_PANEL_TITLE,
+                title_align=ALIGN_ERRORS_PANEL,
+            ),
+            (0, 0, 1, 0),
         )
     )
     if ERRORS_EPILOGUE:
-        console.print(ERRORS_EPILOGUE)
+        console.print(Padding(ERRORS_EPILOGUE, (0, 1, 1, 1)))
 
 
 def rich_abort_error() -> None:
