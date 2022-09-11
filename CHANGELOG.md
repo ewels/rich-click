@@ -3,6 +3,7 @@
 ## Version 1.6.0.dev0
 
 - Removed support for Typer - please use the [native functionality](https://typer.tiangolo.com/tutorial/options/help/#cli-options-help-panels) instead.
+- Added self-updating automated readme screengrabs using [rich-codex](https://github.com/ewels/rich-codex)
 
 ## Version 1.5.2 (2022-08-01)
 

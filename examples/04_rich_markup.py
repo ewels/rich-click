@@ -17,12 +17,7 @@ click.rich_click.USE_RICH_MARKUP = True
     help="Type of file to sync",
 )
 @click.option("--all", is_flag=True, help="Sync all the things?")
-@click.option(
-    "--debug/--no-debug",
-    "-d/-n",
-    default=False,
-    help="Enable :point_right: [yellow]debug mode[/] :point_left:",
-)
+@click.option("--debug", is_flag=True, help="Enable :point_right: [yellow]debug mode[/] :point_left:")
 def cli(input, type, all, debug):
     """
     My amazing tool does [black on blue] all the things [/].

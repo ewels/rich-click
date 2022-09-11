@@ -15,7 +15,7 @@ click.rich_click.SHOW_ARGUMENTS = True
     help="Type of file to sync",
 )
 @click.option("--all", is_flag=True, help="Sync all the things?")
-@click.option("--debug/--no-debug", "-d/-n", default=False, help="Enable debug mode")
+@click.option("--debug", is_flag=True, help="Enable debug mode")
 def cli(input, type, all, debug):
     """
     My amazing tool does all the things.

@@ -17,12 +17,7 @@ click.rich_click.USE_MARKDOWN = True
     help="Type of file to sync",
 )
 @click.option("--all", is_flag=True, help="Sync\n 1. all\n 2. the\n 3. things?")
-@click.option(
-    "--debug/--no-debug",
-    "-d/-n",
-    default=False,
-    help="# Enable `debug mode`",
-)
+@click.option("--debug", is_flag=True, help="# Enable `debug mode`")
 def cli(input, type, all, debug):
     """
     My amazing tool does _**all the things**_.

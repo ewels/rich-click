@@ -18,7 +18,7 @@ click, formatted with rich, with minimal customisation required.
 - 🔢 Easily give custom sort order for options and commands
 - 🎨 Extensive customisation of styling and behaviour possible
 
-![rich-click](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/command_groups.png)
+![rich-click](docs/images/command_groups.svg)
 
 _Screenshot from [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py)_
 
@@ -124,6 +124,8 @@ These can be modified by changing variables in the `click.rich_click` namespace.
 
 Note that most normal click options should still work, such as `show_default=True`, `required=True` and `hidden=True`.
 
+> Note: All images below are auto-generated using another side-project of mine: [rich-codex](https://github.com/ewels/rich-codex). Pretty cool!
+
 ### Using rich markup
 
 In order to be as widely compatible as possible with a simple import, rich-click does _not_ parse rich formatting markup (eg. `[red]`) by default. You need to opt-in to this behaviour.
@@ -137,9 +139,9 @@ click.rich_click.USE_RICH_MARKUP = True
 Remember that you'll need to escape any regular square brackets using a back slash in your help texts,
 for example: `[dim]\[my-default: foo][\]`
 
-![Rich markup example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich_markup.png)
+![`python examples/04_rich_markup.py --help`](docs/images/rich_markup.svg "Rich markup example")
 
-> See [`examples/04_rich_markup.py`](examples/04_rich_markup.py) for and example.
+> See [`examples/04_rich_markup.py`](examples/04_rich_markup.py) for an example.
 
 ### Using Markdown
 
@@ -150,7 +152,7 @@ You must choose either Markdown or rich markup. If you specify both, Markdown ta
 click.rich_click.USE_MARKDOWN = True
 ```
 
-![Markdown example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/markdown.png)
+![`python examples/05_markdown.py --help`](docs/images/markdown.svg "Markdown example")
 
 > See [`examples/05_markdown.py`](examples/05_markdown.py) for an example.
 
@@ -167,7 +169,7 @@ click.rich_click.SHOW_ARGUMENTS = True
 click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
 ```
 
-![Positional arguments example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/arguments.png)
+![`python examples/06_arguments.py --help`](docs/images/arguments.svg "Positional arguments example")
 
 > See [`examples/06_arguments.py`](examples/06_arguments.py) for an example.
 
@@ -180,7 +182,7 @@ If you have a choice, the metavar is a list of the possible values.
 By default, rich-click shows metavars in their own column.
 However, if you have a long list of choices, this column can be quite wide and result in a lot of white space:
 
-![Default metavar display](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/metavars_default.png)
+![`python examples/08_metavars_default.py --help`](docs/images/metavars_default.svg "Default metavar display")
 
 It may look better to show metavars appended to the help text, instead of in their own column.
 For this, use the following:
@@ -190,7 +192,7 @@ click.rich_click.SHOW_METAVARS_COLUMN = False
 click.rich_click.APPEND_METAVARS_HELP = True
 ```
 
-![Appended metavar](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/metavars_appended.png)
+![`python examples/08_metavars.py --help`](docs/images/metavars_appended.svg "Appended metavar")
 
 > See [`examples/08_metavars.py`](examples/08_metavars.py) for an example.
 
@@ -198,7 +200,7 @@ click.rich_click.APPEND_METAVARS_HELP = True
 
 By default, rich-click gives some nice formatting to error messages:
 
-![error-message](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/error.png)
+![`python examples/01_simple.py --hep`](docs/images/error.svg "Error message")
 
 You can customise the _Try 'command --help' for help._ message with `ERRORS_SUGGESTION`
 using rich-click though, and add some text after the error with `ERRORS_EPILOGUE`.
@@ -206,12 +208,14 @@ using rich-click though, and add some text after the error with `ERRORS_EPILOGUE
 For example, from [`examples/07_custom_errors.py`](examples/07_custom_errors.py):
 
 ```python
-click.rich_click.STYLE_ERRORS_SUGGESTION = "blue italic"
+click.rich_click.STYLE_ERRORS_SUGGESTION = "magenta italic"
 click.rich_click.ERRORS_SUGGESTION = "Try running the '--help' flag for more information."
-click.rich_click.ERRORS_EPILOGUE = "To find out more, visit https://mytool.com"
+click.rich_click.ERRORS_EPILOGUE = "To find out more, visit [link=https://mytool.com]https://mytool.com[/link]"
 ```
 
-![custom-error-message](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/custom_error.png)
+![`python examples/07_custom_errors.py --hep`](docs/images/custom_error.svg "Custom error message")
+
+> See [`examples/07_custom_errors.py`](examples/07_custom_errors.py) for an example.
 
 ### Help width
 
@@ -243,9 +247,14 @@ click.rich_click.STYLE_OPTIONS_TABLE_BOX = "SIMPLE"
 
 You can make some really ~horrible~ _colourful_ solutions using these styles if you wish:
 
-![Rich markup example](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/style_tables.png)
+<!-- RICH-CODEX
+extra_env:
+    TERMINAL_WIDTH: 160
+-->
 
-> See [`examples/10_table_styles.py`](examples/10_table_styles.py) for and example.
+![`python examples/10_table_styles.py --help`](docs/images/style_tables.svg "Rich markup example")
+
+> See [`examples/10_table_styles.py`](examples/10_table_styles.py) for an example.
 
 See the [_Configuration options_](#configuration-options) section below for the full list of available options.
 
@@ -257,9 +266,9 @@ It accepts a list of options / commands which means you can also choose a custom
 - For options (flags), set `click.rich_click.OPTION_GROUPS`
 - For subcommands (groups), set `click.rich_click.COMMAND_GROUPS`
 
-![rich-click](https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/command_groups.png)
+![`python examples/03_groups_sorting.py --help`](docs/images/command_groups.svg "Command groups")
 
-See [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py) for a full example.
+> See [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py) for a full example.
 
 ### Options
 

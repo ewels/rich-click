@@ -40,7 +40,7 @@ click.rich_click.COMMAND_GROUPS = {
 }
 
 
-@click.group()
+@click.group(context_settings=dict(help_option_names=["-h", "--help"]))
 @click.option(
     "--type",
     default="files",
@@ -64,7 +64,7 @@ def cli(type, debug):
     from the 'click' package.
 
     You can try using --help at the top level and also for
-    specific group subcommands.
+    specific subcommands.
     """
     print(f"Debug mode is {'on' if debug else 'off'}")
 
