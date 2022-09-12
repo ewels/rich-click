@@ -43,6 +43,8 @@ Users on macOS can install `rich-click` via [MacPorts](https://ports.macports.or
 sudo port install py-rich-click
 ```
 
+Note that rich-click requires `click>=7` but formatted subcommands (groups) only work with `click>=8`. With v7 the output simply reverts to default click output.
+
 ## Usage
 
 ### Import as click
