@@ -1,0 +1,22 @@
+Usage: cli [OPTIONS]                                                           
+                                                                                
+ My amazing tool does all the things.                                           
+ This is a minimal example based on documentation from the 'click' package.     
+                                                                                
+ You can try using --help at the top level and also for specific group          
+ subcommands.                                                                   
+                                                                                
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│  --debug       Enable debug mode.                                            │
+│                                                                              │
+│  --number      This click choice has loads of options.                       │
+│                (one|two|three|four|five|six|seven|eight|nine|ten|eleven|twe  │
+│                lve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nin  │
+│                eteen|twenty|twenty-one|twenty-two|twenty-three|twenty-four|  │
+│                twenty-five|twenty-six|twenty-seven|twenty-eight|twenty-nine  │
+│                |thirty)                                                      │
+│                                                                              │
+│  --help        Show this message and exit.                                   │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯

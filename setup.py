@@ -7,6 +7,6 @@ setup(
         "importlib-metadata; python_version < '3.8'",
     ],
     extras_require={
-        "dev": "pre-commit",
+        "dev": ["pre-commit", "pytest", "typing_extensions"],
     },
 )
