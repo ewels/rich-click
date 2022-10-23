@@ -6,6 +6,7 @@ from click import UsageError
 from conftest import AssertRichFormat, AssertStr, InvokeCli
 from rich.console import Console
 
+import rich_click.rich_click as rc
 from rich_click import command, rich_config, RichContext, RichHelpConfiguration
 from rich_click.rich_command import RichCommand
 
@@ -28,7 +29,7 @@ from rich_click.rich_command import RichCommand
             "arguments",
             "--help",
             None,
-            rich_config(help_config=RichHelpConfiguration(max_width=80, show_arguments=True)),
+            rich_config(help_config=RichHelpConfiguration(show_arguments=True)),
             id="test arguments with rich_config",
         ),
         pytest.param(
@@ -37,7 +38,6 @@ from rich_click.rich_command import RichCommand
             UsageError,
             rich_config(
                 help_config=RichHelpConfiguration(
-                    max_width=80,
                     style_errors_suggestion="magenta italic",
                     errors_suggestion="Try running the '--help' flag for more information.",
                     errors_epilogue="To find out more, visit [link=https://mytool.com]https://mytool.com[/link]",
@@ -49,14 +49,14 @@ from rich_click.rich_command import RichCommand
             "declarative",
             "--help",
             None,
-            rich_config(help_config=RichHelpConfiguration(max_width=80)),
+            rich_config(help_config=RichHelpConfiguration()),
             id="test declarative with rich_config",
         ),
         pytest.param(
             "envvar",
             "greet --help",
             None,
-            rich_config(help_config=RichHelpConfiguration(max_width=80)),
+            rich_config(help_config=RichHelpConfiguration()),
             id="test environment variables with rich_config",
         ),
         pytest.param(
@@ -65,7 +65,6 @@ from rich_click.rich_command import RichCommand
             None,
             rich_config(
                 help_config=RichHelpConfiguration(
-                    max_width=80,
                     option_groups={
                         "cli": [
                             {
@@ -112,37 +111,35 @@ from rich_click.rich_command import RichCommand
             "markdown",
             "--help",
             None,
-            rich_config(help_config=RichHelpConfiguration(max_width=80, use_markdown=True)),
+            rich_config(help_config=RichHelpConfiguration(use_markdown=True)),
             id="test markdown with rich_config",
         ),
         pytest.param(
             "metavars_default",
             "--help",
             None,
-            rich_config(help_config=RichHelpConfiguration(max_width=80)),
+            rich_config(help_config=RichHelpConfiguration()),
             id="test metavars default with rich_config",
         ),
         pytest.param(
             "metavars",
             "--help",
             None,
-            rich_config(
-                help_config=RichHelpConfiguration(max_width=80, show_metavars_column=False, append_metavars_help=True)
-            ),
+            rich_config(help_config=RichHelpConfiguration(show_metavars_column=False, append_metavars_help=True)),
             id="test metavars with rich_config",
         ),
         pytest.param(
             "rich_markup",
             "--help",
             None,
-            rich_config(help_config=RichHelpConfiguration(max_width=80, use_rich_markup=True)),
+            rich_config(help_config=RichHelpConfiguration(use_rich_markup=True)),
             id="test rich markup with rich_config",
         ),
         pytest.param(
             "simple",
             "--help",
             None,
-            rich_config(help_config=RichHelpConfiguration(max_width=80)),
+            rich_config(help_config=RichHelpConfiguration()),
             id="test simple with rich_config",
         ),
         pytest.param(
@@ -151,7 +148,6 @@ from rich_click.rich_command import RichCommand
             None,
             rich_config(
                 help_config=RichHelpConfiguration(
-                    max_width=80,
                     style_options_table_leading=1,
                     style_options_table_box="SIMPLE",
                     style_options_table_row_styles=["bold", ""],
@@ -199,14 +195,14 @@ def test_rich_config_decorator_order(invoke: InvokeCli, assert_str: AssertStr):
     assert_str(
         result.stdout,
         """
-Usage: cli [OPTIONS]                                                           
-                                                                                
- Some help                                                                      
- # Header                                                                       
-                                                                                
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                      │
-╰──────────────────────────────────────────────────────────────────────────────╯
+Usage: cli [[1;36mOPTIONS]                                                               
+                                                                                                    
+ Some help                                                                                          
+ # Header                                                                                           
+                                                                                                    
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
     """,
     )
 

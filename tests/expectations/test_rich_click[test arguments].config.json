@@ -39,8 +39,8 @@
   "align_errors_panel": "left",
   "style_errors_suggestion": "dim",
   "style_aborted": "red",
-  "max_width": 80,
-  "color_system": "auto",
+  "max_width": 100,
+  "color_system": "truecolor",
   "force_terminal": null,
   "header_text": null,
   "footer_text": null,
@@ -75,5 +75,6 @@
     "(^|\\W)(?P<argument>[A-Z0-9\\_]+)(?![_a-zA-Z0-9])",
     "(?P<metavar>\\<[^\\>]+\\>)",
     "(?P<usage>Usage: )"
-  ]
+  ],
+  "legacy_windows": false
 }

@@ -1,6 +1,7 @@
 # flake8: noqa D*
 import importlib
 import json
+import re
 from dataclasses import asdict
 from importlib import reload
 from pathlib import Path
@@ -126,7 +127,9 @@ def initialize_rich_click():
     # must reload the rich_click module between
     # each test
     reload(rc)
-    rc.MAX_WIDTH = 80
+    # default config settings from https://github.com/Textualize/rich/blob/master/tests/render.py
+    rc.MAX_WIDTH = 100
+    rc.COLOR_SYSTEM = "truecolor"
 
 
 class LoadCommandModule(Protocol):
@@ -138,6 +141,18 @@ class LoadCommandModule(Protocol):
                 Example: fixtures.arguments
         """
         ...
+
+
+re_link_ids = re.compile(r"id=[\d.\-]*?;.*?\x1b")
+
+
+def replace_link_ids(render: str) -> str:
+    """Link IDs have a random ID and system path which is a problem for
+    reproducible tests.
+
+    From: https://github.com/Textualize/rich/blob/master/tests/render.py
+    """
+    return re_link_ids.sub("id=0;foo\x1b", render)
 
 
 @pytest.fixture
@@ -198,7 +213,7 @@ class AssertRichFormat(Protocol):
 
         NOTE: This could be made better by dumping Rich's render tree as a dictionary.
         Currently it only asserts the output from the string rendered by Rich Console.
-        This means it will miss cases where assertion of styles is desired.
+        This means it may miss cases where assertion of styles is desired.
 
         Args:
             cmd: The name of the module under test, or a `RichCommand` or `RichGroup` object.
@@ -237,16 +252,19 @@ def assert_rich_format(
             command = cmd
 
         if rich_config:
-            result = invoke(rich_config(command), args)
-        else:
-            result = invoke(command, args)
+            command = rich_config(command)
+            help_config: Optional[RichHelpConfiguration] = command.context_settings.get("rich_help_config")
+            if help_config:
+                help_config.color_system = rc.COLOR_SYSTEM
+                help_config.max_width = rc.MAX_WIDTH
+        result = invoke(command, args)
 
         assert command.formatter is not None
         if error:
             assert isinstance(result.exception, error)
-            actual = command.formatter.getvalue()
+            actual = replace_link_ids(command.formatter.getvalue())
         else:
-            actual = result.stdout
+            actual = replace_link_ids(result.stdout)
 
         expectation_output_path = expectations_dir / f"{request.node.name}.out"
         expectation_config_path = expectations_dir / f"{request.node.name}.config.json"

@@ -1,13 +1,13 @@
 Debug mode is off
-                                                                                
- Usage: cli greet [OPTIONS]                                                     
-                                                                                
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --username    TEXT  This can be set via env var GREETER_GREET_USERNAME       │
-│                     [env var: GREETER_GREET_USERNAME]                        │
-│ --nickname    TEXT  This can be set via env var NICKNAME [env var: NICKNAME] │
-│ --email       TEXT  This can be set via env var EMAIL or EMAIL_ADDRESS       │
-│                     [env var: EMAIL, EMAIL_ADDRESS]                          │
-│                     [default: foo@bar.com]                                   │
-│ --help              Show this message and exit.                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
+                                                                                                    
+ Usage: cli greet [[1;36mOPTIONS]                                                         
+                                                                                                    
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --username    TEXT  This can be set via env var GREETER_GREET_USERNAME                           │
+│                     [env var: GREETER_GREET_USERNAME]                                            │
+│ --nickname    TEXT  This can be set via env var NICKNAME [env var: NICKNAME]                     │
+│ --email       TEXT  This can be set via env var EMAIL or EMAIL_ADDRESS                           │
+│                     [env var: EMAIL, EMAIL_ADDRESS]                                              │
+│                     [default: foo@bar.com]                                                       │
+│ --help              Show this message and exit.                                                  │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
