@@ -41,7 +41,7 @@
   "style_aborted": "red",
   "max_width": 100,
   "color_system": "truecolor",
-  "force_terminal": null,
+  "force_terminal": true,
   "header_text": null,
   "footer_text": null,
   "deprecated_string": "(Deprecated) ",

@@ -130,6 +130,7 @@ def initialize_rich_click():
     # default config settings from https://github.com/Textualize/rich/blob/master/tests/render.py
     rc.MAX_WIDTH = 100
     rc.COLOR_SYSTEM = "truecolor"
+    rc.FORCE_TERMINAL = True
 
 
 class LoadCommandModule(Protocol):
@@ -257,6 +258,7 @@ def assert_rich_format(
             if help_config:
                 help_config.color_system = rc.COLOR_SYSTEM
                 help_config.max_width = rc.MAX_WIDTH
+                help_config.force_terminal = rc.FORCE_TERMINAL
         result = invoke(command, args)
 
         assert command.formatter is not None
