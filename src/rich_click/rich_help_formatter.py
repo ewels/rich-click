@@ -33,10 +33,11 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
             }
         ),
         highlighter=config.highlighter,
-        color_system=config.color_system,  # type: ignore
+        color_system=config.color_system,
         force_terminal=config.force_terminal,
         width=config.max_width,
         file=file,
+        legacy_windows=config.legacy_windows,
     )
 
 

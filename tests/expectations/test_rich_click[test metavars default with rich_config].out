@@ -1,20 +1,17 @@
-Usage: cli [OPTIONS]                                                           
-                                                                                
- My amazing tool does all the things.                                           
- This is a minimal example based on documentation from the 'click' package.     
- You can try using --help at the top level and also for specific group          
- subcommands.                                                                   
-                                                                                
-╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --debug                                     Enable debug mode.               │
-│ --number    [one|two|three|four|five|six|s  This click choice has loads of   │
-│             even|eight|nine|ten|eleven|twe  options.                         │
-│             lve|thirteen|fourteen|fifteen|                                   │
-│             sixteen|seventeen|eighteen|nin                                   │
-│             eteen|twenty|twenty-one|twenty                                   │
-│             -two|twenty-three|twenty-four|                                   │
-│             twenty-five|twenty-six|twenty-                                   │
-│             seven|twenty-eight|twenty-nine                                   │
-│             |thirty]                                                         │
-│ --help                                      Show this message and exit.      │
-╰──────────────────────────────────────────────────────────────────────────────╯
+Usage: cli [[1;36mOPTIONS]                                                               
+                                                                                                    
+ My amazing tool does all the things.                                                               
+ This is a minimal example based on documentation from the 'click' package.                         
+ You can try using --help at the top level and also for specific group subcommands.                 
+                                                                                                    
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --debug                                               Enable debug mode.                         │
+│ --number    [one|two|three|four|five|six|seven|eight  This click choice has loads of options.    │
+│             |nine|ten|eleven|twelve|thirteen|fourtee                                             │
+│             n|fifteen|sixteen|seventeen|eighteen|nin                                             │
+│             eteen|twenty|twenty-one|twenty-two|twent                                             │
+│             y-three|twenty-four|twenty-five|twenty-s                                             │
+│             ix|twenty-seven|twenty-eight|twenty-nine                                             │
+│             |thirty]                                                                             │
+│ --help                                                Show this message and exit.                │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
