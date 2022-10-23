@@ -7,7 +7,7 @@ customisation required.
 
 __version__ = "1.6.0.dev0"
 
-from typing import Optional, TYPE_CHECKING
+from typing import Any, Callable, cast, Optional, overload, TYPE_CHECKING, Union
 
 from click import *  # noqa: F401, F403
 from click import command as click_command
@@ -19,6 +19,7 @@ from rich.console import Console
 from . import rich_click  # noqa: F401
 
 from rich_click.rich_command import RichCommand
+from rich_click.rich_context import RichContext
 from rich_click.rich_group import RichGroup
 from rich_click.rich_help_configuration import RichHelpConfiguration
 
@@ -36,10 +37,13 @@ if TYPE_CHECKING:
         "version_option",
         "group",
         "command",
+        "rich_config",
+        "RichContext",
+        "RichHelpConfiguration",
     ]
 
 
-def group(*args, cls=RichGroup, **kwargs):
+def group(*args, cls=RichGroup, **kwargs) -> Callable[..., RichGroup]:
     """
     Group decorator function.
 
@@ -55,13 +59,13 @@ def group(*args, cls=RichGroup, **kwargs):
             context_settings.update(rich_console=console, rich_help_config=help_config)
             kwargs.update(context_settings=context_settings)
             del fn.__rich_context_settings__
-        cmd = click_group(*args, cls=cls, **kwargs)(fn)
+        cmd = cast(RichGroup, click_group(*args, cls=cls, **kwargs)(fn))
         return cmd
 
     return wrapper
 
 
-def command(*args, cls=RichCommand, **kwargs):
+def command(*args, cls=RichCommand, **kwargs) -> Callable[..., RichCommand]:
     """
     Command decorator function.
 
@@ -77,7 +81,7 @@ def command(*args, cls=RichCommand, **kwargs):
             context_settings.update(rich_console=console, rich_help_config=help_config)
             kwargs.update(context_settings=context_settings)
             del fn.__rich_context_settings__
-        cmd = click_command(*args, cls=cls, **kwargs)(fn)
+        cmd = cast(RichCommand, click_command(*args, cls=cls, **kwargs)(fn))
         return cmd
 
     return wrapper
@@ -98,6 +102,14 @@ def rich_config(console: Optional[Console] = None, help_config: Optional[RichHel
         help_config: Rich help configuration that is used internally to format help messages and exceptions
             Defaults to None.
     """
+
+    @overload
+    def decorator(obj: Union[RichCommand, RichGroup]) -> Union[RichCommand, RichGroup]:
+        ...
+
+    @overload
+    def decorator(obj: Callable[..., Any]) -> Callable[..., Any]:
+        ...
 
     def decorator(obj):
         if isinstance(obj, (RichCommand, RichGroup)):

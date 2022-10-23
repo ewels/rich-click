@@ -1,0 +1,22 @@
+name: Test Coverage
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.7.13"
+
+      - name: Install Dependencies
+        run: pip install '.[dev]'
+
+      - name: Run Tests
+        run: pytest --cov --cov-report xml

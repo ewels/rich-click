@@ -1,7 +1,7 @@
 {
-  "python.defaultInterpreterPath": ".venv/bin/python",
-  "python.testing.pytestPath": ".venv/bin/pytest",
-  "python.linting.flake8Path": ".venv/bin/flake8",
+  "python.defaultInterpreterPath": "venv/bin/python",
+  "python.testing.pytestPath": "venv/bin/pytest",
+  "python.linting.flake8Path": "venv/bin/flake8",
   "python.linting.flake8Enabled": true,
   "python.testing.pytestEnabled": true
 }

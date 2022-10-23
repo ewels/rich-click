@@ -1,12 +1,13 @@
 from typing import Optional, Type
 
+import click
 import pytest
 from click import UsageError
 from conftest import AssertRichFormat, AssertStr, InvokeCli
 from rich.console import Console
 
-from rich_click import command, rich_config
-from rich_click.rich_help_configuration import RichHelpConfiguration
+from rich_click import command, rich_config, RichContext, RichHelpConfiguration
+from rich_click.rich_command import RichCommand
 
 
 @pytest.mark.parametrize(
@@ -182,6 +183,7 @@ def test_rich_config_decorator_order(invoke: InvokeCli, assert_str: AssertStr):
         pass
 
     assert hasattr(cli, "__rich_context_settings__") is False
+    assert cli.console is not None
     assert cli.__doc__ is not None
     assert_str(
         cli.__doc__,
@@ -207,3 +209,18 @@ Usage: cli [OPTIONS]
 ╰──────────────────────────────────────────────────────────────────────────────╯
     """,
     )
+
+
+def test_rich_config_context_settings(invoke: InvokeCli):
+    @click.command(
+        cls=RichCommand, context_settings={"rich_console": Console(), "rich_help_config": RichHelpConfiguration()}
+    )
+    @click.pass_context
+    def cli(ctx: RichContext):
+        assert isinstance(ctx, RichContext)
+        assert ctx.console is not None
+        assert ctx.help_config is not None
+
+    result = invoke(cli)
+    assert result.exit_code == 0
+    assert result.exception is None

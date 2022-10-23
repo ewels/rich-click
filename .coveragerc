@@ -1,0 +1,6 @@
+[run]
+branch = True
+include =
+    src/**
+omit =
+    __main__.py

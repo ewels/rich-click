@@ -8,6 +8,6 @@ setup(
         "typing_extensions",
     ],
     extras_require={
-        "dev": ["pre-commit", "pytest", "flake8", "flake8-docstrings"],
+        "dev": ["pre-commit", "pytest", "flake8", "flake8-docstrings", "pytest-cov"],
     },
 )
