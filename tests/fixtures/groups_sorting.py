@@ -1,7 +1,7 @@
 import rich_click as click
 
 click.rich_click.OPTION_GROUPS = {
-    "03_groups_sorting.py": [
+    "cli": [
         {
             "name": "Basic usage",
             "options": ["--type", "--output"],
@@ -15,7 +15,7 @@ click.rich_click.OPTION_GROUPS = {
             },
         },
     ],
-    "03_groups_sorting.py sync": [
+    "cli sync": [
         {
             "name": "Inputs and outputs",
             "options": ["--input", "--output"],
@@ -27,7 +27,7 @@ click.rich_click.OPTION_GROUPS = {
     ],
 }
 click.rich_click.COMMAND_GROUPS = {
-    "03_groups_sorting.py": [
+    "cli": [
         {
             "name": "Main usage",
             "commands": ["sync", "download"],

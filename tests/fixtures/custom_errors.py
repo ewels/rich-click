@@ -1,3 +1,5 @@
+from click import UsageError
+
 import rich_click as click
 
 # Show custom error messages
@@ -26,7 +28,7 @@ def cli(input, type, all, debug):
     You can try using --help at the top level and also for
     specific group subcommands.
     """
-    print(f"Debug mode is {'on' if debug else 'off'}")
+    raise UsageError("Invalid usage")
 
 
 if __name__ == "__main__":

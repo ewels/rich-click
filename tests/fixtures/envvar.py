@@ -6,7 +6,7 @@ import rich_click as click
 # GREETER_DEBUG=1 GREETER_GREET_USERNAME="test" EMAIL_ADDRESS="foo@bar.com" python examples/09_envvar.py greet
 
 
-@click.group()
+@click.group(context_settings=dict(auto_envvar_prefix="GREETER"))
 @click.option("--debug/--no-debug")
 def cli(debug):
     click.echo(f"Debug mode is {'on' if debug else 'off'}")
@@ -31,7 +31,3 @@ def cli(debug):
 )
 def greet(username, nickname, email):
     click.echo(f"Hello {username} ({nickname}) with email {email}!")
-
-
-if __name__ == "__main__":
-    cli(auto_envvar_prefix="GREETER")

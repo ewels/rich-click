@@ -1,0 +1,8 @@
+Usage: cli [OPTIONS] INPUT                                                     
+                                                                                
+ Try running the '--help' flag for more information.                            
+╭─ Error ──────────────────────────────────────────────────────────────────────╮
+│ Invalid usage                                                                │
+╰──────────────────────────────────────────────────────────────────────────────╯
+                                                                                
+ To find out more, visit https://mytool.com

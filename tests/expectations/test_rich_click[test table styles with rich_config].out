@@ -2,53 +2,60 @@ Usage: cli [OPTIONS] COMMAND [ARGS]...
                                                                                 
  My amazing tool does all the things.                                           
  This is a minimal example based on documentation from the 'click' package.     
-                                                                                
  You can try using --help at the top level and also for specific group          
  subcommands.                                                                   
                                                                                 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │                                                                              │
-│  --type                       Type of file to sync. Lorem ipsum dolor sit    │
-│                               amet, consectetur adipiscing elit. Sed sed     │
-│                               mauris euismod, semper leo quis, sodales       │
-│                               augue. Donec posuere nulla quis egestas        │
-│                               ornare. Nam efficitur ex quis diam tempus,     │
-│                               nec euismod diam consectetur. Etiam vitae      │
-│                               nisi at odio hendrerit dictum in at dui.       │
-│                               Aliquam nulla lacus, pellentesque id           │
-│                               ultricies sit amet, mollis nec tellus. Aenean  │
-│                               arcu justo, pellentesque viverra justo eget,   │
-│                               tempus tincidunt lectus. Maecenas porttitor    │
-│                               risus vitae libero dapibus ullamcorper. Cras   │
-│                               faucibus euismod erat in porta. Phasellus      │
-│                               cursus gravida ante vel aliquet. In accumsan   │
-│                               enim nec ullamcorper gravida. Donec malesuada  │
-│                               dui ac metus tristique cursus. Sed gravida     │
-│                               condimentum fermentum. Ut sit amet nulla       │
-│                               commodo, iaculis tellus vitae, accumsan enim.  │
-│                               Curabitur mollis semper velit a suscipit.      │
-│                               (TEXT)                                         │
+│  --type                       TEXT   Type of file to sync. Lorem ipsum       │
+│                                      dolor sit amet, consectetur adipiscing  │
+│                                      elit. Sed sed mauris euismod, semper    │
+│                                      leo quis, sodales augue. Donec posuere  │
+│                                      nulla quis egestas ornare. Nam          │
+│                                      efficitur ex quis diam tempus, nec      │
+│                                      euismod diam consectetur. Etiam vitae   │
+│                                      nisi at odio hendrerit dictum in at     │
+│                                      dui. Aliquam nulla lacus, pellentesque  │
+│                                      id ultricies sit amet, mollis nec       │
+│                                      tellus. Aenean arcu justo,              │
+│                                      pellentesque viverra justo eget,        │
+│                                      tempus tincidunt lectus. Maecenas       │
+│                                      porttitor risus vitae libero dapibus    │
+│                                      ullamcorper. Cras faucibus euismod      │
+│                                      erat in porta. Phasellus cursus         │
+│                                      gravida ante vel aliquet. In accumsan   │
+│                                      enim nec ullamcorper gravida. Donec     │
+│                                      malesuada dui ac metus tristique        │
+│                                      cursus. Sed gravida condimentum         │
+│                                      fermentum. Ut sit amet nulla commodo,   │
+│                                      iaculis tellus vitae, accumsan enim.    │
+│                                      Curabitur mollis semper velit a         │
+│                                      suscipit.                               │
 │                                                                              │
-│  --debug/--no-debug   -d/-n   Show the debug log messages. Suspendisse       │
-│                               dictum hendrerit turpis eu rutrum. Vivamus     │
-│                               magna ex, elementum sit amet sapien laoreet,   │
-│                               tempor consequat eros. Morbi semper feugiat    │
-│                               nisi eget sodales. Pellentesque et turpis      │
-│                               erat. Donec ac aliquam risus. Nam leo tellus,  │
-│                               rutrum et scelerisque vitae, ultrices sed      │
-│                               metus. Ut sollicitudin convallis turpis, sit   │
-│                               amet sollicitudin felis semper feugiat. In     │
-│                               sapien dui, aliquam eget dui quis, auctor      │
-│                               maximus nibh. Suspendisse maximus sem arcu.    │
-│                               Pellentesque sit amet semper est. Cras         │
-│                               pulvinar ut tellus a semper. In facilisis      │
-│                               tellus odio, non porta nisl accumsan nec.      │
-│                               Pellentesque sollicitudin quam ac felis        │
-│                               congue, ac congue enim tempor.                 │
+│  --debug/--no-debug   -d/-n          Show the debug log messages.            │
+│                                      Suspendisse dictum hendrerit turpis eu  │
+│                                      rutrum. Vivamus magna ex, elementum     │
+│                                      sit amet sapien laoreet, tempor         │
+│                                      consequat eros. Morbi semper feugiat    │
+│                                      nisi eget sodales. Pellentesque et      │
+│                                      turpis erat. Donec ac aliquam risus.    │
+│                                      Nam leo tellus, rutrum et scelerisque   │
+│                                      vitae, ultrices sed metus. Ut           │
+│                                      sollicitudin convallis turpis, sit      │
+│                                      amet sollicitudin felis semper          │
+│                                      feugiat. In sapien dui, aliquam eget    │
+│                                      dui quis, auctor maximus nibh.          │
+│                                      Suspendisse maximus sem arcu.           │
+│                                      Pellentesque sit amet semper est. Cras  │
+│                                      pulvinar ut tellus a semper. In         │
+│                                      facilisis tellus odio, non porta nisl   │
+│                                      accumsan nec. Pellentesque              │
+│                                      sollicitudin quam ac felis congue, ac   │
+│                                      congue enim tempor.                     │
 │                                                                              │
-│  --version                    Show the version and exit.                     │
+│  --version                           Show the version and exit.              │
 │                                                                              │
-│  --help                       Show this message and exit.                    │
+│  --help                              Show this message and exit.             │
 │                                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────╮
