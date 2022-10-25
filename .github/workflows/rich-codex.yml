@@ -1,5 +1,8 @@
 name: Rich-codex
 on: [push]
+env:
+  FORCE_TERMINAL: 1
+  FORCE_COLOR: 1
 jobs:
   rich_codex:
     runs-on: ubuntu-latest
