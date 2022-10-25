@@ -90,12 +90,12 @@ class RichHelpFormatter(click.HelpFormatter):
         """
         return self._console
 
+    def write(self, string: str) -> None:
+        return self._console.print(string)
+
     def getvalue(self) -> str:
         """Get Console output.
 
         This maintains compatibility with the current Click interface
         """
-        result = super().getvalue()
-        if result:
-            self._console.print(result)
         return self._rich_buffer.getvalue()
