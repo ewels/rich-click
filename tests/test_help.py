@@ -195,7 +195,7 @@ def test_rich_config_decorator_order(invoke: InvokeCli, assert_str: AssertStr):
     assert_str(
         result.stdout,
         """
-Usage: cli [[1;36mOPTIONS]                                                               
+Usage: cli [OPTIONS]                                                               
                                                                                                     
  Some help                                                                                          
  # Header                                                                                           
