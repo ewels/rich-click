@@ -1,3 +1,4 @@
+import sys
 from io import StringIO
 from typing import IO, Optional
 
@@ -11,6 +12,13 @@ import rich.theme
 from rich.console import Console
 
 from rich_click.rich_help_configuration import RichHelpConfiguration
+
+
+class TerminalBuffer(StringIO):
+    """String buffer that should be detected as a terminal device."""
+
+    def isatty(self) -> bool:
+        return sys.stdout.isatty()
 
 
 def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> Console:
@@ -72,7 +80,7 @@ class RichHelpFormatter(click.HelpFormatter):
                 Defaults to None.
         """
         super().__init__(*args, **kwargs)
-        self._rich_buffer = StringIO()
+        self._rich_buffer = TerminalBuffer()
         self._config = config or get_module_config()
         self._console = create_console(self._config, self._rich_buffer)
 
