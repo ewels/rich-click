@@ -44,10 +44,13 @@ def group(*args, cls=RichGroup, **kwargs):
     return click_group(*args, cls=cls, **kwargs)
 
 
-def command(*args, cls=RichCommand, **kwargs):
+def command(name=None, cls=RichCommand, **attrs):
     """
     Command decorator function.
 
     Defines the command() function so that it uses the RichCommand class by default.
     """
-    return click_command(*args, cls=cls, **kwargs)
+    if callable(name) and cls:
+        return click_command(cls=cls, **attrs)(name)
+
+    return click_command(name, cls=cls, **attrs)
