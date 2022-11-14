@@ -1,24 +1,8 @@
-name: Test examples
+name: Rich-codex
 on: [push, pull_request]
 jobs:
-  get-examples:
+  test_examples:
     runs-on: ubuntu-latest
-    outputs:
-      # Expose matched filters as job 'modules' output variable
-      scripts: ${{ steps.get-example-scripts.outputs.paths }}
-    steps:
-      - name: Get example scripts
-        uses: tj-actions/glob@v16
-        id: get-example-scripts
-        with:
-          files: "examples/*.py"
-
-  test-examples:
-    needs: get-examples
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        script: ${{ needs.get-examples.outputs.scripts }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -30,4 +14,9 @@ jobs:
         run: pip install .
 
       - name: Test examples
-        run: python ${{ matrix.script }}
+        run: |
+          for f in examples/*py
+          do
+            echo -e "\n\n$f"
+            python $f || exit 1;
+          done
