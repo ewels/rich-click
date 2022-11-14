@@ -50,4 +50,4 @@ def command(*args, cls=RichCommand, **kwargs):
 
     Defines the command() function so that it uses the RichCommand class by default.
     """
-    return click_command(cls=cls)(*args, **kwargs)
+    return click_command(*args, cls=cls, **kwargs)
