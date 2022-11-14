@@ -1,0 +1,29 @@
+name: Test examples
+on: [push, pull_request]
+jobs:
+  get-examples:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get example scripts
+        uses: tj-actions/glob@v16
+        id: get-example-scripts
+        with:
+          files: "examples/*.py"
+
+  test-examples:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        script: ${{ steps.get-example-scripts.outputs.paths }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+
+      - name: Install rich-click
+        run: pip install .
+
+      - name: Test examples
+        run: python ${{ matrix.script }}
