@@ -3,6 +3,9 @@ on: [push, pull_request]
 jobs:
   get-examples:
     runs-on: ubuntu-latest
+    outputs:
+      # Expose matched filters as job 'modules' output variable
+      scripts: ${{ steps.get-example-scripts.outputs.paths }}
     steps:
       - name: Get example scripts
         uses: tj-actions/glob@v16
@@ -11,10 +14,11 @@ jobs:
           files: "examples/*.py"
 
   test-examples:
+    needs: get-examples
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        script: ${{ steps.get-example-scripts.outputs.paths }}
+        script: ${{ needs.get-examples.outputs.scripts }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
