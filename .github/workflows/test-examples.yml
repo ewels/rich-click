@@ -1,0 +1,22 @@
+name: Rich-codex
+on: [push, pull_request]
+jobs:
+  test_examples:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+
+      - name: Install rich-click
+        run: pip install .
+
+      - name: Test examples
+        run: |
+          for f in examples/*py
+          do
+            echo -e "\n\n$f"
+            python $f || exit 1;
+          done
