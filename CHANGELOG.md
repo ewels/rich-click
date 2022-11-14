@@ -4,7 +4,6 @@
 
 - Removed support for Typer - please use the [native functionality](https://typer.tiangolo.com/tutorial/options/help/#cli-options-help-panels) instead.
 - Added self-updating automated readme screengrabs using [rich-codex](https://github.com/ewels/rich-codex)
-- Fix click command call [#95](https://github.com/ewels/rich-click/pull/95)
 
 ## Version 1.5.2 (2022-08-01)
 
