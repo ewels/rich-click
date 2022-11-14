@@ -18,5 +18,5 @@ jobs:
           for f in examples/*py
           do
             echo -e "\n\n$f"
-            python $f || exit 1;
+            python $f --help || exit 1;
           done
