@@ -1,8 +1,9 @@
 # Changelog: rich-click
 
-## Version 1.6.0.dev0
+## Version 1.6.0 (2022-12-05)
 
-- Removed support for Typer - please use the [native functionality](https://typer.tiangolo.com/tutorial/options/help/#cli-options-help-panels) instead.
+- ⚠️ Removed support for Typer ⚠️
+  - Please use the [native Typer functionality](https://typer.tiangolo.com/tutorial/options/help/#cli-options-help-panels) instead.
 - Added self-updating automated readme screengrabs using [rich-codex](https://github.com/ewels/rich-codex)
 - Fix `AssertionError` when using click command call [#94](https://github.com/ewels/rich-click/issues/94)
 
