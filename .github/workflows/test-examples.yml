@@ -1,4 +1,4 @@
-name: Rich-codex
+name: Test Examples
 on: [push, pull_request]
 jobs:
   test_examples:
