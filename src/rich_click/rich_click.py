@@ -266,8 +266,8 @@ def _get_parameter_help(param: Union[click.Option, click.Argument], ctx: click.C
         # Do it ourselves if this is a positional argument
         if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
             metavar_str = param.type.name.upper()
-        # Skip if param is boolean, is a positional argument, or if it's a flag
-        if not (metavar_str == "BOOLEAN" or isinstance(param, click.core.Argument) or param.is_flag):
+        # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option
+        if isinstance(param, click.core.Argument) or (metavar_str != "BOOLEAN" and not param.is_flag):
             metavar_str = metavar_str.replace("[", "").replace("]", "")
             items.append(
                 Text(
@@ -445,8 +445,8 @@ def rich_format_help(
             if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
                 metavar_str = param.type.name.upper()
 
-            # Skip if param is boolean, is a positional argument, or if it's a flag
-            if not (metavar_str == "BOOLEAN" or isinstance(param, click.core.Argument) or param.is_flag):
+            # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option
+            if isinstance(param, click.core.Argument) or (metavar_str != "BOOLEAN" and not param.is_flag):
                 metavar.append(metavar_str)
 
             # Range - from
