@@ -2,7 +2,7 @@
 
 ## Version 1.6.2dev (2023-03-28)
 
-- Add new style option STYLE_COMMAND
+- Add new style option `STYLE_COMMAND`
 
 ## Version 1.6.1 (2023-01-19)
 
