@@ -43,7 +43,7 @@ if TYPE_CHECKING:
     ]
 
 
-def group(*args, cls=RichGroup, **kwargs) -> Callable[..., RichGroup]:
+def group(name=None, cls=RichGroup, **attrs) -> Callable[..., RichGroup]:
     """
     Group decorator function.
 
@@ -59,7 +59,11 @@ def group(*args, cls=RichGroup, **kwargs) -> Callable[..., RichGroup]:
             context_settings.update(rich_console=console, rich_help_config=help_config)
             kwargs.update(context_settings=context_settings)
             del fn.__rich_context_settings__
-        cmd = cast(RichGroup, click_group(*args, cls=cls, **kwargs)(fn))
+        if callable(name) and cls:
+            group = click_group(cls=cls, **attrs)(name)
+        else:
+            group = click_group(name, cls=cls, **attrs)
+        cmd = cast(RichGroup, group(fn))
         return cmd
 
     return wrapper
