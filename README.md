@@ -367,6 +367,7 @@ Here is the full list of config options:
 # Default styles
 STYLE_OPTION = "bold cyan"
 STYLE_ARGUMENT = "bold cyan"
+STYLE_COMMAND = "bold cyan"
 STYLE_SWITCH = "bold green"
 STYLE_METAVAR = "bold yellow"
 STYLE_METAVAR_APPEND = "dim yellow"

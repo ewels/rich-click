@@ -1,5 +1,9 @@
 # Changelog: rich-click
 
+## Version 1.6.2dev (2023-03-28)
+
+- Add new style option `STYLE_COMMAND`
+
 ## Version 1.6.1 (2023-01-19)
 
 - Don't show metavars for [feature switch](https://click.palletsprojects.com/en/8.1.x/options/#feature-switches) options [[#100](https://github.com/ewels/rich-click/issues/100)] (@likewei92)

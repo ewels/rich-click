@@ -27,6 +27,7 @@ except ImportError:
 # Default styles
 STYLE_OPTION = "bold cyan"
 STYLE_ARGUMENT = "bold cyan"
+STYLE_COMMAND = "bold cyan"
 STYLE_SWITCH = "bold green"
 STYLE_METAVAR = "bold yellow"
 STYLE_METAVAR_APPEND = "dim yellow"
@@ -125,6 +126,7 @@ def _get_rich_console() -> Console:
             {
                 "option": STYLE_OPTION,
                 "argument": STYLE_ARGUMENT,
+                "command": STYLE_COMMAND,
                 "switch": STYLE_SWITCH,
                 "metavar": STYLE_METAVAR,
                 "metavar_sep": STYLE_METAVAR_SEPARATOR,
@@ -362,7 +364,6 @@ def rich_format_help(
 
     # Print command / group help if we have some
     if obj.help:
-
         # Print with some padding
         console.print(
             Padding(
@@ -378,7 +379,6 @@ def rich_format_help(
     argument_group_options = []
 
     for param in obj.get_params(ctx):
-
         # Skip positional arguments - they don't have opts or helptext and are covered in usage
         # See https://click.palletsprojects.com/en/8.0.x/documentation/#documenting-arguments
         if isinstance(param, click.core.Argument) and not SHOW_ARGUMENTS:
@@ -408,10 +408,8 @@ def rich_format_help(
 
     # Print each option group panel
     for option_group in option_groups:
-
         options_rows = []
         for opt in option_group.get("options", []):
-
             # Get the param
             for param in obj.get_params(ctx):
                 if any([opt in param.opts]):
@@ -565,7 +563,7 @@ def rich_format_help(
                 **t_styles,
             )
             # Define formatting in first column, as commands don't match highlighter regex
-            commands_table.add_column(style="bold cyan", no_wrap=True)
+            commands_table.add_column(style=STYLE_COMMAND, no_wrap=True)
             for command in cmd_group.get("commands", []):
                 # Skip if command does not exist
                 if command not in obj.list_commands(ctx):
