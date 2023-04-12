@@ -1,8 +1,27 @@
 # Changelog: rich-click
 
-## Version 1.6.2dev (2023-03-28)
+## Version 1.7.0dev
 
-- Add new style option `STYLE_COMMAND`
+This release comes after merging a huge pull-request from [@BrutalSimplicity](https://github.com/BrutalSimplicity) - see [#92](https://github.com/ewels/rich-click/pull/92)
+
+- Extends Click's `HelpFormatter` class
+- Creates a `HelpConfiguration` class that doubles the current module-level settings
+- Added a decorator that allows the `HelpConfiguration` to be passed into Click via the supported `context_settings` argument provided by the `Command` and `Group` classes.
+- The Rich Console object can also be configured per command and is distinct from the Console instance used internally by the formatter. The `RichHelpFormatter` creates a console based on the `RichHelpConfiguration` as the tight coupling between the Formatter and Click's internals make it difficult to allow the Console to be configured externally (i.e. one example is that Click expects help formatting to be buffered).
+- Created a `RichContext` class to allow creation of the custom formatter.
+- The Rich Command, Group, and Context now expose the `Console` and `RichHelpConfiguration` properties.
+- Added contributor VSCode settings
+
+This PR closes a number of issues:
+
+- [#25](https://github.com/ewels/rich-click/issues/25): Add tests!
+- [#90](https://github.com/ewels/rich-click/issues/90): `click.ClickException` should output to `stderr`
+- [#88](https://github.com/ewels/rich-click/issues/88): Rich Click breaks contract of Click's `format_help` and its callers
+- [#18](https://github.com/ewels/rich-click/issues/18): Options inherited from context settings aren't applied
+
+In addition:
+
+- Add new style option `STYLE_COMMAND` [[#102](https://github.com/ewels/rich-click/pull/102)]
 
 ## Version 1.6.1 (2023-01-19)
 

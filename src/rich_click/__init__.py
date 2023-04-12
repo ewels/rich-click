@@ -5,7 +5,7 @@ The intention is to provide attractive help output from click, formatted with ri
 customisation required.
 """
 
-__version__ = "1.6.1"
+__version__ = "1.7.0dev"
 
 from typing import Any, Callable, cast, Optional, overload, TYPE_CHECKING, Union
 
