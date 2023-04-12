@@ -32,6 +32,7 @@ except ImportError:
 # Default styles
 STYLE_OPTION = "bold cyan"
 STYLE_ARGUMENT = "bold cyan"
+STYLE_COMMAND = "bold cyan"
 STYLE_SWITCH = "bold green"
 STYLE_METAVAR = "bold yellow"
 STYLE_METAVAR_APPEND = "dim yellow"
@@ -282,8 +283,8 @@ def _get_parameter_help(
         # Do it ourselves if this is a positional argument
         if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
             metavar_str = param.type.name.upper()
-        # Skip booleans
-        if metavar_str != "BOOLEAN" or isinstance(param, click.core.Argument):
+        # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option
+        if isinstance(param, click.core.Argument) or (metavar_str != "BOOLEAN" and not param.is_flag):
             metavar_str = metavar_str.replace("[", "").replace("]", "")
             items.append(
                 Text(
@@ -466,8 +467,8 @@ def rich_format_help(
             if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
                 metavar_str = param.type.name.upper()
 
-            # Skip booleans and choices (handled above)
-            if metavar_str != "BOOLEAN" or isinstance(param, click.core.Argument):
+            # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option
+            if isinstance(param, click.core.Argument) or (metavar_str != "BOOLEAN" and not param.is_flag):
                 metavar.append(metavar_str)
 
             # Range - from
@@ -586,7 +587,7 @@ def rich_format_help(
                 **t_styles,
             )
             # Define formatting in first column, as commands don't match highlighter regex
-            commands_table.add_column(style="bold cyan", no_wrap=True)
+            commands_table.add_column(style=STYLE_COMMAND, no_wrap=True)
             for command in cmd_group.get("commands", []):
                 # Skip if command does not exist
                 if command not in obj.list_commands(ctx):
@@ -694,6 +695,7 @@ def get_module_help_configuration() -> RichHelpConfiguration:
     module_config = RichHelpConfiguration(
         STYLE_OPTION,
         STYLE_ARGUMENT,
+        STYLE_COMMAND,
         STYLE_SWITCH,
         STYLE_METAVAR,
         STYLE_METAVAR_APPEND,

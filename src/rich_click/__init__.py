@@ -5,7 +5,7 @@ The intention is to provide attractive help output from click, formatted with ri
 customisation required.
 """
 
-__version__ = "1.6.0.dev0"
+__version__ = "1.6.1"
 
 from typing import Any, Callable, cast, Optional, overload, TYPE_CHECKING, Union
 
@@ -69,7 +69,7 @@ def group(name=None, cls=RichGroup, **attrs) -> Callable[..., RichGroup]:
     return wrapper
 
 
-def command(*args, cls=RichCommand, **kwargs) -> Callable[..., RichCommand]:
+def command(name=None, cls=RichCommand, **attrs) -> Callable[..., RichCommand]:
     """
     Command decorator function.
 
@@ -81,11 +81,15 @@ def command(*args, cls=RichCommand, **kwargs) -> Callable[..., RichCommand]:
             rich_context_settings = getattr(fn, "__rich_context_settings__", {})
             console = rich_context_settings.get("rich_console", None)
             help_config = rich_context_settings.get("help_config", None)
-            context_settings = kwargs.get("context_settings", {})
+            context_settings = attrs.get("context_settings", {})
             context_settings.update(rich_console=console, rich_help_config=help_config)
-            kwargs.update(context_settings=context_settings)
+            attrs.update(context_settings=context_settings)
             del fn.__rich_context_settings__
-        cmd = cast(RichCommand, click_command(*args, cls=cls, **kwargs)(fn))
+        if callable(name) and cls:
+            command = click_group(cls=cls, **attrs)(name)
+        else:
+            command = click_group(name, cls=cls, **attrs)
+        cmd = cast(RichCommand, command(fn))
         return cmd
 
     return wrapper

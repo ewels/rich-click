@@ -1,9 +1,19 @@
 # Changelog: rich-click
 
-## Version 1.6.0.dev0
+## Version 1.6.2dev (2023-03-28)
 
-- Removed support for Typer - please use the [native functionality](https://typer.tiangolo.com/tutorial/options/help/#cli-options-help-panels) instead.
+- Add new style option `STYLE_COMMAND`
+
+## Version 1.6.1 (2023-01-19)
+
+- Don't show metavars for [feature switch](https://click.palletsprojects.com/en/8.1.x/options/#feature-switches) options [[#100](https://github.com/ewels/rich-click/issues/100)] (@likewei92)
+
+## Version 1.6.0 (2022-12-05)
+
+- ⚠️ Removed support for Typer ⚠️
+  - Please use the [native Typer functionality](https://typer.tiangolo.com/tutorial/options/help/#cli-options-help-panels) instead.
 - Added self-updating automated readme screengrabs using [rich-codex](https://github.com/ewels/rich-codex)
+- Fix `AssertionError` when using click command call [[#94](https://github.com/ewels/rich-click/issues/94)]
 
 ## Version 1.5.2 (2022-08-01)
 
@@ -21,8 +31,8 @@
 
 ## Version 1.5.1 (2022-06-22)
 
-- Updated pip release build CI [#78](https://github.com/ewels/rich-click/pull/78)
-- Added missed occurence of return values when `standalone_mode` set [#79](https://github.com/ewels/rich-click/pull/79)
+- Updated pip release build CI [[#78](https://github.com/ewels/rich-click/pull/78)]
+- Added missed occurence of return values when `standalone_mode` set [[#79](https://github.com/ewels/rich-click/pull/79)]
 
 ## Version 1.5 (2022-06-21)
 
@@ -31,8 +41,8 @@
 - Add new `OPTION_ENVVAR_FIRST` config flag to print environment variables before option help texts instead of after (nice for alignment if all options have an env var).
 - Refactor config flag `MAX_WIDTH` to set the console `width` and not individual panels
   - Can now also be set with environment variable `TERMINAL_WIDTH`
-- Fix package syntax in `setup.py` for `py.typed` [#75](https://github.com/ewels/rich-click/pull/75)
-- Fix printing of return values when `standalone_mode` set [#76](https://github.com/ewels/rich-click/pull/76)
+- Fix package syntax in `setup.py` for `py.typed` [[#75](https://github.com/ewels/rich-click/pull/75)]
+- Fix printing of return values when `standalone_mode` set [[#76](https://github.com/ewels/rich-click/pull/76)]
 
 ## Version 1.4 (2022-05-17)
 
