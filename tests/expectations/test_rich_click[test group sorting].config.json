@@ -1,6 +1,7 @@
 {
   "style_option": "bold cyan",
   "style_argument": "bold cyan",
+  "style_command": "bold cyan",
   "style_switch": "bold green",
   "style_metavar": "bold yellow",
   "style_metavar_append": "dim yellow",
