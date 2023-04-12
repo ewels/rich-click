@@ -11,8 +11,9 @@ from typing import Any, Callable, cast, Optional, overload, TYPE_CHECKING, Union
 
 from click import *  # noqa: F401, F403
 from click import Command
-from click import group as click_group
+from click import command as click_command
 from click import Group
+from click import group as click_group
 from rich.console import Console
 
 from . import rich_click  # noqa: F401
@@ -85,9 +86,9 @@ def command(name=None, cls=RichCommand, **attrs) -> Callable[..., RichCommand]:
             attrs.update(context_settings=context_settings)
             del fn.__rich_context_settings__
         if callable(name) and cls:
-            command = click_group(cls=cls, **attrs)(name)
+            command = click_command(cls=cls, **attrs)(name)
         else:
-            command = click_group(name, cls=cls, **attrs)
+            command = click_command(name, cls=cls, **attrs)
         cmd = cast(RichCommand, command(fn))
         return cmd
 
