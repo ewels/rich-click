@@ -387,7 +387,6 @@ def rich_format_help(
 
     # Print command / group help if we have some
     if obj.help:
-
         # Print with some padding
         console.print(
             Padding(
@@ -403,7 +402,6 @@ def rich_format_help(
     argument_group_options = []
 
     for param in obj.get_params(ctx):
-
         # Skip positional arguments - they don't have opts or helptext and are covered in usage
         # See https://click.palletsprojects.com/en/8.0.x/documentation/#documenting-arguments
         if isinstance(param, click.core.Argument) and not config.show_arguments:
@@ -433,10 +431,8 @@ def rich_format_help(
 
     # Print each option group panel
     for option_group in option_groups:
-
         options_rows = []
         for opt in option_group.get("options", []):
-
             # Get the param
             for param in obj.get_params(ctx):
                 if any([opt in param.opts]):

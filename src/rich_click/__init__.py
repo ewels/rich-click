@@ -55,9 +55,9 @@ def group(name=None, cls=RichGroup, **attrs) -> Callable[..., RichGroup]:
             rich_context_settings = getattr(fn, "__rich_context_settings__", {})
             console = rich_context_settings.get("rich_console", None)
             help_config = rich_context_settings.get("help_config", None)
-            context_settings = kwargs.get("context_settings", {})
+            context_settings = attrs.get("context_settings", {})
             context_settings.update(rich_console=console, rich_help_config=help_config)
-            kwargs.update(context_settings=context_settings)
+            attrs.update(context_settings=context_settings)
             del fn.__rich_context_settings__
         if callable(name) and cls:
             group = click_group(cls=cls, **attrs)(name)
