@@ -10,7 +10,6 @@ __version__ = "1.6.1"
 from typing import Any, Callable, cast, Optional, overload, TYPE_CHECKING, Union
 
 from click import *  # noqa: F401, F403
-from click import command as click_command
 from click import Command
 from click import group as click_group
 from click import Group

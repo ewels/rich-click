@@ -32,6 +32,7 @@ class RichHelpConfiguration:
     # Default styles
     style_option: rich.style.StyleType = field(default="bold cyan")
     style_argument: rich.style.StyleType = field(default="bold cyan")
+    style_command: rich.style.StyleType = field(default="bold cyan")
     style_switch: rich.style.StyleType = field(default="bold green")
     style_metavar: rich.style.StyleType = field(default="bold yellow")
     style_metavar_append: rich.style.StyleType = field(default="dim yellow")
