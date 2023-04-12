@@ -1,3 +1,5 @@
+// Example settings file for VSCode with suggested settings.
+// Copy to `settings.jsonc` to use within VSCode
 {
   "python.defaultInterpreterPath": "venv/bin/python",
   "python.testing.pytestPath": "venv/bin/pytest",
