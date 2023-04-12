@@ -20,3 +20,4 @@ jobs:
         with:
           commit_changes: "true"
           clean_img_paths: docs/images/*.svg
+          use_pty: true
