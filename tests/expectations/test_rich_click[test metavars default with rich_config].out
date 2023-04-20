@@ -1,6 +1,6 @@
-Usage: cli [OPTIONS]
-
-
+                                                                                                    
+ Usage: cli [OPTIONS]                                                                               
+                                                                                                    
  My amazing tool does all the things.                                                               
  This is a minimal example based on documentation from the 'click' package.                         
  You can try using --help at the top level and also for specific group subcommands.                 

@@ -1,7 +1,7 @@
 Debug mode is off
-Usage: cli greet [OPTIONS]
-
-
+                                                                                                    
+ Usage: cli greet [OPTIONS]                                                                         
+                                                                                                    
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --username    TEXT  This can be set via env var GREETER_GREET_USERNAME                           │
 │                     [env var: GREETER_GREET_USERNAME]                                            │

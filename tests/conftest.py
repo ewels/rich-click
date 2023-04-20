@@ -1,6 +1,7 @@
 # flake8: noqa D*
 import importlib
 import json
+import os
 import re
 from dataclasses import asdict
 from importlib import reload
@@ -270,7 +271,13 @@ def assert_rich_format(
 
         expectation_output_path = expectations_dir / f"{request.node.name}.out"
         expectation_config_path = expectations_dir / f"{request.node.name}.config.json"
+        if os.getenv("UPDATE_EXPECTATIONS"):
+            with open(expectation_output_path, "w") as stream:
+                stream.write(actual)
         assert_str(actual, expectation_output_path)
+        if os.getenv("UPDATE_EXPECTATIONS"):
+            with open(expectation_config_path, "w") as stream:
+                stream.write(json.dumps(config_to_dict(command.formatter.config), indent=2))
         assert_dicts(config_to_dict(command.formatter.config), expectation_config_path)
 
     return assertion

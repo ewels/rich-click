@@ -108,9 +108,7 @@
   "highlighter": [
     "(^|\\W)(?P<switch>\\-\\w+)(?![a-zA-Z0-9])",
     "(^|\\W)(?P<option>\\-\\-[\\w\\-]+)(?![a-zA-Z0-9])",
-    "(^|\\W)(?P<argument>[A-Z0-9\\_]+)(?![_a-zA-Z0-9])",
-    "(?P<metavar>\\<[^\\>]+\\>)",
-    "(?P<usage>Usage: )"
+    "(?P<metavar>\\<[^\\>]+\\>)"
   ],
   "legacy_windows": false
 }
