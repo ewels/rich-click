@@ -22,6 +22,7 @@ This PR closes a number of issues:
 In addition:
 
 - Add new style option `STYLE_COMMAND` [[#102](https://github.com/ewels/rich-click/pull/102)]
+- Updated syling for `Usage:` line to avoid off-target effects [[#108](https://github.com/ewels/rich-click/issues/108)]
 
 ## Version 1.6.1 (2023-01-19)
 
