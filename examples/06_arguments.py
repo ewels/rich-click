@@ -8,6 +8,9 @@ click.rich_click.SHOW_ARGUMENTS = True
 
 @click.command()
 @click.argument("input", type=click.Path(), required=True)
+@click.argument("output", type=click.Path(), required=True)
+@click.argument("format", type=click.Choice(["yaml", "json"]), required=True)
+@click.argument("flavour", required=False)
 @click.option(
     "--type",
     default="files",
