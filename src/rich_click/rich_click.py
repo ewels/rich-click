@@ -381,12 +381,31 @@ def rich_format_help(
 
     # Header text if we have it
     if config.header_text:
-        console.print(Padding(_make_rich_rext(config.header_text, config.style_header_text, formatter), (1, 1, 0, 1)))
+        console.print(
+            Padding(
+                _make_rich_rext(config.header_text, config.style_header_text, formatter),
+                (1, 1, 0, 1),
+            ),
+        )
+
+    # Highlighter for options and arguments
+    class UsageHighlighter(RegexHighlighter):
+        highlights = [
+            r"(?P<argument>\w+)",
+        ]
+
+    usage_highlighter = UsageHighlighter()
 
     # Print usage
     console.print(
         Padding(
-            "Usage: " + ctx.command_path + " " + " ".join(obj.collect_usage_pieces(ctx)),
+            Columns(
+                (
+                    _make_rich_rext("Usage:", config.style_usage, formatter),
+                    ctx.command_path,
+                    usage_highlighter(" ".join(obj.collect_usage_pieces(ctx))),
+                )
+            ),
             1,
         ),
     )

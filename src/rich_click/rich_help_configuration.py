@@ -20,11 +20,6 @@ class OptionHighlighter(rich.highlighter.RegexHighlighter):
         r"(^|\W)(?P<switch>\-\w+)(?![a-zA-Z0-9])",
         r"(^|\W)(?P<option>\-\-[\w\-]+)(?![a-zA-Z0-9])",
         r"(?P<metavar>\<[^\>]+\>)",
-        # Usage: script.py [OPTIONS] COMMAND [ARGS]...
-        r"(?P<usage>Usage: )",
-        r"Usage:.*\[(?P<option>OPTIONS?)\]",
-        r"Usage:.* (?P<command>COMMANDS?) ",
-        r"Usage:.*\[(?P<option>ARGS?)\]",
     ]
 
 
