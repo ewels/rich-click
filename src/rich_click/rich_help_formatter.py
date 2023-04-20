@@ -33,6 +33,7 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
         theme=rich.theme.Theme(
             {
                 "option": config.style_option,
+                "command": config.style_command,
                 "argument": config.style_argument,
                 "switch": config.style_switch,
                 "metavar": config.style_metavar,

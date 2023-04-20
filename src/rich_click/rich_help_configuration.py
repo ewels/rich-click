@@ -23,7 +23,7 @@ class OptionHighlighter(rich.highlighter.RegexHighlighter):
         # Usage: script.py [OPTIONS] COMMAND [ARGS]...
         r"(?P<usage>Usage: )",
         r"Usage:.*\[(?P<option>OPTIONS?)\]",
-        r"Usage:.* (?P<argument>COMMANDS?) ",
+        r"Usage:.* (?P<command>COMMANDS?) ",
         r"Usage:.*\[(?P<option>ARGS?)\]",
     ]
 
