@@ -379,7 +379,7 @@ def get_rich_usage(
         Padding(
             Columns(
                 (
-                    _make_rich_rext("Usage:", config.style_usage, formatter),
+                    Text("Usage:", style=config.style_usage),
                     ctx.command_path,
                     usage_highlighter(" ".join(obj.collect_usage_pieces(ctx))),
                 )
