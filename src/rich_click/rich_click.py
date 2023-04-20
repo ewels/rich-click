@@ -356,6 +356,39 @@ def _make_command_help(
     return _make_rich_rext(paragraphs[0].strip(), config.style_option_help, formatter)
 
 
+def get_rich_usage(
+    obj: Union[click.Command, click.Group],
+    ctx: click.Context,
+    formatter: click.HelpFormatter,
+):
+    """Get usage text for a command."""
+    formatter = _get_rich_formatter(formatter)
+    config = formatter.config
+    console = formatter.console
+
+    # Highlighter for options and arguments
+    class UsageHighlighter(RegexHighlighter):
+        highlights = [
+            r"(?P<argument>\w+)",
+        ]
+
+    usage_highlighter = UsageHighlighter()
+
+    # Print usage
+    console.print(
+        Padding(
+            Columns(
+                (
+                    _make_rich_rext("Usage:", config.style_usage, formatter),
+                    ctx.command_path,
+                    usage_highlighter(" ".join(obj.collect_usage_pieces(ctx))),
+                )
+            ),
+            1,
+        ),
+    )
+
+
 def rich_format_help(
     obj: Union[click.Command, click.Group],
     ctx: click.Context,
@@ -388,27 +421,8 @@ def rich_format_help(
             ),
         )
 
-    # Highlighter for options and arguments
-    class UsageHighlighter(RegexHighlighter):
-        highlights = [
-            r"(?P<argument>\w+)",
-        ]
-
-    usage_highlighter = UsageHighlighter()
-
     # Print usage
-    console.print(
-        Padding(
-            Columns(
-                (
-                    _make_rich_rext("Usage:", config.style_usage, formatter),
-                    ctx.command_path,
-                    usage_highlighter(" ".join(obj.collect_usage_pieces(ctx))),
-                )
-            ),
-            1,
-        ),
-    )
+    get_rich_usage(obj, ctx, formatter)
 
     # Print command / group help if we have some
     if obj.help:
@@ -661,8 +675,9 @@ def rich_format_error(self: click.ClickException, formatter: Optional[RichHelpFo
     console = formatter.console
     config = formatter.config
     highlighter = formatter.config.highlighter
+    # Print usage
     if getattr(self, "ctx", None) is not None:
-        console.print(Padding(self.ctx.get_usage(), 1))
+        get_rich_usage(self.ctx.command, self.ctx, formatter)
     if config.errors_suggestion:
         console.print(
             Padding(
