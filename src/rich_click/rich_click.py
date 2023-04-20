@@ -384,7 +384,12 @@ def rich_format_help(
         console.print(Padding(_make_rich_rext(config.header_text, config.style_header_text, formatter), (1, 1, 0, 1)))
 
     # Print usage
-    formatter.write_usage(ctx.command_path, " ".join(obj.collect_usage_pieces(ctx)))
+    console.print(
+        Padding(
+            "Usage: " + ctx.command_path + " " + " ".join(obj.collect_usage_pieces(ctx)),
+            1,
+        ),
+    )
 
     # Print command / group help if we have some
     if obj.help:
