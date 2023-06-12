@@ -29,7 +29,7 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
         file: Optional IO stream to write Rich Console output
             Defaults to None.
     """
-    return Console(
+    console = Console(
         theme=rich.theme.Theme(
             {
                 "option": config.style_option,
@@ -44,10 +44,11 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
         highlighter=config.highlighter,
         color_system=config.color_system,
         force_terminal=config.force_terminal,
-        width=config.max_width,
         file=file,
         legacy_windows=config.legacy_windows,
     )
+    console.width = min(config.max_width, console.size.width)
+    return console
 
 
 def get_module_config() -> RichHelpConfiguration:
