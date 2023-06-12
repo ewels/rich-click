@@ -47,7 +47,8 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
         file=file,
         legacy_windows=config.legacy_windows,
     )
-    console.width = min(config.max_width, console.size.width)
+    if isinstance(config.max_width, int):
+        console.width = min(config.max_width, console.size.width)
     return console
 
 
