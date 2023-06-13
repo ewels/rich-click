@@ -1,3 +1,4 @@
+from importlib import reload
 from typing import Optional, Type
 
 import click
@@ -204,6 +205,36 @@ Usage: cli [OPTIONS]
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
     """,
+    )
+
+
+def test_rich_config_max_width(invoke: InvokeCli, assert_str: AssertStr):
+    reload(rc)
+    rc.WIDTH = 100
+    rc.MAX_WIDTH = 64
+
+    @command()
+    def cli():
+        """Some help
+
+        # Header
+        """
+        pass
+
+    result = invoke(cli, "--help")
+
+    assert_str(
+        result.stdout,
+        """
+Usage: cli [OPTIONS]                                            
+                                                                
+ Some help                                                      
+ # Header                                                       
+                                                                
+╭─ Options ────────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                      │
+╰──────────────────────────────────────────────────────────────╯
+        """,
     )
 
 

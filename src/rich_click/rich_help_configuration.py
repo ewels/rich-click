@@ -69,6 +69,9 @@ class RichHelpConfiguration:
     align_errors_panel: rich.align.AlignMethod = field(default="left")
     style_errors_suggestion: rich.style.StyleType = field(default="dim")
     style_aborted: rich.style.StyleType = field(default="red")
+    width: Optional[int] = field(
+        default_factory=lambda: (int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None)  # type: ignore
+    )
     max_width: Optional[int] = field(
         default_factory=lambda: (int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None)  # type: ignore
     )

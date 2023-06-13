@@ -45,6 +45,7 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
         color_system=config.color_system,
         force_terminal=config.force_terminal,
         file=file,
+        width=config.width,
         legacy_windows=config.legacy_windows,
     )
     if isinstance(config.max_width, int):

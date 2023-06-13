@@ -71,7 +71,8 @@ STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 STYLE_ERRORS_SUGGESTION = "dim"
 STYLE_ABORTED = "red"
-MAX_WIDTH = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None  # type: ignore
+WIDTH = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None  # type: ignore
+MAX_WIDTH = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else WIDTH  # type: ignore
 COLOR_SYSTEM: Optional[
     Literal["auto", "standard", "256", "truecolor", "windows"]
 ] = "auto"  # Set to None to disable colors
@@ -773,6 +774,7 @@ def get_module_help_configuration() -> RichHelpConfiguration:
         ALIGN_ERRORS_PANEL,
         STYLE_ERRORS_SUGGESTION,
         STYLE_ABORTED,
+        WIDTH,
         MAX_WIDTH,
         COLOR_SYSTEM,
         FORCE_TERMINAL,
