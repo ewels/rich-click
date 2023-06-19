@@ -1,3 +1,5 @@
+from distutils.version import LooseVersion
+from importlib.metadata import version
 from typing import Optional, Type
 
 import click
@@ -10,6 +12,8 @@ import rich_click.rich_click as rc
 from rich_click import command, rich_config, RichContext, RichHelpConfiguration
 from rich_click.rich_command import RichCommand
 
+rich_version = LooseVersion(version("rich"))
+
 
 @pytest.mark.parametrize(
     "cmd, args, error, rich_config",
@@ -19,7 +23,16 @@ from rich_click.rich_command import RichCommand
         pytest.param("declarative", "--help", None, None, id="test declarative"),
         pytest.param("envvar", "greet --help", None, None, id="test envvar"),
         pytest.param("groups_sorting", "--help", None, None, id="test group sorting"),
-        pytest.param("markdown", "--help", None, None, id="test markdown"),
+        pytest.param(
+            "markdown",
+            "--help",
+            None,
+            None,
+            id="test markdown",
+            marks=pytest.mark.skipif(
+                rich_version < LooseVersion("13.0.0"), reason="Markdown h1 borders are different."
+            ),
+        ),
         pytest.param("metavars_default", "--help", None, None, id="test metavars default"),
         pytest.param("metavars", "--help", None, None, id="test metavars"),
         pytest.param("rich_markup", "--help", None, None, id="test rich markup"),
@@ -113,6 +126,9 @@ from rich_click.rich_command import RichCommand
             None,
             rich_config(help_config=RichHelpConfiguration(use_markdown=True)),
             id="test markdown with rich_config",
+            marks=pytest.mark.skipif(
+                rich_version < LooseVersion("13.0.0"), reason="Markdown h1 borders are different."
+            ),
         ),
         pytest.param(
             "metavars_default",

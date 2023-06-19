@@ -1,22 +1,30 @@
 name: Test Coverage
-on:
-  push:
-  pull_request:
-
+on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: [3.9.x, 3.10.x, 3.11.x]
+        click: [8.0.*, 8.1.*]
+        rich: [12.*, 13.*]
     steps:
-      - name: Checkout
+      - name: Check out the repo
         uses: actions/checkout@v3
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.7.13"
+          python-version: ${{ matrix.python }}
 
-      - name: Install Dependencies
-        run: pip install '.[dev]'
+      - name: Install dependencies
+        run: |
+          pip install '.[dev]'
+          pip install --upgrade "click==$CLICK_VERSION"
+          pip install --upgrade "rich==$RICH_VERSION"
+        env:
+          CLICK_VERSION: ${{ matrix.click }}
+          RICH_VERSION: ${{ matrix.rich }}
 
-      - name: Run Tests
+      - name: Run tests
         run: pytest --cov --cov-report xml
