@@ -6,7 +6,7 @@ jobs:
     strategy:
       matrix:
         python: [3.9.x, 3.10.x, 3.11.x]
-        click: [8.0.*, 8.1.*]
+        click: [7.1.*, 8.0.*, 8.1.*]
         rich: [12.*, 13.*]
     steps:
       - name: Check out the repo

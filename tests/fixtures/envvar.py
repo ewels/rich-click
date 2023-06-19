@@ -31,3 +31,7 @@ def cli(debug):
 )
 def greet(username, nickname, email):
     click.echo(f"Hello {username} ({nickname}) with email {email}!")
+
+
+if __name__ == "__main__":
+    cli()
