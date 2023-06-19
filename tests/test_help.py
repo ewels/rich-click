@@ -244,7 +244,6 @@ def test_rich_config_context_settings(invoke: InvokeCli):
 
 @pytest.mark.skipif(not CLICK_IS_BEFORE_VERSION_8X, reason="This is to test a warning when using for click v7.")
 def test_rich_config_warns_before_click_v8(invoke: InvokeCli):
-
     with pytest.warns(RuntimeWarning, match="does not work with versions of click prior to version 8[.]0[.]0"):
 
         @rich_config(help_config=RichHelpConfiguration())
