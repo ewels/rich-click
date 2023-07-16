@@ -18,6 +18,7 @@ from rich.console import Console
 
 from . import rich_click  # noqa: F401
 
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X as _CLICK_IS_BEFORE_VERSION_8X
 from rich_click.rich_command import RichCommand
 from rich_click.rich_context import RichContext
 from rich_click.rich_group import RichGroup
@@ -110,6 +111,19 @@ def rich_config(console: Optional[Console] = None, help_config: Optional[RichHel
         help_config: Rich help configuration that is used internally to format help messages and exceptions
             Defaults to None.
     """
+    if _CLICK_IS_BEFORE_VERSION_8X:
+
+        def decorator_with_warning(obj):
+            import warnings
+
+            warnings.warn(
+                "`rich_config()` does not work with versions of click prior to version 8.0.0."
+                " Please update to a newer version of click to use this functionality.",
+                RuntimeWarning,
+            )
+            return obj
+
+        return decorator_with_warning
 
     @overload
     def decorator(obj: Union[RichCommand, RichGroup]) -> Union[RichCommand, RichGroup]:

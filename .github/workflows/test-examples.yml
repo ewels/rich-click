@@ -1,17 +1,27 @@
 name: Test Examples
 on: [push, pull_request]
 jobs:
-  test_examples:
+  examples:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: [3.7.x, 3.8.x, 3.9.x, 3.10.x, 3.11.x]
+        click: [7.0.*, 8.0.*, 8.1.*] # Skip click 7.1 since regression coverage is strictly higher in 7.0.
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
 
-      - name: Install rich-click
-        run: pip install .
+      - name: Install rich-click and click
+        run: |
+          pip install .
+          pip install --upgrade "click==$CLICK_VERSION"
+        env:
+          CLICK_VERSION: ${{ matrix.click }}
 
       - name: Test examples
         run: |

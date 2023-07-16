@@ -1,0 +1,25 @@
+                                                                                                    
+ Usage: cli [OPTIONS]                                                                               
+                                                                                                    
+ My amazing tool does all the things.                                                               
+ This is a minimal example based on documentation from the click package.                           
+                                                                                                    
+ ▌ Remember:                                                                                        
+ ▌  • You can try using --help at the top level                                                     
+ ▌  • Also for specific group subcommands.                                                          
+                                                                                                    
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --input    PATH  Input file. [default: a custom default]                                         │
+│ --type     TEXT  Type of file to sync                                                            │
+│                  [default: files]                                                                │
+│ --all            Sync                                                                            │
+│                                                                                                  │
+│                   1 all                                                                          │
+│                   2 the                                                                          │
+│                   3 things?                                                                      │
+│ --debug          ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ │
+│                  ┃                              Enable debug mode                              ┃ │
+│                  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ │
+│ --help           Show this message and exit.                                                     │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+

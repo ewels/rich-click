@@ -1,5 +1,5 @@
 import sys
-from typing import Optional, Type
+from typing import Any, Callable, Optional, overload, Type, Union
 
 import click
 
@@ -17,7 +17,7 @@ class RichGroup(click.Group):
     """
 
     context_class: Type[RichContext] = RichContext
-    command_class = RichCommand
+    command_class: Type[RichCommand] = RichCommand
     group_class = type
 
     def __init__(self, *args, **kwargs):
@@ -77,3 +77,17 @@ class RichGroup(click.Group):
 
     def format_help(self, ctx: click.Context, formatter: click.HelpFormatter):
         rich_format_help(self, ctx, formatter)
+
+    @overload
+    def command(self, __func: Callable[..., Any]) -> click.Command:
+        ...
+
+    @overload
+    def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], click.Command]:
+        ...
+
+    def command(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], click.Command], click.Command]:
+        # This method override is required for Click 7.x compatibility.
+        # (The command_class ClassVar was not added until 8.0.)
+        kwargs.setdefault("cls", self.command_class)
+        return super().command(*args, **kwargs)
