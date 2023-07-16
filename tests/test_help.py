@@ -20,6 +20,7 @@ rich_version = LooseVersion(version("rich"))
     "cmd, args, error, rich_config",
     [
         pytest.param("arguments", "--help", None, None, id="test arguments"),
+        pytest.param("context_settings", "--help", None, None, id="test context_settings"),
         pytest.param("custom_errors", "1", UsageError, None, id="test custom errors help"),
         pytest.param("declarative", "--help", None, None, id="test declarative"),
         pytest.param("envvar", "greet --help", None, None, id="test envvar"),
