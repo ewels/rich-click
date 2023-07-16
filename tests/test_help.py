@@ -9,7 +9,7 @@ from conftest import AssertRichFormat, AssertStr, InvokeCli
 from rich.console import Console
 
 from rich_click import command, rich_config, RichContext, RichHelpConfiguration
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
 from rich_click.rich_command import RichCommand
 
 rich_version = LooseVersion(version("rich"))
@@ -26,9 +26,12 @@ click_version = LooseVersion(version("click"))
             None,
             None,
             id="test context_settings",
-            marks=pytest.mark.skipif(
-                click_version < LooseVersion("7.1.0"), reason="show_default is invalid kwarg for click.Context()."
-            ),
+            marks=[
+                pytest.mark.skipif(
+                    click_version < LooseVersion("7.1.0"), reason="show_default is invalid kwarg for click.Context()."
+                ),
+                pytest.mark.skipif(CLICK_IS_VERSION_80, reason="Options render slightly differently."),
+            ],
         ),
         pytest.param("custom_errors", "1", UsageError, None, id="test custom errors help"),
         pytest.param("declarative", "--help", None, None, id="test declarative"),
