@@ -12,7 +12,6 @@ from rich_click import command, rich_config, RichContext, RichHelpConfiguration
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 from rich_click.rich_command import RichCommand
 
-
 rich_version = LooseVersion(version("rich"))
 click_version = LooseVersion(version("click"))
 

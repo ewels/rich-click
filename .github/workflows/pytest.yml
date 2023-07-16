@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [3.7.x, 3.11.x]  # Only test lowest + highest Python versions supported
+        python: [3.7.x, 3.11.x] # Only test lowest + highest Python versions supported
         click: [7.0.*, 7.1.*, 8.0.*, 8.1.*]
         rich: [12.*, 13.*]
     steps:
