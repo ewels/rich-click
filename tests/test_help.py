@@ -1,4 +1,6 @@
+from distutils.version import LooseVersion
 from importlib import reload
+from importlib.metadata import version
 from typing import Optional, Type
 
 import click
@@ -9,7 +11,10 @@ from rich.console import Console
 
 import rich_click.rich_click as rc
 from rich_click import command, rich_config, RichContext, RichHelpConfiguration
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 from rich_click.rich_command import RichCommand
+
+rich_version = LooseVersion(version("rich"))
 
 
 @pytest.mark.parametrize(
@@ -20,7 +25,16 @@ from rich_click.rich_command import RichCommand
         pytest.param("declarative", "--help", None, None, id="test declarative"),
         pytest.param("envvar", "greet --help", None, None, id="test envvar"),
         pytest.param("groups_sorting", "--help", None, None, id="test group sorting"),
-        pytest.param("markdown", "--help", None, None, id="test markdown"),
+        pytest.param(
+            "markdown",
+            "--help",
+            None,
+            None,
+            id="test markdown",
+            marks=pytest.mark.skipif(
+                rich_version < LooseVersion("13.0.0"), reason="Markdown h1 borders are different."
+            ),
+        ),
         pytest.param("metavars_default", "--help", None, None, id="test metavars default"),
         pytest.param("metavars", "--help", None, None, id="test metavars"),
         pytest.param("rich_markup", "--help", None, None, id="test rich markup"),
@@ -114,6 +128,9 @@ from rich_click.rich_command import RichCommand
             None,
             rich_config(help_config=RichHelpConfiguration(use_markdown=True)),
             id="test markdown with rich_config",
+            marks=pytest.mark.skipif(
+                rich_version < LooseVersion("13.0.0"), reason="Markdown h1 borders are different."
+            ),
         ),
         pytest.param(
             "metavars_default",
@@ -163,12 +180,14 @@ from rich_click.rich_command import RichCommand
         ),
     ],
 )
+@pytest.mark.filterwarnings("ignore:^.*click prior to.*$:RuntimeWarning")
 def test_rich_click(
     cmd: str, args: str, error: Optional[Type[Exception]], rich_config, assert_rich_format: AssertRichFormat
 ):
     assert_rich_format(cmd, args, error, rich_config)
 
 
+@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_8X, reason="rich_config not supported prior to click v8")
 def test_rich_config_decorator_order(invoke: InvokeCli, assert_str: AssertStr):
     @command()
     @rich_config(Console(), RichHelpConfiguration(max_width=80, use_markdown=True))
@@ -238,6 +257,7 @@ Usage: cli [OPTIONS]
     )
 
 
+@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_8X, reason="rich_config not supported prior to click v8")
 def test_rich_config_context_settings(invoke: InvokeCli):
     @click.command(
         cls=RichCommand, context_settings={"rich_console": Console(), "rich_help_config": RichHelpConfiguration()}
@@ -251,3 +271,19 @@ def test_rich_config_context_settings(invoke: InvokeCli):
     result = invoke(cli)
     assert result.exit_code == 0
     assert result.exception is None
+
+
+@pytest.mark.skipif(not CLICK_IS_BEFORE_VERSION_8X, reason="This is to test a warning when using for click v7.")
+def test_rich_config_warns_before_click_v8(invoke: InvokeCli):
+    with pytest.warns(RuntimeWarning, match="does not work with versions of click prior to version 8[.]0[.]0"):
+
+        @rich_config(help_config=RichHelpConfiguration())
+        @click.command("test-cmd")
+        def cli():
+            # Command should still work, regardless.
+            click.echo("hello, world!")
+
+    result = invoke(cli)
+    assert result.exit_code == 0
+    assert result.exception is None
+    assert result.stdout == "hello, world!\n"

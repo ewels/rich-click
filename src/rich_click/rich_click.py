@@ -140,7 +140,8 @@ def _get_rich_formatter(formatter: Optional[click.HelpFormatter] = None) -> Rich
             _formatter = formatter
             return _formatter
 
-    return RichHelpFormatter(config=get_module_help_configuration())
+    _formatter = RichHelpFormatter(config=get_module_help_configuration())
+    return _formatter
 
 
 def _make_rich_rext(

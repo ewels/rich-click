@@ -15,6 +15,7 @@ from click.testing import CliRunner, Result
 from typing_extensions import Protocol
 
 import rich_click.rich_click as rc
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 from rich_click.rich_command import RichCommand
 from rich_click.rich_group import RichGroup
 from rich_click.rich_help_configuration import OptionHighlighter, RichHelpConfiguration
@@ -40,6 +41,11 @@ def expectations_dir(root_dir: Path):
     return root_dir / "expectations"
 
 
+@pytest.fixture
+def click_major_version() -> int:
+    return int(click.__version__.split(".")[0])
+
+
 class AssertStr:
     def __call__(self, actual: str, expectation: Union[str, Path]):
         """Assert strings by normalizining line endings
@@ -61,8 +67,8 @@ def assert_str(request: pytest.FixtureRequest, tmpdir: Path):
                 expected = ""
         else:
             expected = expectation
-        normalized_expected = [line.strip() for line in expected.strip().splitlines() if line.strip()]
-        normalized_actual = [line.strip() for line in actual.strip().splitlines() if line.strip()]
+        normalized_expected = "\n".join([line.strip() for line in expected.strip().splitlines() if line.strip()])
+        normalized_actual = "\n".join([line.strip() for line in actual.strip().splitlines() if line.strip()])
 
         try:
             assert normalized_expected == normalized_actual
@@ -109,6 +115,7 @@ def assert_dicts(request: pytest.FixtureRequest, tmpdir: Path):
         # need to perform a roundtrip to convert to
         # supported json data types (i.e. tuple -> list, datetime -> str, etc...)
         actual = roundtrip(actual)
+
         try:
             assert actual == expected
         except Exception:
@@ -131,6 +138,13 @@ def initialize_rich_click():
     # default config settings from https://github.com/Textualize/rich/blob/master/tests/render.py
     rc.WIDTH = 100
     rc.COLOR_SYSTEM = "truecolor"
+
+    # Click <8 tests fail unless we set the COLOR_SYSTEM to None.
+    if CLICK_IS_BEFORE_VERSION_8X:
+        rc.COLOR_SYSTEM = None
+    else:
+        rc.COLOR_SYSTEM = "truecolor"
+
     rc.FORCE_TERMINAL = True
 
 
@@ -236,6 +250,7 @@ def assert_rich_format(
     load_command,
     assert_dicts,
     assert_str,
+    click_major_version,
 ):
     def config_to_dict(config: RichHelpConfiguration):
         config_dict = asdict(config)
@@ -264,14 +279,19 @@ def assert_rich_format(
         result = invoke(command, args)
 
         assert command.formatter is not None
+
         if error:
             assert isinstance(result.exception, error)
-            actual = replace_link_ids(command.formatter.getvalue())
+            assert result.exit_code != 0
+            if CLICK_IS_BEFORE_VERSION_8X:
+                actual = replace_link_ids(result.stdout)
+            else:
+                actual = replace_link_ids(command.formatter.getvalue())
         else:
             actual = replace_link_ids(result.stdout)
 
-        expectation_output_path = expectations_dir / f"{request.node.name}.out"
-        expectation_config_path = expectations_dir / f"{request.node.name}.config.json"
+        expectation_output_path = expectations_dir / f"{request.node.name}-click{click_major_version}.out"
+        expectation_config_path = expectations_dir / f"{request.node.name}-click{click_major_version}.config.json"
         if os.getenv("UPDATE_EXPECTATIONS"):
             with open(expectation_output_path, "w") as stream:
                 stream.write(actual)

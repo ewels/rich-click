@@ -11,11 +11,18 @@ import rich.text
 import rich.theme
 from rich.console import Console
 
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 from rich_click.rich_help_configuration import RichHelpConfiguration
 
 
 class TerminalBuffer(StringIO):
     """String buffer that should be detected as a terminal device."""
+
+    def write(self, __s: str) -> int:
+        if CLICK_IS_BEFORE_VERSION_8X:
+            return sys.stdout.write(__s)
+        else:
+            return super().write(__s)
 
     def isatty(self) -> bool:
         return sys.stdout.isatty()
