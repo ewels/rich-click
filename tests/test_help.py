@@ -1,5 +1,4 @@
 from distutils.version import LooseVersion
-from importlib.metadata import version
 from typing import Optional, Type
 
 import click
@@ -12,8 +11,15 @@ from rich_click import command, rich_config, RichContext, RichHelpConfiguration
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
 from rich_click.rich_command import RichCommand
 
-rich_version = LooseVersion(version("rich"))
-click_version = LooseVersion(version("click"))
+try:
+    from importlib import metadata  # type: ignore
+except ImportError:
+    # Python < 3.8
+    import importlib_metadata as metadata  # type: ignore
+
+
+rich_version = LooseVersion(metadata.version("rich"))
+click_version = LooseVersion(metadata.version("click"))
 
 
 @pytest.mark.parametrize(
