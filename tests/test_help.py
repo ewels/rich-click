@@ -1,19 +1,18 @@
-from distutils.version import LooseVersion
-from importlib.metadata import version
+from importlib import metadata  # type: ignore
 from typing import Optional, Type
 
 import click
 import pytest
 from click import UsageError
 from conftest import AssertRichFormat, AssertStr, InvokeCli
+from packaging import version
 from rich.console import Console
 
-import rich_click.rich_click as rc
 from rich_click import command, rich_config, RichContext, RichHelpConfiguration
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 from rich_click.rich_command import RichCommand
 
-rich_version = LooseVersion(version("rich"))
+rich_version = version.parse(metadata.version("rich"))
 
 
 @pytest.mark.parametrize(
@@ -31,7 +30,7 @@ rich_version = LooseVersion(version("rich"))
             None,
             id="test markdown",
             marks=pytest.mark.skipif(
-                rich_version < LooseVersion("13.0.0"), reason="Markdown h1 borders are different."
+                rich_version < version.parse("13.0.0"), reason="Markdown h1 borders are different."
             ),
         ),
         pytest.param("metavars_default", "--help", None, None, id="test metavars default"),
@@ -128,7 +127,7 @@ rich_version = LooseVersion(version("rich"))
             rich_config(help_config=RichHelpConfiguration(use_markdown=True)),
             id="test markdown with rich_config",
             marks=pytest.mark.skipif(
-                rich_version < LooseVersion("13.0.0"), reason="Markdown h1 borders are different."
+                rich_version < version.parse("13.0.0"), reason="Markdown h1 borders are different."
             ),
         ),
         pytest.param(
