@@ -477,6 +477,9 @@ and [mypy docs](https://mypy.readthedocs.io/en/stable/common_issues.html#spuriou
 
 This package was written by Phil Ewels ([@ewels](http://github.com/ewels/)),
 based on initial code by Will McGugan ([@willmcgugan](https://github.com/willmcgugan)).
+
+rich-click is co-maintained by [@dwreeves](http://github.com/dwreeves/).
+
 Furthermore, these contributors helped make the package what it is today:
 
 - [@harens](http://github.com/harens/)
