@@ -67,7 +67,7 @@ STYLE_COMMANDS_TABLE_PADDING = (0, 1)
 STYLE_COMMANDS_TABLE_BOX = ""
 STYLE_COMMANDS_TABLE_ROW_STYLES = None
 STYLE_COMMANDS_TABLE_BORDER_STYLE = None
-STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO: Optional[tuple[int, int]] = None
+STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (None, None)
 STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 STYLE_ERRORS_SUGGESTION = "dim"
@@ -628,18 +628,15 @@ def rich_format_help(
             )
             # Define formatting in first column, as commands don't match highlighter regex
             # and set column ratio for first and second column, if a ratio has been set
-            if STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO:
-                commands_table.add_column(
-                    style="bold cyan",
-                    no_wrap=True,
-                    ratio=STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO[0],
-                )
-                commands_table.add_column(
-                    no_wrap=False,
-                    ratio=STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO[1],
-                )
-            else:
-                commands_table.add_column(style=STYLE_COMMAND, no_wrap=True)
+            commands_table.add_column(
+                style="bold cyan",
+                no_wrap=True,
+                ratio=STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO[0],
+            )
+            commands_table.add_column(
+                no_wrap=False,
+                ratio=STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO[1],
+            )
             for command in cmd_group.get("commands", []):
                 # Skip if command does not exist
                 if command not in obj.list_commands(ctx):
