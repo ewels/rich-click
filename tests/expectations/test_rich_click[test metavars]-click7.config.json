@@ -34,6 +34,7 @@
   "style_commands_table_pad_edge": false,
   "style_commands_table_padding": [0, 1],
   "style_commands_table_box": "",
+  "style_commands_table_column_width_ratio": null,
   "style_commands_table_row_styles": null,
   "style_commands_table_border_style": null,
   "style_errors_panel_border": "red",
