@@ -34,7 +34,7 @@
   "style_commands_table_pad_edge": false,
   "style_commands_table_padding": [0, 1],
   "style_commands_table_box": "",
-  "style_commands_table_column_width_ratio": [null, null],
+  "style_commands_table_column_width_ratio": [1, 2],
   "style_commands_table_row_styles": null,
   "style_commands_table_border_style": null,
   "style_errors_panel_border": "red",
@@ -42,7 +42,7 @@
   "style_errors_suggestion": "dim",
   "style_aborted": "red",
   "max_width": 100,
-  "color_system": null,
+  "color_system": "truecolor",
   "force_terminal": true,
   "header_text": null,
   "footer_text": null,
@@ -60,7 +60,7 @@
   "errors_suggestion": null,
   "errors_epilogue": null,
   "aborted_text": "Aborted.",
-  "show_arguments": true,
+  "show_arguments": false,
   "show_metavars_column": true,
   "append_metavars_help": false,
   "group_arguments_options": false,
@@ -68,8 +68,43 @@
   "use_markdown": false,
   "use_markdown_emoji": true,
   "use_rich_markup": false,
-  "command_groups": {},
-  "option_groups": {},
+  "command_groups": {
+    "cli": [
+      {
+        "name": "Main usage",
+        "commands": ["sync", "download"]
+      },
+      {
+        "name": "Configuration",
+        "commands": ["config", "auth"]
+      }
+    ]
+  },
+  "option_groups": {
+    "cli": [
+      {
+        "name": "Basic usage",
+        "options": ["--type", "--output"]
+      },
+      {
+        "name": "Advanced options",
+        "options": ["--help", "--version", "--debug"],
+        "table_styles": {
+          "row_styles": ["bold", "yellow", "cyan"]
+        }
+      }
+    ],
+    "cli sync": [
+      {
+        "name": "Inputs and outputs",
+        "options": ["--input", "--output"]
+      },
+      {
+        "name": "Advanced usage",
+        "options": ["--overwrite", "--all", "--help"]
+      }
+    ]
+  },
   "use_click_short_help": false,
   "highlighter": [
     "(^|\\W)(?P<switch>\\-\\w+)(?![a-zA-Z0-9])",

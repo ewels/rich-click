@@ -270,6 +270,10 @@ It accepts a list of options / commands which means you can also choose a custom
 
 ![`python examples/03_groups_sorting.py --help`](docs/images/command_groups.svg "Command groups")
 
+When grouping subcommands into more than one group (in above example: 'Main usage' and 'Configuration') you may find that the automatically calculated widths of different groups do not line up, due to varying option name lengths.
+
+You can avoid this by enforcing the alignment of the help text across groups by setting `click.rich_click.STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (1, 2)`. This results in a fixed ratio of 1:2 for the width of command name and help text column.
+
 > See [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py) for a full example.
 
 ### Options
@@ -402,6 +406,7 @@ STYLE_COMMANDS_TABLE_PADDING = (0, 1)
 STYLE_COMMANDS_TABLE_BOX = ""
 STYLE_COMMANDS_TABLE_ROW_STYLES = None
 STYLE_COMMANDS_TABLE_BORDER_STYLE = None
+STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = None  # Set to a tuple[int, int] to define a column width ratio
 STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 STYLE_ERRORS_SUGGESTION = "dim"
