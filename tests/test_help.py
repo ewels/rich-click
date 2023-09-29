@@ -23,6 +23,7 @@ rich_version = version.parse(metadata.version("rich"))
         pytest.param("declarative", "--help", None, None, id="test declarative"),
         pytest.param("envvar", "greet --help", None, None, id="test envvar"),
         pytest.param("groups_sorting", "--help", None, None, id="test group sorting"),
+        pytest.param("table_alignment", "--help", None, None, id="test command column alignment"),
         pytest.param(
             "markdown",
             "--help",
