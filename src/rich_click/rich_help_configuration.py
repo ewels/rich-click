@@ -65,6 +65,7 @@ class RichHelpConfiguration:
     style_commands_table_box: rich.style.StyleType = field(default="")
     style_commands_table_row_styles: Optional[List[rich.style.StyleType]] = field(default=None)
     style_commands_table_border_style: Optional[rich.style.StyleType] = field(default=None)
+    style_commands_table_column_width_ratio: Optional[rich.style.StyleType] = field(default_factory=lambda: (None, None))
     style_errors_panel_border: rich.style.StyleType = field(default="red")
     align_errors_panel: rich.align.AlignMethod = field(default="left")
     style_errors_suggestion: rich.style.StyleType = field(default="dim")
