@@ -270,7 +270,7 @@ It accepts a list of options / commands which means you can also choose a custom
 
 ![`python examples/03_groups_sorting.py --help`](docs/images/command_groups.svg "Command groups")
 
-When grouping subcommands into more than one group (in above example: 'Main usage' and 'Configuration'), you can also enforce the alignment of the help text across these groups by setting `click.rich_click.STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (1, 2)`. This results in a fixed ratio of 1:2 for the width of command name and help text column. 
+When grouping subcommands into more than one group (in above example: 'Main usage' and 'Configuration'), you can also enforce the alignment of the help text across these groups by setting `click.rich_click.STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (1, 2)`. This results in a fixed ratio of 1:2 for the width of command name and help text column.
 
 > See [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py) for a full example.
 
