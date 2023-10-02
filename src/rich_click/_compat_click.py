@@ -1,7 +1,17 @@
-import click
-from packaging import version
+try:
+    from importlib import metadata  # type: ignore
+except ImportError:
+    # Python < 3.8
+    import importlib_metadata as metadata  # type: ignore
 
-CLICK_IS_BEFORE_VERSION_8X = version.parse(click.__version__) < version.parse("8.0.0")
+
+click_version = metadata.version("click")
+_major = int(click_version.split(".")[0])
+_minor = int(click_version.split(".")[1])
+
+
+CLICK_IS_BEFORE_VERSION_8X = _major < 8
+CLICK_IS_VERSION_80 = _major == 8 and _minor == 0
 
 
 if CLICK_IS_BEFORE_VERSION_8X:

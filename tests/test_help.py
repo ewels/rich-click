@@ -1,4 +1,3 @@
-from importlib import metadata  # type: ignore
 from typing import Optional, Type
 
 import click
@@ -9,16 +8,37 @@ from packaging import version
 from rich.console import Console
 
 from rich_click import command, rich_config, RichContext, RichHelpConfiguration
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
 from rich_click.rich_command import RichCommand
 
+try:
+    from importlib import metadata  # type: ignore
+except ImportError:
+    # Python < 3.8
+    import importlib_metadata as metadata  # type: ignore
+
+
 rich_version = version.parse(metadata.version("rich"))
+click_version = version.parse(metadata.version("click"))
 
 
 @pytest.mark.parametrize(
     "cmd, args, error, rich_config",
     [
         pytest.param("arguments", "--help", None, None, id="test arguments"),
+        pytest.param(
+            "context_settings",
+            "--help",
+            None,
+            None,
+            id="test context_settings",
+            marks=[
+                pytest.mark.skipif(
+                    click_version < version.parse("7.1.0"), reason="show_default is invalid kwarg for click.Context()."
+                ),
+                pytest.mark.skipif(CLICK_IS_VERSION_80, reason="Options render slightly differently."),
+            ],
+        ),
         pytest.param("custom_errors", "1", UsageError, None, id="test custom errors help"),
         pytest.param("declarative", "--help", None, None, id="test declarative"),
         pytest.param("envvar", "greet --help", None, None, id="test envvar"),

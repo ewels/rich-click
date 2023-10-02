@@ -20,6 +20,7 @@ from rich.table import Table
 from rich.text import Text
 from typing_extensions import Literal
 
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
 from rich_click.rich_help_configuration import OptionHighlighter, RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
 
@@ -301,13 +302,25 @@ def _get_parameter_help(
         items.append(Text(config.envvar_string.format(envvar), style=config.style_option_envvar))
 
     # Default value
-    if getattr(param, "show_default", None):
-        # param.default is the value, but click is a bit clever in choosing what to show here
-        # eg. --debug/--no-debug, default=False will show up as [default: no-debug] instead of [default: False]
-        # To avoid duplicating loads of code, let's just pull out the string from click with a regex
-        # Example outputs from param.get_help_record(ctx)[-1] are:
-        #     [default: foo]
-        #     [env var: EMAIL, EMAIL_ADDRESS; default: foo]
+    # Click 7.x, 8.0, and 8.1 all behave slightly differently when handling the default value help text.
+    if CLICK_IS_BEFORE_VERSION_8X:
+        parse_default = param.default is not None and (param.show_default or getattr(ctx, "show_default", None))
+    elif CLICK_IS_VERSION_80:
+        show_default_is_str = isinstance(getattr(param, "show_default", None), str)
+        parse_default = show_default_is_str or (param.default is not None and (param.show_default or ctx.show_default))
+    else:
+        show_default = False
+        show_default_is_str = False
+        if getattr(param, "show_default", None) is not None:
+            if isinstance(param.show_default, str):
+                show_default_is_str = show_default = True
+            else:
+                show_default = param.show_default
+        else:
+            show_default = getattr(ctx, "show_default", False)
+        parse_default = bool(show_default_is_str or (show_default and (param.default is not None)))
+
+    if parse_default:
         default_str_match = re.search(r"\[(?:.+; )?default: (.*)\]", param.get_help_record(ctx)[-1])
         if default_str_match:
             # Don't show the required string, as we show that afterwards anyway
