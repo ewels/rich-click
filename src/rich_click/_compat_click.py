@@ -6,11 +6,12 @@ except ImportError:
 
 
 click_version = metadata.version("click")
-_major, _minor, *_ = click_version.split(".")
+_major = int(click_version.split(".")[0])
+_minor = int(click_version.split(".")[1])
 
 
-CLICK_IS_BEFORE_VERSION_8X = _major < "8"
-CLICK_IS_VERSION_80 = _major == "8" and _minor == "0"
+CLICK_IS_BEFORE_VERSION_8X = _major < 8
+CLICK_IS_VERSION_80 = _major == 8 and _minor == 0
 
 
 if CLICK_IS_BEFORE_VERSION_8X:
