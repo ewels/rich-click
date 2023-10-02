@@ -1,4 +1,3 @@
-from importlib import reload
 from typing import Optional, Type
 
 import click
@@ -249,7 +248,6 @@ Usage: cli [OPTIONS]
 
 
 def test_rich_config_max_width(invoke: InvokeCli, assert_str: AssertStr):
-    reload(rc)
     rc.WIDTH = 100
     rc.MAX_WIDTH = 64
 
