@@ -41,9 +41,8 @@
   "align_errors_panel": "left",
   "style_errors_suggestion": "dim",
   "style_aborted": "red",
-  "width": 100,
-  "max_width": null,
-  "color_system": "truecolor",
+  "max_width": 100,
+  "color_system": null,
   "force_terminal": true,
   "header_text": null,
   "footer_text": null,
@@ -69,43 +68,8 @@
   "use_markdown": false,
   "use_markdown_emoji": true,
   "use_rich_markup": false,
-  "command_groups": {
-    "cli": [
-      {
-        "name": "Main usage",
-        "commands": ["sync", "download"]
-      },
-      {
-        "name": "Configuration",
-        "commands": ["config", "auth"]
-      }
-    ]
-  },
-  "option_groups": {
-    "cli": [
-      {
-        "name": "Basic usage",
-        "options": ["--type", "--output"]
-      },
-      {
-        "name": "Advanced options",
-        "options": ["--help", "--version", "--debug"],
-        "table_styles": {
-          "row_styles": ["bold", "yellow", "cyan"]
-        }
-      }
-    ],
-    "cli sync": [
-      {
-        "name": "Inputs and outputs",
-        "options": ["--input", "--output"]
-      },
-      {
-        "name": "Advanced usage",
-        "options": ["--overwrite", "--all", "--help"]
-      }
-    ]
-  },
+  "command_groups": {},
+  "option_groups": {},
   "use_click_short_help": false,
   "highlighter": [
     "(^|\\W)(?P<switch>\\-\\w+)(?![a-zA-Z0-9])",

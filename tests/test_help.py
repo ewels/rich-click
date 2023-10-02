@@ -1,30 +1,51 @@
-from distutils.version import LooseVersion
 from importlib import reload
-from importlib.metadata import version
 from typing import Optional, Type
 
 import click
 import pytest
 from click import UsageError
 from conftest import AssertRichFormat, AssertStr, InvokeCli
+from packaging import version
 from rich.console import Console
 
 import rich_click.rich_click as rc
 from rich_click import command, rich_config, RichContext, RichHelpConfiguration
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
 from rich_click.rich_command import RichCommand
 
-rich_version = LooseVersion(version("rich"))
+try:
+    from importlib import metadata  # type: ignore
+except ImportError:
+    # Python < 3.8
+    import importlib_metadata as metadata  # type: ignore
+
+
+rich_version = version.parse(metadata.version("rich"))
+click_version = version.parse(metadata.version("click"))
 
 
 @pytest.mark.parametrize(
     "cmd, args, error, rich_config",
     [
         pytest.param("arguments", "--help", None, None, id="test arguments"),
+        pytest.param(
+            "context_settings",
+            "--help",
+            None,
+            None,
+            id="test context_settings",
+            marks=[
+                pytest.mark.skipif(
+                    click_version < version.parse("7.1.0"), reason="show_default is invalid kwarg for click.Context()."
+                ),
+                pytest.mark.skipif(CLICK_IS_VERSION_80, reason="Options render slightly differently."),
+            ],
+        ),
         pytest.param("custom_errors", "1", UsageError, None, id="test custom errors help"),
         pytest.param("declarative", "--help", None, None, id="test declarative"),
         pytest.param("envvar", "greet --help", None, None, id="test envvar"),
         pytest.param("groups_sorting", "--help", None, None, id="test group sorting"),
+        pytest.param("table_alignment", "--help", None, None, id="test command column alignment"),
         pytest.param(
             "markdown",
             "--help",
@@ -32,7 +53,7 @@ rich_version = LooseVersion(version("rich"))
             None,
             id="test markdown",
             marks=pytest.mark.skipif(
-                rich_version < LooseVersion("13.0.0"), reason="Markdown h1 borders are different."
+                rich_version < version.parse("13.0.0"), reason="Markdown h1 borders are different."
             ),
         ),
         pytest.param("metavars_default", "--help", None, None, id="test metavars default"),
@@ -129,7 +150,7 @@ rich_version = LooseVersion(version("rich"))
             rich_config(help_config=RichHelpConfiguration(use_markdown=True)),
             id="test markdown with rich_config",
             marks=pytest.mark.skipif(
-                rich_version < LooseVersion("13.0.0"), reason="Markdown h1 borders are different."
+                rich_version < version.parse("13.0.0"), reason="Markdown h1 borders are different."
             ),
         ),
         pytest.param(

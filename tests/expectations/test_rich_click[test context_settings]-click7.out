@@ -1,0 +1,14 @@
+                                                                                                    
+ Usage: cli [OPTIONS]                                                                               
+                                                                                                    
+ Test cases for context_settings.                                                                   
+ Note that in click < 8.1, '[default: False]' shows for "--help".                                   
+                                                                                                    
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --a       TEXT  This works in all supported click versions. [default: show me always]            │
+│ --b       TEXT  This works in all supported click versions. [default: show me always]            │
+│ --c       TEXT  Hide default only in click>=8.1 [default: show me in old versions]               │
+│ --d       TEXT  Show 'default: (show me in c8+)' in click>=8.0. In click 7, no default is shown. │
+│ --help          Show this message and exit. [default: False]                                     │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+

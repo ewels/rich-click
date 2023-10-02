@@ -20,6 +20,7 @@ from rich.table import Table
 from rich.text import Text
 from typing_extensions import Literal
 
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
 from rich_click.rich_help_configuration import OptionHighlighter, RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
 
@@ -67,6 +68,7 @@ STYLE_COMMANDS_TABLE_PADDING = (0, 1)
 STYLE_COMMANDS_TABLE_BOX = ""
 STYLE_COMMANDS_TABLE_ROW_STYLES = None
 STYLE_COMMANDS_TABLE_BORDER_STYLE = None
+STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (None, None)
 STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 STYLE_ERRORS_SUGGESTION = "dim"
@@ -301,13 +303,25 @@ def _get_parameter_help(
         items.append(Text(config.envvar_string.format(envvar), style=config.style_option_envvar))
 
     # Default value
-    if getattr(param, "show_default", None):
-        # param.default is the value, but click is a bit clever in choosing what to show here
-        # eg. --debug/--no-debug, default=False will show up as [default: no-debug] instead of [default: False]
-        # To avoid duplicating loads of code, let's just pull out the string from click with a regex
-        # Example outputs from param.get_help_record(ctx)[-1] are:
-        #     [default: foo]
-        #     [env var: EMAIL, EMAIL_ADDRESS; default: foo]
+    # Click 7.x, 8.0, and 8.1 all behave slightly differently when handling the default value help text.
+    if CLICK_IS_BEFORE_VERSION_8X:
+        parse_default = param.default is not None and (param.show_default or getattr(ctx, "show_default", None))
+    elif CLICK_IS_VERSION_80:
+        show_default_is_str = isinstance(getattr(param, "show_default", None), str)
+        parse_default = show_default_is_str or (param.default is not None and (param.show_default or ctx.show_default))
+    else:
+        show_default = False
+        show_default_is_str = False
+        if getattr(param, "show_default", None) is not None:
+            if isinstance(param.show_default, str):
+                show_default_is_str = show_default = True
+            else:
+                show_default = param.show_default
+        else:
+            show_default = getattr(ctx, "show_default", False)
+        parse_default = bool(show_default_is_str or (show_default and (param.default is not None)))
+
+    if parse_default:
         default_str_match = re.search(r"\[(?:.+; )?default: (.*)\]", param.get_help_record(ctx)[-1])
         if default_str_match:
             # Don't show the required string, as we show that afterwards anyway
@@ -627,7 +641,16 @@ def rich_format_help(
                 **t_styles,
             )
             # Define formatting in first column, as commands don't match highlighter regex
-            commands_table.add_column(style=STYLE_COMMAND, no_wrap=True)
+            # and set column ratio for first and second column, if a ratio has been set
+            commands_table.add_column(
+                style="bold cyan",
+                no_wrap=True,
+                ratio=STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO[0],
+            )
+            commands_table.add_column(
+                no_wrap=False,
+                ratio=STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO[1],
+            )
             for command in cmd_group.get("commands", []):
                 # Skip if command does not exist
                 if command not in obj.list_commands(ctx):
@@ -771,6 +794,7 @@ def get_module_help_configuration() -> RichHelpConfiguration:
         STYLE_COMMANDS_TABLE_BOX,
         STYLE_COMMANDS_TABLE_ROW_STYLES,
         STYLE_COMMANDS_TABLE_BORDER_STYLE,
+        STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO,
         STYLE_ERRORS_PANEL_BORDER,
         ALIGN_ERRORS_PANEL,
         STYLE_ERRORS_SUGGESTION,
