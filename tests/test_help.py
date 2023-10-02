@@ -7,6 +7,7 @@ from conftest import AssertRichFormat, AssertStr, InvokeCli
 from packaging import version
 from rich.console import Console
 
+import rich_click.rich_click as rc
 from rich_click import command, rich_config, RichContext, RichHelpConfiguration
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
 from rich_click.rich_command import RichCommand
@@ -243,6 +244,35 @@ Usage: cli [OPTIONS]
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
     """,
+    )
+
+
+def test_rich_config_max_width(invoke: InvokeCli, assert_str: AssertStr):
+    rc.WIDTH = 100
+    rc.MAX_WIDTH = 64
+
+    @command()
+    def cli():
+        """Some help
+
+        # Header
+        """
+        pass
+
+    result = invoke(cli, "--help")
+
+    assert_str(
+        result.stdout,
+        """
+Usage: cli [OPTIONS]                                            
+                                                                
+ Some help                                                      
+ # Header                                                       
+                                                                
+╭─ Options ────────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                      │
+╰──────────────────────────────────────────────────────────────╯
+        """,
     )
 
 

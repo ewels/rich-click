@@ -136,13 +136,15 @@ def initialize_rich_click():
     # each test
     reload(rc)
     # default config settings from https://github.com/Textualize/rich/blob/master/tests/render.py
-    rc.MAX_WIDTH = 100
+    rc.WIDTH = 100
+    rc.COLOR_SYSTEM = "truecolor"
 
     # Click <8 tests fail unless we set the COLOR_SYSTEM to None.
     if CLICK_IS_BEFORE_VERSION_8X:
         rc.COLOR_SYSTEM = None
     else:
         rc.COLOR_SYSTEM = "truecolor"
+
     rc.FORCE_TERMINAL = True
 
 
@@ -271,6 +273,7 @@ def assert_rich_format(
             help_config: Optional[RichHelpConfiguration] = command.context_settings.get("rich_help_config")
             if help_config:
                 help_config.color_system = rc.COLOR_SYSTEM
+                help_config.width = rc.WIDTH
                 help_config.max_width = rc.MAX_WIDTH
                 help_config.force_terminal = rc.FORCE_TERMINAL
         result = invoke(command, args)

@@ -224,11 +224,19 @@ click.rich_click.ERRORS_EPILOGUE = "To find out more, visit [link=https://mytool
 The default behaviour of rich-click is to use the full width of the terminal for output.
 However, if you've carefully crafted your help texts for the default narrow click output, you may find that you now have a lot of whitespace at the side of the panels.
 
-To limit the maximum width of the help output, set `MAX_WIDTH` in characters, as follows:
+To limit the maximum width of the help output, regardless of the terminal size, set `WIDTH` in characters as follows:
 
 ```python
-click.rich_click.MAX_WIDTH = 100
+click.rich_click.WIDTH = 128
 ```
+
+To still use the full width of the terminal up to a certain limit, set `MAX_WIDTH` in characters as follows:
+
+```python
+click.rich_click.MAX_WIDTH = 96
+```
+
+Setting `MAX_WIDTH` overrides the effect of `WIDTH`
 
 ### Styling
 
@@ -411,7 +419,8 @@ STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 STYLE_ERRORS_SUGGESTION = "dim"
 STYLE_ABORTED = "red"
-MAX_WIDTH = None  # Set to an int to limit to that many characters
+WIDTH = None  # Set to int for a fixed character limit regardless of the terminal width
+MAX_WIDTH = None  # Set to int for a max character limit that is less than the terminal width. Overrides WIDTH limit
 COLOR_SYSTEM = "auto"  # Set to None to disable colors
 
 # Fixed strings
