@@ -83,6 +83,7 @@ In addition:
 - Add support of new click `hidden` command parameter [[#62](https://github.com/ewels/rich-click/pull/62)]
 - Don't show Typer positional arguments unless `SHOW_ARGUMENTS` is specified [[#59](https://github.com/ewels/rich-click/issues/59)]
 - Fix `\f` escape marker for new versions of Click, including in markdown [[#60](https://github.com/ewels/rich-click/issues/60)]
+- New config option `STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO` to fix column widths across groups [[#119](https://github.com/ewels/rich-click/issues/119)]
 
 ## Version 1.3.0 (2022-03-29)
 

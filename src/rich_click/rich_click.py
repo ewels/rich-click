@@ -68,6 +68,7 @@ STYLE_COMMANDS_TABLE_PADDING = (0, 1)
 STYLE_COMMANDS_TABLE_BOX = ""
 STYLE_COMMANDS_TABLE_ROW_STYLES = None
 STYLE_COMMANDS_TABLE_BORDER_STYLE = None
+STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (None, None)
 STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 STYLE_ERRORS_SUGGESTION = "dim"
@@ -639,7 +640,16 @@ def rich_format_help(
                 **t_styles,
             )
             # Define formatting in first column, as commands don't match highlighter regex
-            commands_table.add_column(style=STYLE_COMMAND, no_wrap=True)
+            # and set column ratio for first and second column, if a ratio has been set
+            commands_table.add_column(
+                style="bold cyan",
+                no_wrap=True,
+                ratio=STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO[0],
+            )
+            commands_table.add_column(
+                no_wrap=False,
+                ratio=STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO[1],
+            )
             for command in cmd_group.get("commands", []):
                 # Skip if command does not exist
                 if command not in obj.list_commands(ctx):
@@ -783,6 +793,7 @@ def get_module_help_configuration() -> RichHelpConfiguration:
         STYLE_COMMANDS_TABLE_BOX,
         STYLE_COMMANDS_TABLE_ROW_STYLES,
         STYLE_COMMANDS_TABLE_BORDER_STYLE,
+        STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO,
         STYLE_ERRORS_PANEL_BORDER,
         ALIGN_ERRORS_PANEL,
         STYLE_ERRORS_SUGGESTION,

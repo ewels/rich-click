@@ -26,7 +26,7 @@ class RichCommand(click.Command):
         Docs reference: https://click.palletsprojects.com/
         """
         super().__init__(*args, **kwargs)
-        self._formatter: Optional[RichHelpFormatter] = None
+        self._formatter: Optional[RichHelpFormatter] = None  # type: ignore[annotation-unchecked]
 
     @property
     def console(self):

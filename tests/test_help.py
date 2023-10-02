@@ -1,10 +1,10 @@
-from distutils.version import LooseVersion
 from typing import Optional, Type
 
 import click
 import pytest
 from click import UsageError
 from conftest import AssertRichFormat, AssertStr, InvokeCli
+from packaging import version
 from rich.console import Console
 
 from rich_click import command, rich_config, RichContext, RichHelpConfiguration
@@ -18,8 +18,8 @@ except ImportError:
     import importlib_metadata as metadata  # type: ignore
 
 
-rich_version = LooseVersion(metadata.version("rich"))
-click_version = LooseVersion(metadata.version("click"))
+rich_version = version.parse(metadata.version("rich"))
+click_version = version.parse(metadata.version("click"))
 
 
 @pytest.mark.parametrize(
@@ -34,7 +34,7 @@ click_version = LooseVersion(metadata.version("click"))
             id="test context_settings",
             marks=[
                 pytest.mark.skipif(
-                    click_version < LooseVersion("7.1.0"), reason="show_default is invalid kwarg for click.Context()."
+                    click_version < version.parse("7.1.0"), reason="show_default is invalid kwarg for click.Context()."
                 ),
                 pytest.mark.skipif(CLICK_IS_VERSION_80, reason="Options render slightly differently."),
             ],
@@ -43,6 +43,7 @@ click_version = LooseVersion(metadata.version("click"))
         pytest.param("declarative", "--help", None, None, id="test declarative"),
         pytest.param("envvar", "greet --help", None, None, id="test envvar"),
         pytest.param("groups_sorting", "--help", None, None, id="test group sorting"),
+        pytest.param("table_alignment", "--help", None, None, id="test command column alignment"),
         pytest.param(
             "markdown",
             "--help",
@@ -50,7 +51,7 @@ click_version = LooseVersion(metadata.version("click"))
             None,
             id="test markdown",
             marks=pytest.mark.skipif(
-                rich_version < LooseVersion("13.0.0"), reason="Markdown h1 borders are different."
+                rich_version < version.parse("13.0.0"), reason="Markdown h1 borders are different."
             ),
         ),
         pytest.param("metavars_default", "--help", None, None, id="test metavars default"),
@@ -147,7 +148,7 @@ click_version = LooseVersion(metadata.version("click"))
             rich_config(help_config=RichHelpConfiguration(use_markdown=True)),
             id="test markdown with rich_config",
             marks=pytest.mark.skipif(
-                rich_version < LooseVersion("13.0.0"), reason="Markdown h1 borders are different."
+                rich_version < version.parse("13.0.0"), reason="Markdown h1 borders are different."
             ),
         ),
         pytest.param(
