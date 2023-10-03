@@ -2,7 +2,7 @@
 
 ## Version 1.7.0dev
 
-> ⚠️ Important notice! ⚠️
+> [!WARNING]
 >
 > Click 7.x support is deprecated and will be removed in rich-click version 1.8.x.
 > Please update to a newer version of click.
