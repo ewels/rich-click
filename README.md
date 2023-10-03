@@ -496,7 +496,10 @@ rich-click is co-maintained by [@dwreeves](http://github.com/dwreeves/).
 
 Furthermore, these contributors helped make the package what it is today:
 
+- [@BrutalSimplicity](https://github.com/BrutalSimplicity)
 - [@harens](http://github.com/harens/)
 - [@fridex](http://github.com/fridex/)
 - [@pawamoy](http://github.com/pawamoy/)
 - [@jorrick](http://github.com/harens/)
+
+See the full list of contributors [here](https://github.com/ewels/rich-click/graphs/contributors).

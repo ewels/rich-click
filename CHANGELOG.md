@@ -2,6 +2,11 @@
 
 ## Version 1.7.0dev
 
+> [!WARNING]
+>
+> Click 7.x support is deprecated and will be removed in rich-click version 1.8.x.
+> Please update to a newer version of click.
+
 This release comes after merging a huge pull-request from [@BrutalSimplicity](https://github.com/BrutalSimplicity) - see [#92](https://github.com/ewels/rich-click/pull/92)
 
 - Extends Click's `HelpFormatter` class
@@ -22,7 +27,9 @@ This PR closes a number of issues:
 In addition:
 
 - Add new style option `STYLE_COMMAND` [[#102](https://github.com/ewels/rich-click/pull/102)]
-- Updated syling for `Usage:` line to avoid off-target effects [[#108](https://github.com/ewels/rich-click/issues/108)]
+- Add new style option `WIDTH` (in addition to `MAX_WIDTH`), thanks to [@ealap](httpsd://github.com/ealap) [[#110](https://github.com/ewels/rich-click/pull/110)]
+- Updated styling for `Usage:` line to avoid off-target effects [[#108](https://github.com/ewels/rich-click/issues/108)]
+- Click 7.x support has been deprecated. [[#117](https://github.com/ewels/rich-click/pull/117)]
 
 ## Version 1.6.1 (2023-01-19)
 
