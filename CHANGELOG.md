@@ -23,6 +23,7 @@ This PR closes a number of issues:
 - [#90](https://github.com/ewels/rich-click/issues/90): `click.ClickException` should output to `stderr`
 - [#88](https://github.com/ewels/rich-click/issues/88): Rich Click breaks contract of Click's `format_help` and its callers
 - [#18](https://github.com/ewels/rich-click/issues/18): Options inherited from context settings aren't applied
+- [#114](https://github.com/ewels/rich-click/issues/114): `ctx.exit(exit_code)` not showing nonzero exit codes.
 
 In addition:
 

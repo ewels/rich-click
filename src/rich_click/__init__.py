@@ -28,7 +28,7 @@ from rich_click.rich_help_configuration import RichHelpConfiguration
 # from click here. This way MyPy will recognize the import and not throw any errors. Furthermore, because of
 # the TYPE_CHECKING check, it does not influence the start routine at all.
 if TYPE_CHECKING:
-    from click import argument, Choice, option, Path, version_option  # noqa: F401
+    from click import argument, Choice, option, pass_context, Path, version_option  # noqa: F401
 
     __all__ = [
         "argument",
@@ -41,6 +41,7 @@ if TYPE_CHECKING:
         "rich_config",
         "RichContext",
         "RichHelpConfiguration",
+        "pass_context",
     ]
 
 
