@@ -5,8 +5,9 @@ from functools import wraps
 from typing import Any, Callable, cast, ClassVar, Optional, overload, Sequence, TextIO, Type, Union
 
 import click
-from click.utils import _detect_program_name, _expand_args, PacifyFlushWrapper
+from click.utils import make_str, PacifyFlushWrapper
 
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 from rich_click.rich_click import rich_abort_error, rich_format_error, rich_format_help
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_formatter import RichHelpFormatter
@@ -66,18 +67,35 @@ class RichBaseCommand(click.BaseCommand):
         # The reason why is explained in a comment in click's source code in the "except Exit as e" block.
 
         if args is None:
-            args = sys.argv[1:]
+            if CLICK_IS_BEFORE_VERSION_8X:
+                from click.utils import get_os_args
 
-            if os.name == "nt" and windows_expand_args:
-                args = _expand_args(args)
+                args = get_os_args()
+            else:
+                args = sys.argv[1:]
+
+                if os.name == "nt" and windows_expand_args:
+                    from click.utils import _expand_args
+
+                    args = _expand_args(args)
         else:
             args = list(args)
 
         if prog_name is None:
-            prog_name = _detect_program_name()
+            if CLICK_IS_BEFORE_VERSION_8X:
+                prog_name = make_str(os.path.basename(sys.argv[0] if sys.argv else __file__))
+            else:
+                from click.utils import _detect_program_name
+
+                prog_name = _detect_program_name()
 
         # Process shell completion requests and exit early.
-        self._main_shell_completion(extra, prog_name, complete_var)
+        if CLICK_IS_BEFORE_VERSION_8X:
+            from click.core import _bashcomplete
+
+            _bashcomplete(self, prog_name, complete_var)
+        else:
+            self._main_shell_completion(extra, prog_name, complete_var)
 
         try:
             try:

@@ -69,7 +69,7 @@ def patch() -> None:
     click.Group = RichGroup
     click.Command = RichCommand
     click.BaseCommand = RichBaseCommand
-    click.RichMultiCommand = RichMultiCommand
+    click.MultiCommand = RichMultiCommand
 
 
 def main(args: Optional[List[str]] = None) -> Any:
