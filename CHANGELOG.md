@@ -20,6 +20,7 @@ This release comes after merging a huge pull-request from [@BrutalSimplicity](ht
 This PR closes a number of issues:
 
 - [#25](https://github.com/ewels/rich-click/issues/25): Add tests!
+- [#38](https://github.com/ewels/rich-click/issues/38): Support `click.MultiCommand`
 - [#90](https://github.com/ewels/rich-click/issues/90): `click.ClickException` should output to `stderr`
 - [#88](https://github.com/ewels/rich-click/issues/88): Rich Click breaks contract of Click's `format_help` and its callers
 - [#18](https://github.com/ewels/rich-click/issues/18): Options inherited from context settings aren't applied

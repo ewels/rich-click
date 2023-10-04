@@ -19,9 +19,8 @@ from rich.console import Console
 from . import rich_click  # noqa: F401
 
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X as _CLICK_IS_BEFORE_VERSION_8X
-from rich_click.rich_command import RichCommand
+from rich_click.rich_command import RichBaseCommand, RichCommand, RichGroup, RichMultiCommand  # noqa: F401
 from rich_click.rich_context import RichContext
-from rich_click.rich_group import RichGroup
 from rich_click.rich_help_configuration import RichHelpConfiguration
 
 # MyPy does not like star imports. Therefore when we are type checking, we import each individual module
