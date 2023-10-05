@@ -19,16 +19,15 @@ from rich.console import Console
 from . import rich_click  # noqa: F401
 
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X as _CLICK_IS_BEFORE_VERSION_8X
-from rich_click.rich_command import RichCommand
+from rich_click.rich_command import RichBaseCommand, RichCommand, RichGroup, RichMultiCommand  # noqa: F401
 from rich_click.rich_context import RichContext
-from rich_click.rich_group import RichGroup
 from rich_click.rich_help_configuration import RichHelpConfiguration
 
 # MyPy does not like star imports. Therefore when we are type checking, we import each individual module
 # from click here. This way MyPy will recognize the import and not throw any errors. Furthermore, because of
 # the TYPE_CHECKING check, it does not influence the start routine at all.
 if TYPE_CHECKING:
-    from click import argument, Choice, option, Path, version_option  # noqa: F401
+    from click import argument, Choice, option, pass_context, Path, version_option  # noqa: F401
 
     __all__ = [
         "argument",
@@ -41,6 +40,7 @@ if TYPE_CHECKING:
         "rich_config",
         "RichContext",
         "RichHelpConfiguration",
+        "pass_context",
     ]
 
 

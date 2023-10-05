@@ -16,8 +16,7 @@ from typing_extensions import Protocol
 
 import rich_click.rich_click as rc
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
-from rich_click.rich_command import RichCommand
-from rich_click.rich_group import RichGroup
+from rich_click.rich_command import RichCommand, RichGroup
 from rich_click.rich_help_configuration import OptionHighlighter, RichHelpConfiguration
 
 
