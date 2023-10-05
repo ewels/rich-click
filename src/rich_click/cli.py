@@ -9,7 +9,7 @@ try:
     from importlib.metadata import entry_points
 except ImportError:
     # Support Python <3.8
-    from importlib_metadata import entry_points
+    from importlib_metadata import entry_points  # type: ignore[no-redef]
 
 import click
 from rich.console import Console
@@ -66,10 +66,10 @@ def patch() -> None:
     """Patch Click internals to use Rich-Click types."""
     click.group = rich_group
     click.command = rich_command
-    click.Group = RichGroup
-    click.Command = RichCommand
-    click.BaseCommand = RichBaseCommand
-    click.RichMultiCommand = RichMultiCommand
+    click.Group = RichGroup  # type: ignore[misc]
+    click.Command = RichCommand  # type: ignore[misc]
+    click.BaseCommand = RichBaseCommand  # type: ignore[misc]
+    click.MultiCommand = RichMultiCommand  # type: ignore[misc]
 
 
 def main(args: Optional[List[str]] = None) -> Any:

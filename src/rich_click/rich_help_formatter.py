@@ -1,6 +1,6 @@
 import sys
 from io import StringIO
-from typing import IO, Optional
+from typing import Any, IO, Optional
 
 import click
 import rich
@@ -80,9 +80,12 @@ class RichHelpFormatter(click.HelpFormatter):
 
     def __init__(
         self,
-        *args,
+        indent_increment: int = 2,
+        width: Optional[int] = None,
+        max_width: Optional[int] = None,
+        *args: Any,
         config: Optional[RichHelpConfiguration] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
         """Create Rich Help Formatter.
 
@@ -90,7 +93,7 @@ class RichHelpFormatter(click.HelpFormatter):
             config: Configuration.
                 Defaults to None.
         """
-        super().__init__(*args, **kwargs)
+        super().__init__(indent_increment, width, max_width, *args, **kwargs)
         self._rich_buffer = TerminalBuffer()
         self._config = config or get_module_config()
         self._console = create_console(self._config, self._rich_buffer)
