@@ -47,9 +47,9 @@ repos:
         name: mypy - Static type checking
         description: Mypy helps ensure that we use our functions and variables correctly by checking the types.
         entry: mypy
-        language: python
+        language: system
         types: [python]
         exclude: ^examples/|^tests/fixtures/
         require_serial: true
-        additional_dependencies:
-          - mypy
+#        additional_dependencies:
+#          - mypy

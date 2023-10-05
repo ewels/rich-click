@@ -1,7 +1,7 @@
 import inspect
 import re
 from os import getenv
-from typing import Dict, Iterable, List, Optional, Union
+from typing import Dict, Iterable, List, Optional, TYPE_CHECKING, Union
 
 import click
 import rich.columns
@@ -28,7 +28,7 @@ from rich_click.rich_help_formatter import RichHelpFormatter
 try:
     from rich.console import group
 except ImportError:
-    from rich.console import render_group as group
+    from rich.console import render_group as group  # type: ignore[attr-defined,no-redef]
 
 # Default styles
 STYLE_OPTION = "bold cyan"
@@ -51,7 +51,7 @@ STYLE_OPTION_ENVVAR = "dim yellow"
 STYLE_REQUIRED_SHORT = "red"
 STYLE_REQUIRED_LONG = "dim red"
 STYLE_OPTIONS_PANEL_BORDER = "dim"
-ALIGN_OPTIONS_PANEL = "left"
+ALIGN_OPTIONS_PANEL: Literal["left", "center", "right"] = "left"
 STYLE_OPTIONS_TABLE_SHOW_LINES = False
 STYLE_OPTIONS_TABLE_LEADING = 0
 STYLE_OPTIONS_TABLE_PAD_EDGE = False
@@ -60,7 +60,7 @@ STYLE_OPTIONS_TABLE_BOX = ""
 STYLE_OPTIONS_TABLE_ROW_STYLES = None
 STYLE_OPTIONS_TABLE_BORDER_STYLE = None
 STYLE_COMMANDS_PANEL_BORDER = "dim"
-ALIGN_COMMANDS_PANEL = "left"
+ALIGN_COMMANDS_PANEL: Literal["left", "center", "right"] = "left"
 STYLE_COMMANDS_TABLE_SHOW_LINES = False
 STYLE_COMMANDS_TABLE_LEADING = 0
 STYLE_COMMANDS_TABLE_PAD_EDGE = False
@@ -70,7 +70,7 @@ STYLE_COMMANDS_TABLE_ROW_STYLES = None
 STYLE_COMMANDS_TABLE_BORDER_STYLE = None
 STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (None, None)
 STYLE_ERRORS_PANEL_BORDER = "red"
-ALIGN_ERRORS_PANEL = "left"
+ALIGN_ERRORS_PANEL: Literal["left", "center", "right"] = "left"
 STYLE_ERRORS_SUGGESTION = "dim"
 STYLE_ABORTED = "red"
 WIDTH = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None  # type: ignore
@@ -196,6 +196,8 @@ def _get_help_text(
     Yields:
         Text or Markdown: Multiple styled objects (depreciated, usage)
     """
+    if TYPE_CHECKING:
+        assert isinstance(obj.help, str)
     formatter = _get_rich_formatter(formatter)
     config = formatter.config
     # Prepend deprecated status
@@ -251,7 +253,7 @@ def _get_parameter_help(
     """
     formatter = _get_rich_formatter(formatter)
     config = formatter.config
-    items = []
+    items: List[rich.console.RenderableType] = []
 
     # Get the environment variable first
     envvar = getattr(param, "envvar", None)
@@ -264,7 +266,7 @@ def _get_parameter_help(
         ):
             envvar = f"{ctx.auto_envvar_prefix}_{param.name.upper()}"
     if envvar is not None:
-        envvar = ", ".join(param.envvar) if type(envvar) is list else envvar
+        envvar = ", ".join(envvar) if type(envvar) is list else envvar
 
     # Environment variable config.before help text
     if getattr(param, "show_envvar", None) and config.option_envvar_first and envvar is not None:
@@ -272,6 +274,9 @@ def _get_parameter_help(
 
     # Main help text
     if getattr(param, "help", None):
+        if TYPE_CHECKING:
+            assert hasattr(param, "help")
+            assert isinstance(param.help, str)
         paragraphs = param.help.split("\n\n")
         # Remove single linebreaks
         if not config.use_markdown:
@@ -406,7 +411,7 @@ def get_rich_usage(
 
 
 def rich_format_help(
-    obj: Union[click.Command, click.Group],
+    obj: click.BaseCommand,
     ctx: click.Context,
     formatter: click.HelpFormatter,
 ) -> None:
@@ -586,7 +591,7 @@ def rich_format_help(
                 show_header=False,
                 expand=True,
                 box=box_style,
-                **t_styles,
+                **t_styles,  # type: ignore[arg-type]
             )
             # Strip the required column if none are required
             if all([x[0] == "" for x in options_rows]):
@@ -606,7 +611,7 @@ def rich_format_help(
     # Groups only:
     # List click command groups
     #
-    if hasattr(obj, "list_commands"):
+    if isinstance(obj, click.MultiCommand):
         # Look through COMMAND_GROUPS for this command
         # stick anything unmatched into a default group at the end
         cmd_groups = config.command_groups.get(ctx.command_path, []).copy()
@@ -638,7 +643,7 @@ def rich_format_help(
                 show_header=False,
                 expand=True,
                 box=box_style,
-                **t_styles,
+                **t_styles,  # type: ignore[arg-type]
             )
             # Define formatting in first column, as commands don't match highlighter regex
             # and set column ratio for first and second column, if a ratio has been set
@@ -676,7 +681,7 @@ def rich_format_help(
                 )
 
     # Epilogue if we have it
-    if obj.epilog:
+    if isinstance(obj, click.Command) and obj.epilog:
         # Remove single linebreaks, replace double with single
         lines = obj.epilog.split("\n\n")
         epilogue = "\n".join([x.replace("\n", " ").strip() for x in lines])
@@ -702,6 +707,8 @@ def rich_format_error(self: click.ClickException, formatter: Optional[RichHelpFo
     highlighter = formatter.config.highlighter
     # Print usage
     if getattr(self, "ctx", None) is not None:
+        if TYPE_CHECKING:
+            assert hasattr(self, "ctx")
         get_rich_usage(self.ctx.command, self.ctx, formatter)
     if config.errors_suggestion:
         console.print(
@@ -714,12 +721,12 @@ def rich_format_error(self: click.ClickException, formatter: Optional[RichHelpFo
     elif (
         config.errors_suggestion is None
         and getattr(self, "ctx", None) is not None
-        and self.ctx.command.get_help_option(self.ctx) is not None
+        and self.ctx.command.get_help_option(self.ctx) is not None  # type: ignore[attr-defined]
     ):
         console.print(
             Padding(
                 "Try [blue]'{command} {option}'[/] for help.".format(
-                    command=self.ctx.command_path, option=self.ctx.help_option_names[0]
+                    command=self.ctx.command_path, option=self.ctx.help_option_names[0]  # type: ignore[attr-defined]
                 ),
                 (0, 1, 0, 1),
             ),

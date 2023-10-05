@@ -7,18 +7,21 @@ customisation required.
 
 __version__ = "1.7.0dev"
 
-from typing import Any, Callable, cast, Optional, Type, TypeVar
+from typing import Any, Callable, cast, Optional, Type, TypeVar, Union
 
 from click import Command
 from click import command as click_command
-from click import Group
+from click import Context, Group
 from click import group as click_group
+from click import pass_context as click_pass_context
 from rich.console import Console
+from typing_extensions import Concatenate, ParamSpec
 
 from . import rich_click  # noqa: F401
 
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
-from rich_click.rich_command import RichBaseCommand, RichCommand, RichGroup, RichMultiCommand  # noqa: F401
+from rich_click.rich_command import RichCommand, RichGroup, RichMultiCommand  # noqa: F401
+from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 
 # MyPy does not like star imports. Therefore when we are type checking, we import each individual module
@@ -26,7 +29,7 @@ from rich_click.rich_help_configuration import RichHelpConfiguration
 # the TYPE_CHECKING check, it does not influence the start routine at all.
 
 F = TypeVar("F", bound=Callable[..., Any])
-FC = TypeVar("FC", RichCommand, Callable[..., Any])
+FC = TypeVar("FC", Command, Callable[..., Any])
 
 
 def group(name: Optional[str] = None, cls: Optional[Type[Group]] = RichGroup, **attrs: Any) -> Callable[[F], Group]:
@@ -55,7 +58,9 @@ def group(name: Optional[str] = None, cls: Optional[Type[Group]] = RichGroup, **
     return wrapper
 
 
-def command(name: str = None, cls: Optional[Type[Group]] = RichCommand, **attrs: Any) -> Callable[[F], Group]:
+def command(
+    name: Optional[str] = None, cls: Optional[Type[Command]] = RichCommand, **attrs: Any
+) -> Callable[[F], Command]:
     """
     Command decorator function.
 
@@ -122,3 +127,24 @@ def rich_config(console: Optional[Console] = None, help_config: Optional[RichHel
         return obj
 
     return decorator
+
+
+# Users of rich_click would face issues using mypy with this code,
+# if not for wrapping `pass_context` with a new function signature:
+#
+# @click.command()
+# @click.pass_context
+# def cli(ctx: click.RichContext) -> None:
+#    ...
+
+
+P = ParamSpec("P")
+R = TypeVar("R")
+C = TypeVar("C", bound=Context)
+
+
+def pass_context(f: Callable[Concatenate[C, P], R]) -> Callable[P, R]:
+    return click_pass_context(f)  # type: ignore[arg-type]
+
+
+pass_context.__doc__ = click_pass_context.__doc__

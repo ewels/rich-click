@@ -1,8 +1,9 @@
 import errno
 import os
 import sys
+import warnings
 from functools import wraps
-from typing import Any, Callable, cast, ClassVar, Optional, overload, Sequence, TextIO, Type, Union
+from typing import Any, Callable, cast, Optional, overload, Sequence, TextIO, Type, TYPE_CHECKING, Union
 
 import click
 from click.utils import make_str, PacifyFlushWrapper
@@ -13,16 +14,16 @@ from rich_click.rich_context import RichContext
 from rich_click.rich_help_formatter import RichHelpFormatter
 
 
-class RichBaseCommand(click.BaseCommand):
-    """Richly formatted click BaseCommand.
+class RichCommand(click.Command):
+    """Richly formatted click Command.
 
-    Inherits click.BaseCommand and overrides help and error methods
+    Inherits click.Command and overrides help and error methods
     to print richly formatted output.
 
     This class can be used as a mixin for other click command objects.
     """
 
-    context_class: ClassVar[Type[RichContext]] = RichContext
+    context_class: Type[RichContext] = RichContext
     _formatter: Optional[RichHelpFormatter] = None
 
     @property
@@ -68,9 +69,9 @@ class RichBaseCommand(click.BaseCommand):
 
         if args is None:
             if CLICK_IS_BEFORE_VERSION_8X:
-                from click.utils import get_os_args
+                from click.utils import get_os_args  # type: ignore[attr-defined]
 
-                args = get_os_args()
+                args: Sequence[str] = get_os_args()  # type: ignore[no-redef]
             else:
                 args = sys.argv[1:]
 
@@ -80,6 +81,9 @@ class RichBaseCommand(click.BaseCommand):
                     args = _expand_args(args)
         else:
             args = list(args)
+
+        if TYPE_CHECKING:
+            assert args is not None
 
         if prog_name is None:
             if CLICK_IS_BEFORE_VERSION_8X:
@@ -91,7 +95,7 @@ class RichBaseCommand(click.BaseCommand):
 
         # Process shell completion requests and exit early.
         if CLICK_IS_BEFORE_VERSION_8X:
-            from click.core import _bashcomplete
+            from click.core import _bashcomplete  # type: ignore[attr-defined]
 
             _bashcomplete(self, prog_name, complete_var)
         else:
@@ -143,23 +147,18 @@ class RichBaseCommand(click.BaseCommand):
         rich_format_help(self, ctx, formatter)
 
 
-class RichCommand(RichBaseCommand, click.Command):
-    """Richly formatted click Command.
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning, module="click")
 
-    Inherits click.Command and overrides help and error methods
-    to print richly formatted output.
-    """
+    class RichMultiCommand(RichCommand, click.MultiCommand):
+        """Richly formatted click MultiCommand.
 
-
-class RichMultiCommand(RichBaseCommand, click.MultiCommand):
-    """Richly formatted click MultiCommand.
-
-    Inherits click.MultiCommand and overrides help and error methods
-    to print richly formatted output.
-    """
+        Inherits click.MultiCommand and overrides help and error methods
+        to print richly formatted output.
+        """
 
 
-class RichGroup(RichBaseCommand, click.Group):
+class RichGroup(RichCommand, click.Group):
     """Richly formatted click Group.
 
     Inherits click.Group and overrides help and error methods

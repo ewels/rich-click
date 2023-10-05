@@ -1,4 +1,4 @@
-from typing import ClassVar, Optional, Type
+from typing import Optional, Type
 
 import click
 from rich.console import Console
@@ -10,7 +10,7 @@ from rich_click.rich_help_formatter import RichHelpFormatter
 class RichContext(click.Context):
     """Click Context class endowed with Rich superpowers."""
 
-    formatter_class: ClassVar[Type[RichHelpFormatter]] = RichHelpFormatter
+    formatter_class: Type[RichHelpFormatter] = RichHelpFormatter
 
     def __init__(
         self,

@@ -10,6 +10,7 @@ from rich.console import Console
 import rich_click.rich_click as rc
 from rich_click import command, rich_config, RichContext, RichHelpConfiguration
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
+from rich_click.decorators import pass_context
 from rich_click.rich_command import RichCommand
 
 try:
@@ -219,6 +220,7 @@ def test_rich_config_decorator_order(invoke: InvokeCli, assert_str: AssertStr):
         pass
 
     assert hasattr(cli, "__rich_context_settings__") is False
+    assert isinstance(cli, RichCommand)
     assert cli.console is not None
     assert cli.__doc__ is not None
     assert_str(
@@ -281,7 +283,7 @@ def test_rich_config_context_settings(invoke: InvokeCli):
     @click.command(
         cls=RichCommand, context_settings={"rich_console": Console(), "rich_help_config": RichHelpConfiguration()}
     )
-    @click.pass_context
+    @pass_context
     def cli(ctx: RichContext):
         assert isinstance(ctx, RichContext)
         assert ctx.console is not None

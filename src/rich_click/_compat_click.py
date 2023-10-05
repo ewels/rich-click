@@ -11,6 +11,7 @@ _minor = int(click_version.split(".")[1])
 
 
 CLICK_IS_BEFORE_VERSION_8X = _major < 8
+CLICK_IS_BEFORE_VERSION_9X = _major < 9
 CLICK_IS_VERSION_80 = _major == 8 and _minor == 0
 
 

@@ -19,7 +19,7 @@ from rich.text import Text
 
 from rich_click import command as rich_command
 from rich_click import group as rich_group
-from rich_click import RichBaseCommand, RichCommand, RichGroup, RichMultiCommand
+from rich_click import RichCommand, RichGroup, RichMultiCommand
 from rich_click.rich_click import (
     ALIGN_ERRORS_PANEL,
     ERRORS_PANEL_TITLE,
@@ -68,7 +68,6 @@ def patch() -> None:
     click.command = rich_command
     click.Group = RichGroup  # type: ignore[misc]
     click.Command = RichCommand  # type: ignore[misc]
-    click.BaseCommand = RichBaseCommand  # type: ignore[misc]
     click.MultiCommand = RichMultiCommand  # type: ignore[misc]
 
 
@@ -99,7 +98,7 @@ def main(args: Optional[List[str]] = None) -> Any:
         sys.exit(0)
     else:
         script_name = args[0]
-    scripts = {script.name: script for script in entry_points().get("console_scripts")}
+    scripts = {script.name: script for script in entry_points().get("console_scripts", [])}
     if script_name in scripts:
         # a valid script was passed
         script = scripts[script_name]

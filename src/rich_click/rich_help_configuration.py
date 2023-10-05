@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from os import getenv
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import rich.align
 import rich.color
@@ -65,7 +65,7 @@ class RichHelpConfiguration:
     style_commands_table_box: rich.style.StyleType = field(default="")
     style_commands_table_row_styles: Optional[List[rich.style.StyleType]] = field(default=None)
     style_commands_table_border_style: Optional[rich.style.StyleType] = field(default=None)
-    style_commands_table_column_width_ratio: Optional[rich.style.StyleType] = field(
+    style_commands_table_column_width_ratio: Optional[Union[Tuple[None, None], Tuple[int, int]]] = field(
         default_factory=lambda: (None, None)
     )
     style_errors_panel_border: rich.style.StyleType = field(default="red")
