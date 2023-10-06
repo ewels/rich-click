@@ -1,4 +1,5 @@
 import rich_click as click
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 
 click.rich_click.STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (1, 2)
 
@@ -97,7 +98,13 @@ def auth() -> None:
     print("Downloading")
 
 
-@cli.command
+if CLICK_IS_BEFORE_VERSION_8X:
+    cmd_dec = cli.command()
+else:
+    cmd_dec = cli.command
+
+
+@cmd_dec
 def config() -> None:
     """Set up the configuration."""
     print("Downloading")

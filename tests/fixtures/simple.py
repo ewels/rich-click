@@ -1,7 +1,7 @@
 import rich_click as click
 
 
-@click.group
+@click.group()
 @click.option(
     "--debug/--no-debug",
     "-d/-n",
@@ -24,7 +24,7 @@ def cli(debug) -> None:
     print(f"Debug mode is {'on' if debug else 'off'}")
 
 
-@cli.command
+@cli.command()
 @click.option(
     "--type",
     required=True,
