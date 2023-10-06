@@ -8,7 +8,7 @@ from packaging import version
 from rich.console import Console
 
 import rich_click.rich_click as rc
-from rich_click import command, pass_context, rich_config, RichContext, RichHelpConfiguration
+from rich_click import command, group, pass_context, rich_config, RichContext, RichHelpConfiguration
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
 from rich_click.rich_command import RichCommand, RichGroup
 
@@ -209,25 +209,97 @@ def test_rich_click(
 
 class ClickGroupWithRichCommandClass(click.Group):
     command_class = RichCommand
+    group_class = RichGroup
+
+
+command_help_output = """
+ Usage: cli [OPTIONS]                                       
+                                                            
+ Some help                                                  
+ ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ 
+ ┃                         Header                         ┃ 
+ ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ 
+                                                            
+╭─ Options ────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                  │
+╰──────────────────────────────────────────────────────────╯
+"""
+
+
+group_help_output = """
+ Usage: cli [OPTIONS] COMMAND [ARGS]...                     
+                                                            
+ Some help                                                  
+ ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ 
+ ┃                         Header                         ┃ 
+ ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ 
+                                                            
+╭─ Options ────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                  │
+╰──────────────────────────────────────────────────────────╯
+"""
 
 
 @pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_8X, reason="rich_config not supported prior to click v8")
 @pytest.mark.parametrize(
-    "command_callable",
+    ("command_callable", "expected_command_type", "expected_help_output"),
     [
-        pytest.param(lambda: command, id="1"),
-        pytest.param(lambda: command(), id="2"),
-        pytest.param(lambda: command("cli"), id="3"),
-        pytest.param(lambda: click.command(cls=RichCommand), id="4"),
-        pytest.param(lambda: click.command("cli", cls=RichCommand), id="5"),
-        pytest.param(lambda: RichGroup(name="grp", callback=lambda: None).command, id="6"),
-        pytest.param(lambda: RichGroup(name="grp", callback=lambda: None).command("cli"), id="7"),
-        pytest.param(lambda: ClickGroupWithRichCommandClass(name="grp", callback=lambda: None).command, id="8"),
-        pytest.param(lambda: ClickGroupWithRichCommandClass(name="grp", callback=lambda: None).command("cli"), id="9"),
+        pytest.param(lambda: command, RichCommand, command_help_output, id="command1"),
+        pytest.param(lambda: command(), RichCommand, command_help_output, id="command2"),
+        pytest.param(lambda: command("cli"), RichCommand, command_help_output, id="command3"),
+        pytest.param(lambda: group, RichGroup, group_help_output, id="group1"),
+        pytest.param(lambda: group(), RichGroup, group_help_output, id="group2"),
+        pytest.param(lambda: group("cli"), RichGroup, group_help_output, id="group3"),
+        pytest.param(lambda: click.command(cls=RichCommand), RichCommand, command_help_output, id="click_command1"),
+        pytest.param(
+            lambda: click.command("cli", cls=RichCommand), RichCommand, command_help_output, id="click_command2"
+        ),
+        pytest.param(lambda: click.group(cls=RichGroup), RichGroup, group_help_output, id="click_group1"),
+        pytest.param(lambda: click.group("cli", cls=RichGroup), RichGroup, group_help_output, id="click_group2"),
+        pytest.param(
+            lambda: RichGroup(name="grp", callback=lambda: None).command,
+            RichCommand,
+            command_help_output,
+            id="RichGroup1",
+        ),
+        pytest.param(
+            lambda: RichGroup(name="grp", callback=lambda: None).command("cli"),
+            RichCommand,
+            command_help_output,
+            id="RichGroup2",
+        ),
+        pytest.param(
+            lambda: ClickGroupWithRichCommandClass(name="grp", callback=lambda: None).command,
+            RichCommand,
+            command_help_output,
+            id="ClickGroup1",
+        ),
+        pytest.param(
+            lambda: ClickGroupWithRichCommandClass(name="grp", callback=lambda: None).command("cli"),
+            RichCommand,
+            command_help_output,
+            id="ClickGroup2",
+        ),
+        pytest.param(
+            lambda: ClickGroupWithRichCommandClass(name="grp", callback=lambda: None).group,
+            RichGroup,
+            group_help_output,
+            id="ClickGroup3",
+        ),
+        pytest.param(
+            lambda: ClickGroupWithRichCommandClass(name="grp", callback=lambda: None).group("cli"),
+            RichGroup,
+            group_help_output,
+            id="ClickGroup4",
+        ),
     ],
 )
 def test_rich_config_decorator_order(
-    invoke: InvokeCli, assert_str: AssertStr, command_callable: Callable[..., Any]
+    invoke: InvokeCli,
+    assert_str: AssertStr,
+    command_callable: Callable[..., Any],
+    expected_command_type: Type[RichCommand],
+    expected_help_output: str,
 ) -> None:
     @command_callable()
     @rich_config(Console(), RichHelpConfiguration(max_width=60, use_markdown=True))
@@ -239,7 +311,7 @@ def test_rich_config_decorator_order(
         pass
 
     assert hasattr(cli, "__rich_context_settings__") is False
-    assert isinstance(cli, RichCommand)
+    assert type(cli) is expected_command_type
     assert cli.console is not None
     assert cli.__doc__ is not None
     assert_str(
@@ -255,18 +327,7 @@ def test_rich_config_decorator_order(
 
     assert_str(
         result.stdout,
-        """
- Usage: cli [OPTIONS]                                       
-                                                            
- Some help                                                  
- ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ 
- ┃                         Header                         ┃ 
- ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ 
-                                                            
-╭─ Options ────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                  │
-╰──────────────────────────────────────────────────────────╯
-    """,
+        expected_help_output,
     )
 
 
