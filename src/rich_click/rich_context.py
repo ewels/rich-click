@@ -28,24 +28,17 @@ class RichContext(click.Context):
                 Defaults to None.
         """
         super().__init__(*args, **kwargs)
-        self._console = rich_console
-        self._help_config = rich_help_config
+        parent: Optional[RichContext] = kwargs.pop("parent", None)
 
-    @property
-    def console(self) -> Optional[Console]:
-        """Rich Console instance for displaying beautfil application output in the terminal.
+        if rich_console is None and hasattr(parent, "console"):
+            rich_console = parent.console  # type: ignore[has-type,union-attr]
 
-        NOTE: This is a separate instance from the one used by the help formatter, and allows full control of the
-        console configuration.
+        self.console = rich_console
 
-        See `rich_config` decorator for how to apply the settings.
-        """
-        return self._console
+        if rich_help_config is None and hasattr(parent, "help_config"):
+            rich_help_config = parent.help_config  # type: ignore[has-type,union-attr]
 
-    @property
-    def help_config(self) -> Optional[RichHelpConfiguration]:
-        """Rich help configuration."""
-        return self._help_config
+        self.help_config = rich_help_config
 
     def make_formatter(self):
         """Create the Rich Help Formatter."""

@@ -78,7 +78,6 @@ from rich_click.decorators import pass_context as pass_context
 from rich_click.decorators import rich_config as rich_config
 from rich_click.rich_command import RichCommand as RichCommand
 from rich_click.rich_command import RichGroup as RichGroup
-from rich_click.rich_command import RichMultiCommand as RichMultiCommand
 from rich_click.rich_context import RichContext as RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration as RichHelpConfiguration
 
@@ -92,7 +91,7 @@ def __getattr__(name: str) -> object:
         import warnings
 
         warnings.warn(
-            "'RichMultiCommand' is deprecated and will be removed in Click 9.0. Use" " 'RichGroup' instead.",
+            "'RichMultiCommand' is deprecated and will be removed in Click 9.0. Use 'RichGroup' instead.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -100,6 +99,5 @@ def __getattr__(name: str) -> object:
 
         return RichMultiCommand
 
-    # Support for potentially deprecated objects in newer versions of click:
     else:
         return getattr(click, name)

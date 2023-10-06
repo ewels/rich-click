@@ -30,10 +30,14 @@ class RichCommand(click.Command):
     def __init__(self, *args: Any, **kwargs: Any):
         """Create Rich Command instance."""
         super().__init__(*args, **kwargs)
+        self._register_rich_context_settings_from_callback()
+
+    def _register_rich_context_settings_from_callback(self) -> None:
         if self.callback is not None:
             if hasattr(self.callback, "__rich_context_settings__"):
                 rich_context_settings = getattr(self.callback, "__rich_context_settings__", {})
-                self.context_settings.update(rich_context_settings)
+                for k, v in rich_context_settings.items():
+                    self.context_settings.setdefault(k, v)
                 del self.callback.__rich_context_settings__
 
     @property
@@ -166,6 +170,12 @@ with warnings.catch_warnings():
         to print richly formatted output.
         """
 
+    @wraps(click.MultiCommand.__init__)
+    def __init__(self, *args, **kwargs):
+        """Initialize RichGroup class."""
+        click.MultiCommand.__init__(self, *args, **kwargs)
+        self._register_rich_context_settings_from_callback()
+
 
 class RichGroup(RichCommand, click.Group):
     """Richly formatted click Group.
@@ -176,6 +186,12 @@ class RichGroup(RichCommand, click.Group):
 
     command_class: Type[RichCommand] = RichCommand
     group_class = type
+
+    @wraps(click.Group.__init__)
+    def __init__(self, *args, **kwargs):
+        """Initialize RichGroup class."""
+        click.Group.__init__(self, *args, **kwargs)
+        self._register_rich_context_settings_from_callback()
 
     if CLICK_IS_BEFORE_VERSION_8X:
 

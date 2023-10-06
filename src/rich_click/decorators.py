@@ -7,7 +7,7 @@ customisation required.
 
 __version__ = "1.7.0dev"
 
-from typing import Any, Callable, cast, Optional, overload, Type, TYPE_CHECKING, TypeVar, Union
+from typing import Any, Callable, cast, Dict, Optional, overload, Type, TYPE_CHECKING, TypeVar, Union
 
 from click import Command
 from click import command as click_command
@@ -177,10 +177,16 @@ def rich_config(
         return decorator_with_warning
 
     def decorator(obj: FC) -> FC:
+        extra: Dict[str, Any] = {}
+        if console is not None:
+            extra["rich_console"] = console
+        if help_config is not None:
+            extra["rich_help_config"] = help_config
+
         if isinstance(obj, (RichCommand, RichGroup)):
-            obj.context_settings.update({"rich_console": console, "rich_help_config": help_config})
+            obj.context_settings.update(extra)
         elif callable(obj) and not isinstance(obj, (Command, Group)):
-            setattr(obj, "__rich_context_settings__", {"rich_console": console, "rich_help_config": help_config})
+            setattr(obj, "__rich_context_settings__", extra)
         else:
             raise NotSupportedError("`rich_config` requires a `RichCommand` or `RichGroup`. Try using the cls keyword")
         return obj

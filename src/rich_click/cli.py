@@ -68,7 +68,8 @@ def patch() -> None:
     click.command = rich_command
     click.Group = RichGroup  # type: ignore[misc]
     click.Command = RichCommand  # type: ignore[misc]
-    click.MultiCommand = RichMultiCommand  # type: ignore[misc]
+    if "MultiCommand" in dir(click):
+        click.MultiCommand = RichMultiCommand  # type: ignore[assignment,misc]
 
 
 def main(args: Optional[List[str]] = None) -> Any:
