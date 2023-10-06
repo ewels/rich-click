@@ -10,7 +10,7 @@ click.rich_click.STYLE_COMMANDS_TABLE_BORDER_STYLE = "red"
 click.rich_click.STYLE_COMMANDS_TABLE_ROW_STYLES = ["magenta", "yellow", "cyan", "green"]
 
 
-@click.group()
+@click.group("cli")
 @click.option(
     "--type",
     default="files",

@@ -49,7 +49,5 @@ repos:
         entry: mypy
         language: system
         types: [python]
-        exclude: ^examples/|^tests/fixtures/
+        exclude: ^examples/
         require_serial: true
-#        additional_dependencies:
-#          - mypy

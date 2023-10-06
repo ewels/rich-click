@@ -6,10 +6,10 @@ from textwrap import dedent
 from typing import Any, List, Optional
 
 try:
-    from importlib.metadata import entry_points
+    from importlib.metadata import entry_points  # type: ignore[import,unused-ignore]
 except ImportError:
     # Support Python <3.8
-    from importlib_metadata import entry_points  # type: ignore[no-redef]
+    from importlib_metadata import entry_points  # type: ignore[import,no-redef]
 
 import click
 from rich.console import Console

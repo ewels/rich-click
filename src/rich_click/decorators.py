@@ -7,11 +7,11 @@ customisation required.
 
 __version__ = "1.7.0dev"
 
-from typing import Any, Callable, cast, Optional, Type, TypeVar, Union
+from typing import Any, Callable, cast, Optional, overload, Type, TYPE_CHECKING, TypeVar, Union
 
 from click import Command
 from click import command as click_command
-from click import Context, Group
+from click import Group
 from click import group as click_group
 from click import pass_context as click_pass_context
 from rich.console import Console
@@ -28,62 +28,121 @@ from rich_click.rich_help_configuration import RichHelpConfiguration
 # from click here. This way MyPy will recognize the import and not throw any errors. Furthermore, because of
 # the TYPE_CHECKING check, it does not influence the start routine at all.
 
+_AnyCallable = Callable[..., Any]
 F = TypeVar("F", bound=Callable[..., Any])
-FC = TypeVar("FC", Command, Callable[..., Any])
+FC = TypeVar("FC", bound=Union[Command, _AnyCallable])
 
 
-def group(name: Optional[str] = None, cls: Optional[Type[Group]] = RichGroup, **attrs: Any) -> Callable[[F], Group]:
+GrpType = TypeVar("GrpType", bound=Group)
+
+
+# variant: no call, directly as decorator for a function.
+@overload
+def group(name: _AnyCallable) -> RichGroup:
+    ...
+
+
+# variant: with positional name and with positional or keyword cls argument:
+# @group(namearg, GroupCls, ...) or @group(namearg, cls=GroupCls, ...)
+@overload
+def group(
+    name: Optional[str],
+    cls: Type[GrpType],
+    **attrs: Any,
+) -> Callable[[_AnyCallable], GrpType]:
+    ...
+
+
+# variant: name omitted, cls _must_ be a keyword argument, @group(cmd=GroupCls, ...)
+@overload
+def group(
+    name: None = None,
+    *,
+    cls: Type[GrpType],
+    **attrs: Any,
+) -> Callable[[_AnyCallable], GrpType]:
+    ...
+
+
+# variant: with optional string name, no cls argument provided.
+@overload
+def group(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichGroup]:
+    ...
+
+
+def group(
+    name: Union[str, _AnyCallable, None] = None,
+    cls: Optional[Type[GrpType]] = None,
+    **attrs: Any,
+) -> Union[Group, Callable[[_AnyCallable], Union[RichGroup, GrpType]]]:
     """
     Group decorator function.
 
     Defines the group() function so that it uses the RichGroup class by default.
     """
+    if cls is None:
+        cls = cast(Type[GrpType], RichGroup)
 
-    def wrapper(fn):
-        if hasattr(fn, "__rich_context_settings__"):
-            rich_context_settings = getattr(fn, "__rich_context_settings__", {})
-            console = rich_context_settings.get("rich_console", None)
-            help_config = rich_context_settings.get("help_config", None)
-            context_settings = attrs.get("context_settings", {})
-            context_settings.update(rich_console=console, rich_help_config=help_config)
-            attrs.update(context_settings=context_settings)
-            del fn.__rich_context_settings__
-        if callable(name) and cls:
-            group = click_group(cls=cls, **attrs)(name)
-        else:
-            group = click_group(name, cls=cls, **attrs)
-        cmd = cast(RichGroup, group(fn))
-        return cmd
+    if callable(name):
+        return command(cls=cls, **attrs)(name)
 
-    return wrapper
+    return command(name, cls, **attrs)
+
+
+CmdType = TypeVar("CmdType", bound=Command)
+
+
+# variant: no call, directly as decorator for a function.
+@overload
+def command(name: _AnyCallable) -> RichCommand:
+    ...
+
+
+# variant: with positional name and with positional or keyword cls argument:
+# @command(namearg, CommandCls, ...) or @command(namearg, cls=CommandCls, ...)
+@overload
+def command(
+    name: Optional[str],
+    cls: Type[CmdType],
+    **attrs: Any,
+) -> Callable[[_AnyCallable], CmdType]:
+    ...
+
+
+# variant: name omitted, cls _must_ be a keyword argument, @command(cls=CommandCls, ...)
+@overload
+def command(
+    name: None = None,
+    *,
+    cls: Type[CmdType],
+    **attrs: Any,
+) -> Callable[[_AnyCallable], CmdType]:
+    ...
+
+
+# variant: with optional string name, no cls argument provided.
+@overload
+def command(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichCommand]:
+    ...
 
 
 def command(
-    name: Optional[str] = None, cls: Optional[Type[Command]] = RichCommand, **attrs: Any
-) -> Callable[[F], Command]:
+    name: Union[Optional[str], _AnyCallable] = None,
+    cls: Optional[Type[CmdType]] = None,
+    **attrs: Any,
+) -> Union[Command, Callable[[_AnyCallable], Union[RichCommand, CmdType]]]:
     """
     Command decorator function.
 
     Defines the command() function so that it uses the RichCommand class by default.
     """
+    if cls is None:
+        cls = cast(Type[CmdType], RichCommand)
 
-    def wrapper(fn):
-        if hasattr(fn, "__rich_context_settings__"):
-            rich_context_settings = getattr(fn, "__rich_context_settings__", {})
-            console = rich_context_settings.get("rich_console", None)
-            help_config = rich_context_settings.get("help_config", None)
-            context_settings = attrs.get("context_settings", {})
-            context_settings.update(rich_console=console, rich_help_config=help_config)
-            attrs.update(context_settings=context_settings)
-            del fn.__rich_context_settings__
-        if callable(name) and cls:
-            command = click_command(cls=cls, **attrs)(name)
-        else:
-            command = click_command(name, cls=cls, **attrs)
-        cmd = cast(RichCommand, command(fn))
-        return cmd
+    if callable(name):
+        return click_command(cls=cls, **attrs)(name)
 
-    return wrapper
+    return click_command(name, cls=cls, **attrs)
 
 
 class NotSupportedError(Exception):
@@ -92,7 +151,9 @@ class NotSupportedError(Exception):
     pass
 
 
-def rich_config(console: Optional[Console] = None, help_config: Optional[RichHelpConfiguration] = None):
+def rich_config(
+    console: Optional[Console] = None, help_config: Optional[RichHelpConfiguration] = None
+) -> Callable[[FC], FC]:
     """Use decorator to configure Rich Click settings.
 
     Args:
@@ -103,7 +164,7 @@ def rich_config(console: Optional[Console] = None, help_config: Optional[RichHel
     """
     if CLICK_IS_BEFORE_VERSION_8X:
 
-        def decorator_with_warning(obj):
+        def decorator_with_warning(obj: FC) -> FC:
             import warnings
 
             warnings.warn(
@@ -122,8 +183,6 @@ def rich_config(console: Optional[Console] = None, help_config: Optional[RichHel
             setattr(obj, "__rich_context_settings__", {"rich_console": console, "rich_help_config": help_config})
         else:
             raise NotSupportedError("`rich_config` requires a `RichCommand` or `RichGroup`. Try using the cls keyword")
-
-        decorator.__doc__ = obj.__doc__
         return obj
 
     return decorator
@@ -140,11 +199,11 @@ def rich_config(console: Optional[Console] = None, help_config: Optional[RichHel
 
 P = ParamSpec("P")
 R = TypeVar("R")
-C = TypeVar("C", bound=Context)
 
 
-def pass_context(f: Callable[Concatenate[C, P], R]) -> Callable[P, R]:
+def pass_context(f: Callable[Concatenate[RichContext, P], R]) -> Callable[P, R]:
+    # flake8: noqa: D400,D401
+    """Marks a callback as wanting to receive the current context
+    object as first argument.
+    """
     return click_pass_context(f)  # type: ignore[arg-type]
-
-
-pass_context.__doc__ = click_pass_context.__doc__

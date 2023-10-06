@@ -4,7 +4,7 @@ import rich_click as click
 click.rich_click.USE_RICH_MARKUP = True
 
 
-@click.command()
+@click.command
 @click.option(
     "--input",
     type=click.Path(),

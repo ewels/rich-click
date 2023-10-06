@@ -26,6 +26,16 @@ class RichCommand(click.Command):
     context_class: Type[RichContext] = RichContext
     _formatter: Optional[RichHelpFormatter] = None
 
+    @wraps(click.Command.__init__)
+    def __init__(self, *args: Any, **kwargs: Any):
+        """Create Rich Command instance."""
+        super().__init__(*args, **kwargs)
+        if self.callback is not None:
+            if hasattr(self.callback, "__rich_context_settings__"):
+                rich_context_settings = getattr(self.callback, "__rich_context_settings__", {})
+                self.context_settings.update(rich_context_settings)
+                del self.callback.__rich_context_settings__
+
     @property
     def console(self):
         """Rich Console.
@@ -54,7 +64,6 @@ class RichCommand(click.Command):
             self._formatter = RichHelpFormatter(config=self.help_config)
         return self._formatter
 
-    @wraps(click.BaseCommand.main)
     def main(
         self,
         args: Optional[Sequence[str]] = None,
@@ -168,16 +177,20 @@ class RichGroup(RichCommand, click.Group):
     command_class: Type[RichCommand] = RichCommand
     group_class = type
 
-    @overload
-    def command(self, __func: Callable[..., Any]) -> click.Command:
-        ...
+    if CLICK_IS_BEFORE_VERSION_8X:
 
-    @overload
-    def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], click.Command]:
-        ...
+        @overload
+        def command(self, __func: Callable[..., Any]) -> click.Command:
+            ...
 
-    def command(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], click.Command], click.Command]:
-        # This method override is required for Click 7.x compatibility.
-        # (The command_class ClassVar was not added until 8.0.)
-        kwargs.setdefault("cls", self.command_class)
-        return super().command(*args, **kwargs)
+        @overload
+        def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], click.Command]:
+            ...
+
+        def command(
+            self, *args: Any, **kwargs: Any
+        ) -> Union[Callable[[Callable[..., Any]], click.Command], click.Command]:
+            # This method override is required for Click 7.x compatibility.
+            # (The command_class ClassVar was not added until 8.0.)
+            kwargs.setdefault("cls", self.command_class)
+            return super().command(*args, **kwargs)

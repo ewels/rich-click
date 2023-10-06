@@ -66,7 +66,7 @@ def get_module_config() -> RichHelpConfiguration:
     A function-level import is used to avoid a circular dependency
     between the formatter and formatter operations.
     """
-    from rich_click.rich_click import get_module_help_configuration  # type: ignore
+    from rich_click.rich_click import get_module_help_configuration
 
     return get_module_help_configuration()
 

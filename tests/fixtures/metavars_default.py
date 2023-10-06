@@ -1,7 +1,7 @@
 import rich_click as click
 
 
-@click.command()
+@click.command("cli")
 @click.option("--debug", is_flag=True, help="Enable debug mode.")
 @click.option(
     "--number",
@@ -42,7 +42,7 @@ import rich_click as click
     show_default=True,
     help="This click choice has loads of options.",
 )
-def cli(debug, number):
+def cli(debug, number) -> None:
     """
     My amazing tool does all the things.
 

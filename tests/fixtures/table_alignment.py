@@ -58,7 +58,7 @@ click.rich_click.COMMAND_GROUPS = {
     help="Show the debug log messages",
 )
 @click.version_option("1.23", prog_name="mytool")
-def cli(type, debug):
+def cli(type, debug) -> None:
     """
     My amazing tool does all the things.
 
@@ -76,26 +76,29 @@ def cli(type, debug):
 @click.option("--output", "-o", help="Output path")
 @click.option("--all", is_flag=True, help="Sync all the things?")
 @click.option("--overwrite", is_flag=True, help="Overwrite local files")
-def sync(input, output, all, overwrite):
+def sync(input, output, all, overwrite) -> None:
     """Synchronise all your files between two places."""
     print("Syncing")
 
 
+# We vary the typing for cli.command() function a bit to test the function signature overloading
+
+
 @cli.command()
 @click.option("--all", is_flag=True, help="Get everything")
-def download(all):
+def download(all) -> None:
     """Pretend to download some files from somewhere."""
     print("Downloading")
 
 
-@cli.command()
-def auth():
+@cli.command("auth")
+def auth() -> None:
     """Authenticate the app."""
     print("Downloading")
 
 
-@cli.command()
-def config():
+@cli.command
+def config() -> None:
     """Set up the configuration."""
     print("Downloading")
 

@@ -1,7 +1,7 @@
 import rich_click as click
 
 
-@click.group()
+@click.group
 @click.option(
     "--debug/--no-debug",
     "-d/-n",
@@ -11,7 +11,7 @@ import rich_click as click
 
     Double newlines are preserved.""",
 )
-def cli(debug):
+def cli(debug) -> None:
     """
     My amazing tool does all the things.
 
@@ -24,7 +24,7 @@ def cli(debug):
     print(f"Debug mode is {'on' if debug else 'off'}")
 
 
-@cli.command()
+@cli.command
 @click.option(
     "--type",
     required=True,
@@ -33,7 +33,7 @@ def cli(debug):
     help="Type of file to sync",
 )
 @click.option("--all", is_flag=True)
-def sync(type, all):
+def sync(type, all) -> None:
     """Synchronise all your files between two places.
     Example command that doesn't do much except print to the terminal."""
     print("Syncing")
@@ -41,7 +41,7 @@ def sync(type, all):
 
 @cli.command(short_help="Optionally use short-help for the group help text")
 @click.option("--all", is_flag=True, help="Get everything")
-def download(all):
+def download(all) -> None:
     """
     Pretend to download some files from
     somewhere. Multi-line help strings are unwrapped

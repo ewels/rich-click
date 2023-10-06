@@ -18,7 +18,7 @@ click.rich_click.USE_MARKDOWN = True
 )
 @click.option("--all", is_flag=True, help="Sync\n 1. all\n 2. the\n 3. things?")
 @click.option("--debug", is_flag=True, help="# Enable `debug mode`")
-def cli(input, type, all, debug):
+def cli(input, type, all, debug) -> None:
     """
     My amazing tool does _**all the things**_.
 

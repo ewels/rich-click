@@ -1,11 +1,11 @@
 import click
 
-from rich_click import RichCommand, RichGroup
+from rich_click import pass_context, RichCommand, RichContext, RichGroup
 
 
 @click.group(cls=RichGroup)
 @click.option("--debug/--no-debug", default=False)
-def cli(debug):
+def cli(debug) -> None:
     """
     My amazing tool does all the things.
 
@@ -19,7 +19,8 @@ def cli(debug):
 
 
 @cli.command(cls=RichCommand)
-def sync():
+@pass_context
+def sync(ctx: RichContext) -> None:
     """Synchronise all your files between two places."""
     click.echo("Syncing")
 

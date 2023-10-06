@@ -1,4 +1,4 @@
-from typing import Optional, Type
+from typing import Any, Optional, Type
 
 import click
 from rich.console import Console
@@ -14,10 +14,10 @@ class RichContext(click.Context):
 
     def __init__(
         self,
-        *args,
+        *args: Any,
         rich_console: Optional[Console] = None,
         rich_help_config: Optional[RichHelpConfiguration] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
         """Create Rich Context instance.
 

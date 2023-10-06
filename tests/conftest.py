@@ -21,22 +21,22 @@ from rich_click.rich_help_configuration import OptionHighlighter, RichHelpConfig
 
 
 @pytest.fixture
-def root_dir():
+def root_dir() -> Path:
     return Path(__file__).parent
 
 
 @pytest.fixture
-def fixtures_dir():
+def fixtures_dir() -> Path:
     return Path(__file__).parent / "fixtures"
 
 
 @pytest.fixture
-def tmpdir(root_dir: Path):
+def tmpdir(root_dir: Path) -> Path:
     return root_dir / "tmp"
 
 
 @pytest.fixture
-def expectations_dir(root_dir: Path):
+def expectations_dir(root_dir: Path) -> Path:
     return root_dir / "expectations"
 
 
@@ -45,8 +45,8 @@ def click_major_version() -> int:
     return int(click.__version__.split(".")[0])
 
 
-class AssertStr:
-    def __call__(self, actual: str, expectation: Union[str, Path]):
+class AssertStr(Protocol):
+    def __call__(self, actual: str, expectation: Union[str, Path]) -> None:
         """Assert strings by normalizining line endings
 
         Args:
@@ -57,8 +57,8 @@ class AssertStr:
 
 
 @pytest.fixture
-def assert_str(request: pytest.FixtureRequest, tmpdir: Path):
-    def assertion(actual: str, expectation: Union[str, Path]):
+def assert_str(request: pytest.FixtureRequest, tmpdir: Path) -> Callable[[str, Union[str, Path]], None]:
+    def assertion(actual: str, expectation: Union[str, Path]) -> None:
         if isinstance(expectation, Path):
             if expectation.exists():
                 expected = expectation.read_text()
@@ -81,7 +81,7 @@ def assert_str(request: pytest.FixtureRequest, tmpdir: Path):
 
 
 class AssertDicts(Protocol):
-    def __call__(self, actual: Dict[str, Any], expectation: Union[Path, Dict[str, Any]]):
+    def __call__(self, actual: Dict[str, Any], expectation: Union[Path, Dict[str, Any]]) -> None:
         """Assert two dictionaries by normalizing as json
 
         Args:
@@ -92,17 +92,17 @@ class AssertDicts(Protocol):
 
 
 @pytest.fixture
-def assert_dicts(request: pytest.FixtureRequest, tmpdir: Path):
+def assert_dicts(request: pytest.FixtureRequest, tmpdir: Path) -> AssertDicts:
     def load_obj(s: str) -> Any:
         return json.loads(s)
 
     def dump_obj(obj: Any) -> str:
         return json.dumps(obj, indent=4)
 
-    def roundtrip(obj):
+    def roundtrip(obj: Any) -> Any:
         return load_obj(dump_obj(obj))
 
-    def assertion(actual: Dict[str, Any], expectation: Union[Path, Dict[str, Any]]):
+    def assertion(actual: Dict[str, Any], expectation: Union[Path, Dict[str, Any]]) -> None:
         if isinstance(expectation, Path):
             if expectation.exists():
                 expected = load_obj(expectation.read_text())
@@ -128,7 +128,7 @@ def assert_dicts(request: pytest.FixtureRequest, tmpdir: Path):
 
 
 @pytest.fixture(autouse=True)
-def initialize_rich_click():
+def initialize_rich_click() -> None:
     """Initialize `rich_click` module."""
     # to isolate module-level configuration we
     # must reload the rich_click module between
@@ -147,8 +147,12 @@ def initialize_rich_click():
     rc.FORCE_TERMINAL = True
 
 
+class CommandModuleType(ModuleType):
+    cli: RichCommand
+
+
 class LoadCommandModule(Protocol):
-    def __call__(self, namespace: str) -> ModuleType:
+    def __call__(self, namespace: str) -> CommandModuleType:
         """Dynamically loads a rich cli fixture.
 
         Args:
@@ -171,21 +175,17 @@ def replace_link_ids(render: str) -> str:
 
 
 @pytest.fixture
-def load_command():
-    def load(namespace: str):
-        # set fixed terminal width for all commands
-        if namespace:
-            # reload the cli module to reset state
-            # for multiple tests of the same cli command
-            module = importlib.import_module(namespace)
-            reload(module)
-            return module
+def load_command() -> LoadCommandModule:
+    def load(namespace: str) -> CommandModuleType:
+        module = importlib.import_module(namespace)
+        reload(module)
+        return cast(CommandModuleType, module)
 
     return load
 
 
 class InvokeCli(Protocol):
-    def __call__(self, cmd: click.BaseCommand, *args: str) -> Result:
+    def __call__(self, cmd: click.Command, *args: Any, **kwargs: Any) -> Result:
         """Invoke click command.
 
         Small convenience fixture to allow invoking a click Command
@@ -198,10 +198,10 @@ class InvokeCli(Protocol):
 
 
 @pytest.fixture
-def invoke():
+def invoke() -> InvokeCli:
     runner = CliRunner()
 
-    def invoke(cmd, *args, **kwargs):
+    def invoke(cmd: click.Command, *args: Any, **kwargs: Any) -> Result:
         result = runner.invoke(cmd, *args, **kwargs, standalone_mode=False)
         return result
 
@@ -215,7 +215,7 @@ class AssertRichFormat(Protocol):
         args: str,
         error: Optional[Type[Exception]],
         rich_config: Optional[Callable[[Any], Union[RichGroup, RichCommand]]],
-    ):
+    ) -> None:
         """Invokes the cli command and applies assertions against the results
 
         This command resolves the cli application from the fixtures directory dynamically
@@ -246,24 +246,24 @@ def assert_rich_format(
     request: pytest.FixtureRequest,
     expectations_dir: Path,
     invoke: InvokeCli,
-    load_command,
-    assert_dicts,
-    assert_str,
-    click_major_version,
-):
-    def config_to_dict(config: RichHelpConfiguration):
+    load_command: LoadCommandModule,
+    assert_dicts: AssertDicts,
+    assert_str: AssertStr,
+    click_major_version: int,
+) -> AssertRichFormat:
+    def config_to_dict(config: RichHelpConfiguration) -> Dict[Any, Any]:
         config_dict = asdict(config)
         config_dict["highlighter"] = cast(OptionHighlighter, config.highlighter).highlights
         return config_dict
 
     def assertion(
-        cmd: Union[str, Union[RichCommand, RichGroup]],
+        cmd: Union[str, RichCommand],
         args: str,
         error: Optional[Type[Exception]],
-        rich_config: Optional[Callable[[Any], Union[RichGroup, RichCommand]]],
-    ):
+        rich_config: Optional[Callable[[Any], RichCommand]],
+    ) -> None:
         if isinstance(cmd, str):
-            command: Union[RichCommand, RichGroup] = load_command(f"fixtures.{cmd}").cli
+            command = load_command(f"fixtures.{cmd}").cli
         else:
             command = cmd
 
