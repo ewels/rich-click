@@ -212,21 +212,45 @@ class ClickGroupWithRichCommandClass(click.Group):
     group_class = RichGroup
 
 
-command_help_output = """
+if rich_version.major == 12:
+    command_help_output = """
  Usage: cli [OPTIONS]                                       
+
+ Some help                                                  
+ ╔════════════════════════════════════════════════════════╗ 
+ ║                         Header                         ║ 
+ ╚════════════════════════════════════════════════════════╝ 
+
+╭─ Options ────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                  │
+╰──────────────────────────────────────────────────────────╯
+"""
+    group_help_output = """
+ Usage: cli [OPTIONS] COMMAND [ARGS]...                     
                                                             
  Some help                                                  
- ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ 
- ┃                         Header                         ┃ 
- ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ 
+ ╔════════════════════════════════════════════════════════╗ 
+ ║                         Header                         ║ 
+ ╚════════════════════════════════════════════════════════╝ 
                                                             
 ╭─ Options ────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                  │
 ╰──────────────────────────────────────────────────────────╯
 """
+else:
+    command_help_output = """
+ Usage: cli [OPTIONS]                                       
 
+ Some help                                                  
+ ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ 
+ ┃                         Header                         ┃ 
+ ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ 
 
-group_help_output = """
+╭─ Options ────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                  │
+╰──────────────────────────────────────────────────────────╯
+"""
+    group_help_output = """
  Usage: cli [OPTIONS] COMMAND [ARGS]...                     
                                                             
  Some help                                                  
@@ -244,10 +268,26 @@ group_help_output = """
 @pytest.mark.parametrize(
     ("command_callable", "expected_command_type", "expected_help_output"),
     [
-        pytest.param(lambda: command, RichCommand, command_help_output, id="command1"),
+        pytest.param(
+            lambda: command,
+            RichCommand,
+            command_help_output,
+            marks=pytest.mark.skipif(
+                click_version < version.parse("8.1.0"), reason="decorator must be called prior to click 8.1.0"
+            ),
+            id="command1",
+        ),
         pytest.param(lambda: command(), RichCommand, command_help_output, id="command2"),
         pytest.param(lambda: command("cli"), RichCommand, command_help_output, id="command3"),
-        pytest.param(lambda: group, RichGroup, group_help_output, id="group1"),
+        pytest.param(
+            lambda: group,
+            RichGroup,
+            group_help_output,
+            id="group1",
+            marks=pytest.mark.skipif(
+                click_version < version.parse("8.1.0"), reason="decorator must be called prior to click 8.1.0"
+            ),
+        ),
         pytest.param(lambda: group(), RichGroup, group_help_output, id="group2"),
         pytest.param(lambda: group("cli"), RichGroup, group_help_output, id="group3"),
         pytest.param(lambda: click.command(cls=RichCommand), RichCommand, command_help_output, id="click_command1"),
@@ -261,6 +301,9 @@ group_help_output = """
             RichCommand,
             command_help_output,
             id="RichGroup1",
+            marks=pytest.mark.skipif(
+                click_version < version.parse("8.1.0"), reason="decorator must be called prior to click 8.1.0"
+            ),
         ),
         pytest.param(
             lambda: RichGroup(name="grp", callback=lambda: None).command("cli"),
@@ -273,6 +316,9 @@ group_help_output = """
             RichCommand,
             command_help_output,
             id="ClickGroup1",
+            marks=pytest.mark.skipif(
+                click_version < version.parse("8.1.0"), reason="decorator must be called prior to click 8.1.0"
+            ),
         ),
         pytest.param(
             lambda: ClickGroupWithRichCommandClass(name="grp", callback=lambda: None).command("cli"),
@@ -285,6 +331,9 @@ group_help_output = """
             RichGroup,
             group_help_output,
             id="ClickGroup3",
+            marks=pytest.mark.skipif(
+                click_version < version.parse("8.1.0"), reason="decorator must be called prior to click 8.1.0"
+            ),
         ),
         pytest.param(
             lambda: ClickGroupWithRichCommandClass(name="grp", callback=lambda: None).group("cli"),
@@ -326,8 +375,8 @@ def test_rich_config_decorator_order(
     result = invoke(cli, "--help")
 
     assert_str(
-        result.stdout,
-        expected_help_output,
+        actual=result.stdout,
+        expectation=expected_help_output,
     )
 
 
@@ -337,10 +386,7 @@ def test_rich_config_max_width(invoke: InvokeCli, assert_str: AssertStr) -> None
 
     @command()
     def cli() -> None:
-        """Some help
-
-        # Header
-        """
+        """Some help text"""
         pass
 
     result = invoke(cli, "--help")
@@ -350,8 +396,7 @@ def test_rich_config_max_width(invoke: InvokeCli, assert_str: AssertStr) -> None
         """
 Usage: cli [OPTIONS]                                            
                                                                 
- Some help                                                      
- # Header                                                       
+ Some help text                                                 
                                                                 
 ╭─ Options ────────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                      │
