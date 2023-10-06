@@ -93,6 +93,10 @@ class RichHelpFormatter(click.HelpFormatter):
             config: Configuration.
                 Defaults to None.
         """
+        if config is not None:
+            # Rich config overrides width and max width if set.
+            width = config.width or width
+            max_width = config.max_width or max_width
         super().__init__(indent_increment, width, max_width, *args, **kwargs)
         self._rich_buffer = TerminalBuffer()
         self._config = config or get_module_config()

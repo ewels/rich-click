@@ -42,4 +42,6 @@ class RichContext(click.Context):
 
     def make_formatter(self):
         """Create the Rich Help Formatter."""
-        return self.formatter_class(config=self.help_config)
+        return self.formatter_class(
+            width=self.terminal_width, max_width=self.max_content_width, config=self.help_config
+        )
