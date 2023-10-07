@@ -23,17 +23,17 @@ def test_command_exit_code_with_context() -> None:
         assert res.exit_code == expected_exit_code
 
 
-def test_group_exit_code_with_context():
+def test_group_exit_code_with_context() -> None:
     for expected_exit_code in range(10):
 
         @group("cli")
         @pass_context
-        def cli(ctx: RichContext):
+        def cli(ctx: RichContext) -> None:
             ctx.exit(expected_exit_code)
 
         @cli.command("subcommand")
         @pass_context
-        def subcommand(ctx: RichContext):
+        def subcommand(ctx: RichContext) -> None:
             ctx.exit(999)
 
         runner = CliRunner()

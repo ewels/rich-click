@@ -42,7 +42,7 @@ import rich_click as click
     show_default=True,
     help="This click choice has loads of options.",
 )
-def cli(debug, number) -> None:
+def cli(debug: bool, number: str) -> None:
     """
     My amazing tool does all the things.
 

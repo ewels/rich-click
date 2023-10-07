@@ -5,7 +5,7 @@ from rich_click import pass_context, RichCommand, RichContext, RichGroup
 
 @click.group(cls=RichGroup)
 @click.option("--debug/--no-debug", default=False)
-def cli(debug) -> None:
+def cli(debug: bool) -> None:
     """
     My amazing tool does all the things.
 

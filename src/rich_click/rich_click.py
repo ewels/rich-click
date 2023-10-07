@@ -495,7 +495,7 @@ def rich_format_help(
             if isinstance(param, click.core.Argument) and not config.group_arguments_options:
                 argument_group_options.append(param.opts[0])
             else:
-                list_of_option_groups: List = option_groups[-1]["options"]  # type: ignore[assignment]
+                list_of_option_groups: List[str] = option_groups[-1]["options"]  # type: ignore[assignment]
                 list_of_option_groups.append(param.opts[0])
 
     # If we're not grouping arguments and we got some, prepend before default options
@@ -643,7 +643,7 @@ def rich_format_help(
                 if command in cmd_group.get("commands", []):
                     break
             else:
-                commands: List = cmd_groups[-1]["commands"]  # type: ignore[assignment]
+                commands: List[str] = cmd_groups[-1]["commands"]  # type: ignore[assignment]
                 commands.append(command)
 
         # Print each command group panel
@@ -717,7 +717,7 @@ def rich_format_help(
         console.print(Padding(_make_rich_rext(config.footer_text, config.style_footer_text, formatter), (1, 1, 0, 1)))
 
 
-def rich_format_error(self: click.ClickException, formatter: Optional[RichHelpFormatter] = None):
+def rich_format_error(self: click.ClickException, formatter: Optional[RichHelpFormatter] = None) -> None:
     """Print richly formatted click errors.
 
     Called by custom exception handler to print richly formatted click errors.

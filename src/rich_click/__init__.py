@@ -12,7 +12,6 @@ __version__ = "1.7.0dev"
 # We need to manually import these instead of `from click import *` to force mypy to recognize a few type annotation overrides for the rich_click decorators.
 from click.core import Argument as Argument
 from click.core import Command as Command
-from click.core import CommandCollection as CommandCollection
 from click.core import Context as Context
 from click.core import Group as Group
 from click.core import Option as Option
@@ -83,8 +82,6 @@ from rich_click.rich_help_configuration import RichHelpConfiguration as RichHelp
 
 
 def __getattr__(name: str) -> object:
-    import click
-
     from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X
 
     if name == "RichMultiCommand" and CLICK_IS_BEFORE_VERSION_9X:
@@ -100,4 +97,6 @@ def __getattr__(name: str) -> object:
         return RichMultiCommand
 
     else:
+        import click
+
         return getattr(click, name)

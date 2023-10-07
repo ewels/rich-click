@@ -59,7 +59,7 @@ click.rich_click.COMMAND_GROUPS = {
     help="Show the debug log messages",
 )
 @click.version_option("1.23", prog_name="mytool")
-def cli(type, debug) -> None:
+def cli(type: str, debug: bool) -> None:
     """
     My amazing tool does all the things.
 
@@ -77,7 +77,7 @@ def cli(type, debug) -> None:
 @click.option("--output", "-o", help="Output path")
 @click.option("--all", is_flag=True, help="Sync all the things?")
 @click.option("--overwrite", is_flag=True, help="Overwrite local files")
-def sync(input, output, all, overwrite) -> None:
+def sync(input: str, output: str, all: bool, overwrite: bool) -> None:
     """Synchronise all your files between two places."""
     print("Syncing")
 
@@ -87,7 +87,7 @@ def sync(input, output, all, overwrite) -> None:
 
 @cli.command()
 @click.option("--all", is_flag=True, help="Get everything")
-def download(all) -> None:
+def download(all: bool) -> None:
     """Pretend to download some files from somewhere."""
     print("Downloading")
 

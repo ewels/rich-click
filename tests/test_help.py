@@ -1,11 +1,12 @@
-from typing import Any, Callable, Optional, Type
+from typing import Any, Callable, Optional, Type, Union
 
 import click
 import pytest
 from click import UsageError
-from conftest import AssertRichFormat, AssertStr, InvokeCli
 from packaging import version
 from rich.console import Console
+
+from tests.conftest import AssertRichFormat, AssertStr, InvokeCli
 
 import rich_click.rich_click as rc
 from rich_click import command, group, pass_context, rich_config, RichContext, RichHelpConfiguration
@@ -202,7 +203,11 @@ click_version = version.parse(metadata.version("click"))
 )
 @pytest.mark.filterwarnings("ignore:^.*click prior to.*$:RuntimeWarning")
 def test_rich_click(
-    cmd: str, args: str, error: Optional[Type[Exception]], rich_config, assert_rich_format: AssertRichFormat
+    cmd: str,
+    args: str,
+    error: Optional[Type[Exception]],
+    rich_config: Optional[Callable[[Any], Union[RichGroup, RichCommand]]],
+    assert_rich_format: AssertRichFormat,
 ) -> None:
     assert_rich_format(cmd, args, error, rich_config)
 
@@ -350,7 +355,7 @@ def test_rich_config_decorator_order(
     expected_command_type: Type[RichCommand],
     expected_help_output: str,
 ) -> None:
-    @command_callable()
+    @command_callable()  # type: ignore[misc]
     @rich_config(Console(), RichHelpConfiguration(max_width=60, use_markdown=True))
     def cli() -> None:
         """Some help

@@ -7,10 +7,12 @@ from typing import Any, Callable, cast, Optional, overload, Sequence, TextIO, Ty
 
 import click
 from click.utils import make_str, PacifyFlushWrapper
+from rich.console import Console
 
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 from rich_click.rich_click import rich_abort_error, rich_format_error, rich_format_help
 from rich_click.rich_context import RichContext
+from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
 
 
@@ -41,7 +43,7 @@ class RichCommand(click.Command):
                 del self.callback.__rich_context_settings__
 
     @property
-    def console(self):
+    def console(self) -> Optional[Console]:
         """Rich Console.
 
         This is a separate instance from the help formatter that allows full control of the
@@ -52,7 +54,7 @@ class RichCommand(click.Command):
         return self.context_settings.get("rich_console")
 
     @property
-    def help_config(self):
+    def help_config(self) -> Optional[RichHelpConfiguration]:
         """Rich Help Configuration."""
         return self.context_settings.get("rich_help_config")
 
@@ -156,7 +158,7 @@ class RichCommand(click.Command):
             sys.stderr.write(self.formatter.getvalue())
             sys.exit(1)
 
-    def format_help(self, ctx: click.Context, formatter: click.HelpFormatter):
+    def format_help(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         rich_format_help(self, ctx, formatter)
 
 
@@ -171,7 +173,7 @@ with warnings.catch_warnings():
         """
 
     @wraps(click.MultiCommand.__init__)
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:  # type: ignore[no-untyped-def]
         """Initialize RichGroup class."""
         click.MultiCommand.__init__(self, *args, **kwargs)
         self._register_rich_context_settings_from_callback()
@@ -188,7 +190,7 @@ class RichGroup(RichCommand, click.Group):
     group_class = type
 
     @wraps(click.Group.__init__)
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize RichGroup class."""
         click.Group.__init__(self, *args, **kwargs)
         self._register_rich_context_settings_from_callback()
@@ -209,4 +211,4 @@ class RichGroup(RichCommand, click.Group):
             # This method override is required for Click 7.x compatibility.
             # (The command_class ClassVar was not added until 8.0.)
             kwargs.setdefault("cls", self.command_class)
-            return super().command(*args, **kwargs)
+            return super().command(*args, **kwargs)  # type: ignore[no-any-return]

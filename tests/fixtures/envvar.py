@@ -8,7 +8,7 @@ import rich_click as click
 
 @click.group(context_settings=dict(auto_envvar_prefix="GREETER"))
 @click.option("--debug/--no-debug")
-def cli(debug) -> None:
+def cli(debug: bool) -> None:
     click.echo(f"Debug mode is {'on' if debug else 'off'}")
 
 
@@ -29,7 +29,7 @@ def cli(debug) -> None:
     show_default=True,
     help="This can be set via env var EMAIL or EMAIL_ADDRESS",
 )
-def greet(username, nickname, email) -> None:
+def greet(username: str, nickname: str, email: str) -> None:
     click.echo(f"Hello {username} ({nickname}) with email {email}!")
 
 

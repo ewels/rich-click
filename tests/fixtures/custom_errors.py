@@ -18,7 +18,7 @@ click.rich_click.ERRORS_EPILOGUE = "To find out more, visit [link=https://mytool
 )
 @click.option("--all", is_flag=True, help="Sync all the things?")
 @click.option("--debug", is_flag=True, default=False, help="Enable debug mode")
-def cli(input, type, all, debug) -> None:
+def cli(input: str, type: str, all: bool, debug: bool) -> None:
     """
     My amazing tool does all the things.
 

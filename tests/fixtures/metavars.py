@@ -45,7 +45,7 @@ click.rich_click.APPEND_METAVARS_HELP = True
     show_default=True,
     help="This click choice has loads of options.",
 )
-def cli(debug, number) -> None:
+def cli(debug: bool, number: str) -> None:
     """
     My amazing tool does all the things.
 

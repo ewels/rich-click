@@ -56,7 +56,7 @@ click.rich_click.COMMAND_GROUPS = {
     help="Show the debug log messages",
 )
 @click.version_option("1.23", prog_name="mytool")
-def cli(type, debug):
+def cli(type: str, debug: bool) -> None:
     """
     My amazing tool does all the things.
 
@@ -70,30 +70,30 @@ def cli(type, debug):
 
 
 @cli.command()
-@click.option("--input", "-i", required=True, help="Input path")
+@click.option("--input", "-i", "input_", required=True, help="Input path")
 @click.option("--output", "-o", help="Output path")
-@click.option("--all", is_flag=True, help="Sync all the things?")
+@click.option("--all", "all_", is_flag=True, help="Sync all the things?")
 @click.option("--overwrite", is_flag=True, help="Overwrite local files")
-def sync(input, output, all, overwrite):
+def sync(input_: str, output: str, all_: bool, overwrite: bool) -> None:
     """Synchronise all your files between two places."""
     print("Syncing")
 
 
 @cli.command()
 @click.option("--all", is_flag=True, help="Get everything")
-def download(all):
+def download(all: bool) -> None:
     """Pretend to download some files from somewhere."""
     print("Downloading")
 
 
 @cli.command()
-def auth():
+def auth() -> None:
     """Authenticate the app."""
     print("Downloading")
 
 
 @cli.command()
-def config():
+def config() -> None:
     """Set up the configuration."""
     print("Downloading")
 
