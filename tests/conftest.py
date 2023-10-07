@@ -136,14 +136,7 @@ def initialize_rich_click() -> None:
     reload(rc)
     # default config settings from https://github.com/Textualize/rich/blob/master/tests/render.py
     rc.WIDTH = 100
-    rc.COLOR_SYSTEM = "truecolor"
-
-    # Click <8 tests fail unless we set the COLOR_SYSTEM to None.
-    if CLICK_IS_BEFORE_VERSION_8X:
-        rc.COLOR_SYSTEM = None
-    else:
-        rc.COLOR_SYSTEM = "truecolor"
-
+    rc.COLOR_SYSTEM = None
     rc.FORCE_TERMINAL = True
 
 

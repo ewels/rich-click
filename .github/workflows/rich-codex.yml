@@ -1,6 +1,7 @@
 name: Rich-codex
-on:
-  workflow_dispatch:
+#on:
+#  workflow_dispatch:
+on: [push, pull_request]
 
 jobs:
   rich_codex:
@@ -17,8 +18,6 @@ jobs:
 
       - name: Generate terminal images with rich-codex
         uses: ewels/rich-codex@v1
-        environment:
-          MAX_WIDTH: 100
         with:
           commit_changes: "true"
           clean_img_paths: docs/images/*.svg

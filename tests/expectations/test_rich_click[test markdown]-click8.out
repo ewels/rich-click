@@ -2,7 +2,7 @@
  Usage: cli [OPTIONS]                                                                               
                                                                                                     
  My amazing tool does all the things.                                                               
- This is a minimal example based on documentation from the ]8;id=0;foo\click]8;;\]8;id=0;foo\ package]8;;\.                           
+ This is a minimal example based on documentation from the click package.                           
                                                                                                     
  ▌ Remember:                                                                                        
  ▌  • You can try using --help at the top level                                                     
@@ -22,3 +22,4 @@
 │                  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ │
 │ --help           Show this message and exit.                                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+

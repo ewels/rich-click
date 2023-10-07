@@ -241,7 +241,7 @@ click.rich_click.APPEND_METAVARS_HELP = True
 
 By default, rich-click gives some nice formatting to error messages:
 
-![`python examples/01_simple.py --hep`](docs/images/error.svg "Error message")
+![`python examples/01_simple.py --hep || true`](docs/images/error.svg "Error message")
 
 You can customise the _Try 'command --help' for help._ message with `ERRORS_SUGGESTION`
 using rich-click though, and add some text after the error with `ERRORS_EPILOGUE`.
@@ -254,7 +254,7 @@ click.rich_click.ERRORS_SUGGESTION = "Try running the '--help' flag for more inf
 click.rich_click.ERRORS_EPILOGUE = "To find out more, visit [link=https://mytool.com]https://mytool.com[/link]"
 ```
 
-![`python examples/07_custom_errors.py --hep`](docs/images/custom_error.svg "Custom error message")
+![`python examples/07_custom_errors.py --hep || true`](docs/images/custom_error.svg "Custom error message")
 
 > See [`examples/07_custom_errors.py`](examples/07_custom_errors.py) for an example.
 
