@@ -57,7 +57,7 @@ _Screenshot from [`examples/11_hello.py`](examples/11_hello.py)_
 
 ### More complex example
 
-![`python examples/03_groups_sorting.py --help`](docs/images/command_groups.svg)
+![examples/03_groups_sorting.py](docs/images/command_groups.svg)
 
 _Screenshot from [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py)_
 
