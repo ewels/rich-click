@@ -1,7 +1,9 @@
 name: Rich-codex
-#on:
-#  workflow_dispatch:
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   rich_codex:

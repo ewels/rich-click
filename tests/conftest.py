@@ -275,12 +275,7 @@ def assert_rich_format(
         if error:
             assert isinstance(result.exception, error)
             assert result.exit_code != 0
-            if CLICK_IS_BEFORE_VERSION_8X:
-                actual = replace_link_ids(result.stdout)
-            else:
-                actual = replace_link_ids(command.formatter.getvalue())
-        else:
-            actual = replace_link_ids(result.stdout)
+        actual = replace_link_ids(result.stdout)
 
         expectation_output_path = expectations_dir / f"{request.node.name}-click{click_major_version}.out"
         expectation_config_path = expectations_dir / f"{request.node.name}-click{click_major_version}.config.json"
