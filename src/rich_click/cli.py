@@ -19,7 +19,7 @@ from rich.text import Text
 
 from rich_click import command as rich_command
 from rich_click import group as rich_group
-from rich_click import RichCommand, RichGroup, RichMultiCommand
+from rich_click import RichCommand, RichCommandCollection, RichGroup, RichMultiCommand
 from rich_click.rich_click import (
     ALIGN_ERRORS_PANEL,
     ERRORS_PANEL_TITLE,
@@ -68,6 +68,7 @@ def patch() -> None:
     click.command = rich_command
     click.Group = RichGroup  # type: ignore[misc]
     click.Command = RichCommand  # type: ignore[misc]
+    click.CommandCollection = RichCommandCollection  # type: ignore[misc]
     if "MultiCommand" in dir(click):
         click.MultiCommand = RichMultiCommand  # type: ignore[assignment,misc]
 

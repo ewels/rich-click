@@ -12,6 +12,7 @@ __version__ = "1.7.0dev"
 # We need to manually import these instead of `from click import *` to force mypy to recognize a few type annotation overrides for the rich_click decorators.
 from click.core import Argument as Argument
 from click.core import Command as Command
+from click.core import CommandCollection as CommandCollection
 from click.core import Context as Context
 from click.core import Group as Group
 from click.core import Option as Option
@@ -76,6 +77,7 @@ from rich_click.decorators import group as group
 from rich_click.decorators import pass_context as pass_context
 from rich_click.decorators import rich_config as rich_config
 from rich_click.rich_command import RichCommand as RichCommand
+from rich_click.rich_command import RichCommandCollection as RichCommandCollection
 from rich_click.rich_command import RichGroup as RichGroup
 from rich_click.rich_context import RichContext as RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration as RichHelpConfiguration

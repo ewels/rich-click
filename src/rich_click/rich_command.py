@@ -9,7 +9,7 @@ import click
 from click.utils import make_str, PacifyFlushWrapper
 from rich.console import Console
 
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_9X
 from rich_click.rich_click import rich_abort_error, rich_format_error, rich_format_help
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
@@ -162,23 +162,6 @@ class RichCommand(click.Command):
         rich_format_help(self, ctx, formatter)
 
 
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=DeprecationWarning, module="click")
-
-    class RichMultiCommand(RichCommand, click.MultiCommand):
-        """Richly formatted click MultiCommand.
-
-        Inherits click.MultiCommand and overrides help and error methods
-        to print richly formatted output.
-        """
-
-    @wraps(click.MultiCommand.__init__)
-    def __init__(self, *args: Any, **kwargs: Any) -> None:  # type: ignore[no-untyped-def]
-        """Initialize RichGroup class."""
-        click.MultiCommand.__init__(self, *args, **kwargs)
-        self._register_rich_context_settings_from_callback()
-
-
 class RichGroup(RichCommand, click.Group):
     """Richly formatted click Group.
 
@@ -212,3 +195,40 @@ class RichGroup(RichCommand, click.Group):
             # (The command_class ClassVar was not added until 8.0.)
             kwargs.setdefault("cls", self.command_class)
             return super().command(*args, **kwargs)  # type: ignore[no-any-return]
+
+
+if CLICK_IS_BEFORE_VERSION_9X:
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=DeprecationWarning, module="click")
+
+        class RichMultiCommand(RichCommand, click.MultiCommand):
+            """Richly formatted click MultiCommand.
+
+            Inherits click.MultiCommand and overrides help and error methods
+            to print richly formatted output.
+            """
+
+        @wraps(click.MultiCommand.__init__)
+        def __init__(self, *args: Any, **kwargs: Any) -> None:  # type: ignore[no-untyped-def]
+            """Initialize RichGroup class."""
+            click.MultiCommand.__init__(self, *args, **kwargs)
+            self._register_rich_context_settings_from_callback()
+
+else:
+
+    class RichMultiCommand(RichGroup):  # type: ignore[no-redef]
+        """This class is deprecated."""
+
+
+class RichCommandCollection(RichGroup, click.CommandCollection):
+    """Richly formatted click CommandCollection.
+
+    Inherits click.CommandCollection and overrides help and error methods
+    to print richly formatted output.
+    """
+
+    @wraps(click.CommandCollection.__init__)
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize RichCommandCollection class."""
+        click.CommandCollection.__init__(self, *args, **kwargs)
+        self._register_rich_context_settings_from_callback()
