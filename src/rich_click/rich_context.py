@@ -1,4 +1,4 @@
-from typing import ClassVar, Optional, Type
+from typing import Any, Optional, Type
 
 import click
 from rich.console import Console
@@ -10,14 +10,14 @@ from rich_click.rich_help_formatter import RichHelpFormatter
 class RichContext(click.Context):
     """Click Context class endowed with Rich superpowers."""
 
-    formatter_class: ClassVar[Type[RichHelpFormatter]] = RichHelpFormatter
+    formatter_class: Type[RichHelpFormatter] = RichHelpFormatter
 
     def __init__(
         self,
-        *args,
+        *args: Any,
         rich_console: Optional[Console] = None,
         rich_help_config: Optional[RichHelpConfiguration] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
         """Create Rich Context instance.
 
@@ -28,25 +28,20 @@ class RichContext(click.Context):
                 Defaults to None.
         """
         super().__init__(*args, **kwargs)
-        self._console = rich_console
-        self._help_config = rich_help_config
+        parent: Optional[RichContext] = kwargs.pop("parent", None)
 
-    @property
-    def console(self) -> Optional[Console]:
-        """Rich Console instance for displaying beautfil application output in the terminal.
+        if rich_console is None and hasattr(parent, "console"):
+            rich_console = parent.console  # type: ignore[has-type,union-attr]
 
-        NOTE: This is a separate instance from the one used by the help formatter, and allows full control of the
-        console configuration.
+        self.console = rich_console
 
-        See `rich_config` decorator for how to apply the settings.
-        """
-        return self._console
+        if rich_help_config is None and hasattr(parent, "help_config"):
+            rich_help_config = parent.help_config  # type: ignore[has-type,union-attr]
 
-    @property
-    def help_config(self) -> Optional[RichHelpConfiguration]:
-        """Rich help configuration."""
-        return self._help_config
+        self.help_config = rich_help_config
 
-    def make_formatter(self):
+    def make_formatter(self) -> RichHelpFormatter:
         """Create the Rich Help Formatter."""
-        return self.formatter_class(config=self.help_config)
+        return self.formatter_class(
+            width=self.terminal_width, max_width=self.max_content_width, config=self.help_config
+        )

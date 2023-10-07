@@ -6,10 +6,10 @@ from textwrap import dedent
 from typing import Any, List, Optional
 
 try:
-    from importlib.metadata import entry_points
+    from importlib.metadata import entry_points  # type: ignore[import,unused-ignore]
 except ImportError:
     # Support Python <3.8
-    from importlib_metadata import entry_points
+    from importlib_metadata import entry_points  # type: ignore[import,no-redef]
 
 import click
 from rich.console import Console
@@ -19,7 +19,7 @@ from rich.text import Text
 
 from rich_click import command as rich_command
 from rich_click import group as rich_group
-from rich_click import RichBaseCommand, RichCommand, RichGroup, RichMultiCommand
+from rich_click import RichCommand, RichCommandCollection, RichGroup, RichMultiCommand
 from rich_click.rich_click import (
     ALIGN_ERRORS_PANEL,
     ERRORS_PANEL_TITLE,
@@ -66,10 +66,11 @@ def patch() -> None:
     """Patch Click internals to use Rich-Click types."""
     click.group = rich_group
     click.command = rich_command
-    click.Group = RichGroup
-    click.Command = RichCommand
-    click.BaseCommand = RichBaseCommand
-    click.MultiCommand = RichMultiCommand
+    click.Group = RichGroup  # type: ignore[misc]
+    click.Command = RichCommand  # type: ignore[misc]
+    click.CommandCollection = RichCommandCollection  # type: ignore[misc]
+    if "MultiCommand" in dir(click):
+        click.MultiCommand = RichMultiCommand  # type: ignore[assignment,misc]
 
 
 def main(args: Optional[List[str]] = None) -> Any:
@@ -99,7 +100,7 @@ def main(args: Optional[List[str]] = None) -> Any:
         sys.exit(0)
     else:
         script_name = args[0]
-    scripts = {script.name: script for script in entry_points().get("console_scripts")}
+    scripts = {script.name: script for script in entry_points().get("console_scripts", [])}
     if script_name in scripts:
         # a valid script was passed
         script = scripts[script_name]

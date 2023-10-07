@@ -10,7 +10,7 @@ click.rich_click.STYLE_COMMANDS_TABLE_BORDER_STYLE = "red"
 click.rich_click.STYLE_COMMANDS_TABLE_ROW_STYLES = ["magenta", "yellow", "cyan", "green"]
 
 
-@click.group()
+@click.group("cli")
 @click.option(
     "--type",
     default="files",
@@ -55,7 +55,7 @@ click.rich_click.STYLE_COMMANDS_TABLE_ROW_STYLES = ["magenta", "yellow", "cyan",
     """,
 )
 @click.version_option("1.23", prog_name="mytool")
-def cli(type, debug):
+def cli(type: str, debug: bool) -> None:
     """
     My amazing tool does all the things.
 
@@ -73,7 +73,7 @@ def cli(type, debug):
 @click.option("--output", "-o", help="Output path")
 @click.option("--all", is_flag=True, help="Sync all the things?")
 @click.option("--overwrite", is_flag=True, help="Overwrite local files")
-def sync(input, output, all, overwrite):
+def sync(input: str, output: str, all: bool, overwrite: bool) -> None:
     """
     Synchronise all your files between two places.
     Curabitur congue eget lorem in lacinia.
@@ -96,7 +96,7 @@ def sync(input, output, all, overwrite):
 
 @cli.command()
 @click.option("--all", is_flag=True, help="Get everything")
-def download(all):
+def download(all: bool) -> None:
     """
     Pretend to download some files from somewhere.
     Integer bibendum libero nunc, sed aliquet ex tincidunt vel.
@@ -112,7 +112,7 @@ def download(all):
 
 
 @cli.command()
-def auth():
+def auth() -> None:
     """
     Authenticate the app.
     Duis lacus nibh, feugiat a nibh a, commodo dictum libero.
@@ -128,7 +128,7 @@ def auth():
 
 
 @cli.command()
-def config():
+def config() -> None:
     """
     Set up the configuration.
     Sed accumsan ornare odio dictum aliquam.

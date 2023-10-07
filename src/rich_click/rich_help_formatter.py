@@ -1,6 +1,6 @@
 import sys
 from io import StringIO
-from typing import IO, Optional
+from typing import Any, IO, Optional
 
 import click
 import rich
@@ -66,7 +66,7 @@ def get_module_config() -> RichHelpConfiguration:
     A function-level import is used to avoid a circular dependency
     between the formatter and formatter operations.
     """
-    from rich_click.rich_click import get_module_help_configuration  # type: ignore
+    from rich_click.rich_click import get_module_help_configuration
 
     return get_module_help_configuration()
 
@@ -80,9 +80,12 @@ class RichHelpFormatter(click.HelpFormatter):
 
     def __init__(
         self,
-        *args,
+        indent_increment: int = 2,
+        width: Optional[int] = None,
+        max_width: Optional[int] = None,
+        *args: Any,
         config: Optional[RichHelpConfiguration] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
         """Create Rich Help Formatter.
 
@@ -90,7 +93,11 @@ class RichHelpFormatter(click.HelpFormatter):
             config: Configuration.
                 Defaults to None.
         """
-        super().__init__(*args, **kwargs)
+        if config is not None:
+            # Rich config overrides width and max width if set.
+            width = config.width or width
+            max_width = config.max_width or max_width
+        super().__init__(indent_increment, width, max_width, *args, **kwargs)
         self._rich_buffer = TerminalBuffer()
         self._config = config or get_module_config()
         self._console = create_console(self._config, self._rich_buffer)

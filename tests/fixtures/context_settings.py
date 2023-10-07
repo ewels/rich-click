@@ -10,7 +10,7 @@ import rich_click as click
     show_default="show me in c8+",
     help="Show 'default: (show me in c8+)' in click>=8.0. In click 7, no default is shown.",
 )
-def cli(a, b, c, d):
+def cli(a: str, b: str, c: str, d: str) -> None:
     """
     Test cases for context_settings.
 

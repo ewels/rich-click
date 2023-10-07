@@ -20,11 +20,11 @@ This release comes after merging a huge pull-request from [@BrutalSimplicity](ht
 This PR closes a number of issues:
 
 - [#25](https://github.com/ewels/rich-click/issues/25): Add tests!
-- [#38](https://github.com/ewels/rich-click/issues/38): Support `click.MultiCommand`
 - [#90](https://github.com/ewels/rich-click/issues/90): `click.ClickException` should output to `stderr`
 - [#88](https://github.com/ewels/rich-click/issues/88): Rich Click breaks contract of Click's `format_help` and its callers
 - [#18](https://github.com/ewels/rich-click/issues/18): Options inherited from context settings aren't applied
-- [#114](https://github.com/ewels/rich-click/issues/114): `ctx.exit(exit_code)` not showing nonzero exit codes.
+
+In addition, we merged another large pull-request that adds **full static type-checking support** (see issue [#85](https://github.com/ewels/rich-click/issues/85)), and fixes many bugs - see PR [#126](https://github.com/ewels/rich-click/pull/126).
 
 In addition:
 
@@ -32,6 +32,8 @@ In addition:
 - Add new style option `WIDTH` (in addition to `MAX_WIDTH`), thanks to [@ealap](httpsd://github.com/ealap) [[#110](https://github.com/ewels/rich-click/pull/110)]
 - Updated styling for `Usage:` line to avoid off-target effects [[#108](https://github.com/ewels/rich-click/issues/108)]
 - Click 7.x support has been deprecated. [[#117](https://github.com/ewels/rich-click/pull/117)]
+- Fixed error where `ctx.exit(exit_code)` would not show nonzero exit codes.[[#114](https://github.com/ewels/rich-click/issues/114)]
+- Support `click.MultiCommand`. [[#38](https://github.com/ewels/rich-click/issues/38)]:
 
 ## Version 1.6.1 (2023-01-19)
 

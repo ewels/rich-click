@@ -1,3 +1,4 @@
+# flake8: noqa: F401
 """
 rich-click is a minimal Python module to combine the efforts of the excellent packages 'rich' and 'click'.
 
@@ -7,141 +8,97 @@ customisation required.
 
 __version__ = "1.7.0dev"
 
-from typing import Any, Callable, cast, Optional, overload, TYPE_CHECKING, Union
+# Import the entire click API here.
+# We need to manually import these instead of `from click import *` to force mypy to recognize a few type annotation overrides for the rich_click decorators.
+from click.core import Argument as Argument
+from click.core import Command as Command
+from click.core import CommandCollection as CommandCollection
+from click.core import Context as Context
+from click.core import Group as Group
+from click.core import Option as Option
+from click.core import Parameter as Parameter
+from click.decorators import argument as argument
+from click.decorators import confirmation_option as confirmation_option
+from click.decorators import help_option as help_option
+from click.decorators import make_pass_decorator as make_pass_decorator
+from click.decorators import option as option
+from click.decorators import pass_obj as pass_obj
+from click.decorators import password_option as password_option
+from click.decorators import version_option as version_option
+from click.exceptions import Abort as Abort
+from click.exceptions import BadArgumentUsage as BadArgumentUsage
+from click.exceptions import BadOptionUsage as BadOptionUsage
+from click.exceptions import BadParameter as BadParameter
+from click.exceptions import ClickException as ClickException
+from click.exceptions import FileError as FileError
+from click.exceptions import MissingParameter as MissingParameter
+from click.exceptions import NoSuchOption as NoSuchOption
+from click.exceptions import UsageError as UsageError
+from click.formatting import HelpFormatter as HelpFormatter
+from click.formatting import wrap_text as wrap_text
+from click.globals import get_current_context as get_current_context
+from click.termui import clear as clear
+from click.termui import confirm as confirm
+from click.termui import echo_via_pager as echo_via_pager
+from click.termui import edit as edit
+from click.termui import getchar as getchar
+from click.termui import launch as launch
+from click.termui import pause as pause
+from click.termui import progressbar as progressbar
+from click.termui import prompt as prompt
+from click.termui import secho as secho
+from click.termui import style as style
+from click.termui import unstyle as unstyle
+from click.types import BOOL as BOOL
+from click.types import Choice as Choice
+from click.types import DateTime as DateTime
+from click.types import File as File
+from click.types import FLOAT as FLOAT
+from click.types import FloatRange as FloatRange
+from click.types import INT as INT
+from click.types import IntRange as IntRange
+from click.types import ParamType as ParamType
+from click.types import Path as Path
+from click.types import STRING as STRING
+from click.types import Tuple as Tuple
+from click.types import UNPROCESSED as UNPROCESSED
+from click.types import UUID as UUID
+from click.utils import echo as echo
+from click.utils import format_filename as format_filename
+from click.utils import get_app_dir as get_app_dir
+from click.utils import get_binary_stream as get_binary_stream
+from click.utils import get_text_stream as get_text_stream
+from click.utils import open_file as open_file
 
-from click import *  # noqa: F401, F403
-from click import Command
-from click import command as click_command
-from click import Group
-from click import group as click_group
-from rich.console import Console
+from . import rich_click as rich_click
 
-from . import rich_click  # noqa: F401
-
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X as _CLICK_IS_BEFORE_VERSION_8X
-from rich_click.rich_command import RichBaseCommand, RichCommand, RichGroup, RichMultiCommand  # noqa: F401
-from rich_click.rich_context import RichContext
-from rich_click.rich_help_configuration import RichHelpConfiguration
-
-# MyPy does not like star imports. Therefore when we are type checking, we import each individual module
-# from click here. This way MyPy will recognize the import and not throw any errors. Furthermore, because of
-# the TYPE_CHECKING check, it does not influence the start routine at all.
-if TYPE_CHECKING:
-    from click import argument, Choice, option, pass_context, Path, version_option  # noqa: F401
-
-    __all__ = [
-        "argument",
-        "Choice",
-        "option",
-        "Path",
-        "version_option",
-        "group",
-        "command",
-        "rich_config",
-        "RichContext",
-        "RichHelpConfiguration",
-        "pass_context",
-    ]
-
-
-def group(name=None, cls=RichGroup, **attrs) -> Callable[..., RichGroup]:
-    """
-    Group decorator function.
-
-    Defines the group() function so that it uses the RichGroup class by default.
-    """
-
-    def wrapper(fn):
-        if hasattr(fn, "__rich_context_settings__"):
-            rich_context_settings = getattr(fn, "__rich_context_settings__", {})
-            console = rich_context_settings.get("rich_console", None)
-            help_config = rich_context_settings.get("help_config", None)
-            context_settings = attrs.get("context_settings", {})
-            context_settings.update(rich_console=console, rich_help_config=help_config)
-            attrs.update(context_settings=context_settings)
-            del fn.__rich_context_settings__
-        if callable(name) and cls:
-            group = click_group(cls=cls, **attrs)(name)
-        else:
-            group = click_group(name, cls=cls, **attrs)
-        cmd = cast(RichGroup, group(fn))
-        return cmd
-
-    return wrapper
-
-
-def command(name=None, cls=RichCommand, **attrs) -> Callable[..., RichCommand]:
-    """
-    Command decorator function.
-
-    Defines the command() function so that it uses the RichCommand class by default.
-    """
-
-    def wrapper(fn):
-        if hasattr(fn, "__rich_context_settings__"):
-            rich_context_settings = getattr(fn, "__rich_context_settings__", {})
-            console = rich_context_settings.get("rich_console", None)
-            help_config = rich_context_settings.get("help_config", None)
-            context_settings = attrs.get("context_settings", {})
-            context_settings.update(rich_console=console, rich_help_config=help_config)
-            attrs.update(context_settings=context_settings)
-            del fn.__rich_context_settings__
-        if callable(name) and cls:
-            command = click_command(cls=cls, **attrs)(name)
-        else:
-            command = click_command(name, cls=cls, **attrs)
-        cmd = cast(RichCommand, command(fn))
-        return cmd
-
-    return wrapper
+from rich_click.decorators import command as command
+from rich_click.decorators import group as group
+from rich_click.decorators import pass_context as pass_context
+from rich_click.decorators import rich_config as rich_config
+from rich_click.rich_command import RichCommand as RichCommand
+from rich_click.rich_command import RichCommandCollection as RichCommandCollection
+from rich_click.rich_command import RichGroup as RichGroup
+from rich_click.rich_context import RichContext as RichContext
+from rich_click.rich_help_configuration import RichHelpConfiguration as RichHelpConfiguration
 
 
-class NotSupportedError(Exception):
-    """Not Supported Error."""
+def __getattr__(name: str) -> object:
+    from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X
 
-    pass
+    if name == "RichMultiCommand" and CLICK_IS_BEFORE_VERSION_9X:
+        import warnings
 
+        warnings.warn(
+            "'RichMultiCommand' is deprecated and will be removed in Click 9.0. Use 'RichGroup' instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        from rich_click.rich_command import RichMultiCommand
 
-def rich_config(console: Optional[Console] = None, help_config: Optional[RichHelpConfiguration] = None):
-    """Use decorator to configure Rich Click settings.
+        return RichMultiCommand
 
-    Args:
-        console: A Rich Console that will be accessible from the `RichContext`, `RichCommand`, and `RichGroup` instances
-            Defaults to None.
-        help_config: Rich help configuration that is used internally to format help messages and exceptions
-            Defaults to None.
-    """
-    if _CLICK_IS_BEFORE_VERSION_8X:
+    else:
+        import click
 
-        def decorator_with_warning(obj):
-            import warnings
-
-            warnings.warn(
-                "`rich_config()` does not work with versions of click prior to version 8.0.0."
-                " Please update to a newer version of click to use this functionality.",
-                RuntimeWarning,
-            )
-            return obj
-
-        return decorator_with_warning
-
-    @overload
-    def decorator(obj: Union[RichCommand, RichGroup]) -> Union[RichCommand, RichGroup]:
-        ...
-
-    @overload
-    def decorator(obj: Callable[..., Any]) -> Callable[..., Any]:
-        ...
-
-    def decorator(obj):
-        if isinstance(obj, (RichCommand, RichGroup)):
-            obj.context_settings.update({"rich_console": console, "rich_help_config": help_config})
-        elif callable(obj) and not isinstance(obj, (Command, Group)):
-            setattr(obj, "__rich_context_settings__", {"rich_console": console, "rich_help_config": help_config})
-        else:
-            raise NotSupportedError("`rich_config` requires a `RichCommand` or `RichGroup`. Try using the cls keyword")
-
-        decorator.__doc__ = obj.__doc__
-        return obj
-
-    return decorator
+        return getattr(click, name)

@@ -1,22 +1,23 @@
-from typing import Optional, Type
+from typing import Any, Callable, Optional, Type, Union
 
 import click
 import pytest
 from click import UsageError
-from conftest import AssertRichFormat, AssertStr, InvokeCli
 from packaging import version
 from rich.console import Console
 
+from tests.conftest import AssertRichFormat, AssertStr, InvokeCli
+
 import rich_click.rich_click as rc
-from rich_click import command, rich_config, RichContext, RichHelpConfiguration
+from rich_click import command, group, pass_context, rich_config, RichContext, RichHelpConfiguration
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
-from rich_click.rich_command import RichCommand
+from rich_click.rich_command import RichCommand, RichGroup
 
 try:
-    from importlib import metadata  # type: ignore
+    from importlib import metadata  # type: ignore[import,unused-ignore]
 except ImportError:
     # Python < 3.8
-    import importlib_metadata as metadata  # type: ignore
+    import importlib_metadata as metadata  # type: ignore[no-redef,import]
 
 
 rich_version = version.parse(metadata.version("rich"))
@@ -202,16 +203,161 @@ click_version = version.parse(metadata.version("click"))
 )
 @pytest.mark.filterwarnings("ignore:^.*click prior to.*$:RuntimeWarning")
 def test_rich_click(
-    cmd: str, args: str, error: Optional[Type[Exception]], rich_config, assert_rich_format: AssertRichFormat
-):
+    cmd: str,
+    args: str,
+    error: Optional[Type[Exception]],
+    rich_config: Optional[Callable[[Any], Union[RichGroup, RichCommand]]],
+    assert_rich_format: AssertRichFormat,
+) -> None:
     assert_rich_format(cmd, args, error, rich_config)
 
 
+class ClickGroupWithRichCommandClass(click.Group):
+    command_class = RichCommand
+    group_class = RichGroup
+
+
+if rich_version.major == 12:
+    command_help_output = """
+ Usage: cli [OPTIONS]                                       
+
+ Some help                                                  
+ ╔════════════════════════════════════════════════════════╗ 
+ ║                         Header                         ║ 
+ ╚════════════════════════════════════════════════════════╝ 
+
+╭─ Options ────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                  │
+╰──────────────────────────────────────────────────────────╯
+"""
+    group_help_output = """
+ Usage: cli [OPTIONS] COMMAND [ARGS]...                     
+                                                            
+ Some help                                                  
+ ╔════════════════════════════════════════════════════════╗ 
+ ║                         Header                         ║ 
+ ╚════════════════════════════════════════════════════════╝ 
+                                                            
+╭─ Options ────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                  │
+╰──────────────────────────────────────────────────────────╯
+"""
+else:
+    command_help_output = """
+ Usage: cli [OPTIONS]                                       
+
+ Some help                                                  
+ ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ 
+ ┃                         Header                         ┃ 
+ ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ 
+
+╭─ Options ────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                  │
+╰──────────────────────────────────────────────────────────╯
+"""
+    group_help_output = """
+ Usage: cli [OPTIONS] COMMAND [ARGS]...                     
+                                                            
+ Some help                                                  
+ ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ 
+ ┃                         Header                         ┃ 
+ ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ 
+                                                            
+╭─ Options ────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                  │
+╰──────────────────────────────────────────────────────────╯
+"""
+
+
 @pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_8X, reason="rich_config not supported prior to click v8")
-def test_rich_config_decorator_order(invoke: InvokeCli, assert_str: AssertStr):
-    @command()
-    @rich_config(Console(), RichHelpConfiguration(max_width=80, use_markdown=True))
-    def cli():
+@pytest.mark.parametrize(
+    ("command_callable", "expected_command_type", "expected_help_output"),
+    [
+        pytest.param(
+            lambda: command,
+            RichCommand,
+            command_help_output,
+            marks=pytest.mark.skipif(
+                click_version < version.parse("8.1.0"), reason="decorator must be called prior to click 8.1.0"
+            ),
+            id="command1",
+        ),
+        pytest.param(lambda: command(), RichCommand, command_help_output, id="command2"),
+        pytest.param(lambda: command("cli"), RichCommand, command_help_output, id="command3"),
+        pytest.param(
+            lambda: group,
+            RichGroup,
+            group_help_output,
+            id="group1",
+            marks=pytest.mark.skipif(
+                click_version < version.parse("8.1.0"), reason="decorator must be called prior to click 8.1.0"
+            ),
+        ),
+        pytest.param(lambda: group(), RichGroup, group_help_output, id="group2"),
+        pytest.param(lambda: group("cli"), RichGroup, group_help_output, id="group3"),
+        pytest.param(lambda: click.command(cls=RichCommand), RichCommand, command_help_output, id="click_command1"),
+        pytest.param(
+            lambda: click.command("cli", cls=RichCommand), RichCommand, command_help_output, id="click_command2"
+        ),
+        pytest.param(lambda: click.group(cls=RichGroup), RichGroup, group_help_output, id="click_group1"),
+        pytest.param(lambda: click.group("cli", cls=RichGroup), RichGroup, group_help_output, id="click_group2"),
+        pytest.param(
+            lambda: RichGroup(name="grp", callback=lambda: None).command,
+            RichCommand,
+            command_help_output,
+            id="RichGroup1",
+            marks=pytest.mark.skipif(
+                click_version < version.parse("8.1.0"), reason="decorator must be called prior to click 8.1.0"
+            ),
+        ),
+        pytest.param(
+            lambda: RichGroup(name="grp", callback=lambda: None).command("cli"),
+            RichCommand,
+            command_help_output,
+            id="RichGroup2",
+        ),
+        pytest.param(
+            lambda: ClickGroupWithRichCommandClass(name="grp", callback=lambda: None).command,
+            RichCommand,
+            command_help_output,
+            id="ClickGroup1",
+            marks=pytest.mark.skipif(
+                click_version < version.parse("8.1.0"), reason="decorator must be called prior to click 8.1.0"
+            ),
+        ),
+        pytest.param(
+            lambda: ClickGroupWithRichCommandClass(name="grp", callback=lambda: None).command("cli"),
+            RichCommand,
+            command_help_output,
+            id="ClickGroup2",
+        ),
+        pytest.param(
+            lambda: ClickGroupWithRichCommandClass(name="grp", callback=lambda: None).group,
+            RichGroup,
+            group_help_output,
+            id="ClickGroup3",
+            marks=pytest.mark.skipif(
+                click_version < version.parse("8.1.0"), reason="decorator must be called prior to click 8.1.0"
+            ),
+        ),
+        pytest.param(
+            lambda: ClickGroupWithRichCommandClass(name="grp", callback=lambda: None).group("cli"),
+            RichGroup,
+            group_help_output,
+            id="ClickGroup4",
+        ),
+    ],
+)
+def test_rich_config_decorator_order(
+    invoke: InvokeCli,
+    assert_str: AssertStr,
+    command_callable: Callable[..., Any],
+    expected_command_type: Type[RichCommand],
+    expected_help_output: str,
+) -> None:
+    @command_callable()  # type: ignore[misc]
+    @rich_config(Console(), RichHelpConfiguration(max_width=60, use_markdown=True))
+    def cli() -> None:
         """Some help
 
         # Header
@@ -219,6 +365,7 @@ def test_rich_config_decorator_order(invoke: InvokeCli, assert_str: AssertStr):
         pass
 
     assert hasattr(cli, "__rich_context_settings__") is False
+    assert type(cli) is expected_command_type
     assert cli.console is not None
     assert cli.__doc__ is not None
     assert_str(
@@ -233,30 +380,18 @@ def test_rich_config_decorator_order(invoke: InvokeCli, assert_str: AssertStr):
     result = invoke(cli, "--help")
 
     assert_str(
-        result.stdout,
-        """
-Usage: cli [OPTIONS]                                                               
-                                                                                                    
- Some help                                                                                          
- # Header                                                                                           
-                                                                                                    
-╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                                          │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-    """,
+        actual=result.stdout,
+        expectation=expected_help_output,
     )
 
 
-def test_rich_config_max_width(invoke: InvokeCli, assert_str: AssertStr):
+def test_rich_config_max_width(invoke: InvokeCli, assert_str: AssertStr) -> None:
     rc.WIDTH = 100
     rc.MAX_WIDTH = 64
 
     @command()
-    def cli():
-        """Some help
-
-        # Header
-        """
+    def cli() -> None:
+        """Some help text"""
         pass
 
     result = invoke(cli, "--help")
@@ -266,8 +401,7 @@ def test_rich_config_max_width(invoke: InvokeCli, assert_str: AssertStr):
         """
 Usage: cli [OPTIONS]                                            
                                                                 
- Some help                                                      
- # Header                                                       
+ Some help text                                                 
                                                                 
 ╭─ Options ────────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                      │
@@ -277,12 +411,12 @@ Usage: cli [OPTIONS]
 
 
 @pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_8X, reason="rich_config not supported prior to click v8")
-def test_rich_config_context_settings(invoke: InvokeCli):
+def test_rich_config_context_settings(invoke: InvokeCli) -> None:
     @click.command(
         cls=RichCommand, context_settings={"rich_console": Console(), "rich_help_config": RichHelpConfiguration()}
     )
-    @click.pass_context
-    def cli(ctx: RichContext):
+    @pass_context
+    def cli(ctx: RichContext) -> None:
         assert isinstance(ctx, RichContext)
         assert ctx.console is not None
         assert ctx.help_config is not None
@@ -293,12 +427,12 @@ def test_rich_config_context_settings(invoke: InvokeCli):
 
 
 @pytest.mark.skipif(not CLICK_IS_BEFORE_VERSION_8X, reason="This is to test a warning when using for click v7.")
-def test_rich_config_warns_before_click_v8(invoke: InvokeCli):
+def test_rich_config_warns_before_click_v8(invoke: InvokeCli) -> None:
     with pytest.warns(RuntimeWarning, match="does not work with versions of click prior to version 8[.]0[.]0"):
 
         @rich_config(help_config=RichHelpConfiguration())
         @click.command("test-cmd")
-        def cli():
+        def cli() -> None:
             # Command should still work, regardless.
             click.echo("hello, world!")
 

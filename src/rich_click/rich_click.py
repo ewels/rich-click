@@ -1,7 +1,7 @@
 import inspect
 import re
 from os import getenv
-from typing import Dict, Iterable, List, Optional, Union
+from typing import Dict, Iterable, List, Optional, Tuple, TYPE_CHECKING, Union
 
 import click
 import rich.columns
@@ -28,93 +28,97 @@ from rich_click.rich_help_formatter import RichHelpFormatter
 try:
     from rich.console import group
 except ImportError:
-    from rich.console import render_group as group
+    from rich.console import render_group as group  # type: ignore[attr-defined,no-redef]
 
 # Default styles
-STYLE_OPTION = "bold cyan"
-STYLE_ARGUMENT = "bold cyan"
-STYLE_COMMAND = "bold cyan"
-STYLE_SWITCH = "bold green"
-STYLE_METAVAR = "bold yellow"
-STYLE_METAVAR_APPEND = "dim yellow"
-STYLE_METAVAR_SEPARATOR = "dim"
-STYLE_HEADER_TEXT = ""
-STYLE_FOOTER_TEXT = ""
-STYLE_USAGE = "yellow"
-STYLE_USAGE_COMMAND = "bold"
-STYLE_DEPRECATED = "red"
-STYLE_HELPTEXT_FIRST_LINE = ""
-STYLE_HELPTEXT = "dim"
-STYLE_OPTION_HELP = ""
-STYLE_OPTION_DEFAULT = "dim"
-STYLE_OPTION_ENVVAR = "dim yellow"
-STYLE_REQUIRED_SHORT = "red"
-STYLE_REQUIRED_LONG = "dim red"
-STYLE_OPTIONS_PANEL_BORDER = "dim"
-ALIGN_OPTIONS_PANEL = "left"
-STYLE_OPTIONS_TABLE_SHOW_LINES = False
-STYLE_OPTIONS_TABLE_LEADING = 0
-STYLE_OPTIONS_TABLE_PAD_EDGE = False
-STYLE_OPTIONS_TABLE_PADDING = (0, 1)
-STYLE_OPTIONS_TABLE_BOX = ""
-STYLE_OPTIONS_TABLE_ROW_STYLES = None
-STYLE_OPTIONS_TABLE_BORDER_STYLE = None
-STYLE_COMMANDS_PANEL_BORDER = "dim"
-ALIGN_COMMANDS_PANEL = "left"
-STYLE_COMMANDS_TABLE_SHOW_LINES = False
-STYLE_COMMANDS_TABLE_LEADING = 0
-STYLE_COMMANDS_TABLE_PAD_EDGE = False
-STYLE_COMMANDS_TABLE_PADDING = (0, 1)
-STYLE_COMMANDS_TABLE_BOX = ""
-STYLE_COMMANDS_TABLE_ROW_STYLES = None
-STYLE_COMMANDS_TABLE_BORDER_STYLE = None
-STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (None, None)
-STYLE_ERRORS_PANEL_BORDER = "red"
-ALIGN_ERRORS_PANEL = "left"
-STYLE_ERRORS_SUGGESTION = "dim"
-STYLE_ABORTED = "red"
-WIDTH = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None  # type: ignore
-MAX_WIDTH = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else WIDTH  # type: ignore
+STYLE_OPTION: rich.style.StyleType = "bold cyan"
+STYLE_ARGUMENT: rich.style.StyleType = "bold cyan"
+STYLE_COMMAND: rich.style.StyleType = "bold cyan"
+STYLE_SWITCH: rich.style.StyleType = "bold green"
+STYLE_METAVAR: rich.style.StyleType = "bold yellow"
+STYLE_METAVAR_APPEND: rich.style.StyleType = "dim yellow"
+STYLE_METAVAR_SEPARATOR: rich.style.StyleType = "dim"
+STYLE_HEADER_TEXT: rich.style.StyleType = ""
+STYLE_FOOTER_TEXT: rich.style.StyleType = ""
+STYLE_USAGE: rich.style.StyleType = "yellow"
+STYLE_USAGE_COMMAND: rich.style.StyleType = "bold"
+STYLE_DEPRECATED: rich.style.StyleType = "red"
+STYLE_HELPTEXT_FIRST_LINE: rich.style.StyleType = ""
+STYLE_HELPTEXT: rich.style.StyleType = "dim"
+STYLE_OPTION_HELP: rich.style.StyleType = ""
+STYLE_OPTION_DEFAULT: rich.style.StyleType = "dim"
+STYLE_OPTION_ENVVAR: rich.style.StyleType = "dim yellow"
+STYLE_REQUIRED_SHORT: rich.style.StyleType = "red"
+STYLE_REQUIRED_LONG: rich.style.StyleType = "dim red"
+STYLE_OPTIONS_PANEL_BORDER: rich.style.StyleType = "dim"
+ALIGN_OPTIONS_PANEL: rich.align.AlignMethod = "left"
+STYLE_OPTIONS_TABLE_SHOW_LINES: bool = False
+STYLE_OPTIONS_TABLE_LEADING: int = 0
+STYLE_OPTIONS_TABLE_PAD_EDGE: bool = False
+STYLE_OPTIONS_TABLE_PADDING: rich.padding.PaddingDimensions = (0, 1)
+STYLE_OPTIONS_TABLE_BOX: rich.style.StyleType = ""
+STYLE_OPTIONS_TABLE_ROW_STYLES: Optional[List[rich.style.StyleType]] = None
+STYLE_OPTIONS_TABLE_BORDER_STYLE: Optional[rich.style.StyleType] = None
+STYLE_COMMANDS_PANEL_BORDER: rich.style.StyleType = "dim"
+ALIGN_COMMANDS_PANEL: rich.align.AlignMethod = "left"
+STYLE_COMMANDS_TABLE_SHOW_LINES: bool = False
+STYLE_COMMANDS_TABLE_LEADING: int = 0
+STYLE_COMMANDS_TABLE_PAD_EDGE: bool = False
+STYLE_COMMANDS_TABLE_PADDING: rich.padding.PaddingDimensions = (0, 1)
+STYLE_COMMANDS_TABLE_BOX: rich.style.StyleType = ""
+STYLE_COMMANDS_TABLE_ROW_STYLES: Optional[List[rich.style.StyleType]] = None
+STYLE_COMMANDS_TABLE_BORDER_STYLE: Optional[rich.style.StyleType] = None
+STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO: Optional[Union[Tuple[None, None], Tuple[int, int]]] = (None, None)
+STYLE_ERRORS_PANEL_BORDER: rich.style.StyleType = "red"
+ALIGN_ERRORS_PANEL: rich.align.AlignMethod = "left"
+STYLE_ERRORS_SUGGESTION: rich.style.StyleType = "dim"
+STYLE_ABORTED: rich.style.StyleType = "red"
+WIDTH: Optional[int] = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None  # type: ignore[arg-type]
+MAX_WIDTH: Optional[int] = (
+    int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else WIDTH  # type: ignore[arg-type]
+)
 COLOR_SYSTEM: Optional[
     Literal["auto", "standard", "256", "truecolor", "windows"]
 ] = "auto"  # Set to None to disable colors
-FORCE_TERMINAL = True if getenv("GITHUB_ACTIONS") or getenv("FORCE_COLOR") or getenv("PY_COLORS") else None
+FORCE_TERMINAL: Optional[bool] = (
+    True if getenv("GITHUB_ACTIONS") or getenv("FORCE_COLOR") or getenv("PY_COLORS") else None
+)
 
 # Fixed strings
 HEADER_TEXT: Optional[str] = None
 FOOTER_TEXT: Optional[str] = None
-DEPRECATED_STRING = "(Deprecated) "
-DEFAULT_STRING = "[default: {}]"
-ENVVAR_STRING = "[env var: {}]"
-REQUIRED_SHORT_STRING = "*"
-REQUIRED_LONG_STRING = "[required]"
-RANGE_STRING = " [{}]"
-APPEND_METAVARS_HELP_STRING = "({})"
-ARGUMENTS_PANEL_TITLE = "Arguments"
-OPTIONS_PANEL_TITLE = "Options"
-COMMANDS_PANEL_TITLE = "Commands"
-ERRORS_PANEL_TITLE = "Error"
+DEPRECATED_STRING: str = "(Deprecated) "
+DEFAULT_STRING: str = "[default: {}]"
+ENVVAR_STRING: str = "[env var: {}]"
+REQUIRED_SHORT_STRING: str = "*"
+REQUIRED_LONG_STRING: str = "[required]"
+RANGE_STRING: str = " [{}]"
+APPEND_METAVARS_HELP_STRING: str = "({})"
+ARGUMENTS_PANEL_TITLE: str = "Arguments"
+OPTIONS_PANEL_TITLE: str = "Options"
+COMMANDS_PANEL_TITLE: str = "Commands"
+ERRORS_PANEL_TITLE: str = "Error"
 ERRORS_SUGGESTION: Optional[str] = None  # Default: Try 'cmd -h' for help. Set to False to disable.
 ERRORS_EPILOGUE: Optional[str] = None
-ABORTED_TEXT = "Aborted."
+ABORTED_TEXT: str = "Aborted."
 
 # Behaviours
-SHOW_ARGUMENTS = False  # Show positional arguments
-SHOW_METAVARS_COLUMN = True  # Show a column with the option metavar (eg. INTEGER)
-APPEND_METAVARS_HELP = False  # Append metavar (eg. [TEXT]) after the help text
-GROUP_ARGUMENTS_OPTIONS = False  # Show arguments with options instead of in own panel
-OPTION_ENVVAR_FIRST = False  # Show env vars before option help text instead of avert
-USE_MARKDOWN = False  # Parse help strings as markdown
-USE_MARKDOWN_EMOJI = True  # Parse emoji codes in markdown :smile:
-USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[/])
+SHOW_ARGUMENTS: bool = False  # Show positional arguments
+SHOW_METAVARS_COLUMN: bool = True  # Show a column with the option metavar (eg. INTEGER)
+APPEND_METAVARS_HELP: bool = False  # Append metavar (eg. [TEXT]) after the help text
+GROUP_ARGUMENTS_OPTIONS: bool = False  # Show arguments with options instead of in own panel
+OPTION_ENVVAR_FIRST: bool = False  # Show env vars before option help text instead of avert
+USE_MARKDOWN: bool = False  # Parse help strings as markdown
+USE_MARKDOWN_EMOJI: bool = True  # Parse emoji codes in markdown :smile:
+USE_RICH_MARKUP: bool = False  # Parse help strings for rich markup (eg. [red]my text[/])
 # Define sorted groups of panels to display subcommands
 COMMAND_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = {}
 # Define sorted groups of panels to display options and arguments
 OPTION_GROUPS: Dict[str, List[Dict[str, Union[str, List[str], Dict[str, List[str]]]]]] = {}
-USE_CLICK_SHORT_HELP = False  # Use click's default function to truncate help text
+USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
 
-highlighter = OptionHighlighter()
-_formatter = None
+highlighter: rich.highlighter.Highlighter = OptionHighlighter()
+_formatter: Optional[RichHelpFormatter] = None
 
 
 def _get_rich_formatter(formatter: Optional[click.HelpFormatter] = None) -> RichHelpFormatter:
@@ -196,6 +200,8 @@ def _get_help_text(
     Yields:
         Text or Markdown: Multiple styled objects (depreciated, usage)
     """
+    if TYPE_CHECKING:
+        assert isinstance(obj.help, str)
     formatter = _get_rich_formatter(formatter)
     config = formatter.config
     # Prepend deprecated status
@@ -233,8 +239,8 @@ def _get_help_text(
         yield _make_rich_rext(remaining_lines, config.style_helptext, formatter)
 
 
-def _get_parameter_help(
-    param: Union[click.Option, click.Argument], ctx: click.Context, formatter: Optional[RichHelpFormatter] = None
+def _get_option_help(
+    param: Union[click.Argument, click.Option], ctx: click.Context, formatter: Optional[RichHelpFormatter] = None
 ) -> rich.columns.Columns:
     """Build primary help text for a click option or argument.
 
@@ -243,7 +249,7 @@ def _get_parameter_help(
     Additional elements are appended to show the default and required status if applicable.
 
     Args:
-        param (click.Option or click.Argument): Option or argument to build help text for
+        param (click.Argument or click.Option): Parameter to build help text for
         ctx (click.Context): Click Context object
 
     Returns:
@@ -251,7 +257,10 @@ def _get_parameter_help(
     """
     formatter = _get_rich_formatter(formatter)
     config = formatter.config
-    items = []
+    items: List[rich.console.RenderableType] = []
+
+    if TYPE_CHECKING:
+        assert isinstance(param.name, str)
 
     # Get the environment variable first
     envvar = getattr(param, "envvar", None)
@@ -264,7 +273,7 @@ def _get_parameter_help(
         ):
             envvar = f"{ctx.auto_envvar_prefix}_{param.name.upper()}"
     if envvar is not None:
-        envvar = ", ".join(param.envvar) if type(envvar) is list else envvar
+        envvar = ", ".join(envvar) if type(envvar) is list else envvar
 
     # Environment variable config.before help text
     if getattr(param, "show_envvar", None) and config.option_envvar_first and envvar is not None:
@@ -272,6 +281,10 @@ def _get_parameter_help(
 
     # Main help text
     if getattr(param, "help", None):
+        if TYPE_CHECKING:
+            assert isinstance(param, click.Option)
+            assert hasattr(param, "help")
+            assert isinstance(param.help, str)
         paragraphs = param.help.split("\n\n")
         # Remove single linebreaks
         if not config.use_markdown:
@@ -304,25 +317,31 @@ def _get_parameter_help(
 
     # Default value
     # Click 7.x, 8.0, and 8.1 all behave slightly differently when handling the default value help text.
-    if CLICK_IS_BEFORE_VERSION_8X:
-        parse_default = param.default is not None and (param.show_default or getattr(ctx, "show_default", None))
+    if not hasattr(param, "show_default"):
+        parse_default = False
+    elif CLICK_IS_BEFORE_VERSION_8X:
+        parse_default = bool(param.default is not None and (param.show_default or getattr(ctx, "show_default", None)))
     elif CLICK_IS_VERSION_80:
-        show_default_is_str = isinstance(getattr(param, "show_default", None), str)
-        parse_default = show_default_is_str or (param.default is not None and (param.show_default or ctx.show_default))
+        show_default_is_str = isinstance(param.show_default, str)
+        parse_default = bool(
+            show_default_is_str or (param.default is not None and (param.show_default or ctx.show_default))
+        )
     else:
-        show_default = False
         show_default_is_str = False
-        if getattr(param, "show_default", None) is not None:
+        if param.show_default is not None:
             if isinstance(param.show_default, str):
                 show_default_is_str = show_default = True
             else:
-                show_default = param.show_default
+                show_default = bool(param.show_default)
         else:
-            show_default = getattr(ctx, "show_default", False)
+            show_default = bool(getattr(ctx, "show_default", False))
         parse_default = bool(show_default_is_str or (show_default and (param.default is not None)))
 
     if parse_default:
-        default_str_match = re.search(r"\[(?:.+; )?default: (.*)\]", param.get_help_record(ctx)[-1])
+        help_record = param.get_help_record(ctx)
+        if TYPE_CHECKING:
+            assert isinstance(help_record, tuple)
+        default_str_match = re.search(r"\[(?:.+; )?default: (.*)\]", help_record[-1])
         if default_str_match:
             # Don't show the required string, as we show that afterwards anyway
             default_str = default_str_match.group(1).replace("; required", "")
@@ -376,7 +395,7 @@ def get_rich_usage(
     obj: Union[click.Command, click.Group],
     ctx: click.Context,
     formatter: click.HelpFormatter,
-):
+) -> None:
     """Get usage text for a command."""
     formatter = _get_rich_formatter(formatter)
     config = formatter.config
@@ -406,7 +425,7 @@ def get_rich_usage(
 
 
 def rich_format_help(
-    obj: Union[click.Command, click.Group],
+    obj: click.Command,
     ctx: click.Context,
     formatter: click.HelpFormatter,
 ) -> None:
@@ -476,13 +495,15 @@ def rich_format_help(
             if isinstance(param, click.core.Argument) and not config.group_arguments_options:
                 argument_group_options.append(param.opts[0])
             else:
-                list_of_option_groups: List = option_groups[-1]["options"]  # type: ignore
+                list_of_option_groups: List[str] = option_groups[-1]["options"]  # type: ignore[assignment]
                 list_of_option_groups.append(param.opts[0])
 
     # If we're not grouping arguments and we got some, prepend before default options
     if len(argument_group_options) > 0:
         extra_option_group = {"name": config.arguments_panel_title, "options": argument_group_options}
-        option_groups.insert(len(option_groups) - 1, extra_option_group)  # type: ignore
+        option_groups.insert(len(option_groups) - 1, extra_option_group)
+
+    # print("!", option_groups)
 
     # Print each option group panel
     for option_group in option_groups:
@@ -517,12 +538,18 @@ def rich_format_help(
             metavar = Text(style=config.style_metavar, overflow="fold")
             metavar_str = param.make_metavar()
 
+            if TYPE_CHECKING:
+                assert isinstance(param.name, str)
+                assert isinstance(param, click.Option)
+
             # Do it ourselves if this is a positional argument
             if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
                 metavar_str = param.type.name.upper()
 
             # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option
-            if isinstance(param, click.core.Argument) or (metavar_str != "BOOLEAN" and not param.is_flag):
+            if isinstance(param, click.core.Argument) or (
+                metavar_str != "BOOLEAN" and not getattr(param, "is_flag", None)
+            ):
                 metavar.append(metavar_str)
 
             # Range - from
@@ -540,7 +567,7 @@ def rich_format_help(
                 pass
 
             # Required asterisk
-            required = ""
+            required: Union[Text, str] = ""
             if param.required:
                 required = Text(config.required_short_string, style=config.style_required_short)
 
@@ -559,7 +586,7 @@ def rich_format_help(
                 highlighter(highlighter(",".join(opt_long_strs))),
                 highlighter(highlighter(",".join(opt_short_strs))),
                 metavar_highlighter(metavar),
-                _get_parameter_help(param, ctx, formatter),
+                _get_option_help(param, ctx, formatter),
             ]
 
             # Remove metavar if specified in config
@@ -578,15 +605,15 @@ def rich_format_help(
                 "pad_edge": config.style_options_table_pad_edge,
                 "padding": config.style_options_table_padding,
             }
-            t_styles.update(option_group.get("table_styles", {}))  # type: ignore
-            box_style = getattr(box, t_styles.pop("box"), None)  # type: ignore
+            t_styles.update(option_group.get("table_styles", {}))  # type: ignore[arg-type]
+            box_style = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
 
             options_table = Table(
                 highlight=True,
                 show_header=False,
                 expand=True,
                 box=box_style,
-                **t_styles,
+                **t_styles,  # type: ignore[arg-type]
             )
             # Strip the required column if none are required
             if all([x[0] == "" for x in options_rows]):
@@ -606,7 +633,7 @@ def rich_format_help(
     # Groups only:
     # List click command groups
     #
-    if hasattr(obj, "list_commands"):
+    if isinstance(obj, click.MultiCommand):
         # Look through COMMAND_GROUPS for this command
         # stick anything unmatched into a default group at the end
         cmd_groups = config.command_groups.get(ctx.command_path, []).copy()
@@ -616,7 +643,7 @@ def rich_format_help(
                 if command in cmd_group.get("commands", []):
                     break
             else:
-                commands: List = cmd_groups[-1]["commands"]  # type: ignore
+                commands: List[str] = cmd_groups[-1]["commands"]  # type: ignore[assignment]
                 commands.append(command)
 
         # Print each command group panel
@@ -630,32 +657,35 @@ def rich_format_help(
                 "pad_edge": config.style_commands_table_pad_edge,
                 "padding": config.style_commands_table_padding,
             }
-            t_styles.update(cmd_group.get("table_styles", {}))  # type: ignore
-            box_style = getattr(box, t_styles.pop("box"), None)  # type: ignore
+            t_styles.update(cmd_group.get("table_styles", {}))  # type: ignore[arg-type]
+            box_style = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
 
             commands_table = Table(
                 highlight=False,
                 show_header=False,
                 expand=True,
                 box=box_style,
-                **t_styles,
+                **t_styles,  # type: ignore[arg-type]
             )
             # Define formatting in first column, as commands don't match highlighter regex
             # and set column ratio for first and second column, if a ratio has been set
-            commands_table.add_column(
-                style="bold cyan",
-                no_wrap=True,
-                ratio=STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO[0],
-            )
+            if config.style_commands_table_column_width_ratio is None:
+                table_column_width_ratio: Union[Tuple[None, None], Tuple[int, int]] = (None, None)
+            else:
+                table_column_width_ratio = config.style_commands_table_column_width_ratio
+
+            commands_table.add_column(style="bold cyan", no_wrap=True, ratio=table_column_width_ratio[0])
             commands_table.add_column(
                 no_wrap=False,
-                ratio=STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO[1],
+                ratio=table_column_width_ratio[1],
             )
             for command in cmd_group.get("commands", []):
                 # Skip if command does not exist
                 if command not in obj.list_commands(ctx):
                     continue
                 cmd = obj.get_command(ctx, command)
+                if TYPE_CHECKING:
+                    assert cmd is not None
                 if cmd.hidden:
                     continue
                 # Use the truncated short text as with vanilla text if requested
@@ -676,7 +706,7 @@ def rich_format_help(
                 )
 
     # Epilogue if we have it
-    if obj.epilog:
+    if isinstance(obj, click.Command) and obj.epilog:
         # Remove single linebreaks, replace double with single
         lines = obj.epilog.split("\n\n")
         epilogue = "\n".join([x.replace("\n", " ").strip() for x in lines])
@@ -687,7 +717,7 @@ def rich_format_help(
         console.print(Padding(_make_rich_rext(config.footer_text, config.style_footer_text, formatter), (1, 1, 0, 1)))
 
 
-def rich_format_error(self: click.ClickException, formatter: Optional[RichHelpFormatter] = None):
+def rich_format_error(self: click.ClickException, formatter: Optional[RichHelpFormatter] = None) -> None:
     """Print richly formatted click errors.
 
     Called by custom exception handler to print richly formatted click errors.
@@ -702,6 +732,8 @@ def rich_format_error(self: click.ClickException, formatter: Optional[RichHelpFo
     highlighter = formatter.config.highlighter
     # Print usage
     if getattr(self, "ctx", None) is not None:
+        if TYPE_CHECKING:
+            assert hasattr(self, "ctx")
         get_rich_usage(self.ctx.command, self.ctx, formatter)
     if config.errors_suggestion:
         console.print(
@@ -714,12 +746,12 @@ def rich_format_error(self: click.ClickException, formatter: Optional[RichHelpFo
     elif (
         config.errors_suggestion is None
         and getattr(self, "ctx", None) is not None
-        and self.ctx.command.get_help_option(self.ctx) is not None
+        and self.ctx.command.get_help_option(self.ctx) is not None  # type: ignore[attr-defined]
     ):
         console.print(
             Padding(
                 "Try [blue]'{command} {option}'[/] for help.".format(
-                    command=self.ctx.command_path, option=self.ctx.help_option_names[0]
+                    command=self.ctx.command_path, option=self.ctx.help_option_names[0]  # type: ignore[attr-defined]
                 ),
                 (0, 1, 0, 1),
             ),

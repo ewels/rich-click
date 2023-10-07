@@ -1,4 +1,5 @@
 import rich_click as click
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
 
 click.rich_click.STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (1, 2)
 
@@ -58,7 +59,7 @@ click.rich_click.COMMAND_GROUPS = {
     help="Show the debug log messages",
 )
 @click.version_option("1.23", prog_name="mytool")
-def cli(type, debug):
+def cli(type: str, debug: bool) -> None:
     """
     My amazing tool does all the things.
 
@@ -76,26 +77,35 @@ def cli(type, debug):
 @click.option("--output", "-o", help="Output path")
 @click.option("--all", is_flag=True, help="Sync all the things?")
 @click.option("--overwrite", is_flag=True, help="Overwrite local files")
-def sync(input, output, all, overwrite):
+def sync(input: str, output: str, all: bool, overwrite: bool) -> None:
     """Synchronise all your files between two places."""
     print("Syncing")
 
 
+# We vary the typing for cli.command() function a bit to test the function signature overloading
+
+
 @cli.command()
 @click.option("--all", is_flag=True, help="Get everything")
-def download(all):
+def download(all: bool) -> None:
     """Pretend to download some files from somewhere."""
     print("Downloading")
 
 
-@cli.command()
-def auth():
+@cli.command("auth")
+def auth() -> None:
     """Authenticate the app."""
     print("Downloading")
 
 
-@cli.command()
-def config():
+if CLICK_IS_BEFORE_VERSION_8X or CLICK_IS_VERSION_80:
+    cmd_dec = cli.command()
+else:
+    cmd_dec = cli.command
+
+
+@cmd_dec
+def config() -> None:
     """Set up the configuration."""
     print("Downloading")
 

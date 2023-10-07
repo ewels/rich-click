@@ -16,7 +16,7 @@ click.rich_click.SHOW_ARGUMENTS = True
 )
 @click.option("--all", is_flag=True, help="Sync all the things?")
 @click.option("--debug", is_flag=True, help="Enable debug mode")
-def cli(input, type, all, debug):
+def cli(input: str, type: str, all: bool, debug: bool) -> None:
     """
     My amazing tool does all the things.
 

@@ -19,9 +19,9 @@ sections = [
 profile = "black"
 
 [tool.mypy]
-python_version = "3.7"
-ignore_missing_imports = "True"
+python_version = "3.8"
 scripts_are_modules = "True"
+strict = "True"
 
 [tool.pyright]
 include = ["src"]

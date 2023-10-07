@@ -1,8 +1,8 @@
 try:
-    from importlib import metadata  # type: ignore
+    from importlib import metadata  # type: ignore[import,unused-ignore]
 except ImportError:
     # Python < 3.8
-    import importlib_metadata as metadata  # type: ignore
+    import importlib_metadata as metadata  # type: ignore[no-redef,import]
 
 
 click_version = metadata.version("click")
@@ -11,6 +11,7 @@ _minor = int(click_version.split(".")[1])
 
 
 CLICK_IS_BEFORE_VERSION_8X = _major < 8
+CLICK_IS_BEFORE_VERSION_9X = _major < 9
 CLICK_IS_VERSION_80 = _major == 8 and _minor == 0
 
 
