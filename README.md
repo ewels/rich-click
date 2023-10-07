@@ -1,6 +1,17 @@
-# rich-click
+<p align="center">
+    <img src="https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich-click-logo.png" alt="rich-click logo">
+</p>
+<p align="center">
+    <em>Richly rendered command line interfaces in click.</em>
+</p>
+<p align="center">
+    <img src="https://github.com/ewels/rich-click/workflows/Test%20Coverage/badge.svg" alt="Test Coverage badge">
+    <img src="https://github.com/ewels/rich-click/workflows/Lint%20code/badge.svg" alt="Lint code badge">
+</p>
 
-**Format [click](https://click.palletsprojects.com/) help output nicely with [Rich](https://github.com/Textualize/rich).**
+---
+
+**rich-click** is a shim around [click](https://click.palletsprojects.com/) that renders help output nicely using [Rich](https://github.com/Textualize/rich).
 
 - Click is a _"Python package for creating beautiful command line interfaces"_.
 - Rich is a _"Python library for rich text and beautiful formatting in the terminal"_.
@@ -18,7 +29,35 @@ click, formatted with rich, with minimal customisation required.
 - 🔢 Easily give custom sort order for options and commands
 - 🎨 Extensive customisation of styling and behaviour possible
 
-![rich-click](docs/images/command_groups.svg)
+## Examples
+
+### Simple Example
+
+To use rich-click in your code, replace `import click` with `import rich_click as click` in your existing click CLI:
+
+```python
+import rich_click as click
+
+@click.command()
+@click.rich_config(help_config=click.RichHelpConfiguration(use_markdown=True, width=60))
+@click.option("--count", default=1, help="Number of greetings.")
+@click.option("--name", prompt="Your name", help="The person to greet.")
+def hello(count, name):
+    """Simple program that greets `NAME` for a total of `COUNT` times."""
+    for _ in range(count):
+        click.echo(f"Hello, {name}!")
+
+if __name__ == '__main__':
+    hello()
+```
+
+![`python examples/11_hello.py --help`](docs/images/hello.svg)
+
+_Screenshot from [`examples/11_hello.py`](examples/11_hello.py)_
+
+### More complex example
+
+![`python examples/03_groups_sorting.py --help`](docs/images/command_groups.svg)
 
 _Screenshot from [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py)_
 
@@ -55,7 +94,7 @@ To use `rich-click`, switch out your normal `click` import with `rich-click`, us
 import rich_click as click
 ```
 
-That's it ✨ Then continue to use `click` as you would normally.
+That's it! ✨ Then continue to use `click` as you would normally.
 
 > See [`examples/01_simple.py`](examples/01_simple.py) for an example.
 
@@ -414,14 +453,15 @@ STYLE_COMMANDS_TABLE_PADDING = (0, 1)
 STYLE_COMMANDS_TABLE_BOX = ""
 STYLE_COMMANDS_TABLE_ROW_STYLES = None
 STYLE_COMMANDS_TABLE_BORDER_STYLE = None
-STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (None, None)  # Set to a tuple[int, int] to define a column width ratio
+STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (None, None)
 STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 STYLE_ERRORS_SUGGESTION = "dim"
 STYLE_ABORTED = "red"
-WIDTH = None  # Set to int for a fixed character limit regardless of the terminal width
-MAX_WIDTH = None  # Set to int for a max character limit that is less than the terminal width. Overrides WIDTH limit
+WIDTH = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None
+MAX_WIDTH = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else WIDTH
 COLOR_SYSTEM = "auto"  # Set to None to disable colors
+FORCE_TERMINAL = True if getenv("GITHUB_ACTIONS") or getenv("FORCE_COLOR") or getenv("PY_COLORS") else None
 
 # Fixed strings
 HEADER_TEXT = None
@@ -446,13 +486,16 @@ SHOW_ARGUMENTS = False  # Show positional arguments
 SHOW_METAVARS_COLUMN = True  # Show a column with the option metavar (eg. INTEGER)
 APPEND_METAVARS_HELP = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS = False  # Show arguments with options instead of in own panel
+OPTION_ENVVAR_FIRST = False  # Show env vars before option help text instead of avert
 USE_MARKDOWN = False  # Parse help strings as markdown
 USE_MARKDOWN_EMOJI = True  # Parse emoji codes in markdown :smile:
 USE_RICH_MARKUP = False  # Parse help strings for rich markup (eg. [red]my text[/])
-COMMAND_GROUPS = {}  # Define sorted groups of panels to display subcommands
-OPTION_GROUPS = {}  # Define sorted groups of panels to display options and arguments
+COMMAND_GROUPS = {} # Define sorted groups of panels to display subcommands
+OPTION_GROUPS = {} # Define sorted groups of panels to display options and arguments
 USE_CLICK_SHORT_HELP = False  # Use click's default function to truncate help text
 ```
+
+Full type annotations of these config options are availble in `src/rich_click/rich_click.py`.
 
 ## Contributing
 
