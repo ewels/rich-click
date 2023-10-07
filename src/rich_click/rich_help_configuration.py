@@ -3,11 +3,8 @@ from os import getenv
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import rich.align
-import rich.color
-import rich.console
 import rich.highlighter
 import rich.padding
-import rich.panel
 import rich.style
 import rich.table
 from typing_extensions import Literal

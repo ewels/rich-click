@@ -1,5 +1,3 @@
-import sys
-from io import StringIO
 from typing import Any, IO, Optional
 
 import click
@@ -11,21 +9,7 @@ import rich.text
 import rich.theme
 from rich.console import Console
 
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 from rich_click.rich_help_configuration import RichHelpConfiguration
-
-
-class TerminalBuffer(StringIO):
-    """String buffer that should be detected as a terminal device."""
-
-    def write(self, __s: str) -> int:
-        if CLICK_IS_BEFORE_VERSION_8X:
-            return sys.stdout.write(__s)
-        else:
-            return super().write(__s)
-
-    def isatty(self) -> bool:
-        return sys.stdout.isatty()
 
 
 def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> Console:
@@ -98,9 +82,8 @@ class RichHelpFormatter(click.HelpFormatter):
             width = config.width or width
             max_width = config.max_width or max_width
         super().__init__(indent_increment, width, max_width, *args, **kwargs)
-        self._rich_buffer = TerminalBuffer()
         self._config = config or get_module_config()
-        self._console = create_console(self._config, self._rich_buffer)
+        self._console = create_console(self._config)
 
     @property
     def config(self) -> RichHelpConfiguration:
@@ -118,10 +101,3 @@ class RichHelpFormatter(click.HelpFormatter):
 
     def write(self, string: str) -> None:
         return self._console.print(string)
-
-    def getvalue(self) -> str:
-        """Get Console output.
-
-        This maintains compatibility with the current Click interface
-        """
-        return self._rich_buffer.getvalue()

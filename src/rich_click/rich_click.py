@@ -1,4 +1,5 @@
 import inspect
+import os
 import re
 from os import getenv
 from typing import Dict, Iterable, List, Optional, Tuple, TYPE_CHECKING, Union
@@ -27,6 +28,7 @@ from typing_extensions import Literal
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_VERSION_80
 from rich_click.rich_help_configuration import OptionHighlighter, RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
+from rich_click.utils import truthy
 
 # Support rich <= 10.6.0
 try:
@@ -39,6 +41,15 @@ if CLICK_IS_BEFORE_VERSION_9X:
     from click import MultiCommand
 else:
     MultiCommand = Group  # type: ignore[misc,assignment]
+
+
+def _force_terminal() -> Optional[bool]:
+    env_vars = {"GITHUB_ACTIONS", "FORCE_COLOR", "PY_COLORS"}
+    if all(i not in os.environ for i in env_vars):
+        return None
+    else:
+        return any(truthy(getenv(i)) for i in env_vars)
+
 
 # Default styles
 STYLE_OPTION: rich.style.StyleType = "bold cyan"
@@ -90,9 +101,7 @@ MAX_WIDTH: Optional[int] = (
 COLOR_SYSTEM: Optional[
     Literal["auto", "standard", "256", "truecolor", "windows"]
 ] = "auto"  # Set to None to disable colors
-FORCE_TERMINAL: Optional[bool] = (
-    True if getenv("GITHUB_ACTIONS") or getenv("FORCE_COLOR") or getenv("PY_COLORS") else None
-)
+FORCE_TERMINAL: Optional[bool] = _force_terminal()
 
 # Fixed strings
 HEADER_TEXT: Optional[str] = None
@@ -180,7 +189,6 @@ def _make_rich_rext(
         MarkdownElement or Text: Styled text object
     """
     formatter = _get_rich_formatter(formatter)
-    assert formatter is not None
     config = formatter.config
     # Remove indentations from input text
     text = inspect.cleandoc(text)

@@ -356,7 +356,7 @@ def test_rich_config_decorator_order(
     expected_help_output: str,
 ) -> None:
     @command_callable()  # type: ignore[misc]
-    @rich_config(Console(), RichHelpConfiguration(max_width=60, use_markdown=True))
+    @rich_config(Console(), RichHelpConfiguration(max_width=60, use_markdown=True, color_system=None))
     def cli() -> None:
         """Some help
 
