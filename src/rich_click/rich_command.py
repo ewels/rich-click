@@ -6,6 +6,10 @@ from functools import wraps
 from typing import Any, Callable, cast, Optional, overload, Sequence, TextIO, Type, TYPE_CHECKING, Union
 
 import click
+
+# Group, Command, and CommandCollection need to be imported directly,
+# or else rich_click.cli.patch() causes a recursion error.
+from click import Command, CommandCollection, Group
 from click.utils import make_str, PacifyFlushWrapper
 from rich.console import Console
 
@@ -28,7 +32,7 @@ class RichCommand(click.Command):
     context_class: Type[RichContext] = RichContext
     _formatter: Optional[RichHelpFormatter] = None
 
-    @wraps(click.Command.__init__)
+    @wraps(Command.__init__)
     def __init__(self, *args: Any, **kwargs: Any):
         """Create Rich Command instance."""
         super().__init__(*args, **kwargs)
@@ -162,7 +166,7 @@ class RichCommand(click.Command):
         rich_format_help(self, ctx, formatter)
 
 
-class RichGroup(RichCommand, click.Group):
+class RichGroup(RichCommand, Group):
     """Richly formatted click Group.
 
     Inherits click.Group and overrides help and error methods
@@ -172,25 +176,23 @@ class RichGroup(RichCommand, click.Group):
     command_class: Type[RichCommand] = RichCommand
     group_class = type
 
-    @wraps(click.Group.__init__)
+    @wraps(Group.__init__)
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize RichGroup class."""
-        click.Group.__init__(self, *args, **kwargs)
+        Group.__init__(self, *args, **kwargs)
         self._register_rich_context_settings_from_callback()
 
     if CLICK_IS_BEFORE_VERSION_8X:
 
         @overload
-        def command(self, __func: Callable[..., Any]) -> click.Command:
+        def command(self, __func: Callable[..., Any]) -> Command:
             ...
 
         @overload
-        def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], click.Command]:
+        def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], Command]:
             ...
 
-        def command(
-            self, *args: Any, **kwargs: Any
-        ) -> Union[Callable[[Callable[..., Any]], click.Command], click.Command]:
+        def command(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], Command], Command]:
             # This method override is required for Click 7.x compatibility.
             # (The command_class ClassVar was not added until 8.0.)
             kwargs.setdefault("cls", self.command_class)
@@ -200,18 +202,21 @@ class RichGroup(RichCommand, click.Group):
 if CLICK_IS_BEFORE_VERSION_9X:
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=DeprecationWarning, module="click")
+        from click import MultiCommand
 
-        class RichMultiCommand(RichCommand, click.MultiCommand):
+        class RichMultiCommand(RichCommand, MultiCommand):
             """Richly formatted click MultiCommand.
 
             Inherits click.MultiCommand and overrides help and error methods
             to print richly formatted output.
             """
 
-        @wraps(click.MultiCommand.__init__)
+        @wraps(MultiCommand.__init__)
         def __init__(self, *args: Any, **kwargs: Any) -> None:  # type: ignore[no-untyped-def]
             """Initialize RichGroup class."""
-            click.MultiCommand.__init__(self, *args, **kwargs)
+            from click import MultiCommand
+
+            MultiCommand.__init__(self, *args, **kwargs)
             self._register_rich_context_settings_from_callback()
 
 else:
@@ -220,15 +225,15 @@ else:
         """This class is deprecated."""
 
 
-class RichCommandCollection(RichGroup, click.CommandCollection):
+class RichCommandCollection(RichGroup, CommandCollection):
     """Richly formatted click CommandCollection.
 
     Inherits click.CommandCollection and overrides help and error methods
     to print richly formatted output.
     """
 
-    @wraps(click.CommandCollection.__init__)
+    @wraps(CommandCollection.__init__)
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize RichCommandCollection class."""
-        click.CommandCollection.__init__(self, *args, **kwargs)
+        CommandCollection.__init__(self, *args, **kwargs)
         self._register_rich_context_settings_from_callback()

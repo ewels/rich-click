@@ -7,6 +7,10 @@ import click
 import rich.columns
 import rich.markdown
 import rich.text
+
+# Due to how rich_click.cli.patch() works, it is safer to import Command types directly
+# rather than use the click module e.g. click.Command
+from click import Command, Group
 from rich import box
 from rich.align import Align
 from rich.columns import Columns
@@ -20,7 +24,7 @@ from rich.table import Table
 from rich.text import Text
 from typing_extensions import Literal
 
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_VERSION_80
 from rich_click.rich_help_configuration import OptionHighlighter, RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
 
@@ -29,6 +33,12 @@ try:
     from rich.console import group
 except ImportError:
     from rich.console import render_group as group  # type: ignore[attr-defined,no-redef]
+
+
+if CLICK_IS_BEFORE_VERSION_9X:
+    from click import MultiCommand
+else:
+    MultiCommand = Group  # type: ignore[misc,assignment]
 
 # Default styles
 STYLE_OPTION: rich.style.StyleType = "bold cyan"
@@ -186,7 +196,7 @@ def _make_rich_rext(
 
 @group()
 def _get_help_text(
-    obj: Union[click.Command, click.Group], formatter: Optional[RichHelpFormatter] = None
+    obj: Union[Command, Group], formatter: Optional[RichHelpFormatter] = None
 ) -> Iterable[Union[rich.markdown.Markdown, rich.text.Text]]:
     """Build primary help text for a click command or group.
 
@@ -392,7 +402,7 @@ def _make_command_help(
 
 
 def get_rich_usage(
-    obj: Union[click.Command, click.Group],
+    obj: Union[Command, Group],
     ctx: click.Context,
     formatter: click.HelpFormatter,
 ) -> None:
@@ -425,7 +435,7 @@ def get_rich_usage(
 
 
 def rich_format_help(
-    obj: click.Command,
+    obj: Command,
     ctx: click.Context,
     formatter: click.HelpFormatter,
 ) -> None:
@@ -633,7 +643,8 @@ def rich_format_help(
     # Groups only:
     # List click command groups
     #
-    if isinstance(obj, click.MultiCommand):
+
+    if isinstance(obj, MultiCommand):
         # Look through COMMAND_GROUPS for this command
         # stick anything unmatched into a default group at the end
         cmd_groups = config.command_groups.get(ctx.command_path, []).copy()
@@ -706,7 +717,7 @@ def rich_format_help(
                 )
 
     # Epilogue if we have it
-    if isinstance(obj, click.Command) and obj.epilog:
+    if isinstance(obj, Command) and obj.epilog:
         # Remove single linebreaks, replace double with single
         lines = obj.epilog.split("\n\n")
         epilogue = "\n".join([x.replace("\n", " ").strip() for x in lines])
