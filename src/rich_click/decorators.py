@@ -5,8 +5,6 @@ The intention is to provide attractive help output from click, formatted with ri
 customisation required.
 """
 
-__version__ = "1.7.0dev"
-
 from typing import Any, Callable, cast, Dict, Optional, overload, Type, TYPE_CHECKING, TypeVar, Union
 
 from click import Command
