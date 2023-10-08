@@ -1,7 +1,5 @@
 import inspect
-import os
 import re
-from os import getenv
 from typing import Dict, Iterable, List, Optional, Tuple, TYPE_CHECKING, Union
 
 import click
@@ -26,9 +24,13 @@ from rich.text import Text
 from typing_extensions import Literal
 
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_VERSION_80
-from rich_click.rich_help_configuration import OptionHighlighter, RichHelpConfiguration
+from rich_click.rich_help_configuration import (
+    force_terminal_default,
+    OptionHighlighter,
+    RichHelpConfiguration,
+    terminal_width_default,
+)
 from rich_click.rich_help_formatter import RichHelpFormatter
-from rich_click.utils import truthy
 
 # Support rich <= 10.6.0
 try:
@@ -41,14 +43,6 @@ if CLICK_IS_BEFORE_VERSION_9X:
     from click import MultiCommand
 else:
     MultiCommand = Group  # type: ignore[misc,assignment]
-
-
-def _force_terminal() -> Optional[bool]:
-    env_vars = {"GITHUB_ACTIONS", "FORCE_COLOR", "PY_COLORS"}
-    if all(i not in os.environ for i in env_vars):
-        return None
-    else:
-        return any(truthy(getenv(i)) for i in env_vars)
 
 
 # Default styles
@@ -94,14 +88,12 @@ STYLE_ERRORS_PANEL_BORDER: rich.style.StyleType = "red"
 ALIGN_ERRORS_PANEL: rich.align.AlignMethod = "left"
 STYLE_ERRORS_SUGGESTION: rich.style.StyleType = "dim"
 STYLE_ABORTED: rich.style.StyleType = "red"
-WIDTH: Optional[int] = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None  # type: ignore[arg-type]
-MAX_WIDTH: Optional[int] = (
-    int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else WIDTH  # type: ignore[arg-type]
-)
+WIDTH: Optional[int] = terminal_width_default()
+MAX_WIDTH: Optional[int] = terminal_width_default()
 COLOR_SYSTEM: Optional[
     Literal["auto", "standard", "256", "truecolor", "windows"]
 ] = "auto"  # Set to None to disable colors
-FORCE_TERMINAL: Optional[bool] = _force_terminal()
+FORCE_TERMINAL: Optional[bool] = force_terminal_default()
 
 # Fixed strings
 HEADER_TEXT: Optional[str] = None

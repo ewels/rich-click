@@ -1,3 +1,4 @@
+import os
 from dataclasses import dataclass, field
 from os import getenv
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -8,6 +9,31 @@ import rich.padding
 import rich.style
 import rich.table
 from typing_extensions import Literal
+
+from rich_click.utils import truthy
+
+
+def force_terminal_default() -> Optional[bool]:
+    """Use as the default factory for `force_terminal`."""
+    env_vars = {"GITHUB_ACTIONS", "FORCE_COLOR", "PY_COLORS"}
+    if all(i not in os.environ for i in env_vars):
+        return None
+    else:
+        return any(truthy(getenv(i)) for i in env_vars)
+
+
+def terminal_width_default() -> Optional[int]:
+    """Use as the default factory for `width` and `max_width`."""
+    width = getenv("TERMINAL_WIDTH")
+    if width:
+        try:
+            return int(width)
+        except ValueError:
+            import warnings
+
+            warnings.warn("Environment variable `TERMINAL_WIDTH` cannot be cast to an integer.", UserWarning)
+            return None
+    return None
 
 
 class OptionHighlighter(rich.highlighter.RegexHighlighter):
@@ -69,18 +95,10 @@ class RichHelpConfiguration:
     align_errors_panel: rich.align.AlignMethod = field(default="left")
     style_errors_suggestion: rich.style.StyleType = field(default="dim")
     style_aborted: rich.style.StyleType = field(default="red")
-    width: Optional[int] = field(
-        default_factory=lambda: (int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None)  # type: ignore
-    )
-    max_width: Optional[int] = field(
-        default_factory=lambda: (int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None)  # type: ignore
-    )
+    width: Optional[int] = field(default_factory=terminal_width_default)
+    max_width: Optional[int] = field(default_factory=terminal_width_default)
     color_system: Optional[Literal["auto", "standard", "256", "truecolor", "windows"]] = field(default="auto")
-    force_terminal: Optional[bool] = field(
-        default_factory=lambda: True
-        if getenv("GITHUB_ACTIONS") or getenv("FORCE_COLOR") or getenv("PY_COLORS")
-        else None
-    )
+    force_terminal: Optional[bool] = field(default_factory=force_terminal_default)
 
     # Fixed strings
     header_text: Optional[str] = field(default=None)
