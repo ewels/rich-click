@@ -173,8 +173,8 @@ class RichGroup(RichCommand, Group):
     to print richly formatted output.
     """
 
-    command_class: Type[RichCommand] = RichCommand
-    group_class = type
+    command_class: Optional[Type[RichCommand]] = RichCommand
+    group_class: Optional[Union[Type[Group], Type[type]]] = type
 
     @wraps(Group.__init__)
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -195,8 +195,26 @@ class RichGroup(RichCommand, Group):
         def command(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], Command], Command]:
             # This method override is required for Click 7.x compatibility.
             # (The command_class ClassVar was not added until 8.0.)
-            kwargs.setdefault("cls", self.command_class)
+            if self.command_class is not None:
+                kwargs.setdefault("cls", self.command_class)
             return super().command(*args, **kwargs)  # type: ignore[no-any-return]
+
+        @overload
+        def group(self, __func: Callable[..., Any]) -> Group:
+            ...
+
+        @overload
+        def group(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], Group]:
+            ...
+
+        def group(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], Group], Group]:
+            # This method override is required for Click 7.x compatibility.
+            # (The group_class ClassVar was not added until 8.0.)
+            if self.group_class is type:
+                kwargs.setdefault("cls", self.__class__)
+            elif self.group_class is not None:
+                kwargs.setdefault("cls", self.group_class)
+            return super().group(*args, **kwargs)  # type: ignore[no-any-return]
 
 
 if CLICK_IS_BEFORE_VERSION_9X:
