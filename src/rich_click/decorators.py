@@ -184,7 +184,10 @@ def rich_config(
         if isinstance(obj, (RichCommand, RichGroup)):
             obj.context_settings.update(extra)
         elif callable(obj) and not isinstance(obj, (Command, Group)):
-            setattr(obj, "__rich_context_settings__", extra)
+            if hasattr(obj, "__rich_context_settings__"):
+                obj.__rich_context_settings__.update(extra)
+            else:
+                setattr(obj, "__rich_context_settings__", extra)
         else:
             raise NotSupportedError("`rich_config` requires a `RichCommand` or `RichGroup`. Try using the cls keyword")
         return obj
