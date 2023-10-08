@@ -1,5 +1,8 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich-click-logo.png" alt="rich-click logo">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich-click-logo-darkmode.png">
+        <img alt="rich-click logo" src="https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich-click-logo.png">
+    </picture>
 </p>
 <p align="center">
     <em>Richly rendered command line interfaces in click.</em>
