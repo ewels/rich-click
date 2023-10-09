@@ -767,7 +767,7 @@ def rich_format_error(self: click.ClickException, formatter: Optional[RichHelpFo
                 Columns(
                     (
                         Text("Try"),
-                        Text(f"{cmd_path} {help_option}", style=config.style_errors_suggestion_command),
+                        Text(f"'{cmd_path} {help_option}'", style=config.style_errors_suggestion_command),
                         Text("for help"),
                     )
                 ),
