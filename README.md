@@ -169,7 +169,7 @@ Note that most normal click options should still work, such as `show_default=Tru
 
 > Note: All images below are auto-generated using another side-project of mine: [rich-codex](https://github.com/ewels/rich-codex). Pretty cool!
 
-### Using rich markup
+### Using Rich markup
 
 In order to be as widely compatible as possible with a simple import, rich-click does _not_ parse rich formatting markup (eg. `[red]`) by default. You need to opt-in to this behaviour.
 
@@ -177,6 +177,15 @@ To use rich markup in your help texts, add the following:
 
 ```python
 click.rich_click.USE_RICH_MARKUP = True
+```
+
+Or alternatively, with the `rich_config` and `RichHelpConfiguration`:
+
+```python
+@click.command()
+@click.rich_config(help_config=click.RichHelpConfiguration(use_rich_markup=True))
+def cli():
+    ...
 ```
 
 Remember that you'll need to escape any regular square brackets using a back slash in your help texts,
@@ -195,6 +204,15 @@ You must choose either Markdown or rich markup. If you specify both, Markdown ta
 click.rich_click.USE_MARKDOWN = True
 ```
 
+Or alternatively, with the `RichHelpConfiguration`:
+
+```python
+@click.command()
+@click.rich_config(help_config=click.RichHelpConfiguration(use_markdown=True))
+def cli():
+    ...
+```
+
 ![`python examples/05_markdown.py --help`](docs/images/markdown.svg "Markdown example")
 
 > See [`examples/05_markdown.py`](examples/05_markdown.py) for an example.
@@ -210,6 +228,20 @@ By default, they will get their own panel but you can tell rich-click to bundle 
 ```python
 click.rich_click.SHOW_ARGUMENTS = True
 click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
+```
+
+Or alternatively, with the `RichHelpConfiguration`:
+
+```python
+help_config = click.RichHelpConfiguration(
+    show_arguments=True,
+    group_arguments_options=True
+)
+
+@click.command()
+@click.rich_config(help_config=help_config)
+def cli():
+    ...
 ```
 
 ![`python examples/06_arguments.py --help`](docs/images/arguments.svg "Positional arguments example")
@@ -233,6 +265,18 @@ For this, use the following:
 ```python
 click.rich_click.SHOW_METAVARS_COLUMN = False
 click.rich_click.APPEND_METAVARS_HELP = True
+```
+
+```python
+help_config = click.RichHelpConfiguration(
+    show_metavars_column=False,
+    append_metavars_help=True
+)
+
+@click.command()
+@click.rich_config(help_config=help_config)
+def cli():
+    ...
 ```
 
 ![`python examples/08_metavars.py --help`](docs/images/metavars_appended.svg "Appended metavar")
@@ -498,6 +542,8 @@ USE_CLICK_SHORT_HELP = False  # Use click's default function to truncate help te
 ```
 
 Full type annotations of these config options are availble in `src/rich_click/rich_click.py`.
+
+100% of these options are supported in the `RichHelpConfiguration` class, as well.
 
 ## Contributing
 
