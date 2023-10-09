@@ -40,6 +40,7 @@
   "style_errors_panel_border": "red",
   "align_errors_panel": "left",
   "style_errors_suggestion": "magenta italic",
+  "style_errors_suggestion_command": "blue",
   "style_aborted": "red",
   "width": 100,
   "max_width": null,
