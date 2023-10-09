@@ -1,10 +1,10 @@
-
- Usage: cli [OPTIONS] COMMAND [ARGS]...
-
- My amazing tool does all the things.
- This is a minimal example based on documentation from the 'click' package.
- You can try using --help at the top level and also for specific subcommands.
-
+                                                                                                    
+ Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             
+                                                                                                    
+ My amazing tool does all the things.                                                               
+ This is a minimal example based on documentation from the 'click' package.                         
+ You can try using --help at the top level and also for specific subcommands.                       
+                                                                                                    
 ╭─ Basic usage ────────────────────────────────────────────────────────────────────────────────────╮
 │ *  --type    TEXT  Type of file to sync [default: files] [required]                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -21,3 +21,4 @@
 │ config                           Set up the configuration.                                       │
 │ auth                             Authenticate the app.                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+

@@ -296,6 +296,7 @@ For example, from [`examples/07_custom_errors.py`](examples/07_custom_errors.py)
 
 ```python
 click.rich_click.STYLE_ERRORS_SUGGESTION = "magenta italic"
+click.rich_click.STYLE_ERRORS_SUGGESTION_COMMAND = "bold"
 click.rich_click.ERRORS_SUGGESTION = "Try running the '--help' flag for more information."
 click.rich_click.ERRORS_EPILOGUE = "To find out more, visit [link=https://mytool.com]https://mytool.com[/link]"
 ```
@@ -503,6 +504,7 @@ STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (None, None)
 STYLE_ERRORS_PANEL_BORDER = "red"
 ALIGN_ERRORS_PANEL = "left"
 STYLE_ERRORS_SUGGESTION = "dim"
+STYLE_ERRORS_SUGGESTION_COMMAND = "blue"
 STYLE_ABORTED = "red"
 WIDTH = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else None
 MAX_WIDTH = int(getenv("TERMINAL_WIDTH")) if getenv("TERMINAL_WIDTH") else WIDTH

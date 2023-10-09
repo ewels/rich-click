@@ -87,6 +87,7 @@ STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO: Optional[Union[Tuple[None, None], Tuple
 STYLE_ERRORS_PANEL_BORDER: rich.style.StyleType = "red"
 ALIGN_ERRORS_PANEL: rich.align.AlignMethod = "left"
 STYLE_ERRORS_SUGGESTION: rich.style.StyleType = "dim"
+STYLE_ERRORS_SUGGESTION_COMMAND: rich.style.StyleType = "blue"
 STYLE_ABORTED: rich.style.StyleType = "red"
 WIDTH: Optional[int] = terminal_width_default()
 MAX_WIDTH: Optional[int] = terminal_width_default()
@@ -425,7 +426,7 @@ def get_rich_usage(
             Columns(
                 (
                     Text("Usage:", style=config.style_usage),
-                    ctx.command_path,
+                    Text(ctx.command_path, style=config.style_usage_command),
                     usage_highlighter(" ".join(obj.collect_usage_pieces(ctx))),
                 )
             ),
@@ -685,7 +686,7 @@ def rich_format_help(
             else:
                 table_column_width_ratio = config.style_commands_table_column_width_ratio
 
-            commands_table.add_column(style="bold cyan", no_wrap=True, ratio=table_column_width_ratio[0])
+            commands_table.add_column(style=config.style_command, no_wrap=True, ratio=table_column_width_ratio[0])
             commands_table.add_column(
                 no_wrap=False,
                 ratio=table_column_width_ratio[1],
@@ -759,10 +760,16 @@ def rich_format_error(self: click.ClickException, formatter: Optional[RichHelpFo
         and getattr(self, "ctx", None) is not None
         and self.ctx.command.get_help_option(self.ctx) is not None  # type: ignore[attr-defined]
     ):
+        cmd_path = self.ctx.command_path  # type: ignore[attr-defined]
+        help_option = self.ctx.help_option_names[0]  # type: ignore[attr-defined]
         console.print(
             Padding(
-                "Try [blue]'{command} {option}'[/] for help.".format(
-                    command=self.ctx.command_path, option=self.ctx.help_option_names[0]  # type: ignore[attr-defined]
+                Columns(
+                    (
+                        Text("Try"),
+                        Text(f"{cmd_path} {help_option}", style=config.style_errors_suggestion_command),
+                        Text("for help"),
+                    )
                 ),
                 (0, 1, 0, 1),
             ),
@@ -841,6 +848,7 @@ def get_module_help_configuration() -> RichHelpConfiguration:
         STYLE_ERRORS_PANEL_BORDER,
         ALIGN_ERRORS_PANEL,
         STYLE_ERRORS_SUGGESTION,
+        STYLE_ERRORS_SUGGESTION_COMMAND,
         STYLE_ABORTED,
         WIDTH,
         MAX_WIDTH,

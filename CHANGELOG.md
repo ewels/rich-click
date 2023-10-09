@@ -30,6 +30,7 @@ In addition:
 
 - Add new style option `STYLE_COMMAND` [[#102](https://github.com/ewels/rich-click/pull/102)]
 - Add new style option `WIDTH` (in addition to `MAX_WIDTH`), thanks to [@ealap](httpsd://github.com/ealap) [[#110](https://github.com/ewels/rich-click/pull/110)]
+- Add new style option `STYLE_ERRORS_SUGGESTION_COMMAND` [[#136](https://github.com/ewels/rich-click/pull/136)]
 - Updated styling for `Usage:` line to avoid off-target effects [[#108](https://github.com/ewels/rich-click/issues/108)]
 - Click 7.x support has been deprecated. [[#117](https://github.com/ewels/rich-click/pull/117)]
 - Fixed error where `ctx.exit(exit_code)` would not show nonzero exit codes.[[#114](https://github.com/ewels/rich-click/issues/114)]
