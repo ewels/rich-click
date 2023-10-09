@@ -296,7 +296,6 @@ For example, from [`examples/07_custom_errors.py`](examples/07_custom_errors.py)
 
 ```python
 click.rich_click.STYLE_ERRORS_SUGGESTION = "magenta italic"
-click.rich_click.STYLE_ERRORS_SUGGESTION_COMMAND = "bold"
 click.rich_click.ERRORS_SUGGESTION = "Try running the '--help' flag for more information."
 click.rich_click.ERRORS_EPILOGUE = "To find out more, visit [link=https://mytool.com]https://mytool.com[/link]"
 ```
