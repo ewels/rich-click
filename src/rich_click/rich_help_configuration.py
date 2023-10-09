@@ -94,6 +94,7 @@ class RichHelpConfiguration:
     style_errors_panel_border: rich.style.StyleType = field(default="red")
     align_errors_panel: rich.align.AlignMethod = field(default="left")
     style_errors_suggestion: rich.style.StyleType = field(default="dim")
+    style_errors_suggestion_command: rich.style.StyleType = field(default="blue")
     style_aborted: rich.style.StyleType = field(default="red")
     width: Optional[int] = field(default_factory=terminal_width_default)
     max_width: Optional[int] = field(default_factory=terminal_width_default)

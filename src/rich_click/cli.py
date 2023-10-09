@@ -36,7 +36,7 @@ console = Console()
 def _print_usage() -> None:
     console.print(
         Padding(
-            Text.from_markup(f"[{STYLE_USAGE}]Usage[/]: rich-click [SCRIPT | MODULE:FUNCTION] [-- SCRIPT_ARGS...]"),
+            Text.from_markup(f"[{STYLE_USAGE}]Usage:[/] rich-click [SCRIPT | MODULE:FUNCTION] [-- SCRIPT_ARGS...]"),
             1,
         ),
         style=STYLE_USAGE_COMMAND,
