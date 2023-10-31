@@ -7,6 +7,7 @@ on:
 
 jobs:
   rich_codex:
+    if: github.repository_owner == 'ewels'
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo

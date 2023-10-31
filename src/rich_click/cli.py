@@ -6,10 +6,10 @@ from textwrap import dedent
 from typing import Any, List, Optional
 
 try:
-    from importlib.metadata import entry_points  # type: ignore[import,unused-ignore]
+    from importlib import metadata  # type: ignore[import,unused-ignore]
 except ImportError:
-    # Support Python <3.8
-    from importlib_metadata import entry_points  # type: ignore[import,no-redef]
+    # Python < 3.8
+    import importlib_metadata as metadata  # type: ignore[no-redef,import-not-found]
 
 import click
 from rich.console import Console
@@ -73,6 +73,19 @@ def patch() -> None:
         click.MultiCommand = RichMultiCommand  # type: ignore[assignment,misc]
 
 
+def entry_points(*, group: str) -> "metadata.EntryPoints":  # type: ignore[name-defined]
+    """entry_points function that is compatible with Python 3.7+."""
+    if sys.version_info >= (3, 10):
+        return metadata.entry_points(group=group)
+
+    epg = metadata.entry_points()
+
+    if sys.version_info < (3, 8) and hasattr(epg, "select"):
+        return epg.select(group=group)
+
+    return epg.get(group, [])
+
+
 def main(args: Optional[List[str]] = None) -> Any:
     """
     The [link=https://github.com/ewels/rich-click]rich-click[/] CLI provides attractive help output from any
@@ -100,7 +113,7 @@ def main(args: Optional[List[str]] = None) -> Any:
         sys.exit(0)
     else:
         script_name = args[0]
-    scripts = {script.name: script for script in entry_points().get("console_scripts", [])}
+    scripts = {script.name: script for script in entry_points(group="console_scripts")}
     if script_name in scripts:
         # a valid script was passed
         script = scripts[script_name]
