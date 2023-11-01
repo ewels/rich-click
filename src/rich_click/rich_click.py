@@ -776,17 +776,22 @@ def rich_format_error(self: click.ClickException, formatter: Optional[RichHelpFo
             style=config.style_errors_suggestion,
         )
 
-    console.print(
-        Padding(
-            Panel(
-                highlighter(self.format_message()),
-                border_style=config.style_errors_panel_border,
-                title=config.errors_panel_title,
-                title_align=config.align_errors_panel,
-            ),
-            (0, 0, 1, 0),
+    # A major Python library using click (dbt-core) has its own exception
+    # logic that subclasses ClickException, but does not use the message
+    # attribute. Checking for the 'message' attribute works to make the
+    # rich-click CLI compatible.
+    if hasattr(self, "message"):
+        console.print(
+            Padding(
+                Panel(
+                    highlighter(self.format_message()),
+                    border_style=config.style_errors_panel_border,
+                    title=config.errors_panel_title,
+                    title_align=config.align_errors_panel,
+                ),
+                (0, 0, 1, 0),
+            )
         )
-    )
     if config.errors_epilogue:
         console.print(Padding(config.errors_epilogue, (0, 1, 1, 1)))
 
