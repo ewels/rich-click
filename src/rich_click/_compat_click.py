@@ -2,7 +2,7 @@ try:
     from importlib import metadata  # type: ignore[import,unused-ignore]
 except ImportError:
     # Python < 3.8
-    import importlib_metadata as metadata  # type: ignore[no-redef,import]
+    import importlib_metadata as metadata  # type: ignore[no-redef,import-not-found]
 
 
 click_version = metadata.version("click")
