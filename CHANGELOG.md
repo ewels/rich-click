@@ -1,6 +1,11 @@
 # Changelog: rich-click
 
-## Version 1.7.0dev
+## Version 1.7.1
+
+- Fix bug with `rich-click` CLI not working with Python 3.12. [#141](https://github.com/ewels/rich-click/issues/141)
+- Fix compatibility issue with `dbt-core` CLI. [[#140](https://github.com/ewels/rich-click/issues/140)]
+
+## Version 1.7.0
 
 > [!WARNING]
 >
