@@ -1,7 +1,8 @@
 import os
 from dataclasses import dataclass, field
 from os import getenv
-from typing import Any, Dict, List, Optional, Tuple, Union
+from types import ModuleType
+from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
 import rich.align
 import rich.highlighter
@@ -11,6 +12,8 @@ import rich.table
 from typing_extensions import Literal
 
 from rich_click.utils import truthy
+
+T = TypeVar("T", bound="RichHelpConfiguration")
 
 
 def force_terminal_default() -> Optional[bool]:
@@ -48,7 +51,12 @@ class OptionHighlighter(rich.highlighter.RegexHighlighter):
 
 @dataclass
 class RichHelpConfiguration:
-    """Rich Help Configuration Class."""
+    """Rich Help Configuration class.
+
+    When merging multiple RichHelpConfigurations together, user-defined values always
+    take precedence over the class's defaults. When there are multiple user-defined values
+    for a given field, the right-most field is used.
+    """
 
     # Default styles
     style_option: rich.style.StyleType = field(default="bold cyan")
@@ -145,3 +153,29 @@ class RichHelpConfiguration:
     highlighter: rich.highlighter.Highlighter = field(default_factory=lambda: OptionHighlighter())
     """Rich regex highlighter for help highlighting"""
     legacy_windows: Optional[bool] = field(default=False)
+
+    @classmethod
+    def build_from_globals(cls, module: Optional[ModuleType] = None, **extra: Any) -> "RichHelpConfiguration":
+        """
+        Build a RichHelpConfiguration from globals in rich_click.rich_click.
+
+        When building from globals, all fields are treated as having been set by the user,
+        meaning they will overwrite other fields when "merged".
+        """
+        if module is None:
+            import rich_click.rich_click as rc
+
+            module = rc
+        kw = {}
+        for k, v in cls.__dataclass_fields__.items():
+            if v.init:
+                if hasattr(module, k.upper()):
+                    kw[k] = getattr(module, k.upper())
+                # Handle lowercase.
+                # (May deprecate and move everything to uppercase... unsure.)
+                elif k == "highlighter" and hasattr(module, k):
+                    kw[k] = getattr(module, k)
+
+        kw.update(extra)
+        inst = cls(**kw)
+        return inst

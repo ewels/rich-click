@@ -1,15 +1,23 @@
 # Changelog: rich-click
 
+## Version 1.8.0dev
+
+- Some internal refactors:
+  - `rich_click.py` is exclusively the global config; all formatting has been moved to `rich_markup.py`.
+  - `RichCommand` now makes use of methods in the super class: `format_usage`, `format_help_text`, `format_options`, and `format_epilog`.
+  - Global `formatter` object has been removed from the code.
+- Added `RichHelpConfiguration.build_from_globals()` classmethod, which pulls all configuration from `rich_click.py`.
+
 ## Version 1.7.1
 
-- Fix bug with `rich-click` CLI not working with Python 3.12. [#141](https://github.com/ewels/rich-click/issues/141)
-- Fix compatibility issue with `dbt-core` CLI. [[#140](https://github.com/ewels/rich-click/issues/140)]
+- Fix bug with `rich-click` CLI not working with Python 3.12. [#140](https://github.com/ewels/rich-click/issues/140)
+- Fix compatibility issue with `dbt-core` CLI. [[#141](https://github.com/ewels/rich-click/issues/141)]
 
 ## Version 1.7.0
 
 > [!WARNING]
 >
-> Click 7.x support is deprecated and will be removed in rich-click version 1.8.x.
+> Click 7.x support is deprecated and will be removed in a future version.
 > Please update to a newer version of click.
 
 This release comes after merging a huge pull-request from [@BrutalSimplicity](https://github.com/BrutalSimplicity) - see [#92](https://github.com/ewels/rich-click/pull/92)

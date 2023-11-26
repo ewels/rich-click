@@ -3,7 +3,7 @@ import os
 import sys
 import warnings
 from functools import wraps
-from typing import Any, Callable, cast, Optional, overload, Sequence, TextIO, Type, TYPE_CHECKING, Union
+from typing import Any, Callable, cast, List, Optional, overload, Sequence, TextIO, Type, TYPE_CHECKING, Union
 
 import click
 
@@ -14,10 +14,10 @@ from click.utils import make_str, PacifyFlushWrapper
 from rich.console import Console
 
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_9X
-from rich_click.rich_click import rich_abort_error, rich_format_error, rich_format_help
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
+from rich_click.rich_markup import get_rich_epilog, get_rich_help_text, get_rich_options, rich_format_error
 
 
 class RichCommand(click.Command):
@@ -62,17 +62,14 @@ class RichCommand(click.Command):
         """Rich Help Configuration."""
         return self.context_settings.get("rich_help_config")
 
-    @property
-    def formatter(self) -> RichHelpFormatter:
-        """Rich Help Formatter.
-
-        This is separate instance from the formatter used to display help,
-        but is created from the same `RichHelpConfiguration`. Currently only used
-        for error reporting.
-        """
-        if self._formatter is None:
-            self._formatter = RichHelpFormatter(config=self.help_config)
-        return self._formatter
+    def make_context(
+        self,
+        info_name: Optional[str],
+        args: List[str],
+        parent: Optional[click.Context] = None,
+        **extra: Any,
+    ) -> RichContext:
+        return super().make_context(info_name, args, parent, **extra)  # type: ignore[return-value]
 
     def main(
         self,
@@ -138,10 +135,10 @@ class RichCommand(click.Command):
                 click.echo(file=sys.stderr)
                 raise click.exceptions.Abort() from None
             except click.exceptions.ClickException as e:
-                rich_format_error(e, self.formatter)
                 if not standalone_mode:
                     raise
-                sys.stderr.write(self.formatter.getvalue())
+                formatter = self.context_class.formatter_class(config=self.help_config, file=sys.stderr)
+                rich_format_error(e, formatter)
                 sys.exit(e.exit_code)
             except OSError as e:
                 if e.errno == errno.EPIPE:
@@ -156,17 +153,37 @@ class RichCommand(click.Command):
             else:
                 return e.exit_code
         except click.exceptions.Abort:
-            rich_abort_error(self.formatter)
             if not standalone_mode:
                 raise
-            sys.stderr.write(self.formatter.getvalue())
-            sys.exit(1)
+            try:
+                formatter = self.context_class.formatter_class(config=self.help_config)
+            except Exception:
+                click.echo("Aborted!", file=sys.stderr)
+            else:
+                formatter.write_abort()
+            finally:
+                sys.exit(1)
 
-    def format_help(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
-        rich_format_help(self, ctx, formatter)
+    # Mypy complains about Liskov substitution principle violations.
+    # We opt to ignore mypy here.
+
+    def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        self.format_usage(ctx, formatter)
+        self.format_help_text(ctx, formatter)
+        self.format_options(ctx, formatter)
+        self.format_epilog(ctx, formatter)
+
+    def format_help_text(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        get_rich_help_text(self, ctx, formatter)
+
+    def format_options(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        get_rich_options(self, ctx, formatter)
+
+    def format_epilog(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        get_rich_epilog(self, ctx, formatter)
 
 
-class RichGroup(RichCommand, Group):
+class RichGroup(RichCommand, Group):  # type: ignore[misc]
     """Richly formatted click Group.
 
     Inherits click.Group and overrides help and error methods
@@ -222,7 +239,7 @@ if CLICK_IS_BEFORE_VERSION_9X:
         warnings.filterwarnings("ignore", category=DeprecationWarning, module="click")
         from click import MultiCommand
 
-        class RichMultiCommand(RichCommand, MultiCommand):
+        class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[misc]
             """Richly formatted click MultiCommand.
 
             Inherits click.MultiCommand and overrides help and error methods
@@ -243,7 +260,7 @@ else:
         """This class is deprecated."""
 
 
-class RichCommandCollection(RichGroup, CommandCollection):
+class RichCommandCollection(RichGroup, CommandCollection):  # type: ignore[misc]
     """Richly formatted click CommandCollection.
 
     Inherits click.CommandCollection and overrides help and error methods

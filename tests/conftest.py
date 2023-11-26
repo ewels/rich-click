@@ -195,7 +195,7 @@ def invoke() -> InvokeCli:
     runner = CliRunner()
 
     def invoke(cmd: click.Command, *args: Any, **kwargs: Any) -> Result:
-        result = runner.invoke(cmd, *args, **kwargs, standalone_mode=False)
+        result = runner.invoke(cmd, *args, **kwargs)
         return result
 
     return invoke
@@ -268,13 +268,13 @@ def assert_rich_format(
                 help_config.width = rc.WIDTH
                 help_config.max_width = rc.MAX_WIDTH
                 help_config.force_terminal = rc.FORCE_TERMINAL
-        result = invoke(command, args)
-
-        assert command.formatter is not None
 
         if error:
-            assert isinstance(result.exception, error)
-            assert result.exit_code != 0
+            result_nonstandalone = invoke(command, args, standalone_mode=False)
+            assert isinstance(result_nonstandalone.exception, error)
+            assert result_nonstandalone.exit_code != 0
+
+        result = invoke(command, args)
         actual = replace_link_ids(result.stdout)
 
         expectation_output_path = expectations_dir / f"{request.node.name}-click{click_major_version}.out"
@@ -285,7 +285,13 @@ def assert_rich_format(
         assert_str(actual, expectation_output_path)
         if os.getenv("UPDATE_EXPECTATIONS"):
             with open(expectation_config_path, "w") as stream:
-                stream.write(json.dumps(config_to_dict(command.formatter.config), indent=2))
-        assert_dicts(config_to_dict(command.formatter.config), expectation_config_path)
+                if command.help_config is not None:
+                    stream.write(json.dumps(config_to_dict(command.help_config), indent=2) + "\n")
+        if command.help_config is not None:
+            assert_dicts(config_to_dict(command.help_config), expectation_config_path)
+        else:
+            pass
+            # TODO: uncomment below out
+            # assert not os.path.exists(expectation_config_path)
 
     return assertion

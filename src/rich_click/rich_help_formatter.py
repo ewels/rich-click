@@ -1,3 +1,4 @@
+from functools import wraps
 from typing import Any, IO, Optional
 
 import click
@@ -44,22 +45,18 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
     return console
 
 
-def get_module_config() -> RichHelpConfiguration:
-    """Get the module-level help configuration.
-
-    A function-level import is used to avoid a circular dependency
-    between the formatter and formatter operations.
-    """
-    from rich_click.rich_click import get_module_help_configuration
-
-    return get_module_help_configuration()
-
-
 class RichHelpFormatter(click.HelpFormatter):
     """Rich Help Formatter.
 
     This class is a container for the help configuration and Rich Console that
     are used internally by the help and error printing methods.
+    """
+
+    console: Console
+    """Rich Console created from the help configuration.
+
+    This console is meant only for use with the formatter and should
+    not be created directly
     """
 
     def __init__(
@@ -69,6 +66,7 @@ class RichHelpFormatter(click.HelpFormatter):
         max_width: Optional[int] = None,
         *args: Any,
         config: Optional[RichHelpConfiguration] = None,
+        file: Optional[IO[str]] = None,
         **kwargs: Any,
     ) -> None:
         """Create Rich Help Formatter.
@@ -78,26 +76,29 @@ class RichHelpFormatter(click.HelpFormatter):
                 Defaults to None.
         """
         if config is not None:
+            self.config = config
             # Rich config overrides width and max width if set.
-            width = config.width or width
-            max_width = config.max_width or max_width
+        else:
+            self.config = RichHelpConfiguration.build_from_globals()
+
+        self.console = create_console(self.config)
+
+        if width is None:
+            width = self.config.width
+        if max_width is None:
+            max_width = self.config.max_width
+
         super().__init__(indent_increment, width, max_width, *args, **kwargs)
-        self._config = config or get_module_config()
-        self._console = create_console(self._config)
 
-    @property
-    def config(self) -> RichHelpConfiguration:
-        """Rich Help Configuration."""
-        return self._config
+    @wraps(Console.print)
+    def write(self, string: Any, **kwargs: Any) -> None:
+        self.console.print(string, **kwargs)
 
-    @property
-    def console(self) -> Console:
-        """Rich Console created from the help configuration.
+    def write_usage(self, prog: str, args: str = "", prefix: Optional[str] = None) -> None:
+        from rich_click.rich_markup import get_rich_usage
 
-        This console is meant only for use with the formatter and should
-        not be created directly
-        """
-        return self._console
+        get_rich_usage(formatter=self, prog=prog, args=args, prefix=prefix)
 
-    def write(self, string: str) -> None:
-        return self._console.print(string)
+    def write_abort(self) -> None:
+        """Print richly formatted abort error."""
+        self.console.print(self.config.aborted_text, style=self.config.style_aborted)
