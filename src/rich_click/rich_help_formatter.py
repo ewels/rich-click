@@ -95,7 +95,7 @@ class RichHelpFormatter(click.HelpFormatter):
         self.console.print(string, **kwargs)
 
     def write_usage(self, prog: str, args: str = "", prefix: Optional[str] = None) -> None:
-        from rich_click.rich_markup import get_rich_usage
+        from rich_click.rich_help_rendering import get_rich_usage
 
         get_rich_usage(formatter=self, prog=prog, args=args, prefix=prefix)
 

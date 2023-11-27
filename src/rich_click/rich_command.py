@@ -17,7 +17,7 @@ from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
-from rich_click.rich_markup import get_rich_epilog, get_rich_help_text, get_rich_options, rich_format_error
+from rich_click.rich_help_rendering import get_rich_epilog, get_rich_help_text, get_rich_options, rich_format_error
 
 
 class RichCommand(click.Command):

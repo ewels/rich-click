@@ -130,7 +130,7 @@ def __getattr__(name: str) -> Any:
             f"{name}() is no longer located in the `rich_click` module." " It is now in the `rich_markup` module.",
             DeprecationWarning,
         )
-        import rich_click.rich_markup
+        import rich_click.rich_help_rendering
 
         return getattr(rich_click.rich_markup, name)
     else:
