@@ -62,15 +62,6 @@ class RichCommand(click.Command):
         """Rich Help Configuration."""
         return self.context_settings.get("rich_help_config")
 
-    def make_context(
-        self,
-        info_name: Optional[str],
-        args: List[str],
-        parent: Optional[click.Context] = None,
-        **extra: Any,
-    ) -> RichContext:
-        return super().make_context(info_name, args, parent, **extra)  # type: ignore[return-value]
-
     def main(
         self,
         args: Optional[Sequence[str]] = None,
@@ -181,6 +172,36 @@ class RichCommand(click.Command):
 
     def format_epilog(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         get_rich_epilog(self, ctx, formatter)
+
+    if CLICK_IS_BEFORE_VERSION_8X:
+
+        def make_context(
+            self,
+            info_name: Optional[str],
+            args: List[str],
+            parent: Optional[click.Context] = None,
+            **extra: Any,
+        ) -> RichContext:
+            for key, value in self.context_settings.items():
+                if key not in extra:
+                    extra[key] = value
+
+            ctx = self.context_class(self, info_name=info_name, parent=parent, **extra)
+
+            with ctx.scope(cleanup=False):
+                self.parse_args(ctx, args)
+            return ctx
+
+    else:
+
+        def make_context(
+            self,
+            info_name: Optional[str],
+            args: List[str],
+            parent: Optional[click.Context] = None,
+            **extra: Any,
+        ) -> RichContext:
+            return super().make_context(info_name, args, parent, **extra)  # type: ignore[return-value]
 
 
 class RichGroup(RichCommand, Group):  # type: ignore[misc]
