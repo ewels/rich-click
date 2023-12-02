@@ -564,7 +564,9 @@ def get_rich_epilog(
         # Remove single linebreaks, replace double with single
         lines = self.epilog.split("\n\n")
         epilog = "\n".join([x.replace("\n", " ").strip() for x in lines])
-        formatter.console.print(Padding(Align(formatter.config.highlighter(epilog), pad=False), 1))
+        formatter.console.print(
+            Padding(Align(_make_rich_rext(epilog, formatter.config.style_epilog_text, formatter), pad=False), 1)
+        )
 
     # Footer text if we have it
     if formatter.config.footer_text:

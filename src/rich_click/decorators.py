@@ -1,16 +1,8 @@
-"""
-rich-click is a minimal Python module to combine the efforts of the excellent packages 'rich' and 'click'.
-
-The intention is to provide attractive help output from click, formatted with rich, with minimal
-customisation required.
-"""
-
 from typing import Any, Callable, cast, Dict, Optional, overload, Type, TYPE_CHECKING, TypeVar, Union
 
 from click import Command
 from click import command as click_command
 from click import Group
-from click import group as click_group
 from click import pass_context as click_pass_context
 from rich.console import Console
 from typing_extensions import Concatenate, ParamSpec
@@ -21,10 +13,6 @@ from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 from rich_click.rich_command import RichCommand, RichGroup, RichMultiCommand  # noqa: F401
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
-
-# MyPy does not like star imports. Therefore when we are type checking, we import each individual module
-# from click here. This way MyPy will recognize the import and not throw any errors. Furthermore, because of
-# the TYPE_CHECKING check, it does not influence the start routine at all.
 
 _AnyCallable = Callable[..., Any]
 F = TypeVar("F", bound=Callable[..., Any])
