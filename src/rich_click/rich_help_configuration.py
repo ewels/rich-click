@@ -59,6 +59,7 @@ class RichHelpConfiguration:
     style_metavar_append: rich.style.StyleType = field(default="dim yellow")
     style_metavar_separator: rich.style.StyleType = field(default="dim")
     style_header_text: rich.style.StyleType = field(default="")
+    style_epilog_text: rich.style.StyleType = field(default="")
     style_footer_text: rich.style.StyleType = field(default="")
     style_usage: rich.style.StyleType = field(default="yellow")
     style_usage_command: rich.style.StyleType = field(default="bold")

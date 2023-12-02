@@ -54,6 +54,7 @@ STYLE_METAVAR: rich.style.StyleType = "bold yellow"
 STYLE_METAVAR_APPEND: rich.style.StyleType = "dim yellow"
 STYLE_METAVAR_SEPARATOR: rich.style.StyleType = "dim"
 STYLE_HEADER_TEXT: rich.style.StyleType = ""
+STYLE_EPILOG_TEXT: rich.style.StyleType = ""
 STYLE_FOOTER_TEXT: rich.style.StyleType = ""
 STYLE_USAGE: rich.style.StyleType = "yellow"
 STYLE_USAGE_COMMAND: rich.style.StyleType = "bold"
@@ -722,7 +723,7 @@ def rich_format_help(
         # Remove single linebreaks, replace double with single
         lines = obj.epilog.split("\n\n")
         epilogue = "\n".join([x.replace("\n", " ").strip() for x in lines])
-        console.print(Padding(Align(highlighter(epilogue), pad=False), 1))
+        console.print(Padding(Align(_make_rich_rext(epilogue, config.style_epilog_text, formatter), pad=False), 1))
 
     # Footer text if we have it
     if config.footer_text:
@@ -820,6 +821,7 @@ def get_module_help_configuration() -> RichHelpConfiguration:
         STYLE_METAVAR_APPEND,
         STYLE_METAVAR_SEPARATOR,
         STYLE_HEADER_TEXT,
+        STYLE_EPILOG_TEXT,
         STYLE_FOOTER_TEXT,
         STYLE_USAGE,
         STYLE_USAGE_COMMAND,
