@@ -5,11 +5,12 @@ from importlib import import_module
 from textwrap import dedent
 from typing import Any, List, Optional
 
+
 try:
     from importlib import metadata  # type: ignore[import,unused-ignore]
 except ImportError:
     # Python < 3.8
-    import importlib_metadata as metadata  # type: ignore[no-redef,import-not-found]
+    import importlib_metadata as metadata  # type: ignore[no-redef,import-not-found,unused-ignore]
 
 import click
 from rich.console import Console
@@ -17,9 +18,9 @@ from rich.padding import Padding
 from rich.panel import Panel
 from rich.text import Text
 
+from rich_click import RichCommand, RichCommandCollection, RichGroup, RichMultiCommand
 from rich_click import command as rich_command
 from rich_click import group as rich_group
-from rich_click import RichCommand, RichCommandCollection, RichGroup, RichMultiCommand
 from rich_click.rich_click import (
     ALIGN_ERRORS_PANEL,
     ERRORS_PANEL_TITLE,
@@ -29,6 +30,7 @@ from rich_click.rich_click import (
     STYLE_USAGE,
     STYLE_USAGE_COMMAND,
 )
+
 
 console = Console()
 

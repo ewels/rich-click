@@ -1,6 +1,6 @@
 import inspect
 import re
-from typing import Iterable, List, Optional, Tuple, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Iterable, List, Optional, Tuple, Union
 
 import click
 
@@ -23,6 +23,7 @@ from rich.text import Text
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_VERSION_80
 from rich_click.rich_help_formatter import RichHelpFormatter
 
+
 # Support rich <= 10.6.0
 try:
     from rich.console import group
@@ -37,16 +38,22 @@ else:
 
 
 def _make_rich_rext(text: str, style: StyleType, formatter: RichHelpFormatter) -> Union[Markdown, Text]:
-    """Take a string, remove indentations, and return styled text.
+    """
+    Take a string, remove indentations, and return styled text.
     By default, return the text as a Rich Text with the request style.
     If config.use_rich_markup is True, also parse the text for Rich markup strings.
     If config.use_markdown is True, parse as Markdown.
     Only one of config.use_markdown or config.use_rich_markup can be True.
     If both are True, config.use_markdown takes precedence.
+
     Args:
-        text (str): Text to style
-        style (str): Rich style to apply
+    ----
+        text (str): Text to style.
+        style (StyleType): Rich style to apply.
+        formatter: formatter object.
+
     Returns:
+    -------
         MarkdownElement or Text: Styled text object
     """
     config = formatter.config
@@ -64,13 +71,19 @@ def _make_rich_rext(text: str, style: StyleType, formatter: RichHelpFormatter) -
 
 @group()
 def _get_help_text(obj: Union[Command, Group], formatter: RichHelpFormatter) -> Iterable[Union[Markdown, Text]]:
-    """Build primary help text for a click command or group.
+    """
+    Build primary help text for a click command or group.
     Returns the prose help text for a command or group, rendered either as a
     Rich Text object or as Markdown.
     If the command is marked as depreciated, the depreciated string will be prepended.
+
     Args:
-        obj (click.Command or click.Group): Command or group to build help text for
+    ----
+        obj (click.Command or click.Group): Command or group to build help text for.
+        formatter: formatter object.
+
     Yields:
+    ------
         Text or Markdown: Multiple styled objects (depreciated, usage)
     """
     if TYPE_CHECKING:
@@ -114,14 +127,20 @@ def _get_help_text(obj: Union[Command, Group], formatter: RichHelpFormatter) -> 
 def _get_option_help(
     param: Union[click.Argument, click.Option], ctx: click.Context, formatter: RichHelpFormatter
 ) -> Columns:
-    """Build primary help text for a click option or argument.
+    """
+    Build primary help text for a click option or argument.
     Returns the prose help text for an option or argument, rendered either
     as a Rich Text object or as Markdown.
     Additional elements are appended to show the default and required status if applicable.
+
     Args:
-        param (click.Argument or click.Option): Parameter to build help text for
-        ctx (click.Context): Click Context object
+    ----
+        param (click.Argument or click.Option): Parameter to build help text for.
+        ctx (click.Context): Click Context object.
+        formatter (RichHelpFormatter): formatter object.
+
     Returns:
+    -------
         Columns: A columns element with multiple styled objects (help, default, required)
     """
     config = formatter.config
@@ -141,7 +160,7 @@ def _get_option_help(
         ):
             envvar = f"{ctx.auto_envvar_prefix}_{param.name.upper()}"
     if envvar is not None:
-        envvar = ", ".join(envvar) if type(envvar) is list else envvar
+        envvar = ", ".join(envvar) if isinstance(envvar, list) else envvar
 
     # Environment variable config.before help text
     if getattr(param, "show_envvar", None) and config.option_envvar_first and envvar is not None:
@@ -230,15 +249,22 @@ def _get_option_help(
 
 
 def _make_command_help(help_text: str, formatter: RichHelpFormatter, is_deprecated: bool) -> Union[Text, Markdown]:
-    """Build cli help text for a click group command.
+    """
+    Build cli help text for a click group command.
     That is, when calling help on groups with multiple subcommands
     (not the main help text when calling the subcommand help).
     Returns the first paragraph of help text for a command, rendered either as a
     Rich Text object or as Markdown.
     Ignores single newlines as paragraph markers, looks for double only.
+
     Args:
+    ----
         help_text (str): Help text
+        formatter: formatter object
+        is_deprecated (bool): Object marked by user as deprecated.
+
     Returns:
+    -------
         Text or Markdown: Styled object
     """
     paragraphs = inspect.cleandoc(help_text).split("\n\n")
@@ -579,11 +605,16 @@ def get_rich_epilog(
 
 
 def rich_format_error(self: click.ClickException, formatter: RichHelpFormatter) -> None:
-    """Print richly formatted click errors.
+    """
+    Print richly formatted click errors.
+
     Called by custom exception handler to print richly formatted click errors.
     Mimics original click.ClickException.echo() function but with rich formatting.
+
     Args:
-        click.ClickException: Click exception to format.
+    ----
+        self (click.ClickException): Click exception to format.
+        formatter: formatter object.
     """
     console = formatter.console
     config = formatter.config

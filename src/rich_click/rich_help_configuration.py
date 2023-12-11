@@ -13,6 +13,7 @@ from typing_extensions import Literal
 
 from rich_click.utils import truthy
 
+
 T = TypeVar("T", bound="RichHelpConfiguration")
 
 
@@ -51,7 +52,8 @@ class OptionHighlighter(rich.highlighter.RegexHighlighter):
 
 @dataclass
 class RichHelpConfiguration:
-    """Rich Help Configuration class.
+    """
+    Rich Help Configuration class.
 
     When merging multiple RichHelpConfigurations together, user-defined values always
     take precedence over the class's defaults. When there are multiple user-defined values

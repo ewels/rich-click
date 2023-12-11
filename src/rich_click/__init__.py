@@ -1,4 +1,4 @@
-# flake8: noqa: F401
+# ruff: noqa: F401
 """
 rich-click is a minimal Python module to combine the efforts of the excellent packages 'rich' and 'click'.
 
@@ -9,7 +9,8 @@ customisation required.
 __version__ = "1.8.0dev0"
 
 # Import the entire click API here.
-# We need to manually import these instead of `from click import *` to force mypy to recognize a few type annotation overrides for the rich_click decorators.
+# We need to manually import these instead of `from click import *` to force
+# mypy to recognize a few type annotation overrides for the rich_click decorators.
 from click.core import Argument as Argument
 from click.core import Command as Command
 from click.core import CommandCollection as CommandCollection
@@ -50,27 +51,25 @@ from click.termui import secho as secho
 from click.termui import style as style
 from click.termui import unstyle as unstyle
 from click.types import BOOL as BOOL
+from click.types import FLOAT as FLOAT
+from click.types import INT as INT
+from click.types import STRING as STRING
+from click.types import UNPROCESSED as UNPROCESSED
+from click.types import UUID as UUID
 from click.types import Choice as Choice
 from click.types import DateTime as DateTime
 from click.types import File as File
-from click.types import FLOAT as FLOAT
 from click.types import FloatRange as FloatRange
-from click.types import INT as INT
 from click.types import IntRange as IntRange
 from click.types import ParamType as ParamType
 from click.types import Path as Path
-from click.types import STRING as STRING
 from click.types import Tuple as Tuple
-from click.types import UNPROCESSED as UNPROCESSED
-from click.types import UUID as UUID
 from click.utils import echo as echo
 from click.utils import format_filename as format_filename
 from click.utils import get_app_dir as get_app_dir
 from click.utils import get_binary_stream as get_binary_stream
 from click.utils import get_text_stream as get_text_stream
 from click.utils import open_file as open_file
-
-from . import rich_click as rich_click
 
 from rich_click.decorators import command as command
 from rich_click.decorators import group as group
@@ -81,6 +80,8 @@ from rich_click.rich_command import RichCommandCollection as RichCommandCollecti
 from rich_click.rich_command import RichGroup as RichGroup
 from rich_click.rich_context import RichContext as RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration as RichHelpConfiguration
+
+from . import rich_click as rich_click
 
 
 def __getattr__(name: str) -> object:

@@ -19,13 +19,15 @@ class RichContext(click.Context):
         rich_help_config: Optional[RichHelpConfiguration] = None,
         **kwargs: Any,
     ) -> None:
-        """Create Rich Context instance.
+        """
+        Create Rich Context instance.
 
         Args:
-            rich_console: Rich Console.
-                Defaults to None.
-            rich_help_config: Rich help configuration.
-                Defaults to None.
+        ----
+            *args: Args that get passed to click.Context.
+            rich_console: Rich Console. Defaults to None.
+            rich_help_config: Rich help configuration.  Defaults to None.
+            **kwargs: Kwargs that get passed to click.Context.
         """
         super().__init__(*args, **kwargs)
         parent: Optional[RichContext] = kwargs.pop("parent", None)

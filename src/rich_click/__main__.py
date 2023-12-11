@@ -8,6 +8,7 @@ Why does this file exist, and why `__main__`? For more info, read:
 
 from rich_click.cli import main
 
+
 if __name__ == "__main__":
     # main will run a Click command which will either exit or raise
     main()
