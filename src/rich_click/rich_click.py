@@ -1,20 +1,9 @@
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import rich.text
-
-# Due to how rich_click.cli.patch() works, it is safer to import Command types directly
-# rather than use the click module e.g. click.Command
-from click import Group
 from typing_extensions import Literal
 
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X
 from rich_click.rich_help_configuration import force_terminal_default, OptionHighlighter, terminal_width_default
-
-if CLICK_IS_BEFORE_VERSION_9X:
-    pass
-else:
-    MultiCommand = Group  # type: ignore[misc,assignment,unused-ignore]
-
 
 # Default styles
 STYLE_OPTION: rich.style.StyleType = "bold cyan"
@@ -25,6 +14,7 @@ STYLE_METAVAR: rich.style.StyleType = "bold yellow"
 STYLE_METAVAR_APPEND: rich.style.StyleType = "dim yellow"
 STYLE_METAVAR_SEPARATOR: rich.style.StyleType = "dim"
 STYLE_HEADER_TEXT: rich.style.StyleType = ""
+STYLE_EPILOG_TEXT: rich.style.StyleType = ""
 STYLE_FOOTER_TEXT: rich.style.StyleType = ""
 STYLE_USAGE: rich.style.StyleType = "yellow"
 STYLE_USAGE_COMMAND: rich.style.StyleType = "bold"
