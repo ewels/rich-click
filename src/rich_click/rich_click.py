@@ -3,7 +3,8 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import rich.text
 from typing_extensions import Literal
 
-from rich_click.rich_help_configuration import force_terminal_default, OptionHighlighter, terminal_width_default
+from rich_click.rich_help_configuration import OptionHighlighter, force_terminal_default, terminal_width_default
+
 
 # Default styles
 STYLE_OPTION: rich.style.StyleType = "bold cyan"

@@ -17,7 +17,7 @@ try:
     from importlib import metadata  # type: ignore[import,unused-ignore]
 except ImportError:
     # Python < 3.8
-    import importlib_metadata as metadata  # type: ignore[no-redef,import-not-found]
+    import importlib_metadata as metadata  # type: ignore[no-redef,import-not-found,unused-ignore]
 
 
 rich_version = version.parse(metadata.version("rich"))
@@ -219,50 +219,50 @@ class ClickGroupWithRichCommandClass(click.Group):
 
 if rich_version.major == 12:
     command_help_output = """
- Usage: cli [OPTIONS]                                       
+ Usage: cli [OPTIONS]
 
- Some help                                                  
- ╔════════════════════════════════════════════════════════╗ 
- ║                         Header                         ║ 
- ╚════════════════════════════════════════════════════════╝ 
+ Some help
+ ╔════════════════════════════════════════════════════════╗
+ ║                         Header                         ║
+ ╚════════════════════════════════════════════════════════╝
 
 ╭─ Options ────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                  │
 ╰──────────────────────────────────────────────────────────╯
 """
     group_help_output = """
- Usage: cli [OPTIONS] COMMAND [ARGS]...                     
-                                                            
- Some help                                                  
- ╔════════════════════════════════════════════════════════╗ 
- ║                         Header                         ║ 
- ╚════════════════════════════════════════════════════════╝ 
-                                                            
+ Usage: cli [OPTIONS] COMMAND [ARGS]...
+
+ Some help
+ ╔════════════════════════════════════════════════════════╗
+ ║                         Header                         ║
+ ╚════════════════════════════════════════════════════════╝
+
 ╭─ Options ────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                  │
 ╰──────────────────────────────────────────────────────────╯
 """
 else:
     command_help_output = """
- Usage: cli [OPTIONS]                                       
+ Usage: cli [OPTIONS]
 
- Some help                                                  
- ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ 
- ┃                         Header                         ┃ 
- ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ 
+ Some help
+ ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+ ┃                         Header                         ┃
+ ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 ╭─ Options ────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                  │
 ╰──────────────────────────────────────────────────────────╯
 """
     group_help_output = """
- Usage: cli [OPTIONS] COMMAND [ARGS]...                     
-                                                            
- Some help                                                  
- ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ 
- ┃                         Header                         ┃ 
- ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ 
-                                                            
+ Usage: cli [OPTIONS] COMMAND [ARGS]...
+
+ Some help
+ ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+ ┃                         Header                         ┃
+ ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
 ╭─ Options ────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                  │
 ╰──────────────────────────────────────────────────────────╯
@@ -358,7 +358,8 @@ def test_rich_config_decorator_order(
     @command_callable()  # type: ignore[misc]
     @rich_config(Console(), RichHelpConfiguration(max_width=60, use_markdown=True, color_system=None))
     def cli() -> None:
-        """Some help
+        """
+        Some help
 
         # Header
         """
@@ -399,10 +400,10 @@ def test_rich_config_max_width(invoke: InvokeCli, assert_str: AssertStr) -> None
     assert_str(
         result.stdout,
         """
-Usage: cli [OPTIONS]                                            
-                                                                
- Some help text                                                 
-                                                                
+Usage: cli [OPTIONS]
+
+ Some help text
+
 ╭─ Options ────────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                      │
 ╰──────────────────────────────────────────────────────────────╯

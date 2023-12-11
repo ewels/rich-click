@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Any, IO, Optional
+from typing import IO, Any, Optional
 
 import click
 import rich
@@ -14,9 +14,11 @@ from rich_click.rich_help_configuration import RichHelpConfiguration
 
 
 def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> Console:
-    """Create a Rich Console configured from Rich Help Configuration.
+    """
+    Create a Rich Console configured from Rich Help Configuration.
 
     Args:
+    ----
         config: Rich Help Configuration instance
         file: Optional IO stream to write Rich Console output
             Defaults to None.
@@ -46,7 +48,8 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
 
 
 class RichHelpFormatter(click.HelpFormatter):
-    """Rich Help Formatter.
+    """
+    Rich Help Formatter.
 
     This class is a container for the help configuration and Rich Console that
     are used internally by the help and error printing methods.
@@ -69,11 +72,18 @@ class RichHelpFormatter(click.HelpFormatter):
         file: Optional[IO[str]] = None,
         **kwargs: Any,
     ) -> None:
-        """Create Rich Help Formatter.
+        """
+        Create Rich Help Formatter.
 
         Args:
-            config: Configuration.
-                Defaults to None.
+        ----
+            indent_increment: Passed to click.HelpFormatter.
+            width: Passed to click.HelpFormatter. Overrides config.width if not None.
+            max_width: Passed to click.HelpFormatter. Overrides config.max_width if not None.
+            *args: Args passed to click.HelpFormatter.
+            config: RichHelpConfiguration. If None, then build config from globals.
+            file: Stream to output to in the Rich Console. If None, use stdout.
+            **kwargs: Kwargs passed to click.HelpFormatter.
         """
         if config is not None:
             self.config = config
@@ -81,8 +91,9 @@ class RichHelpFormatter(click.HelpFormatter):
         else:
             self.config = RichHelpConfiguration.build_from_globals()
 
-        self.console = create_console(self.config)
+        self.console = create_console(self.config, file=file)
 
+        # TODO: Revisit this. I don't think this does anything.
         if width is None:
             width = self.config.width
         if max_width is None:

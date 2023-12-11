@@ -1,18 +1,18 @@
-from typing import Any, Callable, cast, Dict, Optional, overload, Type, TYPE_CHECKING, TypeVar, Union
+from typing import Any, Callable, Dict, Optional, Type, TypeVar, Union, cast, overload
 
-from click import Command
+from click import Command, Group
 from click import command as click_command
-from click import Group
 from click import pass_context as click_pass_context
 from rich.console import Console
 from typing_extensions import Concatenate, ParamSpec
-
-from . import rich_click  # noqa: F401
 
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 from rich_click.rich_command import RichCommand, RichGroup, RichMultiCommand  # noqa: F401
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
+
+from . import rich_click  # noqa: F401
+
 
 _AnyCallable = Callable[..., Any]
 F = TypeVar("F", bound=Callable[..., Any])
@@ -140,9 +140,11 @@ class NotSupportedError(Exception):
 def rich_config(
     console: Optional[Console] = None, help_config: Optional[RichHelpConfiguration] = None
 ) -> Callable[[FC], FC]:
-    """Use decorator to configure Rich Click settings.
+    """
+    Use decorator to configure Rich Click settings.
 
     Args:
+    ----
         console: A Rich Console that will be accessible from the `RichContext`, `RichCommand`, and `RichGroup` instances
             Defaults to None.
         help_config: Rich help configuration that is used internally to format help messages and exceptions
@@ -198,7 +200,5 @@ R = TypeVar("R")
 
 def pass_context(f: Callable[Concatenate[RichContext, P], R]) -> Callable[P, R]:
     # flake8: noqa: D400,D401
-    """Marks a callback as wanting to receive the current context
-    object as first argument.
-    """
+    """Marks a callback as wanting to receive the current context object as first argument."""
     return click_pass_context(f)  # type: ignore[arg-type]

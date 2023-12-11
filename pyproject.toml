@@ -23,6 +23,38 @@ python_version = "3.8"
 scripts_are_modules = "True"
 strict = "True"
 
+[tool.ruff]
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv",
+    "venv",
+    "build",
+    "sdist",
+    "tests/**",
+    "examples/**",
+]
+ignore = [
+    "D100",
+    "D102",
+    "D205",
+    "E731",
+    "D203",
+    "D212"
+]
+line-length = 120
+select = [
+    "D",
+    "E",
+    "F",
+    "W",
+    "I001"
+]
+
+[tool.ruff.isort]
+lines-after-imports = 2
+known-first-party = ["rich-click"]
+
 [tool.pyright]
 include = ["src"]
 pythonVersion = "3.7"

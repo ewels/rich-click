@@ -15,7 +15,6 @@ from click.testing import CliRunner, Result
 from typing_extensions import Protocol
 
 import rich_click.rich_click as rc
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 from rich_click.rich_command import RichCommand, RichGroup
 from rich_click.rich_help_configuration import OptionHighlighter, RichHelpConfiguration
 
@@ -47,9 +46,11 @@ def click_major_version() -> int:
 
 class AssertStr(Protocol):
     def __call__(self, actual: str, expectation: Union[str, Path]) -> None:
-        """Assert strings by normalizining line endings
+        """
+        Assert strings by normalizining line endings
 
         Args:
+        ----
             actual: actual result
             expectation: expected result `str` or `Path` to load result
         """
@@ -82,9 +83,11 @@ def assert_str(request: pytest.FixtureRequest, tmpdir: Path) -> Callable[[str, U
 
 class AssertDicts(Protocol):
     def __call__(self, actual: Dict[str, Any], expectation: Union[Path, Dict[str, Any]]) -> None:
-        """Assert two dictionaries by normalizing as json
+        """
+        Assert two dictionaries by normalizing as json
 
         Args:
+        ----
             actual: actual result
             expectation: expected result `Dict` or `Path` to load result
         """
@@ -146,9 +149,11 @@ class CommandModuleType(ModuleType):
 
 class LoadCommandModule(Protocol):
     def __call__(self, namespace: str) -> CommandModuleType:
-        """Dynamically loads a rich cli fixture.
+        """
+        Dynamically loads a rich cli fixture.
 
         Args:
+        ----
             namespace: Namespace of the rich cli module under test.
                 Example: fixtures.arguments
         """
@@ -159,7 +164,8 @@ re_link_ids = re.compile(r"id=[\d.\-]*?;.*?\x1b")
 
 
 def replace_link_ids(render: str) -> str:
-    """Link IDs have a random ID and system path which is a problem for
+    """
+    Link IDs have a random ID and system path which is a problem for
     reproducible tests.
 
     From: https://github.com/Textualize/rich/blob/master/tests/render.py
@@ -179,12 +185,14 @@ def load_command() -> LoadCommandModule:
 
 class InvokeCli(Protocol):
     def __call__(self, cmd: click.Command, *args: Any, **kwargs: Any) -> Result:
-        """Invoke click command.
+        """
+        Invoke click command.
 
         Small convenience fixture to allow invoking a click Command
         without standalone mode.
 
         Args:
+        ----
             cmd: Click Command
         """
         ...
@@ -209,7 +217,8 @@ class AssertRichFormat(Protocol):
         error: Optional[Type[Exception]],
         rich_config: Optional[Callable[[Any], Union[RichGroup, RichCommand]]],
     ) -> None:
-        """Invokes the cli command and applies assertions against the results
+        """
+        Invokes the cli command and applies assertions against the results
 
         This command resolves the cli application from the fixtures directory dynamically
         to isolate module configuration state between tests. It will also assert that
@@ -224,6 +233,7 @@ class AssertRichFormat(Protocol):
         This means it may miss cases where assertion of styles is desired.
 
         Args:
+        ----
             cmd: The name of the module under test, or a `RichCommand` or `RichGroup` object.
                 If given a module name. This module must have a module-level
                 `cli` attribute that resolves to a Rich Command or Group

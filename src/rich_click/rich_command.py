@@ -3,14 +3,14 @@ import os
 import sys
 import warnings
 from functools import wraps
-from typing import Any, Callable, cast, List, Optional, overload, Sequence, TextIO, Type, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Any, Callable, List, Optional, Sequence, TextIO, Type, Union, cast, overload
 
 import click
 
 # Group, Command, and CommandCollection need to be imported directly,
 # or else rich_click.cli.patch() causes a recursion error.
 from click import Command, CommandCollection, Group
-from click.utils import make_str, PacifyFlushWrapper
+from click.utils import PacifyFlushWrapper, make_str
 from rich.console import Console
 
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_9X
@@ -21,7 +21,8 @@ from rich_click.rich_help_rendering import get_rich_epilog, get_rich_help_text, 
 
 
 class RichCommand(click.Command):
-    """Richly formatted click Command.
+    """
+    Richly formatted click Command.
 
     Inherits click.Command and overrides help and error methods
     to print richly formatted output.
@@ -48,7 +49,8 @@ class RichCommand(click.Command):
 
     @property
     def console(self) -> Optional[Console]:
-        """Rich Console.
+        """
+        Rich Console.
 
         This is a separate instance from the help formatter that allows full control of the
         console configuration.
@@ -205,7 +207,8 @@ class RichCommand(click.Command):
 
 
 class RichGroup(RichCommand, Group):  # type: ignore[misc]
-    """Richly formatted click Group.
+    """
+    Richly formatted click Group.
 
     Inherits click.Group and overrides help and error methods
     to print richly formatted output.
@@ -261,7 +264,8 @@ if CLICK_IS_BEFORE_VERSION_9X:
         from click import MultiCommand
 
         class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[misc]
-            """Richly formatted click MultiCommand.
+            """
+            Richly formatted click MultiCommand.
 
             Inherits click.MultiCommand and overrides help and error methods
             to print richly formatted output.
@@ -278,11 +282,12 @@ if CLICK_IS_BEFORE_VERSION_9X:
 else:
 
     class RichMultiCommand(RichGroup):  # type: ignore[no-redef]
-        """This class is deprecated."""
+        """Deprecated class."""
 
 
 class RichCommandCollection(RichGroup, CommandCollection):  # type: ignore[misc]
-    """Richly formatted click CommandCollection.
+    """
+    Richly formatted click CommandCollection.
 
     Inherits click.CommandCollection and overrides help and error methods
     to print richly formatted output.
