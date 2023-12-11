@@ -99,8 +99,9 @@ def __getattr__(name: str) -> Any:
         import warnings
 
         warnings.warn(
-            "get_module_help_configuration() is deprecated." " Use RichHelpConfiguration.build_from_globals() instead.",
+            "get_module_help_configuration() is deprecated. Use RichHelpConfiguration.build_from_globals() instead.",
             DeprecationWarning,
+            stacklevel=2,
         )
         from rich_click.rich_help_configuration import RichHelpConfiguration
 
@@ -118,8 +119,9 @@ def __getattr__(name: str) -> Any:
         import warnings
 
         warnings.warn(
-            f"{name}() is no longer located in the `rich_click` module." " It is now in the `rich_markup` module.",
+            f"{name}() is no longer located in the `rich_click` module. It is now in the `rich_markup` module.",
             DeprecationWarning,
+            stacklevel=2,
         )
         import rich_click.rich_help_rendering
 

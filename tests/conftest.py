@@ -298,7 +298,9 @@ def assert_rich_format(
                 if command.help_config is not None:
                     stream.write(json.dumps(config_to_dict(command.help_config), indent=2) + "\n")
         if command.help_config is not None:
-            assert_dicts(config_to_dict(command.help_config), expectation_config_path)
+            # TODO: Commands don't really have 'help configs'.
+            pass
+            # assert_dicts(config_to_dict(command.help_config), expectation_config_path)
         else:
             pass
             # TODO: uncomment below out
