@@ -184,7 +184,7 @@ class RichHelpConfiguration:
                 "`highlighter` kwarg is deprecated in RichHelpConfiguration."
                 " Please do one of the following instead: either set highlighter_patterns=[...] if you want"
                 " to use regex; or for more advanced use cases where you'd like to use a different type"
-                " of rich.highlighter.Highlighter, subclass the RichContext instead.",
+                " of rich.highlighter.Highlighter, subclass the `RichHelpFormatter` and update its `highlighter`.",
                 DeprecationWarning,
                 stacklevel=2,
             )
