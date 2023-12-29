@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass, field
 from os import getenv
 from types import ModuleType
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, TypeVar, Union
+from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
 
 import rich.align
 import rich.highlighter
@@ -12,10 +12,6 @@ import rich.table
 from typing_extensions import Literal
 
 from rich_click.utils import truthy
-
-
-if TYPE_CHECKING:
-    pass
 
 
 T = TypeVar("T", bound="RichHelpConfiguration")
