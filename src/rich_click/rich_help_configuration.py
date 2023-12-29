@@ -48,9 +48,9 @@ class OptionHighlighter(rich.highlighter.RegexHighlighter):
     """Highlights our special options."""
 
     highlights = [
-        r"(^|[^\w\-])(?P<switch>\-\w[\w\-]*)",
-        r"(^|[^\w\-])(?P<option>\-\-\w[\w\-]*)",
-        r"(?P<metavar>\<[^\>]+\>)",
+        r"(^|[^\w\-])(?P<switch>-([^\W0-9][\w\-]*\w|[^\W0-9]))",
+        r"(^|[^\w\-])(?P<option>--([^\W0-9][\w\-]*\w|[^\W0-9]))",
+        r"(?P<metavar><[^>]+>)",
     ]
 
 
@@ -162,9 +162,42 @@ class RichHelpConfiguration:
     """Define sorted groups of panels to display options and arguments"""
     use_click_short_help: bool = field(default=False)
     """Use click's default function to truncate help text"""
-    highlighter: rich.highlighter.Highlighter = field(default_factory=lambda: OptionHighlighter())
-    """Rich regex highlighter for help highlighting"""
+    highlighter: Optional[rich.highlighter.Highlighter] = field(default=None, repr=False, compare=False)
+    """(Deprecated) Rich regex highlighter for help highlighting"""
+
+    highlighter_patterns: List[str] = field(
+        default_factory=lambda: [
+            r"(^|[^\w\-])(?P<switch>-([^\W0-9][\w\-]*\w|[^\W0-9]))",
+            r"(^|[^\w\-])(?P<option>--([^\W0-9][\w\-]*\w|[^\W0-9]))",
+            r"(?P<metavar><[^>]+>)",
+        ]
+    )
+    """Patterns to use with the option highlighter."""
+
     legacy_windows: Optional[bool] = field(default=False)
+
+    def __post_init__(self) -> None:  # noqa: D105
+        if self.highlighter is not None:
+            import warnings
+
+            warnings.warn(
+                "`highlighter` kwarg is deprecated in RichHelpConfiguration."
+                " Please do one of the following instead: either set highlighter_patterns=[...] if you want"
+                " to use regex; or for more advanced use cases where you'd like to use a different type"
+                " of rich.highlighter.Highlighter, subclass the RichContext instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+        else:
+
+            class Highlighter(rich.highlighter.RegexHighlighter):
+                """Highlights our special options."""
+
+                highlights = self.highlighter_patterns
+
+            self.highlighter = Highlighter()
+
+        self.__dataclass_fields__.pop("highlighter", None)
 
     @classmethod
     def load_from_globals(cls, module: Optional[ModuleType] = None, **extra: Any) -> "RichHelpConfiguration":

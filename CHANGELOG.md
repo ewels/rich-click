@@ -8,6 +8,7 @@
   - Global `formatter` object has been removed from the code.
 - Added `RichHelpConfiguration.load_from_globals()` classmethod, which pulls all configuration from `rich_click.py`.
 - Fix bug with regex highlighter for options and switches.
+- `RichHelpConfiguration()` is now asserted to be JSON serializable, as an option for porting configurations. That said, serialization is not a fully supported feature of the high-level API, so serialize the config at your own risk.
 
 ## Version 1.7.1
 

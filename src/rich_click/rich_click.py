@@ -5,7 +5,7 @@ import rich.padding
 import rich.style
 from typing_extensions import Literal
 
-from rich_click.rich_help_configuration import OptionHighlighter, force_terminal_default, terminal_width_default
+from rich_click.rich_help_configuration import force_terminal_default, terminal_width_default
 
 
 # Default styles
@@ -92,8 +92,6 @@ COMMAND_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = {}
 # Define sorted groups of panels to display options and arguments
 OPTION_GROUPS: Dict[str, List[Dict[str, Union[str, List[str], Dict[str, List[str]]]]]] = {}
 USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
-
-highlighter: rich.highlighter.Highlighter = OptionHighlighter()
 
 
 def __getattr__(name: str) -> Any:

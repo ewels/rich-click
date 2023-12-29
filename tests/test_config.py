@@ -5,6 +5,8 @@ import pytest
 from rich_click import group, command, rich_config, RichHelpConfiguration, RichContext
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 import rich_click.rich_click as rc
+from dataclasses import asdict
+import json
 
 if CLICK_IS_BEFORE_VERSION_8X:
     pytest.skip(reason="rich_config not supported for click < 8.", allow_module_level=True)
@@ -107,3 +109,22 @@ def test_config_from_globals_behavior() -> None:
         if TYPE_CHECKING:
             assert isinstance(ctx, RichContext)
         assert ctx.help_config.style_option == "new-value"
+
+
+def test_config_is_serializable_and_invertible() -> None:
+    config = RichHelpConfiguration()
+
+    try:
+        serialized_data = json.dumps(asdict(config))
+    except TypeError as e:
+        pytest.fail(f"RichHelpConfiguration is not serializable: Error raised: {e.__class__.__name__}{e.args}")
+    else:
+        deserialized_data = json.loads(serialized_data)
+        config2 = RichHelpConfiguration(**deserialized_data)
+
+        # Correct types.
+        config2.style_options_table_padding = tuple(config2.style_options_table_padding)  # type: ignore[arg-type,assignment]
+        config2.style_commands_table_padding = tuple(config2.style_commands_table_padding)  # type: ignore[arg-type,assignment]
+        config2.style_commands_table_column_width_ratio = tuple(config2.style_commands_table_column_width_ratio)  # type: ignore[arg-type,assignment]
+
+        assert config == config2
