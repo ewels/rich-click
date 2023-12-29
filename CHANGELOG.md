@@ -6,7 +6,7 @@
   - `rich_click.py` is exclusively the global config; all formatting has been moved to `rich_help_rendering.py`.
   - `RichCommand` now makes use of methods in the super class: `format_usage`, `format_help_text`, `format_options`, and `format_epilog`.
   - Global `formatter` object has been removed from the code.
-- Added `RichHelpConfiguration.build_from_globals()` classmethod, which pulls all configuration from `rich_click.py`.
+- Added `RichHelpConfiguration.load_from_globals()` classmethod, which pulls all configuration from `rich_click.py`.
 
 ## Version 1.7.1
 

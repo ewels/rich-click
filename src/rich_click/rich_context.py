@@ -47,7 +47,9 @@ class RichContext(click.Context):
                 kw.update(rich_help_config)
                 self.help_config = RichHelpConfiguration(**kw)
             else:
-                self.help_config = RichHelpConfiguration(**rich_help_config)
+                self.help_config = RichHelpConfiguration.load_from_globals(**rich_help_config)
+        elif rich_help_config is None:
+            self.help_config = RichHelpConfiguration.load_from_globals()
         else:
             self.help_config = rich_help_config
 

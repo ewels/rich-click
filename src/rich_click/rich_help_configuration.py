@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass, field
 from os import getenv
 from types import ModuleType
-from typing import Any, Dict, List, Optional, Tuple, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, TypeVar, Union
 
 import rich.align
 import rich.highlighter
@@ -12,6 +12,10 @@ import rich.table
 from typing_extensions import Literal
 
 from rich_click.utils import truthy
+
+
+if TYPE_CHECKING:
+    pass
 
 
 T = TypeVar("T", bound="RichHelpConfiguration")
@@ -44,8 +48,8 @@ class OptionHighlighter(rich.highlighter.RegexHighlighter):
     """Highlights our special options."""
 
     highlights = [
-        r"(^|\W)(?P<switch>\-\w+)(?![a-zA-Z0-9])",
-        r"(^|\W)(?P<option>\-\-[\w\-]+)(?![a-zA-Z0-9])",
+        r"(^|[^\w\-])(?P<switch>\-\w[\w\-]*)",
+        r"(^|[^\w\-])(?P<option>\-\-\w[\w\-]*)",
         r"(?P<metavar>\<[^\>]+\>)",
     ]
 
@@ -59,6 +63,11 @@ class RichHelpConfiguration:
     take precedence over the class's defaults. When there are multiple user-defined values
     for a given field, the right-most field is used.
     """
+
+    # FIND:
+    # (?<field>[a-zA-Z_]+): (?<typ>.*?) = field\(default=.*?\)
+    # REPLACE:
+    # ${field}: ${typ} = field(default_factory=_get_default(\"\U${field}\E\"))
 
     # Default styles
     style_option: rich.style.StyleType = field(default="bold cyan")
@@ -158,7 +167,7 @@ class RichHelpConfiguration:
     legacy_windows: Optional[bool] = field(default=False)
 
     @classmethod
-    def build_from_globals(cls, module: Optional[ModuleType] = None, **extra: Any) -> "RichHelpConfiguration":
+    def load_from_globals(cls, module: Optional[ModuleType] = None, **extra: Any) -> "RichHelpConfiguration":
         """
         Build a RichHelpConfiguration from globals in rich_click.rich_click.
 

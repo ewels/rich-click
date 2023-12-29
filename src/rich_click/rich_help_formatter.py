@@ -89,7 +89,7 @@ class RichHelpFormatter(click.HelpFormatter):
             self.config = config
             # Rich config overrides width and max width if set.
         else:
-            self.config = RichHelpConfiguration.build_from_globals()
+            self.config = RichHelpConfiguration.load_from_globals()
 
         self.console = create_console(self.config, file=file)
 

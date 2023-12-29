@@ -133,14 +133,8 @@ def assert_dicts(request: pytest.FixtureRequest, tmpdir: Path) -> AssertDicts:
 @pytest.fixture(autouse=True)
 def initialize_rich_click() -> None:
     """Initialize `rich_click` module."""
-    # to isolate module-level configuration we
-    # must reload the rich_click module between
-    # each test
+    # Isolate global configuration for each test.
     reload(rc)
-    # default config settings from https://github.com/Textualize/rich/blob/master/tests/render.py
-    rc.WIDTH = 100
-    rc.COLOR_SYSTEM = None
-    rc.FORCE_TERMINAL = True
 
 
 class CommandModuleType(ModuleType):

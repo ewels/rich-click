@@ -24,6 +24,14 @@ rich_version = version.parse(metadata.version("rich"))
 click_version = version.parse(metadata.version("click"))
 
 
+@pytest.fixture(autouse=True)
+def foo(initialize_rich_click: None) -> None:
+    # Default config settings from https://github.com/Textualize/rich/blob/master/tests/render.py
+    rc.WIDTH = 100
+    rc.COLOR_SYSTEM = None
+    rc.FORCE_TERMINAL = True
+
+
 @pytest.mark.parametrize(
     "cmd, args, error, rich_config",
     [

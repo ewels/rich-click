@@ -1,6 +1,8 @@
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-import rich.text
+import rich.align
+import rich.padding
+import rich.style
 from typing_extensions import Literal
 
 from rich_click.rich_help_configuration import OptionHighlighter, force_terminal_default, terminal_width_default
@@ -99,13 +101,13 @@ def __getattr__(name: str) -> Any:
         import warnings
 
         warnings.warn(
-            "get_module_help_configuration() is deprecated. Use RichHelpConfiguration.build_from_globals() instead.",
+            "get_module_help_configuration() is deprecated. Use RichHelpConfiguration.load_from_globals() instead.",
             DeprecationWarning,
             stacklevel=2,
         )
         from rich_click.rich_help_configuration import RichHelpConfiguration
 
-        return RichHelpConfiguration.build_from_globals
+        return RichHelpConfiguration.load_from_globals
     elif name in {
         "_make_rich_rext",
         "_get_help_text",
@@ -119,12 +121,12 @@ def __getattr__(name: str) -> Any:
         import warnings
 
         warnings.warn(
-            f"{name}() is no longer located in the `rich_click` module. It is now in the `rich_markup` module.",
+            f"{name}() is no longer located in the `rich_click` module. It is now in the `rich_help_rendering` module.",
             DeprecationWarning,
             stacklevel=2,
         )
         import rich_click.rich_help_rendering
 
-        return getattr(rich_click.rich_markup, name)
+        return getattr(rich_click.rich_help_rendering, name)
     else:
         raise AttributeError
