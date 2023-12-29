@@ -40,16 +40,6 @@ def terminal_width_default() -> Optional[int]:
     return None
 
 
-class OptionHighlighter(rich.highlighter.RegexHighlighter):
-    """Highlights our special options."""
-
-    highlights = [
-        r"(^|[^\w\-])(?P<switch>-([^\W0-9][\w\-]*\w|[^\W0-9]))",
-        r"(^|[^\w\-])(?P<option>--([^\W0-9][\w\-]*\w|[^\W0-9]))",
-        r"(?P<metavar><[^>]+>)",
-    ]
-
-
 @dataclass
 class RichHelpConfiguration:
     """
@@ -184,14 +174,6 @@ class RichHelpConfiguration:
                 DeprecationWarning,
                 stacklevel=2,
             )
-        else:
-
-            class Highlighter(rich.highlighter.RegexHighlighter):
-                """Highlights our special options."""
-
-                highlights = self.highlighter_patterns
-
-            self.highlighter = Highlighter()
 
         self.__dataclass_fields__.pop("highlighter", None)
 
@@ -220,3 +202,31 @@ class RichHelpConfiguration:
         kw.update(extra)
         inst = cls(**kw)
         return inst
+
+
+def __getattr__(name: str) -> Any:
+    if name == "OptionHighlighter":
+
+        class OptionHighlighter(rich.highlighter.RegexHighlighter):
+            """Highlights our special options."""
+
+            highlights = [
+                r"(^|[^\w\-])(?P<switch>-([^\W0-9][\w\-]*\w|[^\W0-9]))",
+                r"(^|[^\w\-])(?P<option>--([^\W0-9][\w\-]*\w|[^\W0-9]))",
+                r"(?P<metavar><[^>]+>)",
+            ]
+
+        import warnings
+
+        warnings.warn(
+            "OptionHighlighter is deprecated and will be removed in a future version.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        globals()["OptionHighlighter"] = OptionHighlighter
+
+        return OptionHighlighter
+
+    else:
+        raise AttributeError

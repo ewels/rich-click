@@ -16,7 +16,7 @@ from typing_extensions import Protocol
 
 import rich_click.rich_click as rc
 from rich_click.rich_command import RichCommand, RichGroup
-from rich_click.rich_help_configuration import OptionHighlighter, RichHelpConfiguration
+from rich_click.rich_help_configuration import RichHelpConfiguration
 
 
 @pytest.fixture

@@ -106,6 +106,23 @@ def __getattr__(name: str) -> Any:
         from rich_click.rich_help_configuration import RichHelpConfiguration
 
         return RichHelpConfiguration.load_from_globals
+    if name == "highlighter":
+        import warnings
+
+        from rich_click.rich_help_configuration import OptionHighlighter
+
+        warnings.warn(
+            "`highlighter` config option is deprecated."
+            " Please do one of the following instead: either set HIGHLIGHTER_PATTERNS = [...] if you want"
+            " to use regex; or for more advanced use cases where you'd like to use a different type"
+            " of rich.highlighter.Highlighter, subclass the `RichHelpFormatter` and update its `highlighter`.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        globals()["highlighter"] = highlighter = OptionHighlighter()
+        return highlighter
+
     elif name in {
         "_make_rich_rext",
         "_get_help_text",
