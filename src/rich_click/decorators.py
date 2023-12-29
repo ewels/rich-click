@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict, Optional, Type, TypeVar, Union, cast, overload
+from typing import Any, Callable, Dict, Mapping, Optional, Type, TypeVar, Union, cast, overload
 
 from click import Command, Group
 from click import command as click_command
@@ -138,7 +138,7 @@ class NotSupportedError(Exception):
 
 
 def rich_config(
-    console: Optional[Console] = None, help_config: Optional[RichHelpConfiguration] = None
+    console: Optional[Console] = None, help_config: Optional[Union[Mapping[str, Any], RichHelpConfiguration]] = None
 ) -> Callable[[FC], FC]:
     """
     Use decorator to configure Rich Click settings.
@@ -159,6 +159,7 @@ def rich_config(
                 "`rich_config()` does not work with versions of click prior to version 8.0.0."
                 " Please update to a newer version of click to use this functionality.",
                 RuntimeWarning,
+                stacklevel=2,
             )
             return obj
 

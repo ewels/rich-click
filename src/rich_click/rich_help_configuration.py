@@ -40,16 +40,6 @@ def terminal_width_default() -> Optional[int]:
     return None
 
 
-class OptionHighlighter(rich.highlighter.RegexHighlighter):
-    """Highlights our special options."""
-
-    highlights = [
-        r"(^|\W)(?P<switch>\-\w+)(?![a-zA-Z0-9])",
-        r"(^|\W)(?P<option>\-\-[\w\-]+)(?![a-zA-Z0-9])",
-        r"(?P<metavar>\<[^\>]+\>)",
-    ]
-
-
 @dataclass
 class RichHelpConfiguration:
     """
@@ -59,6 +49,11 @@ class RichHelpConfiguration:
     take precedence over the class's defaults. When there are multiple user-defined values
     for a given field, the right-most field is used.
     """
+
+    # FIND:
+    # (?<field>[a-zA-Z_]+): (?<typ>.*?) = field\(default=.*?\)
+    # REPLACE:
+    # ${field}: ${typ} = field(default_factory=_get_default(\"\U${field}\E\"))
 
     # Default styles
     style_option: rich.style.StyleType = field(default="bold cyan")
@@ -153,12 +148,37 @@ class RichHelpConfiguration:
     """Define sorted groups of panels to display options and arguments"""
     use_click_short_help: bool = field(default=False)
     """Use click's default function to truncate help text"""
-    highlighter: rich.highlighter.Highlighter = field(default_factory=lambda: OptionHighlighter())
-    """Rich regex highlighter for help highlighting"""
+    highlighter: Optional[rich.highlighter.Highlighter] = field(default=None, repr=False, compare=False)
+    """(Deprecated) Rich regex highlighter for help highlighting"""
+
+    highlighter_patterns: List[str] = field(
+        default_factory=lambda: [
+            r"(^|[^\w\-])(?P<switch>-([^\W0-9][\w\-]*\w|[^\W0-9]))",
+            r"(^|[^\w\-])(?P<option>--([^\W0-9][\w\-]*\w|[^\W0-9]))",
+            r"(?P<metavar><[^>]+>)",
+        ]
+    )
+    """Patterns to use with the option highlighter."""
+
     legacy_windows: Optional[bool] = field(default=False)
 
+    def __post_init__(self) -> None:  # noqa: D105
+        if self.highlighter is not None:
+            import warnings
+
+            warnings.warn(
+                "`highlighter` kwarg is deprecated in RichHelpConfiguration."
+                " Please do one of the following instead: either set highlighter_patterns=[...] if you want"
+                " to use regex; or for more advanced use cases where you'd like to use a different type"
+                " of rich.highlighter.Highlighter, subclass the `RichHelpFormatter` and update its `highlighter`.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
+        self.__dataclass_fields__.pop("highlighter", None)
+
     @classmethod
-    def build_from_globals(cls, module: Optional[ModuleType] = None, **extra: Any) -> "RichHelpConfiguration":
+    def load_from_globals(cls, module: Optional[ModuleType] = None, **extra: Any) -> "RichHelpConfiguration":
         """
         Build a RichHelpConfiguration from globals in rich_click.rich_click.
 
@@ -182,3 +202,31 @@ class RichHelpConfiguration:
         kw.update(extra)
         inst = cls(**kw)
         return inst
+
+
+def __getattr__(name: str) -> Any:
+    if name == "OptionHighlighter":
+
+        class OptionHighlighter(rich.highlighter.RegexHighlighter):
+            """Highlights our special options."""
+
+            highlights = [
+                r"(^|[^\w\-])(?P<switch>-([^\W0-9][\w\-]*\w|[^\W0-9]))",
+                r"(^|[^\w\-])(?P<option>--([^\W0-9][\w\-]*\w|[^\W0-9]))",
+                r"(?P<metavar><[^>]+>)",
+            ]
+
+        import warnings
+
+        warnings.warn(
+            "OptionHighlighter is deprecated and will be removed in a future version.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        globals()["OptionHighlighter"] = OptionHighlighter
+
+        return OptionHighlighter
+
+    else:
+        raise AttributeError

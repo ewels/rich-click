@@ -3,7 +3,7 @@ import os
 import sys
 import warnings
 from functools import wraps
-from typing import TYPE_CHECKING, Any, Callable, List, Optional, Sequence, TextIO, Type, Union, cast, overload
+from typing import TYPE_CHECKING, Any, Callable, List, Mapping, Optional, Sequence, TextIO, Type, Union, cast, overload
 
 import click
 
@@ -62,7 +62,18 @@ class RichCommand(click.Command):
     @property
     def help_config(self) -> Optional[RichHelpConfiguration]:
         """Rich Help Configuration."""
-        return self.context_settings.get("rich_help_config")
+        import warnings
+
+        warnings.warn(
+            "RichCommand.help_config is deprecated." " Please use the click.Context's help config instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        cfg = self.context_settings.get("rich_help_config")
+        if isinstance(cfg, Mapping):
+            return RichHelpConfiguration(**cfg)
+        return cfg
 
     def main(
         self,
@@ -175,15 +186,16 @@ class RichCommand(click.Command):
     def format_epilog(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         get_rich_epilog(self, ctx, formatter)
 
-    if CLICK_IS_BEFORE_VERSION_8X:
+    def make_context(
+        self,
+        info_name: Optional[str],
+        args: List[str],
+        parent: Optional[click.Context] = None,
+        **extra: Any,
+    ) -> RichContext:
+        if CLICK_IS_BEFORE_VERSION_8X:
+            # Reimplement Click 8.x logic.
 
-        def make_context(
-            self,
-            info_name: Optional[str],
-            args: List[str],
-            parent: Optional[click.Context] = None,
-            **extra: Any,
-        ) -> RichContext:
             for key, value in self.context_settings.items():
                 if key not in extra:
                     extra[key] = value
@@ -194,15 +206,7 @@ class RichCommand(click.Command):
                 self.parse_args(ctx, args)
             return ctx
 
-    else:
-
-        def make_context(
-            self,
-            info_name: Optional[str],
-            args: List[str],
-            parent: Optional[click.Context] = None,
-            **extra: Any,
-        ) -> RichContext:
+        else:
             return super().make_context(info_name, args, parent, **extra)  # type: ignore[return-value]
 
 
@@ -223,39 +227,38 @@ class RichGroup(RichCommand, Group):  # type: ignore[misc]
         Group.__init__(self, *args, **kwargs)
         self._register_rich_context_settings_from_callback()
 
-    if CLICK_IS_BEFORE_VERSION_8X:
+    @overload
+    def command(self, __func: Callable[..., Any]) -> RichCommand:
+        ...
 
-        @overload
-        def command(self, __func: Callable[..., Any]) -> Command:
-            ...
+    @overload
+    def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichCommand]:
+        ...
 
-        @overload
-        def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], Command]:
-            ...
+    def command(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], RichCommand], RichCommand]:
+        # This method override is required for Click 7.x compatibility.
+        # (The command_class ClassVar was not added until 8.0.)
+        if CLICK_IS_BEFORE_VERSION_8X:
+            kwargs.setdefault("cls", self.command_class)
+        return super().command(*args, **kwargs)  # type: ignore[no-any-return]
 
-        def command(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], Command], Command]:
-            # This method override is required for Click 7.x compatibility.
-            # (The command_class ClassVar was not added until 8.0.)
-            if self.command_class is not None:
-                kwargs.setdefault("cls", self.command_class)
-            return super().command(*args, **kwargs)  # type: ignore[no-any-return]
+    @overload
+    def group(self, __func: Callable[..., Any]) -> "RichGroup":
+        ...
 
-        @overload
-        def group(self, __func: Callable[..., Any]) -> Group:
-            ...
+    @overload
+    def group(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], "RichGroup"]:
+        ...
 
-        @overload
-        def group(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], Group]:
-            ...
-
-        def group(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], Group], Group]:
-            # This method override is required for Click 7.x compatibility.
-            # (The group_class ClassVar was not added until 8.0.)
+    def group(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], "RichGroup"], "RichGroup"]:
+        # This method override is required for Click 7.x compatibility.
+        # (The group_class ClassVar was not added until 8.0.)
+        if CLICK_IS_BEFORE_VERSION_8X:
             if self.group_class is type:
                 kwargs.setdefault("cls", self.__class__)
-            elif self.group_class is not None:
+            else:
                 kwargs.setdefault("cls", self.group_class)
-            return super().group(*args, **kwargs)  # type: ignore[no-any-return]
+        return super().group(*args, **kwargs)  # type: ignore[no-any-return]
 
 
 if CLICK_IS_BEFORE_VERSION_9X:

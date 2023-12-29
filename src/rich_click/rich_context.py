@@ -1,4 +1,4 @@
-from typing import Any, Optional, Type
+from typing import TYPE_CHECKING, Any, Mapping, Optional, Type, Union
 
 import click
 from rich.console import Console
@@ -16,7 +16,7 @@ class RichContext(click.Context):
         self,
         *args: Any,
         rich_console: Optional[Console] = None,
-        rich_help_config: Optional[RichHelpConfiguration] = None,
+        rich_help_config: Optional[Union[Mapping[str, Any], RichHelpConfiguration]] = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -37,10 +37,22 @@ class RichContext(click.Context):
 
         self.console = rich_console
 
-        if rich_help_config is None and hasattr(parent, "help_config"):
-            rich_help_config = parent.help_config  # type: ignore[has-type,union-attr]
-
-        self.help_config = rich_help_config
+        if rich_help_config is None:
+            if hasattr(parent, "help_config"):
+                self.help_config = parent.help_config  # type: ignore[has-type,union-attr]
+            else:
+                self.help_config = RichHelpConfiguration.load_from_globals()
+        elif isinstance(rich_help_config, Mapping):
+            if hasattr(parent, "help_config"):
+                if TYPE_CHECKING:
+                    assert parent is not None
+                kw = parent.help_config.__dict__.copy()
+                kw.update(rich_help_config)
+                self.help_config = RichHelpConfiguration(**kw)
+            else:
+                self.help_config = RichHelpConfiguration.load_from_globals(**rich_help_config)
+        else:
+            self.help_config = rich_help_config
 
     def make_formatter(self) -> RichHelpFormatter:
         """Create the Rich Help Formatter."""

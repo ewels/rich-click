@@ -5,6 +5,7 @@ import pytest
 from click import UsageError
 from packaging import version
 from rich.console import Console
+from click.testing import CliRunner
 
 from tests.conftest import AssertRichFormat, AssertStr, InvokeCli
 
@@ -22,6 +23,14 @@ except ImportError:
 
 rich_version = version.parse(metadata.version("rich"))
 click_version = version.parse(metadata.version("click"))
+
+
+@pytest.fixture(autouse=True)
+def foo(initialize_rich_click: None) -> None:
+    # Default config settings from https://github.com/Textualize/rich/blob/master/tests/render.py
+    rc.WIDTH = 100
+    rc.COLOR_SYSTEM = None
+    rc.FORCE_TERMINAL = True
 
 
 @pytest.mark.parametrize(
@@ -349,7 +358,7 @@ else:
     ],
 )
 def test_rich_config_decorator_order(
-    invoke: InvokeCli,
+    cli_runner: CliRunner,
     assert_str: AssertStr,
     command_callable: Callable[..., Any],
     expected_command_type: Type[RichCommand],
@@ -378,7 +387,7 @@ def test_rich_config_decorator_order(
     """,
     )
 
-    result = invoke(cli, "--help")
+    result = cli_runner.invoke(cli, "--help")
 
     assert_str(
         actual=result.stdout,
@@ -386,7 +395,7 @@ def test_rich_config_decorator_order(
     )
 
 
-def test_rich_config_max_width(invoke: InvokeCli, assert_str: AssertStr) -> None:
+def test_rich_config_max_width(cli_runner: CliRunner, assert_str: AssertStr) -> None:
     rc.WIDTH = 100
     rc.MAX_WIDTH = 64
 
@@ -395,7 +404,7 @@ def test_rich_config_max_width(invoke: InvokeCli, assert_str: AssertStr) -> None
         """Some help text"""
         pass
 
-    result = invoke(cli, "--help")
+    result = cli_runner.invoke(cli, "--help")
 
     assert_str(
         result.stdout,
@@ -412,7 +421,7 @@ Usage: cli [OPTIONS]
 
 
 @pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_8X, reason="rich_config not supported prior to click v8")
-def test_rich_config_context_settings(invoke: InvokeCli) -> None:
+def test_rich_config_context_settings(cli_runner: CliRunner) -> None:
     @click.command(
         cls=RichCommand, context_settings={"rich_console": Console(), "rich_help_config": RichHelpConfiguration()}
     )
@@ -422,13 +431,13 @@ def test_rich_config_context_settings(invoke: InvokeCli) -> None:
         assert ctx.console is not None
         assert ctx.help_config is not None
 
-    result = invoke(cli)
+    result = cli_runner.invoke(cli)
     assert result.exit_code == 0
     assert result.exception is None
 
 
 @pytest.mark.skipif(not CLICK_IS_BEFORE_VERSION_8X, reason="This is to test a warning when using for click v7.")
-def test_rich_config_warns_before_click_v8(invoke: InvokeCli) -> None:
+def test_rich_config_warns_before_click_v8(cli_runner: CliRunner) -> None:
     with pytest.warns(RuntimeWarning, match="does not work with versions of click prior to version 8[.]0[.]0"):
 
         @rich_config(help_config=RichHelpConfiguration())
@@ -437,7 +446,7 @@ def test_rich_config_warns_before_click_v8(invoke: InvokeCli) -> None:
             # Command should still work, regardless.
             click.echo("hello, world!")
 
-    result = invoke(cli)
+    result = cli_runner.invoke(cli)
     assert result.exit_code == 0
     assert result.exception is None
     assert result.stdout == "hello, world!\n"

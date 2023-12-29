@@ -1,3 +1,4 @@
+import sys
 from functools import wraps
 from typing import IO, Any, Optional
 
@@ -11,6 +12,12 @@ import rich.theme
 from rich.console import Console
 
 from rich_click.rich_help_configuration import RichHelpConfiguration
+
+
+if sys.version_info >= (3, 8):
+    from functools import cached_property
+else:
+    cached_property = property
 
 
 def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> Console:
@@ -89,7 +96,7 @@ class RichHelpFormatter(click.HelpFormatter):
             self.config = config
             # Rich config overrides width and max width if set.
         else:
-            self.config = RichHelpConfiguration.build_from_globals()
+            self.config = RichHelpConfiguration.load_from_globals()
 
         self.console = create_console(self.config, file=file)
 
@@ -100,6 +107,17 @@ class RichHelpFormatter(click.HelpFormatter):
             max_width = self.config.max_width
 
         super().__init__(indent_increment, width, max_width, *args, **kwargs)
+
+    @cached_property
+    def highlighter(self) -> rich.highlighter.Highlighter:
+        if self.config.highlighter is not None:
+            return self.config.highlighter
+        else:
+
+            class HighlighterClass(rich.highlighter.RegexHighlighter):
+                highlights = self.config.highlighter_patterns
+
+            return HighlighterClass()
 
     @wraps(Console.print)
     def write(self, string: Any, **kwargs: Any) -> None:

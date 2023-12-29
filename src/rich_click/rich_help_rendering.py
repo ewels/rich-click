@@ -64,9 +64,9 @@ def _make_rich_rext(text: str, style: StyleType, formatter: RichHelpFormatter) -
             text = Emoji.replace(text)
         return Markdown(text, style=style)
     if config.use_rich_markup:
-        return config.highlighter(Text.from_markup(text, style=style))
+        return formatter.highlighter(Text.from_markup(text, style=style))
     else:
-        return config.highlighter(Text(text, style=style))
+        return formatter.highlighter(Text(text, style=style))
 
 
 @group()
@@ -454,8 +454,8 @@ def get_rich_options(
 
             rows = [
                 required,
-                formatter.config.highlighter(formatter.config.highlighter(",".join(opt_long_strs))),
-                formatter.config.highlighter(formatter.config.highlighter(",".join(opt_short_strs))),
+                formatter.highlighter(formatter.highlighter(",".join(opt_long_strs))),
+                formatter.highlighter(formatter.highlighter(",".join(opt_short_strs))),
                 metavar_highlighter(metavar),
                 _get_option_help(param, ctx, formatter),
             ]
@@ -618,7 +618,6 @@ def rich_format_error(self: click.ClickException, formatter: RichHelpFormatter) 
     """
     console = formatter.console
     config = formatter.config
-    highlighter = formatter.config.highlighter
     # Print usage
     if getattr(self, "ctx", None) is not None:
         if TYPE_CHECKING:
@@ -661,7 +660,7 @@ def rich_format_error(self: click.ClickException, formatter: RichHelpFormatter) 
         console.print(
             Padding(
                 Panel(
-                    highlighter(self.format_message()),
+                    formatter.highlighter(self.format_message()),
                     border_style=config.style_errors_panel_border,
                     title=config.errors_panel_title,
                     title_align=config.align_errors_panel,

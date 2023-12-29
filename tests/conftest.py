@@ -16,7 +16,7 @@ from typing_extensions import Protocol
 
 import rich_click.rich_click as rc
 from rich_click.rich_command import RichCommand, RichGroup
-from rich_click.rich_help_configuration import OptionHighlighter, RichHelpConfiguration
+from rich_click.rich_help_configuration import RichHelpConfiguration
 
 
 @pytest.fixture
@@ -27,11 +27,6 @@ def root_dir() -> Path:
 @pytest.fixture
 def fixtures_dir() -> Path:
     return Path(__file__).parent / "fixtures"
-
-
-@pytest.fixture
-def tmpdir(root_dir: Path) -> Path:
-    return root_dir / "tmp"
 
 
 @pytest.fixture
@@ -58,7 +53,7 @@ class AssertStr(Protocol):
 
 
 @pytest.fixture
-def assert_str(request: pytest.FixtureRequest, tmpdir: Path) -> Callable[[str, Union[str, Path]], None]:
+def assert_str(request: pytest.FixtureRequest) -> Callable[[str, Union[str, Path]], None]:
     def assertion(actual: str, expectation: Union[str, Path]) -> None:
         if isinstance(expectation, Path):
             if expectation.exists():
@@ -70,77 +65,34 @@ def assert_str(request: pytest.FixtureRequest, tmpdir: Path) -> Callable[[str, U
         normalized_expected = "\n".join([line.strip() for line in expected.strip().splitlines() if line.strip()])
         normalized_actual = "\n".join([line.strip() for line in actual.strip().splitlines() if line.strip()])
 
-        try:
-            assert normalized_expected == normalized_actual
-        except Exception:
-            tmpdir.mkdir(parents=True, exist_ok=True)
-            tmppath = tmpdir / f"{request.node.name}.out"
-            tmppath.write_text(actual.strip())
-            raise
+        assert normalized_expected == normalized_actual
 
     return assertion
 
 
-class AssertDicts(Protocol):
-    def __call__(self, actual: Dict[str, Any], expectation: Union[Path, Dict[str, Any]]) -> None:
-        """
-        Assert two dictionaries by normalizing as json
-
-        Args:
-        ----
-            actual: actual result
-            expectation: expected result `Dict` or `Path` to load result
-        """
-        ...
-
-
-@pytest.fixture
-def assert_dicts(request: pytest.FixtureRequest, tmpdir: Path) -> AssertDicts:
-    def load_obj(s: str) -> Any:
-        return json.loads(s)
-
-    def dump_obj(obj: Any) -> str:
-        return json.dumps(obj, indent=4)
-
+def assert_dicts(actual: Dict[str, Any], expectation: Union[Path, Dict[str, Any]]) -> None:
     def roundtrip(obj: Any) -> Any:
-        return load_obj(dump_obj(obj))
+        return json.loads(json.dumps(obj))
 
-    def assertion(actual: Dict[str, Any], expectation: Union[Path, Dict[str, Any]]) -> None:
-        if isinstance(expectation, Path):
-            if expectation.exists():
-                expected = load_obj(expectation.read_text())
-            else:
-                expected = {}
+    if isinstance(expectation, Path):
+        if expectation.exists():
+            expected = json.loads(expectation.read_text())
         else:
-            expected = expectation
+            expected = {}
+    else:
+        expected = expectation
 
-        # need to perform a roundtrip to convert to
-        # supported json data types (i.e. tuple -> list, datetime -> str, etc...)
-        actual = roundtrip(actual)
-
-        try:
-            assert actual == expected
-        except Exception:
-            tmpdir.mkdir(parents=True, exist_ok=True)
-            tmppath = tmpdir / f"{request.node.name}.config.json"
-            with tmppath.open("w") as stream:
-                stream.write(dump_obj(actual))
-            raise
-
-    return assertion
+    # need to perform a roundtrip to convert to
+    # supported json data types (i.e. tuple -> list, datetime -> str, etc...)
+    normalized_actual = roundtrip(actual)
+    assert normalized_actual == expected
 
 
 @pytest.fixture(autouse=True)
 def initialize_rich_click() -> None:
     """Initialize `rich_click` module."""
-    # to isolate module-level configuration we
-    # must reload the rich_click module between
-    # each test
+    # Isolate global configuration for each test.
     reload(rc)
-    # default config settings from https://github.com/Textualize/rich/blob/master/tests/render.py
-    rc.WIDTH = 100
-    rc.COLOR_SYSTEM = None
-    rc.FORCE_TERMINAL = True
 
 
 class CommandModuleType(ModuleType):
@@ -173,14 +125,10 @@ def replace_link_ids(render: str) -> str:
     return re_link_ids.sub("id=0;foo\x1b", render)
 
 
-@pytest.fixture
-def load_command() -> LoadCommandModule:
-    def load(namespace: str) -> CommandModuleType:
-        module = importlib.import_module(namespace)
-        reload(module)
-        return cast(CommandModuleType, module)
-
-    return load
+def load_command_from_module(namespace: str, command_attr: str = "cli") -> RichCommand:
+    module = importlib.import_module(namespace)
+    reload(module)
+    return cast(RichCommand, getattr(module, command_attr))
 
 
 class InvokeCli(Protocol):
@@ -199,14 +147,8 @@ class InvokeCli(Protocol):
 
 
 @pytest.fixture
-def invoke() -> InvokeCli:
-    runner = CliRunner()
-
-    def invoke(cmd: click.Command, *args: Any, **kwargs: Any) -> Result:
-        result = runner.invoke(cmd, *args, **kwargs)
-        return result
-
-    return invoke
+def cli_runner() -> CliRunner:
+    return CliRunner()
 
 
 class AssertRichFormat(Protocol):
@@ -248,15 +190,12 @@ class AssertRichFormat(Protocol):
 def assert_rich_format(
     request: pytest.FixtureRequest,
     expectations_dir: Path,
-    invoke: InvokeCli,
-    load_command: LoadCommandModule,
-    assert_dicts: AssertDicts,
+    cli_runner: CliRunner,
     assert_str: AssertStr,
     click_major_version: int,
 ) -> AssertRichFormat:
     def config_to_dict(config: RichHelpConfiguration) -> Dict[Any, Any]:
         config_dict = asdict(config)
-        config_dict["highlighter"] = cast(OptionHighlighter, config.highlighter).highlights
         return config_dict
 
     def assertion(
@@ -266,7 +205,7 @@ def assert_rich_format(
         rich_config: Optional[Callable[[Any], RichCommand]],
     ) -> None:
         if isinstance(cmd, str):
-            command = load_command(f"fixtures.{cmd}").cli
+            command = load_command_from_module(f"fixtures.{cmd}")
         else:
             command = cmd
 
@@ -280,11 +219,11 @@ def assert_rich_format(
                 help_config.force_terminal = rc.FORCE_TERMINAL
 
         if error:
-            result_nonstandalone = invoke(command, args, standalone_mode=False)
+            result_nonstandalone = cli_runner.invoke(command, args, standalone_mode=False)
             assert isinstance(result_nonstandalone.exception, error)
             assert result_nonstandalone.exit_code != 0
 
-        result = invoke(command, args)
+        result = cli_runner.invoke(command, args)
         actual = replace_link_ids(result.stdout)
 
         expectation_output_path = expectations_dir / f"{request.node.name}-click{click_major_version}.out"
@@ -294,14 +233,13 @@ def assert_rich_format(
                 stream.write(actual)
         assert_str(actual, expectation_output_path)
         if os.getenv("UPDATE_EXPECTATIONS"):
-            with open(expectation_config_path, "w") as stream:
-                if command.help_config is not None:
+            if command.help_config is not None:
+                with open(expectation_config_path, "w") as stream:
                     stream.write(json.dumps(config_to_dict(command.help_config), indent=2) + "\n")
         if command.help_config is not None:
+            # TODO: Commands don't really have 'help configs'; contexts do.
             assert_dicts(config_to_dict(command.help_config), expectation_config_path)
         else:
-            pass
-            # TODO: uncomment below out
-            # assert not os.path.exists(expectation_config_path)
+            assert not os.path.exists(expectation_config_path)
 
     return assertion
