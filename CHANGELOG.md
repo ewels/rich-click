@@ -7,6 +7,7 @@
   - `RichCommand` now makes use of methods in the super class: `format_usage`, `format_help_text`, `format_options`, and `format_epilog`.
   - Global `formatter` object has been removed from the code.
 - Added `RichHelpConfiguration.load_from_globals()` classmethod, which pulls all configuration from `rich_click.py`.
+- Fix bug with regex highlighter for options and switches.
 
 ## Version 1.7.1
 
