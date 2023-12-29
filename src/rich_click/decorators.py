@@ -138,18 +138,36 @@ class NotSupportedError(Exception):
 
 
 def rich_config(
-    console: Optional[Console] = None, help_config: Optional[Union[Mapping[str, Any], RichHelpConfiguration]] = None
+    help_config: Optional[Union[Mapping[str, Any], RichHelpConfiguration]] = None, *, console: Optional[Console] = None
 ) -> Callable[[FC], FC]:
     """
     Use decorator to configure Rich Click settings.
 
     Args:
     ----
-        console: A Rich Console that will be accessible from the `RichContext`, `RichCommand`, and `RichGroup` instances
-            Defaults to None.
         help_config: Rich help configuration that is used internally to format help messages and exceptions
             Defaults to None.
+        console: A Rich Console that will be accessible from the `RichContext`, `RichCommand`, and `RichGroup` instances
+            Defaults to None.
     """
+    if isinstance(help_config, Console) and console is None:
+        import warnings
+
+        warnings.warn(
+            "`rich_config()`'s args have been swapped." " Please set the config first, and use a kwarg to set ",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        console = help_config
+    elif isinstance(help_config, Console):
+        import warnings
+
+        warnings.warn(
+            "We have no idea what just happened. Tread carefully.",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+
     if CLICK_IS_BEFORE_VERSION_8X:
 
         def decorator_with_warning(obj: FC) -> FC:
