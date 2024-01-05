@@ -7,6 +7,7 @@
   "style_metavar_append": "dim yellow",
   "style_metavar_separator": "dim",
   "style_header_text": "",
+  "style_epilog_text": "",
   "style_footer_text": "",
   "style_usage": "yellow",
   "style_usage_command": "bold",

@@ -6,7 +6,7 @@ The intention is to provide attractive help output from click, formatted with ri
 customisation required.
 """
 
-__version__ = "1.7.1"
+__version__ = "1.7.3"
 
 # Import the entire click API here.
 # We need to manually import these instead of `from click import *` to force mypy to recognize a few type annotation overrides for the rich_click decorators.
