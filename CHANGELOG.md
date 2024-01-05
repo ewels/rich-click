@@ -1,5 +1,9 @@
 # Changelog: rich-click
 
+## Version 1.7.3
+
+- Fix false deprecation warning.
+
 ## Version 1.7.2
 
 - Add support for rich formatting in epilog text [[#146](https://github.com/ewels/rich-click/pull/146)]
