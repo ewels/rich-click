@@ -12,10 +12,18 @@
 - `RichHelpConfiguration()` is now asserted to be JSON serializable, as an option for porting configurations. That said, serialization is not a fully supported feature of the high-level API, so serialize the config at your own risk.
   - Related: `highlighter` is now deprecated in `RichHelpConfiguration`; please use `highlighter_patterns` instead.
 
+## Version 1.7.3
+
+- Fix false deprecation warning. [[#151](https://github.com/ewels/rich-click/issues/151)]
+
+## Version 1.7.2
+
+- Add support for rich formatting in epilog text [[#146](https://github.com/ewels/rich-click/pull/146)]
+
 ## Version 1.7.1
 
-- Fix bug with `rich-click` CLI not working with Python 3.12. [#140](https://github.com/ewels/rich-click/issues/140)
-- Fix compatibility issue with `dbt-core` CLI. [[#141](https://github.com/ewels/rich-click/issues/141)]
+- Fix bug with `rich-click` CLI not working with Python 3.12. [[#141](https://github.com/ewels/rich-click/issues/141)]
+- Fix compatibility issue with `dbt-core` CLI. [[#140](https://github.com/ewels/rich-click/issues/140)]
 
 ## Version 1.7.0
 
