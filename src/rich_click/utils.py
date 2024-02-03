@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Sequence
+from typing import Any, Dict, List, Optional
 
 from typing_extensions import NotRequired, TypedDict
 
@@ -22,7 +22,7 @@ class CommandGroupDict(TypedDict):
     """Specification for command groups."""
 
     name: NotRequired[str]
-    commands: Sequence[str]
+    commands: List[str]
     table_styles: NotRequired[Dict[str, Any]]
 
 
@@ -30,5 +30,5 @@ class OptionGroupDict(TypedDict):
     """Specification for option groups."""
 
     name: NotRequired[str]
-    options: Sequence[str]
+    options: List[str]
     table_styles: NotRequired[Dict[str, Any]]

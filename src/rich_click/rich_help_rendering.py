@@ -370,7 +370,7 @@ def get_rich_options(
             if isinstance(param, click.core.Argument) and not formatter.config.group_arguments_options:
                 argument_group_options.append(param.opts[0])
             else:
-                list_of_option_groups = list(option_groups[-1]["options"])
+                list_of_option_groups = option_groups[-1]["options"]
                 list_of_option_groups.append(param.opts[0])
 
     # If we're not grouping arguments and we got some, prepend before default options
@@ -520,7 +520,7 @@ def get_rich_options(
                 if command in cmd_group.get("commands", []):
                     break
             else:
-                commands = list(cmd_groups[-1]["commands"])
+                commands = cmd_groups[-1]["commands"]
                 commands.append(command)
 
         # Print each command group panel
