@@ -1,9 +1,8 @@
-from typing import Any, Callable, Dict, Mapping, Optional, Type, TypeVar, Union, cast, overload
+from typing import TYPE_CHECKING, Any, Callable, Dict, Mapping, Optional, Type, TypeVar, Union, cast, overload
 
 from click import Command, Group
 from click import command as click_command
 from click import pass_context as click_pass_context
-from rich.console import Console
 from typing_extensions import Concatenate, ParamSpec
 
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
@@ -12,6 +11,10 @@ from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 
 from . import rich_click  # noqa: F401
+
+
+if TYPE_CHECKING:
+    from rich.console import Console
 
 
 _AnyCallable = Callable[..., Any]
@@ -24,8 +27,7 @@ GrpType = TypeVar("GrpType", bound=Group)
 
 # variant: no call, directly as decorator for a function.
 @overload
-def group(name: _AnyCallable) -> RichGroup:
-    ...
+def group(name: _AnyCallable) -> RichGroup: ...
 
 
 # variant: with positional name and with positional or keyword cls argument:
@@ -35,8 +37,7 @@ def group(
     name: Optional[str],
     cls: Type[GrpType],
     **attrs: Any,
-) -> Callable[[_AnyCallable], GrpType]:
-    ...
+) -> Callable[[_AnyCallable], GrpType]: ...
 
 
 # variant: name omitted, cls _must_ be a keyword argument, @group(cmd=GroupCls, ...)
@@ -46,14 +47,12 @@ def group(
     *,
     cls: Type[GrpType],
     **attrs: Any,
-) -> Callable[[_AnyCallable], GrpType]:
-    ...
+) -> Callable[[_AnyCallable], GrpType]: ...
 
 
 # variant: with optional string name, no cls argument provided.
 @overload
-def group(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichGroup]:
-    ...
+def group(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichGroup]: ...
 
 
 def group(
@@ -80,8 +79,7 @@ CmdType = TypeVar("CmdType", bound=Command)
 
 # variant: no call, directly as decorator for a function.
 @overload
-def command(name: _AnyCallable) -> RichCommand:
-    ...
+def command(name: _AnyCallable) -> RichCommand: ...
 
 
 # variant: with positional name and with positional or keyword cls argument:
@@ -91,8 +89,7 @@ def command(
     name: Optional[str],
     cls: Type[CmdType],
     **attrs: Any,
-) -> Callable[[_AnyCallable], CmdType]:
-    ...
+) -> Callable[[_AnyCallable], CmdType]: ...
 
 
 # variant: name omitted, cls _must_ be a keyword argument, @command(cls=CommandCls, ...)
@@ -102,14 +99,12 @@ def command(
     *,
     cls: Type[CmdType],
     **attrs: Any,
-) -> Callable[[_AnyCallable], CmdType]:
-    ...
+) -> Callable[[_AnyCallable], CmdType]: ...
 
 
 # variant: with optional string name, no cls argument provided.
 @overload
-def command(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichCommand]:
-    ...
+def command(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichCommand]: ...
 
 
 def command(
@@ -138,7 +133,9 @@ class NotSupportedError(Exception):
 
 
 def rich_config(
-    help_config: Optional[Union[Mapping[str, Any], RichHelpConfiguration]] = None, *, console: Optional[Console] = None
+    help_config: Optional[Union[Mapping[str, Any], RichHelpConfiguration]] = None,
+    *,
+    console: Optional["Console"] = None,
 ) -> Callable[[FC], FC]:
     """
     Use decorator to configure Rich Click settings.
@@ -150,11 +147,14 @@ def rich_config(
         console: A Rich Console that will be accessible from the `RichContext`, `RichCommand`, and `RichGroup` instances
             Defaults to None.
     """
+    from rich.console import Console
+
     if isinstance(help_config, Console) and console is None:
         import warnings
 
         warnings.warn(
-            "`rich_config()`'s args have been swapped." " Please set the config first, and use a kwarg to set ",
+            "`rich_config()`'s args have been swapped."
+            " Please set the config first, and use a kwarg to set the console.",
             DeprecationWarning,
             stacklevel=2,
         )

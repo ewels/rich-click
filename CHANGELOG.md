@@ -2,6 +2,7 @@
 
 ## Version 1.8.0dev
 
+- Lazy load Rich to reduce overhead when not rendering help text.
 - Some internal refactors. These refactors are aimed at making the abstractions more maintainable over time, more consistent, and more adept for advanced used cases.
   - `rich_click.py` is exclusively the global config; all formatting has been moved to `rich_help_rendering.py`.
   - `RichCommand` now makes use of methods in the super class: `format_usage`, `format_help_text`, `format_options`, and `format_epilog`.
