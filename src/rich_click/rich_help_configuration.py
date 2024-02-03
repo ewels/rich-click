@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, TypeVar, Uni
 
 from typing_extensions import Literal
 
-from rich_click.utils import truthy
+from rich_click.utils import CommandGroupDict, OptionGroupDict, truthy
 
 
 if TYPE_CHECKING:
@@ -144,9 +144,9 @@ class RichHelpConfiguration:
     """Parse emoji codes in markdown :smile:"""
     use_rich_markup: bool = field(default=False)
     """Parse help strings for rich markup (eg. [red]my text[/])"""
-    command_groups: Dict[str, List[Dict[str, Union[str, Any]]]] = field(default_factory=lambda: {})
+    command_groups: Dict[str, List[CommandGroupDict]] = field(default_factory=lambda: {})
     """Define sorted groups of panels to display subcommands"""
-    option_groups: Dict[str, List[Dict[str, Union[str, Any]]]] = field(default_factory=lambda: {})
+    option_groups: Dict[str, List[OptionGroupDict]] = field(default_factory=lambda: {})
     """Define sorted groups of panels to display options and arguments"""
     use_click_short_help: bool = field(default=False)
     """Use click's default function to truncate help text"""
