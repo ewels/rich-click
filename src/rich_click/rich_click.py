@@ -58,9 +58,9 @@ STYLE_ERRORS_SUGGESTION_COMMAND: "rich.style.StyleType" = "blue"
 STYLE_ABORTED: "rich.style.StyleType" = "red"
 WIDTH: Optional[int] = terminal_width_default()
 MAX_WIDTH: Optional[int] = terminal_width_default()
-COLOR_SYSTEM: Optional[
-    Literal["auto", "standard", "256", "truecolor", "windows"]
-] = "auto"  # Set to None to disable colors
+COLOR_SYSTEM: Optional[Literal["auto", "standard", "256", "truecolor", "windows"]] = (
+    "auto"  # Set to None to disable colors
+)
 FORCE_TERMINAL: Optional[bool] = force_terminal_default()
 
 # Fixed strings

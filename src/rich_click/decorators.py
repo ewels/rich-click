@@ -27,8 +27,7 @@ GrpType = TypeVar("GrpType", bound=Group)
 
 # variant: no call, directly as decorator for a function.
 @overload
-def group(name: _AnyCallable) -> RichGroup:
-    ...
+def group(name: _AnyCallable) -> RichGroup: ...
 
 
 # variant: with positional name and with positional or keyword cls argument:
@@ -38,8 +37,7 @@ def group(
     name: Optional[str],
     cls: Type[GrpType],
     **attrs: Any,
-) -> Callable[[_AnyCallable], GrpType]:
-    ...
+) -> Callable[[_AnyCallable], GrpType]: ...
 
 
 # variant: name omitted, cls _must_ be a keyword argument, @group(cmd=GroupCls, ...)
@@ -49,14 +47,12 @@ def group(
     *,
     cls: Type[GrpType],
     **attrs: Any,
-) -> Callable[[_AnyCallable], GrpType]:
-    ...
+) -> Callable[[_AnyCallable], GrpType]: ...
 
 
 # variant: with optional string name, no cls argument provided.
 @overload
-def group(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichGroup]:
-    ...
+def group(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichGroup]: ...
 
 
 def group(
@@ -83,8 +79,7 @@ CmdType = TypeVar("CmdType", bound=Command)
 
 # variant: no call, directly as decorator for a function.
 @overload
-def command(name: _AnyCallable) -> RichCommand:
-    ...
+def command(name: _AnyCallable) -> RichCommand: ...
 
 
 # variant: with positional name and with positional or keyword cls argument:
@@ -94,8 +89,7 @@ def command(
     name: Optional[str],
     cls: Type[CmdType],
     **attrs: Any,
-) -> Callable[[_AnyCallable], CmdType]:
-    ...
+) -> Callable[[_AnyCallable], CmdType]: ...
 
 
 # variant: name omitted, cls _must_ be a keyword argument, @command(cls=CommandCls, ...)
@@ -105,14 +99,12 @@ def command(
     *,
     cls: Type[CmdType],
     **attrs: Any,
-) -> Callable[[_AnyCallable], CmdType]:
-    ...
+) -> Callable[[_AnyCallable], CmdType]: ...
 
 
 # variant: with optional string name, no cls argument provided.
 @overload
-def command(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichCommand]:
-    ...
+def command(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichCommand]: ...
 
 
 def command(

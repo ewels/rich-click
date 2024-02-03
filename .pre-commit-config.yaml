@@ -21,17 +21,14 @@ repos:
         name: Ruff - Linter
         args: [--fix]
 
-  - repo: local
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 24.1.1
     hooks:
       - id: black
-        name: Black - Auto-formatter.
-        description: Black is the uncompromising Python code formatter. Writing to files.
-        entry: black
-        language: python
-        types: [python]
-        require_serial: true
-        additional_dependencies:
-          - black
+        language_version: python3.12
+
+  - repo: local
+    hooks:
       - id: mypy
         name: mypy - Static type checking
         description: Mypy helps ensure that we use our functions and variables correctly by checking the types.

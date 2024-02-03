@@ -238,12 +238,10 @@ class RichGroup(RichCommand, Group):  # type: ignore[misc]
         self._register_rich_context_settings_from_callback()
 
     @overload
-    def command(self, __func: Callable[..., Any]) -> RichCommand:
-        ...
+    def command(self, __func: Callable[..., Any]) -> RichCommand: ...
 
     @overload
-    def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichCommand]:
-        ...
+    def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichCommand]: ...
 
     def command(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], RichCommand], RichCommand]:
         # This method override is required for Click 7.x compatibility.
@@ -253,12 +251,10 @@ class RichGroup(RichCommand, Group):  # type: ignore[misc]
         return super().command(*args, **kwargs)  # type: ignore[no-any-return]
 
     @overload
-    def group(self, __func: Callable[..., Any]) -> "RichGroup":
-        ...
+    def group(self, __func: Callable[..., Any]) -> "RichGroup": ...
 
     @overload
-    def group(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], "RichGroup"]:
-        ...
+    def group(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], "RichGroup"]: ...
 
     def group(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], "RichGroup"], "RichGroup"]:
         # This method override is required for Click 7.x compatibility.
