@@ -14,22 +14,22 @@ if CLICK_IS_BEFORE_VERSION_8X:
 
 def test_basic_config_for_group() -> None:
     @group(invoke_without_command=True)
-    @rich_config(help_config=RichHelpConfiguration(style_option="parent-value"))
+    @rich_config(help_config=RichHelpConfiguration(style_option="#111111"))
     def cli() -> None:
         pass
 
     @cli.command()
-    @rich_config(help_config=RichHelpConfiguration(style_argument="child-value"))
+    @rich_config(help_config=RichHelpConfiguration(style_argument="#222222"))
     def subcommand1() -> None:
         pass
 
     @cli.command()
-    @rich_config(help_config=dict(style_argument="child-value"))
+    @rich_config(help_config=dict(style_argument="#333333"))
     def subcommand2() -> None:
         pass
 
     @cli.command()
-    @rich_config(help_config=dict(style_option="overwriting-parent-value"))
+    @rich_config(help_config=dict(style_option="#444444"))
     def subcommand3() -> None:
         pass
 
@@ -39,21 +39,21 @@ def test_basic_config_for_group() -> None:
             #  I wrap this one in if TYPE_CHECKING to signify that Mypy needs this.
             #  Every make_context() call in this file fails the type check though.
             assert isinstance(ctx, RichContext)
-        assert ctx.help_config.style_option == "parent-value"
+        assert ctx.help_config.style_option == "#111111"
 
         with subcommand1.make_context("pytest-example", [], parent=ctx) as sub_ctx:
             assert isinstance(sub_ctx, RichContext)
             assert sub_ctx.help_config.style_option == RichHelpConfiguration().style_option
-            assert sub_ctx.help_config.style_argument == "child-value"
+            assert sub_ctx.help_config.style_argument == "#222222"
 
         with subcommand2.make_context("pytest-example", [], parent=ctx) as sub_ctx:
             assert isinstance(sub_ctx, RichContext)
-            assert sub_ctx.help_config.style_option == "parent-value"
-            assert sub_ctx.help_config.style_argument == "child-value"
+            assert sub_ctx.help_config.style_option == "#111111"
+            assert sub_ctx.help_config.style_argument == "#333333"
 
         with subcommand3.make_context("pytest-example", [], parent=ctx) as sub_ctx:
             assert isinstance(sub_ctx, RichContext)
-            assert sub_ctx.help_config.style_option == "overwriting-parent-value"
+            assert sub_ctx.help_config.style_option == "#444444"
 
 
 def test_global_config_equal_config_defaults() -> None:

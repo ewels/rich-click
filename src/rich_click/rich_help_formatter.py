@@ -1,17 +1,14 @@
 import sys
-from functools import wraps
-from typing import IO, Any, Optional
+from typing import IO, TYPE_CHECKING, Any, Optional
 
 import click
-import rich
-import rich.highlighter
-import rich.markdown
-import rich.padding
-import rich.text
-import rich.theme
-from rich.console import Console
 
 from rich_click.rich_help_configuration import RichHelpConfiguration
+
+
+if TYPE_CHECKING:
+    from rich.console import Console
+    from rich.highlighter import Highlighter
 
 
 if sys.version_info >= (3, 8):
@@ -20,7 +17,7 @@ else:
     cached_property = property
 
 
-def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> Console:
+def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> "Console":
     """
     Create a Rich Console configured from Rich Help Configuration.
 
@@ -30,8 +27,11 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
         file: Optional IO stream to write Rich Console output
             Defaults to None.
     """
+    from rich.console import Console
+    from rich.theme import Theme
+
     console = Console(
-        theme=rich.theme.Theme(
+        theme=Theme(
             {
                 "option": config.style_option,
                 "command": config.style_command,
@@ -61,7 +61,7 @@ class RichHelpFormatter(click.HelpFormatter):
     are used internally by the help and error printing methods.
     """
 
-    console: Console
+    console: "Console"
     """Rich Console created from the help configuration.
 
     This console is meant only for use with the formatter and should
@@ -108,19 +108,19 @@ class RichHelpFormatter(click.HelpFormatter):
         super().__init__(indent_increment, width, max_width, *args, **kwargs)
 
     @cached_property
-    def highlighter(self) -> rich.highlighter.Highlighter:
+    def highlighter(self) -> "Highlighter":
         if self.config.highlighter is not None:
             return self.config.highlighter
         else:
+            from rich.highlighter import RegexHighlighter
 
-            class HighlighterClass(rich.highlighter.RegexHighlighter):
+            class HighlighterClass(RegexHighlighter):
                 highlights = self.config.highlighter_patterns
 
             return HighlighterClass()
 
-    @wraps(Console.print)
-    def write(self, string: Any, **kwargs: Any) -> None:
-        self.console.print(string, **kwargs)
+    def write(self, *objects: Any, **kwargs: Any) -> None:
+        self.console.print(*objects, **kwargs)
 
     def write_usage(self, prog: str, args: str = "", prefix: Optional[str] = None) -> None:
         from rich_click.rich_help_rendering import get_rich_usage

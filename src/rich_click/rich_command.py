@@ -11,13 +11,15 @@ import click
 # or else rich_click.cli.patch() causes a recursion error.
 from click import Command, CommandCollection, Group
 from click.utils import PacifyFlushWrapper, make_str
-from rich.console import Console
 
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_9X
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
-from rich_click.rich_help_rendering import get_rich_epilog, get_rich_help_text, get_rich_options, rich_format_error
+
+
+if TYPE_CHECKING:
+    from rich.console import Console
 
 
 class RichCommand(click.Command):
@@ -48,7 +50,7 @@ class RichCommand(click.Command):
                 del self.callback.__rich_context_settings__
 
     @property
-    def console(self) -> Optional[Console]:
+    def console(self) -> Optional["Console"]:
         """
         Rich Console.
 
@@ -65,7 +67,7 @@ class RichCommand(click.Command):
         import warnings
 
         warnings.warn(
-            "RichCommand.help_config is deprecated." " Please use the click.Context's help config instead.",
+            "RichCommand.help_config is deprecated. Please use the click.Context's help config instead.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -141,7 +143,9 @@ class RichCommand(click.Command):
             except click.exceptions.ClickException as e:
                 if not standalone_mode:
                     raise
-                formatter = self.context_class.formatter_class(config=self.help_config, file=sys.stderr)
+                formatter = self.context_class.formatter_class(config=ctx.help_config, file=sys.stderr)
+                from rich_click.rich_help_rendering import rich_format_error
+
                 rich_format_error(e, formatter)
                 sys.exit(e.exit_code)
             except OSError as e:
@@ -160,7 +164,7 @@ class RichCommand(click.Command):
             if not standalone_mode:
                 raise
             try:
-                formatter = self.context_class.formatter_class(config=self.help_config)
+                formatter = self.context_class.formatter_class(config=ctx.help_config)
             except Exception:
                 click.echo("Aborted!", file=sys.stderr)
             else:
@@ -178,12 +182,18 @@ class RichCommand(click.Command):
         self.format_epilog(ctx, formatter)
 
     def format_help_text(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        from rich_click.rich_help_rendering import get_rich_help_text
+
         get_rich_help_text(self, ctx, formatter)
 
     def format_options(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        from rich_click.rich_help_rendering import get_rich_options
+
         get_rich_options(self, ctx, formatter)
 
     def format_epilog(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        from rich_click.rich_help_rendering import get_rich_epilog
+
         get_rich_epilog(self, ctx, formatter)
 
     def make_context(

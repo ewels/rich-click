@@ -1,58 +1,61 @@
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
-import rich.align
-import rich.padding
-import rich.style
 from typing_extensions import Literal
 
 from rich_click.rich_help_configuration import force_terminal_default, terminal_width_default
 
 
+if TYPE_CHECKING:
+    import rich.align
+    import rich.padding
+    import rich.style
+
+
 # Default styles
-STYLE_OPTION: rich.style.StyleType = "bold cyan"
-STYLE_ARGUMENT: rich.style.StyleType = "bold cyan"
-STYLE_COMMAND: rich.style.StyleType = "bold cyan"
-STYLE_SWITCH: rich.style.StyleType = "bold green"
-STYLE_METAVAR: rich.style.StyleType = "bold yellow"
-STYLE_METAVAR_APPEND: rich.style.StyleType = "dim yellow"
-STYLE_METAVAR_SEPARATOR: rich.style.StyleType = "dim"
-STYLE_HEADER_TEXT: rich.style.StyleType = ""
-STYLE_EPILOG_TEXT: rich.style.StyleType = ""
-STYLE_FOOTER_TEXT: rich.style.StyleType = ""
-STYLE_USAGE: rich.style.StyleType = "yellow"
-STYLE_USAGE_COMMAND: rich.style.StyleType = "bold"
-STYLE_DEPRECATED: rich.style.StyleType = "red"
-STYLE_HELPTEXT_FIRST_LINE: rich.style.StyleType = ""
-STYLE_HELPTEXT: rich.style.StyleType = "dim"
-STYLE_OPTION_HELP: rich.style.StyleType = ""
-STYLE_OPTION_DEFAULT: rich.style.StyleType = "dim"
-STYLE_OPTION_ENVVAR: rich.style.StyleType = "dim yellow"
-STYLE_REQUIRED_SHORT: rich.style.StyleType = "red"
-STYLE_REQUIRED_LONG: rich.style.StyleType = "dim red"
-STYLE_OPTIONS_PANEL_BORDER: rich.style.StyleType = "dim"
-ALIGN_OPTIONS_PANEL: rich.align.AlignMethod = "left"
+STYLE_OPTION: "rich.style.StyleType" = "bold cyan"
+STYLE_ARGUMENT: "rich.style.StyleType" = "bold cyan"
+STYLE_COMMAND: "rich.style.StyleType" = "bold cyan"
+STYLE_SWITCH: "rich.style.StyleType" = "bold green"
+STYLE_METAVAR: "rich.style.StyleType" = "bold yellow"
+STYLE_METAVAR_APPEND: "rich.style.StyleType" = "dim yellow"
+STYLE_METAVAR_SEPARATOR: "rich.style.StyleType" = "dim"
+STYLE_HEADER_TEXT: "rich.style.StyleType" = ""
+STYLE_EPILOG_TEXT: "rich.style.StyleType" = ""
+STYLE_FOOTER_TEXT: "rich.style.StyleType" = ""
+STYLE_USAGE: "rich.style.StyleType" = "yellow"
+STYLE_USAGE_COMMAND: "rich.style.StyleType" = "bold"
+STYLE_DEPRECATED: "rich.style.StyleType" = "red"
+STYLE_HELPTEXT_FIRST_LINE: "rich.style.StyleType" = ""
+STYLE_HELPTEXT: "rich.style.StyleType" = "dim"
+STYLE_OPTION_HELP: "rich.style.StyleType" = ""
+STYLE_OPTION_DEFAULT: "rich.style.StyleType" = "dim"
+STYLE_OPTION_ENVVAR: "rich.style.StyleType" = "dim yellow"
+STYLE_REQUIRED_SHORT: "rich.style.StyleType" = "red"
+STYLE_REQUIRED_LONG: "rich.style.StyleType" = "dim red"
+STYLE_OPTIONS_PANEL_BORDER: "rich.style.StyleType" = "dim"
+ALIGN_OPTIONS_PANEL: "rich.align.AlignMethod" = "left"
 STYLE_OPTIONS_TABLE_SHOW_LINES: bool = False
 STYLE_OPTIONS_TABLE_LEADING: int = 0
 STYLE_OPTIONS_TABLE_PAD_EDGE: bool = False
-STYLE_OPTIONS_TABLE_PADDING: rich.padding.PaddingDimensions = (0, 1)
-STYLE_OPTIONS_TABLE_BOX: rich.style.StyleType = ""
-STYLE_OPTIONS_TABLE_ROW_STYLES: Optional[List[rich.style.StyleType]] = None
-STYLE_OPTIONS_TABLE_BORDER_STYLE: Optional[rich.style.StyleType] = None
-STYLE_COMMANDS_PANEL_BORDER: rich.style.StyleType = "dim"
-ALIGN_COMMANDS_PANEL: rich.align.AlignMethod = "left"
+STYLE_OPTIONS_TABLE_PADDING: "rich.padding.PaddingDimensions" = (0, 1)
+STYLE_OPTIONS_TABLE_BOX: "rich.style.StyleType" = ""
+STYLE_OPTIONS_TABLE_ROW_STYLES: Optional[List["rich.style.StyleType"]] = None
+STYLE_OPTIONS_TABLE_BORDER_STYLE: Optional["rich.style.StyleType"] = None
+STYLE_COMMANDS_PANEL_BORDER: "rich.style.StyleType" = "dim"
+ALIGN_COMMANDS_PANEL: "rich.align.AlignMethod" = "left"
 STYLE_COMMANDS_TABLE_SHOW_LINES: bool = False
 STYLE_COMMANDS_TABLE_LEADING: int = 0
 STYLE_COMMANDS_TABLE_PAD_EDGE: bool = False
-STYLE_COMMANDS_TABLE_PADDING: rich.padding.PaddingDimensions = (0, 1)
-STYLE_COMMANDS_TABLE_BOX: rich.style.StyleType = ""
-STYLE_COMMANDS_TABLE_ROW_STYLES: Optional[List[rich.style.StyleType]] = None
-STYLE_COMMANDS_TABLE_BORDER_STYLE: Optional[rich.style.StyleType] = None
+STYLE_COMMANDS_TABLE_PADDING: "rich.padding.PaddingDimensions" = (0, 1)
+STYLE_COMMANDS_TABLE_BOX: "rich.style.StyleType" = ""
+STYLE_COMMANDS_TABLE_ROW_STYLES: Optional[List["rich.style.StyleType"]] = None
+STYLE_COMMANDS_TABLE_BORDER_STYLE: Optional["rich.style.StyleType"] = None
 STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO: Optional[Union[Tuple[None, None], Tuple[int, int]]] = (None, None)
-STYLE_ERRORS_PANEL_BORDER: rich.style.StyleType = "red"
-ALIGN_ERRORS_PANEL: rich.align.AlignMethod = "left"
-STYLE_ERRORS_SUGGESTION: rich.style.StyleType = "dim"
-STYLE_ERRORS_SUGGESTION_COMMAND: rich.style.StyleType = "blue"
-STYLE_ABORTED: rich.style.StyleType = "red"
+STYLE_ERRORS_PANEL_BORDER: "rich.style.StyleType" = "red"
+ALIGN_ERRORS_PANEL: "rich.align.AlignMethod" = "left"
+STYLE_ERRORS_SUGGESTION: "rich.style.StyleType" = "dim"
+STYLE_ERRORS_SUGGESTION_COMMAND: "rich.style.StyleType" = "blue"
+STYLE_ABORTED: "rich.style.StyleType" = "red"
 WIDTH: Optional[int] = terminal_width_default()
 MAX_WIDTH: Optional[int] = terminal_width_default()
 COLOR_SYSTEM: Optional[

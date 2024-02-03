@@ -7,10 +7,15 @@ from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
 
 
+if TYPE_CHECKING:
+    from types import TracebackType
+
+
 class RichContext(click.Context):
     """Click Context class endowed with Rich superpowers."""
 
     formatter_class: Type[RichHelpFormatter] = RichHelpFormatter
+    _console: Optional[Console] = None
 
     def __init__(
         self,
@@ -33,9 +38,10 @@ class RichContext(click.Context):
         parent: Optional[RichContext] = kwargs.pop("parent", None)
 
         if rich_console is None and hasattr(parent, "console"):
-            rich_console = parent.console  # type: ignore[has-type,union-attr]
+            rich_console = parent.console  # type: ignore[union-attr]
 
-        self.console = rich_console
+        if rich_console is not None:
+            self.console = rich_console
 
         if rich_help_config is None:
             if hasattr(parent, "help_config"):
@@ -54,8 +60,36 @@ class RichContext(click.Context):
         else:
             self.help_config = rich_help_config
 
+    @property
+    def console(self) -> Console:
+        if self._console is None:
+            return self.make_formatter().console
+        return self._console
+
+    @console.setter
+    def console(self, val: Console) -> None:
+        self._console = val
+
     def make_formatter(self) -> RichHelpFormatter:
         """Create the Rich Help Formatter."""
-        return self.formatter_class(
-            width=self.terminal_width, max_width=self.max_content_width, config=self.help_config
+        formatter = self.formatter_class(
+            width=self.terminal_width,
+            max_width=self.max_content_width,
+            config=self.help_config,
         )
+        if self._console is None:
+            self._console = formatter.console
+        return formatter
+
+    if TYPE_CHECKING:
+
+        def __enter__(self) -> "RichContext":
+            return super().__enter__()  # type: ignore[return-value]
+
+        def __exit__(
+            self,
+            exc_type: Optional[Type[BaseException]],
+            exc_value: Optional[BaseException],
+            tb: Optional[TracebackType],
+        ) -> None:
+            return super().__exit__(exc_type, exc_value, tb)
