@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional, Sequence
 
 from typing_extensions import NotRequired, TypedDict
 
@@ -21,13 +21,14 @@ def truthy(o: Any) -> Optional[bool]:
 class CommandGroupDict(TypedDict):
     """Specification for command groups."""
 
-    name: str
-    commands: List[str]
+    name: NotRequired[str]
+    commands: Sequence[str]
+    table_styles: NotRequired[Dict[str, Any]]
 
 
 class OptionGroupDict(TypedDict):
     """Specification for option groups."""
 
-    name: str
-    options: List[str]
+    name: NotRequired[str]
+    options: Sequence[str]
     table_styles: NotRequired[Dict[str, Any]]

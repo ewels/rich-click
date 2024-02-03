@@ -22,6 +22,7 @@ from rich.text import Text
 
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_VERSION_80
 from rich_click.rich_help_formatter import RichHelpFormatter
+from rich_click.utils import OptionGroupDict
 
 
 # Support rich <= 10.6.0
@@ -369,15 +370,16 @@ def get_rich_options(
             if isinstance(param, click.core.Argument) and not formatter.config.group_arguments_options:
                 argument_group_options.append(param.opts[0])
             else:
-                list_of_option_groups: List[str] = option_groups[-1]["options"]  # type: ignore[assignment]
+                list_of_option_groups = list(option_groups[-1]["options"])
                 list_of_option_groups.append(param.opts[0])
 
     # If we're not grouping arguments and we got some, prepend before default options
     if len(argument_group_options) > 0:
-        extra_option_group = {"name": formatter.config.arguments_panel_title, "options": argument_group_options}
+        extra_option_group: OptionGroupDict = {
+            "name": formatter.config.arguments_panel_title,
+            "options": argument_group_options,
+        }
         option_groups.insert(len(option_groups) - 1, extra_option_group)
-
-    # print("!", option_groups)
 
     # Print each option group panel
     for option_group in option_groups:
@@ -479,7 +481,7 @@ def get_rich_options(
                 "pad_edge": formatter.config.style_options_table_pad_edge,
                 "padding": formatter.config.style_options_table_padding,
             }
-            t_styles.update(option_group.get("table_styles", {}))  # type: ignore[arg-type]
+            t_styles.update(option_group.get("table_styles", {}))
             box_style = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
 
             options_table = Table(
@@ -518,7 +520,7 @@ def get_rich_options(
                 if command in cmd_group.get("commands", []):
                     break
             else:
-                commands: List[str] = cmd_groups[-1]["commands"]  # type: ignore[assignment]
+                commands = list(cmd_groups[-1]["commands"])
                 commands.append(command)
 
         # Print each command group panel
@@ -532,7 +534,7 @@ def get_rich_options(
                 "pad_edge": formatter.config.style_commands_table_pad_edge,
                 "padding": formatter.config.style_commands_table_padding,
             }
-            t_styles.update(cmd_group.get("table_styles", {}))  # type: ignore[arg-type]
+            t_styles.update(cmd_group.get("table_styles", {}))
             box_style = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
 
             commands_table = Table(
