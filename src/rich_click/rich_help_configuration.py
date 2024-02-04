@@ -205,6 +205,16 @@ class RichHelpConfiguration:
         inst = cls(**kw)
         return inst
 
+    def _dump_into_globals(self, module: Optional[ModuleType] = None) -> None:
+        if module is None:
+            import rich_click.rich_click as rc
+
+            module = rc
+        for k, v in self.__dataclass_fields__.items():
+            if v.init:
+                if hasattr(module, k.upper()):
+                    setattr(module, k.upper(), getattr(self, k))
+
 
 def __getattr__(name: str) -> Any:
     if name == "OptionHighlighter":
