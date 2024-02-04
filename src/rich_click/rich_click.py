@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Literal
 
 from rich_click.rich_help_configuration import force_terminal_default, terminal_width_default
+from rich_click.utils import CommandGroupDict, OptionGroupDict
 
 
 if TYPE_CHECKING:
@@ -91,9 +92,9 @@ USE_MARKDOWN: bool = False  # Parse help strings as markdown
 USE_MARKDOWN_EMOJI: bool = True  # Parse emoji codes in markdown :smile:
 USE_RICH_MARKUP: bool = False  # Parse help strings for rich markup (eg. [red]my text[/])
 # Define sorted groups of panels to display subcommands
-COMMAND_GROUPS: Dict[str, List[Dict[str, Union[str, List[str]]]]] = {}
+COMMAND_GROUPS: Dict[str, List[CommandGroupDict]] = {}
 # Define sorted groups of panels to display options and arguments
-OPTION_GROUPS: Dict[str, List[Dict[str, Union[str, List[str], Dict[str, List[str]]]]]] = {}
+OPTION_GROUPS: Dict[str, List[OptionGroupDict]] = {}
 USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
 
 

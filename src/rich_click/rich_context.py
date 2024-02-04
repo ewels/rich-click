@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING, Any, Mapping, Optional, Type, Union
 
 import click
-from rich.console import Console
 
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
@@ -10,17 +9,19 @@ from rich_click.rich_help_formatter import RichHelpFormatter
 if TYPE_CHECKING:
     from types import TracebackType
 
+    from rich.console import Console
+
 
 class RichContext(click.Context):
     """Click Context class endowed with Rich superpowers."""
 
     formatter_class: Type[RichHelpFormatter] = RichHelpFormatter
-    _console: Optional[Console] = None
+    _console: Optional["Console"] = None
 
     def __init__(
         self,
         *args: Any,
-        rich_console: Optional[Console] = None,
+        rich_console: Optional["Console"] = None,
         rich_help_config: Optional[Union[Mapping[str, Any], RichHelpConfiguration]] = None,
         **kwargs: Any,
     ) -> None:
@@ -61,13 +62,13 @@ class RichContext(click.Context):
             self.help_config = rich_help_config
 
     @property
-    def console(self) -> Console:
+    def console(self) -> "Console":
         if self._console is None:
             return self.make_formatter().console
         return self._console
 
     @console.setter
-    def console(self, val: Console) -> None:
+    def console(self, val: "Console") -> None:
         self._console = val
 
     def make_formatter(self) -> RichHelpFormatter:
