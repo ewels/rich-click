@@ -13,7 +13,6 @@ except ImportError:
     import importlib_metadata as metadata  # type: ignore[no-redef,import-not-found,unused-ignore]
 
 import click
-from rich.console import Console
 
 from rich_click.decorators import command as rich_command
 from rich_click.decorators import group as rich_group
@@ -21,9 +20,6 @@ from rich_click.decorators import pass_context, rich_config
 from rich_click.rich_command import RichCommand, RichCommandCollection, RichGroup, RichMultiCommand
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
-
-
-console = Console()
 
 
 def patch(rich_config: Optional[RichHelpConfiguration] = None) -> None:
@@ -79,7 +75,7 @@ class _RichHelpConfigurationParamType(click.ParamType):
                     data = json.loads(value)
                 if not isinstance(data, dict):
                     raise ValueError("--rich-config needs to be a JSON.")
-                return RichHelpConfiguration(**data)
+                return RichHelpConfiguration.load_from_globals(**data)
             except Exception as e:
                 # In normal circumstances, a bad arg to a CLI doesn't
                 # prevent the help text from rendering.

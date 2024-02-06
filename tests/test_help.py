@@ -1,18 +1,19 @@
+# ruff: noqa: D101,D103,D401
 from typing import Any, Callable, Optional, Type, Union
 
 import click
 import pytest
+import rich_click.rich_click as rc
 from click import UsageError
+from click.testing import CliRunner
 from packaging import version
 from rich.console import Console
-from click.testing import CliRunner
-
-from tests.conftest import AssertRichFormat, AssertStr, InvokeCli
-
-import rich_click.rich_click as rc
-from rich_click import command, group, pass_context, rich_config, RichContext, RichHelpConfiguration
+from rich_click import RichContext, RichHelpConfiguration, command, group, pass_context, rich_config
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
 from rich_click.rich_command import RichCommand, RichGroup
+
+from tests.conftest import AssertRichFormat, AssertStr
+
 
 try:
     from importlib import metadata  # type: ignore[import,unused-ignore]
@@ -230,7 +231,7 @@ if rich_version.major == 12:
     command_help_output = """
  Usage: cli [OPTIONS]
 
- Some help
+ Some help.
  ╔════════════════════════════════════════════════════════╗
  ║                         Header                         ║
  ╚════════════════════════════════════════════════════════╝
@@ -242,7 +243,7 @@ if rich_version.major == 12:
     group_help_output = """
  Usage: cli [OPTIONS] COMMAND [ARGS]...
 
- Some help
+ Some help.
  ╔════════════════════════════════════════════════════════╗
  ║                         Header                         ║
  ╚════════════════════════════════════════════════════════╝
@@ -255,7 +256,7 @@ else:
     command_help_output = """
  Usage: cli [OPTIONS]
 
- Some help
+ Some help.
  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
  ┃                         Header                         ┃
  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
@@ -267,7 +268,7 @@ else:
     group_help_output = """
  Usage: cli [OPTIONS] COMMAND [ARGS]...
 
- Some help
+ Some help.
  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
  ┃                         Header                         ┃
  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
@@ -370,7 +371,7 @@ def test_rich_config_decorator_order(
     )
     def cli() -> None:
         """
-        Some help
+        Some help.
 
         # Header
         """
@@ -383,7 +384,7 @@ def test_rich_config_decorator_order(
     assert_str(
         cli.__doc__,
         """
-    Some help
+    Some help.
 
     # Header
     """,
@@ -403,7 +404,7 @@ def test_rich_config_max_width(cli_runner: CliRunner, assert_str: AssertStr) -> 
 
     @command()
     def cli() -> None:
-        """Some help text"""
+        """Some help text."""
         pass
 
     result = cli_runner.invoke(cli, "--help")
@@ -413,7 +414,7 @@ def test_rich_config_max_width(cli_runner: CliRunner, assert_str: AssertStr) -> 
         """
 Usage: cli [OPTIONS]
 
- Some help text
+ Some help text.
 
 ╭─ Options ────────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                      │

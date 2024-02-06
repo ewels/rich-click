@@ -15,7 +15,7 @@ exclude = [
     "venv",
     "build",
     "sdist",
-    "tests/**",
+    "tests/fixtures/**",
     "examples/**",
 ]
 ignore = [
