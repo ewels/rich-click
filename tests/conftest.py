@@ -1,4 +1,4 @@
-# flake8: noqa D*
+# ruff: noqa: D101,D103,D401
 import importlib
 import json
 import os
@@ -7,16 +7,15 @@ from dataclasses import asdict
 from importlib import reload
 from pathlib import Path
 from types import ModuleType
-from typing import Any, Callable, cast, Dict, Optional, Type, Union
+from typing import Any, Callable, Dict, Optional, Type, Union, cast
 
 import click
 import pytest
-from click.testing import CliRunner, Result
-from typing_extensions import Protocol
-
 import rich_click.rich_click as rc
+from click.testing import CliRunner, Result
 from rich_click.rich_command import RichCommand, RichGroup
 from rich_click.rich_help_configuration import RichHelpConfiguration
+from typing_extensions import Protocol
 
 
 @pytest.fixture
@@ -42,7 +41,7 @@ def click_major_version() -> int:
 class AssertStr(Protocol):
     def __call__(self, actual: str, expectation: Union[str, Path]) -> None:
         """
-        Assert strings by normalizining line endings
+        Assert strings by normalizining line endings.
 
         Args:
         ----
@@ -138,10 +137,6 @@ class InvokeCli(Protocol):
 
         Small convenience fixture to allow invoking a click Command
         without standalone mode.
-
-        Args:
-        ----
-            cmd: Click Command
         """
         ...
 
@@ -160,7 +155,7 @@ class AssertRichFormat(Protocol):
         rich_config: Optional[Callable[[Any], Union[RichGroup, RichCommand]]],
     ) -> None:
         """
-        Invokes the cli command and applies assertions against the results
+        Invokes the cli command and applies assertions against the results.
 
         This command resolves the cli application from the fixtures directory dynamically
         to isolate module configuration state between tests. It will also assert that

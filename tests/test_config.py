@@ -1,12 +1,13 @@
+# ruff: noqa: D101,D103,D401
+import json
+from dataclasses import asdict
 from typing import TYPE_CHECKING
 
 import pytest
-
-from rich_click import group, command, rich_config, RichHelpConfiguration, RichContext
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 import rich_click.rich_click as rc
-from dataclasses import asdict
-import json
+from rich_click import RichContext, RichHelpConfiguration, command, group, rich_config
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
+
 
 if CLICK_IS_BEFORE_VERSION_8X:
     pytest.skip(reason="rich_config not supported for click < 8.", allow_module_level=True)

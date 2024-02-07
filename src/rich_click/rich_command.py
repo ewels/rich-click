@@ -77,6 +77,23 @@ class RichCommand(click.Command):
             return RichHelpConfiguration(**cfg)
         return cfg
 
+    def _generate_rich_help_config(self) -> RichHelpConfiguration:
+        """
+        Use for error handling when a Context is not available.
+
+        If the Context is available, then the help configuration in the Context
+        should be preferred.
+        """
+        cfg = self.context_settings.get("rich_help_config", {})
+        try:
+            if isinstance(cfg, Mapping):
+                return RichHelpConfiguration(**cfg)
+            elif isinstance(cfg, RichHelpConfiguration):
+                return cfg
+        except Exception as e:
+            click.echo(f"{e.__class__.__name__}{e.args}", file=sys.stderr)
+        return RichHelpConfiguration()
+
     def main(
         self,
         args: Optional[Sequence[str]] = None,
@@ -123,6 +140,8 @@ class RichCommand(click.Command):
         else:
             self._main_shell_completion(extra, prog_name, complete_var)
 
+        ctx = None
+
         try:
             try:
                 with self.make_context(prog_name, args, **extra) as ctx:
@@ -143,7 +162,11 @@ class RichCommand(click.Command):
             except click.exceptions.ClickException as e:
                 if not standalone_mode:
                     raise
-                formatter = self.context_class.formatter_class(config=ctx.help_config, file=sys.stderr)
+                if ctx is not None:
+                    config = ctx.help_config
+                else:
+                    config = self._generate_rich_help_config()
+                formatter = self.context_class.formatter_class(config=config, file=sys.stderr)
                 from rich_click.rich_help_rendering import rich_format_error
 
                 rich_format_error(e, formatter)
@@ -164,7 +187,11 @@ class RichCommand(click.Command):
             if not standalone_mode:
                 raise
             try:
-                formatter = self.context_class.formatter_class(config=ctx.help_config)
+                if ctx is not None:
+                    config = ctx.help_config
+                else:
+                    config = self._generate_rich_help_config()
+                formatter = self.context_class.formatter_class(config=config)
             except Exception:
                 click.echo("Aborted!", file=sys.stderr)
             else:

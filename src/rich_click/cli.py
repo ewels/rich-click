@@ -1,9 +1,9 @@
 """The command line interface."""
 
 import sys
+from gettext import gettext as _
 from importlib import import_module
-from textwrap import dedent
-from typing import Any, List, Optional
+from typing import List, Optional, Union
 
 
 try:
@@ -13,58 +13,16 @@ except ImportError:
     import importlib_metadata as metadata  # type: ignore[no-redef,import-not-found,unused-ignore]
 
 import click
-from rich.console import Console
-from rich.padding import Padding
-from rich.panel import Panel
-from rich.text import Text
 
 from rich_click.decorators import command as rich_command
 from rich_click.decorators import group as rich_group
-from rich_click.rich_click import (
-    ALIGN_ERRORS_PANEL,
-    ERRORS_PANEL_TITLE,
-    STYLE_ERRORS_PANEL_BORDER,
-    STYLE_HELPTEXT,
-    STYLE_HELPTEXT_FIRST_LINE,
-    STYLE_USAGE,
-    STYLE_USAGE_COMMAND,
-)
+from rich_click.decorators import pass_context, rich_config
 from rich_click.rich_command import RichCommand, RichCommandCollection, RichGroup, RichMultiCommand
+from rich_click.rich_context import RichContext
+from rich_click.rich_help_configuration import RichHelpConfiguration
 
 
-console = Console()
-
-
-def _print_usage() -> None:
-    console.print(
-        Padding(
-            Text.from_markup(f"[{STYLE_USAGE}]Usage:[/] rich-click [SCRIPT | MODULE:FUNCTION] [-- SCRIPT_ARGS...]"),
-            1,
-        ),
-        style=STYLE_USAGE_COMMAND,
-    )
-
-
-def _print_help() -> None:
-    help_paragraphs = dedent(main.__doc__ or "").split("\n\n")
-    help_paragraphs = [x.replace("\n", " ").strip() for x in help_paragraphs]
-    console.print(
-        Padding(
-            Text.from_markup(help_paragraphs[0].strip()),
-            (0, 1),
-        ),
-        style=STYLE_HELPTEXT_FIRST_LINE,
-    )
-    console.print(
-        Padding(
-            Text.from_markup("\n\n".join(help_paragraphs[1:]).strip()),
-            (0, 1),
-        ),
-        style=STYLE_HELPTEXT,
-    )
-
-
-def patch() -> None:
+def patch(rich_config: Optional[RichHelpConfiguration] = None) -> None:
     """Patch Click internals to use Rich-Click types."""
     click.group = rich_group
     click.command = rich_command
@@ -73,6 +31,8 @@ def patch() -> None:
     click.CommandCollection = RichCommandCollection  # type: ignore[misc]
     if "MultiCommand" in dir(click):
         click.MultiCommand = RichMultiCommand  # type: ignore[assignment,misc,unused-ignore]
+    if rich_config is not None:
+        rich_config._dump_into_globals()
 
 
 def entry_points(*, group: str) -> "metadata.EntryPoints":  # type: ignore[name-defined]
@@ -88,7 +48,78 @@ def entry_points(*, group: str) -> "metadata.EntryPoints":  # type: ignore[name-
     return epg.get(group, [])
 
 
-def main(args: Optional[List[str]] = None) -> Any:
+class _RichHelpConfigurationParamType(click.ParamType):
+
+    name = "JSON"
+
+    def __repr__(self) -> str:
+        return "JSON"
+
+    def convert(
+        self,
+        value: Optional[Union[RichHelpConfiguration, str]],
+        param: Optional[click.Parameter],
+        ctx: Optional[click.Context],
+    ) -> Optional[RichHelpConfiguration]:
+
+        if value is None or isinstance(value, RichHelpConfiguration):
+            return value
+        else:
+            try:
+                import json
+
+                if value.startswith("@"):
+                    with open(value[1:], "r") as f:
+                        data = json.load(f)
+                else:
+                    data = json.loads(value)
+                if not isinstance(data, dict):
+                    raise ValueError("--rich-config needs to be a JSON.")
+                return RichHelpConfiguration.load_from_globals(**data)
+            except Exception as e:
+                # In normal circumstances, a bad arg to a CLI doesn't
+                # prevent the help text from rendering.
+                if ctx is not None and ctx.params.get("show_help", False):
+                    click.echo(ctx.get_help(), color=ctx.color)
+                    ctx.exit()
+                else:
+                    raise e
+
+
+@rich_command("rich-click", context_settings=dict(allow_interspersed_args=False, help_option_names=[]))
+@click.argument("script_and_args", nargs=-1, metavar="[SCRIPT | MODULE:CLICK_COMMAND] [-- SCRIPT_ARGS...]")
+@click.option(
+    "--rich-config",
+    type=_RichHelpConfigurationParamType(),
+    help="Keyword arguments to pass into the [de]RichHelpConfiguration()[/] used"
+    " to render the help text of the command. You can pass either a JSON directly, or a file"
+    " prefixed with `@` (for example: '@rich_config.json'). Note that the --rich-config"
+    " option is also used to render this help text you're reading right now!",
+)
+@click.option(
+    # The rich-click CLI uses a special implementation of --help,
+    # which is aware of the --rich-config object.
+    "--help",
+    "-h",
+    "show_help",
+    is_eager=True,
+    is_flag=True,
+    help=_("Show this message and exit."),
+)
+@pass_context
+@rich_config(
+    help_config={
+        "use_markdown": False,
+        "use_rich_markup": True,
+        "errors_epilogue": "[d]Please run [yellow bold]rich-click --help[/] for usage information.[/]",
+    }
+)
+def main(
+    ctx: RichContext,
+    script_and_args: List[str],
+    rich_config: Optional[RichHelpConfiguration],
+    show_help: bool,
+) -> None:
     """
     The [link=https://github.com/ewels/rich-click]rich-click[/] CLI provides attractive help output from any
     tool using [link=https://click.palletsprojects.com/]click[/], formatted with
@@ -97,60 +128,42 @@ def main(args: Optional[List[str]] = None) -> Any:
     The rich-click command line tool can be prepended before any Python package
     using native click to provide attractive richified click help output.
 
-    For example, if you have a package called [blue]my_package[/] that uses click,
+    For example, if you have a package called [argument]my_package[/] that uses click,
     you can run:
 
-    [blue]  rich-click my_package --help  [/]
+    >>> [command]rich-click[/] [argument]my_package[/] [option]--help[/]
 
-    It only works if the package is using vanilla click without customised [cyan]group()[/]
-    or [cyan]command()[/] classes.
+    This does not always work if the package is using customised [b]click.group()[/]
+    or [b]click.command()[/] classes.
     If in doubt, please suggest to the authors that they use rich_click within their
     tool natively - this will always give a better experience.
     """  # noqa: D400, D401
-    args = args or sys.argv[1:]
-    if not args or args == ["--help"]:
-        # Print usage if we got no args, or only --help
-        _print_usage()
-        _print_help()
-        sys.exit(0)
-    else:
-        script_name = args[0]
+    if (show_help or not script_and_args) and not ctx.resilient_parsing:
+        if rich_config is not None:
+            rich_config.use_markdown = False
+            rich_config.use_rich_markup = True
+            ctx.help_config = rich_config
+        click.echo(ctx.get_help(), color=ctx.color)
+        ctx.exit()
+
+    script, *args = script_and_args
+
     scripts = {script.name: script for script in entry_points(group="console_scripts")}
-    if script_name in scripts:
-        # a valid script was passed
-        script = scripts[script_name]
-        module_path, function_name = script.value.split(":", 1)
-        prog = script_name
-    elif ":" in script_name:
+    if script in scripts:
+        module_path, function_name = scripts[script].value.split(":", 1)
+    elif ":" in script:
         # the path to a function was passed
-        module_path, function_name = args[0].split(":", 1)
-        prog = module_path.split(".", 1)[0]
+        module_path, function_name = script.split(":", 1)
     else:
-        _print_usage()
-        console.print(
-            Panel(
-                Text.from_markup(f"No such script: [bold]{script_name}[/]"),
-                border_style=STYLE_ERRORS_PANEL_BORDER,
-                title=ERRORS_PANEL_TITLE,
-                title_align=ALIGN_ERRORS_PANEL,
-            )
-        )
-        console.print(
-            Padding(
-                "Please run [yellow bold]rich-click --help[/] for usage information.",
-                (0, 1),
-            ),
-            style="dim",
-        )
-        sys.exit(1)
-    if len(args) > 1:
-        if args[1] == "--":
-            del args[1]
-    sys.argv = [prog, *args[1:]]
+        raise click.ClickException(f"No such script: {script_and_args[0]}")
+
+    prog = module_path.split(".", 1)[0]
+
+    sys.argv = [prog, *args]
     # patch click before importing the program function
-    patch()
+    patch(rich_config=rich_config)
     # import the program function
     module = import_module(module_path)
     function = getattr(module, function_name)
     # simply run it: it should be patched as well
-    return function()
+    function()
