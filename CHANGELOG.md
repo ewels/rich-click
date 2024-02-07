@@ -2,6 +2,7 @@
 
 ## Version 1.8.0dev
 
+- Add `--rich-config` option to the `rich-click` CLI.
 - Better typing for option groups and command groups with `TypedDict` [[#156](https://github.com/ewels/rich-click/pull/156)]
 - Lazy load Rich to reduce overhead when not rendering help text. [[#154](https://github.com/ewels/rich-click/pull/154)]
 - Some internal refactors. These refactors are aimed at making the abstractions more maintainable over time, more consistent, and more adept for advanced used cases.
