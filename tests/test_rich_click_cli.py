@@ -2,6 +2,7 @@
 import sys
 from inspect import cleandoc
 from pathlib import Path
+from typing import List
 
 import pytest
 import rich_click.rich_click as rc
@@ -32,7 +33,7 @@ def simple_script(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:
         @click.command
         def cli():
             """My help text"""
-            ...
+            print('Hello, world!')
 
         cli()
         '''
@@ -46,8 +47,17 @@ def simple_script(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:
     return
 
 
-def test_simple_rich_click_cli(simple_script: None, cli_runner: CliRunner, assert_str: AssertStr) -> None:
-    res = cli_runner.invoke(main, ["mymodule:cli", "--help"])
+@pytest.mark.parametrize(
+    "command",
+    [
+        ["mymodule:cli", "--help"],
+        ["--", "mymodule:cli", "--help"],
+    ],
+)
+def test_simple_rich_click_cli(
+    simple_script: None, cli_runner: CliRunner, assert_str: AssertStr, command: List[str]
+) -> None:
+    res = cli_runner.invoke(main, command)
 
     expected_output = """
  Usage: mymodule [OPTIONS]
@@ -60,6 +70,22 @@ def test_simple_rich_click_cli(simple_script: None, cli_runner: CliRunner, asser
 """
 
     assert_str(actual=res.stdout, expectation=expected_output)
+
+
+@pytest.mark.parametrize(
+    "command",
+    [
+        ["mymodule:cli"],
+        ["--", "mymodule:cli"],
+        ["mymodule:cli", "--"],
+    ],
+)
+def test_simple_rich_click_cli_execute_command(
+    simple_script: None, cli_runner: CliRunner, assert_str: AssertStr, command: List[str]
+) -> None:
+    res = cli_runner.invoke(main, command)
+
+    assert res.stdout == "Hello, world!\n"
 
 
 def test_custom_config_rich_click_cli(simple_script: None, cli_runner: CliRunner, assert_str: AssertStr) -> None:

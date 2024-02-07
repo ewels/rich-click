@@ -157,10 +157,6 @@ def main(
     else:
         raise click.ClickException(f"No such script: {script_and_args[0]}")
 
-    if len(args) > 1:
-        if args[0] == "--":
-            del args[0]
-
     prog = module_path.split(".", 1)[0]
 
     sys.argv = [prog, *args]
