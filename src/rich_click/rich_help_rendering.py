@@ -33,7 +33,8 @@ except ImportError:
 
 
 if CLICK_IS_BEFORE_VERSION_9X:
-    from click import MultiCommand
+    # We need to load from
+    from rich_click.rich_command import MultiCommand  # type: ignore[attr-defined]
 else:
     MultiCommand = Group  # type: ignore[misc,assignment]
 
@@ -510,7 +511,7 @@ def get_rich_options(
     # List click command groups
     #
 
-    if isinstance(obj, MultiCommand):
+    if isinstance(obj, (MultiCommand, Group)):
         # Look through COMMAND_GROUPS for this command
         # stick anything unmatched into a default group at the end
         cmd_groups = formatter.config.command_groups.get(ctx.command_path, []).copy()

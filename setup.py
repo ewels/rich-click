@@ -13,5 +13,6 @@ setup(
             "packaging",
             "types-setuptools",
         ],
+        "docs": ["mkdocs", "mkdocs-material[imaging]"],
     },
 )

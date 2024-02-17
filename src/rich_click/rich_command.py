@@ -22,6 +22,12 @@ if TYPE_CHECKING:
     from rich.console import Console
 
 
+# TLDR: if a subcommand overrides one of the methods called by `RichCommand.format_help`,
+# then the text won't render properly. The fix is to not rely on the composability of the API,
+# and to instead force everything to use RichCommand's methods.
+PREVENT_OVERRIDES: bool = False
+
+
 class RichCommand(click.Command):
     """
     Richly formatted click Command.
@@ -203,10 +209,16 @@ class RichCommand(click.Command):
     # We opt to ignore mypy here.
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        self.format_usage(ctx, formatter)
-        self.format_help_text(ctx, formatter)
-        self.format_options(ctx, formatter)
-        self.format_epilog(ctx, formatter)
+        if PREVENT_OVERRIDES:
+            RichCommand.format_usage(self, ctx, formatter)
+            RichCommand.format_help_text(self, ctx, formatter)
+            RichCommand.format_options(self, ctx, formatter)
+            RichCommand.format_epilog(self, ctx, formatter)
+        else:
+            self.format_usage(ctx, formatter)
+            self.format_help_text(ctx, formatter)
+            self.format_options(ctx, formatter)
+            self.format_epilog(ctx, formatter)
 
     def format_help_text(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         from rich_click.rich_help_rendering import get_rich_help_text

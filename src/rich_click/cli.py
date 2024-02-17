@@ -14,6 +14,7 @@ except ImportError:
 
 import click
 
+import rich_click.rich_command
 from rich_click.decorators import command as rich_command
 from rich_click.decorators import group as rich_group
 from rich_click.decorators import pass_context, rich_config
@@ -24,11 +25,13 @@ from rich_click.rich_help_configuration import RichHelpConfiguration
 
 def patch(rich_config: Optional[RichHelpConfiguration] = None) -> None:
     """Patch Click internals to use Rich-Click types."""
+    rich_click.rich_command.PREVENT_OVERRIDES = True
     click.group = rich_group
     click.command = rich_command
     click.Group = RichGroup  # type: ignore[misc]
     click.Command = RichCommand  # type: ignore[misc]
     click.CommandCollection = RichCommandCollection  # type: ignore[misc]
+    # click.HelpFormatter = RichHelpFormatter
     if "MultiCommand" in dir(click):
         click.MultiCommand = RichMultiCommand  # type: ignore[assignment,misc,unused-ignore]
     if rich_config is not None:

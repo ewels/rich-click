@@ -1,0 +1,36 @@
+name: Build images / docs
+on: [push]
+
+# Cancel if a newer run is started
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rich_codex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.x
+
+      - uses: actions/cache@v2
+        with:
+          key: ${{ github.ref }}
+          path: .cache
+
+      - name: Install requirements for docs
+        run: pip install cowsay lolcat mkdocs-material pillow cairosvg
+
+      - name: Generate terminal images with rich-codex
+        uses: ewels/rich-codex@v1
+        with:
+          commit_changes: "true"
+          clean_img_paths: docs/img/*.svg
+
+      - name: Build and deploy docs
+        run: mkdocs gh-deploy --force

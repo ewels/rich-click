@@ -30,7 +30,11 @@ def simple_script(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:
         '''
         import click
 
-        @click.command
+        # Test if robust to subclassing
+        class CustomClickCommand(click.Command):
+            pass
+
+        @click.command(cls=CustomClickCommand)
         def cli():
             """My help text"""
             print('Hello, world!')
