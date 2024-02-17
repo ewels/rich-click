@@ -49,7 +49,7 @@ This works for RichCommands as well as normal click Commands.
 
 <div class="termy">
 ```console
-$ rich-click --html flask --help
+$ rich-click --output=html flask --help
 
 &lt;span style=&quot;color: #808000; text-decoration-color: #808000&quot;&gt;Usage:&lt;/span&gt; &lt;span style=&quot;font-weight: bold&quot;&gt;flask&lt;/span&gt; [&lt;span style=&quot;color: #008080; text-decoration-color: #008080; font-weight: bold&quot;&gt;OPTIONS&lt;/span&gt;] &lt;span style=&quot;color: #008080; text-decoration-color: #008080; font-weight: bold&quot;&gt;COMMAND&lt;/span&gt; [&lt;span style=&quot;color: #008080; text-decoration-color: #008080; font-weight: bold&quot;&gt;ARGS&lt;/span&gt;]...
 
