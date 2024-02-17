@@ -318,6 +318,22 @@ class RichGroup(RichCommand, Group):
                 kwargs.setdefault("cls", self.group_class)
         return super().group(*args, **kwargs)  # type: ignore[no-any-return]
 
+    def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        if PREVENT_OVERRIDES:
+            from rich_click.cli import _PatchedRichCommand
+            from rich_click.utils import method_is_from_subclass_of
+
+            for method_name in ["format_usage", "format_help_text", "format_options", "format_epilog"]:
+                if method_is_from_subclass_of(self.__class__, _PatchedRichCommand, method_name):
+                    getattr(RichGroup, method_name)(self, ctx, formatter)
+                else:
+                    getattr(self, method_name)(ctx, formatter)
+        else:
+            self.format_usage(ctx, formatter)
+            self.format_help_text(ctx, formatter)
+            self.format_options(ctx, formatter)
+            self.format_epilog(ctx, formatter)
+
 
 if CLICK_IS_BEFORE_VERSION_9X:
     with warnings.catch_warnings():
@@ -342,6 +358,7 @@ if CLICK_IS_BEFORE_VERSION_9X:
 
             format_options = RichGroup.format_options  # type: ignore[assignment]
             format_commands = RichGroup.format_commands  # type: ignore[assignment]
+            format_help = RichGroup.format_help  # type: ignore[assignment]
 
 else:
 
