@@ -13,6 +13,6 @@ setup(
             "packaging",
             "types-setuptools",
         ],
-        "docs": ["mkdocs", "mkdocs-material[imaging]"],
+        "docs": ["mkdocs", "mkdocs-material[imaging]", "termynal"],
     },
 )

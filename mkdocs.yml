@@ -3,20 +3,19 @@ repo_name: ewels/rich-click
 repo_url: https://github.com/ewels/rich-click
 site_url: https://ewels.github.io/rich-click/
 edit_uri: edit/main/docs/
-extra_css:
-  - stylesheets/extra.css
+
 theme:
   name: material
   icon:
-    logo: octicons/book-16
     repo: fontawesome/brands/github
-    favicon: img/dbt-linreg-favicon.png
+  favicon: images/favicon.png
+  logo: images/favicon.png
   palette:
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: black
-      accent: blue
+      accent: navy
       toggle:
         icon: material/lightbulb-outline
         name: Switch to light mode
@@ -24,14 +23,12 @@ theme:
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: black
-      accent: blue
+      accent: navy
       toggle:
         icon: material/lightbulb
         name: Switch to dark mode
   font:
     text: Noto Sans
-  features:
-    - navigation.instant
 
 nav:
   - Home: index.md
@@ -58,13 +55,41 @@ nav:
 #  - safety.md
 #  - troubleshooting.md
 
+#markdown_extensions:
+#  - admonition
+#  - pymdownx.highlight:
+#      anchor_linenums: true
+#  - pymdownx.inlinehilite
+#  - pymdownx.snippets
+#  - pymdownx.superfences
+#  - pymdownx.details
+
 markdown_extensions:
+  - toc:
+      permalink: true
+  - markdown.extensions.codehilite:
+      guess_lang: false
   - admonition
-  - pymdownx.highlight:
-      anchor_linenums: true
-  - pymdownx.inlinehilite
-  - pymdownx.snippets
-  - pymdownx.superfences
-  - pymdownx.details
+  - codehilite
+  - extra
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format ""
+  - pymdownx.tabbed:
+      alternate_style: true
+  - mdx_include:
+      base_path: docs
+
 plugins:
   - social
+  - termynal
+
+extra_css:
+  - css/termynal.css
+  - css/extra.css
+
+extra_javascript:
+  - js/termynal.js
+  - js/custom.js

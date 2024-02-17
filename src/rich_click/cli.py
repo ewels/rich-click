@@ -1,9 +1,14 @@
 """The command line interface."""
 
+# ruff: noqa: D103
+
+import os
 import sys
 from gettext import gettext as _
 from importlib import import_module
 from typing import List, Optional, Union
+
+from typing_extensions import Literal
 
 
 try:
@@ -15,12 +20,39 @@ except ImportError:
 import click
 
 import rich_click.rich_command
-from rich_click.decorators import command as rich_command
-from rich_click.decorators import group as rich_group
-from rich_click.decorators import pass_context, rich_config
+from rich_click.decorators import command as _rich_command
+from rich_click.decorators import group as _rich_group
+from rich_click.decorators import pass_context
+from rich_click.decorators import rich_config as rich_config_decorator
 from rich_click.rich_command import RichCommand, RichCommandCollection, RichGroup, RichMultiCommand
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
+
+
+class _PatchedRichCommand(RichCommand):
+    pass
+
+
+class _PatchedRichMultiCommand(RichMultiCommand, _PatchedRichCommand):  # type: ignore[misc]
+    pass
+
+
+class _PatchedRichCommandCollection(RichCommandCollection, _PatchedRichCommand):
+    pass
+
+
+class _PatchedRichGroup(RichGroup, _PatchedRichCommand):
+    pass
+
+
+def rich_command(*args, **kwargs):  # type: ignore[no-untyped-def]
+    kwargs.setdefault("cls", _PatchedRichCommand)
+    return _rich_command(*args, **kwargs)
+
+
+def rich_group(*args, **kwargs):  # type: ignore[no-untyped-def]
+    kwargs.setdefault("cls", _PatchedRichGroup)
+    return _rich_group(*args, **kwargs)
 
 
 def patch(rich_config: Optional[RichHelpConfiguration] = None) -> None:
@@ -28,12 +60,11 @@ def patch(rich_config: Optional[RichHelpConfiguration] = None) -> None:
     rich_click.rich_command.PREVENT_OVERRIDES = True
     click.group = rich_group
     click.command = rich_command
-    click.Group = RichGroup  # type: ignore[misc]
-    click.Command = RichCommand  # type: ignore[misc]
-    click.CommandCollection = RichCommandCollection  # type: ignore[misc]
-    # click.HelpFormatter = RichHelpFormatter
+    click.Group = _PatchedRichGroup  # type: ignore[misc]
+    click.Command = _PatchedRichCommand  # type: ignore[misc]
+    click.CommandCollection = _PatchedRichCommandCollection  # type: ignore[misc]
     if "MultiCommand" in dir(click):
-        click.MultiCommand = RichMultiCommand  # type: ignore[assignment,misc,unused-ignore]
+        click.MultiCommand = _PatchedRichMultiCommand  # type: ignore[assignment,misc,unused-ignore]
     if rich_config is not None:
         rich_config._dump_into_globals()
 
@@ -89,7 +120,7 @@ class _RichHelpConfigurationParamType(click.ParamType):
                     raise e
 
 
-@rich_command("rich-click", context_settings=dict(allow_interspersed_args=False, help_option_names=[]))
+@_rich_command("rich-click", context_settings=dict(allow_interspersed_args=False, help_option_names=[]))
 @click.argument("script_and_args", nargs=-1, metavar="[SCRIPT | MODULE:CLICK_COMMAND] [-- SCRIPT_ARGS...]")
 @click.option(
     "--rich-config",
@@ -98,6 +129,11 @@ class _RichHelpConfigurationParamType(click.ParamType):
     " to render the help text of the command. You can pass either a JSON directly, or a file"
     " prefixed with `@` (for example: '@rich_config.json'). Note that the --rich-config"
     " option is also used to render this help text you're reading right now!",
+)
+@click.option(
+    "--output",
+    type=click.Choice(["html", "svg"], case_sensitive=False),
+    help="Optionally help text as HTML or SVG. By default, help text is rendered normally.",
 )
 @click.option(
     # The rich-click CLI uses a special implementation of --help,
@@ -110,7 +146,7 @@ class _RichHelpConfigurationParamType(click.ParamType):
     help=_("Show this message and exit."),
 )
 @pass_context
-@rich_config(
+@rich_config_decorator(
     help_config={
         "use_markdown": False,
         "use_rich_markup": True,
@@ -120,6 +156,7 @@ class _RichHelpConfigurationParamType(click.ParamType):
 def main(
     ctx: RichContext,
     script_and_args: List[str],
+    output: Literal[None, "html", "svg"],
     rich_config: Optional[RichHelpConfiguration],
     show_help: bool,
 ) -> None:
@@ -140,7 +177,11 @@ def main(
     or [b]click.command()[/] classes.
     If in doubt, please suggest to the authors that they use rich_click within their
     tool natively - this will always give a better experience.
+
+    You can also use this tool to print your own RichCommands as HTML with the
+    --html flag.
     """  # noqa: D400, D401
+    sys.path.append(".")
     if (show_help or not script_and_args) and not ctx.resilient_parsing:
         if rich_config is not None:
             rich_config.use_markdown = False
@@ -161,12 +202,17 @@ def main(
         raise click.ClickException(f"No such script: {script_and_args[0]}")
 
     prog = module_path.split(".", 1)[0]
-
     sys.argv = [prog, *args]
+
     # patch click before importing the program function
     patch(rich_config=rich_config)
     # import the program function
     module = import_module(module_path)
     function = getattr(module, function_name)
     # simply run it: it should be patched as well
+    RichContext.console = console = ctx.make_formatter().console
+    if output is not None:
+        console.record = True
+        console.file = open(os.devnull, "w")
+        RichContext.export_console_as = output
     function()

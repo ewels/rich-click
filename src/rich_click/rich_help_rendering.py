@@ -33,7 +33,7 @@ except ImportError:
 
 
 if CLICK_IS_BEFORE_VERSION_9X:
-    # We need to load from
+    # We need to load from here to help with patching.
     from rich_click.rich_command import MultiCommand  # type: ignore[attr-defined]
 else:
     MultiCommand = Group  # type: ignore[misc,assignment]
@@ -292,11 +292,10 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", pref
         prefix = "Usage:"
 
     config = formatter.config
-    console = formatter.console
 
     # Header text if we have it
     if config.header_text:
-        console.print(
+        formatter.write(
             Padding(
                 _make_rich_rext(config.header_text, config.style_header_text, formatter),
                 (1, 1, 0, 1),
@@ -312,7 +311,7 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", pref
     usage_highlighter = UsageHighlighter()
 
     # Print usage
-    console.print(
+    formatter.write(
         Padding(
             Columns(
                 (
@@ -331,7 +330,7 @@ def get_rich_help_text(self: Command, ctx: click.Context, formatter: RichHelpFor
     # Print command / group help if we have some
     if self.help:
         # Print with some padding
-        formatter.console.print(
+        formatter.write(
             Padding(
                 Align(_get_help_text(self, formatter), pad=False),
                 (0, 1, 1, 1),
@@ -497,7 +496,7 @@ def get_rich_options(
                 options_rows = [x[1:] for x in options_rows]
             for row in options_rows:
                 options_table.add_row(*row)
-            formatter.console.print(
+            formatter.write(
                 Panel(
                     options_table,
                     border_style=formatter.config.style_options_panel_border,
@@ -506,84 +505,86 @@ def get_rich_options(
                 )
             )
 
-    #
-    # Groups only:
-    # List click command groups
-    #
 
-    if isinstance(obj, (MultiCommand, Group)):
-        # Look through COMMAND_GROUPS for this command
-        # stick anything unmatched into a default group at the end
-        cmd_groups = formatter.config.command_groups.get(ctx.command_path, []).copy()
-        cmd_groups.append({"commands": []})
-        for command in obj.list_commands(ctx):
-            for cmd_group in cmd_groups:
-                if command in cmd_group.get("commands", []):
-                    break
-            else:
-                commands = cmd_groups[-1]["commands"]
-                commands.append(command)
+def get_rich_commands(
+    obj: MultiCommand,
+    ctx: click.Context,
+    formatter: RichHelpFormatter,
+) -> None:
+    """Richly render a click Command's options."""
+    # Look through config.option_groups for this command
+    # stick anything unmatched into a default group at the end
 
-        # Print each command group panel
+    # Look through COMMAND_GROUPS for this command
+    # stick anything unmatched into a default group at the end
+    cmd_groups = formatter.config.command_groups.get(ctx.command_path, []).copy()
+    cmd_groups.append({"commands": []})
+    for command in obj.list_commands(ctx):
         for cmd_group in cmd_groups:
-            t_styles = {
-                "show_lines": formatter.config.style_commands_table_show_lines,
-                "leading": formatter.config.style_commands_table_leading,
-                "box": formatter.config.style_commands_table_box,
-                "border_style": formatter.config.style_commands_table_border_style,
-                "row_styles": formatter.config.style_commands_table_row_styles,
-                "pad_edge": formatter.config.style_commands_table_pad_edge,
-                "padding": formatter.config.style_commands_table_padding,
-            }
-            t_styles.update(cmd_group.get("table_styles", {}))
-            box_style = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
+            if command in cmd_group.get("commands", []):
+                break
+        else:
+            commands = cmd_groups[-1]["commands"]
+            commands.append(command)
 
-            commands_table = Table(
-                highlight=False,
-                show_header=False,
-                expand=True,
-                box=box_style,
-                **t_styles,  # type: ignore[arg-type]
-            )
-            # Define formatting in first column, as commands don't match highlighter regex
-            # and set column ratio for first and second column, if a ratio has been set
-            if formatter.config.style_commands_table_column_width_ratio is None:
-                table_column_width_ratio: Union[Tuple[None, None], Tuple[int, int]] = (None, None)
+    # Print each command group panel
+    for cmd_group in cmd_groups:
+        t_styles = {
+            "show_lines": formatter.config.style_commands_table_show_lines,
+            "leading": formatter.config.style_commands_table_leading,
+            "box": formatter.config.style_commands_table_box,
+            "border_style": formatter.config.style_commands_table_border_style,
+            "row_styles": formatter.config.style_commands_table_row_styles,
+            "pad_edge": formatter.config.style_commands_table_pad_edge,
+            "padding": formatter.config.style_commands_table_padding,
+        }
+        t_styles.update(cmd_group.get("table_styles", {}))
+        box_style = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
+
+        commands_table = Table(
+            highlight=False,
+            show_header=False,
+            expand=True,
+            box=box_style,
+            **t_styles,  # type: ignore[arg-type]
+        )
+        # Define formatting in first column, as commands don't match highlighter regex
+        # and set column ratio for first and second column, if a ratio has been set
+        if formatter.config.style_commands_table_column_width_ratio is None:
+            table_column_width_ratio: Union[Tuple[None, None], Tuple[int, int]] = (None, None)
+        else:
+            table_column_width_ratio = formatter.config.style_commands_table_column_width_ratio
+
+        commands_table.add_column(style=formatter.config.style_command, no_wrap=True, ratio=table_column_width_ratio[0])
+        commands_table.add_column(
+            no_wrap=False,
+            ratio=table_column_width_ratio[1],
+        )
+        for command in cmd_group.get("commands", []):
+            # Skip if command does not exist
+            if command not in obj.list_commands(ctx):
+                continue
+            cmd = obj.get_command(ctx, command)
+            if TYPE_CHECKING:
+                assert cmd is not None
+            if cmd.hidden:
+                continue
+            # Use the truncated short text as with vanilla text if requested
+            if formatter.config.use_click_short_help:
+                helptext = cmd.get_short_help_str()
             else:
-                table_column_width_ratio = formatter.config.style_commands_table_column_width_ratio
-
-            commands_table.add_column(
-                style=formatter.config.style_command, no_wrap=True, ratio=table_column_width_ratio[0]
-            )
-            commands_table.add_column(
-                no_wrap=False,
-                ratio=table_column_width_ratio[1],
-            )
-            for command in cmd_group.get("commands", []):
-                # Skip if command does not exist
-                if command not in obj.list_commands(ctx):
-                    continue
-                cmd = obj.get_command(ctx, command)
-                if TYPE_CHECKING:
-                    assert cmd is not None
-                if cmd.hidden:
-                    continue
-                # Use the truncated short text as with vanilla text if requested
-                if formatter.config.use_click_short_help:
-                    helptext = cmd.get_short_help_str()
-                else:
-                    # Use short_help function argument if used, or the full help
-                    helptext = cmd.short_help or cmd.help or ""
-                commands_table.add_row(command, _make_command_help(helptext, formatter, is_deprecated=cmd.deprecated))
-            if commands_table.row_count > 0:
-                formatter.console.print(
-                    Panel(
-                        commands_table,
-                        border_style=formatter.config.style_commands_panel_border,
-                        title=cmd_group.get("name", formatter.config.commands_panel_title),
-                        title_align=formatter.config.align_commands_panel,
-                    )
+                # Use short_help function argument if used, or the full help
+                helptext = cmd.short_help or cmd.help or ""
+            commands_table.add_row(command, _make_command_help(helptext, formatter, is_deprecated=cmd.deprecated))
+        if commands_table.row_count > 0:
+            formatter.write(
+                Panel(
+                    commands_table,
+                    border_style=formatter.config.style_commands_panel_border,
+                    title=cmd_group.get("name", formatter.config.commands_panel_title),
+                    title_align=formatter.config.align_commands_panel,
                 )
+            )
 
 
 def get_rich_epilog(
@@ -596,13 +597,13 @@ def get_rich_epilog(
         # Remove single linebreaks, replace double with single
         lines = self.epilog.split("\n\n")
         epilog = "\n".join([x.replace("\n", " ").strip() for x in lines])
-        formatter.console.print(
+        formatter.write(
             Padding(Align(_make_rich_rext(epilog, formatter.config.style_epilog_text, formatter), pad=False), 1)
         )
 
     # Footer text if we have it
     if formatter.config.footer_text:
-        formatter.console.print(
+        formatter.write(
             Padding(
                 _make_rich_rext(formatter.config.footer_text, formatter.config.style_footer_text, formatter),
                 (1, 1, 0, 1),
@@ -622,7 +623,6 @@ def rich_format_error(self: click.ClickException, formatter: RichHelpFormatter) 
         self (click.ClickException): Click exception to format.
         formatter: formatter object.
     """
-    console = formatter.console
     config = formatter.config
     # Print usage
     if getattr(self, "ctx", None) is not None:
@@ -630,7 +630,7 @@ def rich_format_error(self: click.ClickException, formatter: RichHelpFormatter) 
             assert hasattr(self, "ctx")
         self.ctx.get_usage()
     if config.errors_suggestion:
-        console.print(
+        formatter.write(
             Padding(
                 config.errors_suggestion,
                 (0, 1, 0, 1),
@@ -644,7 +644,7 @@ def rich_format_error(self: click.ClickException, formatter: RichHelpFormatter) 
     ):
         cmd_path = self.ctx.command_path  # type: ignore[attr-defined]
         help_option = self.ctx.help_option_names[0]  # type: ignore[attr-defined]
-        console.print(
+        formatter.write(
             Padding(
                 Columns(
                     (
@@ -663,7 +663,7 @@ def rich_format_error(self: click.ClickException, formatter: RichHelpFormatter) 
     # attribute. Checking for the 'message' attribute works to make the
     # rich-click CLI compatible.
     if hasattr(self, "message"):
-        console.print(
+        formatter.write(
             Padding(
                 Panel(
                     formatter.highlighter(self.format_message()),
@@ -675,9 +675,9 @@ def rich_format_error(self: click.ClickException, formatter: RichHelpFormatter) 
             )
         )
     if config.errors_epilogue:
-        console.print(Padding(config.errors_epilogue, (0, 1, 1, 1)))
+        formatter.write(Padding(config.errors_epilogue, (0, 1, 1, 1)))
 
 
 def rich_abort_error(formatter: RichHelpFormatter) -> None:
     """Print richly formatted abort error."""
-    formatter.console.print(formatter.config.aborted_text, style=formatter.config.style_aborted)
+    formatter.write(formatter.config.aborted_text, style=formatter.config.style_aborted)

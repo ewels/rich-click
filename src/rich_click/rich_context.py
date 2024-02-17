@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Any, Mapping, Optional, Type, Union
 
 import click
+from typing_extensions import Literal, NoReturn
 
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
@@ -16,7 +17,8 @@ class RichContext(click.Context):
     """Click Context class endowed with Rich superpowers."""
 
     formatter_class: Type[RichHelpFormatter] = RichHelpFormatter
-    _console: Optional["Console"] = None
+    console: Optional["Console"] = None
+    export_console_as: Literal[None, "html", "svg"] = None
 
     def __init__(
         self,
@@ -61,25 +63,14 @@ class RichContext(click.Context):
         else:
             self.help_config = rich_help_config
 
-    @property
-    def console(self) -> "Console":
-        if self._console is None:
-            return self.make_formatter().console
-        return self._console
-
-    @console.setter
-    def console(self, val: "Console") -> None:
-        self._console = val
-
     def make_formatter(self) -> RichHelpFormatter:
         """Create the Rich Help Formatter."""
         formatter = self.formatter_class(
             width=self.terminal_width,
             max_width=self.max_content_width,
             config=self.help_config,
+            console=self.console,
         )
-        if self._console is None:
-            self._console = formatter.console
         return formatter
 
     if TYPE_CHECKING:
@@ -94,3 +85,11 @@ class RichContext(click.Context):
             tb: Optional[TracebackType],
         ) -> None:
             return super().__exit__(exc_type, exc_value, tb)
+
+    def exit(self, code: int = 0) -> NoReturn:
+        if self.console is not None and self.console.record:
+            if self.export_console_as == "html":
+                print(self.console.export_html(inline_styles=True, code_format="{code}"))
+            elif self.export_console_as == "svg":
+                print(self.console.export_svg())
+        super().exit(code)

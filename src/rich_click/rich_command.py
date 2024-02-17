@@ -210,10 +210,14 @@ class RichCommand(click.Command):
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         if PREVENT_OVERRIDES:
-            RichCommand.format_usage(self, ctx, formatter)
-            RichCommand.format_help_text(self, ctx, formatter)
-            RichCommand.format_options(self, ctx, formatter)
-            RichCommand.format_epilog(self, ctx, formatter)
+            from rich_click.cli import _PatchedRichCommand
+            from rich_click.utils import method_is_from_subclass_of
+
+            for method_name in ["format_usage", "format_help_text", "format_options", "format_epilog"]:
+                if method_is_from_subclass_of(self.__class__, _PatchedRichCommand, method_name):
+                    getattr(RichCommand, method_name)(self, ctx, formatter)
+                else:
+                    getattr(self, method_name)(ctx, formatter)
         else:
             self.format_usage(ctx, formatter)
             self.format_help_text(ctx, formatter)
@@ -259,7 +263,7 @@ class RichCommand(click.Command):
             return super().make_context(info_name, args, parent, **extra)  # type: ignore[return-value]
 
 
-class RichGroup(RichCommand, Group):  # type: ignore[misc]
+class RichGroup(Group, RichCommand):
     """
     Richly formatted click Group.
 
@@ -275,6 +279,15 @@ class RichGroup(RichCommand, Group):  # type: ignore[misc]
         """Initialize RichGroup class."""
         Group.__init__(self, *args, **kwargs)
         self._register_rich_context_settings_from_callback()
+
+    def format_commands(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        from rich_click.rich_help_rendering import get_rich_commands
+
+        get_rich_commands(self, ctx, formatter)
+
+    def format_options(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        self.format_commands(ctx, formatter)
+        return super().format_options(ctx, formatter)
 
     @overload
     def command(self, __func: Callable[..., Any]) -> RichCommand: ...
@@ -311,7 +324,7 @@ if CLICK_IS_BEFORE_VERSION_9X:
         warnings.filterwarnings("ignore", category=DeprecationWarning, module="click")
         from click import MultiCommand
 
-        class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[misc]
+        class RichMultiCommand(RichCommand, MultiCommand):
             """
             Richly formatted click MultiCommand.
 
@@ -319,13 +332,16 @@ if CLICK_IS_BEFORE_VERSION_9X:
             to print richly formatted output.
             """
 
-        @wraps(MultiCommand.__init__)
-        def __init__(self, *args: Any, **kwargs: Any) -> None:  # type: ignore[no-untyped-def]
-            """Initialize RichGroup class."""
-            from click import MultiCommand
+            @wraps(MultiCommand.__init__)
+            def __init__(self, *args: Any, **kwargs: Any) -> None:
+                """Initialize RichGroup class."""
+                from click import MultiCommand
 
-            MultiCommand.__init__(self, *args, **kwargs)
-            self._register_rich_context_settings_from_callback()
+                MultiCommand.__init__(self, *args, **kwargs)
+                self._register_rich_context_settings_from_callback()
+
+            format_options = RichGroup.format_options  # type: ignore[assignment]
+            format_commands = RichGroup.format_commands  # type: ignore[assignment]
 
 else:
 
@@ -333,7 +349,7 @@ else:
         """Deprecated class."""
 
 
-class RichCommandCollection(RichGroup, CommandCollection):  # type: ignore[misc]
+class RichCommandCollection(RichGroup, CommandCollection):
     """
     Richly formatted click CommandCollection.
 
