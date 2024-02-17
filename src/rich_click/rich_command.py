@@ -263,7 +263,7 @@ class RichCommand(click.Command):
             return super().make_context(info_name, args, parent, **extra)  # type: ignore[return-value]
 
 
-class RichGroup(Group, RichCommand):
+class RichGroup(RichCommand, Group):
     """
     Richly formatted click Group.
 
@@ -286,8 +286,8 @@ class RichGroup(Group, RichCommand):
         get_rich_commands(self, ctx, formatter)
 
     def format_options(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        super().format_options(ctx, formatter)
         self.format_commands(ctx, formatter)
-        return super().format_options(ctx, formatter)
 
     @overload
     def command(self, __func: Callable[..., Any]) -> RichCommand: ...
@@ -349,7 +349,7 @@ else:
         """Deprecated class."""
 
 
-class RichCommandCollection(RichGroup, CommandCollection):
+class RichCommandCollection(RichGroup, CommandCollection):  # type: ignore[misc]
     """
     Richly formatted click CommandCollection.
 
