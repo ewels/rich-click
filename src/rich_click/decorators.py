@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, Mapping, Optional, Type, 
 
 from click import Command, Group
 from click import command as click_command
+from click import option as click_option
 from click import pass_context as click_pass_context
 from typing_extensions import Concatenate, ParamSpec
 
@@ -9,6 +10,7 @@ from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 from rich_click.rich_command import RichCommand, RichGroup, RichMultiCommand  # noqa: F401
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
+from rich_click.rich_option import RichOption
 
 from . import rich_click  # noqa: F401
 
@@ -221,3 +223,19 @@ def pass_context(f: Callable[Concatenate[RichContext, P], R]) -> Callable[P, R]:
     # flake8: noqa: D400,D401
     """Marks a callback as wanting to receive the current context object as first argument."""
     return click_pass_context(f)  # type: ignore[arg-type]
+
+
+def option(
+    *param_decls: str,
+    **attrs: Any,
+) -> Callable[[FC], FC]:
+    """
+    Option decorator function.
+
+    Defines the option() function so that it uses the RichOption class by default.
+    """
+    attrs.setdefault("cls", RichOption)
+    return click_option(
+        *param_decls,
+        **attrs,
+    )

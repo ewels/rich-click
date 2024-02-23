@@ -16,13 +16,11 @@ from click.core import Command as Command
 from click.core import CommandCollection as CommandCollection
 from click.core import Context as Context
 from click.core import Group as Group
-from click.core import Option as Option
 from click.core import Parameter as Parameter
 from click.decorators import argument as argument
 from click.decorators import confirmation_option as confirmation_option
 from click.decorators import help_option as help_option
 from click.decorators import make_pass_decorator as make_pass_decorator
-from click.decorators import option as option
 from click.decorators import pass_obj as pass_obj
 from click.decorators import password_option as password_option
 from click.decorators import version_option as version_option
@@ -73,6 +71,7 @@ from click.utils import open_file as open_file
 
 from rich_click.decorators import command as command
 from rich_click.decorators import group as group
+from rich_click.decorators import option as option
 from rich_click.decorators import pass_context as pass_context
 from rich_click.decorators import rich_config as rich_config
 from rich_click.rich_command import RichCommand as RichCommand
@@ -80,6 +79,7 @@ from rich_click.rich_command import RichCommandCollection as RichCommandCollecti
 from rich_click.rich_command import RichGroup as RichGroup
 from rich_click.rich_context import RichContext as RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration as RichHelpConfiguration
+from rich_click.rich_option import RichOption as RichOption
 
 from . import rich_click as rich_click
 
