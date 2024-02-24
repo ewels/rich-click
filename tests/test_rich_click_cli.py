@@ -82,7 +82,7 @@ def test_simple_rich_click_cli(simple_script: Path, assert_str: AssertStr, comma
     res = subprocess.run(
         [sys.executable, "-m", "src.rich_click", "mymodule:cli", "--help"],
         stdout=subprocess.PIPE,
-        env={**os.environ, "TERMINAL_WIDTH": "100"},
+        env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
     )
 
     if CLICK_IS_BEFORE_VERSION_8X:
@@ -125,7 +125,7 @@ def test_simple_rich_click_cli_execute_command(
     subprocess_res = subprocess.run(
         [sys.executable, "-m", "src.rich_click", *command],
         stdout=subprocess.PIPE,
-        env={**os.environ, "TERMINAL_WIDTH": "100"},
+        env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
     )
 
     assert subprocess_res.stdout.decode() == "Hello, world!\n"
@@ -143,7 +143,7 @@ def test_custom_config_rich_click_cli(simple_script: Path, assert_str: AssertStr
             "--help",
         ],
         stdout=subprocess.PIPE,
-        env={**os.environ, "TERMINAL_WIDTH": "100"},
+        env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
     )
 
     if CLICK_IS_BEFORE_VERSION_8X:
@@ -189,7 +189,7 @@ def test_override_click_command(mock_script_writer: Callable[[str], Path], asser
     res = subprocess.run(
         [sys.executable, "-m", "src.rich_click", "mymodule:cli", "--help"],
         stdout=subprocess.PIPE,
-        env={**os.environ, "TERMINAL_WIDTH": "100"},
+        env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
     )
 
     if CLICK_IS_BEFORE_VERSION_8X:
@@ -243,7 +243,7 @@ def test_override_click_group(mock_script_writer: Callable[[str], Path], assert_
     res = subprocess.run(
         [sys.executable, "-m", "src.rich_click", "mymodule:cli", "--help"],
         stdout=subprocess.PIPE,
-        env={**os.environ, "TERMINAL_WIDTH": "100"},
+        env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
     )
 
     if CLICK_IS_BEFORE_VERSION_8X:
@@ -347,7 +347,7 @@ def test_override_rich_click_group(mock_script_writer: Callable[[str], Path], as
     res = subprocess.run(
         [sys.executable, "-m", "src.rich_click", "mymodule:cli", "--help"],
         stdout=subprocess.PIPE,
-        env={**os.environ, "TERMINAL_WIDTH": "100"},
+        env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
     )
 
     expected_output = """
