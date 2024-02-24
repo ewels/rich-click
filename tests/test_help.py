@@ -389,13 +389,10 @@ def test_rich_config_decorator_order(
 
     result = cli_runner.invoke(cli, "--help")
 
-    print(result.stdout)
-    print(expected_help_output)
-
-    # assert_str(
-    #     actual=result.stdout,
-    #     expectation=expected_help_output,
-    # )
+    assert_str(
+        actual=result.stdout,
+        expectation=expected_help_output,
+    )
 
 
 def test_rich_config_max_width(cli_runner: CliRunner, assert_str: AssertStr) -> None:

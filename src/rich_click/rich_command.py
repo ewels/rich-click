@@ -210,14 +210,7 @@ class RichCommand(click.Command):
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         if OVERRIDES_GUARD:
-            from rich_click.cli import _PatchedRichCommand
-            from rich_click.utils import method_is_from_subclass_of
-
-            for method_name in ["format_usage", "format_help_text", "format_options", "format_epilog"]:
-                if method_is_from_subclass_of(self.__class__, _PatchedRichCommand, method_name):
-                    getattr(RichCommand, method_name)(self, ctx, formatter)
-                else:
-                    getattr(self, method_name)(ctx, formatter)
+            prevent_incompatible_overrides(self, "RichCommand", ctx, formatter)
         else:
             self.format_usage(ctx, formatter)
             self.format_help_text(ctx, formatter)
@@ -263,7 +256,52 @@ class RichCommand(click.Command):
             return super().make_context(info_name, args, parent, **extra)  # type: ignore[return-value]
 
 
-class RichGroup(RichCommand, Group):
+if CLICK_IS_BEFORE_VERSION_9X:
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=DeprecationWarning, module="click")
+        from click import MultiCommand
+
+else:
+
+    MultiCommand = Group  # type: ignore[misc,assignment]
+
+
+class RichMultiCommand(MultiCommand, RichCommand):
+    """
+    Richly formatted click MultiCommand.
+
+    Inherits click.MultiCommand and overrides help and error methods
+    to print richly formatted output.
+    """
+
+    @wraps(MultiCommand.__init__)
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Initialize RichMultiCommand class."""
+        MultiCommand.__init__(self, *args, **kwargs)
+        self._register_rich_context_settings_from_callback()
+
+    def format_commands(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        from rich_click.rich_help_rendering import get_rich_commands
+
+        get_rich_commands(self, ctx, formatter)
+
+    def format_options(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        from rich_click.rich_help_rendering import get_rich_options
+
+        get_rich_options(self, ctx, formatter)
+        self.format_commands(ctx, formatter)
+
+    def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        if OVERRIDES_GUARD:
+            prevent_incompatible_overrides(self, "RichMultiCommand", ctx, formatter)
+        else:
+            self.format_usage(ctx, formatter)
+            self.format_help_text(ctx, formatter)
+            self.format_options(ctx, formatter)
+            self.format_epilog(ctx, formatter)
+
+
+class RichGroup(Group, RichMultiCommand):
     """
     Richly formatted click Group.
 
@@ -279,15 +317,6 @@ class RichGroup(RichCommand, Group):
         """Initialize RichGroup class."""
         Group.__init__(self, *args, **kwargs)
         self._register_rich_context_settings_from_callback()
-
-    def format_commands(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        from rich_click.rich_help_rendering import get_rich_commands
-
-        get_rich_commands(self, ctx, formatter)
-
-    def format_options(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        super().format_options(ctx, formatter)
-        self.format_commands(ctx, formatter)
 
     @overload
     def command(self, __func: Callable[..., Any]) -> RichCommand: ...
@@ -320,14 +349,7 @@ class RichGroup(RichCommand, Group):
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         if OVERRIDES_GUARD:
-            from rich_click.cli import _PatchedRichCommand
-            from rich_click.utils import method_is_from_subclass_of
-
-            for method_name in ["format_usage", "format_help_text", "format_options", "format_epilog"]:
-                if method_is_from_subclass_of(self.__class__, _PatchedRichCommand, method_name):
-                    getattr(RichGroup, method_name)(self, ctx, formatter)
-                else:
-                    getattr(self, method_name)(ctx, formatter)
+            prevent_incompatible_overrides(self, "RichGroup", ctx, formatter)
         else:
             self.format_usage(ctx, formatter)
             self.format_help_text(ctx, formatter)
@@ -335,38 +357,7 @@ class RichGroup(RichCommand, Group):
             self.format_epilog(ctx, formatter)
 
 
-if CLICK_IS_BEFORE_VERSION_9X:
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=DeprecationWarning, module="click")
-        from click import MultiCommand
-
-        class RichMultiCommand(RichCommand, MultiCommand):
-            """
-            Richly formatted click MultiCommand.
-
-            Inherits click.MultiCommand and overrides help and error methods
-            to print richly formatted output.
-            """
-
-            @wraps(MultiCommand.__init__)
-            def __init__(self, *args: Any, **kwargs: Any) -> None:
-                """Initialize RichGroup class."""
-                from click import MultiCommand
-
-                MultiCommand.__init__(self, *args, **kwargs)
-                self._register_rich_context_settings_from_callback()
-
-            format_options = RichGroup.format_options  # type: ignore[assignment]
-            format_commands = RichGroup.format_commands  # type: ignore[assignment]
-            format_help = RichGroup.format_help  # type: ignore[assignment]
-
-else:
-
-    class RichMultiCommand(RichGroup):  # type: ignore[no-redef]
-        """Deprecated class."""
-
-
-class RichCommandCollection(RichGroup, CommandCollection):  # type: ignore[misc]
+class RichCommandCollection(RichGroup, CommandCollection):
     """
     Richly formatted click CommandCollection.
 
@@ -379,3 +370,28 @@ class RichCommandCollection(RichGroup, CommandCollection):  # type: ignore[misc]
         """Initialize RichCommandCollection class."""
         CommandCollection.__init__(self, *args, **kwargs)
         self._register_rich_context_settings_from_callback()
+
+    def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        if OVERRIDES_GUARD:
+            prevent_incompatible_overrides(self, "RichCommandCollection", ctx, formatter)
+        else:
+            self.format_usage(ctx, formatter)
+            self.format_help_text(ctx, formatter)
+            self.format_options(ctx, formatter)
+            self.format_epilog(ctx, formatter)
+
+
+def prevent_incompatible_overrides(
+    cmd: RichCommand, class_name: str, ctx: RichContext, formatter: RichHelpFormatter
+) -> None:
+    """For use by the rich-click CLI."""
+    import rich_click.cli
+    from rich_click.utils import method_is_from_subclass_of
+
+    cls: Type[RichCommand] = getattr(rich_click.cli, f"_Patched{class_name}")
+
+    for method_name in ["format_usage", "format_help_text", "format_options", "format_epilog"]:
+        if method_is_from_subclass_of(cmd.__class__, cls, method_name):
+            getattr(RichCommand, method_name)(cmd, ctx, formatter)
+        else:
+            getattr(cmd, method_name)(ctx, formatter)

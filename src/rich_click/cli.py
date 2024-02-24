@@ -33,20 +33,15 @@ class _PatchedRichCommand(RichCommand):
     pass
 
 
-# TODO:
-#  I wonder if it's possible to make these # type: ignore[misc]'s go away.
-#  I feel like this could, in theory, cause issues for end users as well.
-
-
-class _PatchedRichMultiCommand(RichMultiCommand, _PatchedRichCommand):  # type: ignore[misc]
+class _PatchedRichMultiCommand(RichMultiCommand, _PatchedRichCommand):
     pass
 
 
-class _PatchedRichCommandCollection(RichCommandCollection, _PatchedRichCommand):  # type: ignore[misc]
+class _PatchedRichCommandCollection(RichCommandCollection, _PatchedRichCommand):
     pass
 
 
-class _PatchedRichGroup(RichGroup, _PatchedRichCommand):  # type: ignore[misc]
+class _PatchedRichGroup(RichGroup, _PatchedRichCommand):
     pass
 
 
