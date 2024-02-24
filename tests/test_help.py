@@ -3,15 +3,15 @@ from typing import Any, Callable, Optional, Type, Union
 
 import click
 import pytest
-import rich_click.rich_click as rc
 from click import UsageError
 from click.testing import CliRunner
 from packaging import version
 from rich.console import Console
+
+import rich_click.rich_click as rc
 from rich_click import RichContext, RichHelpConfiguration, command, group, pass_context, rich_config
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
 from rich_click.rich_command import RichCommand, RichGroup
-
 from tests.conftest import AssertRichFormat, AssertStr
 
 

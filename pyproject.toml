@@ -41,7 +41,7 @@ select = [
 #   Add vertical hanging indent when supported.
 #   https://github.com/astral-sh/ruff/issues/2600
 lines-after-imports = 2
-known-first-party = ["rich-click"]
+known-first-party = ["rich_click"]
 
 [tool.pyright]
 include = ["src"]

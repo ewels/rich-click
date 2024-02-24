@@ -7,13 +7,14 @@ from pathlib import Path
 from typing import Callable, List
 
 import pytest
-import rich_click.rich_click as rc
 from click.testing import CliRunner
 from pytest import MonkeyPatch
-from rich_click.cli import main
-from rich_click.rich_context import RichContext
 from typing_extensions import Protocol
 
+import rich_click.rich_click as rc
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
+from rich_click.cli import main
+from rich_click.rich_context import RichContext
 from tests.conftest import AssertStr
 
 
@@ -84,8 +85,13 @@ def test_simple_rich_click_cli(simple_script: Path, assert_str: AssertStr, comma
         env={**os.environ, "TERMINAL_WIDTH": "100"},
     )
 
-    expected_output = """
- Usage: python -m src.rich_click.mymodule [OPTIONS]
+    if CLICK_IS_BEFORE_VERSION_8X:
+        usage = "mymodule"
+    else:
+        usage = "python -m src.rich_click.mymodule"
+
+    expected_output = f"""
+ Usage: {usage} [OPTIONS]
 
  My help text
 
@@ -140,8 +146,13 @@ def test_custom_config_rich_click_cli(simple_script: Path, assert_str: AssertStr
         env={**os.environ, "TERMINAL_WIDTH": "100"},
     )
 
-    expected_output = """
- Usage: python -m src.rich_click.mymodule [OPTIONS]
+    if CLICK_IS_BEFORE_VERSION_8X:
+        usage = "mymodule"
+    else:
+        usage = "python -m src.rich_click.mymodule"
+
+    expected_output = f"""
+ Usage: {usage} [OPTIONS]
 
  My help text
 
@@ -181,8 +192,13 @@ def test_override_click_command(mock_script_writer: Callable[[str], Path], asser
         env={**os.environ, "TERMINAL_WIDTH": "100"},
     )
 
-    expected_output = """
- Usage: python -m src.rich_click.mymodule [OPTIONS]
+    if CLICK_IS_BEFORE_VERSION_8X:
+        usage = "mymodule"
+    else:
+        usage = "python -m src.rich_click.mymodule"
+
+    expected_output = f"""
+ Usage: {usage} [OPTIONS]
 
  My help text
 
@@ -230,8 +246,13 @@ def test_override_click_group(mock_script_writer: Callable[[str], Path], assert_
         env={**os.environ, "TERMINAL_WIDTH": "100"},
     )
 
-    expected_output = """
- Usage: python -m src.rich_click.mymodule [OPTIONS] COMMAND [ARGS]...
+    if CLICK_IS_BEFORE_VERSION_8X:
+        usage = "mymodule"
+    else:
+        usage = "python -m src.rich_click.mymodule"
+
+    expected_output = f"""
+ Usage: {usage} [OPTIONS] COMMAND [ARGS]...
 
  My help text
 
