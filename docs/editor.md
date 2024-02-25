@@ -1,11 +1,47 @@
 ---
-title: live editor
+title: 'rich-click: Live Style Editor'
 hide:
   - toc
   - navigation
 ---
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+const text = "Live Style Editor";
+let index = 0;
+
+type();
+</script>
 <style>
+    #terminal-header {
+      overflow: hidden;
+      border-right: .8em transparent; /* Change color of cursor here */
+      white-space: nowrap;
+      margin: 0 auto;
+      padding: 10px;
+      display: inline-block;
+      animation:
+        typing 1s steps(15),
+        disappear 1.2s steps(1, jump-end)
+    }
+
+    @keyframes disappear {
+        from {
+            border-right: .8em solid;
+        }
+        to {
+            border-right: .8em transparent;
+        }
+
+    }
+
+    @keyframes typing {
+      from {
+        width: 0;
+      }
+      to {
+        width: 35%;
+      }
+    }
     [data-termynal] {
         width: 100%;
         padding: 75px 25px 25px;
@@ -86,7 +122,7 @@ hide:
         opacity: 75%;
     }
 </style>
-# Live Style Editor
+<h1 id="terminal-header" style="width: 35%;">Live Style Editor</h1>
 
 This page contains a live editor for `rich-click` styles.
 
@@ -115,8 +151,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_OPTION</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-option rccfg-selector" data-target="rccfg-style-option">
-                            <option value="">(none)</option>
+                        <select class="rccfg-style-option rccfg-selector" data-target="rccfg-style-option" data-default-index="5">
+                            <option value="">none</option>
                             <option value="black">black</option>
                             <option value="blue">blue</option>
                             <option value="green">green</option>
@@ -138,8 +174,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_ARGUMENT</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-argument rccfg-selector" data-target="rccfg-style-argument">
-                            <option value="">(none)</option>
+                        <select class="rccfg-style-argument rccfg-selector" data-target="rccfg-style-argument" data-default-index="5">
+                            <option value="">none</option>
                             <option value="black">black</option>
                             <option value="blue">blue</option>
                             <option value="green">green</option>
@@ -162,8 +198,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_COMMAND</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-command rccfg-selector" data-target="rccfg-style-command">
-                            <option value="">(none)</option>
+                        <select class="rccfg-style-command rccfg-selector" data-target="rccfg-style-command" data-default-index="5">
+                            <option value="">none</option>
                             <option value="black">black</option>
                             <option value="blue">blue</option>
                             <option value="green">green</option>
@@ -186,8 +222,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_SWITCH</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-switch rccfg-selector" data-target="rccfg-style-switch">
-                            <option value="">(none)</option>
+                        <select class="rccfg-style-switch rccfg-selector" data-target="rccfg-style-switch" data-default-index="5">
+                            <option value="">none</option>
                             <option value="black">black</option>
                             <option value="blue">blue</option>
                             <option value="green">green</option>
@@ -210,8 +246,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_METAVAR</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-metavar rccfg-selector" data-target="rccfg-style-metavar">
-                            <option value="">(none)</option>
+                        <select class="rccfg-style-metavar rccfg-selector" data-target="rccfg-style-metavar" data-default-index="4">
+                            <option value="">none</option>
                             <option value="black">black</option>
                             <option value="blue">blue</option>
                             <option value="green">green</option>
@@ -234,8 +270,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_METAVAR_SEPARATOR</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-metavar-separator rccfg-selector" data-target="rccfg-style-metavar-separator">
-                            <option value="" selected>(none)</option>
+                        <select class="rccfg-style-metavar-separator rccfg-selector" data-target="rccfg-style-metavar-separator" data-default-index="0">
+                            <option value="" selected>none</option>
                             <option value="black">black</option>
                             <option value="blue">blue</option>
                             <option value="green">green</option>
@@ -258,8 +294,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_USAGE</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-usage rccfg-selector" data-target="rccfg-style-usage">
-                            <option value="">(none)</option>
+                        <select class="rccfg-style-usage rccfg-selector" data-target="rccfg-style-usage" data-default-index="4">
+                            <option value="">none</option>
                             <option value="black">black</option>
                             <option value="blue">blue</option>
                             <option value="green">green</option>
@@ -282,8 +318,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_USAGE_COMMAND</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-usage-command rccfg-selector" data-target="rccfg-style-usage-command">
-                            <option value="" selected>(none)</option>
+                        <select class="rccfg-style-usage-command rccfg-selector" data-target="rccfg-style-usage-command" data-default-index="0">
+                            <option value="" selected>none</option>
                             <option value="black">black</option>
                             <option value="blue">blue</option>
                             <option value="green">green</option>
@@ -306,8 +342,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_REQUIRED_SHORT</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-required-short rccfg-selector" data-target="rccfg-style-required-short">
-                            <option value="">(none)</option>
+                        <select class="rccfg-style-required-short rccfg-selector" data-target="rccfg-style-required-short" data-default-index="8">
+                            <option value="">none</option>
                             <option value="black">black</option>
                             <option value="blue">blue</option>
                             <option value="green">green</option>
@@ -330,8 +366,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_REQUIRED_LONG</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-required-long rccfg-selector" data-target="rccfg-style-required-long">
-                            <option value="">(none)</option>
+                        <select class="rccfg-style-required-long rccfg-selector" data-target="rccfg-style-required-long" data-default-index="8">
+                            <option value="">none</option>
                             <option value="black">black</option>
                             <option value="blue">blue</option>
                             <option value="green">green</option>
@@ -354,8 +390,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_PANEL_BORDER</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-panel-border rccfg-selector" data-target="rccfg-style-panel-border">
-                            <option value="" selected>(none)</option>
+                        <select class="rccfg-style-panel-border rccfg-selector" data-target="rccfg-style-panel-border" data-default-index="0">
+                            <option value="" selected>none</option>
                             <option value="black">black</option>
                             <option value="blue">blue</option>
                             <option value="green">green</option>
@@ -372,7 +408,6 @@ the colors in this page have been calibrated to better match how typical modern 
                         <button class="rc-button rccfg-style-panel-border rccfg-italic-button" data-target="rccfg-style-panel-border"><code>italic</code></button>
                     </td>
                 </tr>
-        
             </tbody>
         </table>
     </div>
@@ -417,7 +452,15 @@ the colors in this page have been calibrated to better match how typical modern 
     </code></pre></div>
 
 <script>
+
     $(document).ready(function() {
+
+        $(".rccfg-selector").each(function() {
+            var defaultIndex = $(this).data("default-index");
+            if (!isNaN(defaultIndex) && defaultIndex >= 0 && defaultIndex < this.options.length) {
+                this.selectedIndex = parseInt(defaultIndex);
+            }
+        });
 
         $(".rc-button.rccfg-style-argument.rccfg-bold-button").each(function() {
             $(this).click();
@@ -455,7 +498,7 @@ the colors in this page have been calibrated to better match how typical modern 
         $("." + $(this).data("target")).removeClass(function(index, className) {
             return (className.match(/(^|\s)c-\S+/g) || []).join(' ');
         });
-        if ($(this).val() != "") {
+        if ($(this).val() !== "") {
             $("span ." + $(this).data("target")).toggleClass("c-" + $(this).val());
         }
     }).change();

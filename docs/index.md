@@ -1,4 +1,5 @@
 ---
+title: <b>rich-click</b>
 hide:
   - title
   - navigation

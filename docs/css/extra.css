@@ -46,3 +46,22 @@ a.internal-link::after {
     */
   content: "\00A0↪";
 }
+
+@font-face {
+  font-family: "pixelmix";
+  src:
+    local("pixelmix"),
+    url("../fonts/pixelmix.ttf")
+}
+
+.md-header__topic, h1, h1 code {
+  font-family: "pixelmix";
+  font-size: 24px;
+  font-weight: normal;
+}
+
+.md-header__header {
+  font-family: "pixelmix";
+  font-size: 24px;
+  font-weight: normal;
+}

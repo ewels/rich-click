@@ -137,7 +137,7 @@ This works for RichCommands as well as normal click Commands.
 
 Notably, we used this functionality to help write these docs you are reading right now. :)
 
-<div class="termy">
+<div class="termy" static>
 ```console
 $ rich-click --output=html flask --help
 

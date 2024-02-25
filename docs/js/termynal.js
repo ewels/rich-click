@@ -113,18 +113,20 @@ class Termynal {
    * Start the animation and rener the lines depending on their data attributes.
    */
   async start() {
-    this.addFinish();
+    if (this.container.static) {
+      this.addFinish();
+    }
     await this._wait(this.startDelay);
 
     for (let line of this.lines) {
       const type = line.getAttribute(this.pfx);
       const delay = line.getAttribute(`${this.pfx}-delay`) || this.lineDelay;
 
-      if (type == "input") {
+      if (type === "input") {
         line.setAttribute(`${this.pfx}-cursor`, this.cursor);
         await this.type(line);
         await this._wait(delay);
-      } else if (type == "progress") {
+      } else if (type === "progress") {
         await this.progress(line);
         await this._wait(delay);
       } else {
@@ -134,7 +136,9 @@ class Termynal {
 
       line.removeAttribute(`${this.pfx}-cursor`);
     }
-    this.addRestart();
+    if (this.container.static) {
+      this.addRestart();
+    }
     this.finishElement.style.visibility = "hidden";
     this.lineDelay = this.originalLineDelay;
     this.typeDelay = this.originalTypeDelay;
