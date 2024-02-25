@@ -14,35 +14,13 @@ type();
 <style>
     #terminal-header {
       overflow: hidden;
-      border-right: .8em transparent; /* Change color of cursor here */
       white-space: nowrap;
       margin: 0 auto;
       padding: 10px;
       display: inline-block;
-      animation:
-        typing 1s steps(15),
-        disappear 1.2s steps(1, jump-end)
     }
 
-    @keyframes disappear {
-        from {
-            border-right: .8em solid;
-        }
-        to {
-            border-right: .8em transparent;
-        }
-
-    }
-
-    @keyframes typing {
-      from {
-        width: 0;
-      }
-      to {
-        width: 35%;
-      }
-    }
-    [data-termynal] {
+[data-termynal] {
         width: 100%;
         padding: 75px 25px 25px;
     }
