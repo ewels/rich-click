@@ -56,10 +56,10 @@ hide:
         color: #000000;
     }
     .rc-element.c-blue {
-        color: #000080;
+        color: #0088CC;
     }
     .rc-element.c-green {
-        color: #008000;
+        color: #338022;
     }
     .rc-element.c-yellow {
         color: #AA8800;
@@ -71,7 +71,7 @@ hide:
         color: #c0c0c0;
     }
     .rc-element.c-magenta {
-        color: #800080;
+        color: #9966AA;
     }
     .rc-element.c-red {
         color: #EE5555;
