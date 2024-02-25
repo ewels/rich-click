@@ -1,5 +1,9 @@
 name: Build images / docs
-on: [push]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 # Cancel if a newer run is started
 concurrency:
