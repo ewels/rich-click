@@ -51,17 +51,12 @@ a.internal-link::after {
   font-family: "pixelmix";
   src:
     local("pixelmix"),
-    url("../fonts/pixelmix.ttf")
+    url("../fonts/pixelmix.ttf") format("truetype")
 }
 
-.md-header__topic, h1, h1 code {
+.md-header__topic, h1, h1 code, .md-header__header {
   font-family: "pixelmix";
   font-size: 24px;
   font-weight: normal;
-}
-
-.md-header__header {
-  font-family: "pixelmix";
-  font-size: 24px;
-  font-weight: normal;
+  text-shadow: -4px 4px rgba(128, 128, 128, 0.1);
 }

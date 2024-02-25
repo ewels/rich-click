@@ -88,7 +88,7 @@ function createTermynals() {
         lineData: useLines,
         noInit: true,
         typeDelay: 50,
-        lineDelay: 500,
+        lineDelay: 500
       });
       termynals.push(termynal);
     });

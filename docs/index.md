@@ -61,7 +61,7 @@ if __name__ == '__main__':
     hello()
 ```
 
-<div class="termy">
+<div class="termy termy-static" static="true">
 
 ```console
 $ python examples/11_hello.py --help

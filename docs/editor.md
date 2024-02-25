@@ -13,6 +13,7 @@ type();
 </script>
 <style>
     #terminal-header {
+      text-shadow: -4px 4px rgba(128, 128, 128, 0.1);
       overflow: hidden;
       white-space: nowrap;
       margin: 0 auto;

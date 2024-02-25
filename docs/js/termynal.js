@@ -26,7 +26,7 @@ class Termynal {
    * @param {string} options.cursor – Character to use for cursor, defaults to ▋.
    * @param {Object[]} lineData - Dynamically loaded line data objects.
    * @param {boolean} options.noInit - Don't initialise the animation.
-   */
+   * @param {boolean} options.static - No animation; just render the text. */
   constructor(container = "#termynal", options = {}) {
     this.container =
       typeof container === "string"
@@ -62,6 +62,11 @@ class Termynal {
       this.container.getAttribute(`${this.pfx}-cursor`) ||
       "▋";
     this.lineData = this.lineDataToElements(options.lineData || []);
+    this.static =
+      options.static ||
+      this.container.hasAttribute(`static`)
+      || false;
+
     this.loadLines();
     if (!options.noInit) this.init();
   }
@@ -113,7 +118,7 @@ class Termynal {
    * Start the animation and rener the lines depending on their data attributes.
    */
   async start() {
-    if (this.container.static) {
+    if (!this.static) {
       this.addFinish();
     }
     await this._wait(this.startDelay);
@@ -136,7 +141,7 @@ class Termynal {
 
       line.removeAttribute(`${this.pfx}-cursor`);
     }
-    if (this.container.static) {
+    if (!this.static) {
       this.addRestart();
     }
     this.finishElement.style.visibility = "hidden";
