@@ -152,4 +152,26 @@ A general utility script for Flask applications.
 
 ```
 </div>
-```
+
+## Notes on how the `rich-click` CLI works
+
+Under the hood, the `rich-click` CLI is patching the `click` module, and replacing the Click decorators and `click.Command`, `click.Group`, etc. objects with their equivalent **rich-click** versions.
+
+Sometimes, a subclassed `click.Command` will overwrite one of these methods:
+
+- `click.Command.format_usage`
+- `click.Command.format_help_text`
+- `click.Command.format_options`
+- `click.MultiCommand.format_commands`
+- `click.Command.format_epilog`
+
+Patching the way `rich-click` does messes with method resolution order,
+since by the time the downstream library subclasses the `click.Command`, it will be a `RichCommand`, and the subclass's method will take precedence over the `RichCommand`'s methods.
+The problem is that **rich-click**'s methods can be incompatible or at least stylistically incongruous with the base Click help text rendering.
+
+To solve this, `rich-click` checks whether a method comes from a "true" `RichCommand` subclass or if it just looks that way due to patching.
+If `RichCommand` is "properly" subclassed, the override is allowed.
+If the subclass is only a result of the patching operation, we ignore the aforementioned methods and use the **rich-click** implementation.
+
+Long story short, the `rich-click` CLI is safe to subclassing when it is the user's intent to subclass a **rich-click** object. (This is so that you can use other nifty features of the CLI such as the `--output` option on your own **rich-click** CLIs)
+That said, custom, non-**rich-click** implementations are ignored.
