@@ -324,13 +324,7 @@ the colors in this page have been calibrated to better match how typical modern 
         </tr>
 
     </tbody>
-
 </table>
-
-    style_command: "rich.style.StyleType" = field(default="bold cyan")
-    style_switch: "rich.style.StyleType" = field(default="bold green")
-    style_metavar: "rich.style.StyleType" = field(default="bold yellow")
-    style_metavar_append: "rich.style.StyleType" = field(default="dim yellow")
 
 <script>
     document.querySelectorAll('rccfg-selector').forEach(selector => {
@@ -415,19 +409,18 @@ the colors in this page have been calibrated to better match how typical modern 
 
 <div class="termy">
 ```console
- <span class="rc-element s-bold c-yellow rccfg-style-usage">Usage:</span> <span class="rc-element s-bold rccfg-style-usage-command">docs</span> [<span class="rc-element rccfg-style-argument s-bold c-cyan">OPTIONS</span>] <span class="rc-element rccfg-style-argument s-bold c-cyan">FOO</span> <span class="rc-element rccfg-style-argument s-bold c-cyan">COMMAND</span> [<span class="rc-element rccfg-style-argument s-bold c-cyan">ARGS</span>]...
+ <span class="rc-element s-bold c-yellow rccfg-style-usage">Usage:</span> <span class="rc-element s-bold rccfg-style-usage-command">docs</span> [<span class="rc-element rccfg-style-argument s-bold c-cyan">OPTIONS</span>] <span class="rc-element rccfg-style-argument s-bold c-cyan">FOO</span> <span class="rc-element rccfg-style-argument s-bold c-cyan">COMMAND</span> [<span class="rc-element rccfg-style-argument s-bold c-cyan">ARGS</span>]...                             
 
-Help text for CLI
+ Help text for CLI
 
 <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╭─ Options ────────────────────────────────────────────────────────────╮</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span class="rc-element s-bold c-cyan rccfg-style-option">--bar</span> <span class="rc-element s-bold c-green rccfg-style-switch">-b</span> <span class="rc-element s-bold c-yellow rccfg-style-metavar">TEXT</span> Lorem ipsum <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">[default: (someval)]</span> <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span class="rc-element c-red rccfg-style-required-short">\*</span> <span class="rc-element s-bold c-cyan rccfg-style-option">--baz</span> <span class="rc-element s-bold c-yellow rccfg-style-metavar"><span class="rc-element s-dim rccfg-style-metavar-separator">[</span>a<span class="rc-element s-dim rccfg-style-metavar-separator">|</span>b<span class="rc-element s-dim rccfg-style-metavar-separator">|</span>c<span class="rc-element s-dim rccfg-style-metavar-separator">]</span></span> Choose wisely <span class="rc-element s-dim c-red rccfg-style-required-long">[required]</span> <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span <span class="rc-element s-bold c-cyan rccfg-style-option">--help</span> <span style="color: #808000; text-decoration-color: #808000; font-weight: bold"> </span> Show this message and exit. <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
+<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>    <span class="rc-element s-bold c-cyan rccfg-style-option">--bar</span>   <span class="rc-element s-bold c-green rccfg-style-switch">-b</span>  <span class="rc-element s-bold c-yellow rccfg-style-metavar">TEXT</span>     Lorem ipsum <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">[default: (someval)]</span>             <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
+<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span class="rc-element c-red rccfg-style-required-short">*</span>  <span class="rc-element s-bold c-cyan rccfg-style-option">--baz</span>       <span class="rc-element s-bold c-yellow rccfg-style-metavar"><span class="rc-element s-dim rccfg-style-metavar-separator">[</span>a<span class="rc-element s-dim rccfg-style-metavar-separator">|</span>b<span class="rc-element s-dim rccfg-style-metavar-separator">|</span>c<span class="rc-element s-dim rccfg-style-metavar-separator">]</span></span>  Choose wisely <span class="rc-element s-dim c-red rccfg-style-required-long">[required]</span>                     <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
+<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>    <span <span class="rc-element s-bold c-cyan rccfg-style-option">--help</span>      <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">       </span>  Show this message and exit.                  <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
 <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╰──────────────────────────────────────────────────────────────────────╯</span>
 <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╭─ Commands ───────────────────────────────────────────────────────────╮</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span class="rc-element c-cyan s-bold rccfg-style-command">subcommand </span> Help text for subcommand <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
+<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span class="rc-element c-cyan s-bold rccfg-style-command">subcommand           </span> Help text for subcommand                       <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
 <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╰──────────────────────────────────────────────────────────────────────╯</span>
-
 ```
 
 
@@ -512,4 +505,3 @@ Help text for CLI
         $(this).toggleClass("rc-button.button-selected");
     });
 </script>
-```
