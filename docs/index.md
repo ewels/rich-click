@@ -1,6 +1,7 @@
 ---
 hide:
   - title
+  - navigation
 ---
 
 <style>

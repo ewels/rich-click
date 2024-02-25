@@ -8,6 +8,10 @@ theme:
   name: material
   icon:
     repo: fontawesome/brands/github
+  features:
+    - navigation.tabs
+    - navigation.expand
+    - navigation.indexes
   favicon: images/favicon.png
   logo: images/favicon.png
   palette:
@@ -32,9 +36,12 @@ theme:
 
 nav:
   - Home: index.md
-  - "<code>rich-click</code> CLI tool": rich_click_cli.md
-  - Configuration:
-      - Overview: configuration/index.md
+  - "Live Style Editor": editor.md
+  - Documentation:
+      - Index: docs/index.md
+      - "<code>rich-click</code> CLI tool": rich_click_cli.md
+      - Configuration:
+        - Overview: configuration/index.md
 #  - Usage:
 #      - usage/github_action.md
 #      - usage/cli.md
@@ -70,8 +77,11 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format ""
   - pymdownx.tabbed:
       alternate_style: true
+  - attr_list
+  - md_in_html
 
 plugins:
+  - search
   - social
   # - termynal
 
