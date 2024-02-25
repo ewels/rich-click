@@ -75,7 +75,7 @@ markdown_extensions:
 
 plugins:
   - social
-  - termynal
+  # - termynal
 
 extra_css:
   - css/termynal.css

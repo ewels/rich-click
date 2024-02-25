@@ -133,7 +133,7 @@ class _RichHelpConfigurationParamType(click.ParamType):
 @click.option(
     "--output",
     type=click.Choice(["html", "svg"], case_sensitive=False),
-    help="Optionally help text as HTML or SVG. By default, help text is rendered normally.",
+    help="Optionally render help text as HTML or SVG. By default, help text is rendered normally.",
 )
 @click.option(
     # The rich-click CLI uses a special implementation of --help,
@@ -144,6 +144,7 @@ class _RichHelpConfigurationParamType(click.ParamType):
     is_eager=True,
     is_flag=True,
     help=_("Show this message and exit."),
+    # callback=help_callback
 )
 @pass_context
 @rich_config_decorator(
@@ -181,7 +182,6 @@ def main(
     You can also use this tool to print your own RichCommands as HTML with the
     --html flag.
     """  # noqa: D400, D401
-    sys.path.append(".")
     if (show_help or not script_and_args) and not ctx.resilient_parsing:
         if rich_config is not None:
             rich_config.use_markdown = False
@@ -189,6 +189,8 @@ def main(
             ctx.help_config = rich_config
         click.echo(ctx.get_help(), color=ctx.color)
         ctx.exit()
+
+    sys.path.append(".")
 
     script, *args = script_and_args
 
@@ -210,8 +212,9 @@ def main(
     module = import_module(module_path)
     function = getattr(module, function_name)
     # simply run it: it should be patched as well
-    RichContext.console = console = ctx.make_formatter().console
     if output is not None:
+        ctx.help_config = RichHelpConfiguration.load_from_globals()
+        RichContext.console = console = ctx.make_formatter().console
         console.record = True
         console.file = open(os.devnull, "w")
         RichContext.export_console_as = output

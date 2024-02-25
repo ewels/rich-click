@@ -35,5 +35,5 @@ repos:
         entry: mypy
         language: system
         types: [python]
-        exclude: ^examples/
+        exclude: ^examples|^docs/
         require_serial: true

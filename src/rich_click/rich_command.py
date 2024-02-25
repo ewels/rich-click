@@ -356,6 +356,13 @@ class RichGroup(Group, RichMultiCommand):
             self.format_options(ctx, formatter)
             self.format_epilog(ctx, formatter)
 
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        """Alias for :meth:`main`."""
+        # Include this here because I run into a false warning
+        # in the PyCharm IDE otherwise; for some reason PyCharm doesn't
+        # seem to think RichGroups are callable. (No issues with Mypy, though.)
+        return super().__call__(*args, **kwargs)
+
 
 class RichCommandCollection(RichGroup, CommandCollection):
     """

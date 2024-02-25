@@ -6,6 +6,9 @@ target-version = ['py37']
 python_version = "3.8"
 scripts_are_modules = "True"
 strict = "True"
+exclude = [
+    '.*?live_style_editor\.py$'
+]
 
 [tool.ruff]
 exclude = [
@@ -17,6 +20,7 @@ exclude = [
     "sdist",
     "tests/fixtures/**",
     "examples/**",
+    "docs/"
 ]
 ignore = [
     "D100",
