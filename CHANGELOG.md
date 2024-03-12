@@ -1,5 +1,9 @@
 # Changelog: rich-click
 
+## Version 1.7.4
+
+- Set `legacy_windows` by default to `None`, and deprecated this option.
+
 ## Version 1.7.3
 
 - Fix false deprecation warning.

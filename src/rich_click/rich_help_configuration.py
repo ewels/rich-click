@@ -145,4 +145,4 @@ class RichHelpConfiguration:
     """Use click's default function to truncate help text"""
     highlighter: rich.highlighter.Highlighter = field(default_factory=lambda: OptionHighlighter())
     """Rich regex highlighter for help highlighting"""
-    legacy_windows: Optional[bool] = field(default=False)
+    legacy_windows: Optional[bool] = field(default=None)
