@@ -114,5 +114,5 @@
     "(^|\\W)(?P<option>\\-\\-[\\w\\-]+)(?![a-zA-Z0-9])",
     "(?P<metavar>\\<[^\\>]+\\>)"
   ],
-  "legacy_windows": false
+  "legacy_windows": null
 }
