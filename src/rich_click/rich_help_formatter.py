@@ -1,3 +1,4 @@
+import sys
 from typing import Any, IO, Optional
 
 import click
@@ -83,7 +84,7 @@ class RichHelpFormatter(click.HelpFormatter):
             max_width = config.max_width or max_width
         super().__init__(indent_increment, width, max_width, *args, **kwargs)
         self._config = config or get_module_config()
-        self._console = create_console(self._config)
+        self._console = create_console(self._config, file=sys.stderr)
 
     @property
     def config(self) -> RichHelpConfiguration:
