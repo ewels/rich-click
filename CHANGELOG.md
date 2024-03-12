@@ -2,7 +2,7 @@
 
 ## Version 1.7.4
 
-- Set `legacy_windows` by default to `None`, and deprecated this option.
+- Set `legacy_windows` by default to `None`.
 
 ## Version 1.7.3
 
