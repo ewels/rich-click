@@ -22,15 +22,15 @@ repos:
         require_serial: true
         additional_dependencies:
           - isort
-      - id: black
-        name: Black - Auto-formatter.
-        description: Black is the uncompromising Python code formatter. Writing to files.
-        entry: black
-        language: python
-        types: [python]
-        require_serial: true
-        additional_dependencies:
-          - black
+      #      - id: black
+      #        name: Black - Auto-formatter.
+      #        description: Black is the uncompromising Python code formatter. Writing to files.
+      #        entry: black
+      #        language: python
+      #        types: [python]
+      #        require_serial: true
+      #        additional_dependencies:
+      #          - black
       - id: flake8
         name: Flake8 - Enforce code style and doc.
         description: A command-line utility for enforcing style consistency across Python projects.
