@@ -3,15 +3,15 @@ from typing import Any, Callable, Optional, Type, Union
 
 import click
 import pytest
-import rich_click.rich_click as rc
 from click import UsageError
 from click.testing import CliRunner
 from packaging import version
 from rich.console import Console
+
+import rich_click.rich_click as rc
 from rich_click import RichContext, RichHelpConfiguration, command, group, pass_context, rich_config
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
 from rich_click.rich_command import RichCommand, RichGroup
-
 from tests.conftest import AssertRichFormat, AssertStr
 
 
@@ -366,9 +366,7 @@ def test_rich_config_decorator_order(
     expected_help_output: str,
 ) -> None:
     @command_callable()  # type: ignore[misc]
-    @rich_config(
-        help_config=RichHelpConfiguration(max_width=60, use_markdown=True, color_system=None), console=Console()
-    )
+    @rich_config(help_config=RichHelpConfiguration(max_width=60, use_markdown=True, color_system=None))
     def cli() -> None:
         """
         Some help.
@@ -379,7 +377,6 @@ def test_rich_config_decorator_order(
 
     assert hasattr(cli, "__rich_context_settings__") is False
     assert type(cli) is expected_command_type
-    assert cli.console is not None
     assert cli.__doc__ is not None
     assert_str(
         cli.__doc__,

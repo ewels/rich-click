@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Type
 
 from typing_extensions import NotRequired, TypedDict
 
@@ -16,6 +16,18 @@ def truthy(o: Any) -> Optional[bool]:
         return None
     else:
         return bool(o)
+
+
+def method_is_from_subclass_of(cls: Type[object], base_cls: Type[object], method_name: str) -> bool:
+    """
+    Check to see whether a class's method comes from a subclass of some base class.
+
+    This is used under the hood to see whether we would expect a patched RichCommand's help text
+    methods to be compatible or incompatible with rich-click or not.
+    """
+    return any(
+        getattr(c, method_name, None) == getattr(cls, method_name) for c in cls.__mro__ if issubclass(c, base_cls)
+    )
 
 
 class CommandGroupDict(TypedDict):

@@ -4,6 +4,7 @@ import sys
 import click
 import pytest
 from click.testing import CliRunner
+
 from rich_click import RichContext, command, group, pass_context
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 
