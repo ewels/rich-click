@@ -21,7 +21,7 @@ type();
       display: inline-block;
     }
 
-[data-termynal] {
+    [data-termynal] {
         width: 100%;
         padding: 75px 25px 25px;
     }
@@ -43,7 +43,7 @@ type();
         display: inline-block;
     }
 
-@media (max-width: 74em) {
+    @media (max-width: 74em) {
         .container {
             flex-direction: column;
             align-items: center;
@@ -64,9 +64,6 @@ type();
         }
 }
 
-    .rc-button.button-selected code {
-        background-color: rgba(223, 200, 128, 0.4);
-    }
     .rc-element.c-black {
         color: #000000;
     }
@@ -141,7 +138,10 @@ type();
     }
     .color-option.selected-color {
         opacity: 1;
-    }    
+    }
+    .rc-button.button-selected code {
+      background-color: rgba(127, 127, 127, 0.4);
+    }
 </style>
 <h1 id="terminal-header" style="width: 35%;">Live Style Editor</h1>
 

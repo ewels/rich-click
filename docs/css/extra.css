@@ -8,19 +8,8 @@
   display: none; /* Hide light images in dark mode */
 }
 
-:root {
-  --editor-button:  rgba(223, 200, 128, 0.5);
-}
-
-[data-md-color-scheme="dark"] {
-  --editor-button: rgba(223, 200, 128, 0.9);
-}
-[data-md-color-scheme="light"] {
-  --editor-button: rgba(223, 200, 128, 0.2);
-}
-
 .rc-button.button-selected code {
-    background-color: var(--editor-button);
+  background-color: rgba(127, 127, 127, 0.4);
 }
 
 .termynal-comment {
