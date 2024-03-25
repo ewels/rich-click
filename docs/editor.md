@@ -100,6 +100,48 @@ type();
     .rc-element.s-dim {
         opacity: 75%;
     }
+    .color-option[data-color="black"] {
+        background-color: #000000;
+    }
+    .color-option[data-color="blue"] {
+        background-color: #0088CC;
+    }
+    .color-option[data-color="green"] {
+        background-color: #338022;
+    }
+    .color-option[data-color="yellow"] {
+        background-color: #AA8800;
+    }
+    .color-option[data-color="cyan"] {
+        background-color: #009090;
+    }
+    .color-option[data-color="white"] {
+        background-color: #c0c0c0;
+    }
+    .color-option[data-color="magenta"] {
+        background-color: #9966AA;
+    }
+    .color-option[data-color="red"] {
+        background-color: #EE5555;
+    }
+    .color-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1.1em);
+        grid-gap: 0.2em;
+    }
+    .color-option {
+        width: 1.1em;
+        height: 1.1em;
+        cursor: pointer;
+        opacity: 0.2;
+        transition: opacity 0.2s ease;
+    }
+    .color-option:hover {
+        opacity: 0.8;
+    }
+    .color-option.selected-color {
+        opacity: 1;
+    }    
 </style>
 <h1 id="terminal-header" style="width: 35%;">Live Style Editor</h1>
 
@@ -130,17 +172,16 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_OPTION</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-option rccfg-selector" data-target="rccfg-style-option" data-default-index="5">
-                            <option value="">none</option>
-                            <option value="black">black</option>
-                            <option value="blue">blue</option>
-                            <option value="green">green</option>
-                            <option value="yellow">yellow</option>
-                            <option value="cyan" selected>cyan</option>
-                            <option value="white">white</option>
-                            <option value="magenta">magenta</option>
-                            <option value="red">red</option>
-                        </select>
+                        <div class="rccfg-style-option color-grid" data-target="rccfg-style-option">
+                            <div class="color-option" data-color="black"></div>
+                            <div class="color-option" data-color="blue"></div>
+                            <div class="color-option" data-color="green"></div>
+                            <div class="color-option" data-color="yellow"></div>
+                            <div class="color-option selected-color" data-color="cyan"></div>
+                            <div class="color-option" data-color="white"></div>
+                            <div class="color-option" data-color="magenta"></div>
+                            <div class="color-option" data-color="red"></div>
+                        </div>
                     </td>
                     <td>
                         <button class="rc-button rccfg-style-option rccfg-dim-button" data-target="rccfg-style-option"><code>dim</code></button>
@@ -153,17 +194,16 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_ARGUMENT</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-argument rccfg-selector" data-target="rccfg-style-argument" data-default-index="5">
-                            <option value="">none</option>
-                            <option value="black">black</option>
-                            <option value="blue">blue</option>
-                            <option value="green">green</option>
-                            <option value="yellow">yellow</option>
-                            <option value="cyan" selected>cyan</option>
-                            <option value="white">white</option>
-                            <option value="magenta">magenta</option>
-                            <option value="red">red</option>
-                        </select>
+                        <div class="rccfg-style-argument color-grid" data-target="rccfg-style-argument">
+                            <div class="color-option" data-color="black"></div>
+                            <div class="color-option" data-color="blue"></div>
+                            <div class="color-option" data-color="green"></div>
+                            <div class="color-option" data-color="yellow"></div>
+                            <div class="color-option selected-color" data-color="cyan"></div>
+                            <div class="color-option" data-color="white"></div>
+                            <div class="color-option" data-color="magenta"></div>
+                            <div class="color-option" data-color="red"></div>
+                        </div>
                     </td>
                     <td>
                         <button class="rc-button rccfg-style-argument rccfg-dim-button" data-target="rccfg-style-argument"><code>dim</code></button>
@@ -177,17 +217,16 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_COMMAND</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-command rccfg-selector" data-target="rccfg-style-command" data-default-index="5">
-                            <option value="">none</option>
-                            <option value="black">black</option>
-                            <option value="blue">blue</option>
-                            <option value="green">green</option>
-                            <option value="yellow">yellow</option>
-                            <option value="cyan" selected>cyan</option>
-                            <option value="white">white</option>
-                            <option value="magenta">magenta</option>
-                            <option value="red">red</option>
-                        </select>
+                        <div class="rccfg-style-command color-grid" data-target="rccfg-style-command">
+                            <div class="color-option" data-color="black"></div>
+                            <div class="color-option" data-color="blue"></div>
+                            <div class="color-option" data-color="green"></div>
+                            <div class="color-option" data-color="yellow"></div>
+                            <div class="color-option selected-color" data-color="cyan"></div>
+                            <div class="color-option" data-color="white"></div>
+                            <div class="color-option" data-color="magenta"></div>
+                            <div class="color-option" data-color="red"></div>
+                        </div>
                     </td>
                     <td>
                         <button class="rc-button rccfg-style-command rccfg-dim-button" data-target="rccfg-style-command"><code>dim</code></button>
@@ -201,17 +240,16 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_SWITCH</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-switch rccfg-selector" data-target="rccfg-style-switch" data-default-index="5">
-                            <option value="">none</option>
-                            <option value="black">black</option>
-                            <option value="blue">blue</option>
-                            <option value="green">green</option>
-                            <option value="yellow">yellow</option>
-                            <option value="cyan" selected>cyan</option>
-                            <option value="white">white</option>
-                            <option value="magenta">magenta</option>
-                            <option value="red">red</option>
-                        </select>
+                        <div class="rccfg-style-switch color-grid" data-target="rccfg-style-switch">
+                            <div class="color-option" data-color="black"></div>
+                            <div class="color-option" data-color="blue"></div>
+                            <div class="color-option selected-color" data-color="green"></div>
+                            <div class="color-option" data-color="yellow"></div>
+                            <div class="color-option" data-color="cyan"></div>
+                            <div class="color-option" data-color="white"></div>
+                            <div class="color-option" data-color="magenta"></div>
+                            <div class="color-option" data-color="red"></div>
+                        </div>
                     </td>
                     <td>
                         <button class="rc-button rccfg-style-switch rccfg-dim-button" data-target="rccfg-style-switch"><code>dim</code></button>
@@ -225,17 +263,16 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_METAVAR</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-metavar rccfg-selector" data-target="rccfg-style-metavar" data-default-index="4">
-                            <option value="">none</option>
-                            <option value="black">black</option>
-                            <option value="blue">blue</option>
-                            <option value="green">green</option>
-                            <option value="yellow" selected>yellow</option>
-                            <option value="cyan">cyan</option>
-                            <option value="white">white</option>
-                            <option value="magenta">magenta</option>
-                            <option value="red">red</option>
-                        </select>
+                        <div class="rccfg-style-metavar color-grid" data-target="rccfg-style-metavar">
+                            <div class="color-option" data-color="black"></div>
+                            <div class="color-option" data-color="blue"></div>
+                            <div class="color-option" data-color="green"></div>
+                            <div class="color-option selected-color" data-color="yellow"></div>
+                            <div class="color-option" data-color="cyan"></div>
+                            <div class="color-option" data-color="white"></div>
+                            <div class="color-option" data-color="magenta"></div>
+                            <div class="color-option" data-color="red"></div>
+                        </div>
                     </td>
                     <td>
                         <button class="rc-button rccfg-style-metavar rccfg-dim-button" data-target="rccfg-style-metavar"><code>dim</code></button>
@@ -249,17 +286,16 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_METAVAR_SEPARATOR</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-metavar-separator rccfg-selector" data-target="rccfg-style-metavar-separator" data-default-index="0">
-                            <option value="" selected>none</option>
-                            <option value="black">black</option>
-                            <option value="blue">blue</option>
-                            <option value="green">green</option>
-                            <option value="yellow">yellow</option>
-                            <option value="cyan">cyan</option>
-                            <option value="white">white</option>
-                            <option value="magenta">magenta</option>
-                            <option value="red">red</option>
-                        </select>
+                        <div class="rccfg-style-metavar-separator color-grid" data-target="rccfg-style-metavar-separator">
+                            <div class="color-option" data-color="black"></div>
+                            <div class="color-option" data-color="blue"></div>
+                            <div class="color-option" data-color="green"></div>
+                            <div class="color-option" data-color="yellow"></div>
+                            <div class="color-option" data-color="cyan"></div>
+                            <div class="color-option" data-color="white"></div>
+                            <div class="color-option" data-color="magenta"></div>
+                            <div class="color-option" data-color="red"></div>
+                        </div>
                     </td>
                     <td>
                         <button class="rc-button rccfg-style-metavar-separator rccfg-dim-button" data-target="rccfg-style-metavar-separator"><code>dim</code></button>
@@ -273,17 +309,16 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_USAGE</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-usage rccfg-selector" data-target="rccfg-style-usage" data-default-index="4">
-                            <option value="">none</option>
-                            <option value="black">black</option>
-                            <option value="blue">blue</option>
-                            <option value="green">green</option>
-                            <option value="yellow" selected>yellow</option>
-                            <option value="cyan">cyan</option>
-                            <option value="white">white</option>
-                            <option value="magenta">magenta</option>
-                            <option value="red">red</option>
-                        </select>
+                        <div class="rccfg-style-usage color-grid" data-target="rccfg-style-usage">
+                            <div class="color-option" data-color="black"></div>
+                            <div class="color-option" data-color="blue"></div>
+                            <div class="color-option" data-color="green"></div>
+                            <div class="color-option selected-color" data-color="yellow"></div>
+                            <div class="color-option" data-color="cyan"></div>
+                            <div class="color-option" data-color="white"></div>
+                            <div class="color-option" data-color="magenta"></div>
+                            <div class="color-option" data-color="red"></div>
+                        </div>
                     </td>
                     <td>
                         <button class="rc-button rccfg-style-usage rccfg-dim-button" data-target="rccfg-style-usage"><code>dim</code></button>
@@ -297,17 +332,16 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_USAGE_COMMAND</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-usage-command rccfg-selector" data-target="rccfg-style-usage-command" data-default-index="0">
-                            <option value="" selected>none</option>
-                            <option value="black">black</option>
-                            <option value="blue">blue</option>
-                            <option value="green">green</option>
-                            <option value="yellow">yellow</option>
-                            <option value="cyan">cyan</option>
-                            <option value="white">white</option>
-                            <option value="magenta">magenta</option>
-                            <option value="red">red</option>
-                        </select>
+                        <div class="rccfg-style-usage-command color-grid" data-target="rccfg-style-usage-command">
+                            <div class="color-option" data-color="black"></div>
+                            <div class="color-option" data-color="blue"></div>
+                            <div class="color-option" data-color="green"></div>
+                            <div class="color-option" data-color="yellow"></div>
+                            <div class="color-option" data-color="cyan"></div>
+                            <div class="color-option" data-color="white"></div>
+                            <div class="color-option" data-color="magenta"></div>
+                            <div class="color-option" data-color="red"></div>
+                        </div>
                     </td>
                     <td>
                         <button class="rc-button rccfg-style-usage-command rccfg-dim-button" data-target="rccfg-style-usage-command"><code>dim</code></button>
@@ -321,17 +355,16 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_REQUIRED_SHORT</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-required-short rccfg-selector" data-target="rccfg-style-required-short" data-default-index="8">
-                            <option value="">none</option>
-                            <option value="black">black</option>
-                            <option value="blue">blue</option>
-                            <option value="green">green</option>
-                            <option value="yellow">yellow</option>
-                            <option value="cyan">cyan</option>
-                            <option value="white">white</option>
-                            <option value="magenta">magenta</option>
-                            <option value="red" selected>red</option>
-                        </select>
+                        <div class="rccfg-style-required-short color-grid" data-target="rccfg-style-required-short">
+                            <div class="color-option" data-color="black"></div>
+                            <div class="color-option" data-color="blue"></div>
+                            <div class="color-option" data-color="green"></div>
+                            <div class="color-option" data-color="yellow"></div>
+                            <div class="color-option" data-color="cyan"></div>
+                            <div class="color-option" data-color="white"></div>
+                            <div class="color-option" data-color="magenta"></div>
+                            <div class="color-option selected-color" data-color="red"></div>
+                        </div>
                     </td>
                     <td>
                         <button class="rc-button rccfg-style-required-short rccfg-dim-button" data-target="rccfg-style-required-short"><code>dim</code></button>
@@ -345,17 +378,16 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_REQUIRED_LONG</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-required-long rccfg-selector" data-target="rccfg-style-required-long" data-default-index="8">
-                            <option value="">none</option>
-                            <option value="black">black</option>
-                            <option value="blue">blue</option>
-                            <option value="green">green</option>
-                            <option value="yellow">yellow</option>
-                            <option value="cyan">cyan</option>
-                            <option value="white">white</option>
-                            <option value="magenta">magenta</option>
-                            <option value="red" selected>red</option>
-                        </select>
+                        <div class="rccfg-style-required-long color-grid" data-target="rccfg-style-required-long">
+                            <div class="color-option" data-color="black"></div>
+                            <div class="color-option" data-color="blue"></div>
+                            <div class="color-option" data-color="green"></div>
+                            <div class="color-option" data-color="yellow"></div>
+                            <div class="color-option" data-color="cyan"></div>
+                            <div class="color-option" data-color="white"></div>
+                            <div class="color-option" data-color="magenta"></div>
+                            <div class="color-option selected-color" data-color="red"></div>
+                        </div>
                     </td>
                     <td>
                         <button class="rc-button rccfg-style-required-long rccfg-dim-button" data-target="rccfg-style-required-long"><code>dim</code></button>
@@ -369,17 +401,16 @@ the colors in this page have been calibrated to better match how typical modern 
                         <label for="color-select">STYLE_PANEL_BORDER</label>
                     </td>
                     <td>
-                        <select class="rccfg-style-panel-border rccfg-selector" data-target="rccfg-style-panel-border" data-default-index="0">
-                            <option value="" selected>none</option>
-                            <option value="black">black</option>
-                            <option value="blue">blue</option>
-                            <option value="green">green</option>
-                            <option value="yellow">yellow</option>
-                            <option value="cyan">cyan</option>
-                            <option value="white">white</option>
-                            <option value="magenta">magenta</option>
-                            <option value="red">red</option>
-                        </select>
+                        <div class="rccfg-style-panel-border color-grid" data-target="rccfg-style-panel-border">
+                            <div class="color-option" data-color="black"></div>
+                            <div class="color-option" data-color="blue"></div>
+                            <div class="color-option" data-color="green"></div>
+                            <div class="color-option" data-color="yellow"></div>
+                            <div class="color-option" data-color="cyan"></div>
+                            <div class="color-option" data-color="white"></div>
+                            <div class="color-option" data-color="magenta"></div>
+                            <div class="color-option" data-color="red"></div>
+                        </div>
                     </td>
                     <td>
                         <button class="rc-button rccfg-style-panel-border rccfg-dim-button" data-target="rccfg-style-panel-border"><code>dim</code></button>
@@ -434,6 +465,8 @@ the colors in this page have been calibrated to better match how typical modern 
 
     $(document).ready(function() {
 
+        $(".color-option.selected-color").addClass("selected");
+
         $(".rccfg-selector").each(function() {
             var defaultIndex = $(this).data("default-index");
             if (!isNaN(defaultIndex) && defaultIndex >= 0 && defaultIndex < this.options.length) {
@@ -473,13 +506,18 @@ the colors in this page have been calibrated to better match how typical modern 
 </script>
 
 <script>
-    $(".rccfg-selector").change(function() {
-        $("." + $(this).data("target")).removeClass(function(index, className) {
+    $(".color-grid .color-option").click(function() {
+        var colorGrid = $(this).closest(".color-grid");
+        var targetClass = colorGrid.data("target");
+
+        colorGrid.find(".color-option").not(this).removeClass("selected-color");
+
+        $("." + targetClass).removeClass(function(index, className) {
             return (className.match(/(^|\s)c-\S+/g) || []).join(' ');
         });
-        if ($(this).val() !== "") {
-            $("span ." + $(this).data("target")).toggleClass("c-" + $(this).val());
-        }
+        var isSelected = $(this).hasClass("selected-color");
+        $("span ." + targetClass).toggleClass("c-" + $(this).data("color"), !isSelected);
+        $(this).toggleClass("selected-color");
     }).change();
 
     $(".rccfg-bold-button").click(function() {
