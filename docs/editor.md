@@ -509,19 +509,6 @@ The colors in this page have been calibrated to better match how typical modern 
     </div>
 </div>
 
-```python
-@click.group("my-command")
-@click.argument("foo")
-@click.option("--bar", "-b", help="Lorem ipsum", show_default="someval")
-@click.option("--baz", required=True, help="Choose wisely", type=click.Choice(["a", "b", "c"]))
-def cli(foo, bar, baz):
-    """
-    Help text for CLI
-
-    Second line of help text.
-    """
-```
-
 === "`RichHelpConfiguration()`"
     <div class="copy highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">rich_click</span> <span class="k">as</span> <span class="nn">click</span><br>
     <span class="n">help_config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichClickConfiguration</span><span class="p">(</span>
