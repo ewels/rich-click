@@ -46,7 +46,7 @@ pip install rich-click
 
 To use rich-click in your code, replace `import click` with `import rich_click as click` in your existing click CLI:
 
-```python
+```{ .python .copy }
 import rich_click as click
 
 @click.command()
