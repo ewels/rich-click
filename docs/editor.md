@@ -95,7 +95,7 @@ type();
         font-weight: bold;
     }
     .rc-element.s-dim {
-        opacity: 75%;
+        opacity: 50%;
     }
     .color-option[data-color="black"] {
         background-color: #000000;
@@ -184,8 +184,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         </div>
                     </td>
                     <td>
-                        <button class="rc-button rccfg-style-option rccfg-dim-button" data-target="rccfg-style-option"><code>dim</code></button>
                         <button class="rc-button rccfg-style-option rccfg-bold-button" data-target="rccfg-style-option"><code>bold</code></button>
+                        <button class="rc-button rccfg-style-option rccfg-dim-button" data-target="rccfg-style-option"><code>dim</code></button>
                         <button class="rc-button rccfg-style-option rccfg-italic-button" data-target="rccfg-style-option"><code>italic</code></button>
                     </td>
                 </tr>
@@ -206,8 +206,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         </div>
                     </td>
                     <td>
-                        <button class="rc-button rccfg-style-argument rccfg-dim-button" data-target="rccfg-style-argument"><code>dim</code></button>
                         <button class="rc-button rccfg-style-argument rccfg-bold-button" data-target="rccfg-style-argument"><code>bold</code></button>
+                        <button class="rc-button rccfg-style-argument rccfg-dim-button" data-target="rccfg-style-argument"><code>dim</code></button>
                         <button class="rc-button rccfg-style-argument rccfg-italic-button" data-target="rccfg-style-argument"><code>italic</code></button>
                     </td>
                 </tr>
@@ -229,8 +229,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         </div>
                     </td>
                     <td>
-                        <button class="rc-button rccfg-style-command rccfg-dim-button" data-target="rccfg-style-command"><code>dim</code></button>
                         <button class="rc-button rccfg-style-command rccfg-bold-button" data-target="rccfg-style-command"><code>bold</code></button>
+                        <button class="rc-button rccfg-style-command rccfg-dim-button" data-target="rccfg-style-command"><code>dim</code></button>
                         <button class="rc-button rccfg-style-command rccfg-italic-button" data-target="rccfg-style-command"><code>italic</code></button>
                     </td>
                 </tr>
@@ -252,8 +252,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         </div>
                     </td>
                     <td>
-                        <button class="rc-button rccfg-style-switch rccfg-dim-button" data-target="rccfg-style-switch"><code>dim</code></button>
                         <button class="rc-button rccfg-style-switch rccfg-bold-button" data-target="rccfg-style-switch"><code>bold</code></button>
+                        <button class="rc-button rccfg-style-switch rccfg-dim-button" data-target="rccfg-style-switch"><code>dim</code></button>
                         <button class="rc-button rccfg-style-switch rccfg-italic-button" data-target="rccfg-style-switch"><code>italic</code></button>
                     </td>
                 </tr>
@@ -275,8 +275,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         </div>
                     </td>
                     <td>
-                        <button class="rc-button rccfg-style-metavar rccfg-dim-button" data-target="rccfg-style-metavar"><code>dim</code></button>
                         <button class="rc-button rccfg-style-metavar rccfg-bold-button" data-target="rccfg-style-metavar"><code>bold</code></button>
+                        <button class="rc-button rccfg-style-metavar rccfg-dim-button" data-target="rccfg-style-metavar"><code>dim</code></button>
                         <button class="rc-button rccfg-style-metavar rccfg-italic-button" data-target="rccfg-style-metavar"><code>italic</code></button>
                     </td>
                 </tr>
@@ -298,8 +298,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         </div>
                     </td>
                     <td>
-                        <button class="rc-button rccfg-style-metavar-separator rccfg-dim-button" data-target="rccfg-style-metavar-separator"><code>dim</code></button>
                         <button class="rc-button rccfg-style-metavar-separator rccfg-bold-button" data-target="rccfg-style-metavar-separator"><code>bold</code></button>
+                        <button class="rc-button rccfg-style-metavar-separator rccfg-dim-button" data-target="rccfg-style-metavar-separator"><code>dim</code></button>
                         <button class="rc-button rccfg-style-metavar-separator rccfg-italic-button" data-target="rccfg-style-metavar-separator"><code>italic</code></button>
                     </td>
                 </tr>
@@ -321,8 +321,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         </div>
                     </td>
                     <td>
-                        <button class="rc-button rccfg-style-usage rccfg-dim-button" data-target="rccfg-style-usage"><code>dim</code></button>
                         <button class="rc-button rccfg-style-usage rccfg-bold-button" data-target="rccfg-style-usage"><code>bold</code></button>
+                        <button class="rc-button rccfg-style-usage rccfg-dim-button" data-target="rccfg-style-usage"><code>dim</code></button>
                         <button class="rc-button rccfg-style-usage rccfg-italic-button" data-target="rccfg-style-usage"><code>italic</code></button>
                     </td>
                 </tr>
@@ -344,8 +344,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         </div>
                     </td>
                     <td>
-                        <button class="rc-button rccfg-style-usage-command rccfg-dim-button" data-target="rccfg-style-usage-command"><code>dim</code></button>
                         <button class="rc-button rccfg-style-usage-command rccfg-bold-button" data-target="rccfg-style-usage-command"><code>bold</code></button>
+                        <button class="rc-button rccfg-style-usage-command rccfg-dim-button" data-target="rccfg-style-usage-command"><code>dim</code></button>
                         <button class="rc-button rccfg-style-usage-command rccfg-italic-button" data-target="rccfg-style-usage-command"><code>italic</code></button>
                     </td>
                 </tr>
@@ -367,8 +367,8 @@ the colors in this page have been calibrated to better match how typical modern 
                         </div>
                     </td>
                     <td>
-                        <button class="rc-button rccfg-style-required-short rccfg-dim-button" data-target="rccfg-style-required-short"><code>dim</code></button>
                         <button class="rc-button rccfg-style-required-short rccfg-bold-button" data-target="rccfg-style-required-short"><code>bold</code></button>
+                        <button class="rc-button rccfg-style-required-short rccfg-dim-button" data-target="rccfg-style-required-short"><code>dim</code></button>
                         <button class="rc-button rccfg-style-required-short rccfg-italic-button" data-target="rccfg-style-required-short"><code>italic</code></button>
                     </td>
                 </tr>
@@ -390,18 +390,18 @@ the colors in this page have been calibrated to better match how typical modern 
                         </div>
                     </td>
                     <td>
-                        <button class="rc-button rccfg-style-required-long rccfg-dim-button" data-target="rccfg-style-required-long"><code>dim</code></button>
                         <button class="rc-button rccfg-style-required-long rccfg-bold-button" data-target="rccfg-style-required-long"><code>bold</code></button>
+                        <button class="rc-button rccfg-style-required-long rccfg-dim-button" data-target="rccfg-style-required-long"><code>dim</code></button>
                         <button class="rc-button rccfg-style-required-long rccfg-italic-button" data-target="rccfg-style-required-long"><code>italic</code></button>
                     </td>
                 </tr>
         
                 <tr>
                     <td>
-                        <label for="color-select">STYLE_PANEL_BORDER</label>
+                        <label for="color-select">STYLE_OPTIONS_PANEL_BORDER</label>
                     </td>
                     <td>
-                        <div class="rccfg-style-panel-border color-grid" data-target="rccfg-style-panel-border">
+                        <div class="rccfg-style-options-panel-border color-grid" data-target="rccfg-style-options-panel-border">
                             <div class="color-option" data-color="black"></div>
                             <div class="color-option" data-color="blue"></div>
                             <div class="color-option" data-color="green"></div>
@@ -413,9 +413,31 @@ the colors in this page have been calibrated to better match how typical modern 
                         </div>
                     </td>
                     <td>
-                        <button class="rc-button rccfg-style-panel-border rccfg-dim-button" data-target="rccfg-style-panel-border"><code>dim</code></button>
-                        <button class="rc-button rccfg-style-panel-border rccfg-bold-button" data-target="rccfg-style-panel-border"><code>bold</code></button>
-                        <button class="rc-button rccfg-style-panel-border rccfg-italic-button" data-target="rccfg-style-panel-border"><code>italic</code></button>
+                        <button class="rc-button rccfg-style-options-panel-border rccfg-bold-button" data-target="rccfg-style-options-panel-border"><code>bold</code></button>
+                        <button class="rc-button rccfg-style-options-panel-border rccfg-dim-button" data-target="rccfg-style-options-panel-border"><code>dim</code></button>
+                        <button class="rc-button rccfg-style-options-panel-border rccfg-italic-button" data-target="rccfg-style-options-panel-border"><code>italic</code></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="color-select">STYLE_COMMANDS_PANEL_BORDER</label>
+                    </td>
+                    <td>
+                        <div class="rccfg-style-commands-panel-border color-grid" data-target="rccfg-style-commands-panel-border">
+                            <div class="color-option" data-color="black"></div>
+                            <div class="color-option" data-color="blue"></div>
+                            <div class="color-option" data-color="green"></div>
+                            <div class="color-option" data-color="yellow"></div>
+                            <div class="color-option" data-color="cyan"></div>
+                            <div class="color-option" data-color="white"></div>
+                            <div class="color-option" data-color="magenta"></div>
+                            <div class="color-option" data-color="red"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="rc-button rccfg-style-commands-panel-border rccfg-bold-button" data-target="rccfg-style-commands-panel-border"><code>bold</code></button>
+                        <button class="rc-button rccfg-style-commands-panel-border rccfg-dim-button" data-target="rccfg-style-commands-panel-border"><code>dim</code></button>
+                        <button class="rc-button rccfg-style-commands-panel-border rccfg-italic-button" data-target="rccfg-style-commands-panel-border"><code>italic</code></button>
                     </td>
                 </tr>
             </tbody>
@@ -428,14 +450,14 @@ the colors in this page have been calibrated to better match how typical modern 
         
          Help text for CLI
         
-        <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╭─ Options ────────────────────────────────────────────────────────────╮</span>
-        <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>    <span class="rc-element s-bold c-cyan rccfg-style-option">--bar</span>   <span class="rc-element s-bold c-green rccfg-style-switch">-b</span>  <span class="rc-element s-bold c-yellow rccfg-style-metavar">TEXT</span>     Lorem ipsum <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">[default: (someval)]</span>             <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-        <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span class="rc-element c-red rccfg-style-required-short">*</span>  <span class="rc-element s-bold c-cyan rccfg-style-option">--baz</span>       <span class="rc-element s-bold c-yellow rccfg-style-metavar"><span class="rc-element s-dim rccfg-style-metavar-separator">[</span>a<span class="rc-element s-dim rccfg-style-metavar-separator">|</span>b<span class="rc-element s-dim rccfg-style-metavar-separator">|</span>c<span class="rc-element s-dim rccfg-style-metavar-separator">]</span></span>  Choose wisely <span class="rc-element s-dim c-red rccfg-style-required-long">[required]</span>                     <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-        <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>    <span <span class="rc-element s-bold c-cyan rccfg-style-option">--help</span>      <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">       </span>  Show this message and exit.                  <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-        <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╰──────────────────────────────────────────────────────────────────────╯</span>
-        <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╭─ Commands ───────────────────────────────────────────────────────────╮</span>
-        <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span class="rc-element c-cyan s-bold rccfg-style-command">subcommand           </span> Help text for subcommand                       <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-        <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╰──────────────────────────────────────────────────────────────────────╯</span>
+        <span class="rc-element s-dim rccfg-style-options-panel-border">╭─ Options ────────────────────────────────────────────────────────────╮</span>
+        <span class="rc-element s-dim rccfg-style-options-panel-border">│</span>    <span class="rc-element s-bold c-cyan rccfg-style-option">--bar</span>   <span class="rc-element s-bold c-green rccfg-style-switch">-b</span>  <span class="rc-element s-bold c-yellow rccfg-style-metavar">TEXT</span>     Lorem ipsum <span class="rc-element s-dim rccfg-style-options-panel-border">[default: (someval)]</span>             <span class="rc-element s-dim rccfg-style-options-panel-border">│</span>
+        <span class="rc-element s-dim rccfg-style-options-panel-border">│</span> <span class="rc-element c-red rccfg-style-required-short">*</span>  <span class="rc-element s-bold c-cyan rccfg-style-option">--baz</span>       <span class="rc-element s-bold c-yellow rccfg-style-metavar"><span class="rc-element s-dim rccfg-style-metavar-separator">[</span>a<span class="rc-element s-dim rccfg-style-metavar-separator">|</span>b<span class="rc-element s-dim rccfg-style-metavar-separator">|</span>c<span class="rc-element s-dim rccfg-style-metavar-separator">]</span></span>  Choose wisely <span class="rc-element s-dim c-red rccfg-style-required-long">[required]</span>                     <span class="rc-element s-dim rccfg-style-options-panel-border">│</span>
+        <span class="rc-element s-dim rccfg-style-options-panel-border">│</span>    <span <span class="rc-element s-bold c-cyan rccfg-style-option">--help</span>      <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">       </span>  Show this message and exit.                  <span class="rc-element s-dim rccfg-style-options-panel-border">│</span>
+        <span class="rc-element s-dim rccfg-style-options-panel-border">╰──────────────────────────────────────────────────────────────────────╯</span>
+        <span class="rc-element s-dim rccfg-style-commands-panel-border">╭─ Commands ───────────────────────────────────────────────────────────╮</span>
+        <span class="rc-element s-dim rccfg-style-commands-panel-border">│</span> <span class="rc-element c-cyan s-bold rccfg-style-command">subcommand           </span> Help text for subcommand                       <span class="rc-element s-dim rccfg-style-commands-panel-border">│</span>
+        <span class="rc-element s-dim rccfg-style-commands-panel-border">╰──────────────────────────────────────────────────────────────────────╯</span>
         ```
         </div>
     </div>
@@ -446,8 +468,18 @@ the colors in this page have been calibrated to better match how typical modern 
 
 === "Global config"
     <div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">rich_click</span> <span class="k">as</span> <span class="nn">click</span><br>
-    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_OPTION</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_ARGUMENT</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><br>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_OPTION</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-option">bold </span><span class="rccfg-code-dim rccfg-style-option"></span><span class="rccfg-code-italic rccfg-style-option"></span><span class="rccfg-code-color rccfg-style-option">cyan</span></span>&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_ARGUMENT</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-argument">bold </span><span class="rccfg-code-dim rccfg-style-argument"></span><span class="rccfg-code-italic rccfg-style-argument"></span><span class="rccfg-code-color rccfg-style-argument">cyan</span></span>&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_COMMAND</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-command">bold </span><span class="rccfg-code-dim rccfg-style-command"></span><span class="rccfg-code-italic rccfg-style-command"></span><span class="rccfg-code-color rccfg-style-command">cyan</span></span>&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_SWITCH</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-switch">bold </span><span class="rccfg-code-dim rccfg-style-switch"></span><span class="rccfg-code-italic rccfg-style-switch"></span><span class="rccfg-code-color rccfg-style-switch">green</span></span>&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_METAVAR</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-metavar">bold </span><span class="rccfg-code-dim rccfg-style-metavar"></span><span class="rccfg-code-italic rccfg-style-metavar"></span><span class="rccfg-code-color rccfg-style-metavar">yellow</span></span>&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_METAVAR_SEPARATOR</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-metavar-separator"></span><span class="rccfg-code-dim rccfg-style-metavar-separator">dim</span><span class="rccfg-code-italic rccfg-style-metavar-separator"></span><span class="rccfg-code-color rccfg-style-metavar-separator"></span></span>&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_USAGE</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-usage">bold </span><span class="rccfg-code-dim rccfg-style-usage"></span><span class="rccfg-code-italic rccfg-style-usage"></span><span class="rccfg-code-color rccfg-style-usage">yellow</span></span>&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_USAGE_COMMAND</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-usage-command">bold </span><span class="rccfg-code-dim rccfg-style-usage-command"></span><span class="rccfg-code-italic rccfg-style-usage-command"></span><span class="rccfg-code-color rccfg-style-usage-command"></span></span>&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_REQUIRED_SHORT</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-required-short"></span><span class="rccfg-code-dim rccfg-style-required-short"></span><span class="rccfg-code-italic rccfg-style-required-short"></span><span class="rccfg-code-color rccfg-style-required-short">red</span></span>&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_REQUIRED_LONG</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-required-long"></span><span class="rccfg-code-dim rccfg-style-required-long">dim </span><span class="rccfg-code-italic rccfg-style-required-long"></span><span class="rccfg-code-color rccfg-style-required-long">red</span></span>&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_OPTIONS_PANEL_BORDER</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-options-panel-border"></span><span class="rccfg-code-dim rccfg-style-options-panel-border">dim</span><span class="rccfg-code-italic rccfg-style-options-panel-border"></span><span class="rccfg-code-color rccfg-style-options-panel-border"></span></span>&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_COMMANDS_PANEL_BORDER</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-commands-panel-border"></span><span class="rccfg-code-dim rccfg-style-commands-panel-border">dim</span><span class="rccfg-code-italic rccfg-style-commands-panel-border"></span><span class="rccfg-code-color rccfg-style-commands-panel-border"></span></span>&quot;</span><br>
     <span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;my-command&quot;</span><span class="p">)</span>
     <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
     <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--bar&quot;</span><span class="p">,</span> <span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Lorem ipsum&quot;</span><span class="p">,</span> <span class="n">show_default</span><span class="o">=</span><span class="s2">&quot;someval&quot;</span><span class="p">)</span>
@@ -501,11 +533,43 @@ the colors in this page have been calibrated to better match how typical modern 
         $(".rc-button.rccfg-style-required-long.rccfg-dim-button").each(function() {
             $(this).click();
         });
+        $(".rc-button.rccfg-style-options-panel-border.rccfg-dim-button").each(function() {
+            $(this).click();
+        });
+        $(".rc-button.rccfg-style-commands-panel-border.rccfg-dim-button").each(function() {
+            $(this).click();
+        });
 
     });
 </script>
 
 <script>
+    function trimText() {
+        $('.rccfg-code-outer').each(function() {
+            var boldFlagText = $(this).find(".rccfg-code-bold");
+            if ($(this).text().slice(-5) === "bold ") {
+                boldFlagText.text("bold");
+            }
+            else if ((boldFlagText.text() === "bold") && $(this).text().slice(-4) !== "bold") {
+                boldFlagText.text("bold ");
+            }
+            var dimFlagText = $(this).find(".rccfg-code-dim");
+            if ($(this).text().slice(-4) === "dim ") {
+                dimFlagText.text("dim");
+            }
+            else if (dimFlagText.text() === "dim" && $(this).text().slice(-3) !== "dim") {
+                dimFlagText.text("dim ");
+            }
+            var italicFlagText = $(this).find(".rccfg-code-italic");
+            if ($(this).text().slice(-7) === "italic ") {
+                italicFlagText.text("italic");
+            }
+            else if (italicFlagText.text() === "italic" && $(this).text().slice(-6) !== "italic") {
+                italicFlagText.text("italic ");
+            }
+        });
+    }
+
     $(".color-grid .color-option").click(function() {
         var colorGrid = $(this).closest(".color-grid");
         var targetClass = colorGrid.data("target");
@@ -516,22 +580,58 @@ the colors in this page have been calibrated to better match how typical modern 
             return (className.match(/(^|\s)c-\S+/g) || []).join(' ');
         });
         var isSelected = $(this).hasClass("selected-color");
-        $("span ." + targetClass).toggleClass("c-" + $(this).data("color"), !isSelected);
+        var selectedColor = $(this).data("color");
+        $("span .rc-element." + targetClass).toggleClass("c-" + selectedColor, !isSelected);
         $(this).toggleClass("selected-color");
+
+        if (!isSelected) {
+            $("span .rccfg-code-color." + targetClass).text(selectedColor);
+        }
+        else {
+            $("span .rccfg-code-color." + targetClass).text("");
+        }
+        trimText()
     }).change();
 
     $(".rccfg-bold-button").click(function() {
-        $("." + $(this).data("target")).toggleClass("s-bold");
+        var targetClass = $(this).data("target");
+        var loc = $("." + targetClass);
+        loc.toggleClass("s-bold");
         $(this).toggleClass("button-selected");
+        if (loc.hasClass("s-bold")) {
+            $("span .rccfg-code-bold." + targetClass).text("bold ")
+        }
+        else {
+            $("span .rccfg-code-bold." + targetClass).text("")
+        }
+        trimText()
     });
 
     $(".rccfg-dim-button").click(function() {
-        $("." + $(this).data("target")).toggleClass("s-dim");
+        var targetClass = $(this).data("target");
+        var loc = $("." + targetClass);
+        loc.toggleClass("s-dim");
         $(this).toggleClass("button-selected");
+        if (loc.hasClass("s-dim")) {
+            $("span .rccfg-code-dim." + targetClass).text("dim ")
+        }
+        else {
+            $("span .rccfg-code-dim." + targetClass).text("")
+        }
+        trimText()
     });
 
     $(".rccfg-italic-button").click(function() {
-        $("." + $(this).data("target")).toggleClass("s-italic");
+        var targetClass = $(this).data("target");
+        var loc = $("." + targetClass);
+        loc.toggleClass("s-italic");
         $(this).toggleClass("button-selected");
+        if (loc.hasClass("s-italic")) {
+            $("span .rccfg-code-italic." + targetClass).text("italic ")
+        }
+        else {
+            $("span .rccfg-code-italic." + targetClass).text("")
+        }
+        trimText()
     });
 </script>
