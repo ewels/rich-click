@@ -397,6 +397,29 @@ The colors in this page have been calibrated to better match how typical modern 
 
                 <tr>
                     <td>
+                        <label for="color-select">STYLE_OPTION_DEFAULT</label>
+                    </td>
+                    <td>
+                        <div class="rccfg-style-option-default color-grid" data-target="rccfg-style-option-default">
+                            <div class="color-option" data-color="black"></div>
+                            <div class="color-option" data-color="blue"></div>
+                            <div class="color-option" data-color="green"></div>
+                            <div class="color-option" data-color="yellow"></div>
+                            <div class="color-option" data-color="cyan"></div>
+                            <div class="color-option" data-color="white"></div>
+                            <div class="color-option" data-color="magenta"></div>
+                            <div class="color-option" data-color="red"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="rc-button rccfg-style-option-default rccfg-bold-button" data-target="rccfg-style-option-default"><code>bold</code></button>
+                        <button class="rc-button rccfg-style-option-default rccfg-dim-button" data-target="rccfg-style-option-default"><code>dim</code></button>
+                        <button class="rc-button rccfg-style-option-default rccfg-italic-button" data-target="rccfg-style-option-default"><code>italic</code></button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
                         <label for="color-select">STYLE_REQUIRED_SHORT</label>
                     </td>
                     <td>
@@ -497,7 +520,7 @@ The colors in this page have been calibrated to better match how typical modern 
          <span class="rc-element s-dim rccfg-style-helptext">Second line of help text.</span>                                              
 
         <span class="rc-element s-dim rccfg-style-options-panel-border">╭─ Options ────────────────────────────────────────────────────────────╮</span>
-        <span class="rc-element s-dim rccfg-style-options-panel-border">│</span>    <span class="rc-element s-bold c-cyan rccfg-style-option">--bar</span>   <span class="rc-element s-bold c-green rccfg-style-switch">-b</span>  <span class="rc-element s-bold c-yellow rccfg-style-metavar">TEXT</span>     Lorem ipsum <span class="rc-element s-dim rccfg-style-options-panel-border">[default: (someval)]</span>             <span class="rc-element s-dim rccfg-style-options-panel-border">│</span>
+        <span class="rc-element s-dim rccfg-style-options-panel-border">│</span>    <span class="rc-element s-bold c-cyan rccfg-style-option">--bar</span>   <span class="rc-element s-bold c-green rccfg-style-switch">-b</span>  <span class="rc-element s-bold c-yellow rccfg-style-metavar">TEXT</span>     Lorem ipsum <span class="rc-element s-dim rccfg-style-option-default">[default: (someval)]</span>             <span class="rc-element s-dim rccfg-style-options-panel-border">│</span>
         <span class="rc-element s-dim rccfg-style-options-panel-border">│</span> <span class="rc-element c-red rccfg-style-required-short">*</span>  <span class="rc-element s-bold c-cyan rccfg-style-option">--baz</span>       <span class="rc-element s-bold c-yellow rccfg-style-metavar"><span class="rc-element s-dim rccfg-style-metavar-separator">[</span>a<span class="rc-element s-dim rccfg-style-metavar-separator">|</span>b<span class="rc-element s-dim rccfg-style-metavar-separator">|</span>c<span class="rc-element s-dim rccfg-style-metavar-separator">]</span></span>  Choose wisely <span class="rc-element s-dim c-red rccfg-style-required-long">[required]</span>                     <span class="rc-element s-dim rccfg-style-options-panel-border">│</span>
         <span class="rc-element s-dim rccfg-style-options-panel-border">│</span>    <span <span class="rc-element s-bold c-cyan rccfg-style-option">--help</span>      <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">       </span>  Show this message and exit.                  <span class="rc-element s-dim rccfg-style-options-panel-border">│</span>
         <span class="rc-element s-dim rccfg-style-options-panel-border">╰──────────────────────────────────────────────────────────────────────╯</span>
@@ -522,6 +545,7 @@ The colors in this page have been calibrated to better match how typical modern 
         <span class="n">style_usage_command</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-usage-command">bold </span><span class="rccfg-code-dim rccfg-style-usage-command"></span><span class="rccfg-code-italic rccfg-style-usage-command"></span><span class="rccfg-code-color rccfg-style-usage-command"></span></span>&quot;</span><span class="p">,</span>
         <span class="n">style_helptext_first_line</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-helptext-first-line"></span><span class="rccfg-code-dim rccfg-style-helptext-first-line"></span><span class="rccfg-code-italic rccfg-style-helptext-first-line"></span><span class="rccfg-code-color rccfg-style-helptext-first-line"></span></span>&quot;</span><span class="p">,</span>
         <span class="n">style_helptext</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-helptext"></span><span class="rccfg-code-dim rccfg-style-helptext">dim</span><span class="rccfg-code-italic rccfg-style-helptext"></span><span class="rccfg-code-color rccfg-style-helptext"></span></span>&quot;</span><span class="p">,</span>
+        <span class="n">style_option_default</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-option-default"></span><span class="rccfg-code-dim rccfg-style-option-default"></span><span class="rccfg-code-italic rccfg-style-option-default"></span><span class="rccfg-code-color rccfg-style-option-default">red</span></span>&quot;</span><span class="p">,</span>
         <span class="n">style_required_short</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-required-short"></span><span class="rccfg-code-dim rccfg-style-required-short"></span><span class="rccfg-code-italic rccfg-style-required-short"></span><span class="rccfg-code-color rccfg-style-required-short">red</span></span>&quot;</span><span class="p">,</span>
         <span class="n">style_required_long</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-required-long"></span><span class="rccfg-code-dim rccfg-style-required-long">dim </span><span class="rccfg-code-italic rccfg-style-required-long"></span><span class="rccfg-code-color rccfg-style-required-long">red</span></span>&quot;</span><span class="p">,</span>
         <span class="n">style_options_panel_border</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-options-panel-border"></span><span class="rccfg-code-dim rccfg-style-options-panel-border">dim</span><span class="rccfg-code-italic rccfg-style-options-panel-border"></span><span class="rccfg-code-color rccfg-style-options-panel-border"></span></span>&quot;</span><span class="p">,</span>
@@ -557,6 +581,7 @@ The colors in this page have been calibrated to better match how typical modern 
     <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_USAGE_COMMAND</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-usage-command">bold</span><span class="rccfg-code-dim rccfg-style-usage-command"></span><span class="rccfg-code-italic rccfg-style-usage-command"></span><span class="rccfg-code-color rccfg-style-usage-command"></span></span>&quot;</span>
     <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_HELPTEXT_FIRST_LINE</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-helptext-first-line"></span><span class="rccfg-code-dim rccfg-style-helptext-first-line"></span><span class="rccfg-code-italic rccfg-style-helptext-first-line"></span><span class="rccfg-code-color rccfg-style-helptext-first-line"></span></span>&quot;</span>
     <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_HELPTEXT</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-helptext"></span><span class="rccfg-code-dim rccfg-style-helptext">dim</span><span class="rccfg-code-italic rccfg-style-helptext"></span><span class="rccfg-code-color rccfg-style-helptext"></span></span>&quot;</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_REQUIRED_SHORT</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-option-default"></span><span class="rccfg-code-dim rccfg-style-option-default"></span><span class="rccfg-code-italic rccfg-style-option-default"></span><span class="rccfg-code-color rccfg-style-option-default">red</span></span>&quot;</span>
     <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_REQUIRED_SHORT</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-required-short"></span><span class="rccfg-code-dim rccfg-style-required-short"></span><span class="rccfg-code-italic rccfg-style-required-short"></span><span class="rccfg-code-color rccfg-style-required-short">red</span></span>&quot;</span>
     <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_REQUIRED_LONG</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-required-long"></span><span class="rccfg-code-dim rccfg-style-required-long">dim </span><span class="rccfg-code-italic rccfg-style-required-long"></span><span class="rccfg-code-color rccfg-style-required-long">red</span></span>&quot;</span>
     <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_OPTIONS_PANEL_BORDER</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-options-panel-border"></span><span class="rccfg-code-dim rccfg-style-options-panel-border">dim</span><span class="rccfg-code-italic rccfg-style-options-panel-border"></span><span class="rccfg-code-color rccfg-style-options-panel-border"></span></span>&quot;</span>
@@ -607,6 +632,9 @@ The colors in this page have been calibrated to better match how typical modern 
             $(this).click();
         });
         $(".rc-button.rccfg-style-helptext.rccfg-dim-button").each(function() {
+            $(this).click();
+        });
+        $(".rc-button.rccfg-style-option-default.rccfg-dim-button").each(function() {
             $(this).click();
         });
         $(".rc-button.rccfg-style-required-long.rccfg-dim-button").each(function() {
