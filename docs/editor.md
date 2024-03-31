@@ -582,15 +582,6 @@ The colors in this page have been calibrated to better match how typical modern 
 
     $(document).ready(function() {
 
-        $(".color-option.selected-color").addClass("selected");
-
-        $(".rccfg-selector").each(function() {
-            var defaultIndex = $(this).data("default-index");
-            if (!isNaN(defaultIndex) && defaultIndex >= 0 && defaultIndex < this.options.length) {
-                this.selectedIndex = parseInt(defaultIndex);
-            }
-        });
-
         $(".rc-button.rccfg-style-argument.rccfg-bold-button").each(function() {
             $(this).click();
         });
