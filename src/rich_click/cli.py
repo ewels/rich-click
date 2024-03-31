@@ -124,6 +124,7 @@ class _RichHelpConfigurationParamType(click.ParamType):
 @click.argument("script_and_args", nargs=-1, metavar="[SCRIPT | MODULE:CLICK_COMMAND] [-- SCRIPT_ARGS...]")
 @click.option(
     "--rich-config",
+    "-c",
     type=_RichHelpConfigurationParamType(),
     help="Keyword arguments to pass into the [de]RichHelpConfiguration()[/] used"
     " to render the help text of the command. You can pass either a JSON directly, or a file"
@@ -132,6 +133,7 @@ class _RichHelpConfigurationParamType(click.ParamType):
 )
 @click.option(
     "--output",
+    "-o",
     type=click.Choice(["html", "svg"], case_sensitive=False),
     help="Optionally render help text as HTML or SVG. By default, help text is rendered normally.",
 )
