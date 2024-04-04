@@ -1,5 +1,5 @@
 ---
-title: <b>rich-click</b>
+title: rich-click
 hide:
   - title
   - navigation
@@ -36,9 +36,26 @@ click, formatted with rich, with minimal customisation required.
 
 ## Installation
 
-```console
-pip install rich-click
-```
+=== "pip"
+    ```{.shell, .copy}
+    pip install rich-click
+    ```
+
+=== "uv"
+    ```{.shell, .copy}
+    uv pip install rich-click
+    ```
+
+=== "Rye"
+    ```{.shell, .copy}
+    rye add rich-click
+    rye sync
+    ```
+
+=== "Pipenv"
+    ```{.shell, .copy}
+    pipenv install rich-click
+    ```
 
 ## Examples
 
@@ -61,10 +78,10 @@ if __name__ == '__main__':
     hello()
 ```
 
-<div class="termy termy-static" static="true">
+<div class="termy termy-static" static="true" style="width: 100%">
 
 ```console
-$ python examples/11_hello.py --help
+$ python hello.py --help
 
  <span style="color: #808000; text-decoration-color: #808000">Usage:</span> <span style="font-weight: bold">examples</span> [<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">OPTIONS</span>]
 

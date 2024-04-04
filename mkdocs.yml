@@ -39,9 +39,10 @@ nav:
   - "Live Style Editor": editor.md
   - Documentation:
       - Index: docs/index.md
-      - "<code>rich-click</code> CLI tool": rich_click_cli.md
+      - Introduction to Click: docs/introduction_to_click.md
+      - "<code>rich-click</code> CLI tool": docs/rich_click_cli.md
       - Configuration:
-        - Overview: configuration/index.md
+        - Overview: docs/configuration/index.md
 #  - Usage:
 #      - usage/github_action.md
 #      - usage/cli.md
