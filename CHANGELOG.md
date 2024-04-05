@@ -14,6 +14,7 @@
 - Fix bug with regex highlighter for options and switches.
 - `RichHelpConfiguration()` is now asserted to be JSON serializable, as an option for porting configurations. That said, serialization is not a fully supported feature of the high-level API, so serialize the config at your own risk.
   - Related: `highlighter` is now deprecated in `RichHelpConfiguration`; please use `highlighter_patterns` instead.
+- Moved exclusively to `pyproject.toml` and removed `setup.py` / `setup.cfg`; thank you [@Stealthii](github.com/Stealthii)!
 
 ## Version 1.7.3
 
