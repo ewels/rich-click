@@ -1,14 +1,63 @@
+[project]
+name = "rich-click"
+description = "Format click help output nicely with rich"
+readme = "README.md"
+license = { file = "LICENSE" }
+maintainers = [{ name = "Phil Ewels", email = "phil@ewels.co.uk" }]
+authors = [{ name = "Phil Ewels", email = "phil@ewels.co.uk" }]
+requires-python = ">=3.7"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+dynamic = [
+  "version",
+]
+dependencies = [
+  "click>=7",
+  'importlib-metadata; python_version < "3.8"',
+  "rich>=10.7",
+  "typing_extensions",
+]
+optional-dependencies.dev = [
+  "mypy",
+  "packaging",
+  "pre-commit",
+  "pytest",
+  "pytest-cov",
+  "ruff",
+  "types-setuptools",
+]
+[project.urls]
+Documentation = "https://github.com/ewels/rich-click"
+Homepage = "https://github.com/ewels/rich-click"
+Issues = "https://github.com/ewels/rich-click/issues"
+Repository = "https://github.com/ewels/rich-click"
+[project.scripts]
+rich-click = "rich_click.cli:main"
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+  "setuptools>=45",
+]
+
+[tool.setuptools.dynamic]
+version = { attr = "rich_click.__version__" }
+
 [tool.black]
 line-length = 120
 target-version = ['py37']
-
-[tool.mypy]
-python_version = "3.8"
-scripts_are_modules = "True"
-strict = "True"
-exclude = [
-    '.*?live_style_editor\.py$'
-]
 
 [tool.ruff]
 exclude = [
@@ -23,21 +72,21 @@ exclude = [
     "docs/"
 ]
 ignore = [
-    "D100",
-    "D102",
-    "D205",
-    "E731",
-    "D105",
-    "D203",
-    "D212"
+    "D100", # Missing docstring in public module
+    "D102", # Missing docstring in public method
+    "D105", # Missing docstring in magic method
+    "D203", # 1 blank line required before class docstring
+    "D205", # 1 blank line required between summary line and description
+    "D212", # Multi-line docstring summary should start at the first line
+    "E731", # Do not assign a lambda expression, use a def
 ]
 line-length = 120
 select = [
-    "D",
-    "E",
-    "F",
-    "W",
-    "I001"
+    "D",    # pydocstyle
+    "E",    # pycodestyle
+    "F",    # flake8
+    "W",    # pycodestyle
+    "I001", # isort
 ]
 
 [tool.ruff.isort]
@@ -46,6 +95,15 @@ select = [
 #   https://github.com/astral-sh/ruff/issues/2600
 lines-after-imports = 2
 known-first-party = ["rich_click"]
+
+[tool.pytest.ini_options]
+addopts = "-s -rP -vv --showlocals"
+pythonpath = ["tests", "src"]
+testpaths = ["tests"]
+
+exclude = [
+    '.*?live_style_editor\.py$'
+]
 
 [tool.pyright]
 include = ["src"]
@@ -57,8 +115,3 @@ executionEnvironments = [
         "src",
     ] },
 ]
-
-[tool.pytest.ini_options]
-addopts = "-s -rP -vv --showlocals"
-pythonpath = ["tests", "src"]
-testpaths = ["tests"]
