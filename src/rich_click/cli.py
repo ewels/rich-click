@@ -7,7 +7,7 @@ import sys
 from functools import wraps
 from gettext import gettext as _
 from importlib import import_module
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 
 from typing_extensions import Literal
 
@@ -42,7 +42,7 @@ def entry_points(*, group: str) -> "metadata.EntryPoints":  # type: ignore[name-
 
 
 @wraps(_patch)
-def patch(*args, **kwargs) -> None:
+def patch(*args: Any, **kwargs: Any) -> None:
     import warnings
 
     warnings.warn(
