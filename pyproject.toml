@@ -111,6 +111,10 @@ addopts = "-s -rP -vv --showlocals"
 pythonpath = ["tests", "src"]
 testpaths = ["tests"]
 
+[tool.mypy]
+python_version = "3.8"
+scripts_are_modules = true
+strict = true
 exclude = [
     '.*?live_style_editor\.py$'
 ]
