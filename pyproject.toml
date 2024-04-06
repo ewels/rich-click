@@ -3,40 +3,47 @@ name = "rich-click"
 description = "Format click help output nicely with rich"
 readme = "README.md"
 license = { file = "LICENSE" }
-maintainers = [{ name = "Phil Ewels", email = "phil@ewels.co.uk" }]
+maintainers = [{ name = "Phil Ewels", email = "phil@ewels.co.uk" }, { name = "Daniel Reeves", email = "xdanielreeves@gmail.com"}]
 authors = [{ name = "Phil Ewels", email = "phil@ewels.co.uk" }]
 requires-python = ">=3.7"
 classifiers = [
-  "Development Status :: 3 - Alpha",
-  "Intended Audience :: Developers",
-  "License :: OSI Approved :: MIT License",
-  "Operating System :: OS Independent",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.7",
-  "Programming Language :: Python :: 3.8",
-  "Programming Language :: Python :: 3.9",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 dynamic = [
-  "version",
+    "version",
 ]
 dependencies = [
-  "click>=7",
-  'importlib-metadata; python_version < "3.8"',
-  "rich>=10.7",
-  "typing_extensions",
+    "click>=7",
+    'importlib-metadata; python_version < "3.8"',
+    "rich>=10.7",
+    "typing_extensions",
 ]
 optional-dependencies.dev = [
-  "mypy",
-  "packaging",
-  "pre-commit",
-  "pytest",
-  "pytest-cov",
-  "ruff",
-  "types-setuptools",
+    "mypy",
+    "packaging",
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "ruff",
+    "types-setuptools",
+]
+optional-dependencies.docs = [
+    "markdown_include",
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocs-material-extensions",
+    "mkdocstrings[python]",
 ]
 [project.urls]
 Documentation = "https://github.com/ewels/rich-click"
@@ -49,7 +56,7 @@ rich-click = "rich_click.cli:main"
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-  "setuptools>=45",
+    "setuptools>=45",
 ]
 
 [tool.setuptools.dynamic]
@@ -95,6 +102,9 @@ select = [
 #   https://github.com/astral-sh/ruff/issues/2600
 lines-after-imports = 2
 known-first-party = ["rich_click"]
+
+[tool.pyproject-fmt]
+indent = 4
 
 [tool.pytest.ini_options]
 addopts = "-s -rP -vv --showlocals"

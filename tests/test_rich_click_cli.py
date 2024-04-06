@@ -84,6 +84,7 @@ def test_simple_rich_click_cli(simple_script: Path, assert_str: AssertStr, comma
         stdout=subprocess.PIPE,
         env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
     )
+    assert res.returncode == 0
 
     if CLICK_IS_BEFORE_VERSION_8X:
         usage = "mymodule"
@@ -116,6 +117,7 @@ def test_simple_rich_click_cli_execute_command(
 ) -> None:
     res = cli_runner.invoke(main, command)
 
+    assert res.exit_code == 0
     assert res.stdout == "Hello, world!\n"
 
     # Throughout the rest of this test module,
@@ -127,6 +129,7 @@ def test_simple_rich_click_cli_execute_command(
         stdout=subprocess.PIPE,
         env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
     )
+    assert subprocess_res.returncode == 0
 
     assert subprocess_res.stdout.decode() == "Hello, world!\n"
 
@@ -145,6 +148,7 @@ def test_custom_config_rich_click_cli(simple_script: Path, assert_str: AssertStr
         stdout=subprocess.PIPE,
         env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
     )
+    assert res.returncode == 0
 
     if CLICK_IS_BEFORE_VERSION_8X:
         usage = "mymodule"
@@ -191,6 +195,7 @@ def test_override_click_command(mock_script_writer: Callable[[str], Path], asser
         stdout=subprocess.PIPE,
         env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
     )
+    assert res.returncode == 0
 
     if CLICK_IS_BEFORE_VERSION_8X:
         usage = "mymodule"
@@ -245,6 +250,7 @@ def test_override_click_group(mock_script_writer: Callable[[str], Path], assert_
         stdout=subprocess.PIPE,
         env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
     )
+    assert res.returncode == 0
 
     if CLICK_IS_BEFORE_VERSION_8X:
         usage = "mymodule"
@@ -259,7 +265,11 @@ def test_override_click_group(mock_script_writer: Callable[[str], Path], assert_
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-    """
+╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
+│ subcommand                        Subcommand help text                                           │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+"""
 
     assert_str(actual=res.stdout.decode(), expectation=expected_output)
 
@@ -303,6 +313,7 @@ def test_override_rich_click_command(mock_script_writer: WriteScript) -> None:
     res = subprocess.run(
         [sys.executable, "-m", "rich_click", "mymodule:cli", "--help"], stdout=subprocess.PIPE, env=os.environ
     )
+    assert res.returncode == 0
 
     expected_output = ("I am overriding RichCommand!\n" * 4) + "\n"
 
@@ -349,6 +360,7 @@ def test_override_rich_click_group(mock_script_writer: Callable[[str], Path], as
         stdout=subprocess.PIPE,
         env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
     )
+    assert res.returncode == 0
 
     expected_output = """
 I am overriding RichCommand!

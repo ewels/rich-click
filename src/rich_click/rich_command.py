@@ -392,13 +392,19 @@ def prevent_incompatible_overrides(
     cmd: RichCommand, class_name: str, ctx: RichContext, formatter: RichHelpFormatter
 ) -> None:
     """For use by the rich-click CLI."""
-    import rich_click.cli
+    import rich_click.patch
     from rich_click.utils import method_is_from_subclass_of
 
-    cls: Type[RichCommand] = getattr(rich_click.cli, f"_Patched{class_name}")
+    cls: Type[RichCommand] = getattr(rich_click.patch, f"_Patched{class_name}")
 
     for method_name in ["format_usage", "format_help_text", "format_options", "format_epilog"]:
         if method_is_from_subclass_of(cmd.__class__, cls, method_name):
             getattr(RichCommand, method_name)(cmd, ctx, formatter)
         else:
             getattr(cmd, method_name)(ctx, formatter)
+
+    if hasattr(cmd.__class__, "format_commands"):
+        if method_is_from_subclass_of(cmd.__class__, cls, "format_commands"):
+            getattr(RichMultiCommand, "format_commands")(cmd, ctx, formatter)
+        else:
+            getattr(cmd, "format_commands")(ctx, formatter)

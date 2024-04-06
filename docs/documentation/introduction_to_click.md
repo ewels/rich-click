@@ -158,7 +158,7 @@ And you can run any of the subcommands like so:
 ```console
 $ python hello.py french Jennifer
 
-Hello, Jennifer!
+Bonjour, Jennifer!
 
 $ python hello.py french --help
 

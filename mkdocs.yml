@@ -11,7 +11,7 @@ theme:
   features:
     - navigation.tabs
     - navigation.expand
-    - navigation.indexes
+    # - navigation.indexes
   favicon: images/favicon.png
   logo: images/favicon.png
   palette:
@@ -38,11 +38,13 @@ nav:
   - Home: index.md
   - "Live Style Editor": editor.md
   - Documentation:
-      - Index: docs/index.md
-      - Introduction to Click: docs/introduction_to_click.md
-      - "<code>rich-click</code> CLI tool": docs/rich_click_cli.md
-      - Configuration:
-        - Overview: docs/configuration/index.md
+      # - Index: documentation/index.md
+      - Introduction to Click: documentation/introduction_to_click.md
+      - Configuration: documentation/configuration.md
+      - Groups: documentation/groups.md
+      - "<code>rich-click</code> CLI tool": documentation/rich_click_cli.md
+      - API Reference: documentation/api_reference.md
+  - Contributing: contributing.md
 #  - Usage:
 #      - usage/github_action.md
 #      - usage/cli.md
@@ -80,6 +82,8 @@ markdown_extensions:
       alternate_style: true
   - attr_list
   - md_in_html
+  - markdown_include.include:
+      base_path: docs
 
 plugins:
   - search

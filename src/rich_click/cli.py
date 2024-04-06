@@ -4,6 +4,7 @@
 
 import os
 import sys
+from functools import wraps
 from gettext import gettext as _
 from importlib import import_module
 from typing import List, Optional, Union
@@ -19,54 +20,12 @@ except ImportError:
 
 import click
 
-import rich_click.rich_command
 from rich_click.decorators import command as _rich_command
-from rich_click.decorators import group as _rich_group
 from rich_click.decorators import pass_context
 from rich_click.decorators import rich_config as rich_config_decorator
-from rich_click.rich_command import RichCommand, RichCommandCollection, RichGroup, RichMultiCommand
+from rich_click.patch import patch as _patch
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
-
-
-class _PatchedRichCommand(RichCommand):
-    pass
-
-
-class _PatchedRichMultiCommand(RichMultiCommand, _PatchedRichCommand):
-    pass
-
-
-class _PatchedRichCommandCollection(RichCommandCollection, _PatchedRichCommand):
-    pass
-
-
-class _PatchedRichGroup(RichGroup, _PatchedRichCommand):
-    pass
-
-
-def rich_command(*args, **kwargs):  # type: ignore[no-untyped-def]
-    kwargs.setdefault("cls", _PatchedRichCommand)
-    return _rich_command(*args, **kwargs)
-
-
-def rich_group(*args, **kwargs):  # type: ignore[no-untyped-def]
-    kwargs.setdefault("cls", _PatchedRichGroup)
-    return _rich_group(*args, **kwargs)
-
-
-def patch(rich_config: Optional[RichHelpConfiguration] = None) -> None:
-    """Patch Click internals to use Rich-Click types."""
-    rich_click.rich_command.OVERRIDES_GUARD = True
-    click.group = rich_group
-    click.command = rich_command
-    click.Group = _PatchedRichGroup  # type: ignore[misc]
-    click.Command = _PatchedRichCommand  # type: ignore[misc]
-    click.CommandCollection = _PatchedRichCommandCollection  # type: ignore[misc]
-    if "MultiCommand" in dir(click):
-        click.MultiCommand = _PatchedRichMultiCommand  # type: ignore[assignment,misc,unused-ignore]
-    if rich_config is not None:
-        rich_config._dump_into_globals()
 
 
 def entry_points(*, group: str) -> "metadata.EntryPoints":  # type: ignore[name-defined]
@@ -80,6 +39,20 @@ def entry_points(*, group: str) -> "metadata.EntryPoints":  # type: ignore[name-
         return epg.select(group=group)
 
     return epg.get(group, [])
+
+
+@wraps(_patch)
+def patch(*args, **kwargs) -> None:
+    import warnings
+
+    warnings.warn(
+        "`rich_click.cli.patch()` has moved to `rich_click.patch.patch()`."
+        " Importing `patch()` from `rich_click.cli` is deprecated; please import from `rich_click.patch` instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
+    return _patch(*args, **kwargs)
 
 
 class _RichHelpConfigurationParamType(click.ParamType):
@@ -196,9 +169,12 @@ def main(
 
     script, *args = script_and_args
 
+    _from_entry_points = False
+
     scripts = {script.name: script for script in entry_points(group="console_scripts")}
     if script in scripts:
         module_path, function_name = scripts[script].value.split(":", 1)
+        _from_entry_points = True
     elif ":" in script:
         # the path to a function was passed
         module_path, function_name = script.split(":", 1)
@@ -209,7 +185,7 @@ def main(
     sys.argv = [prog, *args]
 
     # patch click before importing the program function
-    patch(rich_config=rich_config)
+    _patch(rich_config=rich_config)
     # import the program function
     module = import_module(module_path)
     function = getattr(module, function_name)
@@ -220,4 +196,8 @@ def main(
         console.record = True
         console.file = open(os.devnull, "w")
         RichContext.export_console_as = output
-    function()
+
+    if ctx.resilient_parsing and isinstance(function, click.Command):
+        function.main(resilient_parsing=True)
+    else:
+        function()

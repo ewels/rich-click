@@ -1,6 +1,23 @@
+# `rich-click` CLI tool
+
 ## Overview
 
 **rich-click** comes with a CLI tool that allows you to format the Click help output for any CLI that uses Click.
+
+<div class="termy">
+```console
+$ rich-click --help
+
+ <span style="color: #808000; text-decoration-color: #808000">Usage:                                                       </span>          
+ <span style="font-weight: bold">rich_click                                                   </span>          
+ [<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">OPTIONS</span>] [<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">SCRIPT</span> | <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">MODULE</span>:<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">CLICK_COMMAND</span>] [-- <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">SCRIPT_ARGS</span>...]          
+                                                                        
+ The <a href="https://github.com/ewels/rich-click">rich-click</a> CLI provides attractive help output from any tool using 
+ <a href="https://click.palletsprojects.com/">click</a>, formatted with <a href="https://github.com/Textualize/rich">rich</a>.                                            
+
+// The rest of the output is omitted
+```
+</div>
 
 To use, simply prefix `rich-click` to the command. Here are a few examples:
 
@@ -165,7 +182,7 @@ Sometimes, a subclassed `click.Command` will overwrite one of these methods:
 - `click.MultiCommand.format_commands`
 - `click.Command.format_epilog`
 
-Patching the way `rich-click` does messes with method resolution order,
+Patching Click internals can mess with method resolution order,
 since by the time the downstream library subclasses the `click.Command`, it will be a `RichCommand`, and the subclass's method will take precedence over the `RichCommand`'s methods.
 The problem is that **rich-click**'s methods can be incompatible or at least stylistically incongruous with the base Click help text rendering.
 

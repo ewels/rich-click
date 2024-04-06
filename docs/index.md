@@ -26,13 +26,24 @@ hide:
 
 ---
 
-**rich-click** is a shim around [click](https://click.palletsprojects.com/) that renders help output nicely using [Rich](https://github.com/Textualize/rich).
+**rich-click** is a shim around [Click](https://click.palletsprojects.com/) that renders help output nicely using [Rich](https://github.com/Textualize/rich).
 
 - Click is a _"Python package for creating beautiful command line interfaces"_.
 - Rich is a _"Python library for rich text and beautiful formatting in the terminal"_.
 
 The intention of `rich-click` is to provide attractive help output from
 click, formatted with rich, with minimal customisation required.
+
+## Features
+
+- 🌈 Rich command-line formatting of click help and error messages
+- 💫 Nice styles be default, usage is simply `import rich_click as click`
+- 💻 CLI tool to run on _other people's_ tools (prefix the command with `rich-click`)
+- 📦 Export help text as HTML or SVG
+- 🎁 Group commands and options into named panels
+- ❌ Well formatted error messages
+- 🔢 Easily give custom sort order for options and commands
+- 🎨 Extensive customisation of styling and behaviour possible
 
 ## Installation
 
@@ -52,9 +63,26 @@ click, formatted with rich, with minimal customisation required.
     rye sync
     ```
 
+=== "Poetry"
+    ```{.shell, .copy}
+    poetry add rich-click
+    ```
+
 === "Pipenv"
     ```{.shell, .copy}
     pipenv install rich-click
+    ```
+
+=== "conda"
+    [**rich-click**](https://anaconda.org/conda-forge/rich-click) is available via the conda-forge channel (see [docs](https://conda-forge.org/docs/user/introduction.html#how-can-i-install-packages-from-conda-forge)).
+    ```{.shell, .copy}
+    conda install rich-click
+    ```
+
+=== "MacPorts"
+    This installation method is deprecated.
+    ```{.shell, .copy}
+    sudo port install py-rich-click
     ```
 
 ## Examples
@@ -96,6 +124,8 @@ $ python hello.py --help
 ```
 
 </div>
+
+### Complex example
 
 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC

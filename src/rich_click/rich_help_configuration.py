@@ -206,7 +206,7 @@ class RichHelpConfiguration:
         inst = cls(**kw)
         return inst
 
-    def _dump_into_globals(self, module: Optional[ModuleType] = None) -> None:
+    def dump_to_globals(self, module: Optional[ModuleType] = None) -> None:
         if module is None:
             import rich_click.rich_click as rc
 
