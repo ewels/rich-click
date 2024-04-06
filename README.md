@@ -8,8 +8,15 @@
     <em>Richly rendered command line interfaces in click.</em>
 </p>
 <p align="center">
+    <img src="https://img.shields.io/pypi/v/rich-click?logo=pypi" alt="PyPI"/>
     <img src="https://github.com/ewels/rich-click/workflows/Test%20Coverage/badge.svg" alt="Test Coverage badge">
     <img src="https://github.com/ewels/rich-click/workflows/Lint%20code/badge.svg" alt="Lint code badge">
+</p>
+
+---
+
+<p align="center">
+    <a href="https://ewels.github.io/rich-click">Documentation</a>&nbsp&nbsp·&nbsp&nbsp<a href="https://github.com/ewels/rich-click">Source Code</a>&nbsp&nbsp<a href="https://github.com/ewels/rich-click">Changelog</a>
 </p>
 
 ---
@@ -74,20 +81,21 @@ _Screenshot from [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py
 
 ## Usage
 
+This is a quick overview of how to use **rich-click**. [Read the docs](https://ewels.github.io/rich-click) for more information.
+
+There are a couple of ways to being using `rich-click`:
+
 ### Import as click
 
-To use `rich-click`, switch out your normal `click` import with `rich-click`, using the same namespace:
+To use **rich-click**, switch out your normal `click` import with `rich_click`, using the same namespace:
 
 ```python
 import rich_click as click
 ```
 
-That's it! ✨ Then continue to use `click` as you would normally.
+That's it! ✨ Then continue to use Click as you would normally.
 
 > See [`examples/01_simple.py`](examples/01_simple.py) for an example.
-
-The intention is to maintain most / all of the normal click functionality and arguments.
-If you spot something that breaks or is missing once you start using the plugin, please create an issue about it.
 
 ### Declarative
 
@@ -96,14 +104,12 @@ This means that you can continue to use the unmodified `click` package in parall
 
 > See [`examples/02_declarative.py`](examples/02_declarative.py) for an example.
 
-### Command-line usage
+### `rich-click` CLI tool
 
-`rich-click` comes with a CLI tool that allows you to format the click help output from _any_ package.
-As long as that tool is using click and isn't already passing custom `cls` objects, it should work.
-However, please consider it an experimental feature at this point.
+**rich-click** comes with a CLI tool that allows you to format the Click help output from _any_ package that uses Click.
 
-To use, simply prefix to your normal command.
-For example, to get richified click help text from a package called `awesometool`, you could run:
+To use, prefix `rich-click` to your normal command.
+For example, to get richified Click help text from a package called `awesometool`, you could run:
 
 ```console
 $ rich-click awesometool --help
@@ -111,343 +117,4 @@ $ rich-click awesometool --help
 Usage: awesometool [OPTIONS]
 ..more richified output below..
 ```
-
-### Patching
-
-In some situations, you might be registering a command from another Click CLI that does not use Rich-Click:
-
-```python
-import rich_click as click
-from some_library import another_cli
-
-@click.group("my-cli")
-def cli():
-    pass
-
-# `another_cli` will NOT have Rich-Click markup. :(
-cli.add_command(another_cli)
-```
-
-In this situation, `another_cli` retains its original behavior. In order to make `another_cli` work with Rich-Click, you need to patch `click` before you import `another_cli`. You can patch Click with `rich_click.patch.patch` like this:
-
-```python
-import rich_click as click
-from rich_click.patch import patch
-
-patch()
-
-from some_library import another_cli  # noqa: E402
-
-@click.group("my-cli")
-def cli():
-    pass
-
-# `another_cli` will have Rich-Click markup. :)
-cli.add_command(another_cli)
-```
-
-## Customisation
-
-There are a large number of customisation options in rich-click.
-These can be modified by changing variables in the `click.rich_click` namespace.
-
-Note that most normal click options should still work, such as `show_default=True`, `required=True` and `hidden=True`.
-
-> Note: All images below are auto-generated using another side-project of mine: [rich-codex](https://github.com/ewels/rich-codex). Pretty cool!
-
-### Using Rich markup
-
-In order to be as widely compatible as possible with a simple import, rich-click does _not_ parse rich formatting markup (eg. `[red]`) by default. You need to opt-in to this behaviour.
-
-To use rich markup in your help texts, add the following:
-
-```python
-click.rich_click.USE_RICH_MARKUP = True
-```
-
-Or alternatively, with the `rich_config` and `RichHelpConfiguration`:
-
-```python
-@click.command()
-@click.rich_config(help_config=click.RichHelpConfiguration(use_rich_markup=True))
-def cli():
-    ...
-```
-
-Remember that you'll need to escape any regular square brackets using a back slash in your help texts,
-for example: `[dim]\[my-default: foo][\]`
-
-![`python examples/04_rich_markup.py --help`](docs/images/rich_markup.svg "Rich markup example")
-
-> See [`examples/04_rich_markup.py`](examples/04_rich_markup.py) for an example.
-
-### Using Markdown
-
-If you prefer, you can use Markdown text.
-You must choose either Markdown or rich markup. If you specify both, Markdown takes preference.
-
-```python
-click.rich_click.USE_MARKDOWN = True
-```
-
-Or alternatively, with the `RichHelpConfiguration`:
-
-```python
-@click.command()
-@click.rich_config(help_config=click.RichHelpConfiguration(use_markdown=True))
-def cli():
-    ...
-```
-
-![`python examples/05_markdown.py --help`](docs/images/markdown.svg "Markdown example")
-
-> See [`examples/05_markdown.py`](examples/05_markdown.py) for an example.
-
-### Positional arguments
-
-The default click behaviour is to only show positional arguments in the top usage string,
-and not in the list below with the options.
-
-If you prefer, you can tell rich-click to show arguments with `SHOW_ARGUMENTS`.
-By default, they will get their own panel but you can tell rich-click to bundle them together with `GROUP_ARGUMENTS_OPTIONS`:
-
-```python
-click.rich_click.SHOW_ARGUMENTS = True
-click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
-```
-
-Or alternatively, with the `RichHelpConfiguration`:
-
-```python
-help_config = click.RichHelpConfiguration(
-    show_arguments=True,
-    group_arguments_options=True
-)
-
-@click.command()
-@click.rich_config(help_config=help_config)
-def cli():
-    ...
-```
-
-![`python examples/06_arguments.py --help`](docs/images/arguments.svg "Positional arguments example")
-
-> See [`examples/06_arguments.py`](examples/06_arguments.py) for an example.
-
-### Metavars and option choices
-
-Metavars are click's way of showing expected input types.
-For example, if you have an option that must be an integer, the metavar is `INTEGER`.
-If you have a choice, the metavar is a list of the possible values.
-
-By default, rich-click shows metavars in their own column.
-However, if you have a long list of choices, this column can be quite wide and result in a lot of white space:
-
-![`python examples/08_metavars_default.py --help`](docs/images/metavars_default.svg "Default metavar display")
-
-It may look better to show metavars appended to the help text, instead of in their own column.
-For this, use the following:
-
-```python
-click.rich_click.SHOW_METAVARS_COLUMN = False
-click.rich_click.APPEND_METAVARS_HELP = True
-```
-
-```python
-help_config = click.RichHelpConfiguration(
-    show_metavars_column=False,
-    append_metavars_help=True
-)
-
-@click.command()
-@click.rich_config(help_config=help_config)
-def cli():
-    ...
-```
-
-![`python examples/08_metavars.py --help`](docs/images/metavars_appended.svg "Appended metavar")
-
-> See [`examples/08_metavars.py`](examples/08_metavars.py) for an example.
-
-### Error messages
-
-By default, rich-click gives some nice formatting to error messages:
-
-![`python examples/01_simple.py --hep || true`](docs/images/error.svg "Error message")
-
-You can customise the _Try 'command --help' for help._ message with `ERRORS_SUGGESTION`
-using rich-click though, and add some text after the error with `ERRORS_EPILOGUE`.
-
-For example, from [`examples/07_custom_errors.py`](examples/07_custom_errors.py):
-
-```python
-click.rich_click.STYLE_ERRORS_SUGGESTION = "magenta italic"
-click.rich_click.ERRORS_SUGGESTION = "Try running the '--help' flag for more information."
-click.rich_click.ERRORS_EPILOGUE = "To find out more, visit [link=https://mytool.com]https://mytool.com[/link]"
-```
-
-![`python examples/07_custom_errors.py --hep || true`](docs/images/custom_error.svg "Custom error message")
-
-> See [`examples/07_custom_errors.py`](examples/07_custom_errors.py) for an example.
-
-### Help width
-
-The default behaviour of rich-click is to use the full width of the terminal for output.
-However, if you've carefully crafted your help texts for the default narrow click output, you may find that you now have a lot of whitespace at the side of the panels.
-
-To limit the maximum width of the help output, regardless of the terminal size, set `WIDTH` in characters as follows:
-
-```python
-click.rich_click.WIDTH = 128
-```
-
-To still use the full width of the terminal up to a certain limit, set `MAX_WIDTH` in characters as follows:
-
-```python
-click.rich_click.MAX_WIDTH = 96
-```
-
-Setting `MAX_WIDTH` overrides the effect of `WIDTH`
-
-### Styling
-
-Most aspects of rich-click formatting can be customised, from colours to alignment.
-
-For example, to print the option flags in a different colour, you can use:
-
-```python
-click.rich_click.STYLE_OPTION = "magenta"
-```
-
-To add a blank line between rows of options, you can use:
-
-```python
-click.rich_click.STYLE_OPTIONS_TABLE_LEADING = 1
-click.rich_click.STYLE_OPTIONS_TABLE_BOX = "SIMPLE"
-```
-
-You can make some really ~horrible~ _colourful_ solutions using these styles if you wish:
-
-<!-- RICH-CODEX
-extra_env:
-    TERMINAL_WIDTH: 160
--->
-
-![`python examples/10_table_styles.py --help`](docs/images/style_tables.svg "Rich markup example")
-
-> See [`examples/10_table_styles.py`](examples/10_table_styles.py) for an example.
-
-See the [_Configuration options_](#configuration-options) section below for the full list of available options.
-
-## Groups and sorting
-
-`rich-click` gives functionality to list options and subcommands in groups, printed as separate panels.
-It accepts a list of options / commands which means you can also choose a custom sorting order.
-
-- For options (flags), set `click.rich_click.OPTION_GROUPS`
-- For subcommands (groups), set `click.rich_click.COMMAND_GROUPS`
-
-![`python examples/03_groups_sorting.py --help`](docs/images/command_groups.svg "Command groups")
-
-When grouping subcommands into more than one group (in above example: 'Main usage' and 'Configuration') you may find that the automatically calculated widths of different groups do not line up, due to varying option name lengths.
-
-You can avoid this by enforcing the alignment of the help text across groups by setting `click.rich_click.STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (1, 2)`. This results in a fixed ratio of 1:2 for the width of command name and help text column.
-
-> See [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py) for a full example.
-
-### Options
-
-To group option flags into two sections with custom names, see the following example:
-
-```python
-click.rich_click.OPTION_GROUPS = {
-    "mytool": [
-        {
-            "name": "Simple options",
-            "options": ["--name", "--description", "--version", "--help"],
-        },
-        {
-            "name": "Advanced options",
-            "options": ["--force", "--yes", "--delete"],
-        },
-    ]
-}
-```
-
-If you omit `name` it will use `Commands` (can be configured with `OPTIONS_PANEL_TITLE`).
-
-### Commands
-
-Here we create two groups of commands for the base command of `mytool`.
-Any subcommands not listed will automatically be printed in a panel at the end labelled "Commands" as usual.
-
-```python
-click.rich_click.COMMAND_GROUPS = {
-    "mytool": [
-        {
-            "name": "Commands for uploading",
-            "commands": ["sync", "upload"],
-        },
-        {
-            "name": "Download data",
-            "commands": ["get", "fetch", "download"],
-        },
-    ]
-}
-```
-
-If you omit `name` it will use `Commands` (can be configured with `COMMANDS_PANEL_TITLE`).
-
-### Multiple commands
-
-If you use multiple nested subcommands, you can specify their commands using the top-level dictionary keys:
-
-```python
-click.rich_click.COMMAND_GROUPS = {
-    "mytool": [{"commands": ["sync", "auth"]}],
-    "mytool sync": [
-        {
-            "name": "Commands for uploading",
-            "commands": ["sync", "upload"],
-        },
-        {
-            "name": "Download data",
-            "commands": ["get", "fetch", "download"],
-        },
-    ],
-    "mytool auth":[{"commands": ["login", "logout"]}],
-}
-```
-
-### Table styling
-
-Typically you would style the option / command tables using the global config options.
-However, if you wish you may style tables on a per-group basis using the `table_styles` key:
-
-```python
-click.rich_click.COMMAND_GROUPS = {
-    "mytool": [
-        {
-            "commands": ["sync", "auth"],
-            "table_styles": {
-                "show_lines": True,
-                "row_styles": ["magenta", "yellow", "cyan", "green"],
-                "border_style": "red",
-                "box": "DOUBLE",
-            },
-        },
-    ],
-}
-```
-
-The available keys are: `show_lines`, `leading`, `box`, `border_style`, `row_styles`, `pad_edge`, `padding`.
-
-## Configuration options
-
-Here is the full list of config options:
-
-
-Full type annotations of these config options are availble in `src/rich_click/rich_click.py`.
-
-100% of these options are supported in the `RichHelpConfiguration` class, as well.
 

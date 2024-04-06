@@ -41,9 +41,11 @@ nav:
       # - Index: documentation/index.md
       - Introduction to Click: documentation/introduction_to_click.md
       - Configuration: documentation/configuration.md
-      - Groups: documentation/groups.md
+      - "Formatting & Styles": documentation/formatting_and_styles.md
+      - "Groups & Sorting": documentation/groups_and_sorting.md
       - "<code>rich-click</code> CLI tool": documentation/rich_click_cli.md
       - API Reference: documentation/api_reference.md
+  - Changelog: changelog.md
   - Contributing: contributing.md
 #  - Usage:
 #      - usage/github_action.md

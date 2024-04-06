@@ -21,7 +21,7 @@ $ rich-click --help
 
 To use, simply prefix `rich-click` to the command. Here are a few examples:
 
-=== "flask"
+=== "<code>flask</code>"
 
     <div class="termy">
     ```console
@@ -58,7 +58,7 @@ To use, simply prefix `rich-click` to the command. Here are a few examples:
     ```
     </div>
 
-=== "celery"
+=== "<code>celery</code>"
 
     <div class="termy">
     ```console
@@ -110,7 +110,7 @@ To use, simply prefix `rich-click` to the command. Here are a few examples:
     ```
     </div>
 
-=== "dagster"
+=== "<code>dagster</code>"
 
     <div class="termy">
     ```console
@@ -192,3 +192,42 @@ If the subclass is only a result of the patching operation, we ignore the aforem
 
 Long story short, the `rich-click` CLI is safe to subclassing when it is the user's intent to subclass a **rich-click** object. (This is so that you can use other nifty features of the CLI such as the `--output` option on your own **rich-click** CLIs)
 That said, custom, non-**rich-click** implementations are ignored.
+
+### Using `patch()` as an end user
+
+The functionality that `rich-click` uses to patch Click internals is available for use by **rich-click** end users,
+and it occasionally comes in handy outside of the `rich-click` CLI.
+
+In some situations, you might be registering a command from another Click CLI that does not use Rich-Click:
+
+```python
+import rich_click as click
+from some_library import another_cli
+
+@click.group("my-cli")
+def cli():
+    pass
+
+# `another_cli` will NOT have rich-click markup. :(
+cli.add_command(another_cli)
+```
+
+In this situation, `another_cli` retains its original help text behavior.
+In order to make `another_cli` work with Rich-Click, you need to patch `click` before you import `another_cli`.
+You can patch Click with `rich_click.patch.patch` like this:
+
+```python
+import rich_click as click
+from rich_click.patch import patch
+
+patch()
+
+from some_library import another_cli  # noqa: E402
+
+@click.group("my-cli")
+def cli():
+    pass
+
+# `another_cli` will have rich-click markup. :)
+cli.add_command(another_cli)
+```

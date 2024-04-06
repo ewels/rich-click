@@ -202,6 +202,8 @@ OPTION_GROUPS = {} # Define sorted groups of panels to display options and argum
 USE_CLICK_SHORT_HELP = False  # Use click's default function to truncate help text
 ```
 
+Full type annotations of these config options are available in `src/rich_click/rich_click.py`.
+
 All of these are available in the `RichHelpConfiguration` object, but as lowercase.
 
 ## Config resolution order (advanced)

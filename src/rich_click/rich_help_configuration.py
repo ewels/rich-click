@@ -163,7 +163,7 @@ class RichHelpConfiguration:
     )
     """Patterns to use with the option highlighter."""
 
-    legacy_windows: Optional[bool] = field(default=False)
+    legacy_windows: Optional[bool] = field(default=None)
 
     def __post_init__(self) -> None:  # noqa: D105
         if self.highlighter is not None:

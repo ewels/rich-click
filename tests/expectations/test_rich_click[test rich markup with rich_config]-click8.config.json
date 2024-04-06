@@ -79,5 +79,5 @@
     "(^|[^\\w\\-])(?P<option>--([^\\W0-9][\\w\\-]*\\w|[^\\W0-9]))",
     "(?P<metavar><[^>]+>)"
   ],
-  "legacy_windows": false
+  "legacy_windows": null
 }

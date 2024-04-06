@@ -54,7 +54,7 @@ Arguments and options are also added with decorators. The difference between arg
 - Arguments are required, and options are not (unless you specify `required=True`).
 - Arguments are positional, and options must be prefixed with one or two dashes.
 
-The below code shows some of the features available with optinos and arguments:
+The below code shows some of the features available with options and arguments:
 
 ```python
 # hello.py
@@ -99,12 +99,14 @@ Usage: hello.py [OPTIONS] NAME
 
 Options:
   -t, --times INTEGER  Number of times to print the greeting.
+                       [default: 1]
   --say-goodbye        After saying hello, say goodbye.
   --help               Show this message and exit.
 ```
 </div>
 
-Note how in addition to parsing the new arguments and options passed in, Click also renders these in the help text.
+Click is able to parse the new arguments and options, e.g. it knows that `--times [number]` maps to the function argument `times`.
+Additionally, Click also knows to render these new arguments in the help text.
 
 ### Groups
 
