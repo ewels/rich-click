@@ -1,11 +1,7 @@
-# This file contains the [pre-commit](https://pre-commit.com/) configuration of this repository.
-# More on which specific pre-commit hooks we use can be found in README.md.
----
 minimum_pre_commit_version: "2.9.2"
 repos:
   - repo: meta
     hooks:
-      - id: identity
       - id: check-hooks-apply
 
 # I'm excluding this because it's messing up the docs.

@@ -38,7 +38,7 @@ hide:
 - Rich is a _"Python library for rich text and beautiful formatting in the terminal"_.
 
 The intention of `rich-click` is to provide attractive help output from
-click, formatted with rich, with minimal customisation required.
+Click, formatted with Rich, with minimal customisation required.
 
 ## Features
 
@@ -169,7 +169,43 @@ $ python examples/03_groups_sorting.py --help
 
 </div>
 
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-Section 1.10.32 of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC
+## Usage
 
-"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"
+There are a couple of ways to begin using `rich-click`:
+
+### Import `rich_click` as `click`
+
+Switch out your normal `click` import with `rich_click`, using the same namespace:
+
+```python
+import rich_click as click
+```
+
+That's it! ✨ Then continue to use Click as you would normally.
+
+> See [`examples/01_simple.py`](examples/01_simple.py) for an example.
+
+### Declarative
+
+If you prefer, you can `RichGroup` or `RichCommand` with the `cls` argument in your click usage instead.
+This means that you can continue to use the unmodified `click` package in parallel.
+
+> See [`examples/02_declarative.py`](examples/02_declarative.py) for an example.
+
+### `rich-click` CLI tool
+
+**rich-click** comes with a CLI tool that allows you to format the Click help output from _any_ package that uses Click.
+
+To use, prefix `rich-click` to your normal command.
+For example, to get richified Click help text from a package called `awesometool`, you could run:
+
+```console
+$ rich-click awesometool --help
+
+Usage: awesometool [OPTIONS]
+..more richified output below..
+```
+
+## License
+
+This project is licensed under the MIT license.

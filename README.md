@@ -27,7 +27,7 @@
 - Rich is a _"Python library for rich text and beautiful formatting in the terminal"_.
 
 The intention of `rich-click` is to provide attractive help output from
-click, formatted with rich, with minimal customisation required.
+Click, formatted with Rich, with minimal customisation required.
 
 ## Features
 
@@ -83,11 +83,11 @@ _Screenshot from [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py
 
 This is a quick overview of how to use **rich-click**. [Read the docs](https://ewels.github.io/rich-click) for more information.
 
-There are a couple of ways to being using `rich-click`:
+There are a couple of ways to begin using `rich-click`:
 
-### Import as click
+### Import `rich_click` as `click`
 
-To use **rich-click**, switch out your normal `click` import with `rich_click`, using the same namespace:
+Switch out your normal `click` import with `rich_click`, using the same namespace:
 
 ```python
 import rich_click as click
@@ -118,3 +118,6 @@ Usage: awesometool [OPTIONS]
 ..more richified output below..
 ```
 
+## License
+
+This project is licensed under the MIT license.
