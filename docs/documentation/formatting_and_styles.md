@@ -1,5 +1,9 @@
 # Formatting & Styles
 
+!!! info
+    All images below are auto-generated using another side-project of mine: [rich-codex](https://github.com/ewels/rich-codex). Pretty cool!
+
+
 ## Formatting
 
 There are a large number of customisation options in rich-click.
@@ -157,6 +161,9 @@ click.rich_click.MAX_WIDTH = 96
 Setting `MAX_WIDTH` overrides the effect of `WIDTH`
 
 ## Styles
+
+!!! success
+    Check out the [**Live Style Editor**](../editor.md) to easily get started building a custom **rich-click** style!
 
 Most aspects of rich-click formatting can be customised, from colours to alignment.
 

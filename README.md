@@ -50,8 +50,6 @@ pip install rich-click
 
 ## Examples
 
-> Note: All images below are auto-generated using another side-project of mine: [rich-codex](https://github.com/ewels/rich-codex). Pretty cool!
-
 ### Simple Example
 
 To use rich-click in your code, replace `import click` with `import rich_click as click` in your existing click CLI:

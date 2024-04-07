@@ -41,6 +41,7 @@ optional-dependencies.dev = [
 optional-dependencies.docs = [
     "markdown_include",
     "mkdocs",
+    "mkdocs-glightbox",
     "mkdocs-material",
     "mkdocs-material-extensions",
     "mkdocstrings[python]",

@@ -3,6 +3,7 @@ title: rich-click
 hide:
   - title
   - navigation
+glightbox: false
 ---
 
 <style>
@@ -132,7 +133,7 @@ $ python examples/hello_11.py --help
 
 ### More complex example
 
-**rich-click** has a ton of customization options that let you compose help text however you'd like.
+**rich-click** has a ton of customisation options that let you compose help text however you'd like.
 Below is a more complex example of what **rich-click** is capable of:
 
 <div class="termy termy-static" static="true" style="width: 100%">

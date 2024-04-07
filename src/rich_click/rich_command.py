@@ -93,7 +93,7 @@ class RichCommand(click.Command):
         cfg = self.context_settings.get("rich_help_config", {})
         try:
             if isinstance(cfg, Mapping):
-                return RichHelpConfiguration(**cfg)
+                return RichHelpConfiguration.load_from_globals(**cfg)
             elif isinstance(cfg, RichHelpConfiguration):
                 return cfg
         except Exception as e:
