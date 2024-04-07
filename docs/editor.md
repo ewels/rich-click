@@ -1,5 +1,5 @@
 ---
-title: 'rich-click: Live Style Editor'
+title: Live Style Editor
 hide:
   - toc
   - navigation
