@@ -1,35 +1,28 @@
 # Formatting & Styles
 
-## Customisation
+## Formatting
 
 There are a large number of customisation options in rich-click.
 These can be modified by changing variables in the `click.rich_click` namespace.
 
 Note that most normal click options should still work, such as `show_default=True`, `required=True` and `hidden=True`.
 
-> Note: All images below are auto-generated using another side-project of mine: [rich-codex](https://github.com/ewels/rich-codex). Pretty cool!
-
 ### Using Rich markup
 
 In order to be as widely compatible as possible with a simple import, rich-click does _not_ parse rich formatting markup (eg. `[red]`) by default. You need to opt-in to this behaviour.
 
-To use rich markup in your help texts, add the following:
-
-```python
-click.rich_click.USE_RICH_MARKUP = True
-```
-
-Or alternatively, with the `rich_config` and `RichHelpConfiguration`:
-
-```python
-@click.command()
-@click.rich_config(help_config=click.RichHelpConfiguration(use_rich_markup=True))
-def cli():
-    ...
-```
-
 Remember that you'll need to escape any regular square brackets using a back slash in your help texts,
 for example: `[dim]\[my-default: foo][\]`
+
+=== "`RichHelpConfiguration()`"
+    ```python
+    help_config = click.RichHelpConfiguration(use_rich_markup=True)
+    ```
+
+=== "Global config"
+    ```python
+    click.rich_click.USE_RICH_MARKUP = True
+    ```
 
 ![`python examples/04_rich_markup.py --help`](docs/images/rich_markup.svg "Rich markup example")
 
@@ -38,20 +31,17 @@ for example: `[dim]\[my-default: foo][\]`
 ### Using Markdown
 
 If you prefer, you can use Markdown text.
-You must choose either Markdown or rich markup. If you specify both, Markdown takes preference.
+You must choose either Markdown or rich markup. If you specify both, Markdown takes precedence.
 
-```python
-click.rich_click.USE_MARKDOWN = True
-```
+=== "`RichHelpConfiguration()`"
+    ```python
+    help_config = click.RichHelpConfiguration(use_markdown=True)
+    ```
 
-Or alternatively, with the `RichHelpConfiguration`:
-
-```python
-@click.command()
-@click.rich_config(help_config=click.RichHelpConfiguration(use_markdown=True))
-def cli():
-    ...
-```
+=== "Global config"
+    ```python
+    click.rich_click.USE_MARKDOWN = True
+    ```
 
 ![`python examples/05_markdown.py --help`](docs/images/markdown.svg "Markdown example")
 
@@ -63,26 +53,21 @@ The default click behaviour is to only show positional arguments in the top usag
 and not in the list below with the options.
 
 If you prefer, you can tell rich-click to show arguments with `SHOW_ARGUMENTS`.
-By default, they will get their own panel but you can tell rich-click to bundle them together with `GROUP_ARGUMENTS_OPTIONS`:
+By default, they will get their own panel, but you can tell rich-click to bundle them together with `GROUP_ARGUMENTS_OPTIONS`:
 
-```python
-click.rich_click.SHOW_ARGUMENTS = True
-click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
-```
+=== "`RichHelpConfiguration()`"
+    ```python
+    help_config = click.RichHelpConfiguration(
+        show_arguments=True,
+        group_arguments_options=True
+    )
+    ```
 
-Or alternatively, with the `RichHelpConfiguration`:
-
-```python
-help_config = click.RichHelpConfiguration(
-    show_arguments=True,
-    group_arguments_options=True
-)
-
-@click.command()
-@click.rich_config(help_config=help_config)
-def cli():
-    ...
-```
+=== "Global config"
+    ```python
+    click.rich_click.SHOW_ARGUMENTS = True
+    click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
+    ```
 
 ![`python examples/06_arguments.py --help`](docs/images/arguments.svg "Positional arguments example")
 
@@ -102,22 +87,19 @@ However, if you have a long list of choices, this column can be quite wide and r
 It may look better to show metavars appended to the help text, instead of in their own column.
 For this, use the following:
 
-```python
-click.rich_click.SHOW_METAVARS_COLUMN = False
-click.rich_click.APPEND_METAVARS_HELP = True
-```
+=== "`RichHelpConfiguration()`"
+    ```python
+    help_config = click.RichHelpConfiguration(
+        show_metavars_column=False,
+        append_metavars_help=True
+    )
+    ```
 
-```python
-help_config = click.RichHelpConfiguration(
-    show_metavars_column=False,
-    append_metavars_help=True
-)
-
-@click.command()
-@click.rich_config(help_config=help_config)
-def cli():
-    ...
-```
+=== "Global config"
+    ```python
+    click.rich_click.SHOW_METAVARS_COLUMN = False
+    click.rich_click.APPEND_METAVARS_HELP = True
+    ```
 
 ![`python examples/08_metavars.py --help`](docs/images/metavars_appended.svg "Appended metavar")
 
@@ -134,11 +116,22 @@ using rich-click though, and add some text after the error with `ERRORS_EPILOGUE
 
 For example, from [`examples/07_custom_errors.py`](examples/07_custom_errors.py):
 
-```python
-click.rich_click.STYLE_ERRORS_SUGGESTION = "magenta italic"
-click.rich_click.ERRORS_SUGGESTION = "Try running the '--help' flag for more information."
-click.rich_click.ERRORS_EPILOGUE = "To find out more, visit [link=https://mytool.com]https://mytool.com[/link]"
-```
+=== "`RichHelpConfiguration()`"
+
+    ```python
+    help_config = click.RichHelpConfiguration(
+        style_errors_suggestion="magenta italic",
+        errors_suggestion="Try running the '--help' flag for more information.",
+        errors_epilogue="To find out more, visit [link=https://mytool.com]https://mytool.com[/link]"
+    )
+    ```
+
+=== "Global config"
+    ```python
+    click.rich_click.STYLE_ERRORS_SUGGESTION = "magenta italic"
+    click.rich_click.ERRORS_SUGGESTION = "Try running the '--help' flag for more information."
+    click.rich_click.ERRORS_EPILOGUE = "To find out more, visit [link=https://mytool.com]https://mytool.com[/link]"
+    ```
 
 ![`python examples/07_custom_errors.py --hep || true`](docs/images/custom_error.svg "Custom error message")
 
@@ -163,7 +156,7 @@ click.rich_click.MAX_WIDTH = 96
 
 Setting `MAX_WIDTH` overrides the effect of `WIDTH`
 
-### Styling
+## Styles
 
 Most aspects of rich-click formatting can be customised, from colours to alignment.
 

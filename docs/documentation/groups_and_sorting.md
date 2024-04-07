@@ -47,7 +47,7 @@ You can avoid this by enforcing the alignment of the help text across groups by 
 !!! info
     See [`examples/03_groups_sorting.py`](https://github.com/ewels/rich-click/blob/main/examples/03_groups_sorting.py) for a full example.
 
-### Options
+## Options
 
 To group option flags into two sections with custom names, see the following example:
 
@@ -68,7 +68,7 @@ click.rich_click.OPTION_GROUPS = {
 
 If you omit `name` it will use `Commands` (can be configured with `OPTIONS_PANEL_TITLE`).
 
-### Commands
+## Commands
 
 Here we create two groups of commands for the base command of `mytool`.
 Any subcommands not listed will automatically be printed in a panel at the end labelled "Commands" as usual.
@@ -90,7 +90,7 @@ click.rich_click.COMMAND_GROUPS = {
 
 If you omit `name` it will use `Commands` (can be configured with `COMMANDS_PANEL_TITLE`).
 
-### Multiple commands
+## Multiple commands
 
 If you use multiple nested subcommands, you can specify their commands using the top-level dictionary keys:
 
@@ -111,7 +111,7 @@ click.rich_click.COMMAND_GROUPS = {
 }
 ```
 
-### Table styling
+## Table styling
 
 Typically you would style the option / command tables using the global config options.
 However, if you wish you may style tables on a per-group basis using the `table_styles` key:
