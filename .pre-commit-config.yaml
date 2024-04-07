@@ -1,17 +1,21 @@
-# This file contains the [pre-commit](https://pre-commit.com/) configuration of this repository.
-# More on which specific pre-commit hooks we use can be found in README.md.
----
 minimum_pre_commit_version: "2.9.2"
 repos:
   - repo: meta
     hooks:
-      - id: identity
       - id: check-hooks-apply
 
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: "v3.0.0-alpha.3" # Can not be removed, so leave this empty.
+# I'm excluding this because it's messing up the docs.
+# Will consider adding back, although this has also been
+# annoying for the JSONs too.
+#  - repo: https://github.com/pre-commit/mirrors-prettier
+#    rev: "v3.1.0"
+#    hooks:
+#      - id: prettier
+
+  - repo: https://github.com/tox-dev/pyproject-fmt
+    rev: 1.7.0
     hooks:
-      - id: prettier
+      - id: pyproject-fmt
 
   - repo: https://github.com/tox-dev/pyproject-fmt
     rev: 1.7.0
@@ -40,5 +44,5 @@ repos:
         entry: mypy
         language: system
         types: [python]
-        exclude: ^examples/
+        exclude: ^examples|^docs/
         require_serial: true

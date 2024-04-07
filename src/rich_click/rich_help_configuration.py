@@ -21,11 +21,12 @@ T = TypeVar("T", bound="RichHelpConfiguration")
 
 def force_terminal_default() -> Optional[bool]:
     """Use as the default factory for `force_terminal`."""
-    env_vars = {"GITHUB_ACTIONS", "FORCE_COLOR", "PY_COLORS"}
-    if all(i not in os.environ for i in env_vars):
-        return None
+    env_vars = ["FORCE_COLOR", "PY_COLORS", "GITHUB_ACTIONS"]
+    for env_var in env_vars:
+        if env_var in os.environ:
+            return truthy(getenv(env_var))
     else:
-        return any(truthy(getenv(i)) for i in env_vars)
+        return None
 
 
 def terminal_width_default() -> Optional[int]:
@@ -162,7 +163,7 @@ class RichHelpConfiguration:
     )
     """Patterns to use with the option highlighter."""
 
-    legacy_windows: Optional[bool] = field(default=False)
+    legacy_windows: Optional[bool] = field(default=None)
 
     def __post_init__(self) -> None:  # noqa: D105
         if self.highlighter is not None:
@@ -205,7 +206,7 @@ class RichHelpConfiguration:
         inst = cls(**kw)
         return inst
 
-    def _dump_into_globals(self, module: Optional[ModuleType] = None) -> None:
+    def dump_to_globals(self, module: Optional[ModuleType] = None) -> None:
         if module is None:
             import rich_click.rich_click as rc
 

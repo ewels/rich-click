@@ -17,7 +17,10 @@ else:
     cached_property = property
 
 
-def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> "Console":
+def create_console(
+    config: RichHelpConfiguration,
+    file: Optional[IO[str]] = None,
+) -> "Console":
     """
     Create a Rich Console configured from Rich Help Configuration.
 
@@ -74,6 +77,7 @@ class RichHelpFormatter(click.HelpFormatter):
         width: Optional[int] = None,
         max_width: Optional[int] = None,
         *args: Any,
+        console: Optional["Console"] = None,
         config: Optional[RichHelpConfiguration] = None,
         file: Optional[IO[str]] = None,
         **kwargs: Any,
@@ -87,6 +91,7 @@ class RichHelpFormatter(click.HelpFormatter):
             width: Passed to click.HelpFormatter. Overrides config.width if not None.
             max_width: Passed to click.HelpFormatter. Overrides config.max_width if not None.
             *args: Args passed to click.HelpFormatter.
+            console: Use an external console.
             config: RichHelpConfiguration. If None, then build config from globals.
             file: Stream to output to in the Rich Console. If None, use stdout.
             **kwargs: Kwargs passed to click.HelpFormatter.
@@ -97,7 +102,7 @@ class RichHelpFormatter(click.HelpFormatter):
         else:
             self.config = RichHelpConfiguration.load_from_globals()
 
-        self.console = create_console(self.config, file=file)
+        self.console = console or create_console(self.config, file=file)
 
         # TODO: Revisit this. I don't think this does anything.
         if width is None:

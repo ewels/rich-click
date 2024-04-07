@@ -4,6 +4,7 @@ from dataclasses import asdict
 from typing import TYPE_CHECKING
 
 import pytest
+
 import rich_click.rich_click as rc
 from rich_click import RichContext, RichHelpConfiguration, command, group, rich_config
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X

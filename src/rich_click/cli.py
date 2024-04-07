@@ -1,9 +1,15 @@
 """The command line interface."""
 
+# ruff: noqa: D103
+
+import os
 import sys
+from functools import wraps
 from gettext import gettext as _
 from importlib import import_module
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
+
+from typing_extensions import Literal
 
 
 try:
@@ -14,25 +20,12 @@ except ImportError:
 
 import click
 
-from rich_click.decorators import command as rich_command
-from rich_click.decorators import group as rich_group
-from rich_click.decorators import pass_context, rich_config
-from rich_click.rich_command import RichCommand, RichCommandCollection, RichGroup, RichMultiCommand
+from rich_click.decorators import command as _rich_command
+from rich_click.decorators import pass_context
+from rich_click.decorators import rich_config as rich_config_decorator
+from rich_click.patch import patch as _patch
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
-
-
-def patch(rich_config: Optional[RichHelpConfiguration] = None) -> None:
-    """Patch Click internals to use Rich-Click types."""
-    click.group = rich_group
-    click.command = rich_command
-    click.Group = RichGroup  # type: ignore[misc]
-    click.Command = RichCommand  # type: ignore[misc]
-    click.CommandCollection = RichCommandCollection  # type: ignore[misc]
-    if "MultiCommand" in dir(click):
-        click.MultiCommand = RichMultiCommand  # type: ignore[assignment,misc,unused-ignore]
-    if rich_config is not None:
-        rich_config._dump_into_globals()
 
 
 def entry_points(*, group: str) -> "metadata.EntryPoints":  # type: ignore[name-defined]
@@ -46,6 +39,20 @@ def entry_points(*, group: str) -> "metadata.EntryPoints":  # type: ignore[name-
         return epg.select(group=group)
 
     return epg.get(group, [])
+
+
+@wraps(_patch)
+def patch(*args: Any, **kwargs: Any) -> None:
+    import warnings
+
+    warnings.warn(
+        "`rich_click.cli.patch()` has moved to `rich_click.patch.patch()`."
+        " Importing `patch()` from `rich_click.cli` is deprecated; please import from `rich_click.patch` instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
+    return _patch(*args, **kwargs)
 
 
 class _RichHelpConfigurationParamType(click.ParamType):
@@ -86,15 +93,22 @@ class _RichHelpConfigurationParamType(click.ParamType):
                     raise e
 
 
-@rich_command("rich-click", context_settings=dict(allow_interspersed_args=False, help_option_names=[]))
+@_rich_command("rich-click", context_settings=dict(allow_interspersed_args=False, help_option_names=[]))
 @click.argument("script_and_args", nargs=-1, metavar="[SCRIPT | MODULE:CLICK_COMMAND] [-- SCRIPT_ARGS...]")
 @click.option(
     "--rich-config",
+    "-c",
     type=_RichHelpConfigurationParamType(),
     help="Keyword arguments to pass into the [de]RichHelpConfiguration()[/] used"
     " to render the help text of the command. You can pass either a JSON directly, or a file"
     " prefixed with `@` (for example: '@rich_config.json'). Note that the --rich-config"
     " option is also used to render this help text you're reading right now!",
+)
+@click.option(
+    "--output",
+    "-o",
+    type=click.Choice(["html", "svg"], case_sensitive=False),
+    help="Optionally render help text as HTML or SVG. By default, help text is rendered normally.",
 )
 @click.option(
     # The rich-click CLI uses a special implementation of --help,
@@ -105,9 +119,10 @@ class _RichHelpConfigurationParamType(click.ParamType):
     is_eager=True,
     is_flag=True,
     help=_("Show this message and exit."),
+    # callback=help_callback
 )
 @pass_context
-@rich_config(
+@rich_config_decorator(
     help_config={
         "use_markdown": False,
         "use_rich_markup": True,
@@ -117,6 +132,7 @@ class _RichHelpConfigurationParamType(click.ParamType):
 def main(
     ctx: RichContext,
     script_and_args: List[str],
+    output: Literal[None, "html", "svg"],
     rich_config: Optional[RichHelpConfiguration],
     show_help: bool,
 ) -> None:
@@ -137,6 +153,9 @@ def main(
     or [b]click.command()[/] classes.
     If in doubt, please suggest to the authors that they use rich_click within their
     tool natively - this will always give a better experience.
+
+    You can also use this tool to print your own RichCommands as HTML with the
+    --html flag.
     """  # noqa: D400, D401
     if (show_help or not script_and_args) and not ctx.resilient_parsing:
         if rich_config is not None:
@@ -146,11 +165,16 @@ def main(
         click.echo(ctx.get_help(), color=ctx.color)
         ctx.exit()
 
+    sys.path.append(".")
+
     script, *args = script_and_args
+
+    _from_entry_points = False
 
     scripts = {script.name: script for script in entry_points(group="console_scripts")}
     if script in scripts:
         module_path, function_name = scripts[script].value.split(":", 1)
+        _from_entry_points = True
     elif ":" in script:
         # the path to a function was passed
         module_path, function_name = script.split(":", 1)
@@ -158,12 +182,22 @@ def main(
         raise click.ClickException(f"No such script: {script_and_args[0]}")
 
     prog = module_path.split(".", 1)[0]
-
     sys.argv = [prog, *args]
+
     # patch click before importing the program function
-    patch(rich_config=rich_config)
+    _patch(rich_config=rich_config)
     # import the program function
     module = import_module(module_path)
     function = getattr(module, function_name)
     # simply run it: it should be patched as well
-    function()
+    if output is not None:
+        ctx.help_config = RichHelpConfiguration.load_from_globals()
+        RichContext.console = console = ctx.make_formatter().console
+        console.record = True
+        console.file = open(os.devnull, "w")
+        RichContext.export_console_as = output
+
+    if ctx.resilient_parsing and isinstance(function, click.Command):
+        function.main(resilient_parsing=True)
+    else:
+        function()

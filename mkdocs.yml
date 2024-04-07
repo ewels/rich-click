@@ -1,0 +1,108 @@
+site_name: rich-click
+repo_name: ewels/rich-click
+repo_url: https://github.com/ewels/rich-click
+site_url: https://ewels.github.io/rich-click/
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.tabs
+    - navigation.expand
+    # - navigation.indexes
+  favicon: images/favicon.png
+  logo: images/favicon.png
+  palette:
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: navy
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: black
+      accent: navy
+      toggle:
+        icon: material/lightbulb
+        name: Switch to dark mode
+  font:
+    text: Noto Sans
+
+nav:
+  - Home: index.md
+  - "Live Style Editor": editor.md
+  - Documentation:
+      # - Index: documentation/index.md
+      - Introduction to Click: documentation/introduction_to_click.md
+      - Configuration: documentation/configuration.md
+      - "Formatting & Styles": documentation/formatting_and_styles.md
+      - "Groups & Sorting": documentation/groups_and_sorting.md
+      - "<code>rich-click</code> CLI tool": documentation/rich_click_cli.md
+      # - API Reference: documentation/api_reference.md
+  - Changelog: changelog.md
+  - Contributing: contributing.md
+#  - Usage:
+#      - usage/github_action.md
+#      - usage/cli.md
+#      - usage/docker_image.md
+#  - Inputs:
+#      - inputs/markdown.md
+#      - inputs/direct_inputs.md
+#      - inputs/config_file.md
+#  - Configuration:
+#      - config/overview.md
+#      - config/time_limits.md
+#      - config/tweaks.md
+#      - config/command_setup.md
+#      - config/width.md
+#      - config/colours.md
+#      - config/cleaning.md
+#      - config/ignoring_changes.md
+#  - safety.md
+#  - troubleshooting.md
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - markdown.extensions.codehilite:
+      guess_lang: false
+  - admonition
+  - codehilite
+  - extra
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format ""
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - markdown_include.include:
+      base_path: docs
+
+plugins:
+  - search
+  - social
+  - glightbox:
+      effect: fade
+      height: auto
+      zoomable: true
+      width: 100em
+      skip_classes:
+        - disable-glightbox
+  # - termynal
+
+extra_css:
+  - css/termynal.css
+  - css/extra.css
+
+extra_javascript:
+  - js/termynal.js
+  - js/custom.js
