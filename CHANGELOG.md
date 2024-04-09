@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 1.8.0dev
+## Version 1.8.0dev (2023-04-09)
 
 - Add `--rich-config` option to the `rich-click` CLI.
 - Better typing for option groups and command groups with `TypedDict` [[#156](https://github.com/ewels/rich-click/pull/156)]
@@ -15,25 +15,26 @@
 - `RichHelpConfiguration()` is now asserted to be JSON serializable, as an option for porting configurations. That said, serialization is not a fully supported feature of the high-level API, so serialize the config at your own risk.
   - Related: `highlighter` is now deprecated in `RichHelpConfiguration`; please use `highlighter_patterns` instead.
 - Moved exclusively to `pyproject.toml` and removed `setup.py` / `setup.cfg`; thank you [@Stealthii](github.com/Stealthii)!
+- Moved to `text_markup: Literal["markdown", "rich", None]` instead of booleans.
 
-## Version 1.7.4
+## Version 1.7.4 (2024-03-12)
 
 - Fixed `legacy_windows` default. [[#167](https://github.com/ewels/rich-click/issues/167)]
 
-## Version 1.7.3
+## Version 1.7.3 (2024-01-05)
 
 - Fix false deprecation warning. [[#151](https://github.com/ewels/rich-click/issues/151)]
 
-## Version 1.7.2
+## Version 1.7.2 (2023-12-02)
 
 - Add support for rich formatting in epilog text [[#146](https://github.com/ewels/rich-click/pull/146)]
 
-## Version 1.7.1
+## Version 1.7.1 (2023-10-31)
 
 - Fix bug with `rich-click` CLI not working with Python 3.12. [[#141](https://github.com/ewels/rich-click/issues/141)]
 - Fix compatibility issue with `dbt-core` CLI. [[#140](https://github.com/ewels/rich-click/issues/140)]
 
-## Version 1.7.0
+## Version 1.7.0 (2023-10-11)
 
 > [!WARNING]
 >
@@ -99,7 +100,7 @@ In addition:
 - Updated pip release build CI [[#78](https://github.com/ewels/rich-click/pull/78)]
 - Added missed occurence of return values when `standalone_mode` set [[#79](https://github.com/ewels/rich-click/pull/79)]
 
-## Version 1.5 (2022-06-21)
+## Version 1.5.0 (2022-06-21)
 
 - Add new `FORCE_TERMINAL` config flag to force colours even when help output is piped
   - Can also be enabled by setting environment variables `GITHUB_ACTIONS`, `FORCE_COLOR` or `PY_COLORS`
@@ -109,7 +110,7 @@ In addition:
 - Fix package syntax in `setup.py` for `py.typed` [[#75](https://github.com/ewels/rich-click/pull/75)]
 - Fix printing of return values when `standalone_mode` set [[#76](https://github.com/ewels/rich-click/pull/76)]
 
-## Version 1.4 (2022-05-17)
+## Version 1.4.0 (2022-05-17)
 
 - Added support for styling the tables that options and commands are displayed in [[#69](https://github.com/ewels/rich-click/issues/69)]
 - Fixed `AttributeError` from `envvar` code in some Typer usage [[#70](https://github.com/ewels/rich-click/pull/70)]
