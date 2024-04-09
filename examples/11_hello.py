@@ -2,7 +2,7 @@ import rich_click as click
 
 
 @click.command()
-@click.rich_config(help_config=click.RichHelpConfiguration(use_markdown=True, width=60))
+@click.rich_config(help_config=click.RichHelpConfiguration(text_markup="markdown", width=60))
 @click.option("--count", default=1, help="Number of greetings.")
 @click.option("--name", prompt="Your name", help="The person to greet.")
 def hello(count, name):

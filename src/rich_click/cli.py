@@ -124,8 +124,7 @@ class _RichHelpConfigurationParamType(click.ParamType):
 @pass_context
 @rich_config_decorator(
     help_config={
-        "use_markdown": False,
-        "use_rich_markup": True,
+        "text_markup": "rich",
         "errors_epilogue": "[d]Please run [yellow bold]rich-click --help[/] for usage information.[/]",
     }
 )
