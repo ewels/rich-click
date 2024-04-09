@@ -406,5 +406,3 @@ def prevent_incompatible_overrides(
     if hasattr(cmd.__class__, "format_commands"):
         if method_is_from_subclass_of(cmd.__class__, cls, "format_commands"):
             getattr(RichMultiCommand, "format_commands")(cmd, ctx, formatter)
-        else:
-            getattr(cmd, "format_commands")(ctx, formatter)
