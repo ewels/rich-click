@@ -61,14 +61,24 @@ def _make_rich_rext(text: str, style: StyleType, formatter: RichHelpFormatter) -
     config = formatter.config
     # Remove indentations from input text
     text = inspect.cleandoc(text)
+    if config.text_markup == "markdown":
+        use_markdown = True
+        use_rich = False
+    elif config.text_markup == "rich":
+        use_markdown = False
+        use_rich = True
+    else:
+        use_markdown = config.use_markdown
+        use_rich = config.use_rich_markup
+
     # TODO:
     #  In a future major version release, decouple emojis and markdown.
     #  Decoupling isn't something that is sensible without breaking the API.
-    if config.use_markdown:
+    if use_markdown:
         if config.use_markdown_emoji:
             text = Emoji.replace(text)
         return Markdown(text, style=style)
-    if config.use_rich_markup:
+    elif use_rich:
         return formatter.highlighter(Text.from_markup(text, style=style))
     else:
         return formatter.highlighter(Text(text, style=style))

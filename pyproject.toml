@@ -29,7 +29,8 @@ dependencies = [
     "rich>=10.7",
     "typing_extensions",
 ]
-optional-dependencies.dev = [
+[project.optional-dependencies]
+dev = [
     "mypy",
     "packaging",
     "pre-commit",
@@ -38,7 +39,7 @@ optional-dependencies.dev = [
     "ruff",
     "types-setuptools",
 ]
-optional-dependencies.docs = [
+docs = [
     "markdown_include",
     "mkdocs",
     "mkdocs-glightbox",

@@ -11,40 +11,56 @@ These can be modified by changing variables in the `click.rich_click` namespace.
 
 Note that most normal click options should still work, such as `show_default=True`, `required=True` and `hidden=True`.
 
-### Using Rich markup
+### Text markup
 
-In order to be as widely compatible as possible with a simple import, rich-click does _not_ parse rich formatting markup (eg. `[red]`) by default. You need to opt-in to this behaviour.
+**rich-click** supports 3 different values for `text_markup`, which determines how text is rendered:
+
+- `None`: Rendered as plain text. This is the default.
+- `'rich'`: Rendered using Rich's markup syntax.
+- `'markdown'`: Rendered with markdown.
+
+!!! warning
+    Prior to **rich-click** 1.8.0, markup was controlled by the booleans `use_rich_markup` and `use_markdown`. 
+
+    These booleans have been silently deprecated (read: they will still be supported for the distant future),
+    and users are encouraged to use the `text_markup: Literal["markdown", "rich", None]` config option instead.
+
+    Note that the previous behavior of `use_markdown` and `use_rich_markup` was that they are mutually exclusive,
+    and that `use_markdown` takes precedence over `use_rich_markup`.
+
+#### Rich markup
+
+In order to be as widely compatible as possible with a simple import, **rich-click** does _not_ parse rich formatting markup (eg. `[red]`) by default. You need to opt-in to this behaviour.
 
 Remember that you'll need to escape any regular square brackets using a back slash in your help texts,
 for example: `[dim]\[my-default: foo][\]`
 
 === "`RichHelpConfiguration()`"
     ```python
-    help_config = click.RichHelpConfiguration(use_rich_markup=True)
+    help_config = click.RichHelpConfiguration(text_markup="rich")
     ```
 
 === "Global config"
     ```python
-    click.rich_click.USE_RICH_MARKUP = True
+    click.rich_click.TEXT_MARKUP = "rich"
     ```
 
 ![`python ../../examples/04_rich_markup.py --help`](../images/rich_markup.svg "Rich markup example")
 
 > See [`examples/04_rich_markup.py`](examples/04_rich_markup.py) for an example.
 
-### Using Markdown
+#### Markdown
 
 If you prefer, you can use Markdown text.
-You must choose either Markdown or rich markup. If you specify both, Markdown takes precedence.
 
 === "`RichHelpConfiguration()`"
     ```python
-    help_config = click.RichHelpConfiguration(use_markdown=True)
+    help_config = click.RichHelpConfiguration(text_markup="markdown")
     ```
 
 === "Global config"
     ```python
-    click.rich_click.USE_MARKDOWN = True
+    click.rich_click.TEXT_MARKUP = "markdown"
     ```
 
 ![`python ../../examples/05_markdown.py --help`](../images/markdown.svg "Markdown example")
