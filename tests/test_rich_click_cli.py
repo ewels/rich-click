@@ -82,6 +82,7 @@ def test_simple_rich_click_cli(simple_script: Path, assert_str: AssertStr, comma
     res = subprocess.run(
         [sys.executable, "-m", "src.rich_click", "mymodule:cli", "--help"],
         stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
     )
     assert res.returncode == 0
