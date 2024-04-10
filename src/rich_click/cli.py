@@ -116,7 +116,7 @@ class _RichHelpConfigurationParamType(click.ParamType):
     default=False,
     hidden=True,
     help="Suppress warnings when there are conflicting entry_points."
-         " (This option is hidden because this situation is extremely rare).",
+    " (This option is hidden because this situation is extremely rare).",
 )
 @click.option(
     # The rich-click CLI uses a special implementation of --help,
@@ -176,8 +176,8 @@ def main(
     script, *args = script_and_args
 
     _selected: List[str] = []
-    module_path = None
-    function_name = None
+    module_path = ""
+    function_name = ""
 
     for s in entry_points(group="console_scripts"):
         if script == s.name:
@@ -192,28 +192,31 @@ def main(
         # This is an extremely rare edge case that comes up when the user sets the PYTHONPATH themselves.
         if script in sys.argv:
             _args = sys.argv.copy()
-            _args[_args.index(script)] = f'{module_path}:{function_name}'
+            _args[_args.index(script)] = f"{module_path}:{function_name}"
         else:
-            _args = ["rich-click", f'{module_path}:{function_name}']
+            _args = ["rich-click", f"{module_path}:{function_name}"]
 
-        click.echo(click.style(
-            f"WARNING: Multiple entry_points correspond with script '{script}': {_selected!r}."
-            "\nThis can happen when an 'egg-info' directory exists, you're using a virtualenv,"
-            " and you have set a custom PYTHONPATH."
-            f"\n\nThe selected script is '{module_path}:{function_name}', which is being executed now."
-            "\n\nIt is safer and recommended that you specify the MODULE:CLICK_COMMAND"
-            f" ('{module_path}:{function_name}') instead of the script ('{script}'), like this:"
-            f"\n\n>>> rich-click {' '.join(_args)}"
-            "\n\nAlternatively, you can pass --suppress-warnings to the rich-click CLI,"
-            " which will disable this message.",
-            fg="red"
-        ), file=sys.stderr)
+        click.echo(
+            click.style(
+                f"WARNING: Multiple entry_points correspond with script '{script}': {_selected!r}."
+                "\nThis can happen when an 'egg-info' directory exists, you're using a virtualenv,"
+                " and you have set a custom PYTHONPATH."
+                f"\n\nThe selected script is '{module_path}:{function_name}', which is being executed now."
+                "\n\nIt is safer and recommended that you specify the MODULE:CLICK_COMMAND"
+                f" ('{module_path}:{function_name}') instead of the script ('{script}'), like this:"
+                f"\n\n>>> rich-click {' '.join(_args)}"
+                "\n\nAlternatively, you can pass --suppress-warnings to the rich-click CLI,"
+                " which will disable this message.",
+                fg="red",
+            ),
+            file=sys.stderr,
+        )
 
     if ":" in script and module_path is None:
         # the path to a function was passed
         module_path, function_name = script.split(":", 1)
 
-    if module_path is None:
+    if not module_path:
         raise click.ClickException(f"No such script: {script_and_args[0]}")
 
     prog = module_path.split(".", 1)[0]
