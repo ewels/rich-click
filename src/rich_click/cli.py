@@ -212,7 +212,7 @@ def main(
             file=sys.stderr,
         )
 
-    if ":" in script and module_path is None:
+    if ":" in script and not module_path:
         # the path to a function was passed
         module_path, function_name = script.split(":", 1)
 
