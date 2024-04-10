@@ -111,6 +111,14 @@ class _RichHelpConfigurationParamType(click.ParamType):
     help="Optionally render help text as HTML or SVG. By default, help text is rendered normally.",
 )
 @click.option(
+    "--suppress-warnings/--do-not-suppress-warnings",
+    is_flag=True,
+    default=False,
+    hidden=True,
+    help="Suppress warnings when there are conflicting entry_points."
+         " (This option is hidden because this situation is extremely rare).",
+)
+@click.option(
     # The rich-click CLI uses a special implementation of --help,
     # which is aware of the --rich-config object.
     "--help",
@@ -132,6 +140,7 @@ def main(
     ctx: RichContext,
     script_and_args: List[str],
     output: Literal[None, "html", "svg"],
+    suppress_warnings: bool,
     rich_config: Optional[RichHelpConfiguration],
     show_help: bool,
 ) -> None:
@@ -164,20 +173,47 @@ def main(
         click.echo(ctx.get_help(), color=ctx.color)
         ctx.exit()
 
-    sys.path.append(".")
-
     script, *args = script_and_args
 
-    _from_entry_points = False
+    _selected: List[str] = []
+    module_path = None
+    function_name = None
 
-    scripts = {script.name: script for script in entry_points(group="console_scripts")}
-    if script in scripts:
-        module_path, function_name = scripts[script].value.split(":", 1)
-        _from_entry_points = True
-    elif ":" in script:
+    for s in entry_points(group="console_scripts"):
+        if script == s.name:
+            if not _selected:
+                module_path, function_name = s.value.split(":", 1)
+            if suppress_warnings:
+                break
+            if s.value not in _selected:
+                _selected.append(s.value)
+
+    if len(_selected) > 1 and not suppress_warnings:
+        # This is an extremely rare edge case that comes up when the user sets the PYTHONPATH themselves.
+        if script in sys.argv:
+            _args = sys.argv.copy()
+            _args[_args.index(script)] = f'{module_path}:{function_name}'
+        else:
+            _args = ["rich-click", f'{module_path}:{function_name}']
+
+        click.echo(click.style(
+            f"WARNING: Multiple entry_points correspond with script '{script}': {_selected!r}."
+            "\nThis can happen when an 'egg-info' directory exists, you're using a virtualenv,"
+            " and you have set a custom PYTHONPATH."
+            f"\n\nThe selected script is '{module_path}:{function_name}', which is being executed now."
+            "\n\nIt is safer and recommended that you specify the MODULE:CLICK_COMMAND"
+            f" ('{module_path}:{function_name}') instead of the script ('{script}'), like this:"
+            f"\n\n>>> rich-click {' '.join(_args)}"
+            "\n\nAlternatively, you can pass --suppress-warnings to the rich-click CLI,"
+            " which will disable this message.",
+            fg="red"
+        ), file=sys.stderr)
+
+    if ":" in script and module_path is None:
         # the path to a function was passed
         module_path, function_name = script.split(":", 1)
-    else:
+
+    if module_path is None:
         raise click.ClickException(f"No such script: {script_and_args[0]}")
 
     prog = module_path.split(".", 1)[0]
