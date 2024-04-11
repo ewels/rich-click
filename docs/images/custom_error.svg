@@ -1,4 +1,4 @@
-<svg class="rich-terminal" viewBox="0 0 1629 928.4" xmlns="http://www.w3.org/2000/svg">
+<svg class="rich-terminal" viewBox="0 0 994 318.4" xmlns="http://www.w3.org/2000/svg">
     <!-- Generated with Rich https://www.textualize.io -->
     <style>
 
@@ -19,179 +19,86 @@
         font-weight: 700;
     }
 
-    .terminal-1741453368-matrix {
+    .terminal-3504293245-matrix {
         font-family: Fira Code, monospace;
         font-size: 20px;
         line-height: 24.4px;
         font-variant-east-asian: full-width;
     }
 
-    .terminal-1741453368-title {
+    .terminal-3504293245-title {
         font-size: 18px;
         font-weight: bold;
         font-family: arial;
     }
 
-    .terminal-1741453368-r1 { fill: #c5c8c6 }
+    .terminal-3504293245-r1 { fill: #c5c8c6 }
+.terminal-3504293245-r2 { fill: #d0b344 }
+.terminal-3504293245-r3 { fill: #c5c8c6;font-weight: bold }
+.terminal-3504293245-r4 { fill: #68a0b3;font-weight: bold }
+.terminal-3504293245-r5 { fill: #98729f;font-style: italic; }
+.terminal-3504293245-r6 { fill: #98a84b }
+.terminal-3504293245-r7 { fill: #cc555a }
+.terminal-3504293245-r8 { fill: #1984e9;text-decoration: underline; }
     </style>
 
     <defs>
-    <clipPath id="terminal-1741453368-clip-terminal">
-      <rect x="0" y="0" width="1609.3999999999999" height="877.4" />
+    <clipPath id="terminal-3504293245-clip-terminal">
+      <rect x="0" y="0" width="975.0" height="267.4" />
     </clipPath>
-    <clipPath id="terminal-1741453368-line-0">
-    <rect x="0" y="1.5" width="1610.4" height="24.65"/>
+    <clipPath id="terminal-3504293245-line-0">
+    <rect x="0" y="1.5" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-1741453368-line-1">
-    <rect x="0" y="25.9" width="1610.4" height="24.65"/>
+<clipPath id="terminal-3504293245-line-1">
+    <rect x="0" y="25.9" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-1741453368-line-2">
-    <rect x="0" y="50.3" width="1610.4" height="24.65"/>
+<clipPath id="terminal-3504293245-line-2">
+    <rect x="0" y="50.3" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-1741453368-line-3">
-    <rect x="0" y="74.7" width="1610.4" height="24.65"/>
+<clipPath id="terminal-3504293245-line-3">
+    <rect x="0" y="74.7" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-1741453368-line-4">
-    <rect x="0" y="99.1" width="1610.4" height="24.65"/>
+<clipPath id="terminal-3504293245-line-4">
+    <rect x="0" y="99.1" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-1741453368-line-5">
-    <rect x="0" y="123.5" width="1610.4" height="24.65"/>
+<clipPath id="terminal-3504293245-line-5">
+    <rect x="0" y="123.5" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-1741453368-line-6">
-    <rect x="0" y="147.9" width="1610.4" height="24.65"/>
+<clipPath id="terminal-3504293245-line-6">
+    <rect x="0" y="147.9" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-1741453368-line-7">
-    <rect x="0" y="172.3" width="1610.4" height="24.65"/>
+<clipPath id="terminal-3504293245-line-7">
+    <rect x="0" y="172.3" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-1741453368-line-8">
-    <rect x="0" y="196.7" width="1610.4" height="24.65"/>
+<clipPath id="terminal-3504293245-line-8">
+    <rect x="0" y="196.7" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-1741453368-line-9">
-    <rect x="0" y="221.1" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-10">
-    <rect x="0" y="245.5" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-11">
-    <rect x="0" y="269.9" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-12">
-    <rect x="0" y="294.3" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-13">
-    <rect x="0" y="318.7" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-14">
-    <rect x="0" y="343.1" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-15">
-    <rect x="0" y="367.5" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-16">
-    <rect x="0" y="391.9" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-17">
-    <rect x="0" y="416.3" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-18">
-    <rect x="0" y="440.7" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-19">
-    <rect x="0" y="465.1" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-20">
-    <rect x="0" y="489.5" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-21">
-    <rect x="0" y="513.9" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-22">
-    <rect x="0" y="538.3" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-23">
-    <rect x="0" y="562.7" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-24">
-    <rect x="0" y="587.1" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-25">
-    <rect x="0" y="611.5" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-26">
-    <rect x="0" y="635.9" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-27">
-    <rect x="0" y="660.3" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-28">
-    <rect x="0" y="684.7" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-29">
-    <rect x="0" y="709.1" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-30">
-    <rect x="0" y="733.5" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-31">
-    <rect x="0" y="757.9" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-32">
-    <rect x="0" y="782.3" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-33">
-    <rect x="0" y="806.7" width="1610.4" height="24.65"/>
-            </clipPath>
-<clipPath id="terminal-1741453368-line-34">
-    <rect x="0" y="831.1" width="1610.4" height="24.65"/>
+<clipPath id="terminal-3504293245-line-9">
+    <rect x="0" y="221.1" width="976" height="24.65"/>
             </clipPath>
     </defs>
 
-    <rect fill="#292929" stroke="rgba(255,255,255,0.35)" stroke-width="1" x="1" y="1" width="1627" height="926.4" rx="8"/><text class="terminal-1741453368-title" fill="#c5c8c6" text-anchor="middle" x="813" y="27">Custom&#160;error&#160;message</text>
+    <rect fill="#292929" stroke="rgba(255,255,255,0.35)" stroke-width="1" x="1" y="1" width="992" height="316.4" rx="8"/><text class="terminal-3504293245-title" fill="#c5c8c6" text-anchor="middle" x="496" y="27">Custom&#160;error&#160;message</text>
             <g transform="translate(26,22)">
             <circle cx="0" cy="0" r="7" fill="#ff5f57"/>
             <circle cx="22" cy="0" r="7" fill="#febc2e"/>
             <circle cx="44" cy="0" r="7" fill="#28c840"/>
             </g>
         
-    <g transform="translate(9, 41)" clip-path="url(#terminal-1741453368-clip-terminal)">
+    <g transform="translate(9, 41)" clip-path="url(#terminal-3504293245-clip-terminal)">
     
-    <g class="terminal-1741453368-matrix">
-    <text class="terminal-1741453368-r1" x="0" y="20" textLength="695.4" clip-path="url(#terminal-1741453368-line-0)">$&#160;python&#160;../../examples/07_custom_errors.py&#160;--hep&#160;||&#160;true</text><text class="terminal-1741453368-r1" x="1610.4" y="20" textLength="12.2" clip-path="url(#terminal-1741453368-line-0)">
-</text><text class="terminal-1741453368-r1" x="0" y="44.4" textLength="414.8" clip-path="url(#terminal-1741453368-line-1)">Traceback&#160;(most&#160;recent&#160;call&#160;last):</text><text class="terminal-1741453368-r1" x="1610.4" y="44.4" textLength="12.2" clip-path="url(#terminal-1741453368-line-1)">
-</text><text class="terminal-1741453368-r1" x="0" y="68.8" textLength="1195.6" clip-path="url(#terminal-1741453368-line-2)">&#160;&#160;File&#160;&quot;/home/runner/work/rich-click/rich-click/src/rich_click/rich_command.py&quot;,&#160;line&#160;153,&#160;in&#160;main</text><text class="terminal-1741453368-r1" x="1610.4" y="68.8" textLength="12.2" clip-path="url(#terminal-1741453368-line-2)">
-</text><text class="terminal-1741453368-r1" x="0" y="93.2" textLength="732" clip-path="url(#terminal-1741453368-line-3)">&#160;&#160;&#160;&#160;with&#160;self.make_context(prog_name,&#160;args,&#160;**extra)&#160;as&#160;ctx:</text><text class="terminal-1741453368-r1" x="1610.4" y="93.2" textLength="12.2" clip-path="url(#terminal-1741453368-line-3)">
-</text><text class="terminal-1741453368-r1" x="0" y="117.6" textLength="634.4" clip-path="url(#terminal-1741453368-line-4)">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</text><text class="terminal-1741453368-r1" x="1610.4" y="117.6" textLength="12.2" clip-path="url(#terminal-1741453368-line-4)">
-</text><text class="terminal-1741453368-r1" x="0" y="142" textLength="1293.2" clip-path="url(#terminal-1741453368-line-5)">&#160;&#160;File&#160;&quot;/home/runner/work/rich-click/rich-click/src/rich_click/rich_command.py&quot;,&#160;line&#160;256,&#160;in&#160;make_context</text><text class="terminal-1741453368-r1" x="1610.4" y="142" textLength="12.2" clip-path="url(#terminal-1741453368-line-5)">
-</text><text class="terminal-1741453368-r1" x="0" y="166.4" textLength="1159" clip-path="url(#terminal-1741453368-line-6)">&#160;&#160;&#160;&#160;return&#160;super().make_context(info_name,&#160;args,&#160;parent,&#160;**extra)&#160;&#160;#&#160;type:&#160;ignore[return-value]</text><text class="terminal-1741453368-r1" x="1610.4" y="166.4" textLength="12.2" clip-path="url(#terminal-1741453368-line-6)">
-</text><text class="terminal-1741453368-r1" x="0" y="190.8" textLength="793" clip-path="url(#terminal-1741453368-line-7)">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</text><text class="terminal-1741453368-r1" x="1610.4" y="190.8" textLength="12.2" clip-path="url(#terminal-1741453368-line-7)">
-</text><text class="terminal-1741453368-r1" x="0" y="215.2" textLength="1427.4" clip-path="url(#terminal-1741453368-line-8)">&#160;&#160;File&#160;&quot;/opt/hostedtoolcache/Python/3.12.2/x64/lib/python3.12/site-packages/click/core.py&quot;,&#160;line&#160;943,&#160;in&#160;make_context</text><text class="terminal-1741453368-r1" x="1610.4" y="215.2" textLength="12.2" clip-path="url(#terminal-1741453368-line-8)">
-</text><text class="terminal-1741453368-r1" x="0" y="239.6" textLength="366" clip-path="url(#terminal-1741453368-line-9)">&#160;&#160;&#160;&#160;self.parse_args(ctx,&#160;args)</text><text class="terminal-1741453368-r1" x="1610.4" y="239.6" textLength="12.2" clip-path="url(#terminal-1741453368-line-9)">
-</text><text class="terminal-1741453368-r1" x="0" y="264" textLength="1415.2" clip-path="url(#terminal-1741453368-line-10)">&#160;&#160;File&#160;&quot;/opt/hostedtoolcache/Python/3.12.2/x64/lib/python3.12/site-packages/click/core.py&quot;,&#160;line&#160;1405,&#160;in&#160;parse_args</text><text class="terminal-1741453368-r1" x="1610.4" y="264" textLength="12.2" clip-path="url(#terminal-1741453368-line-10)">
-</text><text class="terminal-1741453368-r1" x="0" y="288.4" textLength="707.6" clip-path="url(#terminal-1741453368-line-11)">&#160;&#160;&#160;&#160;opts,&#160;args,&#160;param_order&#160;=&#160;parser.parse_args(args=args)</text><text class="terminal-1741453368-r1" x="1610.4" y="288.4" textLength="12.2" clip-path="url(#terminal-1741453368-line-11)">
-</text><text class="terminal-1741453368-r1" x="0" y="312.8" textLength="707.6" clip-path="url(#terminal-1741453368-line-12)">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;^^^^^^^^^^^^^^^^^^^^^^^^^^^^</text><text class="terminal-1741453368-r1" x="1610.4" y="312.8" textLength="12.2" clip-path="url(#terminal-1741453368-line-12)">
-</text><text class="terminal-1741453368-r1" x="0" y="337.2" textLength="1427.4" clip-path="url(#terminal-1741453368-line-13)">&#160;&#160;File&#160;&quot;/opt/hostedtoolcache/Python/3.12.2/x64/lib/python3.12/site-packages/click/parser.py&quot;,&#160;line&#160;337,&#160;in&#160;parse_args</text><text class="terminal-1741453368-r1" x="1610.4" y="337.2" textLength="12.2" clip-path="url(#terminal-1741453368-line-13)">
-</text><text class="terminal-1741453368-r1" x="0" y="361.6" textLength="500.2" clip-path="url(#terminal-1741453368-line-14)">&#160;&#160;&#160;&#160;self._process_args_for_options(state)</text><text class="terminal-1741453368-r1" x="1610.4" y="361.6" textLength="12.2" clip-path="url(#terminal-1741453368-line-14)">
-</text><text class="terminal-1741453368-r1" x="0" y="386" textLength="1610.4" clip-path="url(#terminal-1741453368-line-15)">&#160;&#160;File&#160;&quot;/opt/hostedtoolcache/Python/3.12.2/x64/lib/python3.12/site-packages/click/parser.py&quot;,&#160;line&#160;364,&#160;in&#160;_process_args_for_options</text><text class="terminal-1741453368-r1" x="1610.4" y="386" textLength="12.2" clip-path="url(#terminal-1741453368-line-15)">
-</text><text class="terminal-1741453368-r1" x="0" y="410.4" textLength="414.8" clip-path="url(#terminal-1741453368-line-16)">&#160;&#160;&#160;&#160;self._process_opts(arg,&#160;state)</text><text class="terminal-1741453368-r1" x="1610.4" y="410.4" textLength="12.2" clip-path="url(#terminal-1741453368-line-16)">
-</text><text class="terminal-1741453368-r1" x="0" y="434.8" textLength="1464" clip-path="url(#terminal-1741453368-line-17)">&#160;&#160;File&#160;&quot;/opt/hostedtoolcache/Python/3.12.2/x64/lib/python3.12/site-packages/click/parser.py&quot;,&#160;line&#160;514,&#160;in&#160;_process_opts</text><text class="terminal-1741453368-r1" x="1610.4" y="434.8" textLength="12.2" clip-path="url(#terminal-1741453368-line-17)">
-</text><text class="terminal-1741453368-r1" x="0" y="459.2" textLength="756.4" clip-path="url(#terminal-1741453368-line-18)">&#160;&#160;&#160;&#160;self._match_long_opt(norm_long_opt,&#160;explicit_value,&#160;state)</text><text class="terminal-1741453368-r1" x="1610.4" y="459.2" textLength="12.2" clip-path="url(#terminal-1741453368-line-18)">
-</text><text class="terminal-1741453368-r1" x="0" y="483.6" textLength="1488.4" clip-path="url(#terminal-1741453368-line-19)">&#160;&#160;File&#160;&quot;/opt/hostedtoolcache/Python/3.12.2/x64/lib/python3.12/site-packages/click/parser.py&quot;,&#160;line&#160;398,&#160;in&#160;_match_long_opt</text><text class="terminal-1741453368-r1" x="1610.4" y="483.6" textLength="12.2" clip-path="url(#terminal-1741453368-line-19)">
-</text><text class="terminal-1741453368-r1" x="0" y="508" textLength="854" clip-path="url(#terminal-1741453368-line-20)">&#160;&#160;&#160;&#160;raise&#160;NoSuchOption(opt,&#160;possibilities=possibilities,&#160;ctx=self.ctx)</text><text class="terminal-1741453368-r1" x="1610.4" y="508" textLength="12.2" clip-path="url(#terminal-1741453368-line-20)">
-</text><text class="terminal-1741453368-r1" x="0" y="532.4" textLength="634.4" clip-path="url(#terminal-1741453368-line-21)">click.exceptions.NoSuchOption:&#160;No&#160;such&#160;option:&#160;--hep</text><text class="terminal-1741453368-r1" x="1610.4" y="532.4" textLength="12.2" clip-path="url(#terminal-1741453368-line-21)">
-</text><text class="terminal-1741453368-r1" x="1610.4" y="556.8" textLength="12.2" clip-path="url(#terminal-1741453368-line-22)">
-</text><text class="terminal-1741453368-r1" x="0" y="581.2" textLength="817.4" clip-path="url(#terminal-1741453368-line-23)">During&#160;handling&#160;of&#160;the&#160;above&#160;exception,&#160;another&#160;exception&#160;occurred:</text><text class="terminal-1741453368-r1" x="1610.4" y="581.2" textLength="12.2" clip-path="url(#terminal-1741453368-line-23)">
-</text><text class="terminal-1741453368-r1" x="1610.4" y="605.6" textLength="12.2" clip-path="url(#terminal-1741453368-line-24)">
-</text><text class="terminal-1741453368-r1" x="0" y="630" textLength="414.8" clip-path="url(#terminal-1741453368-line-25)">Traceback&#160;(most&#160;recent&#160;call&#160;last):</text><text class="terminal-1741453368-r1" x="1610.4" y="630" textLength="12.2" clip-path="url(#terminal-1741453368-line-25)">
-</text><text class="terminal-1741453368-r1" x="0" y="654.4" textLength="1512.8" clip-path="url(#terminal-1741453368-line-26)">&#160;&#160;File&#160;&quot;/home/runner/work/rich-click/rich-click/docs/documentation/../../examples/07_custom_errors.py&quot;,&#160;line&#160;33,&#160;in&#160;&lt;module&gt;</text><text class="terminal-1741453368-r1" x="1610.4" y="654.4" textLength="12.2" clip-path="url(#terminal-1741453368-line-26)">
-</text><text class="terminal-1741453368-r1" x="0" y="678.8" textLength="109.8" clip-path="url(#terminal-1741453368-line-27)">&#160;&#160;&#160;&#160;cli()</text><text class="terminal-1741453368-r1" x="1610.4" y="678.8" textLength="12.2" clip-path="url(#terminal-1741453368-line-27)">
-</text><text class="terminal-1741453368-r1" x="0" y="703.2" textLength="1390.8" clip-path="url(#terminal-1741453368-line-28)">&#160;&#160;File&#160;&quot;/opt/hostedtoolcache/Python/3.12.2/x64/lib/python3.12/site-packages/click/core.py&quot;,&#160;line&#160;1157,&#160;in&#160;__call__</text><text class="terminal-1741453368-r1" x="1610.4" y="703.2" textLength="12.2" clip-path="url(#terminal-1741453368-line-28)">
-</text><text class="terminal-1741453368-r1" x="0" y="727.6" textLength="451.4" clip-path="url(#terminal-1741453368-line-29)">&#160;&#160;&#160;&#160;return&#160;self.main(*args,&#160;**kwargs)</text><text class="terminal-1741453368-r1" x="1610.4" y="727.6" textLength="12.2" clip-path="url(#terminal-1741453368-line-29)">
-</text><text class="terminal-1741453368-r1" x="0" y="752" textLength="451.4" clip-path="url(#terminal-1741453368-line-30)">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;^^^^^^^^^^^^^^^^^^^^^^^^^^</text><text class="terminal-1741453368-r1" x="1610.4" y="752" textLength="12.2" clip-path="url(#terminal-1741453368-line-30)">
-</text><text class="terminal-1741453368-r1" x="0" y="776.4" textLength="1195.6" clip-path="url(#terminal-1741453368-line-31)">&#160;&#160;File&#160;&quot;/home/runner/work/rich-click/rich-click/src/rich_click/rich_command.py&quot;,&#160;line&#160;178,&#160;in&#160;main</text><text class="terminal-1741453368-r1" x="1610.4" y="776.4" textLength="12.2" clip-path="url(#terminal-1741453368-line-31)">
-</text><text class="terminal-1741453368-r1" x="0" y="800.8" textLength="427" clip-path="url(#terminal-1741453368-line-32)">&#160;&#160;&#160;&#160;rich_format_error(e,&#160;formatter)</text><text class="terminal-1741453368-r1" x="1610.4" y="800.8" textLength="12.2" clip-path="url(#terminal-1741453368-line-32)">
-</text><text class="terminal-1741453368-r1" x="0" y="825.2" textLength="1439.6" clip-path="url(#terminal-1741453368-line-33)">&#160;&#160;File&#160;&quot;/home/runner/work/rich-click/rich-click/src/rich_click/rich_help_rendering.py&quot;,&#160;line&#160;641,&#160;in&#160;rich_format_error</text><text class="terminal-1741453368-r1" x="1610.4" y="825.2" textLength="12.2" clip-path="url(#terminal-1741453368-line-33)">
-</text><text class="terminal-1741453368-r1" x="0" y="849.6" textLength="622.2" clip-path="url(#terminal-1741453368-line-34)">&#160;&#160;&#160;&#160;self.ctx.command.get_usage(self.ctx,&#160;formatter)</text><text class="terminal-1741453368-r1" x="1610.4" y="849.6" textLength="12.2" clip-path="url(#terminal-1741453368-line-34)">
-</text><text class="terminal-1741453368-r1" x="0" y="874" textLength="927.2" clip-path="url(#terminal-1741453368-line-35)">TypeError:&#160;Command.get_usage()&#160;takes&#160;2&#160;positional&#160;arguments&#160;but&#160;3&#160;were&#160;given</text><text class="terminal-1741453368-r1" x="1610.4" y="874" textLength="12.2" clip-path="url(#terminal-1741453368-line-35)">
+    <g class="terminal-3504293245-matrix">
+    <text class="terminal-3504293245-r1" x="0" y="20" textLength="695.4" clip-path="url(#terminal-3504293245-line-0)">$&#160;python&#160;../../examples/07_custom_errors.py&#160;--hep&#160;||&#160;true</text><text class="terminal-3504293245-r1" x="976" y="20" textLength="12.2" clip-path="url(#terminal-3504293245-line-0)">
+</text><text class="terminal-3504293245-r1" x="976" y="44.4" textLength="12.2" clip-path="url(#terminal-3504293245-line-1)">
+</text><text class="terminal-3504293245-r2" x="12.2" y="68.8" textLength="73.2" clip-path="url(#terminal-3504293245-line-2)">Usage:</text><text class="terminal-3504293245-r3" x="97.6" y="68.8" textLength="231.8" clip-path="url(#terminal-3504293245-line-2)">07_custom_errors.py</text><text class="terminal-3504293245-r1" x="329.4" y="68.8" textLength="24.4" clip-path="url(#terminal-3504293245-line-2)">&#160;[</text><text class="terminal-3504293245-r4" x="353.8" y="68.8" textLength="85.4" clip-path="url(#terminal-3504293245-line-2)">OPTIONS</text><text class="terminal-3504293245-r1" x="439.2" y="68.8" textLength="24.4" clip-path="url(#terminal-3504293245-line-2)">]&#160;</text><text class="terminal-3504293245-r4" x="463.6" y="68.8" textLength="61" clip-path="url(#terminal-3504293245-line-2)">INPUT</text><text class="terminal-3504293245-r1" x="976" y="68.8" textLength="12.2" clip-path="url(#terminal-3504293245-line-2)">
+</text><text class="terminal-3504293245-r1" x="976" y="93.2" textLength="12.2" clip-path="url(#terminal-3504293245-line-3)">
+</text><text class="terminal-3504293245-r5" x="12.2" y="117.6" textLength="195.2" clip-path="url(#terminal-3504293245-line-4)">Try&#160;running&#160;the&#160;</text><text class="terminal-3504293245-r6" x="207.4" y="117.6" textLength="97.6" clip-path="url(#terminal-3504293245-line-4)">&#x27;--help&#x27;</text><text class="terminal-3504293245-r5" x="305" y="117.6" textLength="329.4" clip-path="url(#terminal-3504293245-line-4)">&#160;flag&#160;for&#160;more&#160;information.</text><text class="terminal-3504293245-r1" x="976" y="117.6" textLength="12.2" clip-path="url(#terminal-3504293245-line-4)">
+</text><text class="terminal-3504293245-r7" x="0" y="142" textLength="24.4" clip-path="url(#terminal-3504293245-line-5)">╭─</text><text class="terminal-3504293245-r7" x="24.4" y="142" textLength="85.4" clip-path="url(#terminal-3504293245-line-5)">&#160;Error&#160;</text><text class="terminal-3504293245-r7" x="109.8" y="142" textLength="841.8" clip-path="url(#terminal-3504293245-line-5)">─────────────────────────────────────────────────────────────────────</text><text class="terminal-3504293245-r7" x="951.6" y="142" textLength="24.4" clip-path="url(#terminal-3504293245-line-5)">─╮</text><text class="terminal-3504293245-r1" x="976" y="142" textLength="12.2" clip-path="url(#terminal-3504293245-line-5)">
+</text><text class="terminal-3504293245-r7" x="0" y="166.4" textLength="12.2" clip-path="url(#terminal-3504293245-line-6)">│</text><text class="terminal-3504293245-r1" x="12.2" y="166.4" textLength="207.4" clip-path="url(#terminal-3504293245-line-6)">&#160;No&#160;such&#160;option:&#160;</text><text class="terminal-3504293245-r4" x="219.6" y="166.4" textLength="61" clip-path="url(#terminal-3504293245-line-6)">--hep</text><text class="terminal-3504293245-r1" x="280.6" y="166.4" textLength="170.8" clip-path="url(#terminal-3504293245-line-6)">&#160;Did&#160;you&#160;mean&#160;</text><text class="terminal-3504293245-r4" x="451.4" y="166.4" textLength="73.2" clip-path="url(#terminal-3504293245-line-6)">--help</text><text class="terminal-3504293245-r1" x="524.6" y="166.4" textLength="439.2" clip-path="url(#terminal-3504293245-line-6)">?&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3504293245-r7" x="963.8" y="166.4" textLength="12.2" clip-path="url(#terminal-3504293245-line-6)">│</text><text class="terminal-3504293245-r1" x="976" y="166.4" textLength="12.2" clip-path="url(#terminal-3504293245-line-6)">
+</text><text class="terminal-3504293245-r7" x="0" y="190.8" textLength="976" clip-path="url(#terminal-3504293245-line-7)">╰──────────────────────────────────────────────────────────────────────────────╯</text><text class="terminal-3504293245-r1" x="976" y="190.8" textLength="12.2" clip-path="url(#terminal-3504293245-line-7)">
+</text><text class="terminal-3504293245-r1" x="976" y="215.2" textLength="12.2" clip-path="url(#terminal-3504293245-line-8)">
+</text><text class="terminal-3504293245-r1" x="0" y="239.6" textLength="305" clip-path="url(#terminal-3504293245-line-9)">&#160;To&#160;find&#160;out&#160;more,&#160;visit&#160;</text><text class="terminal-3504293245-r8" x="305" y="239.6" textLength="219.6" clip-path="url(#terminal-3504293245-line-9)">https://mytool.com</text><text class="terminal-3504293245-r1" x="976" y="239.6" textLength="12.2" clip-path="url(#terminal-3504293245-line-9)">
+</text><text class="terminal-3504293245-r1" x="976" y="264" textLength="12.2" clip-path="url(#terminal-3504293245-line-10)">
 </text>
     </g>
     </g>
