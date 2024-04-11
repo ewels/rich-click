@@ -16,6 +16,7 @@
     - Related: `highlighter` is now deprecated in `RichHelpConfiguration`; please use `highlighter_patterns` instead.
 - Moved exclusively to `pyproject.toml` and removed `setup.py` / `setup.cfg`; thank you [@Stealthii](github.com/Stealthii)!
 - Moved to `text_markup: Literal["markdown", "rich", None]` instead of booleans.
+- Fixed issue where error messages would not print to `stderr` by default.
 
 ## Version 1.7.4 (2024-03-12)
 
