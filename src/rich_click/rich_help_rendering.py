@@ -638,7 +638,7 @@ def rich_format_error(self: click.ClickException, formatter: RichHelpFormatter) 
     if getattr(self, "ctx", None) is not None:
         if TYPE_CHECKING:
             assert hasattr(self, "ctx")
-        self.ctx.get_usage()
+        self.ctx.command.get_usage(self.ctx, formatter)
     if config.errors_suggestion:
         formatter.write(
             Padding(
