@@ -32,7 +32,8 @@ Click, formatted with Rich, with minimal customisation required.
 ## Features
 
 - 🌈 Rich command-line formatting of click help and error messages
-- 💫 Nice styles be default, usage is simply `import rich_click as click`
+- 😌 Same API as Click: usage is simply `import rich_click as click`
+- 💫 Nice styles by default
 - 💻 CLI tool to run on _other people's_ tools (prefix the command with `rich-click`)
 - 📦 Export help text as HTML or SVG
 - 🎁 Group commands and options into named panels
@@ -75,7 +76,7 @@ _Screenshot from [`examples/11_hello.py`](examples/11_hello.py)_
 
 ### More complex example
 
-![examples/03_groups_sorting.py](docs/images/command_groups.svg)
+![`python examples/03_groups_sorting.py`](docs/images/command_groups.svg)
 
 _Screenshot from [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py)_
 
@@ -99,8 +100,17 @@ That's it! ✨ Then continue to use Click as you would normally.
 
 ### Declarative
 
-If you prefer, you can `RichGroup` or `RichCommand` with the `cls` argument in your click usage instead.
+If you prefer, you can use `RichGroup` or `RichCommand` with the `cls` argument in your click usage instead.
 This means that you can continue to use the unmodified `click` package in parallel.
+
+```python
+import click
+from rich_click import RichCommand
+
+@click.command(cls=RichCommand)
+def main():
+    """My amazing tool does all the things."""
+```
 
 > See [`examples/02_declarative.py`](examples/02_declarative.py) for an example.
 

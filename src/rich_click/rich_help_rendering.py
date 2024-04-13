@@ -357,6 +357,7 @@ def get_rich_options(
     # Look through config.option_groups for this command
     # stick anything unmatched into a default group at the end
     option_groups = formatter.config.option_groups.get(ctx.command_path, []).copy()
+    option_groups.extend(formatter.config.option_groups.get("*", []))
     option_groups.append({"options": []})
     argument_group_options = []
 
@@ -528,6 +529,7 @@ def get_rich_commands(
     # Look through COMMAND_GROUPS for this command
     # stick anything unmatched into a default group at the end
     cmd_groups = formatter.config.command_groups.get(ctx.command_path, []).copy()
+    cmd_groups.extend(formatter.config.command_groups.get("*", []))
     cmd_groups.append({"commands": []})
     for command in obj.list_commands(ctx):
         for cmd_group in cmd_groups:
