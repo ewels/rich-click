@@ -1,7 +1,7 @@
 import inspect
 import re
 from fnmatch import fnmatch
-from typing import TYPE_CHECKING, Dict, Iterable, List, Literal, Optional, Tuple, TypeVar, Union, overload
+from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, TypeVar, Union, overload
 
 import click
 
@@ -20,6 +20,7 @@ from rich.panel import Panel
 from rich.style import StyleType
 from rich.table import Table
 from rich.text import Text
+from typing_extensions import Literal
 
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_VERSION_80
 from rich_click.rich_help_formatter import RichHelpFormatter
