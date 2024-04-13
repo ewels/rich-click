@@ -1,6 +1,7 @@
 import inspect
 import re
-from typing import TYPE_CHECKING, Iterable, List, Optional, Tuple, Union
+from fnmatch import fnmatch
+from typing import TYPE_CHECKING, Dict, Iterable, List, Literal, Optional, Tuple, TypeVar, Union, overload
 
 import click
 
@@ -22,7 +23,7 @@ from rich.text import Text
 
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_VERSION_80
 from rich_click.rich_help_formatter import RichHelpFormatter
-from rich_click.utils import OptionGroupDict
+from rich_click.utils import CommandGroupDict, OptionGroupDict
 
 
 # Support rich <= 10.6.0
@@ -348,6 +349,59 @@ def get_rich_help_text(self: Command, ctx: click.Context, formatter: RichHelpFor
         )
 
 
+GroupType = TypeVar("GroupType", OptionGroupDict, CommandGroupDict)
+
+
+@overload
+def _resolve_groups(
+    ctx: click.Context, groups: Dict[str, List[OptionGroupDict]], group_attribute: Literal["options"]
+) -> List[OptionGroupDict]: ...
+
+
+@overload
+def _resolve_groups(
+    ctx: click.Context, groups: Dict[str, List[CommandGroupDict]], group_attribute: Literal["commands"]
+) -> List[CommandGroupDict]: ...
+
+
+def _resolve_groups(
+    ctx: click.Context, groups: Dict[str, List[GroupType]], group_attribute: Literal["commands", "options"]
+) -> List[GroupType]:
+    """Logic for resolving the groups."""
+    cmd_name = ctx.command.name
+    _ctx = ctx
+    while _ctx.parent is not None:
+        _ctx = _ctx.parent
+        cmd_name = f"{_ctx.command.name} {cmd_name}"
+    # 'command_path' is sometimes the file name, e.g. hello.py.
+    # We also want to make sure that the actual command name is supported as well.
+    if cmd_name != ctx.command_path:
+        paths = [cmd_name, ctx.command_path]
+    else:
+        paths = [cmd_name]
+    final_groups_list: List[GroupType] = []
+
+    # Assign wildcards, but make sure we do not overwrite anything already defined.
+    for _path in paths:
+        for mtch in reversed(sorted([_ for _ in groups if fnmatch(_path, _)])):
+            wildcard_option_groups = groups[mtch]
+            for grp in wildcard_option_groups:
+                grp = grp.copy()
+                opts = grp.get(group_attribute, []).copy()  # type: ignore[attr-defined]
+                for opt in grp.get(group_attribute, []):  # type: ignore[attr-defined]
+                    if opt in [
+                        _opt
+                        for _grp in final_groups_list
+                        for _opt in _grp.get(group_attribute, [])  # type: ignore[attr-defined]
+                    ]:
+                        opts.remove(opt)
+                grp[group_attribute] = opts  # type: ignore[typeddict-unknown-key]
+                final_groups_list.append(grp)
+
+    final_groups_list.append({group_attribute: []})  # type: ignore[misc]
+    return final_groups_list
+
+
 def get_rich_options(
     obj: Command,
     ctx: click.Context,
@@ -356,9 +410,7 @@ def get_rich_options(
     """Richly render a click Command's options."""
     # Look through config.option_groups for this command
     # stick anything unmatched into a default group at the end
-    option_groups = formatter.config.option_groups.get(ctx.command_path, []).copy()
-    option_groups.extend(formatter.config.option_groups.get("*", []))
-    option_groups.append({"options": []})
+    option_groups = _resolve_groups(ctx=ctx, groups=formatter.config.option_groups, group_attribute="options")
     argument_group_options = []
 
     for param in obj.get_params(ctx):
@@ -528,9 +580,7 @@ def get_rich_commands(
 
     # Look through COMMAND_GROUPS for this command
     # stick anything unmatched into a default group at the end
-    cmd_groups = formatter.config.command_groups.get(ctx.command_path, []).copy()
-    cmd_groups.extend(formatter.config.command_groups.get("*", []))
-    cmd_groups.append({"commands": []})
+    cmd_groups = _resolve_groups(ctx=ctx, groups=formatter.config.command_groups, group_attribute="commands")
     for command in obj.list_commands(ctx):
         for cmd_group in cmd_groups:
             if command in cmd_group.get("commands", []):

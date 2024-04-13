@@ -14,9 +14,13 @@
 - Fix bug with regex highlighter for options and switches.
 - `RichHelpConfiguration()` is now asserted to be JSON serializable, as an option for porting configurations. That said, serialization is not a fully supported feature of the high-level API, so serialize the config at your own risk.
     - Related: `highlighter` is now deprecated in `RichHelpConfiguration`; please use `highlighter_patterns` instead.
-- Moved exclusively to `pyproject.toml` and removed `setup.py` / `setup.cfg`; thank you [@Stealthii](github.com/Stealthii)!
+- Moved exclusively to `pyproject.toml` and removed `setup.py` / `setup.cfg`; thank you [@Stealthii](https://github.com/Stealthii)!
 - Moved to `text_markup: Literal["markdown", "rich", None]` instead of booleans.
 - Fixed issue where error messages would not print to `stderr` by default.
+- Some quality of life improvements for command and option groups:
+  - Support both `command_path` and `command.name`
+  - Added wildcard (`*`) option for command groups and option groups, with thanks to [@ITProKyle](https://github.com/ITProKyle)!
+  - Resolve duplicates.
 
 ## Version 1.7.4 (2024-03-12)
 
