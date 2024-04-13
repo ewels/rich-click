@@ -6,6 +6,7 @@ edit_uri: edit/main/docs/
 
 theme:
   name: material
+  custom_dir: docs/overrides
   icon:
     repo: fontawesome/brands/github
   features:
@@ -39,7 +40,6 @@ nav:
   - Home: index.md
   - "Live Style Editor": editor.md
   - Documentation:
-      # - Index: documentation/index.md
       - Introduction to Click: documentation/introduction_to_click.md
       - Configuration: documentation/configuration.md
       - "Formatting & Styles": documentation/formatting_and_styles.md
@@ -48,25 +48,6 @@ nav:
       # - API Reference: documentation/api_reference.md
   - Changelog: changelog.md
   - Contributing: contributing.md
-#  - Usage:
-#      - usage/github_action.md
-#      - usage/cli.md
-#      - usage/docker_image.md
-#  - Inputs:
-#      - inputs/markdown.md
-#      - inputs/direct_inputs.md
-#      - inputs/config_file.md
-#  - Configuration:
-#      - config/overview.md
-#      - config/time_limits.md
-#      - config/tweaks.md
-#      - config/command_setup.md
-#      - config/width.md
-#      - config/colours.md
-#      - config/cleaning.md
-#      - config/ignoring_changes.md
-#  - safety.md
-#  - troubleshooting.md
 
 markdown_extensions:
   - toc:

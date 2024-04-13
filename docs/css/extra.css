@@ -43,9 +43,51 @@ a.internal-link::after {
     url("../fonts/pixelmix.ttf") format("truetype")
 }
 
-.md-header__topic, h1, h1 code, .md-header__header {
+.md-header__topic, .md-header__topic code,
+h1, h1 code, h2, h2 code, h3, h3 code,
+h4, h4 code, h5, h5 code,
+.md-header__header, .md-header__header code {
   font-family: "pixelmix";
-  font-size: 24px;
-  font-weight: normal;
+}
+
+.md-header__topic, .md-header__topic code, h1, h1 code, .md-header__header {
   text-shadow: -4px 4px rgba(128, 128, 128, 0.1);
+}
+
+h2, h2 code, h3, h3 code {
+  text-shadow: -3px 3px rgba(128, 128, 128, 0.1);
+}
+
+h4, h4 code, h5, h5 code {
+  text-shadow: -2px 2px rgba(128, 128, 128, 0.1);
+}
+
+.md-content ul {
+  list-style: none;
+}
+
+.md-content ul > li {
+  position: relative;
+  padding-left: 20px;
+}
+
+.md-content ul > li::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--md-typeset-color);
+  opacity: 90%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin-top: 0.8em;
+  transform: translateY(-50%);
+  transition: background-color 0.2s ease;
+}
+
+.md-content ul > li:hover::before {
+  background-color: var(--md-accent-fg-color);
+  fill-opacity: 100%;
+  opacity: 100%;
 }

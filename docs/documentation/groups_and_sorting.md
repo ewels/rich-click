@@ -6,39 +6,7 @@ It accepts a list of options / commands which means you can also choose a custom
 - For options / flags, set `click.rich_click.OPTION_GROUPS`
 - For subcommands / Click groups, set `click.rich_click.COMMAND_GROUPS`
 
-<div class="termy termy-static" static="true" style="width: 100%">
-
-```console
-$ python examples/03_groups_sorting.py --help
-
- <span style="color: #808000; text-decoration-color: #808000">Usage:</span> <span style="font-weight: bold">03_groups_sorting.py</span> [<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">OPTIONS</span>] <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">COMMAND</span> [<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">ARGS</span>]...
-                                                                        
- My amazing tool does all the things.                                   
- <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">This is a minimal example based on documentation from the &#x27;click&#x27; </span>     
- <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">package.</span>                                                               
- <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">You can try using </span><span style="color: #7fbfbf; text-decoration-color: #7fbfbf; font-weight: bold">--help</span><span style="color: #7f7f7f; text-decoration-color: #7f7f7f"> at the top level and also for specific </span>       
- <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">subcommands.</span>                                                           
-                                                                        
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╭─ Options ────────────────────────────────────────────────────────────╮</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #800000; text-decoration-color: #800000">*</span>  <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--type</span>                     <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">TEXT</span>  Type of file to sync             <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>                                     <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">[default: files]    </span>             <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>                                     <span style="color: #bf7f7f; text-decoration-color: #bf7f7f">[required]          </span>             <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>    <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--debug</span>/<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--no-debug</span>  <span style="color: #008000; text-decoration-color: #008000; font-weight: bold">-d</span>/<span style="color: #008000; text-decoration-color: #008000; font-weight: bold">-n</span>  <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">    </span>  Show the debug log messages      <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>                                     <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">[default: no-debug]        </span>      <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>    <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--version</span>                  <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">    </span>  Show the version and exit.       <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>    <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--help</span>              <span style="color: #008000; text-decoration-color: #008000; font-weight: bold">-h</span>     <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">    </span>  Show this message and exit.      <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╰──────────────────────────────────────────────────────────────────────╯</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╭─ Main usage ─────────────────────────────────────────────────────────╮</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">sync       </span> Synchronise all your files between two places.           <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">download   </span> Pretend to download some files from somewhere.           <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╰──────────────────────────────────────────────────────────────────────╯</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╭─ Configuration ──────────────────────────────────────────────────────╮</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">config     </span> Set up the configuration.                                <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">auth       </span> Authenticate the app.                                    <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╰──────────────────────────────────────────────────────────────────────╯</span>
-```
-
-</div>
+![](../images/command_groups.svg)
 
 When grouping subcommands into more than one group (in above example: 'Main usage' and 'Configuration') you may find that the automatically calculated widths of different groups do not line up, due to varying option name lengths.
 
@@ -107,9 +75,39 @@ click.rich_click.COMMAND_GROUPS = {
             "commands": ["get", "fetch", "download"],
         },
     ],
-    "mytool auth":[{"commands": ["login", "logout"]}],
+    "mytool auth": [{"commands": ["login", "logout"]}],
 }
 ```
+
+## Wildcard options
+
+Instead of defining the group based on the command path, you can use wildcards instead:
+
+```python
+click.rich_click.COMMAND_GROUPS = {
+    "*": [
+        {
+            "name": "Commands for uploading",
+            "commands": ["sync", "upload"],
+        }
+    ]
+}
+
+click.rich_click.OPTION_GROUPS = {
+    "*": [
+        {
+            "name": "Simple options",
+            "options": ["--name", "--description", "--version", "--help"],
+        },
+    ]
+}
+```
+
+This will apply the groups to every subcommand of the command group.
+If a command or option specified in the wildcard does not exist, then it is ignored.
+
+If an option is specified for both a wildcard and explicitly named command, then the wildcard is ignored;
+explicit naming always takes precedence.
 
 ## Table styling
 

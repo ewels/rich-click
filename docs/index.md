@@ -45,7 +45,8 @@ Click, formatted with Rich, with minimal customisation required.
 ## Features
 
 - 🌈 Rich command-line formatting of click help and error messages
-- 💫 Nice styles be default, usage is simply `import rich_click as click`
+- 😌 Same API as Click: usage is simply `import rich_click as click`
+- 💫 Nice styles by default
 - 💻 CLI tool to run on _other people's_ tools (prefix the command with `rich-click`)
 - 📦 Export help text as HTML or SVG
 - 🎁 Group commands and options into named panels
@@ -114,66 +115,18 @@ if __name__ == '__main__':
     hello()
 ```
 
-<div class="termy termy-static" static="true" style="width: 100%">
-
-```console
-$ python examples/hello_11.py --help
-
- <span style="color: #808000; text-decoration-color: #808000">Usage:</span> <span style="font-weight: bold">hello_11.py</span> [<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">OPTIONS</span>]
-
- Simple program that greets <span style="color: #008080; text-decoration-color: #008080; background-color: #000000; font-weight: bold">NAME</span> for a total of <span style="color: #008080; text-decoration-color: #008080; background-color: #000000; font-weight: bold">COUNT</span> times.
-
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╭─ Options ────────────────────────────────────────────────────────────╮</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--count</span>    <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">INTEGER</span>  Number of greetings.                             <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--name</span>     <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">TEXT   </span>  The person to greet.                             <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--help</span>     <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">       </span>  Show this message and exit.                      <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╰──────────────────────────────────────────────────────────────────────╯</span>
-```
-
-</div>
+![](images/hello.svg)
 
 ### More complex example
 
 **rich-click** has a ton of customisation options that let you compose help text however you'd like.
 Below is a more complex example of what **rich-click** is capable of:
 
-<div class="termy termy-static" static="true" style="width: 100%">
-
-```console
-$ python examples/03_groups_sorting.py --help
-
- <span style="color: #808000; text-decoration-color: #808000">Usage:</span> <span style="font-weight: bold">03_groups_sorting.py</span> [<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">OPTIONS</span>] <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">COMMAND</span> [<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">ARGS</span>]...
-                                                                        
- My amazing tool does all the things.                                   
- <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">This is a minimal example based on documentation from the &#x27;click&#x27; </span>     
- <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">package.</span>                                                               
- <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">You can try using </span><span style="color: #7fbfbf; text-decoration-color: #7fbfbf; font-weight: bold">--help</span><span style="color: #7f7f7f; text-decoration-color: #7f7f7f"> at the top level and also for specific </span>       
- <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">subcommands.</span>                                                           
-                                                                        
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╭─ Options ────────────────────────────────────────────────────────────╮</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #800000; text-decoration-color: #800000">*</span>  <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--type</span>                     <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">TEXT</span>  Type of file to sync             <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>                                     <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">[default: files]    </span>             <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>                                     <span style="color: #bf7f7f; text-decoration-color: #bf7f7f">[required]          </span>             <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>    <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--debug</span>/<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--no-debug</span>  <span style="color: #008000; text-decoration-color: #008000; font-weight: bold">-d</span>/<span style="color: #008000; text-decoration-color: #008000; font-weight: bold">-n</span>  <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">    </span>  Show the debug log messages      <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>                                     <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">[default: no-debug]        </span>      <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>    <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--version</span>                  <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">    </span>  Show the version and exit.       <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>    <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--help</span>              <span style="color: #008000; text-decoration-color: #008000; font-weight: bold">-h</span>     <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">    </span>  Show this message and exit.      <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╰──────────────────────────────────────────────────────────────────────╯</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╭─ Main usage ─────────────────────────────────────────────────────────╮</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">sync       </span> Synchronise all your files between two places.           <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">download   </span> Pretend to download some files from somewhere.           <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╰──────────────────────────────────────────────────────────────────────╯</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╭─ Configuration ──────────────────────────────────────────────────────╮</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">config     </span> Set up the configuration.                                <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">auth       </span> Authenticate the app.                                    <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╰──────────────────────────────────────────────────────────────────────╯</span>
-```
-
-</div>
+![](images/command_groups.svg)
 
 ## Usage
 
-There are a couple of ways to begin using `rich-click`:
+There are a couple of ways to begin using **rich-click**:
 
 ### Import `rich_click` as `click`
 
@@ -189,8 +142,17 @@ That's it! ✨ Then continue to use Click as you would normally.
 
 ### Declarative
 
-If you prefer, you can `RichGroup` or `RichCommand` with the `cls` argument in your click usage instead.
+If you prefer, you can use `RichGroup` or `RichCommand` with the `cls` argument in your click usage instead.
 This means that you can continue to use the unmodified `click` package in parallel.
+
+```python
+import click
+from rich_click import RichCommand
+
+@click.command(cls=RichCommand)
+def main():
+    """My amazing tool does all the things."""
+```
 
 > See [`examples/02_declarative.py`](examples/02_declarative.py) for an example.
 

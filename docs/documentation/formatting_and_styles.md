@@ -72,7 +72,7 @@ If you prefer, you can use Markdown text.
 The default click behaviour is to only show positional arguments in the top usage string,
 and not in the list below with the options.
 
-If you prefer, you can tell rich-click to show arguments with `SHOW_ARGUMENTS`.
+If you prefer, you can tell **rich-click** to show arguments with `SHOW_ARGUMENTS`.
 By default, they will get their own panel, but you can tell rich-click to bundle them together with `GROUP_ARGUMENTS_OPTIONS`:
 
 === "`RichHelpConfiguration()`"
