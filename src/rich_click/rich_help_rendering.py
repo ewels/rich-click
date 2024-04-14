@@ -1,7 +1,7 @@
 import inspect
 import re
 from fnmatch import fnmatch
-from typing import TYPE_CHECKING, Dict, Iterable, List, Optional, Tuple, TypeVar, Union, overload
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, TypeVar, Union, overload
 
 import click
 
@@ -426,7 +426,7 @@ def get_rich_options(
 
         # Already mentioned in a config option group
         for option_group in option_groups:
-            if any([opt in option_group.get("options", []) for opt in param.opts]):
+            if any([opt in (option_group.get("options") or []) for opt in param.opts]):
                 break
 
         # No break, no mention - add to the default group
@@ -439,16 +439,22 @@ def get_rich_options(
 
     # If we're not grouping arguments and we got some, prepend before default options
     if len(argument_group_options) > 0:
-        extra_option_group: OptionGroupDict = {
-            "name": formatter.config.arguments_panel_title,
-            "options": argument_group_options,
-        }
+        for grp in option_groups:
+            if grp.get("name", "") == formatter.config.arguments_panel_title and not grp.get("options"):
+                extra_option_group = grp.copy()
+                extra_option_group["options"] = argument_group_options
+                break
+        else:
+            extra_option_group: OptionGroupDict = {  # type: ignore[no-redef]
+                "name": formatter.config.arguments_panel_title,
+                "options": argument_group_options,
+            }
         option_groups.insert(len(option_groups) - 1, extra_option_group)
 
     # Print each option group panel
     for option_group in option_groups:
         options_rows = []
-        for opt in option_group.get("options", []):
+        for opt in option_group.get("options") or []:
             # Get the param
             for param in obj.get_params(ctx):
                 if any([opt in param.opts]):
@@ -545,14 +551,14 @@ def get_rich_options(
                 "pad_edge": formatter.config.style_options_table_pad_edge,
                 "padding": formatter.config.style_options_table_padding,
             }
+            if isinstance(formatter.config.style_options_table_box, str):
+                t_styles["box"] = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
             t_styles.update(option_group.get("table_styles", {}))
-            box_style = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
 
             options_table = Table(
                 highlight=True,
                 show_header=False,
                 expand=True,
-                box=box_style,
                 **t_styles,  # type: ignore[arg-type]
             )
             # Strip the required column if none are required
@@ -560,14 +566,24 @@ def get_rich_options(
                 options_rows = [x[1:] for x in options_rows]
             for row in options_rows:
                 options_table.add_row(*row)
-            formatter.write(
-                Panel(
-                    options_table,
-                    border_style=formatter.config.style_options_panel_border,
-                    title=option_group.get("name", formatter.config.options_panel_title),
-                    title_align=formatter.config.align_options_panel,
-                )
-            )
+
+            kw: Dict[str, Any] = {
+                "border_style": formatter.config.style_options_panel_border,
+                "title": option_group.get("name", formatter.config.options_panel_title),
+                "title_align": formatter.config.align_options_panel,
+            }
+
+            if isinstance(formatter.config.style_options_panel_box, str):
+                box_style = getattr(box, formatter.config.style_options_panel_box, None)
+            else:
+                box_style = formatter.config.style_options_panel_box
+
+            if box_style:
+                kw["box"] = box_style
+
+            kw.update(option_group.get("panel_styles", {}))
+
+            formatter.write(Panel(options_table, **kw))
 
 
 def get_rich_commands(
@@ -601,14 +617,14 @@ def get_rich_commands(
             "pad_edge": formatter.config.style_commands_table_pad_edge,
             "padding": formatter.config.style_commands_table_padding,
         }
+        if isinstance(formatter.config.style_commands_table_box, str):
+            t_styles["box"] = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
         t_styles.update(cmd_group.get("table_styles", {}))
-        box_style = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
 
         commands_table = Table(
             highlight=False,
             show_header=False,
             expand=True,
-            box=box_style,
             **t_styles,  # type: ignore[arg-type]
         )
         # Define formatting in first column, as commands don't match highlighter regex
@@ -640,14 +656,23 @@ def get_rich_commands(
                 helptext = cmd.short_help or cmd.help or ""
             commands_table.add_row(command, _make_command_help(helptext, formatter, is_deprecated=cmd.deprecated))
         if commands_table.row_count > 0:
-            formatter.write(
-                Panel(
-                    commands_table,
-                    border_style=formatter.config.style_commands_panel_border,
-                    title=cmd_group.get("name", formatter.config.commands_panel_title),
-                    title_align=formatter.config.align_commands_panel,
-                )
-            )
+
+            kw: Dict[str, Any] = {
+                "border_style": formatter.config.style_commands_panel_border,
+                "title": cmd_group.get("name", formatter.config.commands_panel_title),
+                "title_align": formatter.config.align_commands_panel,
+            }
+
+            if isinstance(formatter.config.style_commands_panel_box, str):
+                box_style = getattr(box, formatter.config.style_commands_panel_box, None)
+            else:
+                box_style = formatter.config.style_commands_panel_box
+
+            if box_style:
+                kw["box"] = box_style
+
+            kw.update(cmd_group.get("panel_styles", {}))
+            formatter.write(Panel(commands_table, **kw))
 
 
 def get_rich_epilog(
@@ -726,6 +751,17 @@ def rich_format_error(self: click.ClickException, formatter: RichHelpFormatter) 
     # attribute. Checking for the 'message' attribute works to make the
     # rich-click CLI compatible.
     if hasattr(self, "message"):
+
+        kw: Dict[str, Any] = {}
+
+        if isinstance(formatter.config.style_errors_panel_box, str):
+            box_style = getattr(box, formatter.config.style_errors_panel_box, None)
+        else:
+            box_style = formatter.config.style_errors_panel_box
+
+        if box_style:
+            kw["box"] = box_style
+
         formatter.write(
             Padding(
                 Panel(
@@ -733,6 +769,7 @@ def rich_format_error(self: click.ClickException, formatter: RichHelpFormatter) 
                     border_style=config.style_errors_panel_border,
                     title=config.errors_panel_title,
                     title_align=config.align_errors_panel,
+                    **kw,
                 ),
                 (0, 0, 1, 0),
             )

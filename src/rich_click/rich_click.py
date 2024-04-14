@@ -8,6 +8,7 @@ from rich_click.utils import CommandGroupDict, OptionGroupDict
 
 if TYPE_CHECKING:
     import rich.align
+    import rich.box
     import rich.padding
     import rich.style
 
@@ -34,25 +35,28 @@ STYLE_OPTION_ENVVAR: "rich.style.StyleType" = "dim yellow"
 STYLE_REQUIRED_SHORT: "rich.style.StyleType" = "red"
 STYLE_REQUIRED_LONG: "rich.style.StyleType" = "dim red"
 STYLE_OPTIONS_PANEL_BORDER: "rich.style.StyleType" = "dim"
+STYLE_OPTIONS_PANEL_BOX: Optional[Union[str, "rich.box.Box"]] = "ROUNDED"
 ALIGN_OPTIONS_PANEL: "rich.align.AlignMethod" = "left"
 STYLE_OPTIONS_TABLE_SHOW_LINES: bool = False
 STYLE_OPTIONS_TABLE_LEADING: int = 0
 STYLE_OPTIONS_TABLE_PAD_EDGE: bool = False
 STYLE_OPTIONS_TABLE_PADDING: "rich.padding.PaddingDimensions" = (0, 1)
-STYLE_OPTIONS_TABLE_BOX: "rich.style.StyleType" = ""
+STYLE_OPTIONS_TABLE_BOX: Optional[Union[str, "rich.box.Box"]] = ""
 STYLE_OPTIONS_TABLE_ROW_STYLES: Optional[List["rich.style.StyleType"]] = None
 STYLE_OPTIONS_TABLE_BORDER_STYLE: Optional["rich.style.StyleType"] = None
 STYLE_COMMANDS_PANEL_BORDER: "rich.style.StyleType" = "dim"
+STYLE_COMMANDS_PANEL_BOX: Optional[Union[str, "rich.box.Box"]] = "ROUNDED"
 ALIGN_COMMANDS_PANEL: "rich.align.AlignMethod" = "left"
 STYLE_COMMANDS_TABLE_SHOW_LINES: bool = False
 STYLE_COMMANDS_TABLE_LEADING: int = 0
 STYLE_COMMANDS_TABLE_PAD_EDGE: bool = False
 STYLE_COMMANDS_TABLE_PADDING: "rich.padding.PaddingDimensions" = (0, 1)
-STYLE_COMMANDS_TABLE_BOX: "rich.style.StyleType" = ""
+STYLE_COMMANDS_TABLE_BOX: Optional[Union[str, "rich.box.Box"]] = ""
 STYLE_COMMANDS_TABLE_ROW_STYLES: Optional[List["rich.style.StyleType"]] = None
 STYLE_COMMANDS_TABLE_BORDER_STYLE: Optional["rich.style.StyleType"] = None
 STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO: Optional[Union[Tuple[None, None], Tuple[int, int]]] = (None, None)
 STYLE_ERRORS_PANEL_BORDER: "rich.style.StyleType" = "red"
+STYLE_ERRORS_PANEL_BOX: Optional[Union[str, "rich.box.Box"]] = "ROUNDED"
 ALIGN_ERRORS_PANEL: "rich.align.AlignMethod" = "left"
 STYLE_ERRORS_SUGGESTION: "rich.style.StyleType" = "dim"
 STYLE_ERRORS_SUGGESTION_COMMAND: "rich.style.StyleType" = "blue"
