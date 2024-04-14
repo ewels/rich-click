@@ -3,7 +3,6 @@
 ## Version 1.8.0dev (2023-04-09)
 
 - Add `--rich-config` option to the `rich-click` CLI.
-- Better typing for option groups and command groups with `TypedDict` [[#156](https://github.com/ewels/rich-click/pull/156)]
 - Lazy load Rich to reduce overhead when not rendering help text. [[#154](https://github.com/ewels/rich-click/pull/154)]
 - Some internal refactors. These refactors are aimed at making the abstractions more maintainable over time, more consistent, and more adept for advanced used cases.
     - `rich_click.py` is exclusively the global config; all formatting has been moved to `rich_help_rendering.py`.
@@ -17,10 +16,17 @@
 - Moved exclusively to `pyproject.toml` and removed `setup.py` / `setup.cfg`; thank you [@Stealthii](https://github.com/Stealthii)!
 - Moved to `text_markup: Literal["markdown", "rich", None]` instead of booleans.
 - Fixed issue where error messages would not print to `stderr` by default.
-- Some quality of life improvements for command and option groups:
-  - Support both `command_path` and `command.name`
+- New configuration options: [[#178](https://github.com/ewels/rich-click/pull/178)]
+  - `STYLE_OPTIONS_PANEL_BOX`
+  - `STYLE_COMMANDS_PANEL_BOX`
+  - `STYLE_ERRORS_PANEL_BOX`
+- Many quality of life improvements for command and option groups:
+  - Support both `command_path` and `command.name`.
   - Added wildcard (`*`) option for command groups and option groups, with thanks to [@ITProKyle](https://github.com/ITProKyle)!
   - Resolve duplicates.
+  - Better typing for option groups and command groups with `TypedDict` [[#156](https://github.com/ewels/rich-click/pull/156)]
+  - Added `panel_styles` support to groups. [[#178](https://github.com/ewels/rich-click/pull/178)]
+  - Allow `table_styles` and `panel_styles` to be defined for the positional arguments group.
 
 ## Version 1.7.4 (2024-03-12)
 

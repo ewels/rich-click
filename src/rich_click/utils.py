@@ -36,11 +36,13 @@ class CommandGroupDict(TypedDict):
     name: NotRequired[str]
     commands: List[str]
     table_styles: NotRequired[Dict[str, Any]]
+    panel_styles: NotRequired[Dict[str, Any]]
 
 
 class OptionGroupDict(TypedDict):
     """Specification for option groups."""
 
     name: NotRequired[str]
-    options: List[str]
+    options: NotRequired[List[str]]
     table_styles: NotRequired[Dict[str, Any]]
+    panel_styles: NotRequired[Dict[str, Any]]

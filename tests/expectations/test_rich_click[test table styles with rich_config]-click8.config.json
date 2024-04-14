@@ -20,6 +20,7 @@
   "style_required_short": "red",
   "style_required_long": "dim red",
   "style_options_panel_border": "dim",
+  "style_options_panel_box": "ROUNDED",
   "align_options_panel": "left",
   "style_options_table_show_lines": false,
   "style_options_table_leading": 1,
@@ -35,6 +36,7 @@
   ],
   "style_options_table_border_style": null,
   "style_commands_panel_border": "dim",
+  "style_commands_panel_box": "ROUNDED",
   "align_commands_panel": "left",
   "style_commands_table_show_lines": true,
   "style_commands_table_leading": 0,
@@ -56,6 +58,7 @@
     null
   ],
   "style_errors_panel_border": "red",
+  "style_errors_panel_box": "ROUNDED",
   "align_errors_panel": "left",
   "style_errors_suggestion": "dim",
   "style_errors_suggestion_command": "blue",

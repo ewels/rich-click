@@ -87,8 +87,8 @@ Instead of defining the group based on the command path, you can use wildcards i
 click.rich_click.COMMAND_GROUPS = {
     "*": [
         {
-            "name": "Commands for uploading",
-            "commands": ["sync", "upload"],
+            "name": "Commands for entity management",
+            "commands": ["user", "item"],
         }
     ]
 }
@@ -97,22 +97,43 @@ click.rich_click.OPTION_GROUPS = {
     "*": [
         {
             "name": "Simple options",
-            "options": ["--name", "--description", "--version", "--help"],
+            "options": ["--name", "--description"],
         },
-    ]
+    ],
+    # This will match to all subcommands of "user", e.g. "cli user create" and "cli user update".
+    "cli user *": [
+        {
+            "name": "Cloud",
+            "options": ["--region", "--env"],
+        },
+    ],
+    # This will match to things like "cli user delete" and "cli item delete".
+    "cli * delete": [
+        {
+            "name": "Advanced",
+            "options": ["--force"],
+        },
+    ],
 }
 ```
 
 This will apply the groups to every subcommand of the command group.
 If a command or option specified in the wildcard does not exist, then it is ignored.
+Using the above code as an example, imagine the command `cli user describe` does not have an option `--environment`.
+It would still be safe in that case to map `--environment` to `cli user *`; it will just be ignored.
 
 If an option is specified for both a wildcard and explicitly named command, then the wildcard is ignored;
 explicit naming always takes precedence.
 
-## Table styling
+!!! warning
+    **rich-click** does its best to attempt to resolve duplicate options/command definitions, but other than
+    preferring exact matches  to wildcards, the exact logic of how duplicates are resolved is subject to
+    revision in upcoming minor version releases. Don't get too clever with duplicating your options/commands!
 
-Typically you would style the option / command tables using the global config options.
-However, if you wish you may style tables on a per-group basis using the `table_styles` key:
+## Styling
+
+Typically, you would style the option / command tables using the global config options.
+However, if you wish, you may style tables on a per-group basis using the `table_styles` and `panel_styles` keys:
 
 ```python
 click.rich_click.COMMAND_GROUPS = {
@@ -125,9 +146,79 @@ click.rich_click.COMMAND_GROUPS = {
                 "border_style": "red",
                 "box": "DOUBLE",
             },
+            "panel_styles": {
+                "box": "ASCII",
+            }
         },
     ],
 }
 ```
 
-The available keys are: `show_lines`, `leading`, `box`, `border_style`, `row_styles`, `pad_edge`, `padding`.
+The `table_styles` dict is pass as kwargs into the inner `rich.table.Table()`, and `panel_styles` is passed into the outer `rich.panel.Panel()`.
+
+You can view the respective docstrings of the `Table` and `Panel` objects for more information:
+
+- [`rich/table.py`](https://github.com/Textualize/rich/blob/master/rich/table.py)
+- [`rich/panel.py`](https://github.com/Textualize/rich/blob/master/rich/panel.py)
+
+### Argument Styles
+
+The panel for positional arguments is a little special.
+
+If the following three things are true...:
+
+1. `config.show_arguments` is `True`.
+2. There is an option group with a `name` equal to the `config.arguments_panel_title` (default: `'Arguments'`)
+3. The option group does not have any `options` (The list is empty, undefined, or `None`).
+
+... Then this allows you to specify styling options for the `Arguments` panel separately of other panels.
+
+For example, in the below code, the `Arguments` panel will have a box type of `ASCII`,
+independent of the options panel.
+
+```python
+import rich_click as click
+
+help_config = click.RichHelpConfiguration(
+    show_arguments=True,
+    option_groups={"my-command": [{"name": "Arguments", "panel_styles": {"box": "ASCII"}}]}
+)
+
+@click.command
+@click.argument("foo")
+@click.option("--bar")
+@click.rich_config(help_config=help_config)
+def cli(foo, bar):
+    ...
+```
+
+## Usage notes
+
+Be careful implementing command/option groups with `@click.rich_config(help_config=...)` in subcommands:
+    - The groups are _**not**_ merged to the parent help config.
+    - It is _**still required**_ to spell out the whole command as the key, or at least match with a wildcard.
+
+For example, the following code works:
+
+```python
+@click.group("my-cli")
+def my_cli():
+  ...
+
+# This example uses `"*my-subcommand"` to enable it to map to any arbitrarily named parent command.
+@my_cli.command("my-subcommand")
+@click.option("--version")
+@click.rich_config(help_config={"option_groups": {"*my-subcommand": [{"name": "Version", "commands": ["--version"]}]}})
+def my_subcommand():
+  ...
+```
+
+However, if you were to only specify `"my-subcommand"`
+
+!!! info
+    The reason why specifying option/command groups is like this has to do with **rich-click**'s history.
+    Basically, the `@click.rich_config()` decorator and `RichHelpConfiguration()` object were not introduced until version 1.7.0.
+    Prior to that, the only way to define config options was with the global configuration.
+
+    So, the way that `option_groups` and `command_groups` are defined is a relic of **rich-click**'s global configuration.
+    **rich-click**'s maintainers are aware of how awkward it feels, and we'll be introducing a more seamless and natural API in a future release. 😊
