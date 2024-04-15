@@ -57,42 +57,45 @@ Click, formatted with Rich, with minimal customisation required.
 ## Installation
 
 === "pip"
-    ```{.shell, .copy}
+    ```shell
     pip install rich-click
     ```
 
 === "uv"
-    ```{.shell, .copy}
+    ```shell
     uv pip install rich-click
     ```
 
 === "Rye"
-    ```{.shell, .copy}
+    ```shell
     rye add rich-click
     rye sync
     ```
 
 === "Poetry"
-    ```{.shell, .copy}
+    ```shell
     poetry add rich-click
     ```
 
 === "Pipenv"
-    ```{.shell, .copy}
+    ```shell
     pipenv install rich-click
     ```
 
 === "conda"
-    [**rich-click**](https://anaconda.org/conda-forge/rich-click) is available via the conda-forge channel (see [docs](https://conda-forge.org/docs/user/introduction.html#how-can-i-install-packages-from-conda-forge)).
-    ```{.shell, .copy}
+    ```shell
     conda install rich-click
     ```
+    !!! note
+        [**rich-click** is available](https://anaconda.org/conda-forge/rich-click) via the conda-forge channel (see [docs](https://conda-forge.org/docs/user/introduction.html#how-can-i-install-packages-from-conda-forge)).
 
 === "MacPorts"
-    This installation method is deprecated.
-    ```{.shell, .copy}
+    ```shell
     sudo port install py-rich-click
     ```
+
+    !!! danger "Depreciated"
+        This installation method is deprecated.
 
 ## Examples
 
@@ -100,7 +103,7 @@ Click, formatted with Rich, with minimal customisation required.
 
 To use rich-click in your code, replace `import click` with `import rich_click as click` in your existing click CLI:
 
-```{ .python .copy }
+```python
 import rich_click as click
 
 @click.command()
