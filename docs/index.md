@@ -115,14 +115,14 @@ if __name__ == '__main__':
     hello()
 ```
 
-![](images/hello.svg)
+![](images/hello.svg){.screenshot}
 
 ### More complex example
 
 **rich-click** has a ton of customisation options that let you compose help text however you'd like.
 Below is a more complex example of what **rich-click** is capable of:
 
-![](images/command_groups.svg)
+![](images/command_groups.svg){.screenshot}
 
 ## Usage
 
