@@ -5,7 +5,7 @@
 
 **rich-click** is a drop-in replacement for [Click](https://click.palletsprojects.com/en/8.1.x/), a Python CLI framework.
 This means that if you know Click, you already know **rich-click**.
-The docs to Click are the appropriate place to 
+The docs to Click are the appropriate place to
 
 ## Click 101
 
@@ -198,10 +198,10 @@ That's the **_only_** change needed to use **rich-click**! And now we get the fo
 ```console
 $ python hello.py --help
 
-<span style="color: #808000; text-decoration-color: #808000">Usage:</span> <span style="font-weight: bold">my_file</span> [<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">OPTIONS</span>] <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">NAME</span>                                          
-                                                                        
- Prints &#x27;hello, [name]!&#x27; into the terminal N times.                     
-                                                                        
+<span style="color: #808000; text-decoration-color: #808000">Usage:</span> <span style="font-weight: bold">my_file</span> [<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">OPTIONS</span>] <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">NAME</span>
+
+ Prints &#x27;hello, [name]!&#x27; into the terminal N times.
+
 <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╭─ Options ────────────────────────────────────────────────────────────╮</span>
 <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--times</span>        <span style="color: #008000; text-decoration-color: #008000; font-weight: bold">-t</span>  <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">INTEGER</span>  Number of times to print the greeting.   <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
 <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>                             <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">[default: 1]                          </span>   <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
@@ -211,23 +211,20 @@ $ python hello.py --help
 ```
 </div>
 
-## Why Click?
+## Other CLI libraries
 
-Why **rich-click** is obvious. If you're using Click, you may as well use **rich-click** for the beautiful help text!
+Click has been around for over a decade and is the most popular third-party CLI tool in Python.
+It's popularity is for a good reason: you can do basically _anything_ in Click.
+Click is very well abstracted, and as a result, you will likely never feel like you are brushing up against the limitations of what Click is capable of.
 
-Why _Click_ is a different question.
-The [Why Click?](https://click.palletsprojects.com/en/8.1.x/why) docs are good, but they were written a really long time ago.
-The landscape has changed quite a bit since that page was first written.
+There are other CLI libraries available.
+Of particular note is [Typer](https://typer.tiangolo.com/), which is itself built on top of Click.
+Typer is also [able to format help messages with Rich](https://typer.tiangolo.com/tutorial/commands/help/#rich-markdown-and-markup),
+functionality that was adapted from **rich-click** - as a result, the output looks remarkably similar!
+However, the two libraries have since drifted apart, so note that not all **rich-click** functionality is available within Typer.
 
-These days, there are plenty of "competitors" to Click.
-In fact, many of them, such as Typer, borrow Click's internals,
-since Click got so much right when it comes to the nitty-gritty of parsing arguments and printing text.
-
-So a better way to phrase the question is perhaps: why Click _today_?
-I would offer a few reasons:
-
-- **You can do basically anything in Click.** In Click, everything is just a subclass and a method override away. Click is very well abstracted, and as a result, you will likely never feel like you are brushing up against the limitations of what Click is capable of.
-
-- **Click is extremely popular.** It is the most popular third-party CLI tool in Python, even to this day. Tons of libraries use Click. Knowing Click means you are in good company with a tool you'll encounter plenty in the wild.
-
-- **It just works.** Click has been around for more than a decade, it's battle-tested, and you are _very_ unlikely to ever hit a bug or a snag.
+!!! tip "Why Click?"
+    If you're interested in why people choose to use Click, check out the
+    [Why Click? docs](https://click.palletsprojects.com/en/8.1.x/why).
+    These are good, but be aware that they were written a really long time ago.
+    The landscape has changed quite a bit since that page was first written.
