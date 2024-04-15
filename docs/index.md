@@ -83,16 +83,19 @@ Click, formatted with Rich, with minimal customisation required.
     ```
 
 === "conda"
-    [**rich-click**](https://anaconda.org/conda-forge/rich-click) is available via the conda-forge channel (see [docs](https://conda-forge.org/docs/user/introduction.html#how-can-i-install-packages-from-conda-forge)).
     ```{.shell, .copy}
     conda install rich-click
     ```
+    !!! note
+        [**rich-click** is available](https://anaconda.org/conda-forge/rich-click) via the conda-forge channel (see [docs](https://conda-forge.org/docs/user/introduction.html#how-can-i-install-packages-from-conda-forge)).
 
 === "MacPorts"
-    This installation method is deprecated.
     ```{.shell, .copy}
     sudo port install py-rich-click
     ```
+
+    !!! danger "Depreciated"
+        This installation method is deprecated.
 
 ## Examples
 
