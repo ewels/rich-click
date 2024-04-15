@@ -1,7 +1,7 @@
 # Formatting & Styles
 
 !!! info
-    All images below are auto-generated using another side-project of mine: [rich-codex](https://github.com/ewels/rich-codex). Pretty cool!
+    All images below are auto-generated using another **rich** side-project: [rich-codex](https://github.com/ewels/rich-codex). Pretty cool!
 
 
 ## Formatting
@@ -20,7 +20,7 @@ Note that most normal click options should still work, such as `show_default=Tru
 - `'markdown'`: Rendered with markdown.
 
 !!! warning
-    Prior to **rich-click** 1.8.0, markup was controlled by the booleans `use_rich_markup` and `use_markdown`. 
+    Prior to **rich-click** 1.8.0, markup was controlled by the booleans `use_rich_markup` and `use_markdown`.
 
     These booleans have been silently deprecated (read: they will still be supported for the distant future),
     and users are encouraged to use the `text_markup: Literal["markdown", "rich", None]` config option instead.
@@ -45,7 +45,7 @@ for example: `[dim]\[my-default: foo][\]`
     click.rich_click.TEXT_MARKUP = "rich"
     ```
 
-![`python ../../examples/04_rich_markup.py --help`](../images/rich_markup.svg "Rich markup example")
+![`python ../../examples/04_rich_markup.py --help`](../images/rich_markup.svg "Rich markup example"){.screenshot}
 
 > See [`examples/04_rich_markup.py`](examples/04_rich_markup.py) for an example.
 
@@ -63,7 +63,7 @@ If you prefer, you can use Markdown text.
     click.rich_click.TEXT_MARKUP = "markdown"
     ```
 
-![`python ../../examples/05_markdown.py --help`](../images/markdown.svg "Markdown example")
+![`python ../../examples/05_markdown.py --help`](../images/markdown.svg "Markdown example"){.screenshot}
 
 > See [`examples/05_markdown.py`](examples/05_markdown.py) for an example.
 
@@ -89,7 +89,7 @@ By default, they will get their own panel, but you can tell rich-click to bundle
     click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
     ```
 
-![`python ../../examples/06_arguments.py --help`](../images/arguments.svg "Positional arguments example")
+![`python ../../examples/06_arguments.py --help`](../images/arguments.svg "Positional arguments example"){.screenshot}
 
 > See [`examples/06_arguments.py`](examples/06_arguments.py) for an example.
 
@@ -102,7 +102,7 @@ If you have a choice, the metavar is a list of the possible values.
 By default, rich-click shows metavars in their own column.
 However, if you have a long list of choices, this column can be quite wide and result in a lot of white space:
 
-![`python ../../examples/08_metavars_default.py --help`](../images/metavars_default.svg "Default metavar display")
+![`python ../../examples/08_metavars_default.py --help`](../images/metavars_default.svg "Default metavar display"){.screenshot}
 
 It may look better to show metavars appended to the help text, instead of in their own column.
 For this, use the following:
@@ -121,7 +121,7 @@ For this, use the following:
     click.rich_click.APPEND_METAVARS_HELP = True
     ```
 
-![`python ../../examples/08_metavars.py --help`](../images/metavars_appended.svg "Appended metavar")
+![`python ../../examples/08_metavars.py --help`](../images/metavars_appended.svg "Appended metavar"){.screenshot}
 
 > See [`examples/08_metavars.py`](examples/08_metavars.py) for an example.
 
@@ -129,7 +129,7 @@ For this, use the following:
 
 By default, rich-click gives some nice formatting to error messages:
 
-![`python ../../examples/01_simple.py --hep || true`](../images/error.svg "Error message")
+![`python ../../examples/01_simple.py --hep || true`](../images/error.svg "Error message"){.screenshot}
 
 You can customise the _Try 'command --help' for help._ message with `ERRORS_SUGGESTION`
 using rich-click though, and add some text after the error with `ERRORS_EPILOGUE`.
@@ -153,7 +153,7 @@ For example, from [`examples/07_custom_errors.py`](examples/07_custom_errors.py)
     click.rich_click.ERRORS_EPILOGUE = "To find out more, visit [link=https://mytool.com]https://mytool.com[/link]"
     ```
 
-![`python ../../examples/07_custom_errors.py --hep || true`](../images/custom_error.svg "Custom error message")
+![`python ../../examples/07_custom_errors.py --hep || true`](../images/custom_error.svg "Custom error message"){.screenshot}
 
 > See [`examples/07_custom_errors.py`](examples/07_custom_errors.py) for an example.
 
@@ -203,7 +203,7 @@ extra_env:
     TERMINAL_WIDTH: 160
 -->
 
-![`python ../../examples/10_table_styles.py --help`](../images/style_tables.svg "Rich markup example")
+![`python ../../examples/10_table_styles.py --help`](../images/style_tables.svg "Rich markup example"){.screenshot}
 
 > See [`examples/10_table_styles.py`](examples/10_table_styles.py) for an example.
 

@@ -6,7 +6,7 @@ It accepts a list of options / commands which means you can also choose a custom
 - For options / flags, set `click.rich_click.OPTION_GROUPS`
 - For subcommands / Click groups, set `click.rich_click.COMMAND_GROUPS`
 
-![](../images/command_groups.svg)
+![](../images/command_groups.svg){.screenshot}
 
 When grouping subcommands into more than one group (in above example: 'Main usage' and 'Configuration') you may find that the automatically calculated widths of different groups do not line up, due to varying option name lengths.
 
