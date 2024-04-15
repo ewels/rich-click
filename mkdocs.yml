@@ -11,6 +11,7 @@ theme:
     repo: fontawesome/brands/github
   features:
     - content.tabs.link
+    - content.code.copy
     - navigation.tabs
     - navigation.expand
     # - navigation.indexes
