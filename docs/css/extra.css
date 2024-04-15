@@ -44,8 +44,7 @@ a.internal-link::after {
 }
 
 .md-header__topic, .md-header__topic code,
-h1, h1 code, h2, h2 code, h3, h3 code,
-h4, h4 code, h5, h5 code,
+h1, h1 code,
 .md-header__header, .md-header__header code {
   font-family: "pixelmix";
 }
