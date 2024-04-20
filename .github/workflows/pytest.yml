@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [3.7.x, 3.11.x] # Only test lowest + highest Python versions supported
+        python: [3.7.x, 3.11.x, 3.12.x]
         click: [7.0.*, 7.1.*, 8.0.*, 8.1.*]
         rich: [12.*, 13.*]
     steps:
@@ -18,8 +18,20 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Install dependencies
+        if: matrix.python != '3.7.x'
         run: |
-          pip install '.[dev]'
+          pip install -U uv
+          uv pip install --system --editable ".[dev]"
+          uv pip install --system --upgrade "click==$CLICK_VERSION"
+          uv pip install --system --upgrade "rich==$RICH_VERSION"
+        env:
+          CLICK_VERSION: ${{ matrix.click }}
+          RICH_VERSION: ${{ matrix.rich }}
+
+      - name: Install dependencies (Python 3.7)
+        if: matrix.python == '3.7.x'
+        run: |
+          pip install --editable ".[dev]"
           pip install --upgrade "click==$CLICK_VERSION"
           pip install --upgrade "rich==$RICH_VERSION"
         env:

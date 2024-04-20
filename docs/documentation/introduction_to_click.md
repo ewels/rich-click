@@ -23,12 +23,12 @@ For example, the `@click.command` decorator creates a `Command` object that call
 You can run the file like normal, or you can run `--help` to render the function's docstring:
 
 <!-- RICH-CODEX
-working_dir: docs/code_examples/introduction_to_click
+working_dir: docs/code_snippets/introduction_to_click
 -->
 ![`python hello.py`](../images/introduction_to_click/hello.svg)
 
 <!-- RICH-CODEX
-working_dir: docs/code_examples/introduction_to_click
+working_dir: docs/code_snippets/introduction_to_click
 -->
 ![`python hello.py --help`](../images/introduction_to_click/hello_help.svg)
 
@@ -47,13 +47,12 @@ The below code shows some of the features available with options and arguments:
 ```
 
 <!-- RICH-CODEX
-fake_command: 
-working_dir: docs/code_examples/introduction_to_click
+working_dir: docs/code_snippets/introduction_to_click
 -->
 ![`python hello_v2.py --say-goodbye --times 3 Edward`](../images/introduction_to_click/hello_v2.svg)
 
 <!-- RICH-CODEX
-working_dir: docs/code_examples/introduction_to_click
+working_dir: docs/code_snippets/introduction_to_click
 -->
 ![`python hello_v2.py --help`](../images/introduction_to_click/hello_v2_help.svg)
 
@@ -72,19 +71,19 @@ Last but not least, Click allows for command groups and sub-commands, which allo
 Running `python hello.py --help` gives you the help text for the group and lists the subcommands:
 
 <!-- RICH-CODEX
-working_dir: docs/code_examples/introduction_to_click
+working_dir: docs/code_snippets/introduction_to_click
 -->
 ![`python hello_v3.py --help`](../images/introduction_to_click/hello_v3_help.svg)
 
 And you can run any of the subcommands like so:
 
 <!-- RICH-CODEX
-working_dir: docs/code_examples/introduction_to_click
+working_dir: docs/code_snippets/introduction_to_click
 -->
 ![`python hello_v3.py french Jennifer`](../images/introduction_to_click/hello_v3_subcommand.svg)
 
 <!-- RICH-CODEX
-working_dir: docs/code_examples/introduction_to_click
+working_dir: docs/code_snippets/introduction_to_click
 -->
 ![`python hello_v3.py french --help`](../images/introduction_to_click/hello_v3_subcommand_help.svg)
 
@@ -110,7 +109,7 @@ import rich_click as click
 That's the **_only_** change needed to use **rich-click**! And now we get the following beautiful help text:
 
 <!-- RICH-CODEX
-working_dir: docs/code_examples/introduction_to_click
+working_dir: docs/code_snippets/introduction_to_click
 -->
 ![`python hello_rich.py --help`](../images/introduction_to_click/hello_rich.svg)
 

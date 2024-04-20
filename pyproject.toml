@@ -46,6 +46,7 @@ docs = [
     "mkdocs-material",
     "mkdocs-material-extensions",
     "mkdocstrings[python]",
+    "pip",
 ]
 [project.urls]
 Documentation = "https://github.com/ewels/rich-click"

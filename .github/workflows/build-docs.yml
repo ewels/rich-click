@@ -22,15 +22,57 @@ jobs:
         with:
           python-version: 3.x
 
-      - uses: actions/cache@v2
-        with:
-          key: ${{ github.ref }}
-          path: .cache
+        # Unclear why but uv pip install causes mysterious error (even when 'pip' is installed):
+        #  File "/opt/hostedtoolcache/Python/3.12.3/x64/bin/mkdocs", line 8, in <module>
+        #    sys.exit(cli())
+        #             ^^^^^
+        #  File "/opt/hostedtoolcache/Python/3.12.3/x64/lib/python3.12/site-packages/click/core.py", line 1157, in __call__
+        #    return self.main(*args, **kwargs)
+        #           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        #  File "/opt/hostedtoolcache/Python/3.12.3/x64/lib/python3.12/site-packages/click/core.py", line 1078, in main
+        #    rv = self.invoke(ctx)
+        #         ^^^^^^^^^^^^^^^^
+        #  File "/opt/hostedtoolcache/Python/3.12.3/x64/lib/python3.12/site-packages/click/core.py", line 1688, in invoke
+        #    return _process_result(sub_ctx.command.invoke(sub_ctx))
+        #                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        #  File "/opt/hostedtoolcache/Python/3.12.3/x64/lib/python3.12/site-packages/click/core.py", line 1434, in invoke
+        #    return ctx.invoke(self.callback, **ctx.params)
+        #           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        #  File "/opt/hostedtoolcache/Python/3.12.3/x64/lib/python3.12/site-packages/click/core.py", line 783, in invoke
+        #    return __callback(*args, **kwargs)
+        #           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        #  File "/opt/hostedtoolcache/Python/3.12.3/x64/lib/python3.12/site-packages/mkdocs/__main__.py", line 311, in gh_deploy_command
+        #    build.build(cfg, dirty=not clean)
+        #  File "/opt/hostedtoolcache/Python/3.12.3/x64/lib/python3.12/site-packages/mkdocs/commands/build.py", line 265, in build
+        #    config = config.plugins.on_config(config)
+        #             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        #  File "/opt/hostedtoolcache/Python/3.12.3/x64/lib/python3.12/site-packages/mkdocs/plugins.py", line 587, in on_config
+        #    return self.run_event('config', config)
+        #           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        #  File "/opt/hostedtoolcache/Python/3.12.3/x64/lib/python3.12/site-packages/mkdocs/plugins.py", line 566, in run_event
+        #    result = method(item, **kwargs)
+        #             ^^^^^^^^^^^^^^^^^^^^^^
+        #  File "/opt/hostedtoolcache/Python/3.12.3/x64/lib/python3.12/site-packages/material/plugins/social/plugin.py", line 138, in on_config
+        #    self.font = self._load_font(config)
+        #                ^^^^^^^^^^^^^^^^^^^^^^^
+        #  File "/opt/hostedtoolcache/Python/3.12.3/x64/lib/python3.12/site-packages/material/plugins/social/plugin.py", line 454, in _load_font
+        #    self._load_font_from_google(name)
+        #  File "/opt/hostedtoolcache/Python/3.12.3/x64/lib/python3.12/site-packages/material/plugins/social/plugin.py", line 477, in _load_font_from_google
+        #    zip = ZipFile(tmp)
+        #          ^^^^^^^^^^^^
+        #  File "/opt/hostedtoolcache/Python/3.12.3/x64/lib/python3.12/zipfile/__init__.py", line 1349, in __init__
+        #    self._RealGetContents()
+        #  File "/opt/hostedtoolcache/Python/3.12.3/x64/lib/python3.12/zipfile/__init__.py", line 1416, in _RealGetContents
+        #    raise BadZipFile("File is not a zip file")
+        #zipfile.BadZipFile: File is not a zip file
+#      - name: Install requirements for docs
+#        run: |
+#          pip install -U uv
+#          uv pip install --system --extra docs -r pyproject.toml
 
       - name: Install requirements for docs
         run: |
-          uv pip compile --extra docs --upgrade pyproject.toml -o .cache/requirements.txt
-          uv pip sync --system .cache/requirements.txt
+          pip install --editable ".[docs]"
 
       - name: Generate terminal images with rich-codex
         uses: ewels/rich-codex@v1
