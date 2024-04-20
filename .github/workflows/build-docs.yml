@@ -34,7 +34,10 @@ jobs:
         uses: ewels/rich-codex@v1
         with:
           commit_changes: "true"
-          clean_img_paths: docs/img/*.svg
+          clean_img_paths: docs/images/*.svg
+          terminal_width: 80
+          skip_git_checks: "true"
+          working_dir: "."
 
       - name: Build and deploy docs
         run: mkdocs gh-deploy --force

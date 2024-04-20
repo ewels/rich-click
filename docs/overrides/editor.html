@@ -8,7 +8,7 @@
             "dim": false,
             "italic": false,
         },
-        "style_argument": {
+        "style_option": {
             "color": "cyan",
             "bold": true,
             "dim": false,
@@ -257,8 +257,7 @@ The Live Style Editor seeks to represent a useful subset of the available stylin
 </div>
 </div>
 <script>
-    $(document).ready(function() {
-
+    function setDefaultStyle() {
         $(".rc-button.rccfg-style-argument.rccfg-bold-button").each(function() {
             $(this).click();
         });
@@ -298,7 +297,7 @@ The Live Style Editor seeks to represent a useful subset of the available stylin
         $(".rc-button.rccfg-style-commands-panel-border.rccfg-dim-button").each(function() {
             $(this).click();
         });
-    });
+    }
     function trimText() {
         $('.rccfg-code-outer').each(function() {
             var boldFlagText = $(this).find(".rccfg-code-bold");
@@ -388,6 +387,10 @@ The Live Style Editor seeks to represent a useful subset of the available stylin
             $("span .rccfg-code-italic." + targetClass).text("")
         }
         trimText()
+    });
+
+    $(document).ready(function() {
+        setDefaultStyle()
     });
 </script>
 {% endblock %}

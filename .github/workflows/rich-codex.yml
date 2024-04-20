@@ -26,3 +26,4 @@ jobs:
           clean_img_paths: docs/images/*.svg
           terminal_width: 80
           skip_git_checks: "true"
+          working_dir: "."
