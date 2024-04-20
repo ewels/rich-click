@@ -28,7 +28,9 @@ jobs:
           path: .cache
 
       - name: Install requirements for docs
-        run: pip install -e ".[docs]"
+        run: |
+          uv pip compile --extra docs --upgrade pyproject.toml -o .cache/requirements.txt
+          uv pip sync --system .cache/requirements.txt
 
       - name: Generate terminal images with rich-codex
         uses: ewels/rich-codex@v1

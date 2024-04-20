@@ -45,6 +45,9 @@ for example: `[dim]\[my-default: foo][\]`
     click.rich_click.TEXT_MARKUP = "rich"
     ```
 
+<!-- RICH-CODEX
+working_dir: .
+-->
 ![`python examples/04_rich_markup.py --help`](../images/rich_markup.svg "Rich markup example")
 
 > See [`examples/04_rich_markup.py`](examples/04_rich_markup.py) for an example.
@@ -63,6 +66,9 @@ If you prefer, you can use Markdown text.
     click.rich_click.TEXT_MARKUP = "markdown"
     ```
 
+<!-- RICH-CODEX
+working_dir: .
+-->
 ![`python examples/05_markdown.py --help`](../images/markdown.svg "Markdown example")
 
 > See [`examples/05_markdown.py`](examples/05_markdown.py) for an example.
@@ -89,6 +95,9 @@ By default, they will get their own panel, but you can tell rich-click to bundle
     click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
     ```
 
+<!-- RICH-CODEX
+working_dir: .
+-->
 ![`python examples/06_arguments.py --help`](../images/arguments.svg "Positional arguments example")
 
 > See [`examples/06_arguments.py`](examples/06_arguments.py) for an example.
@@ -102,6 +111,9 @@ If you have a choice, the metavar is a list of the possible values.
 By default, rich-click shows metavars in their own column.
 However, if you have a long list of choices, this column can be quite wide and result in a lot of white space:
 
+<!-- RICH-CODEX
+working_dir: .
+-->
 ![`python examples/08_metavars_default.py --help`](../images/metavars_default.svg "Default metavar display")
 
 It may look better to show metavars appended to the help text, instead of in their own column.
@@ -121,6 +133,9 @@ For this, use the following:
     click.rich_click.APPEND_METAVARS_HELP = True
     ```
 
+<!-- RICH-CODEX
+working_dir: .
+-->
 ![`python examples/08_metavars.py --help`](../images/metavars_appended.svg "Appended metavar")
 
 > See [`examples/08_metavars.py`](examples/08_metavars.py) for an example.
@@ -129,6 +144,9 @@ For this, use the following:
 
 By default, rich-click gives some nice formatting to error messages:
 
+<!-- RICH-CODEX
+working_dir: .
+-->
 ![`python examples/01_simple.py --hep || true`](../images/error.svg "Error message")
 
 You can customise the _Try 'command --help' for help._ message with `ERRORS_SUGGESTION`
@@ -153,6 +171,9 @@ For example, from [`examples/07_custom_errors.py`](examples/07_custom_errors.py)
     click.rich_click.ERRORS_EPILOGUE = "To find out more, visit [link=https://mytool.com]https://mytool.com[/link]"
     ```
 
+<!-- RICH-CODEX
+working_dir: .
+-->
 ![`python examples/07_custom_errors.py --hep || true`](../images/custom_error.svg "Custom error message")
 
 > See [`examples/07_custom_errors.py`](examples/07_custom_errors.py) for an example.
@@ -199,6 +220,7 @@ click.rich_click.STYLE_OPTIONS_TABLE_BOX = "SIMPLE"
 You can make some really ~horrible~ _colourful_ solutions using these styles if you wish:
 
 <!-- RICH-CODEX
+working_dir: .
 extra_env:
     TERMINAL_WIDTH: 160
 -->

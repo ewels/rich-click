@@ -16,36 +16,21 @@ Click utilizes function decorators as its primary interface for composing a CLI.
 For example, the `@click.command` decorator creates a `Command` object that calls the function:
 
 ```python
-# hello.py
-import click
-
-@click.command()
-def hello():
-    """Prints 'hello, world!' into the terminal."""
-    print("Hello, world!")
-
-if __name__ == "__main__":
-    hello()
+# docs/code_snippets/introduction_to_click/hello.py
+{!code_snippets/introduction_to_click/hello.py!}
 ```
 
 You can run the file like normal, or you can run `--help` to render the function's docstring:
 
-<div class="termy">
-```console
-$ python hello.py
+<!-- RICH-CODEX
+working_dir: docs/code_examples/introduction_to_click
+-->
+![`python hello.py`](../images/introduction_to_click/hello.svg)
 
-Hello, world!
-
-$ python hello.py --help
-
-Usage: hello.py [OPTIONS]
-
-  Prints 'hello, world!' into the terminal.
-
-Options:
-  --help  Show this message and exit.
-```
-</div>
+<!-- RICH-CODEX
+working_dir: docs/code_examples/introduction_to_click
+-->
+![`python hello.py --help`](../images/introduction_to_click/hello_help.svg)
 
 ### Arguments and Options
 
@@ -57,53 +42,20 @@ Arguments and options are also added with decorators. The difference between arg
 The below code shows some of the features available with options and arguments:
 
 ```python
-# hello.py
-import click
-
-@click.command()
-@click.argument("name")
-@click.option("--times", "-t",
-              default=1,
-              type=click.INT,
-              show_default=True,
-              help="Number of times to print the greeting.")
-@click.option("--say-goodbye",
-              is_flag=True,
-              default=False,
-              help="After saying hello, say goodbye.")
-def hello(name, times, say_goodbye):
-    """Prints 'hello, [name]!' into the terminal N times."""
-    for t in range(times):
-        print(f"Hello, {name}!")
-    if say_goodbye:
-        print("Goodbye!")
-
-if __name__ == "__main__":
-    hello()
+# docs/code_snippets/introduction_to_click/hello_v2.py
+{!code_snippets/introduction_to_click/hello_v2.py!}
 ```
 
-<div class="termy">
-```console
-$ python hello.py --say-goodbye --times 3 Edward
+<!-- RICH-CODEX
+fake_command: 
+working_dir: docs/code_examples/introduction_to_click
+-->
+![`python hello_v2.py --say-goodbye --times 3 Edward`](../images/introduction_to_click/hello_v2.svg)
 
-Hello, Edward!
-Hello, Edward!
-Hello, Edward!
-Goodbye!
-
-$ python hello.py --help
-
-Usage: hello.py [OPTIONS] NAME
-
-  Prints 'hello, [name]!' into the terminal N times.
-
-Options:
-  -t, --times INTEGER  Number of times to print the greeting.
-                       [default: 1]
-  --say-goodbye        After saying hello, say goodbye.
-  --help               Show this message and exit.
-```
-</div>
+<!-- RICH-CODEX
+working_dir: docs/code_examples/introduction_to_click
+-->
+![`python hello_v2.py --help`](../images/introduction_to_click/hello_v2_help.svg)
 
 Click is able to parse the new arguments and options, e.g. it knows that `--times [number]` maps to the function argument `times`.
 Additionally, Click also knows to render these new arguments in the help text.
@@ -113,65 +65,28 @@ Additionally, Click also knows to render these new arguments in the help text.
 Last but not least, Click allows for command groups and sub-commands, which allows you to nest commands inside other commands.
 
 ```python
-# hello.py
-import click
-
-@click.group("greetings")
-def greetings_cli():
-    """CLI for greetings."""
-
-@greetings_cli.command("english")
-@click.argument("name")
-def english(name):
-    """Greet in English"""
-    print(f"Hello, {name}!")
-
-@greetings_cli.command("french")
-@click.argument("name")
-def french(name):
-    """Greet in French"""
-    print(f"Bonjour, {name}!")
-
-if __name__ == "__main__":
-    greetings_cli()
+# docs/code_snippets/introduction_to_click/hello_v3.py
+{!code_snippets/introduction_to_click/hello_v3.py!}
 ```
 
 Running `python hello.py --help` gives you the help text for the group and lists the subcommands:
 
-<div class="termy">
-```console
-$  python hello.py --help
-Usage: hello.py [OPTIONS] COMMAND [ARGS]...
-
-  CLI for greetings.
-
-Options:
-  --help  Show this message and exit.
-
-Commands:
-  english  Greet in English.
-  french   Greet in French.
-```
-</div>
+<!-- RICH-CODEX
+working_dir: docs/code_examples/introduction_to_click
+-->
+![`python hello_v3.py --help`](../images/introduction_to_click/hello_v3_help.svg)
 
 And you can run any of the subcommands like so:
 
-<div class="termy">
-```console
-$ python hello.py french Jennifer
+<!-- RICH-CODEX
+working_dir: docs/code_examples/introduction_to_click
+-->
+![`python hello_v3.py french Jennifer`](../images/introduction_to_click/hello_v3_subcommand.svg)
 
-Bonjour, Jennifer!
-
-$ python hello.py french --help
-
-Usage: hello.py french [OPTIONS] NAME
-
-  Greet in French.
-
-Options:
-  --help  Show this message and exit.
-```
-</div>
+<!-- RICH-CODEX
+working_dir: docs/code_examples/introduction_to_click
+-->
+![`python hello_v3.py french --help`](../images/introduction_to_click/hello_v3_subcommand_help.svg)
 
 ## Next Steps
 
@@ -194,22 +109,10 @@ import rich_click as click
 
 That's the **_only_** change needed to use **rich-click**! And now we get the following beautiful help text:
 
-<div class="termy">
-```console
-$ python hello.py --help
-
-<span style="color: #808000; text-decoration-color: #808000">Usage:</span> <span style="font-weight: bold">my_file</span> [<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">OPTIONS</span>] <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">NAME</span>                                          
-                                                                        
- Prints &#x27;hello, [name]!&#x27; into the terminal N times.                     
-                                                                        
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╭─ Options ────────────────────────────────────────────────────────────╮</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--times</span>        <span style="color: #008000; text-decoration-color: #008000; font-weight: bold">-t</span>  <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">INTEGER</span>  Number of times to print the greeting.   <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>                             <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">[default: 1]                          </span>   <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--say-goodbye</span>      <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">       </span>  After saying hello, say goodbye.         <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--help</span>             <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">       </span>  Show this message and exit.              <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╰──────────────────────────────────────────────────────────────────────╯</span>
-```
-</div>
+<!-- RICH-CODEX
+working_dir: docs/code_examples/introduction_to_click
+-->
+![`python hello_rich.py --help`](../images/introduction_to_click/hello_rich.svg)
 
 ## Why Click?
 
