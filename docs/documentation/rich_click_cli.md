@@ -4,20 +4,7 @@
 
 **rich-click** comes with a CLI tool that allows you to format the Click help output for any CLI that uses Click.
 
-<div class="termy">
-```console
-$ rich-click --help
-
- <span style="color: #808000; text-decoration-color: #808000">Usage:                                                       </span>          
- <span style="font-weight: bold">rich_click                                                   </span>          
- [<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">OPTIONS</span>] [<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">SCRIPT</span> | <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">MODULE</span>:<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">CLICK_COMMAND</span>] [-- <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">SCRIPT_ARGS</span>...]          
-                                                                        
- The <a href="https://github.com/ewels/rich-click">rich-click</a> CLI provides attractive help output from any tool using 
- <a href="https://click.palletsprojects.com/">click</a>, formatted with <a href="https://github.com/Textualize/rich">rich</a>.                                            
-
-// The rest of the output is omitted
-```
-</div>
+![`rich-click --help`](../images/code_snippets/rich_click_cli/rich_click.svg){.screenshot}
 
 To use, simply prefix `rich-click` to the command. Here are a few real world examples:
 
@@ -52,7 +39,7 @@ fake_command: rich-click --output svg app:main --help
 working_dir: docs/code_snippets/rich_click_cli
 head: 12
 -->
-![`rich-click --output svg app:main --help`](../images/code_snippets/rich_click_cli/output_to_html.svg){.screenshot}
+![`rich-click --output svg app:main --help | grep -Eo '.{1,3}'`](../images/code_snippets/rich_click_cli/output_to_html.svg){.screenshot}
 
 SVG example:
 
@@ -63,7 +50,7 @@ fake_command: rich-click --output html app:main --help
 working_dir: docs/code_snippets/rich_click_cli
 head: 12
 -->
-![`rich-click --output html app:main --help`](../images/code_snippets/rich_click_cli/output_to_svg.svg){.screenshot}
+![`rich-click --output html app:main --help | grep -Eo '.{1,3}'`](../images/code_snippets/rich_click_cli/output_to_svg.svg){.screenshot}
 
 _SVG and HTML generated from [`docs/code_snippets/rich_click_cli/app.py`](https://github.com/ewels/rich-click/blob/main/docs/code_snippets/rich_click_cli/app.py)_
 

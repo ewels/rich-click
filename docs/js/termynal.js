@@ -86,7 +86,6 @@ class Termynal {
       line.style.visibility = "hidden";
       this.container.appendChild(line);
     }
-    const restart = this.generateRestart();
     restart.style.visibility = "hidden";
     this.container.appendChild(restart);
     this.container.setAttribute("data-termynal", "");

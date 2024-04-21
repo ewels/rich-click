@@ -1,4 +1,4 @@
-name: Build images / docs
+name: Build docs
 on:
   workflow_dispatch:
   push:
@@ -15,10 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: 3.x
 
@@ -32,9 +32,7 @@ jobs:
         with:
           commit_changes: "true"
           clean_img_paths: docs/images/*.svg
-          terminal_width: 80
           skip_git_checks: "true"
-          working_dir: "."
 
       - name: Build and deploy docs
         run: mkdocs gh-deploy --force
