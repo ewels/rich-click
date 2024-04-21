@@ -25,7 +25,7 @@ jobs:
       - name: Install requirements for docs
         run: |
           pip install -U uv
-          uv pip install --system --extra docs -r pyproject.toml
+          uv pip install --system --editable ".[docs]"
 
       - name: Generate terminal images with rich-codex
         uses: ewels/rich-codex@v1
