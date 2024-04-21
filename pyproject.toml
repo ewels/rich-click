@@ -43,7 +43,7 @@ docs = [
     "markdown_include",
     "mkdocs",
     "mkdocs-glightbox",
-    "mkdocs-material",
+    "mkdocs-material~=9.5.18",
     "mkdocs-material-extensions",
     "mkdocstrings[python]",
     "pip",
