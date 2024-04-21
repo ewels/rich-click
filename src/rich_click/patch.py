@@ -40,7 +40,7 @@ def rich_group(*args, **kwargs):  # type: ignore[no-untyped-def]
 
 
 def patch(rich_config: Optional[RichHelpConfiguration] = None) -> None:
-    """Patch Click internals to use Rich-Click types."""
+    """Patch Click internals to use rich-click types."""
     rich_click.rich_command.OVERRIDES_GUARD = True
     click.group = rich_group
     click.command = rich_command

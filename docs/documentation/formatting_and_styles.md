@@ -45,7 +45,6 @@ for example: `[dim]\[my-default: foo][\]`
     click.rich_click.TEXT_MARKUP = "rich"
     ```
 
-<<<<<<< HEAD
 <!-- RICH-CODEX
 working_dir: .
 -->
@@ -67,7 +66,6 @@ If you prefer, you can use Markdown text.
     click.rich_click.TEXT_MARKUP = "markdown"
     ```
 
-<<<<<<< HEAD
 <!-- RICH-CODEX
 working_dir: .
 -->
@@ -97,7 +95,6 @@ By default, they will get their own panel, but you can tell rich-click to bundle
     click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
     ```
 
-<<<<<<< HEAD
 <!-- RICH-CODEX
 working_dir: .
 -->
@@ -114,7 +111,6 @@ If you have a choice, the metavar is a list of the possible values.
 By default, rich-click shows metavars in their own column.
 However, if you have a long list of choices, this column can be quite wide and result in a lot of white space:
 
-<<<<<<< HEAD
 <!-- RICH-CODEX
 working_dir: .
 -->
@@ -137,7 +133,6 @@ For this, use the following:
     click.rich_click.APPEND_METAVARS_HELP = True
     ```
 
-<<<<<<< HEAD
 <!-- RICH-CODEX
 working_dir: .
 -->
@@ -149,7 +144,6 @@ working_dir: .
 
 By default, rich-click gives some nice formatting to error messages:
 
-<<<<<<< HEAD
 <!-- RICH-CODEX
 working_dir: .
 -->
@@ -177,7 +171,6 @@ For example, from [`examples/07_custom_errors.py`](examples/07_custom_errors.py)
     click.rich_click.ERRORS_EPILOGUE = "To find out more, visit [link=https://mytool.com]https://mytool.com[/link]"
     ```
 
-<<<<<<< HEAD
 <!-- RICH-CODEX
 working_dir: .
 -->
