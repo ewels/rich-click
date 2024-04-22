@@ -1,3 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+
+.md-typeset [data-termynal] pre {
+    font-family: "Fira Code", monospace;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-variant-ligatures: initial;
+}
+
 #terminal-header {
   text-shadow: -4px 4px rgba(128, 128, 128, 0.1);
   overflow: hidden;
