@@ -7,7 +7,6 @@
  */
 
 :root {
-    --color-bg: #252a33;
     --color-text: #eee;
     --color-text-subtle: #a2a2a2;
 }
@@ -15,10 +14,10 @@
 [data-termynal] {
     width: 750px;
     max-width: 100%;
-    background: var(--color-bg);
     color: var(--color-text);
     font-size: 14px;
     font-family: 'Fira Mono', Consolas, Menlo, Monaco, 'Courier New', Courier, monospace;
+    box-shadow: 0 3px 10px 1px rgba(87, 87, 87, 0.3);
     border-radius: 4px;
     padding: 15px 25px 15px;
     position: relative;
