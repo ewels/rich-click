@@ -12,13 +12,7 @@
   background-color: rgba(127, 127, 127, 0.4);
 }
 
-.termynal-comment {
-  color: #4a968f;
-  font-style: italic;
-  display: block;
-}
-
-.termy [data-termynal] {
+[data-termynal] {
   white-space: pre;
 }
 

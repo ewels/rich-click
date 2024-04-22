@@ -86,6 +86,3 @@ extra_css:
   - css/termynal.css
   - css/extra.css
 
-extra_javascript:
-  - js/termynal.js
-  - js/custom.js

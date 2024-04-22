@@ -2,13 +2,13 @@
 {% set COLORS = ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"] %}
 {% set
     DEFAULT_STYLE_DICT = {
-        "style_argument": {
+        "style_option": {
             "color": "cyan",
             "bold": true,
             "dim": false,
             "italic": false,
         },
-        "style_option": {
+        "style_argument": {
             "color": "cyan",
             "bold": true,
             "dim": false,
@@ -104,19 +104,19 @@
 {% endblock %}
 
 {% set live_terminal %}
- <span class="rc-element s-bold c-yellow rccfg-style-usage">Usage:</span> <span class="rc-element s-bold rccfg-style-usage-command">docs</span> [<span class="rc-element rccfg-style-argument s-bold c-cyan">OPTIONS</span>] <span class="rc-element rccfg-style-argument s-bold c-cyan">FOO</span> <span class="rc-element rccfg-style-argument s-bold c-cyan">COMMAND</span> [<span class="rc-element rccfg-style-argument s-bold c-cyan">ARGS</span>]...
+ <span class="rc-element c-yellow rccfg-style-usage">Usage:</span> <span class="rc-element rccfg-style-usage-command">docs</span> [<span class="rc-element rccfg-style-argument c-cyan">OPTIONS</span>] <span class="rc-element rccfg-style-argument c-cyan">FOO</span> <span class="rc-element rccfg-style-argument c-cyan">COMMAND</span> [<span class="rc-element rccfg-style-argument c-cyan">ARGS</span>]...
 
  <span class="rc-element rccfg-style-helptext-first-line">Help text for CLI</span>
- <span class="rc-element s-dim rccfg-style-helptext">Second line of help text.</span>
+ <span class="rc-element rccfg-style-helptext">Second line of help text.</span>
 
-<span class="rc-element s-dim rccfg-style-options-panel-border">╭─ Options ────────────────────────────────────────────────────────────╮</span>
-<span class="rc-element s-dim rccfg-style-options-panel-border">│</span>    <span class="rc-element s-bold c-cyan rccfg-style-option">--bar</span>   <span class="rc-element s-bold c-green rccfg-style-switch">-b</span>  <span class="rc-element s-bold c-yellow rccfg-style-metavar">TEXT</span>     Lorem ipsum <span class="rc-element s-dim rccfg-style-option-default">[default: (someval)]</span>             <span class="rc-element s-dim rccfg-style-options-panel-border">│</span>
-<span class="rc-element s-dim rccfg-style-options-panel-border">│</span> <span class="rc-element c-red rccfg-style-required-short">*</span>  <span class="rc-element s-bold c-cyan rccfg-style-option">--baz</span>       <span class="rc-element s-bold c-yellow rccfg-style-metavar"><span class="rc-element s-dim rccfg-style-metavar-separator">[</span>a<span class="rc-element s-dim rccfg-style-metavar-separator">|</span>b<span class="rc-element s-dim rccfg-style-metavar-separator">|</span>c<span class="rc-element s-dim rccfg-style-metavar-separator">]</span></span>  Choose wisely <span class="rc-element s-dim c-red rccfg-style-required-long">[required]</span>                     <span class="rc-element s-dim rccfg-style-options-panel-border">│</span>
-<span class="rc-element s-dim rccfg-style-options-panel-border">│</span>    <span <span class="rc-element s-bold c-cyan rccfg-style-option">--help</span>      <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">       </span>  Show this message and exit.                  <span class="rc-element s-dim rccfg-style-options-panel-border">│</span>
-<span class="rc-element s-dim rccfg-style-options-panel-border">╰──────────────────────────────────────────────────────────────────────╯</span>
-<span class="rc-element s-dim rccfg-style-commands-panel-border">╭─ Commands ───────────────────────────────────────────────────────────╮</span>
-<span class="rc-element s-dim rccfg-style-commands-panel-border">│</span> <span class="rc-element c-cyan s-bold rccfg-style-command">subcommand           </span> Help text for subcommand                       <span class="rc-element s-dim rccfg-style-commands-panel-border">│</span>
-<span class="rc-element s-dim rccfg-style-commands-panel-border">╰──────────────────────────────────────────────────────────────────────╯</span>
+<span class="rc-element rccfg-style-options-panel-border">╭─ Options ────────────────────────────────────────────────────────────╮</span>
+<span class="rc-element rccfg-style-options-panel-border">│</span>    <span class="rc-element c-cyan rccfg-style-option">--bar</span>   <span class="rc-element c-green rccfg-style-switch">-b</span>  <span class="rc-element c-yellow rccfg-style-metavar">TEXT</span>     Lorem ipsum <span class="rc-element rccfg-style-option-default">[default: (someval)]</span>             <span class="rc-element rccfg-style-options-panel-border">│</span>
+<span class="rc-element rccfg-style-options-panel-border">│</span> <span class="rc-element c-red rccfg-style-required-short">*</span>  <span class="rc-element c-cyan rccfg-style-option">--baz</span>       <span class="rc-element c-yellow rccfg-style-metavar"><span class="rc-element rccfg-style-metavar-separator">[</span>a<span class="rc-element rccfg-style-metavar-separator">|</span>b<span class="rc-element rccfg-style-metavar-separator">|</span>c<span class="rc-element rccfg-style-metavar-separator">]</span></span>  Choose wisely <span class="rc-element c-red rccfg-style-required-long">[required]</span>                     <span class="rc-element rccfg-style-options-panel-border">│</span>
+<span class="rc-element rccfg-style-options-panel-border">│</span>    <span <span class="rc-element c-cyan rccfg-style-option">--help</span>      <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">       </span>  Show this message and exit.                  <span class="rc-element rccfg-style-options-panel-border">│</span>
+<span class="rc-element rccfg-style-options-panel-border">╰──────────────────────────────────────────────────────────────────────╯</span>
+<span class="rc-element rccfg-style-commands-panel-border">╭─ Commands ───────────────────────────────────────────────────────────╮</span>
+<span class="rc-element rccfg-style-commands-panel-border">│</span> <span class="rc-element c-cyan rccfg-style-command">subcommand           </span> Help text for subcommand                       <span class="rc-element rccfg-style-commands-panel-border">│</span>
+<span class="rc-element rccfg-style-commands-panel-border">╰──────────────────────────────────────────────────────────────────────╯</span>
 {% endset %}
 
 {% block content %}
@@ -133,22 +133,24 @@ The Live Style Editor seeks to represent a useful subset of the available stylin
     <div class="left-column">
         <table id="option-table">
             <thead>
-                <td>
-                    Option
-                </td>
-                <td>
-                    Color
-                </td>
-                <td>
-                    Other styles
-                </td>
+                <tr>
+                    <th>
+                        Option
+                    </th>
+                    <th>
+                        Color
+                    </th>
+                    <th>
+                        Other styles
+                    </th>
+                </tr>
             </thead>
             <tbody>
                 {% for option_name, attrs in DEFAULT_STYLE_DICT.items() %}
                 {% set css_cls = "rccfg-" ~ option_name.replace("_", "-") %}
                 <tr>
                     <td>
-                        <label for="color-select">{{ option_name.upper() }}</label>
+                        <label for="color-select" title="{{ option_name.upper() }}">{{ option_name.upper() }}</label>
                     </td>
                     <td>
                         <div class="{{ css_cls }} color-grid" data-target="{{ css_cls }}">
@@ -172,10 +174,10 @@ The Live Style Editor seeks to represent a useful subset of the available stylin
         </table>
     </div>
     <div class="right-column">
-        <div class="termy">
-        <div class="highlight"><pre>
+        <div data-termynal style="height: 500px;">
+        <div><pre>
 {%- for row in live_terminal.split("\n") %}
-<span class="go">{{ row | escape }}</span>
+<span class="go">{{ row }}</span>
 {%- endfor %}
         </pre></div>
         </div>
