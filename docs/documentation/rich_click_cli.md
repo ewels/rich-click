@@ -33,7 +33,7 @@ You can also use `rich-click --output=html [command]` to render rich HTML for he
 
 This works for RichCommands as well as normal click Commands.
 
-HTML example:
+SVG example:
 
 <!-- RICH-CODEX
 extra_env:
@@ -44,7 +44,7 @@ head: 12
 -->
 ![`rich-click --output svg app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_html.svg){.screenshot}
 
-SVG example:
+HTML example:
 
 <!-- RICH-CODEX
 extra_env:
