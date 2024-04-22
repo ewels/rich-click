@@ -47,7 +47,6 @@ docs = [
     "mkdocs-material[imaging]~=9.5.18",
     "mkdocs-material-extensions",
     "mkdocstrings[python]",
-    "pip",
     "rich-codex",
 ]
 [project.urls]
