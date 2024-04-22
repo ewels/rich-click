@@ -36,6 +36,7 @@ dev = [
     "pre-commit",
     "pytest",
     "pytest-cov",
+    "rich-codex",
     "ruff",
     "types-setuptools",
 ]
@@ -43,9 +44,10 @@ docs = [
     "markdown_include",
     "mkdocs",
     "mkdocs-glightbox",
-    "mkdocs-material",
+    "mkdocs-material[imaging]~=9.5.18",
     "mkdocs-material-extensions",
     "mkdocstrings[python]",
+    "rich-codex",
 ]
 [project.urls]
 Documentation = "https://github.com/ewels/rich-click"

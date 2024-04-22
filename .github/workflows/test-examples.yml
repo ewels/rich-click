@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [3.7.x, 3.8.x, 3.9.x, 3.10.x, 3.11.x]
+        python: [3.7.x, 3.11.x, 3.12.x]
         click: [7.0.*, 8.0.*, 8.1.*] # Skip click 7.1 since regression coverage is strictly higher in 7.0.
     steps:
       - name: Check out the repo
@@ -16,9 +16,19 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
 
-      - name: Install rich-click and click
+      - name: Install dependencies
+        if: matrix.python != '3.7.x'
         run: |
-          pip install .
+          pip install -U uv
+          uv pip install --system --editable "."
+          uv pip install --system --upgrade "click==$CLICK_VERSION"
+        env:
+          CLICK_VERSION: ${{ matrix.click }}
+
+      - name: Install dependencies (Python 3.7)
+        if: matrix.python == '3.7.x'
+        run: |
+          pip install --editable "."
           pip install --upgrade "click==$CLICK_VERSION"
         env:
           CLICK_VERSION: ${{ matrix.click }}
@@ -28,5 +38,5 @@ jobs:
           for f in examples/*py
           do
             echo -e "\n\n$f"
-            python $f --help || exit 1;
+            python "${f}" --help || exit 1;
           done
