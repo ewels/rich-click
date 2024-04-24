@@ -1,0 +1,9 @@
+authors:
+  ewels:
+    name: Phil Ewels
+    description: rich-click creator
+    avatar: https://github.com/ewels.png
+  dwreeves:
+    name: Daniel Reeves
+    description: Co-maintainer
+    avatar: https://github.com/dwreeves.png
