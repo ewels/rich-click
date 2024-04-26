@@ -1,3 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+
+.md-typeset [data-termynal] pre {
+    font-family: "Fira Code", monospace;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-variant-ligatures: initial;
+}
+
 #terminal-header {
   text-shadow: -4px 4px rgba(128, 128, 128, 0.1);
   overflow: hidden;
@@ -10,16 +20,57 @@
 [data-termynal] {
     width: 100%;
     padding: 75px 25px 25px;
+    overflow-x: hidden;
 }
 
 .container {
     display: flex;
-    height: 100%;
+    align-items: flex-start;
 }
 
 .container .left-column {
-    flex: 3 0 auto;
+    flex: 1 0 auto;
     align-content: center;
+    padding-top: 5px;
+}
+
+#option-table {
+    display: block;
+    width: 100%;
+}
+
+.container .left-column thead {
+    background-color: rgba(133, 133, 133, 0.07);
+}
+
+.container .left-column table thead tr th:nth-child(1),
+.container .left-column table tbody tr td:nth-child(1) {
+    max-width: 270px;
+    min-width: 270px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.container .left-column table thead tr th:nth-child(2),
+.container .left-column table tbody tr td:nth-child(2) {
+    max-width: 100px;
+    min-width: 100px;
+}
+
+.container .left-column table thead tr th:nth-child(3),
+.container .left-column table tbody tr td:nth-child(3) {
+    max-width: 200px;
+    min-width: 200px;
+}
+
+
+.container .left-column table tbody {
+    height: 460px;
+    width: auto;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    display: block;
 }
 
 .container .right-column {
@@ -27,6 +78,9 @@
     padding: 25px 15px;
     align-content: center;
     display: inline-block;
+    overflow-x: hidden;
+        white-space: nowrap;
+
 }
 
 @media (max-width: 74em) {

@@ -11,6 +11,27 @@ or better still, dive right in with a pull-request.
 3. Install our the package as an editable including all dev dependencies with `pip3 install -e ".[dev]"`
 4. Install pre-commit with `pre-commit install`
 
+### One-shot script (OSX)
+
+Requirements:
+
+- `brew install pyenv pyenv-virtualenv uv`
+- Initialize `pyenv-virtualenv`: run `pyenv virtualenv-init` and follow instructions.
+
+```
+pyenv install --skip-existing 3.7 3.12
+pyenv virtualenv 3.7 rich-click-3.7
+pyenv virtualenv 3.12 rich-click-3.12
+echo '#rich-click-3.7
+rich-click-3.12' >.python-version
+uv pip install --all-extras -r pyproject.toml --editable .
+echo 'rich-click-3.7
+#rich-click-3.12' >.python-version
+uv pip install --extra dev -r pyproject.toml --editable .
+```
+
+Note: 3.7 is the minimum supported Python version for **rich-click**, but docs are rendered in 3.12.
+
 ## Pre-commit
 
 Our pre-commit hooks contain the following hooks:

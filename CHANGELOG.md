@@ -17,16 +17,16 @@
 - Moved to `text_markup: Literal["markdown", "rich", None]` instead of booleans.
 - Fixed issue where error messages would not print to `stderr` by default.
 - New configuration options: [[#178](https://github.com/ewels/rich-click/pull/178)]
-  - `STYLE_OPTIONS_PANEL_BOX`
-  - `STYLE_COMMANDS_PANEL_BOX`
-  - `STYLE_ERRORS_PANEL_BOX`
+    - `STYLE_OPTIONS_PANEL_BOX`
+    - `STYLE_COMMANDS_PANEL_BOX`
+    - `STYLE_ERRORS_PANEL_BOX`
 - Many quality of life improvements for command and option groups:
-  - Support both `command_path` and `command.name`.
-  - Added wildcard (`*`) option for command groups and option groups, with thanks to [@ITProKyle](https://github.com/ITProKyle)!
-  - Resolve duplicates.
-  - Better typing for option groups and command groups with `TypedDict` [[#156](https://github.com/ewels/rich-click/pull/156)]
-  - Added `panel_styles` support to groups. [[#178](https://github.com/ewels/rich-click/pull/178)]
-  - Allow `table_styles` and `panel_styles` to be defined for the positional arguments group.
+    - Support both `command_path` and `command.name`.
+    - Added wildcard (`*`) option for command groups and option groups, with thanks to [@ITProKyle](https://github.com/ITProKyle)!
+    - Resolve duplicates.
+    - Better typing for option groups and command groups with `TypedDict` [[#156](https://github.com/ewels/rich-click/pull/156)]
+    - Added `panel_styles` support to groups. [[#178](https://github.com/ewels/rich-click/pull/178)]
+    - Allow `table_styles` and `panel_styles` to be defined for the positional arguments group.
 
 ## Version 1.7.4 (2024-03-12)
 
