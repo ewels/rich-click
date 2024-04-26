@@ -17,10 +17,7 @@ else:
     cached_property = property
 
 
-def create_console(
-    config: RichHelpConfiguration,
-    file: Optional[IO[str]] = None,
-) -> "Console":
+def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> "Console":
     """
     Create a Rich Console configured from Rich Help Configuration.
 
@@ -29,6 +26,7 @@ def create_console(
         config: Rich Help Configuration instance
         file: Optional IO stream to write Rich Console output
             Defaults to None.
+        record: If true, record the output
     """
     from rich.console import Console
     from rich.theme import Theme

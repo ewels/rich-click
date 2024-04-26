@@ -1,3 +1,4 @@
+import os
 from typing import TYPE_CHECKING, Any, Mapping, Optional, Type, Union
 
 import click
@@ -19,6 +20,7 @@ class RichContext(click.Context):
     formatter_class: Type[RichHelpFormatter] = RichHelpFormatter
     console: Optional["Console"] = None
     export_console_as: Literal[None, "html", "svg"] = None
+    record: bool = False
 
     def __init__(
         self,
@@ -70,7 +72,12 @@ class RichContext(click.Context):
             max_width=self.max_content_width,
             config=self.help_config,
             console=self.console,
+            file=open(os.devnull, "w") if self.record else None,
         )
+        if self.record:
+            if self.console is None:
+                self.console = formatter.console
+            self.console.record = True
         return formatter
 
     if TYPE_CHECKING:
@@ -87,7 +94,7 @@ class RichContext(click.Context):
             return super().__exit__(exc_type, exc_value, tb)
 
     def exit(self, code: int = 0) -> NoReturn:
-        if self.console is not None and self.console.record:
+        if self.record and self.console is not None and self.console.record:
             if self.export_console_as == "html":
                 print(self.console.export_html(inline_styles=True, code_format="{code}"))
             elif self.export_console_as == "svg":

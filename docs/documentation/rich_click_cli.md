@@ -42,7 +42,7 @@ fake_command: rich-click --output svg app:main --help
 working_dir: docs/code_snippets/rich_click_cli
 head: 12
 -->
-![`rich-click --output svg app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_html.svg){.screenshot}
+![`rich-click --output svg app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_svg.svg){.screenshot}
 
 HTML example:
 
@@ -53,7 +53,7 @@ fake_command: rich-click --output html app:main --help
 working_dir: docs/code_snippets/rich_click_cli
 head: 12
 -->
-![`rich-click --output html app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_svg.svg){.screenshot}
+![`rich-click --output html app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_html.svg){.screenshot}
 
 _SVG and HTML generated from [`docs/code_snippets/rich_click_cli/app.py`](https://github.com/ewels/rich-click/blob/main/docs/code_snippets/rich_click_cli/app.py)_
 
