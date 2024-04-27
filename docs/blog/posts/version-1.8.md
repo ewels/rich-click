@@ -522,6 +522,10 @@ During command execution, **rich-click** now loads faster and takes up less memo
 
 ![](../../images/blog/version-1.8/memory_profiles.png "Memory consumption of different CLI frameworks")
 
+!!! info
+    Python regularly compiles `.py` files into `.pyc` files to speed up code execution.
+    The **with bytecode** metrics measure performance _with_ these `.pyc` files, and the **without bytecode** metrics measure performance _without_ them.
+
 We include the code we ran below. The metrics you see above were gathered by running the below script on an old Macbook.
 
 ??? note "Profiling script"
@@ -718,6 +722,42 @@ Why is **rich-click** 1.8 more performant? 1.7 left a few free optimizations on 
 
 1. Only import `rich` when rendering help text.
 2. Use `click.__version__` instead of `importlib.metadata.version("click")` for Click 7 compat.
+
+For the first change, this meant replacing code like this...:
+
+```python
+from typing import IO, Optional
+
+from rich.console import Console
+
+from rich_click.rich_help_configuration import RichHelpConfiguration
+
+def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> Console:
+    console = Console(
+        # ...
+    )
+    return console
+```
+
+...with code like this...:
+
+```python hl_lines="1 5 8 9"
+from typing import TYPE_CHECKING, IO, Optional
+
+from rich_click.rich_help_configuration import RichHelpConfiguration
+
+if TYPE_CHECKING:
+    from rich.console import Console
+
+def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> "Console":
+    from rich.console import Console
+    console = Console(
+        # ...
+    )
+    return console
+```
+
+...so that Rich is only loaded when it is needed!
 
 Combined, these two changes account for the performance improvements you see.
 
