@@ -18,7 +18,7 @@ and along with it - this blog!
 
 ## New docs website and blog
 
-Until now, **rich-click** has just had a GitHub repo and all documentation has been in the `README`.
+Until now, **rich-click** has just had a GitHub repo and all documentation has been in the README. Now, we have full docs! We've fleshed out the documentation from the README, and we'll continue to add to it over time.
 
 ### Live Style Editor
 
