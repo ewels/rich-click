@@ -33,10 +33,47 @@ Here is an example of a style that Phil made with the style editor:
 ??? success "Phil's Generated Code"
 
     ```python
-    # todo
+    import rich_click as click
+    
+    help_config = click.RichHelpConfiguration(
+        style_option="bold cyan",
+        style_argument="bold cyan",
+        style_command="bold green",
+        style_switch="bold green",
+        style_metavar="green",
+        style_metavar_separator="dim blue",
+        style_usage="bold italic magenta",
+        style_usage_command="bold yellow",
+        style_helptext_first_line="bold italic white",
+        style_helptext="dim italic yellow",
+        style_option_default="bold yellow",
+        style_required_short="bold red",
+        style_required_long="bold red",
+        style_options_panel_border="italic blue",
+        style_commands_panel_border="italic blue"
+    )
+    
+    @click.group("my-command")
+    @click.argument("foo")
+    @click.option("--bar", "-b", help="Lorem ipsum", show_default="someval")
+    @click.option("--baz", required=True, help="Choose wisely", type=click.Choice(["a", "b", "c"]))
+    @click.rich_config(help_config=help_config)
+    def cli(foo, bar):
+        """
+        Help text for CLI
+    
+        Second line of help text.
+        """
+    
+    @cli.command("subcommand")
+    def subcommand(foo, bar):
+        """Help text for subcommand"""
+    
+    if __name__ == "__main__":
+        cli()
     ```
 
-[todo]
+![](../../images/blog/version-1.8/phils_example.svg){.screenshot}
 
 And here's one that Daniel made:
 
