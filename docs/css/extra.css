@@ -40,7 +40,7 @@ a.internal-link::after {
 .md-header__topic, .md-header__topic code,
 h1, h1 code,
 .md-header__header, .md-header__header code {
-  font-family: "pixelmix";
+  font-family: "pixelmix", "Noto Sans", sans-serif;
 }
 
 .md-header__topic, .md-header__topic code, h1, h1 code, .md-header__header {
