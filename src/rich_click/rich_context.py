@@ -72,9 +72,9 @@ class RichContext(click.Context):
             max_width=self.max_content_width,
             config=self.help_config,
             console=self.console,
-            file=open(os.devnull, "w") if self.record else None,
+            file=open(os.devnull, "w") if self.export_console_as is not None else None,
         )
-        if self.record:
+        if self.export_console_as is not None:
             if self.console is None:
                 self.console = formatter.console
             self.console.record = True
@@ -94,7 +94,7 @@ class RichContext(click.Context):
             return super().__exit__(exc_type, exc_value, tb)
 
     def exit(self, code: int = 0) -> NoReturn:
-        if self.record and self.console is not None and self.console.record:
+        if self.export_console_as is not None and self.console is not None and self.console.record:
             if self.export_console_as == "html":
                 print(self.console.export_html(inline_styles=True, code_format="{code}"))
             elif self.export_console_as == "svg":

@@ -44,23 +44,23 @@ And here's one that Daniel made:
 
     ```python
     import rich_click as click
-    
+
     help_config = click.RichHelpConfiguration(
-        style_option="bold cyan",
-        style_argument="bold cyan",
-        style_command="bold cyan",
-        style_switch="bold green",
-        style_metavar="bold yellow",
-        style_metavar_separator="dim",
-        style_usage="bold yellow",
-        style_usage_command="bold",
-        style_helptext_first_line="",
-        style_helptext="dim",
-        style_option_default="dim",
-        style_required_short="red",
-        style_required_long="dim red",
-        style_options_panel_border="dim",
-        style_commands_panel_border="dim"
+        style_option="bold magenta",
+        style_argument="bold yellow",
+        style_command="bold blue",
+        style_switch="bold magenta",
+        style_metavar="yellow",
+        style_metavar_separator="",
+        style_usage="bold blue",
+        style_usage_command="",
+        style_helptext_first_line="bold",
+        style_helptext="",
+        style_option_default="yellow",
+        style_required_short="bold red",
+        style_required_long="red",
+        style_options_panel_border="magenta",
+        style_commands_panel_border="blue"
     )
     
     @click.group("my-command")
@@ -83,7 +83,7 @@ And here's one that Daniel made:
         cli()
     ```
 
-![](../../images/blog/version-1.8/daniels_example.svg)
+![](../../images/blog/version-1.8/daniels_example.svg){.screenshot}
 
 ## **rich-click** version 1.8
 
@@ -95,7 +95,7 @@ The `rich-click` CLI now allows for `--output svg` and `--output html` to help e
 rich-click --output svg path.to.my.cli:main --help
 ```
 
-![](../../images/blog/version-1.8/output_to_svg.svg)
+![](../../images/blog/version-1.8/output_to_svg.svg){.screenshot}
 
 ### Easier decorator API
 
@@ -175,9 +175,105 @@ The biggest addition to **rich-click**'s styling options was control over panel 
 - `STYLE_COMMANDS_PANEL_BOX`
 - `STYLE_ERRORS_PANEL_BOX`
 
-Here's an silly example of what sort of customization this enables:
+Here's a silly example of what this can do:
 
-[todo: add example here]
+??? note "Code for silly example"
+
+    ```python
+    import rich_click as click
+    
+    help_config = click.RichHelpConfiguration(
+        style_options_panel_box="ASCII",
+        style_commands_panel_box="HEAVY",
+    )
+    
+    @click.group("app")
+    @click.option("--env-file", "-e", type=click.Path(), help=".env file")
+    @click.rich_config(help_config=help_config)
+    def cli():
+        """
+        CLI for `app`
+    
+        This `app` lets you do cool things.
+        """
+    
+    @cli.command("db")
+    def deploy():
+        """Database commands for app"""
+    
+    @cli.command("deploy")
+    def deploy():
+        """Deploy app"""
+    
+    @cli.command("self")
+    def self():
+        """Manage app"""
+    
+    
+    if __name__ == "__main__":
+        cli()
+    ```
+
+
+![](../../images/blog/version-1.8/boxes_silly.svg){.screenshot}
+
+
+Here's a simple, stylish, and sleek example that would look great in your app:
+
+??? note "Code for stylish example"
+
+    ```python
+    import rich_click as click
+    
+    help_config = click.RichHelpConfiguration(
+        style_options_panel_box="SIMPLE_HEAD",
+        style_options_table_box="SIMPLE_HEAD",
+        style_commands_panel_box="SIMPLE_HEAD",
+        style_commands_table_box="SIMPLE_HEAD",
+        style_options_panel_border="bold",
+        options_panel_title="[u]Options[/]",
+        use_rich_markup=True,
+        style_commands_panel_border="bold",
+        commands_panel_title="[u]Commands[/]",
+        style_option="green",
+        style_usage="",
+        style_usage_command="",
+        style_argument="green",
+        style_switch="dim green",
+        style_command="green",
+        style_metavar="dim",
+    )
+    
+    @click.group("app")
+    @click.option("--env-file", "-e", type=click.Path(), help=".env file")
+    @click.rich_config(help_config=help_config)
+    def cli():
+        """
+        CLI for `app`
+    
+        This `app` lets you do cool things.
+        """
+    
+    @cli.command("db")
+    def deploy():
+        """Database commands for app"""
+    
+    @cli.command("deploy")
+    def deploy():
+        """Deploy app"""
+    
+    @cli.command("self")
+    def self():
+        """Manage app"""
+    
+    
+    if __name__ == "__main__":
+        cli()
+    ```
+
+
+![](../../images/blog/version-1.8/boxes_sleek.svg){.screenshot}
+
 
 ### Improvements to option and command group API
 
@@ -339,9 +435,7 @@ You can also stick wildcards in the front, middle, or end of a key, e.g.:
 
 #### `panel_styles` + Arguments panel styling
 
-The dicts for now accept an optional `panel_styles` key, which passes kwargs to the `Panel()`:
-
-[todo: add stylized example here]
+The dicts for command+option groups now accept an optional `panel_styles` key, which passes kwargs to the `Panel()`.
 
 Another handy feature is that the "Arguments" panel (which is created when the config option `show_arguments` is `True`)
 can now be stylized through the API so long as the following is true:
@@ -352,21 +446,36 @@ can now be stylized through the API so long as the following is true:
 
 Example:
 
-```python
+```python hl_lines="8-11"
 import rich_click as click
+from rich import box
 
 help_config = click.RichHelpConfiguration(
     show_arguments=True,
-    option_groups={"my-command": [{"name": "Arguments", "panel_styles": {"box": "ASCII"}}]}
+    option_groups={
+        "my-command": [
+            {
+                "name": "Arguments",
+                "panel_styles": {"box": box.DOUBLE_EDGE, "border_style": "dim red"}
+             }
+        ]
+    }
 )
 
-@click.command
+@click.command("my-command")
 @click.argument("foo")
-@click.option("--bar")
+@click.argument("bar")
+@click.option("--baz")
 @click.rich_config(help_config=help_config)
-def cli(foo, bar):
+def cli(foo, bar, baz):
     ...
+
+if __name__ == "__main__":
+    cli()
 ```
+
+![](../../images/blog/version-1.8/arguments_box_and_panel_styles.svg){.screenshot}
+
 
 ### Improved performance
 
@@ -376,27 +485,9 @@ During command execution, **rich-click** now loads faster and takes up less memo
 
 ![](../../images/blog/version-1.8/memory_profiles.png "Memory consumption of different CLI frameworks")
 
-We include Typer in our profiling to show a reasonable baseline for a Click wrapper's overhead.
-Typer is an ambitious and great project that's doing quite a bit under the hood, and it's reasonable to expect it to take a little more time and memory.
+We include the code we ran below. The metrics you see above were gathered by running the below script on an old Macbook.
 
-Why is **rich-click** 1.8 more performant? 1.7 left a few free optimizations on the table:
-
-1. Only import `rich` when rendering help text.
-2. Use `click.__version__` instead of `importlib.metadata.version("click")` for Click 7 compat.
-
-Combined, these two changes account for the performance improvements you see.
-
-Performance isn't everything; if it was, we'd all be using `argparse`, or we'd abandon Python altogether for Rust.
-This is also peanuts in the grand scheme of things.
-In all likelihood, you've spent more time reading this blog post than the cumulative amount of time you'll save by `pip install --upgrade`-ing your **rich-click** 1.7 project.
-(There are other reasons to upgrade to 1.8 than performance, of course!)
-
-So why bother improving **rich-click**'s performance if it's not a big deal?
-Because we're honored every time someone chooses **rich-click** for their applications, and we want to pay it back by keeping things as efficient as we reasonably can.
-Your application is complex and special and all yours.
-We're excited we get to be a very small part of what you're doing, 🫶 and we'll do our best to keep our end of things neat and tidy.
-
-??? note "Speed test script"
+??? note "Profiling script"
 
     This is the script we used to generate the data in the bar chart.
 
@@ -582,6 +673,26 @@ We're excited we get to be a very small part of what you're doing, 🫶 and we'l
     get_mprof hello_rich_click.py true
     get_mprof hello_rich_click.py false
     ```
+
+We include Typer in our profiling to show a reasonable baseline for a Click wrapper's overhead.
+Typer is an ambitious and great project that's doing quite a bit under the hood, and it's reasonable to expect it to take a little more time and memory.
+
+Why is **rich-click** 1.8 more performant? 1.7 left a few free optimizations on the table:
+
+1. Only import `rich` when rendering help text.
+2. Use `click.__version__` instead of `importlib.metadata.version("click")` for Click 7 compat.
+
+Combined, these two changes account for the performance improvements you see.
+
+Performance isn't everything; if it was, we'd all be using `argparse`, or we'd abandon Python altogether for Rust.
+This is also peanuts in the grand scheme of things.
+In all likelihood, you've spent more time reading this blog post than the cumulative amount of time you'll save by `pip install --upgrade`-ing your **rich-click** 1.7 project.
+(There are other reasons to upgrade to 1.8 than performance, of course!)
+
+So why bother improving **rich-click**'s performance if it's not a big deal?
+Because we're honored every time someone chooses **rich-click** for their applications, and we want to pay it back by keeping things as efficient as we reasonably can.
+Your application is complex and special and all yours.
+We're excited we get to be a very small part of what you're doing, 🫶 and we'll do our best to keep our end of things neat and tidy.
 
 ### And more...
 
