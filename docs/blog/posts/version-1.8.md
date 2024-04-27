@@ -3,8 +3,8 @@ draft: false
 slug: version-1.8
 date: 2024-04-30
 authors:
-  - ewels
   - dwreeves
+  - ewels
 categories:
   - Release notes
 ---
