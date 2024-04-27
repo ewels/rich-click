@@ -26,7 +26,6 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
         config: Rich Help Configuration instance
         file: Optional IO stream to write Rich Console output
             Defaults to None.
-        record: If true, record the output
     """
     from rich.console import Console
     from rich.theme import Theme
