@@ -27,6 +27,39 @@ If the CLI is not installed as a script, you can also pass the location with: `<
 
 For example, if you have a file located at `path/to/my/cli.py`, and the Click `Command` object is named `main`, then you can run: `rich-click path.to.my.cli:main`.
 
+!!! warning
+
+    If you are experiencing any unexpected issues with the `rich-click` CLI, first make sure you are not calling
+    your command on load of the module.
+
+    For example, the following could cause a strange `No such option: --output` error when attempting to run `rich-click --output html my_cli:cli`:
+
+    ```python
+    import rich_click as click
+    
+    @click.command("my-cli")
+    @click.argument("x")
+    def cli(x):
+        ...
+
+    cli()
+    ```
+
+    To make it so `rich-click --output html` works on the above code, add a `if __name__ == "__main__":`
+
+    ```python hl_lines="8"
+    import rich_click as click
+    
+    @click.command("my-cli")
+    @click.argument("x")
+    def cli(x):
+        ...
+    
+    if __name__ == "__main__":
+        cli()
+    ```
+
+
 ## Render help text as HTML or SVG
 
 You can also use `rich-click --output=html [command]` to render rich HTML for help text, or `rich-click --output=svg [command]` to generate an SVG.
@@ -42,7 +75,7 @@ fake_command: rich-click --output svg app:main --help
 working_dir: docs/code_snippets/rich_click_cli
 head: 12
 -->
-![`rich-click --output svg app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_html.svg){.screenshot}
+![`rich-click --output svg app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_svg.svg){.screenshot}
 
 HTML example:
 
@@ -53,7 +86,7 @@ fake_command: rich-click --output html app:main --help
 working_dir: docs/code_snippets/rich_click_cli
 head: 12
 -->
-![`rich-click --output html app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_svg.svg){.screenshot}
+![`rich-click --output html app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_html.svg){.screenshot}
 
 _SVG and HTML generated from [`docs/code_snippets/rich_click_cli/app.py`](https://github.com/ewels/rich-click/blob/main/docs/code_snippets/rich_click_cli/app.py)_
 

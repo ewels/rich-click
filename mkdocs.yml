@@ -64,6 +64,7 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format ""
+  - pymdownx.details
   - pymdownx.tabbed:
       alternate_style: true
   - attr_list
@@ -82,7 +83,6 @@ plugins:
       width: 100em
       skip_classes:
         - disable-glightbox
-  # - termynal
   - rss:
       match_path: blog/posts/.*
       date_from_meta:

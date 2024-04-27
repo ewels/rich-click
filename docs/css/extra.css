@@ -40,19 +40,11 @@ a.internal-link::after {
 .md-header__topic, .md-header__topic code,
 h1, h1 code,
 .md-header__header, .md-header__header code {
-  font-family: "pixelmix";
+  font-family: "pixelmix", "Noto Sans", sans-serif;
 }
 
 .md-header__topic, .md-header__topic code, h1, h1 code, .md-header__header {
   text-shadow: -4px 4px rgba(128, 128, 128, 0.1);
-}
-
-h2, h2 code, h3, h3 code {
-  text-shadow: -3px 3px rgba(128, 128, 128, 0.1);
-}
-
-h4, h4 code, h5, h5 code {
-  text-shadow: -2px 2px rgba(128, 128, 128, 0.1);
 }
 
 .md-content ul {
