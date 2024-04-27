@@ -50,7 +50,7 @@ working_dir: .
 -->
 ![`python examples/04_rich_markup.py --help`](../images/rich_markup.svg "Rich markup example"){.screenshot}
 
-> See [`examples/04_rich_markup.py`](examples/04_rich_markup.py) for an example.
+> See [`examples/04_rich_markup.py`](https://github.com/ewels/rich-click/blob/main/examples/04_rich_markup.py) for an example.
 
 #### Markdown
 
@@ -71,7 +71,7 @@ working_dir: .
 -->
 ![`python examples/05_markdown.py --help`](../images/markdown.svg "Markdown example"){.screenshot}
 
-> See [`examples/05_markdown.py`](examples/05_markdown.py) for an example.
+> See [`examples/05_markdown.py`](https://github.com/ewels/rich-click/blob/main/examples/05_markdown.py) for an example.
 
 ### Positional arguments
 
@@ -100,7 +100,7 @@ working_dir: .
 -->
 ![`python examples/06_arguments.py --help`](../images/arguments.svg "Positional arguments example"){.screenshot}
 
-> See [`examples/06_arguments.py`](examples/06_arguments.py) for an example.
+> See [`examples/06_arguments.py`](https://github.com/ewels/rich-click/blob/main/examples/06_arguments.py) for an example.
 
 ### Metavars and option choices
 
@@ -138,7 +138,7 @@ working_dir: .
 -->
 ![`python examples/08_metavars.py --help`](../images/metavars_appended.svg "Appended metavar"){.screenshot}
 
-> See [`examples/08_metavars.py`](examples/08_metavars.py) for an example.
+> See [`examples/08_metavars.py`](https://github.com/ewels/rich-click/blob/main/examples/08_metavars.py) for an example.
 
 ### Error messages
 
@@ -152,7 +152,7 @@ working_dir: .
 You can customise the _Try 'command --help' for help._ message with `ERRORS_SUGGESTION`
 using rich-click though, and add some text after the error with `ERRORS_EPILOGUE`.
 
-For example, from [`examples/07_custom_errors.py`](examples/07_custom_errors.py):
+For example, from [`examples/07_custom_errors.py`](https://github.com/ewels/rich-click/blob/main/examples/07_custom_errors.py):
 
 === "`RichHelpConfiguration()`"
 
@@ -176,7 +176,7 @@ working_dir: .
 -->
 ![`python examples/07_custom_errors.py --hep || true`](../images/custom_error.svg "Custom error message"){.screenshot}
 
-> See [`examples/07_custom_errors.py`](examples/07_custom_errors.py) for an example.
+> See [`examples/07_custom_errors.py`](https://github.com/ewels/rich-click/blob/main/examples/07_custom_errors.py) for an example.
 
 ### Help width
 
@@ -227,7 +227,7 @@ extra_env:
 ![`python examples/10_table_styles.py --help`](../images/style_tables.svg "Rich markup example"){.screenshot}
 
 
-> See [`examples/10_table_styles.py`](examples/10_table_styles.py) for an example.
+> See [`examples/10_table_styles.py`](https://github.com/ewels/rich-click/blob/main/examples/10_table_styles.py) for an example.
 
 See the [_Configuration options_](#configuration-options) section below for the full list of available options.
 

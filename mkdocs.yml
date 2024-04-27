@@ -1,7 +1,7 @@
 site_name: rich-click
 repo_name: ewels/rich-click
 repo_url: https://github.com/ewels/rich-click
-site_url: https://ewels.github.io/rich-click/
+site_url: https://localhost:8000 # https://ewels.github.io/rich-click/
 edit_uri: edit/main/docs/
 
 theme:
@@ -16,7 +16,7 @@ theme:
     - navigation.expand
     # - navigation.indexes
   favicon: images/favicon.png
-  logo: images/favicon.png
+  logo: images/logo-square-large.png
   palette:
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
@@ -47,7 +47,7 @@ nav:
       - "Groups & Sorting": documentation/groups_and_sorting.md
       - "<code>rich-click</code> CLI tool": documentation/rich_click_cli.md
       # - API Reference: documentation/api_reference.md
-  - Blog: blog
+  - Blog: blog/index.md
   - Changelog: changelog.md
   - Contributing: contributing.md
 
@@ -75,7 +75,9 @@ markdown_extensions:
 plugins:
   - search
   - blog
-  - social
+  - social:
+      cards_layout_options:
+        font_family: Kode Mono
   - glightbox:
       effect: fade
       height: auto

@@ -96,7 +96,7 @@ import rich_click as click
 
 That's it! ✨ Then continue to use Click as you would normally.
 
-> See [`examples/01_simple.py`](examples/01_simple.py) for an example.
+> See [`examples/01_simple.py`](https://github.com/ewels/rich-click/blob/main/examples/01_simple.py) for an example.
 
 ### Declarative
 
@@ -112,7 +112,7 @@ def main():
     """My amazing tool does all the things."""
 ```
 
-> See [`examples/02_declarative.py`](examples/02_declarative.py) for an example.
+> See [`examples/02_declarative.py`](https://github.com/ewels/rich-click/blob/main/examples/02_declarative.py) for an example.
 
 ### `rich-click` CLI tool
 
