@@ -2,14 +2,13 @@ import errno
 import os
 import sys
 import warnings
-from functools import wraps
 from typing import TYPE_CHECKING, Any, Callable, List, Mapping, Optional, Sequence, TextIO, Type, Union, cast, overload
 
 import click
 
 # Group, Command, and CommandCollection need to be imported directly,
 # or else rich_click.cli.patch() causes a recursion error.
-from click import Command, CommandCollection, Group
+from click import CommandCollection, Group
 from click.utils import PacifyFlushWrapper, make_str
 
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_9X
@@ -41,7 +40,6 @@ class RichCommand(click.Command):
     context_class: Type[RichContext] = RichContext
     _formatter: Optional[RichHelpFormatter] = None
 
-    @wraps(Command.__init__)
     def __init__(self, *args: Any, **kwargs: Any):
         """Create Rich Command instance."""
         super().__init__(*args, **kwargs)
@@ -274,7 +272,6 @@ class RichMultiCommand(MultiCommand, RichCommand):
     to print richly formatted output.
     """
 
-    @wraps(MultiCommand.__init__)
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize RichMultiCommand class."""
         MultiCommand.__init__(self, *args, **kwargs)
@@ -312,7 +309,6 @@ class RichGroup(Group, RichMultiCommand):
     command_class: Optional[Type[RichCommand]] = RichCommand
     group_class: Optional[Union[Type[Group], Type[type]]] = type
 
-    @wraps(Group.__init__)
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize RichGroup class."""
         Group.__init__(self, *args, **kwargs)
@@ -372,7 +368,6 @@ class RichCommandCollection(RichGroup, CommandCollection):
     to print richly formatted output.
     """
 
-    @wraps(CommandCollection.__init__)
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize RichCommandCollection class."""
         CommandCollection.__init__(self, *args, **kwargs)
