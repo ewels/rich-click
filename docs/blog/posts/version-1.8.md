@@ -457,7 +457,7 @@ help_config = click.RichHelpConfiguration(
             {
                 "name": "Arguments",
                 "panel_styles": {"box": box.DOUBLE_EDGE, "border_style": "dim red"}
-             }
+            }
         ]
     }
 )
