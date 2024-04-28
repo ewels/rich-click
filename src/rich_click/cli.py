@@ -238,9 +238,8 @@ def main(
         module = import_module(module_path)
 
     function = getattr(module, function_name)
-    # simply run it: it should be patched as well
+
     if output is not None:
-        RichContext.record = True
         RichContext.export_console_as = output
 
     prog = module_path.split(".", 1)[0]

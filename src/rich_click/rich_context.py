@@ -20,7 +20,6 @@ class RichContext(click.Context):
     formatter_class: Type[RichHelpFormatter] = RichHelpFormatter
     console: Optional["Console"] = None
     export_console_as: Literal[None, "html", "svg"] = None
-    record: bool = False
 
     def __init__(
         self,
