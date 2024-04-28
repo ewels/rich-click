@@ -1,7 +1,7 @@
 site_name: rich-click
 repo_name: ewels/rich-click
 repo_url: https://github.com/ewels/rich-click
-site_url: https://localhost:8000 # https://ewels.github.io/rich-click/
+site_url: https://ewels.github.io/rich-click/
 edit_uri: edit/main/docs/
 
 theme:
