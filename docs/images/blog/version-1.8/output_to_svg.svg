@@ -87,9 +87,9 @@
             <circle cx="22" cy="0" r="7" fill="#febc2e"/>
             <circle cx="44" cy="0" r="7" fill="#28c840"/>
             </g>
-        
+
     <g transform="translate(9, 41)" clip-path="url(#terminal-1140994003-clip-terminal)">
-    
+
     <g class="terminal-1140994003-matrix">
     <text class="terminal-1140994003-r1" x="0" y="20" textLength="500.2" clip-path="url(#terminal-1140994003-line-0)">$&#160;rich-click&#160;--output&#160;svg&#160;app:main&#160;--help</text><text class="terminal-1140994003-r1" x="1464" y="20" textLength="12.2" clip-path="url(#terminal-1140994003-line-0)">
 </text><text class="terminal-1140994003-r1" x="0" y="44.4" textLength="1049.2" clip-path="url(#terminal-1140994003-line-1)">&lt;svg&#160;class=&quot;rich-terminal&quot;&#160;viewBox=&quot;0&#160;0&#160;994&#160;416.0&quot;&#160;xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;</text><text class="terminal-1140994003-r1" x="1464" y="44.4" textLength="12.2" clip-path="url(#terminal-1140994003-line-1)">

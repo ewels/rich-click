@@ -16,7 +16,7 @@ theme:
     - navigation.expand
     # - navigation.indexes
   favicon: images/favicon.png
-  logo: images/favicon.png
+  logo: images/logo-square-large.png
   palette:
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
@@ -47,6 +47,7 @@ nav:
       - "Groups & Sorting": documentation/groups_and_sorting.md
       - "<code>rich-click</code> CLI tool": documentation/rich_click_cli.md
       # - API Reference: documentation/api_reference.md
+  - Blog: blog/index.md
   - Changelog: changelog.md
   - Contributing: contributing.md
 
@@ -63,6 +64,7 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format ""
+  - pymdownx.details
   - pymdownx.tabbed:
       alternate_style: true
   - attr_list
@@ -72,7 +74,10 @@ markdown_extensions:
 
 plugins:
   - search
-  - social
+  - blog
+  - social:
+      cards_layout_options:
+        font_family: Kode Mono
   - glightbox:
       effect: fade
       height: auto
@@ -80,7 +85,13 @@ plugins:
       width: 100em
       skip_classes:
         - disable-glightbox
-  # - termynal
+  - rss:
+      match_path: blog/posts/.*
+      date_from_meta:
+        as_creation: date
+      categories:
+        - categories
+        - tags
 
 extra_css:
   - css/termynal.css

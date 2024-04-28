@@ -46,6 +46,7 @@ docs = [
     "mkdocs-glightbox",
     "mkdocs-material[imaging]~=9.5.18",
     "mkdocs-material-extensions",
+    "mkdocs-rss-plugin",
     "mkdocstrings[python]",
     "rich-codex",
 ]

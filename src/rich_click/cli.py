@@ -7,7 +7,7 @@ import sys
 from functools import wraps
 from gettext import gettext as _
 from importlib import import_module
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional, Tuple, Union
 
 from typing_extensions import Literal
 
@@ -93,6 +93,54 @@ class _RichHelpConfigurationParamType(click.ParamType):
                     raise e
 
 
+def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> Tuple[str, str]:
+    _selected: List[str] = []
+    module_path = ""
+    function_name = ""
+
+    for s in entry_points(group="console_scripts"):
+        if script == s.name:
+            if not _selected:
+                module_path, function_name = s.value.split(":", 1)
+            if suppress_warnings:
+                break
+            if s.value not in _selected:
+                _selected.append(s.value)
+
+    if len(_selected) > 1 and not suppress_warnings:
+        # This is an extremely rare edge case that comes up when the user sets the PYTHONPATH themselves.
+        if script in sys.argv:
+            _args = sys.argv.copy()
+            _args[_args.index(script)] = f"{module_path}:{function_name}"
+        else:
+            _args = ["rich-click", f"{module_path}:{function_name}"]
+
+        click.echo(
+            click.style(
+                f"WARNING: Multiple entry_points correspond with script '{script}': {_selected!r}."
+                "\nThis can happen when an 'egg-info' directory exists, you're using a virtualenv,"
+                " and you have set a custom PYTHONPATH."
+                f"\n\nThe selected script is '{module_path}:{function_name}', which is being executed now."
+                "\n\nIt is safer and recommended that you specify the MODULE:CLICK_COMMAND"
+                f" ('{module_path}:{function_name}') instead of the script ('{script}'), like this:"
+                f"\n\n>>> rich-click {' '.join(_args)}"
+                "\n\nAlternatively, you can pass --suppress-warnings to the rich-click CLI,"
+                " which will disable this message.",
+                fg="red",
+            ),
+            file=sys.stderr,
+        )
+
+    if ":" in script and not module_path:
+        # the path to a function was passed
+        module_path, function_name = script.split(":", 1)
+
+    if not module_path:
+        raise click.ClickException(f"No such script: {script}")
+
+    return module_path, function_name
+
+
 @_rich_command("rich-click", context_settings=dict(allow_interspersed_args=False, help_option_names=[]))
 @click.argument("script_and_args", nargs=-1, metavar="[SCRIPT | MODULE:CLICK_COMMAND] [-- SCRIPT_ARGS...]")
 @click.option(
@@ -173,67 +221,30 @@ def main(
         click.echo(ctx.get_help(), color=ctx.color)
         ctx.exit()
 
-    script, *args = script_and_args
-
-    _selected: List[str] = []
-    module_path = ""
-    function_name = ""
-
-    for s in entry_points(group="console_scripts"):
-        if script == s.name:
-            if not _selected:
-                module_path, function_name = s.value.split(":", 1)
-            if suppress_warnings:
-                break
-            if s.value not in _selected:
-                _selected.append(s.value)
-
-    if len(_selected) > 1 and not suppress_warnings:
-        # This is an extremely rare edge case that comes up when the user sets the PYTHONPATH themselves.
-        if script in sys.argv:
-            _args = sys.argv.copy()
-            _args[_args.index(script)] = f"{module_path}:{function_name}"
-        else:
-            _args = ["rich-click", f"{module_path}:{function_name}"]
-
-        click.echo(
-            click.style(
-                f"WARNING: Multiple entry_points correspond with script '{script}': {_selected!r}."
-                "\nThis can happen when an 'egg-info' directory exists, you're using a virtualenv,"
-                " and you have set a custom PYTHONPATH."
-                f"\n\nThe selected script is '{module_path}:{function_name}', which is being executed now."
-                "\n\nIt is safer and recommended that you specify the MODULE:CLICK_COMMAND"
-                f" ('{module_path}:{function_name}') instead of the script ('{script}'), like this:"
-                f"\n\n>>> rich-click {' '.join(_args)}"
-                "\n\nAlternatively, you can pass --suppress-warnings to the rich-click CLI,"
-                " which will disable this message.",
-                fg="red",
-            ),
-            file=sys.stderr,
-        )
-
-    if ":" in script and not module_path:
-        # the path to a function was passed
-        module_path, function_name = script.split(":", 1)
-
-    if not module_path:
-        raise click.ClickException(f"No such script: {script_and_args[0]}")
-
-    prog = module_path.split(".", 1)[0]
-    sys.argv = [prog, *args]
-
     # patch click before importing the program function
     _patch(rich_config=rich_config)
+
+    script, *args = script_and_args
+
     # import the program function
-    module = import_module(module_path)
+    try:
+        module_path, function_name = _get_module_path_and_function_name(script, suppress_warnings)
+        module = import_module(module_path)
+    except (ModuleNotFoundError, click.ClickException):
+        sys.path.append(os.path.abspath("."))
+        # PYTHONPATH can change output of entry_points(group="console_scripts") in rare cases,
+        # so we want to rerun the whole search
+        module_path, function_name = _get_module_path_and_function_name(script, suppress_warnings)
+        module = import_module(module_path)
+
     function = getattr(module, function_name)
     # simply run it: it should be patched as well
     if output is not None:
-        ctx.help_config = RichHelpConfiguration.load_from_globals()
-        RichContext.console = console = ctx.make_formatter().console
-        console.record = True
-        console.file = open(os.devnull, "w")
+        RichContext.record = True
         RichContext.export_console_as = output
+
+    prog = module_path.split(".", 1)[0]
+    sys.argv = [prog, *args]
 
     if ctx.resilient_parsing and isinstance(function, click.Command):
         function.main(resilient_parsing=True)
