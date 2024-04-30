@@ -679,7 +679,7 @@ We include the code we ran below. The metrics you see above were gathered by run
     
     # Times
     
-    uv pip install --no-binary :all: "rich-click==1.8.0dev7"
+    uv pip install --no-binary :all: "rich-click==1.8.0"
     
     get_times hello_argparse.py true
     get_times hello_click.py true
@@ -699,7 +699,7 @@ We include the code we ran below. The metrics you see above were gathered by run
     # Memory profiling
     
     uv pip install memory-profiler
-    uv pip install --no-binary :all: "rich-click==1.8.0dev7"
+    uv pip install --no-binary :all: "rich-click==1.8.0"
     
     get_mprof hello_argparse.py true
     get_mprof hello_click.py true

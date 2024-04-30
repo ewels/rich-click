@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 1.8.0dev (2023-04-09)
+## Version 1.8.0 (2023-04-30)
 
 - Add `--rich-config` option to the `rich-click` CLI.
 - Lazy load Rich to reduce overhead when not rendering help text. [[#154](https://github.com/ewels/rich-click/pull/154)]
