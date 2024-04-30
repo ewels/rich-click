@@ -13,27 +13,36 @@ Note that most normal click options should still work, such as `show_default=Tru
 
 ### Text markup
 
-**rich-click** supports 3 different values for `text_markup`, which determines how text is rendered:
+**rich-click** supports 4 different values for `text_markup`, which determines how text is rendered:
 
-- `None`: Rendered as plain text. This is the default.
+- `'ansi'`: Rendered as plain text with ANSI escape codes handled. This is the default.
 - `'rich'`: Rendered using Rich's markup syntax.
 - `'markdown'`: Rendered with markdown.
+- `None`: Rendered as plain text, ANSI escape codes are not handled.
 
 !!! warning
     Prior to **rich-click** 1.8.0, markup was controlled by the booleans `use_rich_markup` and `use_markdown`.
 
     These booleans have been silently deprecated (read: they will still be supported for the distant future),
-    and users are encouraged to use the `text_markup: Literal["markdown", "rich", None]` config option instead.
+    and users are encouraged to use the `text_markup` config option instead.
 
     Note that the previous behavior of `use_markdown` and `use_rich_markup` was that they are mutually exclusive,
     and that `use_markdown` takes precedence over `use_rich_markup`.
 
+!!! note
+    Don't mix `click.style()` with `text_markup="rich"`!
+    If you want colors, bold, italic, and so on, then use [Rich markup](https://rich.readthedocs.io/en/stable/markup.html).
+
 #### Rich markup
 
-In order to be as widely compatible as possible with a simple import, **rich-click** does _not_ parse rich formatting markup (eg. `[red]`) by default. You need to opt-in to this behaviour.
+In order to be as widely compatible as possible with a simple import,
+**rich-click** does _not_ parse rich formatting markup (eg. `[red]`) by default.
+You need to opt-in to this behaviour.
 
 Remember that you'll need to escape any regular square brackets using a back slash in your help texts,
 for example: `[dim]\[my-default: foo][\]`
+
+For more information, read the Rich docs on [markup](https://rich.readthedocs.io/en/stable/markup.html) and [styles](https://rich.readthedocs.io/en/stable/style.html).
 
 === "`RichHelpConfiguration()`"
     ```python
