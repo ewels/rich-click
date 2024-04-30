@@ -2,7 +2,7 @@
 
 ## Version 1.8.0 (2023-04-30)
 
-- Add `--rich-config` option to the `rich-click` CLI.
+- Add `--rich-config` and `--output` options to the `rich-click` CLI.
 - Lazy load Rich to reduce overhead when not rendering help text. [[#154](https://github.com/ewels/rich-click/pull/154)]
 - Some internal refactors. These refactors are aimed at making the abstractions more maintainable over time, more consistent, and more adept for advanced used cases.
     - `rich_click.py` is exclusively the global config; all formatting has been moved to `rich_help_rendering.py`.
