@@ -80,7 +80,7 @@
   "append_metavars_help": false,
   "group_arguments_options": false,
   "option_envvar_first": false,
-  "text_markup": null,
+  "text_markup": "ansi",
   "use_markdown": false,
   "use_markdown_emoji": true,
   "use_rich_markup": true,

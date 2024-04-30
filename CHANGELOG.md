@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 1.8.0dev (2023-04-09)
+## Version 1.8.0 (2023-04-30)
 
 - Add `--rich-config` option to the `rich-click` CLI.
 - Lazy load Rich to reduce overhead when not rendering help text. [[#154](https://github.com/ewels/rich-click/pull/154)]
@@ -14,7 +14,8 @@
 - `RichHelpConfiguration()` is now asserted to be JSON serializable, as an option for porting configurations. That said, serialization is not a fully supported feature of the high-level API, so serialize the config at your own risk.
     - Related: `highlighter` is now deprecated in `RichHelpConfiguration`; please use `highlighter_patterns` instead.
 - Moved exclusively to `pyproject.toml` and removed `setup.py` / `setup.cfg`; thank you [@Stealthii](https://github.com/Stealthii)!
-- Moved to `text_markup: Literal["markdown", "rich", None]` instead of booleans.
+- Moved to `text_markup: Literal["markdown", "rich", "ansi", None]` instead of booleans.
+  - The default is now `ansi` instead of `None` to help support usage of `click.style()`. `None` is still supported.
 - Fixed issue where error messages would not print to `stderr` by default.
 - New configuration options: [[#178](https://github.com/ewels/rich-click/pull/178)]
     - `STYLE_OPTIONS_PANEL_BOX`

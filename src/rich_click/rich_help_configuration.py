@@ -144,7 +144,7 @@ class RichHelpConfiguration:
     """Show arguments with options instead of in own panel"""
     option_envvar_first: bool = field(default=False)
     """Show env vars before option help text instead of after"""
-    text_markup: Literal["rich", "markdown", None] = None
+    text_markup: Literal["ansi", "rich", "markdown", None] = "ansi"
     use_markdown: bool = field(default=False)
     """Silently deprecated; use `text_markup` field instead."""
     use_markdown_emoji: bool = field(default=True)
