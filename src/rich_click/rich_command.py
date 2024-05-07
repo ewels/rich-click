@@ -220,10 +220,16 @@ class RichCommand(click.Command):
 
         get_rich_help_text(self, ctx, formatter)
 
-    def format_options(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+    # TODO:
+    #  Switching from base click to rich click causes mypy problems.
+    #  Either we: (a) swap MRO (incompatible with click 9, without handling 8 and 9 differently)
+    #  or (b) we allow issues when users attempt multiple inheritance with a RichCommand
+    #  or (c) we use incorrect types here.
+    #  We are looking for a solution that fixes all 3. For now, we opt for (c).
+    def format_options(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         from rich_click.rich_help_rendering import get_rich_options
 
-        get_rich_options(self, ctx, formatter)
+        get_rich_options(self, ctx, formatter)  # type: ignore[arg-type]
 
     def format_epilog(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         from rich_click.rich_help_rendering import get_rich_epilog
@@ -264,7 +270,7 @@ else:
     MultiCommand = Group  # type: ignore[misc,assignment]
 
 
-class RichMultiCommand(MultiCommand, RichCommand):
+class RichMultiCommand(RichCommand, MultiCommand):
     """
     Richly formatted click MultiCommand.
 
@@ -282,11 +288,12 @@ class RichMultiCommand(MultiCommand, RichCommand):
 
         get_rich_commands(self, ctx, formatter)
 
-    def format_options(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+    def format_options(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         from rich_click.rich_help_rendering import get_rich_options
 
-        get_rich_options(self, ctx, formatter)
-        self.format_commands(ctx, formatter)
+        get_rich_options(self, ctx, formatter)  # type: ignore[arg-type]
+
+        self.format_commands(ctx, formatter)  # type: ignore[arg-type]
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         if OVERRIDES_GUARD:
@@ -298,7 +305,7 @@ class RichMultiCommand(MultiCommand, RichCommand):
             self.format_epilog(ctx, formatter)
 
 
-class RichGroup(Group, RichMultiCommand):
+class RichGroup(RichMultiCommand, Group):
     """
     Richly formatted click Group.
 
@@ -360,7 +367,7 @@ class RichGroup(Group, RichMultiCommand):
         return super().__call__(*args, **kwargs)
 
 
-class RichCommandCollection(RichGroup, CommandCollection):
+class RichCommandCollection(CommandCollection, RichGroup):
     """
     Richly formatted click CommandCollection.
 
