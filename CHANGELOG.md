@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 1.8.0 (2023-05-07)
+
+- Fixed bad deprecation warning with `highlighter`
+- Fixed incompatibility with Click 9.
+
 ## Version 1.8.0 (2023-04-30)
 
 - Add `--rich-config` and `--output` options to the `rich-click` CLI.
