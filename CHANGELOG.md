@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.8.2 (2023-05-14)
+
+- Fix another deprecation warning issue.
+
 ## Version 1.8.1 (2023-05-07)
 
 - Fixed bad deprecation warning with `highlighter`
