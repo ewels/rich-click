@@ -172,17 +172,19 @@ class RichHelpConfiguration:
     legacy_windows: Optional[bool] = field(default=None)
 
     def __post_init__(self) -> None:  # noqa: D105
-        if self.highlighter is not None:
-            import warnings
+        # Todo: Fix this so that the deprecation warning works properly.
 
-            warnings.warn(
-                "`highlighter` kwarg is deprecated in RichHelpConfiguration."
-                " Please do one of the following instead: either set highlighter_patterns=[...] if you want"
-                " to use regex; or for more advanced use cases where you'd like to use a different type"
-                " of rich.highlighter.Highlighter, subclass the `RichHelpFormatter` and update its `highlighter`.",
-                DeprecationWarning,
-                stacklevel=2,
-            )
+        # if self.highlighter is not None:
+        #     import warnings
+        #
+        #     warnings.warn(
+        #         "`highlighter` kwarg is deprecated in RichHelpConfiguration."
+        #         " Please do one of the following instead: either set highlighter_patterns=[...] if you want"
+        #         " to use regex; or for more advanced use cases where you'd like to use a different type"
+        #         " of rich.highlighter.Highlighter, subclass the `RichHelpFormatter` and update its `highlighter`.",
+        #         DeprecationWarning,
+        #         stacklevel=2,
+        #     )
 
         self.__dataclass_fields__.pop("highlighter", None)
 
