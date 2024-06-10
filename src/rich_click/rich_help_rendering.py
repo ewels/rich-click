@@ -388,6 +388,10 @@ def _resolve_groups(
         paths = [cmd_name, ctx.command_path]
     else:
         paths = [cmd_name]
+    # Also handle 'python -m foo' when the user specifies a key of 'foo':
+    if ctx.command_path.startswith("python -m "):
+        extra = ctx.command_path.replace("python -m ", "", 1)
+        paths.append(extra)
     final_groups_list: List[GroupType] = []
 
     # Assign wildcards, but make sure we do not overwrite anything already defined.

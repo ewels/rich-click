@@ -238,13 +238,14 @@ def __getattr__(name: str) -> Any:
                 r"(?P<metavar><[^>]+>)",
             ]
 
-        import warnings
-
-        warnings.warn(
-            "OptionHighlighter is deprecated and will be removed in a future version.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
+        # todo: fix
+        # import warnings
+        #
+        # warnings.warn(
+        #     "OptionHighlighter is deprecated and will be removed in a future version.",
+        #     DeprecationWarning,
+        #     stacklevel=2,
+        # )
 
         globals()["OptionHighlighter"] = OptionHighlighter
 

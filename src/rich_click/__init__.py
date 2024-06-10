@@ -6,7 +6,7 @@ The intention is to provide attractive help output from Click, formatted with Ri
 customisation required.
 """
 
-__version__ = "1.8.2"
+__version__ = "1.8.3"
 
 # Import the entire click API here.
 # We need to manually import these instead of `from click import *` to force
