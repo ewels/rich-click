@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 1.8.3 (2023-06-09)
+
+- Support `{cmd}` as an option/command group key when `python -m {cmd}` is the command_path.
+- Fix yet another deprecation warning issue. (Sorry, sorry.)
+
 ## Version 1.8.2 (2023-05-14)
 
 - Fix another deprecation warning issue.
