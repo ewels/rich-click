@@ -94,8 +94,8 @@ Click, formatted with Rich, with minimal customisation required.
     sudo port install py-rich-click
     ```
 
-    !!! danger "Depreciated"
-        This installation method is deprecated.
+    !!! note "Depreciated"
+        This installation method is not officially supported, and is not guaranteed to be up to date.
 
 ## Examples
 
