@@ -27,7 +27,7 @@ dependencies = [
     "click>=7",
     'importlib-metadata; python_version < "3.8"',
     "rich>=10.7",
-    "typing_extensions",
+    "typing_extensions>=4",
 ]
 [project.optional-dependencies]
 dev = [
