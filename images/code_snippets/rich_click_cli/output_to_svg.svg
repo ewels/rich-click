@@ -1,0 +1,111 @@
+<svg class="rich-terminal" viewBox="0 0 1482 391.59999999999997" xmlns="http://www.w3.org/2000/svg">
+    <!-- Generated with Rich https://www.textualize.io -->
+    <style>
+
+    @font-face {
+        font-family: "Fira Code";
+        src: local("FiraCode-Regular"),
+                url("https://cdnjs.cloudflare.com/ajax/libs/firacode/6.2.0/woff2/FiraCode-Regular.woff2") format("woff2"),
+                url("https://cdnjs.cloudflare.com/ajax/libs/firacode/6.2.0/woff/FiraCode-Regular.woff") format("woff");
+        font-style: normal;
+        font-weight: 400;
+    }
+    @font-face {
+        font-family: "Fira Code";
+        src: local("FiraCode-Bold"),
+                url("https://cdnjs.cloudflare.com/ajax/libs/firacode/6.2.0/woff2/FiraCode-Bold.woff2") format("woff2"),
+                url("https://cdnjs.cloudflare.com/ajax/libs/firacode/6.2.0/woff/FiraCode-Bold.woff") format("woff");
+        font-style: bold;
+        font-weight: 700;
+    }
+
+    .terminal-1140994003-matrix {
+        font-family: Fira Code, monospace;
+        font-size: 20px;
+        line-height: 24.4px;
+        font-variant-east-asian: full-width;
+    }
+
+    .terminal-1140994003-title {
+        font-size: 18px;
+        font-weight: bold;
+        font-family: arial;
+    }
+
+    .terminal-1140994003-r1 { fill: #c5c8c6 }
+.terminal-1140994003-r2 { fill: #868887;font-style: italic; }
+    </style>
+
+    <defs>
+    <clipPath id="terminal-1140994003-clip-terminal">
+      <rect x="0" y="0" width="1463.0" height="340.59999999999997" />
+    </clipPath>
+    <clipPath id="terminal-1140994003-line-0">
+    <rect x="0" y="1.5" width="1464" height="24.65"/>
+            </clipPath>
+<clipPath id="terminal-1140994003-line-1">
+    <rect x="0" y="25.9" width="1464" height="24.65"/>
+            </clipPath>
+<clipPath id="terminal-1140994003-line-2">
+    <rect x="0" y="50.3" width="1464" height="24.65"/>
+            </clipPath>
+<clipPath id="terminal-1140994003-line-3">
+    <rect x="0" y="74.7" width="1464" height="24.65"/>
+            </clipPath>
+<clipPath id="terminal-1140994003-line-4">
+    <rect x="0" y="99.1" width="1464" height="24.65"/>
+            </clipPath>
+<clipPath id="terminal-1140994003-line-5">
+    <rect x="0" y="123.5" width="1464" height="24.65"/>
+            </clipPath>
+<clipPath id="terminal-1140994003-line-6">
+    <rect x="0" y="147.9" width="1464" height="24.65"/>
+            </clipPath>
+<clipPath id="terminal-1140994003-line-7">
+    <rect x="0" y="172.3" width="1464" height="24.65"/>
+            </clipPath>
+<clipPath id="terminal-1140994003-line-8">
+    <rect x="0" y="196.7" width="1464" height="24.65"/>
+            </clipPath>
+<clipPath id="terminal-1140994003-line-9">
+    <rect x="0" y="221.1" width="1464" height="24.65"/>
+            </clipPath>
+<clipPath id="terminal-1140994003-line-10">
+    <rect x="0" y="245.5" width="1464" height="24.65"/>
+            </clipPath>
+<clipPath id="terminal-1140994003-line-11">
+    <rect x="0" y="269.9" width="1464" height="24.65"/>
+            </clipPath>
+<clipPath id="terminal-1140994003-line-12">
+    <rect x="0" y="294.3" width="1464" height="24.65"/>
+            </clipPath>
+    </defs>
+
+    <rect fill="#292929" stroke="rgba(255,255,255,0.35)" stroke-width="1" x="1" y="1" width="1480" height="389.6" rx="8"/>
+            <g transform="translate(26,22)">
+            <circle cx="0" cy="0" r="7" fill="#ff5f57"/>
+            <circle cx="22" cy="0" r="7" fill="#febc2e"/>
+            <circle cx="44" cy="0" r="7" fill="#28c840"/>
+            </g>
+        
+    <g transform="translate(9, 41)" clip-path="url(#terminal-1140994003-clip-terminal)">
+    
+    <g class="terminal-1140994003-matrix">
+    <text class="terminal-1140994003-r1" x="0" y="20" textLength="500.2" clip-path="url(#terminal-1140994003-line-0)">$&#160;rich-click&#160;--output&#160;svg&#160;app:main&#160;--help</text><text class="terminal-1140994003-r1" x="1464" y="20" textLength="12.2" clip-path="url(#terminal-1140994003-line-0)">
+</text><text class="terminal-1140994003-r1" x="0" y="44.4" textLength="1049.2" clip-path="url(#terminal-1140994003-line-1)">&lt;svg&#160;class=&quot;rich-terminal&quot;&#160;viewBox=&quot;0&#160;0&#160;994&#160;416.0&quot;&#160;xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;</text><text class="terminal-1140994003-r1" x="1464" y="44.4" textLength="12.2" clip-path="url(#terminal-1140994003-line-1)">
+</text><text class="terminal-1140994003-r1" x="0" y="68.8" textLength="707.6" clip-path="url(#terminal-1140994003-line-2)">&#160;&#160;&#160;&#160;&lt;!--&#160;Generated&#160;with&#160;Rich&#160;https://www.textualize.io&#160;--&gt;</text><text class="terminal-1140994003-r1" x="1464" y="68.8" textLength="12.2" clip-path="url(#terminal-1140994003-line-2)">
+</text><text class="terminal-1140994003-r1" x="0" y="93.2" textLength="134.2" clip-path="url(#terminal-1140994003-line-3)">&#160;&#160;&#160;&#160;&lt;style&gt;</text><text class="terminal-1140994003-r1" x="1464" y="93.2" textLength="12.2" clip-path="url(#terminal-1140994003-line-3)">
+</text><text class="terminal-1140994003-r1" x="0" y="117.6" textLength="195.2" clip-path="url(#terminal-1140994003-line-4)">&#160;&#160;&#160;&#160;@font-face&#160;{</text><text class="terminal-1140994003-r1" x="1464" y="117.6" textLength="12.2" clip-path="url(#terminal-1140994003-line-4)">
+</text><text class="terminal-1140994003-r1" x="0" y="142" textLength="402.6" clip-path="url(#terminal-1140994003-line-5)">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;font-family:&#160;&quot;Fira&#160;Code&quot;;</text><text class="terminal-1140994003-r1" x="1464" y="142" textLength="12.2" clip-path="url(#terminal-1140994003-line-5)">
+</text><text class="terminal-1140994003-r1" x="0" y="166.4" textLength="475.8" clip-path="url(#terminal-1140994003-line-6)">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;src:&#160;local(&quot;FiraCode-Regular&quot;),</text><text class="terminal-1140994003-r1" x="1464" y="166.4" textLength="12.2" clip-path="url(#terminal-1140994003-line-6)">
+</text><text class="terminal-1140994003-r1" x="0" y="190.8" textLength="1464" clip-path="url(#terminal-1140994003-line-7)">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;url(&quot;https://cdnjs.cloudflare.com/ajax/libs/firacode/6.2.0/woff2/FiraCode-Regular.woff2&quot;)&#160;format(&quot;woff2&quot;</text><text class="terminal-1140994003-r1" x="1464" y="190.8" textLength="12.2" clip-path="url(#terminal-1140994003-line-7)">
+</text><text class="terminal-1140994003-r1" x="0" y="215.2" textLength="24.4" clip-path="url(#terminal-1140994003-line-8)">),</text><text class="terminal-1140994003-r1" x="1464" y="215.2" textLength="12.2" clip-path="url(#terminal-1140994003-line-8)">
+</text><text class="terminal-1140994003-r1" x="0" y="239.6" textLength="1451.8" clip-path="url(#terminal-1140994003-line-9)">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;url(&quot;https://cdnjs.cloudflare.com/ajax/libs/firacode/6.2.0/woff/FiraCode-Regular.woff&quot;)&#160;format(&quot;woff&quot;);</text><text class="terminal-1140994003-r1" x="1464" y="239.6" textLength="12.2" clip-path="url(#terminal-1140994003-line-9)">
+</text><text class="terminal-1140994003-r1" x="0" y="264" textLength="329.4" clip-path="url(#terminal-1140994003-line-10)">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;font-style:&#160;normal;</text><text class="terminal-1140994003-r1" x="1464" y="264" textLength="12.2" clip-path="url(#terminal-1140994003-line-10)">
+</text><text class="terminal-1140994003-r1" x="0" y="288.4" textLength="305" clip-path="url(#terminal-1140994003-line-11)">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;font-weight:&#160;400;</text><text class="terminal-1140994003-r1" x="1464" y="288.4" textLength="12.2" clip-path="url(#terminal-1140994003-line-11)">
+</text><text class="terminal-1140994003-r1" x="0" y="312.8" textLength="61" clip-path="url(#terminal-1140994003-line-12)">&#160;&#160;&#160;&#160;}</text><text class="terminal-1140994003-r1" x="1464" y="312.8" textLength="12.2" clip-path="url(#terminal-1140994003-line-12)">
+</text><text class="terminal-1140994003-r2" x="0" y="337.2" textLength="183" clip-path="url(#terminal-1140994003-line-13)">[..truncated..]</text><text class="terminal-1140994003-r1" x="1464" y="337.2" textLength="12.2" clip-path="url(#terminal-1140994003-line-13)">
+</text>
+    </g>
+    </g>
+</svg>
