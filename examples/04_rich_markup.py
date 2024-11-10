@@ -8,7 +8,7 @@ click.rich_click.USE_RICH_MARKUP = True
 @click.option(
     "--input",
     type=click.Path(),
-    help="Input [magenta bold]file[/]. [dim]\[default: a custom default][/]",
+    help="Input [magenta bold]file[/]. [dim][default: a custom default][/]",
 )
 @click.option(
     "--type",
