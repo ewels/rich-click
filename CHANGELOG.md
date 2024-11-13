@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.8.4 (2024-11-12)
+
+- Support `rich.text.Text()` objects for `header_text`, `footer_text`, `errors_suggestion`, and `errors_epilogue`.
+
 ## Version 1.8.3 (2023-06-09)
 
 - Support `{cmd}` as an option/command group key when `python -m {cmd}` is the command_path.

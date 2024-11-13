@@ -41,7 +41,7 @@ else:
     MultiCommand = Group  # type: ignore[misc,assignment]
 
 
-def _make_rich_rext(text: str, style: StyleType, formatter: RichHelpFormatter) -> Union[Markdown, Text]:
+def _make_rich_rext(text: Union[str, Text], style: StyleType, formatter: RichHelpFormatter) -> Union[Markdown, Text]:
     """
     Take a string, remove indentations, and return styled text.
     By default, return the text as a Rich Text with the request style.
@@ -60,6 +60,9 @@ def _make_rich_rext(text: str, style: StyleType, formatter: RichHelpFormatter) -
     -------
         MarkdownElement or Text: Styled text object
     """
+    if isinstance(text, Text):
+        return text
+
     config = formatter.config
     # Remove indentations from input text
     text = inspect.cleandoc(text)

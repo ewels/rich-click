@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     import rich.highlighter
     import rich.padding
     import rich.style
+    import rich.text
 
 
 T = TypeVar("T", bound="RichHelpConfiguration")
@@ -115,8 +116,8 @@ class RichHelpConfiguration:
     force_terminal: Optional[bool] = field(default_factory=force_terminal_default)
 
     # Fixed strings
-    header_text: Optional[str] = field(default=None)
-    footer_text: Optional[str] = field(default=None)
+    header_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
+    footer_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     deprecated_string: str = field(default="(Deprecated) ")
     default_string: str = field(default="[default: {}]")
     envvar_string: str = field(default="[env var: {}]")
@@ -128,9 +129,9 @@ class RichHelpConfiguration:
     options_panel_title: str = field(default="Options")
     commands_panel_title: str = field(default="Commands")
     errors_panel_title: str = field(default="Error")
-    errors_suggestion: Optional[str] = field(default=None)
+    errors_suggestion: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     """Defaults to Try 'cmd -h' for help. Set to False to disable."""
-    errors_epilogue: Optional[str] = field(default=None)
+    errors_epilogue: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     aborted_text: str = field(default="Aborted.")
 
     # Behaviours

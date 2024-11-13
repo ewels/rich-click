@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     import rich.box
     import rich.padding
     import rich.style
+    import rich.text
 
 
 # Default styles
@@ -69,8 +70,8 @@ COLOR_SYSTEM: Optional[Literal["auto", "standard", "256", "truecolor", "windows"
 FORCE_TERMINAL: Optional[bool] = force_terminal_default()
 
 # Fixed strings
-HEADER_TEXT: Optional[str] = None
-FOOTER_TEXT: Optional[str] = None
+HEADER_TEXT: Optional[Union[str, "rich.text.Text"]] = None
+FOOTER_TEXT: Optional[Union[str, "rich.text.Text"]] = None
 DEPRECATED_STRING: str = "(Deprecated) "
 DEFAULT_STRING: str = "[default: {}]"
 ENVVAR_STRING: str = "[env var: {}]"
@@ -82,8 +83,10 @@ ARGUMENTS_PANEL_TITLE: str = "Arguments"
 OPTIONS_PANEL_TITLE: str = "Options"
 COMMANDS_PANEL_TITLE: str = "Commands"
 ERRORS_PANEL_TITLE: str = "Error"
-ERRORS_SUGGESTION: Optional[str] = None  # Default: Try 'cmd -h' for help. Set to False to disable.
-ERRORS_EPILOGUE: Optional[str] = None
+ERRORS_SUGGESTION: Optional[Union[str, "rich.text.Text"]] = (
+    None  # Default: Try 'cmd -h' for help. Set to False to disable.
+)
+ERRORS_EPILOGUE: Optional[Union[str, "rich.text.Text"]] = None
 ABORTED_TEXT: str = "Aborted."
 
 # Behaviours
