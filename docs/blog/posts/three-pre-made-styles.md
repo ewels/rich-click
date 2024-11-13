@@ -1,7 +1,7 @@
 ---
 draft: false
 slug: three-pre-made-styles
-date: 2024-04-30
+date: 2024-11-13
 authors:
   - dwreeves
 categories:
