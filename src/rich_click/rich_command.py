@@ -167,10 +167,10 @@ class RichCommand(click.Command):
                 if not standalone_mode:
                     raise
                 if ctx is not None:
-                    config = ctx.help_config
+                    formatter = ctx.make_formatter()
                 else:
                     config = self._generate_rich_help_config()
-                formatter = self.context_class.formatter_class(config=config, file=sys.stderr)
+                    formatter = self.context_class.formatter_class(console=self.console, config=config, file=sys.stderr)
                 from rich_click.rich_help_rendering import rich_format_error
 
                 rich_format_error(e, formatter)
@@ -192,10 +192,10 @@ class RichCommand(click.Command):
                 raise
             try:
                 if ctx is not None:
-                    config = ctx.help_config
+                    formatter = ctx.make_formatter()
                 else:
                     config = self._generate_rich_help_config()
-                formatter = self.context_class.formatter_class(config=config)
+                    formatter = self.context_class.formatter_class(console=self.console, config=config)
             except Exception:
                 click.echo("Aborted!", file=sys.stderr)
             else:

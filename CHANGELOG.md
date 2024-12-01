@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.8.5 (2024-12-01)
+
+- Fix issue with error messages not using user-defined styles. [[#215](https://github.com/ewels/rich-click/pull/215)] ([@sankarngrjn](https://github.com/sankarngrjn))
+
 ## Version 1.8.4 (2024-11-12)
 
 - Support `rich.text.Text()` objects for `header_text`, `footer_text`, `errors_suggestion`, and `errors_epilogue`.
