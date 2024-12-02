@@ -211,9 +211,9 @@ Setting `MAX_WIDTH` overrides the effect of `WIDTH`
 !!! success
     Check out the [**Live Style Editor**](../editor.md) to easily get started building a custom **rich-click** style!
 
-Most aspects of rich-click formatting can be customised, from colours to alignment.
+Most aspects of rich-click formatting can be customised, from color to alignment.
 
-For example, to print the option flags in a different colour, you can use:
+For example, to print the option flags in a different color, you can use:
 
 ```python
 click.rich_click.STYLE_OPTION = "magenta"
@@ -226,7 +226,7 @@ click.rich_click.STYLE_OPTIONS_TABLE_LEADING = 1
 click.rich_click.STYLE_OPTIONS_TABLE_BOX = "SIMPLE"
 ```
 
-You can make some really ~horrible~ _colourful_ solutions using these styles if you wish:
+You can make some really ~horrible~ _colorful_ solutions using these styles if you wish:
 
 <!-- RICH-CODEX
 working_dir: .

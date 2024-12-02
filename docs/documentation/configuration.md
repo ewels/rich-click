@@ -1,6 +1,6 @@
 # Configuration
 
-There are two methods to configure rich-click:
+There are two methods to configure **rich-click**:
 
 - Decorator: Use the `@rich_config()` decorator (and `RichHelpConfiguration()`).
 - Globals: Set the global variables in the `rich_config.rich_config` module.
