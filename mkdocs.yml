@@ -60,6 +60,8 @@ markdown_extensions:
       guess_lang: false
   - admonition
   - codehilite
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
   - extra
   - pymdownx.superfences:
       custom_fences:
