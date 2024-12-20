@@ -123,6 +123,8 @@ terminal_width: 48
 -->
 ![`python colors.py`](../images/code_snippets/accessibility/colors.svg){.screenshot}
 
+(The colors you see when running this locally will differ from the colors in the image.)
+
 The fact that the colors are not deterministic is a _benefit_ for accessibility; it means, for example, a user can customize their terminal so that the ANSI "red" is more suitable for them.
 Nearly every modern terminal allows for this sort of customization.
 
