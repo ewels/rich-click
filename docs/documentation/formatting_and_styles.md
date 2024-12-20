@@ -6,7 +6,7 @@
 
 ## Formatting
 
-There are a large number of customisation options in rich-click.
+There are a large number of customization options in rich-click.
 These can be modified by changing variables in the `click.rich_click` namespace.
 
 Note that most normal click options should still work, such as `show_default=True`, `required=True` and `hidden=True`.
@@ -158,7 +158,7 @@ working_dir: .
 -->
 ![`python examples/01_simple.py --hep || true`](../images/error.svg "Error message"){.screenshot}
 
-You can customise the _Try 'command --help' for help._ message with `ERRORS_SUGGESTION`
+You can customize the _Try 'command --help' for help._ message with `ERRORS_SUGGESTION`
 using rich-click though, and add some text after the error with `ERRORS_EPILOGUE`.
 
 For example, from [`examples/07_custom_errors.py`](https://github.com/ewels/rich-click/blob/main/examples/07_custom_errors.py):
@@ -211,7 +211,7 @@ Setting `MAX_WIDTH` overrides the effect of `WIDTH`
 !!! success
     Check out the [**Live Style Editor**](../editor.md) to easily get started building a custom **rich-click** style!
 
-Most aspects of rich-click formatting can be customised, from color to alignment.
+Most aspects of rich-click formatting can be customized, from color to alignment.
 
 For example, to print the option flags in a different color, you can use:
 
