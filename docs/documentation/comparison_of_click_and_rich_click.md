@@ -25,28 +25,30 @@ The only change to these decorators is that by default, their `cls=` parameters 
 
 You can still access the base Click classes by their original names:
 
-- `from rich_click import Command`
-- `from rich_click import Group`
-- `from rich_click import Context`
+```python
+from rich_click import Command, Group, Context
+```
 
 The above are the same as importing from `click`.
 
 **rich-click**'s subclasses all have the word Rich in front of them!
 
-- `from rich_click import RichCommand`
-- `from rich_click import RichGroup`
-- `from rich_click import RichContext`
+```python
+from rich_click import RichCommand, RichGroup, RichContext
+```
 
 ### Echo and interactive elements
 
 **rich-click** deliberately does _not_ enrich certain Click features:
 
-- `click.echo()`
-- `click.echo_via_pager()`
-- `click.confirm()`
-- `click.prompt()`
+```python
+click.echo()
+click.echo_via_pager()
+click.confirm()
+click.prompt()
+```
 
-You are free to use these functions and they are available via `import rich_click as click`,
+You are free to use these functions and they are available via `#!python import rich_click as click`,
 but Rich's markup will not work with these functions because these functions are just the base Click implementations,
 without any changes.
 
@@ -54,10 +56,10 @@ This is a deliberate decision that we are unlikely to change in the future.
 We do not want to maintain a more spread-out API surface, and we encourage users to become comfortable using Rich directly; it's a great library and it's worth learning a little bit about it!
 If you'd like Rich markup for your echos and interactive elements, then you can:
 
-- Replace `click.echo()` with `rich.print()`
-- Replace `click.echo_via_pager()` with `rich.Console().pager()`
-- Replace `click.confirm()` with `rich.prompt.Confirm.ask()`
-- Replace `click.prompt()` with `rich.prompt.Prompt.ask()`
+- Replace `#!python click.echo()` with `#!python rich.print()` ([docs](https://rich.readthedocs.io/en/stable/introduction.html#quick-start))
+- Replace `#!python click.echo_via_pager()` with `#!python rich.Console().pager()` ([docs](https://rich.readthedocs.io/en/stable/console.html#paging))
+- Replace `#!python click.confirm()` with `#!python rich.prompt.Confirm.ask()` ([docs](https://rich.readthedocs.io/en/stable/prompt.html))
+- Replace `#!python click.prompt()` with `#!python rich.prompt.Prompt.ask()` ([docs](https://rich.readthedocs.io/en/stable/prompt.html))
 
 Below is a side-by-side comparison of Click and Rich implementations of echos and interactive elements in **rich-click**:
 
@@ -92,7 +94,7 @@ Below is a side-by-side comparison of Click and Rich implementations of echos an
         name = Prompt.ask("[blue]What is your name?[/]")
     
         if not Confirm.ask("[blue]Are you sure?[/]"):
-            rich.print("[red]Aborting[/]"))
+            rich.print("[red]Aborting[/]")
             return
     
         rich.print(f"[green]Hello, {name}![/]")

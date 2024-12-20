@@ -47,14 +47,14 @@ NO_COLOR=1 python cli.py
 
 And this will disable all colors in **rich-click**.
 
-You can also add `NO_COLOR=1` to your `~/.bashrc` (if using bash) or `~/.zshrc` (if using zsh):
+You can also add `export NO_COLOR=1` to your `~/.bashrc` (if using bash) or `~/.zshrc` (if using zsh) for it to be set automatically every time you open a new terminal shell:
 
 ```shell
 # If using bash:
-echo "NO_COLOR=1" > ~/.bashrc
+echo "export NO_COLOR=1" >> ~/.bashrc
 
 # If using zsh:
-echo "NO_COLOR=1" > ~/.zshrc
+echo "export NO_COLOR=1" >> ~/.zshrc
 ```
 
 ## Colorblindness accessibility considerations for developers
