@@ -118,6 +118,8 @@ Below is a quick script that renders all of these colors:
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/accessibility
+hide_command: true
+terminal_width: 48
 -->
 ![`python colors.py`](../images/code_snippets/accessibility/colors.svg){.screenshot}
 

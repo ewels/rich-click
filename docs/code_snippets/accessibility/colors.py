@@ -6,7 +6,7 @@ from rich.console import Console
 from rich.box import SIMPLE
 from rich.table import Table
 
-console = Console()
+console = Console(color_system="truecolor")
 table = Table(title="ANSI Colors", box=SIMPLE)
 colors = ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"]
 table.add_column("Color", style="bold")
