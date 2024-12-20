@@ -205,7 +205,7 @@ def main(
 
     >>> [command]rich-click[/] [argument]my_package[/] [option]--help[/]
 
-    This does not always work if the package is using customised [b]click.group()[/]
+    This does not always work if the package is using customized [b]click.group()[/]
     or [b]click.command()[/] classes.
     If in doubt, please suggest to the authors that they use rich_click within their
     tool natively - this will always give a better experience.

@@ -27,7 +27,7 @@
 - Rich is a _"Python library for rich text and beautiful formatting in the terminal"_.
 
 The intention of `rich-click` is to provide attractive help output from
-Click, formatted with Rich, with minimal customisation required.
+Click, formatted with Rich, with minimal customization required.
 
 ## Features
 
@@ -39,7 +39,7 @@ Click, formatted with Rich, with minimal customisation required.
 - 🎁 Group commands and options into named panels
 - ❌ Well formatted error messages
 - 🔢 Easily give custom sort order for options and commands
-- 🎨 Extensive customisation of styling and behaviour possible
+- 🎨 Extensive customization of styling and behaviour possible
 
 ## Installation
 

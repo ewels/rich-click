@@ -47,3 +47,11 @@ repos:
         types: [python]
         exclude: ^examples|^docs/
         require_serial: true
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.4
+    hooks:
+    - id: codespell
+      files: ^docs/.*\.md$
+      additional_dependencies:
+        - tomli

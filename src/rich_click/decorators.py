@@ -159,14 +159,6 @@ def rich_config(
             stacklevel=2,
         )
         console = help_config
-    elif isinstance(help_config, Console):
-        import warnings
-
-        warnings.warn(
-            "We have no idea what just happened. Tread carefully.",
-            RuntimeWarning,
-            stacklevel=2,
-        )
 
     if CLICK_IS_BEFORE_VERSION_8X:
 

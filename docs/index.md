@@ -40,7 +40,7 @@ glightbox: false
 - Rich is a _"Python library for rich text and beautiful formatting in the terminal"_.
 
 The intention of `rich-click` is to provide attractive help output from
-Click, formatted with Rich, with minimal customisation required.
+Click, formatted with Rich, with minimal customization required.
 
 ## Features
 
@@ -52,7 +52,7 @@ Click, formatted with Rich, with minimal customisation required.
 - 🎁 Group commands and options into named panels
 - ❌ Well formatted error messages
 - 🔢 Easily give custom sort order for options and commands
-- 🎨 Extensive customisation of styling and behaviour possible
+- 🎨 Extensive customization of styling and behaviour possible
 
 ## Installation
 
@@ -122,7 +122,7 @@ if __name__ == '__main__':
 
 ### More complex example
 
-**rich-click** has a ton of customisation options that let you compose help text however you'd like.
+**rich-click** has a ton of customization options that let you compose help text however you'd like.
 Below is a more complex example of what **rich-click** is capable of:
 
 ![](images/command_groups.svg){.screenshot}
