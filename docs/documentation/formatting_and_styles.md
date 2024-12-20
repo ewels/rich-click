@@ -238,5 +238,5 @@ extra_env:
 
 > See [`examples/10_table_styles.py`](https://github.com/ewels/rich-click/blob/main/examples/10_table_styles.py) for an example.
 
-See the [_Configuration options_](#configuration-options) section below for the full list of available options.
+See the [_Configuration options_](configuration.md#configuration-options) section below for the full list of available options.
 
