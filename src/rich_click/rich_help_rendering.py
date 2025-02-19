@@ -22,7 +22,12 @@ from rich.table import Table
 from rich.text import Text
 from typing_extensions import Literal
 
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_VERSION_80
+from rich_click._compat_click import (
+    CLICK_IS_BEFORE_VERSION_8X,
+    CLICK_IS_BEFORE_VERSION_9X,
+    CLICK_IS_BEFORE_VERSION_82,
+    CLICK_IS_VERSION_80,
+)
 from rich_click.rich_help_formatter import RichHelpFormatter
 from rich_click.utils import CommandGroupDict, OptionGroupDict
 
@@ -211,7 +216,7 @@ def _get_option_help(
 
     # Append metavar if requested
     if config.append_metavars_help:
-        metavar_str = param.make_metavar()
+        metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
         # Do it ourselves if this is a positional argument
         if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
             metavar_str = param.type.name.upper()
@@ -497,7 +502,7 @@ def get_rich_options(
 
             # Column for a metavar, if we have one
             metavar = Text(style=formatter.config.style_metavar, overflow="fold")
-            metavar_str = param.make_metavar()
+            metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
 
             if TYPE_CHECKING:
                 assert isinstance(param.name, str)
