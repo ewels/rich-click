@@ -2,12 +2,19 @@ name: Test Coverage
 on: [push, pull_request]
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
-        python: [3.7.x, 3.12.x, 3.13.x]
-        click: [7.0.*, 7.1.*, 8.0.*, 8.1.*]
+        python: [3.7, 3.12, 3.13]
+        click: [7.0.*, 7.1.*, 8.0.*, 8.1.*]  # 8.2.*
         rich: [12.*, 13.*]
+        exclude:
+#          - python: 3.7
+#            click: 8.2.*
+          - python: 3.13
+            click: 7.0.*
+          - python: 3.13
+            click: 7.1.*
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -18,18 +25,18 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Install dependencies
-        if: matrix.python != '3.7.x'
+        if: matrix.python != '3.7'
         run: |
           pip install -U uv
           uv pip install --system --editable ".[dev]"
-          uv pip install --system --upgrade "click==$CLICK_VERSION"
-          uv pip install --system --upgrade "rich==$RICH_VERSION"
+          uv pip install --system --upgrade "click==$CLICK_VERSION" --prerelease=allow
+          uv pip install --system --upgrade "rich==$RICH_VERSION" --prerelease=allow
         env:
           CLICK_VERSION: ${{ matrix.click }}
           RICH_VERSION: ${{ matrix.rich }}
 
       - name: Install dependencies (Python 3.7)
-        if: matrix.python == '3.7.x'
+        if: matrix.python == '3.7'
         run: |
           pip install --editable ".[dev]"
           pip install --upgrade "click==$CLICK_VERSION"

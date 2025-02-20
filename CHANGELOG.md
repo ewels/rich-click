@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.8.6 (2025-02-19)
+
+- Fix incompatibility with click 8.2.0. [[#224](https://github.com/ewels/rich-click/pull/224)] ([@ppentchev](https://github.com/ppentchev))
+
 ## Version 1.8.5 (2024-12-01)
 
 - Fix issue with error messages not using user-defined styles. [[#215](https://github.com/ewels/rich-click/pull/215)] ([@sankarngrjn](https://github.com/sankarngrjn))
