@@ -409,13 +409,15 @@ def _resolve_groups(
             for grp in wildcard_option_groups:
                 grp = grp.copy()
                 opts = grp.get(group_attribute, []).copy()  # type: ignore[attr-defined]
+                traversed = []
                 for opt in grp.get(group_attribute, []):  # type: ignore[attr-defined]
-                    if opt in [
+                    if grp.get("deduplicate", True) and opt in [
                         _opt
                         for _grp in final_groups_list
-                        for _opt in _grp.get(group_attribute, [])  # type: ignore[attr-defined]
+                        for _opt in [*traversed, *_grp.get(group_attribute, [])]  # type: ignore[has-type]
                     ]:
                         opts.remove(opt)
+                    traversed.append(opt)
                 grp[group_attribute] = opts  # type: ignore[typeddict-unknown-key]
                 final_groups_list.append(grp)
 

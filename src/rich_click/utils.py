@@ -37,6 +37,7 @@ class CommandGroupDict(TypedDict):
     commands: List[str]
     table_styles: NotRequired[Dict[str, Any]]
     panel_styles: NotRequired[Dict[str, Any]]
+    deduplicate: NotRequired[bool]
 
 
 class OptionGroupDict(TypedDict):
@@ -46,3 +47,4 @@ class OptionGroupDict(TypedDict):
     options: NotRequired[List[str]]
     table_styles: NotRequired[Dict[str, Any]]
     panel_styles: NotRequired[Dict[str, Any]]
+    deduplicate: NotRequired[bool]
