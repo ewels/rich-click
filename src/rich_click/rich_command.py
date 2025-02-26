@@ -195,7 +195,7 @@ class RichCommand(click.Command):
                     formatter = ctx.make_formatter()
                 else:
                     config = self._generate_rich_help_config()
-                    formatter = self.context_class.formatter_class(console=self.console, config=config)
+                    formatter = self.context_class.formatter_class(console=self.console, config=config, file=sys.stderr)
             except Exception:
                 click.echo("Aborted!", file=sys.stderr)
             else:

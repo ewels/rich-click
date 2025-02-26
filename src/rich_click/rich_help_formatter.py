@@ -99,7 +99,12 @@ class RichHelpFormatter(click.HelpFormatter):
         else:
             self.config = RichHelpConfiguration.load_from_globals()
 
-        self.console = console or create_console(self.config, file=file)
+        if console:
+            self.console = console
+            # if file:
+            #     self.console.file = file
+        else:
+            self.console = create_console(self.config, file=file)
 
         # TODO: Revisit this. I don't think this does anything.
         if width is None:

@@ -127,8 +127,29 @@ explicit naming always takes precedence.
 
 !!! warning
     **rich-click** does its best to attempt to resolve duplicate options/command definitions, but other than
-    preferring exact matches  to wildcards, the exact logic of how duplicates are resolved is subject to
+    preferring exact matches to wildcards, the exact logic of how duplicates are resolved is subject to
     revision in upcoming minor version releases. Don't get too clever with duplicating your options/commands!
+    
+    You can disable deduplication (both across and within groups, for both commands and options) by setting `"deduplicate": False`.
+    The below example will show `--a` three times (two times in Foo, one time in Bar) with deduplication turned off.
+    Without `"deduplicate": False`, the option `--a` only shows up once.
+
+    ```python
+    click.rich_click.OPTION_GROUPS = {
+        "*": [
+            {
+                "name": "Foo",
+                "options": ["--a", "--a"],
+                "deduplicate": False
+            },
+            {
+                "name": "Bar",
+                "options": ["--a", "--b"],
+                "deduplicate": False
+            },
+        ]
+    }
+    ```
 
 ## Styling
 
