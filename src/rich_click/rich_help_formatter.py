@@ -2,6 +2,7 @@ import sys
 from typing import IO, TYPE_CHECKING, Any, Optional
 
 import click
+from typing_extensions import Literal
 
 from rich_click.rich_help_configuration import RichHelpConfiguration
 
@@ -68,6 +69,8 @@ class RichHelpFormatter(click.HelpFormatter):
     not be created directly
     """
 
+    export_console_as: Literal[None, "html", "svg"] = None
+
     def __init__(
         self,
         indent_increment: int = 2,
@@ -101,8 +104,8 @@ class RichHelpFormatter(click.HelpFormatter):
 
         if console:
             self.console = console
-            # if file:
-            #     self.console.file = file
+            if file:
+                self.console.file = file
         else:
             self.console = create_console(self.config, file=file)
 

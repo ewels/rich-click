@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 1.8.8 (2025-03-09)
+
+- Make text wrap instead of using ellipses for overflowing metavars in options tables.
+- Added `--errors-in-output-format` flag to `rich-click` CLI.
+- Actually fixed regression in stderr handling [[#164](https://github.com/ewels/rich-click/issues/164)].
+
 ## Version 1.8.7 (2025-03-08)
 
 - Add ability to turn off option/command deduplication in groups [[#226](https://github.com/ewels/rich-click/issues/226)]
