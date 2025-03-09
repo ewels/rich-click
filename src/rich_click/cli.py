@@ -159,6 +159,13 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
     help="Optionally render help text as HTML or SVG. By default, help text is rendered normally.",
 )
 @click.option(
+    "--errors-in-output-format",
+    is_flag=True,
+    help="If set, forces the CLI to render CLI error messages"
+    " in the format specified by the --output option."
+    " By default, error messages render normally, i.e. they are not converted to html or svg.",
+)
+@click.option(
     "--suppress-warnings/--do-not-suppress-warnings",
     is_flag=True,
     default=False,
@@ -188,6 +195,7 @@ def main(
     ctx: RichContext,
     script_and_args: List[str],
     output: Literal[None, "html", "svg"],
+    errors_in_output_format: bool,
     suppress_warnings: bool,
     rich_config: Optional[RichHelpConfiguration],
     show_help: bool,
@@ -241,6 +249,8 @@ def main(
 
     if output is not None:
         RichContext.export_console_as = output
+        if errors_in_output_format:
+            RichContext.errors_in_output_format = True
 
     prog = module_path.split(".", 1)[0]
     sys.argv = [prog, *args]

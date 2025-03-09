@@ -1,5 +1,6 @@
 import inspect
 import re
+import sys
 from fnmatch import fnmatch
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, TypeVar, Union, overload
 
@@ -605,6 +606,8 @@ def get_rich_options(
 
             kw.update(option_group.get("panel_styles", {}))
 
+            options_table.columns[0].overflow = "fold"
+
             formatter.write(Panel(options_table, **kw))
 
 
@@ -721,7 +724,9 @@ def get_rich_epilog(
         )
 
 
-def rich_format_error(self: click.ClickException, formatter: RichHelpFormatter) -> None:
+def rich_format_error(
+    self: click.ClickException, formatter: RichHelpFormatter, export_console_as: Literal[None, "html", "svg"] = None
+) -> None:
     """
     Print richly formatted click errors.
 
@@ -732,6 +737,7 @@ def rich_format_error(self: click.ClickException, formatter: RichHelpFormatter) 
     ----
         self (click.ClickException): Click exception to format.
         formatter: formatter object.
+        export_console_as: If set, outputs error message as HTML or SVG.
     """
     config = formatter.config
     # Print usage
@@ -798,6 +804,11 @@ def rich_format_error(self: click.ClickException, formatter: RichHelpFormatter) 
         )
     if config.errors_epilogue:
         formatter.write(Padding(config.errors_epilogue, (0, 1, 1, 1)))
+    if formatter.console.record:
+        if export_console_as == "html":
+            print(formatter.console.export_html(inline_styles=True, code_format="{code}"))
+        elif export_console_as == "svg":
+            print(formatter.console.export_svg(title="rich-click " + " ".join(sys.argv)))
 
 
 def rich_abort_error(formatter: RichHelpFormatter) -> None:

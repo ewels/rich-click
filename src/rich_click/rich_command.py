@@ -98,6 +98,20 @@ class RichCommand(click.Command):
             click.echo(f"{e.__class__.__name__}{e.args}", file=sys.stderr)
         return RichHelpConfiguration()
 
+    def _error_formatter(self, ctx: Optional[RichContext]) -> RichHelpFormatter:
+        if ctx is not None:
+            formatter = ctx.make_formatter(error=True)
+        else:
+            config = self._generate_rich_help_config()
+            if self.context_class.errors_in_output_format and self.context_class.export_console_as is not None:
+                formatter = self.context_class.formatter_class(
+                    console=self.console, config=config, file=open(os.devnull, "w")
+                )
+                formatter.console.record = True
+            else:
+                formatter = self.context_class.formatter_class(console=self.console, config=config, file=sys.stderr)
+        return formatter
+
     def main(
         self,
         args: Optional[Sequence[str]] = None,
@@ -166,14 +180,15 @@ class RichCommand(click.Command):
             except click.exceptions.ClickException as e:
                 if not standalone_mode:
                     raise
-                if ctx is not None:
-                    formatter = ctx.make_formatter()
-                else:
-                    config = self._generate_rich_help_config()
-                    formatter = self.context_class.formatter_class(console=self.console, config=config, file=sys.stderr)
+                formatter = self._error_formatter(ctx)
                 from rich_click.rich_help_rendering import rich_format_error
 
-                rich_format_error(e, formatter)
+                if self.context_class.errors_in_output_format:
+                    export_console_as = self.context_class.export_console_as
+                else:
+                    export_console_as = None
+
+                rich_format_error(e, formatter, export_console_as=export_console_as)
                 sys.exit(e.exit_code)
             except OSError as e:
                 if e.errno == errno.EPIPE:
@@ -191,11 +206,7 @@ class RichCommand(click.Command):
             if not standalone_mode:
                 raise
             try:
-                if ctx is not None:
-                    formatter = ctx.make_formatter()
-                else:
-                    config = self._generate_rich_help_config()
-                    formatter = self.context_class.formatter_class(console=self.console, config=config, file=sys.stderr)
+                formatter = self._error_formatter(ctx)
             except Exception:
                 click.echo("Aborted!", file=sys.stderr)
             else:

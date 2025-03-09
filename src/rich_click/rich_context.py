@@ -1,4 +1,5 @@
 import os
+import sys
 from typing import TYPE_CHECKING, Any, Mapping, Optional, Type, Union
 
 import click
@@ -20,6 +21,7 @@ class RichContext(click.Context):
     formatter_class: Type[RichHelpFormatter] = RichHelpFormatter
     console: Optional["Console"] = None
     export_console_as: Literal[None, "html", "svg"] = None
+    errors_in_output_format: bool = False
 
     def __init__(
         self,
@@ -64,14 +66,18 @@ class RichContext(click.Context):
         else:
             self.help_config = rich_help_config
 
-    def make_formatter(self) -> RichHelpFormatter:
+    def make_formatter(self, error: bool = False) -> RichHelpFormatter:
         """Create the Rich Help Formatter."""
         formatter = self.formatter_class(
             width=self.terminal_width,
             max_width=self.max_content_width,
             config=self.help_config,
             console=self.console,
-            file=open(os.devnull, "w") if self.export_console_as is not None else None,
+            file=(
+                open(os.devnull, "w")
+                if error and self.export_console_as is not None and self.errors_in_output_format
+                else sys.stderr if error else open(os.devnull, "w") if self.export_console_as is not None else None
+            ),
         )
         if self.export_console_as is not None:
             if self.console is None:
@@ -98,4 +104,6 @@ class RichContext(click.Context):
                 print(self.console.export_html(inline_styles=True, code_format="{code}"))
             elif self.export_console_as == "svg":
                 print(self.console.export_svg())
+                # Todo: In 1.9, replace above with the following:
+                # print(self.console.export_svg(title="rich-click " + " ".join(sys.argv)))
         super().exit(code)

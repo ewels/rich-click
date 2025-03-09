@@ -18,11 +18,6 @@ from rich_click.rich_context import RichContext
 from tests.conftest import AssertStr
 
 
-# TODO:
-#  I need to make it so these tests don't cause side effects
-# pytest.skip(allow_module_level=True)
-
-
 @pytest.fixture(autouse=True)
 def default_config(initialize_rich_click: None) -> None:
     # Default config settings from https://github.com/Textualize/rich/blob/master/tests/render.py
@@ -373,3 +368,60 @@ I am overriding RichCommand!
     """
 
     assert_str(actual=res.stdout.decode(), expectation=expected_output)
+
+
+@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_8X, reason="Warning message gets in the way.")
+def test_error_to_stderr(mock_script_writer: Callable[[str], Path], assert_str: AssertStr) -> None:
+    mock_script_writer(
+        '''
+        import click
+
+        @click.group("foo")
+        def foo():
+            """foo group"""
+
+        @foo.command("bar")
+        def bar():
+            """bar command"""
+        '''
+    )
+
+    res_grp = subprocess.run(
+        [sys.executable, "-m", "src.rich_click", "mymodule:foo", "--bad-input"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
+    )
+    assert res_grp.returncode == 2
+
+    expected_output_grp = """
+     Usage: python -m src.rich_click.mymodule [OPTIONS] COMMAND [ARGS]...
+
+    Try 'python -m src.rich_click.mymodule --help' for help
+    ╭─ Error ──────────────────────────────────────────────────────────────────────────────────────────╮
+    │ No such option: --bad-input                                                                      │
+    ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+    """
+
+    assert_str(actual=res_grp.stdout.decode(), expectation="")
+    assert_str(actual=res_grp.stderr.decode(), expectation=expected_output_grp)
+
+    res_cmd = subprocess.run(
+        [sys.executable, "-m", "src.rich_click", "mymodule:foo", "bar", "--bad-input"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
+    )
+    assert res_cmd.returncode == 2
+
+    expected_output_grp = """
+     Usage: python -m src.rich_click.mymodule bar [OPTIONS]
+
+    Try 'python -m src.rich_click.mymodule bar --help' for help
+    ╭─ Error ──────────────────────────────────────────────────────────────────────────────────────────╮
+    │ No such option: --bad-input                                                                      │
+    ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+    """
+
+    assert_str(actual=res_cmd.stdout.decode(), expectation="")
+    assert_str(actual=res_cmd.stderr.decode(), expectation=expected_output_grp)
