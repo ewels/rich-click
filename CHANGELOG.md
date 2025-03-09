@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 1.8.7a0 (2025-02-26)
+## Version 1.8.7 (2025-03-08)
 
 - Add ability to turn off option/command deduplication in groups [[#226](https://github.com/ewels/rich-click/issues/226)]
 - Fix regression in stderr handling [[#164](https://github.com/ewels/rich-click/issues/164)]
