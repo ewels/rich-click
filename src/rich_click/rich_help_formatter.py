@@ -140,3 +140,9 @@ class RichHelpFormatter(click.HelpFormatter):
     def write_abort(self) -> None:
         """Print richly formatted abort error."""
         self.console.print(self.config.aborted_text, style=self.config.style_aborted)
+
+    def getvalue(self) -> str:
+        if self.console.record:
+            return self.console.export_text()
+
+        return super().getvalue()
