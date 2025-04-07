@@ -143,6 +143,6 @@ class RichHelpFormatter(click.HelpFormatter):
 
     def getvalue(self) -> str:
         if self.console.record:
-            return self.console.export_text()
+            return self.console.export_text(clear=False)
 
         return super().getvalue()
