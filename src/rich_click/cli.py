@@ -22,7 +22,6 @@ import click
 
 from rich_click.decorators import command as _rich_command
 from rich_click.decorators import pass_context
-from rich_click.decorators import rich_config as rich_config_decorator
 from rich_click.patch import patch as _patch
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
@@ -155,8 +154,8 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
 @click.option(
     "--output",
     "-o",
-    type=click.Choice(["html", "svg"], case_sensitive=False),
-    help="Optionally render help text as HTML or SVG. By default, help text is rendered normally.",
+    type=click.Choice(["html", "svg", "text"], case_sensitive=False),
+    help="Optionally render help text as HTML or SVG or plain text. By default, help text is rendered normally.",
 )
 @click.option(
     "--errors-in-output-format",
@@ -185,12 +184,6 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
     # callback=help_callback
 )
 @pass_context
-@rich_config_decorator(
-    help_config={
-        "text_markup": "rich",
-        "errors_epilogue": "[d]Please run [yellow bold]rich-click --help[/] for usage information.[/]",
-    }
-)
 def main(
     ctx: RichContext,
     script_and_args: List[str],
@@ -225,6 +218,7 @@ def main(
         if rich_config is not None:
             rich_config.use_markdown = False
             rich_config.use_rich_markup = True
+            rich_config.text_markup = "rich"
             ctx.help_config = rich_config
         click.echo(ctx.get_help(), color=ctx.color)
         ctx.exit()
@@ -247,10 +241,9 @@ def main(
 
     function = getattr(module, function_name)
 
-    if output is not None:
-        RichContext.export_console_as = output
-        if errors_in_output_format:
-            RichContext.errors_in_output_format = True
+    ctx.export_console_as = output
+    ctx.errors_in_output_format = errors_in_output_format
+    ctx.help_config.errors_epilogue = None
 
     prog = module_path.split(".", 1)[0]
     sys.argv = [prog, *args]
