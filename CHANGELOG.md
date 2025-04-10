@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.9.0dev0 (WIP)
+
+- `RichHelpFormatter` now defers printing by default if a user does not specify a Console. [[#231](https://github.com/ewels/rich-click/pull/231)] (With contributions from [@ofek](https://github.com/ofek))
+
 ## Version 1.8.8 (2025-03-09)
 
 - Make text wrap instead of using ellipses for overflowing metavars in options tables.

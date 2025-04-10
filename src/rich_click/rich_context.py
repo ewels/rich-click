@@ -1,9 +1,8 @@
-import os
-import sys
 from typing import TYPE_CHECKING, Any, Mapping, Optional, Type, Union
 
 import click
-from typing_extensions import Literal, NoReturn
+from click.globals import get_current_context as click_get_current_context
+from typing_extensions import Literal
 
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
@@ -20,7 +19,7 @@ class RichContext(click.Context):
 
     formatter_class: Type[RichHelpFormatter] = RichHelpFormatter
     console: Optional["Console"] = None
-    export_console_as: Literal[None, "html", "svg"] = None
+    export_console_as: Optional[Literal["html", "svg", "text"]] = None
     errors_in_output_format: bool = False
 
     def __init__(
@@ -28,6 +27,8 @@ class RichContext(click.Context):
         *args: Any,
         rich_console: Optional["Console"] = None,
         rich_help_config: Optional[Union[Mapping[str, Any], RichHelpConfiguration]] = None,
+        export_console_as: Optional[Literal["html", "svg", "text"]] = None,
+        errors_in_output_format: Optional[bool] = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -38,10 +39,22 @@ class RichContext(click.Context):
             *args: Args that get passed to click.Context.
             rich_console: Rich Console. Defaults to None.
             rich_help_config: Rich help configuration.  Defaults to None.
+            export_console_as: Arg is passed to RichHelpFormatter().
+            errors_in_output_format: Arg is passed to RichHelpFormatter().
             **kwargs: Kwargs that get passed to click.Context.
         """
         super().__init__(*args, **kwargs)
         parent: Optional[RichContext] = kwargs.pop("parent", None)
+
+        if export_console_as is None and hasattr(parent, "export_console_as"):
+            self.export_console_as = parent.export_console_as  # type: ignore[union-attr]
+        else:
+            self.export_console_as = export_console_as
+
+        if errors_in_output_format is None and hasattr(parent, "export_console_as"):
+            self.errors_in_output_format = parent.errors_in_output_format  # type: ignore[union-attr]
+        else:
+            self.errors_in_output_format = errors_in_output_format or False
 
         if rich_console is None and hasattr(parent, "console"):
             rich_console = parent.console  # type: ignore[union-attr]
@@ -66,23 +79,15 @@ class RichContext(click.Context):
         else:
             self.help_config = rich_help_config
 
-    def make_formatter(self, error: bool = False) -> RichHelpFormatter:
+    def make_formatter(self, error_mode: bool = False) -> RichHelpFormatter:
         """Create the Rich Help Formatter."""
         formatter = self.formatter_class(
             width=self.terminal_width,
             max_width=self.max_content_width,
             config=self.help_config,
             console=self.console,
-            file=(
-                open(os.devnull, "w")
-                if error and self.export_console_as is not None and self.errors_in_output_format
-                else sys.stderr if error else open(os.devnull, "w") if self.export_console_as is not None else None
-            ),
+            export_console_as=(self.export_console_as if not error_mode or self.errors_in_output_format else None),
         )
-        if self.export_console_as is not None:
-            if self.console is None:
-                self.console = formatter.console
-            self.console.record = True
         return formatter
 
     if TYPE_CHECKING:
@@ -98,12 +103,21 @@ class RichContext(click.Context):
         ) -> None:
             return super().__exit__(exc_type, exc_value, tb)
 
-    def exit(self, code: int = 0) -> NoReturn:
-        if self.export_console_as is not None and self.console is not None and self.console.record:
-            if self.export_console_as == "html":
-                print(self.console.export_html(inline_styles=True, code_format="{code}"))
-            elif self.export_console_as == "svg":
-                print(self.console.export_svg())
-                # Todo: In 1.9, replace above with the following:
-                # print(self.console.export_svg(title="rich-click " + " ".join(sys.argv)))
-        super().exit(code)
+
+def get_current_context(silent: bool = False) -> Optional[RichContext]:
+    """
+    Return the current click context.  This can be used as a way to
+    access the current context object from anywhere.  This is a more implicit
+    alternative to the :func:`pass_context` decorator.  This function is
+    primarily useful for helpers such as :func:`echo` which might be
+    interested in changing its behavior based on the current context.
+
+    To push the current context, :meth:`Context.scope` can be used.
+
+    .. versionadded:: 5.0
+
+    :param silent: if set to `True` the return value is `None` if no context
+                   is available.  The default behavior is to raise a
+                   :exc:`RuntimeError`.
+    """
+    return click_get_current_context(silent=silent)  # type: ignore[return-value]

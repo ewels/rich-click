@@ -6,7 +6,7 @@ The intention is to provide attractive help output from Click, formatted with Ri
 customization required.
 """
 
-__version__ = "1.8.8"
+__version__ = "1.9.0.dev0"
 
 # Import the entire click API here.
 # We need to manually import these instead of `from click import *` to force
@@ -37,7 +37,6 @@ from click.exceptions import NoSuchOption as NoSuchOption
 from click.exceptions import UsageError as UsageError
 from click.formatting import HelpFormatter as HelpFormatter
 from click.formatting import wrap_text as wrap_text
-from click.globals import get_current_context as get_current_context
 from click.termui import clear as clear
 from click.termui import confirm as confirm
 from click.termui import echo_via_pager as echo_via_pager
@@ -79,6 +78,7 @@ from rich_click.rich_command import RichCommand as RichCommand
 from rich_click.rich_command import RichCommandCollection as RichCommandCollection
 from rich_click.rich_command import RichGroup as RichGroup
 from rich_click.rich_context import RichContext as RichContext
+from rich_click.rich_context import get_current_context as get_current_context
 from rich_click.rich_help_configuration import RichHelpConfiguration as RichHelpConfiguration
 
 from . import rich_click as rich_click

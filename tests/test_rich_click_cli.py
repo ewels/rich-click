@@ -171,13 +171,13 @@ def test_override_click_command(mock_script_writer: Callable[[str], Path], asser
 
         class OverrideCommand(click.Command):
             def format_usage(self, ctx, formatter):
-                print('I am overriding Command!')
+                formatter.write('I am overriding Command!')
             def format_help_text(self, ctx, formatter):
-                print('I am overriding Command!')
+                formatter.write('I am overriding Command!')
             def format_options(self, ctx, formatter):
-                print('I am overriding Command!')
+                formatter.write('I am overriding Command!')
             def format_epilog(self, ctx, formatter):
-                print('I am overriding Command!')
+                formatter.write('I am overriding Command!')
 
         @click.command(cls=OverrideCommand)
         def cli():
@@ -218,18 +218,18 @@ def test_override_click_group(mock_script_writer: Callable[[str], Path], assert_
 
         class OverrideCommand(click.Command):
             def format_usage(self, ctx, formatter):
-                print('I am overriding Command!')
+                formatter.write('I am overriding Command!')
             def format_help_text(self, ctx, formatter):
-                print('I am overriding Command!')
+                formatter.write('I am overriding Command!')
             def format_options(self, ctx, formatter):
-                print('I am overriding Command!')
+                formatter.write('I am overriding Command!')
             def format_epilog(self, ctx, formatter):
-                print('I am overriding Command!')
+                formatter.write('I am overriding Command!')
 
         class OverrideGroup(OverrideCommand, click.Group):
             command_class = OverrideCommand
             def format_commands(self, ctx, formatter):
-                print('I am overriding Command!')
+                formatter.write('I am overriding Command!')
 
         @click.group(cls=OverrideGroup)
         def cli():
@@ -278,18 +278,18 @@ def test_override_rich_click_command(mock_script_writer: WriteScript) -> None:
         # Test if robust to subclassing
         class OverrideRichCommand(click.RichCommand):
             def format_usage(self, ctx, formatter):
-                print('I am overriding RichCommand!')
+                formatter.write('I am overriding RichCommand!')
             def format_help_text(self, ctx, formatter):
-                print('I am overriding RichCommand!')
+                formatter.write('I am overriding RichCommand!')
             def format_options(self, ctx, formatter):
-                print('I am overriding RichCommand!')
+                formatter.write('I am overriding RichCommand!')
             def format_epilog(self, ctx, formatter):
-                print('I am overriding RichCommand!')
+                formatter.write('I am overriding RichCommand!')
 
         class OverrideRichGroup(OverrideRichCommand, click.RichGroup):
             command_class = OverrideRichCommand
             def format_commands(self, ctx, formatter):
-                print('I am overriding RichCommand!')
+                formatter.write('I am overriding RichCommand!')
 
         @click.group(cls=OverrideRichGroup)
         def cli():
@@ -311,7 +311,7 @@ def test_override_rich_click_command(mock_script_writer: WriteScript) -> None:
     )
     assert res.returncode == 0
 
-    expected_output = ("I am overriding RichCommand!\n" * 4) + "\n"
+    expected_output = "I am overriding RichCommand!\n" * 4
 
     assert res.returncode == 0
     assert res.stdout.decode() == expected_output
@@ -325,16 +325,16 @@ def test_override_rich_click_group(mock_script_writer: Callable[[str], Path], as
         # Test if robust to subclassing
         class OverrideRichCommand(click.RichCommand):
             def format_usage(self, ctx, formatter):
-                print('I am overriding RichCommand!')
+                formatter.write('I am overriding RichCommand!')
             def format_help_text(self, ctx, formatter):
-                print('I am overriding RichCommand!')
+                formatter.write('I am overriding RichCommand!')
             def format_epilog(self, ctx, formatter):
-                print('I am overriding RichCommand!')
+                formatter.write('I am overriding RichCommand!')
 
         class OverrideRichGroup(OverrideRichCommand, click.RichGroup):
             command_class = OverrideRichCommand
             def format_commands(self, ctx, formatter):
-                print('I am overriding RichCommand (format_commands)!')
+                formatter.write('I am overriding RichCommand (format_commands)!')
 
         @click.group(cls=OverrideRichGroup)
         def cli():
