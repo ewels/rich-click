@@ -53,6 +53,7 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
                 "usage": config.style_usage,
             }
         ),
+        stderr=True,
         color_system=config.color_system,
         force_terminal=config.force_terminal,
         file=file or open(os.devnull, "w"),
