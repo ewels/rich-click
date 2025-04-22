@@ -34,9 +34,6 @@ def entry_points(*, group: str) -> "metadata.EntryPoints":  # type: ignore[name-
 
     epg = metadata.entry_points()
 
-    if sys.version_info < (3, 8) and hasattr(epg, "select"):
-        return epg.select(group=group)
-
     return epg.get(group, [])
 
 

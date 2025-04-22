@@ -8,11 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: 3.x
+          python-version: 3
       - name: Install dependencies
         run: |
-          pip install -U uv
-          uv pip install --system --editable ".[dev]"
-      - uses: pre-commit/action@v2.0.3
+          pip install --editable ".[dev]"
+      - uses: pre-commit-ci/lite-action@v1.1.0

@@ -18,18 +18,19 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: astral-sh/setup-uv@v4
         with:
           python-version: 3.x
 
       - name: Install requirements for docs
         run: |
-          pip install -U uv
-          uv pip install --system --editable ".[docs]"
+          uv pip install --editable ".[docs]"
 
       - name: Generate terminal images with rich-codex
         uses: ewels/rich-codex@v1
         with:
+          use_uv: "true"
+          skip_python_setup: "true"
           commit_changes: "true"
           clean_img_paths: docs/images/*.svg
           skip_git_checks: "true"
