@@ -146,6 +146,7 @@ def rich_config(
             Defaults to None.
         console: A Rich Console that will be accessible from the `RichContext`, `RichCommand`, and `RichGroup` instances
             Defaults to None.
+
     """
     from rich.console import Console
 

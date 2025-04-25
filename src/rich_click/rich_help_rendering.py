@@ -65,6 +65,7 @@ def _make_rich_rext(text: Union[str, Text], style: StyleType, formatter: RichHel
     Returns:
     -------
         MarkdownElement or Text: Styled text object
+
     """
     if isinstance(text, Text):
         return text
@@ -119,6 +120,7 @@ def _get_help_text(obj: Union[Command, Group], formatter: RichHelpFormatter) -> 
     Yields:
     ------
         Text or Markdown: Multiple styled objects (depreciated, usage)
+
     """
     if TYPE_CHECKING:
         assert isinstance(obj.help, str)
@@ -176,6 +178,7 @@ def _get_option_help(
     Returns:
     -------
         Columns: A columns element with multiple styled objects (help, default, required)
+
     """
     config = formatter.config
     items: List[RenderableType] = []
@@ -300,6 +303,7 @@ def _make_command_help(help_text: str, formatter: RichHelpFormatter, is_deprecat
     Returns:
     -------
         Text or Markdown: Styled object
+
     """
     paragraphs = inspect.cleandoc(help_text).split("\n\n")
     # Remove single linebreaks
@@ -738,6 +742,7 @@ def rich_format_error(
         self (click.ClickException): Click exception to format.
         formatter: formatter object.
         export_console_as: If set, outputs error message as HTML or SVG.
+
     """
     config = formatter.config
     # Print usage

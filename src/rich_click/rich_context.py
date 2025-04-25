@@ -42,6 +42,7 @@ class RichContext(click.Context):
             export_console_as: Arg is passed to RichHelpFormatter().
             errors_in_output_format: Arg is passed to RichHelpFormatter().
             **kwargs: Kwargs that get passed to click.Context.
+
         """
         super().__init__(*args, **kwargs)
         parent: Optional[RichContext] = kwargs.pop("parent", None)

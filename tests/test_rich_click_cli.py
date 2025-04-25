@@ -130,6 +130,52 @@ def test_simple_rich_click_cli_execute_command(
     assert subprocess_res.stdout.decode() == "Hello, world!\n"
 
 
+def test_rich_click_cli_help(assert_str: AssertStr) -> None:
+    res = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "src.rich_click",
+            "--help",
+        ],
+        stdout=subprocess.PIPE,
+        env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
+    )
+    assert res.returncode == 0
+
+
+def test_rich_click_cli_help_with_rich_config(assert_str: AssertStr) -> None:
+    res = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "src.rich_click",
+            "--rich-config",
+            '{"style_option": "bold red"}',
+            "--help",
+        ],
+        stdout=subprocess.PIPE,
+        env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
+    )
+    assert res.returncode == 0
+
+
+def test_rich_click_cli_help_with_bad_rich_config(assert_str: AssertStr) -> None:
+    res = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "src.rich_click",
+            "--rich-config",
+            '{"bad", "json"}',
+            "--help",
+        ],
+        stdout=subprocess.PIPE,
+        env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
+    )
+    assert res.returncode == 0
+
+
 def test_custom_config_rich_click_cli(simple_script: Path, assert_str: AssertStr) -> None:
     res = subprocess.run(
         [
