@@ -122,7 +122,7 @@ def _get_help_text(obj: Union[Command, Group], formatter: RichHelpFormatter) -> 
         Text or Markdown: Multiple styled objects (depreciated, usage)
 
     """
-    if TYPE_CHECKING:
+    if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(obj.help, str)
     config = formatter.config
     # Prepend deprecated status
@@ -183,7 +183,7 @@ def _get_option_help(
     config = formatter.config
     items: List[RenderableType] = []
 
-    if TYPE_CHECKING:
+    if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(param.name, str)
 
     # Get the environment variable first
@@ -205,7 +205,7 @@ def _get_option_help(
 
     # Main help text
     if getattr(param, "help", None):
-        if TYPE_CHECKING:
+        if TYPE_CHECKING:  # pragma: no cover
             assert isinstance(param, click.Option)
             assert hasattr(param, "help")
             assert isinstance(param.help, str)
@@ -263,7 +263,7 @@ def _get_option_help(
 
     if parse_default:
         help_record = param.get_help_record(ctx)
-        if TYPE_CHECKING:
+        if TYPE_CHECKING:  # pragma: no cover
             assert isinstance(help_record, tuple)
         default_str_match = re.search(r"\[(?:.+; )?default: (.*)\]", help_record[-1])
         if default_str_match:
@@ -511,7 +511,7 @@ def get_rich_options(
             metavar = Text(style=formatter.config.style_metavar, overflow="fold")
             metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
 
-            if TYPE_CHECKING:
+            if TYPE_CHECKING:  # pragma: no cover
                 assert isinstance(param.name, str)
                 assert isinstance(param, click.Option)
 
@@ -673,7 +673,7 @@ def get_rich_commands(
             if command not in obj.list_commands(ctx):
                 continue
             cmd = obj.get_command(ctx, command)
-            if TYPE_CHECKING:
+            if TYPE_CHECKING:  # pragma: no cover
                 assert cmd is not None
             if cmd.hidden:
                 continue
@@ -747,7 +747,7 @@ def rich_format_error(
     config = formatter.config
     # Print usage
     if getattr(self, "ctx", None) is not None:
-        if TYPE_CHECKING:
+        if TYPE_CHECKING:  # pragma: no cover
             assert hasattr(self, "ctx")
         self.ctx.command.format_usage(self.ctx, formatter)
     if config.errors_suggestion:

@@ -9,7 +9,7 @@ from typing_extensions import Literal
 from rich_click.rich_help_configuration import RichHelpConfiguration
 
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from rich.console import Console
     from rich.highlighter import Highlighter
 

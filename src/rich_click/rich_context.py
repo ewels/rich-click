@@ -8,7 +8,7 @@ from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
 
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from types import TracebackType
 
     from rich.console import Console
@@ -70,7 +70,7 @@ class RichContext(click.Context):
                 self.help_config = RichHelpConfiguration.load_from_globals()
         elif isinstance(rich_help_config, Mapping):
             if hasattr(parent, "help_config"):
-                if TYPE_CHECKING:
+                if TYPE_CHECKING:  # pragma: no cover
                     assert parent is not None
                 kw = parent.help_config.__dict__.copy()
                 kw.update(rich_help_config)
@@ -91,7 +91,7 @@ class RichContext(click.Context):
         )
         return formatter
 
-    if TYPE_CHECKING:
+    if TYPE_CHECKING:  # pragma: no cover
 
         def __enter__(self) -> "RichContext":
             return super().__enter__()  # type: ignore[return-value]
