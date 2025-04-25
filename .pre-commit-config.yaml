@@ -13,25 +13,25 @@ repos:
 #      - id: prettier
 
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.6.27
+    rev: 03d0035246f3e81f36aed592ffb4bebf33a03106  # frozen: v1.7.7
     hooks:
       - id: actionlint
 
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: 1.7.0
+    rev: 57b6ff7bf72affdd12c7f3fd6de761ba18a33b3a  # frozen: v2.5.1
     hooks:
       - id: pyproject-fmt
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.1.7
+    rev: d119aaff6891558b6eaf52518386871d1d267131  # frozen: v0.11.6
     hooks:
       - id: ruff
-        name: Ruff - Linter
+        name: Ruff
         args: [--fix]
 
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 24.1.1
+    rev: a4920527036bb9a3f3e6055d595849d67d0da066  # frozen: 25.1.0
     hooks:
       - id: black
         language_version: python3.12
@@ -49,7 +49,7 @@ repos:
         require_serial: true
 
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.4
+    rev: 63c8f8312b7559622c0d82815639671ae42132ac  # frozen: v2.4.1
     hooks:
     - id: codespell
       files: ^docs/.*\.md$

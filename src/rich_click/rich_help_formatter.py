@@ -1,5 +1,6 @@
 import os
 import sys
+from functools import cached_property
 from typing import IO, TYPE_CHECKING, Any, Dict, Optional
 
 import click
@@ -13,12 +14,6 @@ if TYPE_CHECKING:
     from rich.highlighter import Highlighter
 
 
-if sys.version_info >= (3, 8):
-    from functools import cached_property
-else:
-    cached_property = property
-
-
 def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> "Console":
     """
     Create a Rich Console configured from Rich Help Configuration.
@@ -28,6 +23,7 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
         config: Rich Help Configuration instance
         file: Optional IO stream to write Rich Console output
             Defaults to None.
+
     """
     from rich.console import Console
     from rich.theme import Theme
@@ -109,6 +105,7 @@ class RichHelpFormatter(click.HelpFormatter):
             export_console_as: How output is rendered by getvalue(). Default of None renders output normally.
             export_kwargs: Any kwargs passed to the export method of the Console in getvalue().
             **kwargs: Kwargs passed to click.HelpFormatter.
+
         """
         if config is not None:
             self.config = config

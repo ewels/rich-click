@@ -7,14 +7,14 @@ on:
 
 jobs:
   rich_codex:
-    if: github.repository_owner == 'ewels'
+    if: github.repository_owner == 'ewels' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: astral-sh/setup-uv@v5
         with:
           python-version: 3.x
 
@@ -24,6 +24,8 @@ jobs:
       - name: Generate terminal images with rich-codex
         uses: ewels/rich-codex@v1
         with:
+          use_uv: "true"
+          skip_python_setup: "true"
           commit_changes: "true"
           clean_img_paths: docs/images/*.svg
           terminal_width: 80

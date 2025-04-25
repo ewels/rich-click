@@ -1,36 +1,42 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+    "setuptools>=45",
+]
+
 [project]
 name = "rich-click"
 description = "Format click help output nicely with rich"
 readme = "README.md"
 license = { file = "LICENSE" }
-maintainers = [{ name = "Phil Ewels", email = "phil@ewels.co.uk" }, { name = "Daniel Reeves", email = "xdanielreeves@gmail.com"}]
-authors = [{ name = "Phil Ewels", email = "phil@ewels.co.uk" }]
-requires-python = ">=3.7"
+maintainers = [
+    { name = "Phil Ewels", email = "phil@ewels.co.uk" },
+    { name = "Daniel Reeves", email = "xdanielreeves@gmail.com" },
+]
+authors = [ { name = "Phil Ewels", email = "phil@ewels.co.uk" } ]
+requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 dynamic = [
     "version",
 ]
 dependencies = [
     "click>=7",
-    'importlib-metadata; python_version < "3.8"',
     "rich>=10.7",
-    "typing_extensions>=4",
+    "typing-extensions>=4",
 ]
-[project.optional-dependencies]
-dev = [
+optional-dependencies.dev = [
     "mypy",
     "packaging",
     "pre-commit",
@@ -40,8 +46,8 @@ dev = [
     "ruff",
     "types-setuptools",
 ]
-docs = [
-    "markdown_include",
+optional-dependencies.docs = [
+    "markdown-include",
     "mkdocs",
     "mkdocs-glightbox",
     "mkdocs-material[imaging]~=9.5.18",
@@ -50,40 +56,41 @@ docs = [
     "mkdocstrings[python]",
     "rich-codex",
 ]
-[project.urls]
-Documentation = "https://github.com/ewels/rich-click"
-Homepage = "https://github.com/ewels/rich-click"
-Issues = "https://github.com/ewels/rich-click/issues"
-Repository = "https://github.com/ewels/rich-click"
-[project.scripts]
-rich-click = "rich_click.cli:main"
-
-[build-system]
-build-backend = "setuptools.build_meta"
-requires = [
-    "setuptools>=45",
-]
+urls.Documentation = "https://github.com/ewels/rich-click"
+urls.Homepage = "https://github.com/ewels/rich-click"
+urls.Issues = "https://github.com/ewels/rich-click/issues"
+urls.Repository = "https://github.com/ewels/rich-click"
+scripts.rich-click = "rich_click.cli:main"
 
 [tool.setuptools.dynamic]
 version = { attr = "rich_click.__version__" }
 
 [tool.black]
 line-length = 120
-target-version = ['py37']
+target-version = [ 'py37' ]
 
 [tool.ruff]
+line-length = 120
 exclude = [
     ".git",
-    "__pycache__",
     ".venv",
-    "venv",
+    "__pycache__",
     "build",
+    "docs/",
+    "examples/**",
     "sdist",
     "tests/fixtures/**",
-    "examples/**",
-    "docs/"
+    "venv",
 ]
-ignore = [
+
+lint.select = [
+    "D",    # pydocstyle
+    "E",    # pycodestyle
+    "F",    # flake8
+    "I001", # isort
+    "W",    # pycodestyle
+]
+lint.ignore = [
     "D100", # Missing docstring in public module
     "D102", # Missing docstring in public method
     "D105", # Missing docstring in magic method
@@ -92,41 +99,31 @@ ignore = [
     "D212", # Multi-line docstring summary should start at the first line
     "E731", # Do not assign a lambda expression, use a def
 ]
-line-length = 120
-select = [
-    "D",    # pydocstyle
-    "E",    # pycodestyle
-    "F",    # flake8
-    "W",    # pycodestyle
-    "I001", # isort
-]
-
-[tool.ruff.isort]
+lint.isort.known-first-party = [ "rich_click" ]
 # Todo:
 #   Add vertical hanging indent when supported.
 #   https://github.com/astral-sh/ruff/issues/2600
-lines-after-imports = 2
-known-first-party = ["rich_click"]
+lint.isort.lines-after-imports = 2
 
 [tool.pyproject-fmt]
 indent = 4
 
 [tool.pytest.ini_options]
 addopts = "-s -rP -vv --showlocals"
-pythonpath = ["tests", "src"]
-testpaths = ["tests"]
+pythonpath = [ "tests", "src" ]
+testpaths = [ "tests" ]
 
 [tool.mypy]
 python_version = "3.8"
 scripts_are_modules = true
 strict = true
 exclude = [
-    '.*?live_style_editor\.py$'
+    '.*?live_style_editor\.py$',
 ]
 
 [tool.pyright]
-include = ["src"]
-pythonVersion = "3.7"
+include = [ "src" ]
+pythonVersion = "3.8"
 typeCheckingMode = "basic"
 executionEnvironments = [
     { root = "src" },
