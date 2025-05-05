@@ -9,7 +9,7 @@ from typing_extensions import Literal
 from rich_click.utils import CommandGroupDict, OptionGroupDict, truthy
 
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import rich.align
     import rich.box
     import rich.highlighter

@@ -17,7 +17,7 @@ from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
 
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from rich.console import Console
 
 
@@ -142,7 +142,7 @@ class RichCommand(click.Command):
         else:
             args = list(args)
 
-        if TYPE_CHECKING:
+        if TYPE_CHECKING:  # pragma: no cover
             assert args is not None
 
         if prog_name is None:

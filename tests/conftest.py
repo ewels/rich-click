@@ -48,6 +48,7 @@ class AssertStr(Protocol):
         ----
             actual: actual result
             expectation: expected result `str` or `Path` to load result
+
         """
         ...
 
@@ -108,6 +109,7 @@ class LoadCommandModule(Protocol):
         ----
             namespace: Namespace of the rich cli module under test.
                 Example: fixtures.arguments
+
         """
         ...
 
@@ -178,6 +180,7 @@ class AssertRichFormat(Protocol):
             args: The arguments to invoke the command with
             error: Optional exception to assert
             rich_config: Optional rich_config function to be applied to the command
+
         """
         ...
 

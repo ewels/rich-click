@@ -13,7 +13,7 @@ from rich_click.rich_help_configuration import RichHelpConfiguration
 from . import rich_click  # noqa: F401
 
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from rich.console import Console
 
 
@@ -146,6 +146,7 @@ def rich_config(
             Defaults to None.
         console: A Rich Console that will be accessible from the `RichContext`, `RichCommand`, and `RichGroup` instances
             Defaults to None.
+
     """
     from rich.console import Console
 

@@ -6,7 +6,7 @@ from rich_click.rich_help_configuration import force_terminal_default, terminal_
 from rich_click.utils import CommandGroupDict, OptionGroupDict
 
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     import rich.align
     import rich.box
     import rich.padding

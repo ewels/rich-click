@@ -65,6 +65,7 @@ def _make_rich_rext(text: Union[str, Text], style: StyleType, formatter: RichHel
     Returns:
     -------
         MarkdownElement or Text: Styled text object
+
     """
     if isinstance(text, Text):
         return text
@@ -119,8 +120,9 @@ def _get_help_text(obj: Union[Command, Group], formatter: RichHelpFormatter) -> 
     Yields:
     ------
         Text or Markdown: Multiple styled objects (depreciated, usage)
+
     """
-    if TYPE_CHECKING:
+    if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(obj.help, str)
     config = formatter.config
     # Prepend deprecated status
@@ -176,11 +178,12 @@ def _get_option_help(
     Returns:
     -------
         Columns: A columns element with multiple styled objects (help, default, required)
+
     """
     config = formatter.config
     items: List[RenderableType] = []
 
-    if TYPE_CHECKING:
+    if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(param.name, str)
 
     # Get the environment variable first
@@ -202,7 +205,7 @@ def _get_option_help(
 
     # Main help text
     if getattr(param, "help", None):
-        if TYPE_CHECKING:
+        if TYPE_CHECKING:  # pragma: no cover
             assert isinstance(param, click.Option)
             assert hasattr(param, "help")
             assert isinstance(param.help, str)
@@ -260,7 +263,7 @@ def _get_option_help(
 
     if parse_default:
         help_record = param.get_help_record(ctx)
-        if TYPE_CHECKING:
+        if TYPE_CHECKING:  # pragma: no cover
             assert isinstance(help_record, tuple)
         default_str_match = re.search(r"\[(?:.+; )?default: (.*)\]", help_record[-1])
         if default_str_match:
@@ -300,6 +303,7 @@ def _make_command_help(help_text: str, formatter: RichHelpFormatter, is_deprecat
     Returns:
     -------
         Text or Markdown: Styled object
+
     """
     paragraphs = inspect.cleandoc(help_text).split("\n\n")
     # Remove single linebreaks
@@ -507,7 +511,7 @@ def get_rich_options(
             metavar = Text(style=formatter.config.style_metavar, overflow="fold")
             metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
 
-            if TYPE_CHECKING:
+            if TYPE_CHECKING:  # pragma: no cover
                 assert isinstance(param.name, str)
                 assert isinstance(param, click.Option)
 
@@ -669,7 +673,7 @@ def get_rich_commands(
             if command not in obj.list_commands(ctx):
                 continue
             cmd = obj.get_command(ctx, command)
-            if TYPE_CHECKING:
+            if TYPE_CHECKING:  # pragma: no cover
                 assert cmd is not None
             if cmd.hidden:
                 continue
@@ -738,11 +742,12 @@ def rich_format_error(
         self (click.ClickException): Click exception to format.
         formatter: formatter object.
         export_console_as: If set, outputs error message as HTML or SVG.
+
     """
     config = formatter.config
     # Print usage
     if getattr(self, "ctx", None) is not None:
-        if TYPE_CHECKING:
+        if TYPE_CHECKING:  # pragma: no cover
             assert hasattr(self, "ctx")
         self.ctx.command.format_usage(self.ctx, formatter)
     if config.errors_suggestion:
