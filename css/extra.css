@@ -1,0 +1,84 @@
+[data-md-color-scheme="light"] img[src$="#only-dark"],
+[data-md-color-scheme="light"] img[src$="#gh-dark-mode-only"] {
+  display: none; /* Hide dark images in light mode */
+}
+
+[data-md-color-scheme="dark"] img[src$="#only-light"],
+[data-md-color-scheme="dark"] img[src$="#gh-light-mode-only"] {
+  display: none; /* Hide light images in dark mode */
+}
+
+.rc-button.button-selected code {
+  background-color: rgba(127, 127, 127, 0.4);
+}
+
+[data-termynal] {
+  white-space: pre;
+}
+
+a.external-link::after {
+  /* \00A0 is a non-breaking space
+        to make the mark be on the same line as the link
+    */
+  content: "\00A0[↪]";
+}
+
+a.internal-link::after {
+  /* \00A0 is a non-breaking space
+        to make the mark be on the same line as the link
+    */
+  content: "\00A0↪";
+}
+
+@font-face {
+  font-family: "pixelmix";
+  src:
+    local("pixelmix"),
+    url("../fonts/pixelmix.ttf") format("truetype")
+}
+
+.md-header__topic, .md-header__topic code,
+h1, h1 code,
+.md-header__header, .md-header__header code {
+  font-family: "pixelmix", "Noto Sans", sans-serif;
+}
+
+.md-header__topic, .md-header__topic code, h1, h1 code, .md-header__header {
+  text-shadow: -4px 4px rgba(128, 128, 128, 0.1);
+}
+
+.md-content ul {
+  list-style: none;
+}
+
+.md-content ul > li {
+  position: relative;
+  padding-left: 20px;
+}
+
+.md-content ul > li::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--md-typeset-color);
+  opacity: 90%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin-top: 0.8em;
+  transform: translateY(-50%);
+  transition: background-color 0.2s ease;
+}
+
+.md-content ul > li:hover::before {
+  background-color: var(--md-accent-fg-color);
+  fill-opacity: 100%;
+  opacity: 100%;
+}
+
+.md-content img.screenshot {
+  max-width: 700px;
+  margin: 2em auto .8em;
+  display: block;
+}
