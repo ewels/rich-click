@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: astral-sh/setup-uv@v5
         with:
-          python-version: 3.x
+          python-version: 3
 
       - name: Install your custom tools
         run: pip install ".[dev]"
