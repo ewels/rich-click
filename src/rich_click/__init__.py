@@ -18,14 +18,9 @@ from click.core import Context as Context
 from click.core import Group as Group
 from click.core import Option as Option
 from click.core import Parameter as Parameter
-from click.decorators import argument as argument
-from click.decorators import confirmation_option as confirmation_option
-from click.decorators import help_option as help_option
 from click.decorators import make_pass_decorator as make_pass_decorator
 from click.decorators import option as option
 from click.decorators import pass_obj as pass_obj
-from click.decorators import password_option as password_option
-from click.decorators import version_option as version_option
 from click.exceptions import Abort as Abort
 from click.exceptions import BadArgumentUsage as BadArgumentUsage
 from click.exceptions import BadOptionUsage as BadOptionUsage
@@ -70,16 +65,24 @@ from click.utils import get_binary_stream as get_binary_stream
 from click.utils import get_text_stream as get_text_stream
 from click.utils import open_file as open_file
 
+from rich_click.decorators import argument as argument
 from rich_click.decorators import command as command
+from rich_click.decorators import confirmation_option as confirmation_option
 from rich_click.decorators import group as group
+from rich_click.decorators import help_option as help_option
 from rich_click.decorators import pass_context as pass_context
+from rich_click.decorators import password_option as password_option
 from rich_click.decorators import rich_config as rich_config
+from rich_click.decorators import version_option as version_option
 from rich_click.rich_command import RichCommand as RichCommand
 from rich_click.rich_command import RichCommandCollection as RichCommandCollection
 from rich_click.rich_command import RichGroup as RichGroup
 from rich_click.rich_context import RichContext as RichContext
 from rich_click.rich_context import get_current_context as get_current_context
 from rich_click.rich_help_configuration import RichHelpConfiguration as RichHelpConfiguration
+from rich_click.rich_parameters import RichArgument as RichArgument
+from rich_click.rich_parameters import RichOption as RichOption
+from rich_click.rich_parameters import RichParameter as RichParameter
 
 from . import rich_click as rich_click
 
