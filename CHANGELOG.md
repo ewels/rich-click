@@ -3,6 +3,11 @@
 ## Version 1.9.0dev0 (WIP)
 
 - `RichHelpFormatter` now defers printing by default if a user does not specify a Console. [[#231](https://github.com/ewels/rich-click/pull/231)] (With contributions from [@ofek](https://github.com/ofek))
+- `help=` is now a valid kwarg for `@argument()` decorator.
+- `show_arguments` is now `Optional[bool]`. If `None`, then the Arguments panel shows if (1) at least one help text is set for an argument, and (2) `group_arguments_options` is False.
+- New config option: `print_help_to_stderr`. If `True`, then `--help` prints to stderr. Defaults to `False`.
+- (Still WIP) `panel=` is now a valid kwarg for all parameter decorators. Panel specifies which panel (in <1.9, a "group") a parameter should be associated with.
+  - (Still WIP: silently deprecating "groups", and renaming this to "panels". We will need to handle this with care, as we do not under any circumstances want to break existing 1.8.x code.)
 
 ## Version 1.8.8 (2025-03-09)
 

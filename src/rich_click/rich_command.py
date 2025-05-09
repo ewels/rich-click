@@ -268,6 +268,19 @@ class RichCommand(click.Command):
         else:
             return super().make_context(info_name, args, parent, **extra)  # type: ignore[return-value]
 
+    def parse_args(self, ctx: click.Context, args: List[str]) -> List[str]:
+        # This looks odd, but this is to keep mypy happy.
+        # Setting `ctx: click.RichContext` causes a lot of mypy issues.
+        help_config: Optional[RichHelpConfiguration] = getattr(ctx, "help_config", None)
+        if help_config is not None:
+            print_help_to_stderr = help_config.print_help_to_stderr
+        else:
+            print_help_to_stderr = False
+        if not args and self.no_args_is_help and not ctx.resilient_parsing:
+            click.echo(ctx.get_help(), color=ctx.color, file=sys.stderr if print_help_to_stderr else None)
+            ctx.exit()
+        return super().parse_args(ctx, args)
+
 
 if CLICK_IS_BEFORE_VERSION_9X:
     with warnings.catch_warnings():

@@ -1,14 +1,21 @@
 from typing import TYPE_CHECKING, Any, Callable, Dict, Mapping, Optional, Type, TypeVar, Union, cast, overload
 
-from click import Command, Group
+from click import Argument, Command, Group, Option
+from click import argument as click_argument
 from click import command as click_command
+from click import confirmation_option as click_confirmation_option
+from click import help_option as click_help_option
+from click import option as click_option
 from click import pass_context as click_pass_context
+from click import password_option as click_password_option
+from click import version_option as click_version_option
 from typing_extensions import Concatenate, ParamSpec
 
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 from rich_click.rich_command import RichCommand, RichGroup, RichMultiCommand  # noqa: F401
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
+from rich_click.rich_parameters import RichArgument, RichHelpOption, RichOption
 
 from . import rich_click  # noqa: F401
 
@@ -195,6 +202,151 @@ def rich_config(
         return obj
 
     return decorator
+
+
+def argument(*param_decls: str, cls: Optional[Type[Argument]] = None, **attrs: Any) -> Callable[[FC], FC]:
+    """
+    Attaches an argument to the command.  All positional arguments are
+    passed as parameter declarations to :class:`Argument`; all keyword
+    arguments are forwarded unchanged (except ``cls``).
+    This is equivalent to creating an :class:`Argument` instance manually
+    and attaching it to the :attr:`Command.params` list.
+
+    For the default argument class, refer to :class:`Argument` and
+    :class:`Parameter` for descriptions of parameters.
+
+    :param cls: the argument class to instantiate.  This defaults to
+                :class:`Argument`.
+    :param param_decls: Passed as positional arguments to the constructor of
+        ``cls``.
+    :param attrs: Passed as keyword arguments to the constructor of ``cls``.
+    """
+    if cls is None:
+        cls = RichArgument
+
+    return click_argument(*param_decls, cls=cls, **attrs)
+
+
+def option(*param_decls: str, cls: Optional[Type[Option]] = None, **attrs: Any) -> Callable[[FC], FC]:
+    """
+    Attaches an option to the command.  All positional arguments are
+    passed as parameter declarations to :class:`Option`; all keyword
+    arguments are forwarded unchanged (except ``cls``).
+    This is equivalent to creating an :class:`Option` instance manually
+    and attaching it to the :attr:`Command.params` list.
+
+    For the default option class, refer to :class:`Option` and
+    :class:`Parameter` for descriptions of parameters.
+
+    :param cls: the option class to instantiate.  This defaults to
+                :class:`Option`.
+    :param param_decls: Passed as positional arguments to the constructor of
+        ``cls``.
+    :param attrs: Passed as keyword arguments to the constructor of ``cls``.
+    """
+    if cls is None:
+        cls = RichOption
+
+    return click_option(*param_decls, cls=cls, **attrs)
+
+
+def confirmation_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
+    """
+    Add a ``--yes`` option which shows a prompt before continuing if
+    not passed. If the prompt is declined, the program will exit.
+
+    :param param_decls: One or more option names. Defaults to the single
+        value ``"--yes"``.
+    :param kwargs: Extra arguments are passed to :func:`option`.
+    """
+    kwargs.setdefault("cls", RichOption)
+    return click_confirmation_option(*param_decls, **kwargs)
+
+
+def password_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
+    """
+    Add a ``--password`` option which prompts for a password, hiding
+    input and asking to enter the value again for confirmation.
+
+    :param param_decls: One or more option names. Defaults to the single
+        value ``"--password"``.
+    :param kwargs: Extra arguments are passed to :func:`option`.
+    """
+    if not param_decls:
+        param_decls = ("--password",)
+
+    kwargs.setdefault("prompt", True)
+    kwargs.setdefault("confirmation_prompt", True)
+    kwargs.setdefault("hide_input", True)
+    return click_password_option(*param_decls, **kwargs)
+
+
+if not CLICK_IS_BEFORE_VERSION_8X:
+
+    def version_option(
+        version: Optional[str] = None,
+        *param_decls: str,
+        package_name: Optional[str] = None,
+        prog_name: Optional[str] = None,
+        message: Optional[str] = None,
+        **kwargs: Any,
+    ) -> Callable[[FC], FC]:
+        """
+        Add a ``--version`` option which immediately prints the version
+        number and exits the program.
+
+        If ``version`` is not provided, Click will try to detect it using
+        :func:`importlib.metadata.version` to get the version for the
+        ``package_name``. On Python < 3.8, the ``importlib_metadata``
+        backport must be installed.
+
+        If ``package_name`` is not provided, Click will try to detect it by
+        inspecting the stack frames. This will be used to detect the
+        version, so it must match the name of the installed package.
+
+        :param version: The version number to show. If not provided, Click
+            will try to detect it.
+        :param param_decls: One or more option names. Defaults to the single
+            value ``"--version"``.
+        :param package_name: The package name to detect the version from. If
+            not provided, Click will try to detect it.
+        :param prog_name: The name of the CLI to show in the message. If not
+            provided, it will be detected from the command.
+        :param message: The message to show. The values ``%(prog)s``,
+            ``%(package)s``, and ``%(version)s`` are available. Defaults to
+            ``"%(prog)s, version %(version)s"``.
+        :param kwargs: Extra arguments are passed to :func:`option`.
+        :raise RuntimeError: ``version`` could not be detected.
+        """
+        kwargs.setdefault("cls", RichOption)
+        return click_version_option(
+            version, *param_decls, package_name=package_name, prog_name=prog_name, message=message, **kwargs
+        )
+
+else:
+
+    def version_option(version: Optional[str] = None, *param_decls: Any, **attrs: Any) -> Callable[[FC], FC]:  # type: ignore[misc]
+        """
+        Add a ``--version`` option which immediately prints the version
+        number and exits the program.
+        """
+        attrs.setdefault("cls", RichOption)
+        return click_version_option(version, *param_decls, **attrs)
+
+
+def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
+    """
+    Decorator for the pre-configured ``--help`` option defined above.
+
+    :param param_decls: One or more option names. Defaults to the single
+        value ``"--help"``.
+    :param kwargs: Extra arguments are passed to :func:`option`.
+    """
+    if RichHelpOption is not None:
+        kwargs.setdefault("cls", RichHelpOption)
+    else:
+        kwargs.setdefault("cls", RichOption)
+    return click_help_option(*param_decls, **kwargs)
 
 
 # Users of rich_click would face issues using mypy with this code,

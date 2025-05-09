@@ -135,7 +135,7 @@ class RichHelpConfiguration:
     aborted_text: str = field(default="Aborted.")
 
     # Behaviours
-    show_arguments: bool = field(default=False)
+    show_arguments: Optional[bool] = field(default=None)
     """Show positional arguments"""
     show_metavars_column: bool = field(default=True)
     """Show a column with the option metavar (eg. INTEGER)"""
@@ -171,6 +171,8 @@ class RichHelpConfiguration:
     """Patterns to use with the option highlighter."""
 
     legacy_windows: Optional[bool] = field(default=None)
+
+    print_help_to_stderr: bool = False
 
     def __post_init__(self) -> None:  # noqa: D105
         # Todo: Fix this so that the deprecation warning works properly.
