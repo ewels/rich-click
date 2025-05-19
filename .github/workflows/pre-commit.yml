@@ -15,4 +15,4 @@ jobs:
         run: |
           pip install -U uv
           uv pip install --system --editable ".[dev]"
-      - uses: pre-commit/action@v2.0.3
+      - uses: pre-commit/action@v3.0.1
