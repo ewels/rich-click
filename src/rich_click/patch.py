@@ -21,11 +21,11 @@ class _PatchedRichMultiCommand(RichMultiCommand, _PatchedRichCommand):
     pass
 
 
-class _PatchedRichCommandCollection(RichCommandCollection, _PatchedRichCommand):  # type: ignore[misc]
+class _PatchedRichCommandCollection(RichCommandCollection, _PatchedRichCommand):
     pass
 
 
-class _PatchedRichGroup(RichGroup, _PatchedRichCommand):  # type: ignore[misc]
+class _PatchedRichGroup(RichGroup, _PatchedRichCommand):
     pass
 
 
@@ -41,13 +41,15 @@ def rich_group(*args, **kwargs):  # type: ignore[no-untyped-def]
 
 def patch(rich_config: Optional[RichHelpConfiguration] = None) -> None:
     """Patch Click internals to use rich-click types."""
+    from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X
+
     rich_click.rich_command.OVERRIDES_GUARD = True
     click.group = rich_group
     click.command = rich_command
     click.Group = _PatchedRichGroup  # type: ignore[misc]
     click.Command = _PatchedRichCommand  # type: ignore[misc]
     click.CommandCollection = _PatchedRichCommandCollection  # type: ignore[misc]
-    if "MultiCommand" in dir(click):
+    if CLICK_IS_BEFORE_VERSION_9X:
         click.MultiCommand = _PatchedRichMultiCommand  # type: ignore[assignment,misc,unused-ignore]
     if rich_config is not None:
         rich_config.dump_to_globals()

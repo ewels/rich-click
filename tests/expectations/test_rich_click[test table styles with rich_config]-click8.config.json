@@ -70,6 +70,7 @@
   "header_text": null,
   "footer_text": null,
   "deprecated_string": "(Deprecated) ",
+  "deprecated_with_reason_string": "(Deprecated: {}) ",
   "default_string": "[default: {}]",
   "envvar_string": "[env var: {}]",
   "required_short_string": "*",

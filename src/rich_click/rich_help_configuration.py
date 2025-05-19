@@ -119,6 +119,7 @@ class RichHelpConfiguration:
     header_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     footer_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     deprecated_string: str = field(default="(Deprecated) ")
+    deprecated_with_reason_string: str = field(default="(Deprecated: {}) ")
     default_string: str = field(default="[default: {}]")
     envvar_string: str = field(default="[env var: {}]")
     required_short_string: str = field(default="*")

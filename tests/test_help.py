@@ -209,12 +209,20 @@ def default_config(initialize_rich_click: None) -> None:
             ),
             id="test table styles with rich_config",
         ),
+        pytest.param(
+            "no_args_is_help",
+            None,
+            None,
+            rich_config(help_config=RichHelpConfiguration()),
+            id="no args is help",
+            marks=pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_8X, reason="no_args_is_help= added in Click 8."),
+        ),
     ],
 )
 @pytest.mark.filterwarnings("ignore:^.*click prior to.*$:RuntimeWarning")
 def test_rich_click(
     cmd: str,
-    args: str,
+    args: Optional[str],
     error: Optional[Type[Exception]],
     rich_config: Optional[Callable[[Any], Union[RichGroup, RichCommand]]],
     assert_rich_format: AssertRichFormat,

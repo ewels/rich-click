@@ -15,6 +15,7 @@ from click.testing import CliRunner, Result
 from typing_extensions import Protocol
 
 import rich_click.rich_click as rc
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_82
 from rich_click.rich_command import RichCommand, RichGroup
 from rich_click.rich_help_configuration import RichHelpConfiguration
 
@@ -36,6 +37,7 @@ def expectations_dir(root_dir: Path) -> Path:
 
 @pytest.fixture
 def click_major_version() -> int:
+    # todo: needs to be handled for 9.0
     return int(click.__version__.split(".")[0])  # type: ignore[attr-defined]
 
 
@@ -151,7 +153,7 @@ class AssertRichFormat(Protocol):
     def __call__(
         self,
         cmd: Union[str, RichCommand, RichGroup],
-        args: str,
+        args: Optional[str],
         error: Optional[Type[Exception]],
         rich_config: Optional[Callable[[Any], Union[RichGroup, RichCommand]]],
     ) -> None:
@@ -196,7 +198,7 @@ def assert_rich_format(
 
     def assertion(
         cmd: Union[str, RichCommand],
-        args: str,
+        args: Optional[str],
         error: Optional[Type[Exception]],
         rich_config: Optional[Callable[[Any], RichCommand]],
     ) -> None:
@@ -220,7 +222,10 @@ def assert_rich_format(
             assert result_nonstandalone.exit_code != 0
 
         result = cli_runner.invoke(command, args)
-        actual = replace_link_ids(result.stdout)
+        if error is not None and not CLICK_IS_BEFORE_VERSION_82:
+            actual = replace_link_ids(result.stderr)
+        else:
+            actual = replace_link_ids(result.stdout)
 
         expectation_output_path = expectations_dir / f"{request.node.name}-click{click_major_version}.out"
         expectation_config_path = expectations_dir / f"{request.node.name}-click{click_major_version}.config.json"
