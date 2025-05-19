@@ -44,7 +44,7 @@ if CLICK_IS_BEFORE_VERSION_9X:
     # We need to load from here to help with patching.
     from rich_click.rich_command import MultiCommand  # type: ignore[attr-defined]
 else:
-    MultiCommand = Group  # type: ignore[misc,assignment]
+    MultiCommand = Group
 
 
 def _make_rich_rext(text: Union[str, Text], style: StyleType, formatter: RichHelpFormatter) -> Union[Markdown, Text]:
@@ -612,7 +612,7 @@ def get_rich_options(
 
 
 def get_rich_commands(
-    obj: MultiCommand,
+    obj: MultiCommand,  # type: ignore[valid-type]
     ctx: click.Context,
     formatter: RichHelpFormatter,
 ) -> None:
@@ -623,7 +623,7 @@ def get_rich_commands(
     # Look through COMMAND_GROUPS for this command
     # stick anything unmatched into a default group at the end
     cmd_groups = _resolve_groups(ctx=ctx, groups=formatter.config.command_groups, group_attribute="commands")
-    for command in obj.list_commands(ctx):
+    for command in obj.list_commands(ctx):  # type: ignore[attr-defined]
         for cmd_group in cmd_groups:
             if command in cmd_group.get("commands", []):
                 break
@@ -666,9 +666,9 @@ def get_rich_commands(
         )
         for command in cmd_group.get("commands", []):
             # Skip if command does not exist
-            if command not in obj.list_commands(ctx):
+            if command not in obj.list_commands(ctx):  # type: ignore[attr-defined]
                 continue
-            cmd = obj.get_command(ctx, command)
+            cmd = obj.get_command(ctx, command)  # type: ignore[attr-defined]
             if TYPE_CHECKING:
                 assert cmd is not None
             if cmd.hidden:
@@ -681,7 +681,6 @@ def get_rich_commands(
                 helptext = cmd.short_help or cmd.help or ""
             commands_table.add_row(command, _make_command_help(helptext, formatter, is_deprecated=cmd.deprecated))
         if commands_table.row_count > 0:
-
             kw: Dict[str, Any] = {
                 "border_style": formatter.config.style_commands_panel_border,
                 "title": cmd_group.get("name", formatter.config.commands_panel_title),
@@ -779,7 +778,6 @@ def rich_format_error(
     # attribute. Checking for the 'message' attribute works to make the
     # rich-click CLI compatible.
     if hasattr(self, "message"):
-
         kw: Dict[str, Any] = {}
 
         if isinstance(formatter.config.style_errors_panel_box, str):

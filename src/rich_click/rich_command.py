@@ -152,9 +152,9 @@ class RichCommand(click.Command):
 
         # Process shell completion requests and exit early.
         if CLICK_IS_BEFORE_VERSION_8X:
-            from click.core import _bashcomplete  # type: ignore[attr-defined]
+            from click.core import _bashcomplete
 
-            _bashcomplete(self, prog_name, complete_var)
+            _bashcomplete(self, prog_name, complete_var)  # type: ignore[operator]
         else:
             self._main_shell_completion(extra, prog_name, complete_var)
 
@@ -277,11 +277,10 @@ if CLICK_IS_BEFORE_VERSION_9X:
         from click import MultiCommand
 
 else:
+    MultiCommand = Group
 
-    MultiCommand = Group  # type: ignore[misc,assignment]
 
-
-class RichMultiCommand(RichCommand, MultiCommand):
+class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[misc, valid-type]
     """
     Richly formatted click MultiCommand.
 
@@ -291,10 +290,10 @@ class RichMultiCommand(RichCommand, MultiCommand):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize RichMultiCommand class."""
-        MultiCommand.__init__(self, *args, **kwargs)
+        MultiCommand.__init__(self, *args, **kwargs)  # type: ignore[misc]
         self._register_rich_context_settings_from_callback()
 
-    def format_commands(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+    def format_commands(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:
         from rich_click.rich_help_rendering import get_rich_commands
 
         get_rich_commands(self, ctx, formatter)
@@ -316,7 +315,7 @@ class RichMultiCommand(RichCommand, MultiCommand):
             self.format_epilog(ctx, formatter)
 
 
-class RichGroup(RichMultiCommand, Group):
+class RichGroup(RichMultiCommand, Group):  # type: ignore[misc]
     """
     Richly formatted click Group.
 
@@ -378,7 +377,7 @@ class RichGroup(RichMultiCommand, Group):
         return super().__call__(*args, **kwargs)
 
 
-class RichCommandCollection(CommandCollection, RichGroup):
+class RichCommandCollection(CommandCollection, RichGroup):  # type: ignore[misc]
     """
     Richly formatted click CommandCollection.
 

@@ -36,7 +36,7 @@ def expectations_dir(root_dir: Path) -> Path:
 
 @pytest.fixture
 def click_major_version() -> int:
-    return int(click.__version__.split(".")[0])
+    return int(click.__version__.split(".")[0])  # type: ignore[attr-defined]
 
 
 class AssertStr(Protocol):
