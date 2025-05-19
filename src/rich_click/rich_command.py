@@ -273,14 +273,15 @@ class RichCommand(click.Command):
 
 if CLICK_IS_BEFORE_VERSION_9X:
     with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=DeprecationWarning, module="click")
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
         from click import MultiCommand
 
 else:
+
     MultiCommand = Group
 
 
-class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[misc, valid-type]
+class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[valid-type,misc]
     """
     Richly formatted click MultiCommand.
 
@@ -293,17 +294,17 @@ class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[misc, valid-t
         MultiCommand.__init__(self, *args, **kwargs)  # type: ignore[misc]
         self._register_rich_context_settings_from_callback()
 
-    def format_commands(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:
+    def format_commands(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         from rich_click.rich_help_rendering import get_rich_commands
 
-        get_rich_commands(self, ctx, formatter)
+        get_rich_commands(self, ctx, formatter)  # type: ignore[arg-type]
 
     def format_options(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         from rich_click.rich_help_rendering import get_rich_options
 
         get_rich_options(self, ctx, formatter)  # type: ignore[arg-type]
 
-        self.format_commands(ctx, formatter)  # type: ignore[arg-type]
+        self.format_commands(ctx, formatter)
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         if OVERRIDES_GUARD:
@@ -315,7 +316,7 @@ class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[misc, valid-t
             self.format_epilog(ctx, formatter)
 
 
-class RichGroup(RichMultiCommand, Group):  # type: ignore[misc]
+class RichGroup(RichMultiCommand, Group):
     """
     Richly formatted click Group.
 
@@ -377,7 +378,7 @@ class RichGroup(RichMultiCommand, Group):  # type: ignore[misc]
         return super().__call__(*args, **kwargs)
 
 
-class RichCommandCollection(CommandCollection, RichGroup):  # type: ignore[misc]
+class RichCommandCollection(CommandCollection, RichGroup):
     """
     Richly formatted click CommandCollection.
 

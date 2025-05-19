@@ -39,8 +39,9 @@ try:
 except ImportError:
     from rich.console import render_group as group  # type: ignore[attr-defined,no-redef]
 
-
-if CLICK_IS_BEFORE_VERSION_9X:
+if TYPE_CHECKING:
+    from rich_click.rich_command import Group as MultiCommand  # type: ignore[attr-defined]
+elif CLICK_IS_BEFORE_VERSION_9X:
     # We need to load from here to help with patching.
     from rich_click.rich_command import MultiCommand  # type: ignore[attr-defined]
 else:
@@ -282,7 +283,9 @@ def _get_option_help(
     return Columns(items)
 
 
-def _make_command_help(help_text: str, formatter: RichHelpFormatter, is_deprecated: bool) -> Union[Text, Markdown]:
+def _make_command_help(
+    help_text: str, formatter: RichHelpFormatter, is_deprecated: Union[bool, str]
+) -> Union[Text, Markdown]:
     """
     Build cli help text for a click group command.
     That is, when calling help on groups with multiple subcommands
@@ -309,8 +312,11 @@ def _make_command_help(help_text: str, formatter: RichHelpFormatter, is_deprecat
         paragraphs[0] = paragraphs[0].replace("\b\n", "")
     help_text = paragraphs[0].strip()
     if is_deprecated:
-        # TODO: Format the deprecation text.
-        help_text = f"{formatter.config.deprecated_string}{help_text}"
+        # todo: handle within config in 1.9.0?
+        if isinstance(is_deprecated, str):
+            help_text = f"{formatter.config.deprecated_with_reason_string.format(is_deprecated)}{help_text}"
+        else:
+            help_text = f"{formatter.config.deprecated_string}{help_text}"
     renderable = _make_rich_rext(help_text, formatter.config.style_option_help, formatter)
     return renderable
 

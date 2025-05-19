@@ -73,6 +73,7 @@ FORCE_TERMINAL: Optional[bool] = force_terminal_default()
 HEADER_TEXT: Optional[Union[str, "rich.text.Text"]] = None
 FOOTER_TEXT: Optional[Union[str, "rich.text.Text"]] = None
 DEPRECATED_STRING: str = "(Deprecated) "
+DEPRECATED_WITH_REASON_STRING: str = "(Deprecated: {}) "
 DEFAULT_STRING: str = "[default: {}]"
 ENVVAR_STRING: str = "[env var: {}]"
 REQUIRED_SHORT_STRING: str = "*"

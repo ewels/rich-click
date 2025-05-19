@@ -20,7 +20,7 @@ else:
     CLICK_IS_BEFORE_VERSION_82 = (_major, _minor) < (8, 2)
     CLICK_IS_BEFORE_VERSION_8X = _major < 8
     CLICK_IS_BEFORE_VERSION_9X = _major < 9
-    CLICK_IS_VERSION_80 = _major == 8 and _minor == 0
+    CLICK_IS_VERSION_80 = (_major, _minor) == (8, 0)
 
 
 if CLICK_IS_BEFORE_VERSION_8X:
