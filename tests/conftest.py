@@ -153,7 +153,7 @@ class AssertRichFormat(Protocol):
     def __call__(
         self,
         cmd: Union[str, RichCommand, RichGroup],
-        args: str,
+        args: Optional[str],
         error: Optional[Type[Exception]],
         rich_config: Optional[Callable[[Any], Union[RichGroup, RichCommand]]],
     ) -> None:
@@ -198,7 +198,7 @@ def assert_rich_format(
 
     def assertion(
         cmd: Union[str, RichCommand],
-        args: str,
+        args: Optional[str],
         error: Optional[Type[Exception]],
         rich_config: Optional[Callable[[Any], RichCommand]],
     ) -> None:

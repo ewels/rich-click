@@ -10,8 +10,9 @@ import click
 # or else rich_click.cli.patch() causes a recursion error.
 from click import CommandCollection, Group
 from click.utils import PacifyFlushWrapper, make_str
+from typing_extensions import Literal, NoReturn
 
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_9X
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_BEFORE_VERSION_82
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
@@ -112,6 +113,26 @@ class RichCommand(click.Command):
                 formatter = self.context_class.formatter_class(console=self.console, config=config, file=sys.stderr)
         return formatter
 
+    @overload
+    def main(
+        self,
+        args: Optional[Sequence[str]] = None,
+        prog_name: Optional[str] = None,
+        complete_var: Optional[str] = None,
+        standalone_mode: Literal[True] = True,
+        **extra: Any,
+    ) -> NoReturn: ...
+
+    @overload
+    def main(
+        self,
+        args: Optional[Sequence[str]] = None,
+        prog_name: Optional[str] = None,
+        complete_var: Optional[str] = None,
+        standalone_mode: bool = ...,
+        **extra: Any,
+    ) -> Any: ...
+
     def main(
         self,
         args: Optional[Sequence[str]] = None,
@@ -180,6 +201,11 @@ class RichCommand(click.Command):
             except click.exceptions.ClickException as e:
                 if not standalone_mode:
                     raise
+
+                if not CLICK_IS_BEFORE_VERSION_82:
+                    if isinstance(e, click.exceptions.NoArgsIsHelpError):
+                        sys.exit(e.exit_code)
+
                 formatter = self._error_formatter(ctx)
                 from rich_click.rich_help_rendering import rich_format_error
 

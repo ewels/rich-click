@@ -21,11 +21,11 @@ class _PatchedRichMultiCommand(RichMultiCommand, _PatchedRichCommand):
     pass
 
 
-class _PatchedRichCommandCollection(RichCommandCollection, _PatchedRichCommand):  # type: ignore[misc]
+class _PatchedRichCommandCollection(RichCommandCollection, _PatchedRichCommand):
     pass
 
 
-class _PatchedRichGroup(RichGroup, _PatchedRichCommand):  # type: ignore[misc]
+class _PatchedRichGroup(RichGroup, _PatchedRichCommand):
     pass
 
 

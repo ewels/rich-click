@@ -2,9 +2,12 @@
 
 ## Version 1.8.9 (2025-05-19)
 
-- Fix deprecation warning in Click 8.2. [[#215](https://github.com/ewels/rich-click/pull/215)] ([@finsberg](https://github.com/finsberg))
-- Fix typing incompatibilities with Click 8.2.
-- Added Click 8.2's support for `Parameter.deprecated: str | bool`
+Click 8.2 support:
+
+- Fix deprecation warning in Click 8.2. [[#239](https://github.com/ewels/rich-click/pull/239)] ([@finsberg](https://github.com/finsberg))
+- Fix typing incompatibilities with Click 8.2. [[#240](https://github.com/ewels/rich-click/pull/240), [#242](https://github.com/ewels/rich-click/pull/242)] ([@finsberg](https://github.com/finsberg))
+- Fixed `no_args_is_help=True` with Click 8.2: [[#241](https://github.com/ewels/rich-click/issues/241)]
+- Added Click 8.2's support for `Parameter.deprecated: str | bool` [[#242](https://github.com/ewels/rich-click/pull/242)]
 
 ## Version 1.8.8 (2025-03-09)
 

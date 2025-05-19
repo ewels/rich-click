@@ -1,0 +1,9 @@
+                                                                                                    
+ Usage: cli [OPTIONS]                                                                               
+                                                                                                    
+ My amazing tool does all the things.                                                               
+                                                                                                    
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --version      Show the version and exit.                                                        │
+│ --help         Show this message and exit.                                                       │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯

@@ -618,7 +618,7 @@ def get_rich_options(
 
 
 def get_rich_commands(
-    obj: MultiCommand,  # type: ignore[valid-type]
+    obj: MultiCommand,
     ctx: click.Context,
     formatter: RichHelpFormatter,
 ) -> None:
@@ -629,7 +629,7 @@ def get_rich_commands(
     # Look through COMMAND_GROUPS for this command
     # stick anything unmatched into a default group at the end
     cmd_groups = _resolve_groups(ctx=ctx, groups=formatter.config.command_groups, group_attribute="commands")
-    for command in obj.list_commands(ctx):  # type: ignore[attr-defined]
+    for command in obj.list_commands(ctx):
         for cmd_group in cmd_groups:
             if command in cmd_group.get("commands", []):
                 break
@@ -672,9 +672,9 @@ def get_rich_commands(
         )
         for command in cmd_group.get("commands", []):
             # Skip if command does not exist
-            if command not in obj.list_commands(ctx):  # type: ignore[attr-defined]
+            if command not in obj.list_commands(ctx):
                 continue
-            cmd = obj.get_command(ctx, command)  # type: ignore[attr-defined]
+            cmd = obj.get_command(ctx, command)
             if TYPE_CHECKING:
                 assert cmd is not None
             if cmd.hidden:
