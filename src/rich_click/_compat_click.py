@@ -1,8 +1,12 @@
+import warnings
+
 import click
 
 
 try:
-    click_version = click.__version__
+    with warnings.catch_warnings():
+        warnings.simplefilter(category=DeprecationWarning, action="ignore")
+        click_version = click.__version__
 except Exception:
     # Click 9+ deprecated __version__, so all these checks must necessarily be False if __version__ doesn't exist.
     CLICK_IS_BEFORE_VERSION_82 = False
