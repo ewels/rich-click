@@ -45,7 +45,7 @@ In order to set this environment variable automatically every time you use the t
 The 4-bit ANSI color system is a set of 16 different colors implemented in every terminal. This is the most common way to set colors.
 These colors are **not** deterministic; different terminals use slightly different hex values for the ANSI colors. [Wikipedia has a full breakdown of all the variations in these colors](https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit)
 
-Most modern terminals have the ability to customize all of these colors in the terminals' settings.
+Nearly all modern terminals have the ability to customize these colors in the terminals' settings.
 If you are having difficulty distinguishing colors, it is recommended that you adjust these settings.
 
 !!! note
