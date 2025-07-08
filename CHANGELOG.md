@@ -4,7 +4,7 @@
 
 - `RichHelpFormatter` now defers printing by default if a user does not specify a Console. [[#231](https://github.com/ewels/rich-click/pull/231)] (With contributions from [@ofek](https://github.com/ofek))
 
-# Version 1.8.9 (2025-05-19)
+## Version 1.8.9 (2025-05-19)
 
 Click 8.2 support:
 
