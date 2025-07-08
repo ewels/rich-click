@@ -1,25 +1,22 @@
 name: Rich-codex
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
   rich_codex:
-    if: github.repository_owner == 'ewels' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: 3
+          activate-environment: true
 
       - name: Install your custom tools
-        run: pip install ".[dev]"
+        run: pip install ".[docs]"
 
       - name: Generate terminal images with rich-codex
         uses: ewels/rich-codex@v1
