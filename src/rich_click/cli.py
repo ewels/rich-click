@@ -98,6 +98,8 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
         if script == s.name:
             if not _selected:
                 module_path, function_name = s.value.split(":", 1)
+                if " [" in function_name and function_name.endswith("]"):
+                    function_name = function_name.split(" [")[0]
             if suppress_warnings:
                 break
             if s.value not in _selected:
@@ -119,7 +121,7 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
                 f"\n\nThe selected script is '{module_path}:{function_name}', which is being executed now."
                 "\n\nIt is safer and recommended that you specify the MODULE:CLICK_COMMAND"
                 f" ('{module_path}:{function_name}') instead of the script ('{script}'), like this:"
-                f"\n\n>>> rich-click {' '.join(_args)}"
+                f"\n\n>>> {' '.join(_args)}"
                 "\n\nAlternatively, you can pass --suppress-warnings to the rich-click CLI,"
                 " which will disable this message.",
                 fg="red",
