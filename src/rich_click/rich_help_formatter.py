@@ -1,3 +1,4 @@
+import os
 import sys
 from functools import cached_property
 from typing import IO, TYPE_CHECKING, Any, Dict, Optional
@@ -50,9 +51,9 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
         ),
         color_system=config.color_system,
         force_terminal=config.force_terminal,
-        # file=file or open(os.devnull, "w"),
+        file=file or open(os.devnull, "w"),
         width=config.width,
-        # record=True if file is None else False,
+        record=True if file is None else False,
         legacy_windows=config.legacy_windows,
     )
     if isinstance(config.max_width, int):
