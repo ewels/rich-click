@@ -1,14 +1,14 @@
                                                                                                     
- Usage: cli [OPTIONS]                                                                               
+ [33mUsage:[0m [1mcli[0m [[1;36mOPTIONS[0m]                                                                               
                                                                                                     
- My amazing tool does  all the things .                                                             
- This is a minimal example based on documentation from the ]8;id=0;foo\'click' package]8;;\.                         
- You can try using --help at the top level and also for specific group subcommands.                 
+ My amazing tool does [30;44m all the things [0m.                                                             
+ [2mThis is a [0m[2;4mminimal example[0m[2m based on documentation from the [0m]8;id=0;foo\[2m'click' package[0m]8;;\[2m.[0m                         
+ [2;3mYou can try using [0m[1;2;3;36m--help[0m[2;3m at the top level and also for specific group subcommands.[0m                 
                                                                                                     
-╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --input    PATH  Input file. [default: a custom default]                                         │
-│ --type     TEXT  Type of file to sync [default: files]                                           │
-│ --all            Sync all the things?                                                            │
-│ --debug          Enable 👉 debug mode 👈                                                         │
-│ --help           Show this message and exit.                                                     │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+[2m╭─[0m[2m Options [0m[2m───────────────────────────────────────────────────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m [1;36m--input[0m    [1;33mPATH[0m  Input [1;35mfile[0m. [2m[default: a custom default][0m                                         [2m│[0m
+[2m│[0m [1;36m--type[0m     [1;33mTEXT[0m  Type of file to sync [2m[default: files][0m                                           [2m│[0m
+[2m│[0m [1;36m--all[0m      [1;33m    [0m  Sync all the things?                                                            [2m│[0m
+[2m│[0m [1;36m--debug[0m    [1;33m    [0m  Enable 👉 [33mdebug mode[0m 👈                                                         [2m│[0m
+[2m│[0m [1;36m--help[0m     [1;33m    [0m  Show this message and exit.                                                     [2m│[0m
+[2m╰──────────────────────────────────────────────────────────────────────────────────────────────────╯[0m

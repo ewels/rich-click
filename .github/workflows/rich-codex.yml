@@ -15,10 +15,8 @@ jobs:
           python-version: 3
           activate-environment: true
 
-      - name: Install your custom tools
-        run: |
-          uv pip install ".[docs]"
-          pip install ".[docs]"
+      - name: Install dependencies
+        run: uv pip install ".[docs]"
 
       - name: Generate terminal images with rich-codex
         uses: ewels/rich-codex@v1

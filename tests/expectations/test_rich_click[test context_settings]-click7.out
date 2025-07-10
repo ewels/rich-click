@@ -1,13 +1,13 @@
                                                                                                     
- Usage: cli [OPTIONS]                                                                               
+ [33mUsage:[0m [1mcli[0m [[1;36mOPTIONS[0m]                                                                               
                                                                                                     
  Test cases for context_settings.                                                                   
- Note that in click < 8.1, '[default: False]' shows for "--help".                                   
+ [2mNote that in click < 8.1, '[default: False]' shows for "[0m[1;2;36m--help[0m[2m".[0m                                   
                                                                                                     
-╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --a       TEXT  This works in all supported click versions. [default: show me always]            │
-│ --b       TEXT  This works in all supported click versions. [default: show me always]            │
-│ --c       TEXT  Hide default only in click>=8.1 [default: show me in old versions]               │
-│ --d       TEXT  Show 'default: (show me in c8+)' in click>=8.0. In click 7, no default is shown. │
-│ --help          Show this message and exit. [default: False]                                     │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+[2m╭─[0m[2m Options [0m[2m───────────────────────────────────────────────────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m [1;36m--a[0m       [1;33mTEXT[0m  This works in all supported click versions. [2m[default: show me always][0m            [2m│[0m
+[2m│[0m [1;36m--b[0m       [1;33mTEXT[0m  This works in all supported click versions. [2m[default: show me always][0m            [2m│[0m
+[2m│[0m [1;36m--c[0m       [1;33mTEXT[0m  Hide default only in click>=8.1 [2m[default: show me in old versions][0m               [2m│[0m
+[2m│[0m [1;36m--d[0m       [1;33mTEXT[0m  Show 'default: (show me in c8+)' in click>=8.0. In click 7, no default is shown. [2m│[0m
+[2m│[0m [1;36m--help[0m    [1;33m    [0m  Show this message and exit. [2m[default: False][0m                                     [2m│[0m
+[2m╰──────────────────────────────────────────────────────────────────────────────────────────────────╯[0m

@@ -22,12 +22,12 @@ jobs:
         with:
           python-version: 3
 
-      - name: Install your custom tools
-        run: pip install ".[docs]"
+      - name: Install dependencies
+        run: uv pip install ".[docs]"
 
       - name: Generate terminal images with rich-codex
-        uses: ewels/rich-codex@v1
         if: github.repository_owner == 'ewels' || github.event_name == 'workflow_dispatch'
+        uses: ewels/rich-codex@v1
         with:
           skip_python_setup: "true"
           commit_changes: "true"

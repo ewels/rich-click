@@ -1,15 +1,15 @@
                                                                                                     
- Usage: cli [OPTIONS]                                                                               
+ [33mUsage:[0m [1mcli[0m [[1;36mOPTIONS[0m]                                                                               
                                                                                                     
  My amazing tool does all the things.                                                               
- This is a minimal example based on documentation from the 'click' package.                         
- You can try using --help at the top level and also for specific group subcommands.                 
+ [2mThis is a minimal example based on documentation from the 'click' package.[0m                         
+ [2mYou can try using [0m[1;2;36m--help[0m[2m at the top level and also for specific group subcommands.[0m                 
                                                                                                     
-╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --debug     Enable debug mode.                                                                   │
-│ --number    This click choice has loads of options.                                              │
-│             (one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fi │
-│             fteen|sixteen|seventeen|eighteen|nineteen|twenty|twenty-one|twenty-two|twenty-three| │
-│             twenty-four|twenty-five|twenty-six|twenty-seven|twenty-eight|twenty-nine|thirty)     │
-│ --help      Show this message and exit.                                                          │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+[2m╭─[0m[2m Options [0m[2m───────────────────────────────────────────────────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m [1;36m--debug[0m     Enable debug mode.                                                                   [2m│[0m
+[2m│[0m [1;36m--number[0m    This click choice has loads of options.                                              [2m│[0m
+[2m│[0m             [2;33m(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fi[0m [2m│[0m
+[2m│[0m             [2;33mfteen|sixteen|seventeen|eighteen|nineteen|twenty|twenty-one|twenty-two|twenty-three|[0m [2m│[0m
+[2m│[0m             [2;33mtwenty-four|twenty-five|twenty-six|twenty-seven|twenty-eight|twenty-nine|thirty)    [0m [2m│[0m
+[2m│[0m [1;36m--help[0m      Show this message and exit.                                                          [2m│[0m
+[2m╰──────────────────────────────────────────────────────────────────────────────────────────────────╯[0m

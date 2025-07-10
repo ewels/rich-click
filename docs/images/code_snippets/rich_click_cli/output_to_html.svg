@@ -19,64 +19,71 @@
         font-weight: 700;
     }
 
-    .terminal-4241808805-matrix {
+    .terminal-1925981695-matrix {
         font-family: Fira Code, monospace;
         font-size: 20px;
         line-height: 24.4px;
         font-variant-east-asian: full-width;
     }
 
-    .terminal-4241808805-title {
+    .terminal-1925981695-title {
         font-size: 18px;
         font-weight: bold;
         font-family: arial;
     }
 
-    .terminal-4241808805-r1 { fill: #c5c8c6 }
-.terminal-4241808805-r2 { fill: #868887;font-style: italic; }
+    .terminal-1925981695-r1 { fill: #c5c8c6 }
+.terminal-1925981695-r2 { fill: #d0b344 }
+.terminal-1925981695-r3 { fill: #c5c8c6;font-weight: bold }
+.terminal-1925981695-r4 { fill: #68a0b3;font-weight: bold }
+.terminal-1925981695-r5 { fill: #868887 }
+.terminal-1925981695-r6 { fill: #98a84b;font-weight: bold }
+.terminal-1925981695-r7 { fill: #8d7b39;font-weight: bold }
+.terminal-1925981695-r8 { fill: #d0b344;font-weight: bold }
+.terminal-1925981695-r9 { fill: #868887;font-style: italic; }
     </style>
 
     <defs>
-    <clipPath id="terminal-4241808805-clip-terminal">
+    <clipPath id="terminal-1925981695-clip-terminal">
       <rect x="0" y="0" width="975.0" height="340.59999999999997" />
     </clipPath>
-    <clipPath id="terminal-4241808805-line-0">
+    <clipPath id="terminal-1925981695-line-0">
     <rect x="0" y="1.5" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-4241808805-line-1">
+<clipPath id="terminal-1925981695-line-1">
     <rect x="0" y="25.9" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-4241808805-line-2">
+<clipPath id="terminal-1925981695-line-2">
     <rect x="0" y="50.3" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-4241808805-line-3">
+<clipPath id="terminal-1925981695-line-3">
     <rect x="0" y="74.7" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-4241808805-line-4">
+<clipPath id="terminal-1925981695-line-4">
     <rect x="0" y="99.1" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-4241808805-line-5">
+<clipPath id="terminal-1925981695-line-5">
     <rect x="0" y="123.5" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-4241808805-line-6">
+<clipPath id="terminal-1925981695-line-6">
     <rect x="0" y="147.9" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-4241808805-line-7">
+<clipPath id="terminal-1925981695-line-7">
     <rect x="0" y="172.3" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-4241808805-line-8">
+<clipPath id="terminal-1925981695-line-8">
     <rect x="0" y="196.7" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-4241808805-line-9">
+<clipPath id="terminal-1925981695-line-9">
     <rect x="0" y="221.1" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-4241808805-line-10">
+<clipPath id="terminal-1925981695-line-10">
     <rect x="0" y="245.5" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-4241808805-line-11">
+<clipPath id="terminal-1925981695-line-11">
     <rect x="0" y="269.9" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-4241808805-line-12">
+<clipPath id="terminal-1925981695-line-12">
     <rect x="0" y="294.3" width="976" height="24.65"/>
             </clipPath>
     </defs>
@@ -88,23 +95,23 @@
             <circle cx="44" cy="0" r="7" fill="#28c840"/>
             </g>
         
-    <g transform="translate(9, 41)" clip-path="url(#terminal-4241808805-clip-terminal)">
+    <g transform="translate(9, 41)" clip-path="url(#terminal-1925981695-clip-terminal)">
     
-    <g class="terminal-4241808805-matrix">
-    <text class="terminal-4241808805-r1" x="0" y="20" textLength="512.4" clip-path="url(#terminal-4241808805-line-0)">$&#160;rich-click&#160;--output&#160;html&#160;app:main&#160;--help</text><text class="terminal-4241808805-r1" x="976" y="20" textLength="12.2" clip-path="url(#terminal-4241808805-line-0)">
-</text><text class="terminal-4241808805-r1" x="976" y="44.4" textLength="12.2" clip-path="url(#terminal-4241808805-line-1)">
-</text><text class="terminal-4241808805-r1" x="0" y="68.8" textLength="976" clip-path="url(#terminal-4241808805-line-2)">&#160;Usage:&#160;app&#160;[OPTIONS]&#160;COMMAND&#160;[ARGS]...&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-4241808805-r1" x="976" y="68.8" textLength="12.2" clip-path="url(#terminal-4241808805-line-2)">
-</text><text class="terminal-4241808805-r1" x="976" y="93.2" textLength="12.2" clip-path="url(#terminal-4241808805-line-3)">
-</text><text class="terminal-4241808805-r1" x="0" y="117.6" textLength="976" clip-path="url(#terminal-4241808805-line-4)">&#160;CLI&#160;for&#160;my-app&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-4241808805-r1" x="976" y="117.6" textLength="12.2" clip-path="url(#terminal-4241808805-line-4)">
-</text><text class="terminal-4241808805-r1" x="976" y="142" textLength="12.2" clip-path="url(#terminal-4241808805-line-5)">
-</text><text class="terminal-4241808805-r1" x="0" y="166.4" textLength="976" clip-path="url(#terminal-4241808805-line-6)">╭─&#160;Options&#160;────────────────────────────────────────────────────────────────────╮</text><text class="terminal-4241808805-r1" x="976" y="166.4" textLength="12.2" clip-path="url(#terminal-4241808805-line-6)">
-</text><text class="terminal-4241808805-r1" x="0" y="190.8" textLength="976" clip-path="url(#terminal-4241808805-line-7)">│&#160;--environment&#160;&#160;-e&#160;&#160;[production|staging|integra&#160;&#160;Environment&#160;to&#160;run&#160;in.&#160;&#160;&#160;&#160;&#160;&#160;&#160;│</text><text class="terminal-4241808805-r1" x="976" y="190.8" textLength="12.2" clip-path="url(#terminal-4241808805-line-7)">
-</text><text class="terminal-4241808805-r1" x="0" y="215.2" textLength="976" clip-path="url(#terminal-4241808805-line-8)">│&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;tion]&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;[default:&#160;production]&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;│</text><text class="terminal-4241808805-r1" x="976" y="215.2" textLength="12.2" clip-path="url(#terminal-4241808805-line-8)">
-</text><text class="terminal-4241808805-r1" x="0" y="239.6" textLength="976" clip-path="url(#terminal-4241808805-line-9)">│&#160;--version&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Show&#160;the&#160;version&#160;and&#160;exit.&#160;&#160;&#160;│</text><text class="terminal-4241808805-r1" x="976" y="239.6" textLength="12.2" clip-path="url(#terminal-4241808805-line-9)">
-</text><text class="terminal-4241808805-r1" x="0" y="264" textLength="976" clip-path="url(#terminal-4241808805-line-10)">│&#160;--help&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Show&#160;this&#160;message&#160;and&#160;exit.&#160;&#160;│</text><text class="terminal-4241808805-r1" x="976" y="264" textLength="12.2" clip-path="url(#terminal-4241808805-line-10)">
-</text><text class="terminal-4241808805-r1" x="0" y="288.4" textLength="976" clip-path="url(#terminal-4241808805-line-11)">╰──────────────────────────────────────────────────────────────────────────────╯</text><text class="terminal-4241808805-r1" x="976" y="288.4" textLength="12.2" clip-path="url(#terminal-4241808805-line-11)">
-</text><text class="terminal-4241808805-r1" x="0" y="312.8" textLength="976" clip-path="url(#terminal-4241808805-line-12)">╭─&#160;Commands&#160;───────────────────────────────────────────────────────────────────╮</text><text class="terminal-4241808805-r1" x="976" y="312.8" textLength="12.2" clip-path="url(#terminal-4241808805-line-12)">
-</text><text class="terminal-4241808805-r2" x="0" y="337.2" textLength="183" clip-path="url(#terminal-4241808805-line-13)">[..truncated..]</text><text class="terminal-4241808805-r1" x="976" y="337.2" textLength="12.2" clip-path="url(#terminal-4241808805-line-13)">
+    <g class="terminal-1925981695-matrix">
+    <text class="terminal-1925981695-r1" x="0" y="20" textLength="512.4" clip-path="url(#terminal-1925981695-line-0)">$&#160;rich-click&#160;--output&#160;html&#160;app:main&#160;--help</text><text class="terminal-1925981695-r1" x="976" y="20" textLength="12.2" clip-path="url(#terminal-1925981695-line-0)">
+</text><text class="terminal-1925981695-r1" x="976" y="44.4" textLength="12.2" clip-path="url(#terminal-1925981695-line-1)">
+</text><text class="terminal-1925981695-r2" x="12.2" y="68.8" textLength="73.2" clip-path="url(#terminal-1925981695-line-2)">Usage:</text><text class="terminal-1925981695-r3" x="97.6" y="68.8" textLength="36.6" clip-path="url(#terminal-1925981695-line-2)">app</text><text class="terminal-1925981695-r1" x="134.2" y="68.8" textLength="24.4" clip-path="url(#terminal-1925981695-line-2)">&#160;[</text><text class="terminal-1925981695-r4" x="158.6" y="68.8" textLength="85.4" clip-path="url(#terminal-1925981695-line-2)">OPTIONS</text><text class="terminal-1925981695-r1" x="244" y="68.8" textLength="24.4" clip-path="url(#terminal-1925981695-line-2)">]&#160;</text><text class="terminal-1925981695-r4" x="268.4" y="68.8" textLength="85.4" clip-path="url(#terminal-1925981695-line-2)">COMMAND</text><text class="terminal-1925981695-r1" x="353.8" y="68.8" textLength="24.4" clip-path="url(#terminal-1925981695-line-2)">&#160;[</text><text class="terminal-1925981695-r4" x="378.2" y="68.8" textLength="48.8" clip-path="url(#terminal-1925981695-line-2)">ARGS</text><text class="terminal-1925981695-r1" x="427" y="68.8" textLength="427" clip-path="url(#terminal-1925981695-line-2)">]...&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-1925981695-r1" x="976" y="68.8" textLength="12.2" clip-path="url(#terminal-1925981695-line-2)">
+</text><text class="terminal-1925981695-r1" x="976" y="93.2" textLength="12.2" clip-path="url(#terminal-1925981695-line-3)">
+</text><text class="terminal-1925981695-r1" x="976" y="117.6" textLength="12.2" clip-path="url(#terminal-1925981695-line-4)">
+</text><text class="terminal-1925981695-r1" x="0" y="142" textLength="976" clip-path="url(#terminal-1925981695-line-5)">&#160;CLI&#160;for&#160;my-app&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-1925981695-r1" x="976" y="142" textLength="12.2" clip-path="url(#terminal-1925981695-line-5)">
+</text><text class="terminal-1925981695-r1" x="976" y="166.4" textLength="12.2" clip-path="url(#terminal-1925981695-line-6)">
+</text><text class="terminal-1925981695-r5" x="0" y="190.8" textLength="24.4" clip-path="url(#terminal-1925981695-line-7)">╭─</text><text class="terminal-1925981695-r5" x="24.4" y="190.8" textLength="109.8" clip-path="url(#terminal-1925981695-line-7)">&#160;Options&#160;</text><text class="terminal-1925981695-r5" x="134.2" y="190.8" textLength="817.4" clip-path="url(#terminal-1925981695-line-7)">───────────────────────────────────────────────────────────────────</text><text class="terminal-1925981695-r5" x="951.6" y="190.8" textLength="24.4" clip-path="url(#terminal-1925981695-line-7)">─╮</text><text class="terminal-1925981695-r1" x="976" y="190.8" textLength="12.2" clip-path="url(#terminal-1925981695-line-7)">
+</text><text class="terminal-1925981695-r5" x="0" y="215.2" textLength="12.2" clip-path="url(#terminal-1925981695-line-8)">│</text><text class="terminal-1925981695-r4" x="24.4" y="215.2" textLength="158.6" clip-path="url(#terminal-1925981695-line-8)">--environment</text><text class="terminal-1925981695-r6" x="207.4" y="215.2" textLength="24.4" clip-path="url(#terminal-1925981695-line-8)">-e</text><text class="terminal-1925981695-r7" x="256.2" y="215.2" textLength="12.2" clip-path="url(#terminal-1925981695-line-8)">[</text><text class="terminal-1925981695-r8" x="268.4" y="215.2" textLength="122" clip-path="url(#terminal-1925981695-line-8)">production</text><text class="terminal-1925981695-r7" x="390.4" y="215.2" textLength="12.2" clip-path="url(#terminal-1925981695-line-8)">|</text><text class="terminal-1925981695-r8" x="402.6" y="215.2" textLength="85.4" clip-path="url(#terminal-1925981695-line-8)">staging</text><text class="terminal-1925981695-r1" x="488" y="215.2" textLength="24.4" clip-path="url(#terminal-1925981695-line-8)">[</text><text class="terminal-1925981695-r1" x="976" y="215.2" textLength="12.2" clip-path="url(#terminal-1925981695-line-8)">
+</text><text class="terminal-1925981695-r1" x="0" y="239.6" textLength="97.6" clip-path="url(#terminal-1925981695-line-9)">1;2;33m|</text><text class="terminal-1925981695-r8" x="97.6" y="239.6" textLength="85.4" clip-path="url(#terminal-1925981695-line-9)">integra</text><text class="terminal-1925981695-r1" x="183" y="239.6" textLength="378.2" clip-path="url(#terminal-1925981695-line-9)">&#160;&#160;Environment&#160;to&#160;run&#160;in.&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-1925981695-r5" x="561.2" y="239.6" textLength="12.2" clip-path="url(#terminal-1925981695-line-9)">│</text><text class="terminal-1925981695-r1" x="976" y="239.6" textLength="12.2" clip-path="url(#terminal-1925981695-line-9)">
+</text><text class="terminal-1925981695-r5" x="0" y="264" textLength="12.2" clip-path="url(#terminal-1925981695-line-10)">│</text><text class="terminal-1925981695-r8" x="256.2" y="264" textLength="48.8" clip-path="url(#terminal-1925981695-line-10)">tion</text><text class="terminal-1925981695-r7" x="305" y="264" textLength="12.2" clip-path="url(#terminal-1925981695-line-10)">]</text><text class="terminal-1925981695-r5" x="610" y="264" textLength="280.6" clip-path="url(#terminal-1925981695-line-10)">[default:&#160;production]&#160;</text><text class="terminal-1925981695-r1" x="976" y="264" textLength="12.2" clip-path="url(#terminal-1925981695-line-10)">
+</text><text class="terminal-1925981695-r5" x="0" y="288.4" textLength="122" clip-path="url(#terminal-1925981695-line-11)">[0m&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-1925981695-r5" x="122" y="288.4" textLength="12.2" clip-path="url(#terminal-1925981695-line-11)">│</text><text class="terminal-1925981695-r1" x="976" y="288.4" textLength="12.2" clip-path="url(#terminal-1925981695-line-11)">
+</text><text class="terminal-1925981695-r5" x="0" y="312.8" textLength="12.2" clip-path="url(#terminal-1925981695-line-12)">│</text><text class="terminal-1925981695-r4" x="24.4" y="312.8" textLength="109.8" clip-path="url(#terminal-1925981695-line-12)">--version</text><text class="terminal-1925981695-r1" x="585.6" y="312.8" textLength="378.2" clip-path="url(#terminal-1925981695-line-12)">&#160;&#160;Show&#160;the&#160;version&#160;and&#160;exit.&#160;&#160;&#160;</text><text class="terminal-1925981695-r5" x="963.8" y="312.8" textLength="12.2" clip-path="url(#terminal-1925981695-line-12)">│</text><text class="terminal-1925981695-r1" x="976" y="312.8" textLength="12.2" clip-path="url(#terminal-1925981695-line-12)">
+</text><text class="terminal-1925981695-r9" x="0" y="337.2" textLength="183" clip-path="url(#terminal-1925981695-line-13)">[..truncated..]</text><text class="terminal-1925981695-r1" x="976" y="337.2" textLength="12.2" clip-path="url(#terminal-1925981695-line-13)">
 </text>
     </g>
     </g>

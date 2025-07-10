@@ -5,7 +5,7 @@
 import os
 import sys
 from functools import wraps
-from gettext import gettext as _
+from gettext import gettext
 from importlib import import_module
 from typing import Any, List, Optional, Tuple, Union
 
@@ -83,7 +83,9 @@ class _RichHelpConfigurationParamType(click.ParamType):
                 # In normal circumstances, a bad arg to a CLI doesn't
                 # prevent the help text from rendering.
                 if ctx is not None and ctx.params.get("show_help", False):
-                    click.echo(ctx.get_help(), color=ctx.color)
+                    import rich
+
+                    rich.print(ctx.get_help())
                     ctx.exit()
                 else:
                     raise e
@@ -113,20 +115,18 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
         else:
             _args = ["rich-click", f"{module_path}:{function_name}"]
 
-        click.echo(
-            click.style(
-                f"WARNING: Multiple entry_points correspond with script '{script}': {_selected!r}."
-                "\nThis can happen when an 'egg-info' directory exists, you're using a virtualenv,"
-                " and you have set a custom PYTHONPATH."
-                f"\n\nThe selected script is '{module_path}:{function_name}', which is being executed now."
-                "\n\nIt is safer and recommended that you specify the MODULE:CLICK_COMMAND"
-                f" ('{module_path}:{function_name}') instead of the script ('{script}'), like this:"
-                f"\n\n>>> {' '.join(_args)}"
-                "\n\nAlternatively, you can pass --suppress-warnings to the rich-click CLI,"
-                " which will disable this message.",
-                fg="red",
-            ),
-            file=sys.stderr,
+        import rich
+
+        rich.print(
+            f"[red]WARNING: Multiple entry_points correspond with script '{script}': {_selected!r}."
+            "\nThis can happen when an 'egg-info' directory exists, you're using a virtualenv,"
+            " and you have set a custom PYTHONPATH."
+            f"\n\nThe selected script is '{module_path}:{function_name}', which is being executed now."
+            "\n\nIt is safer and recommended that you specify the MODULE:CLICK_COMMAND"
+            f" ('{module_path}:{function_name}') instead of the script ('{script}'), like this:"
+            f"\n\n>>> {' '.join(_args)}"
+            "\n\nAlternatively, you can pass --suppress-warnings to the rich-click CLI,"
+            " which will disable this message.[/]",
         )
 
     if ":" in script and not module_path:
@@ -179,7 +179,7 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
     "show_help",
     is_eager=True,
     is_flag=True,
-    help=_("Show this message and exit."),
+    help=gettext("Show this message and exit."),
     # callback=help_callback
 )
 @pass_context
@@ -209,17 +209,16 @@ def main(
     or [b]click.command()[/] classes.
     If in doubt, please suggest to the authors that they use rich_click within their
     tool natively - this will always give a better experience.
-
-    You can also use this tool to print your own RichCommands as HTML with the
-    --html flag.
     """  # noqa: D400, D401
     if (show_help or not script_and_args) and not ctx.resilient_parsing:
-        if rich_config is not None:
+        if rich_config is None:
+            rich_config = RichHelpConfiguration(text_markup="rich")
+        else:
             rich_config.use_markdown = False
             rich_config.use_rich_markup = True
             rich_config.text_markup = "rich"
-            ctx.help_config = rich_config
-        click.echo(ctx.get_help(), color=ctx.color)
+        ctx.help_config = rich_config
+        print(ctx.get_help(), end="")
         ctx.exit()
 
     # patch click before importing the program function
