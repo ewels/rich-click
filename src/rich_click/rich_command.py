@@ -44,6 +44,8 @@ class RichCommand(click.Command):
         """Create Rich Command instance."""
         super().__init__(*args, **kwargs)
         self._register_rich_context_settings_from_callback()
+        if not hasattr(self, "_help_option"):
+            self._help_option = None
 
     def _register_rich_context_settings_from_callback(self) -> None:
         if self.callback is not None:
@@ -155,9 +157,9 @@ class RichCommand(click.Command):
 
         # Process shell completion requests and exit early.
         if CLICK_IS_BEFORE_VERSION_8X:
-            from click.core import _bashcomplete  # type: ignore[attr-defined]
+            from click.core import _bashcomplete  # type: ignore[attr-defined,unused-ignore]
 
-            _bashcomplete(self, prog_name, complete_var)
+            _bashcomplete(self, prog_name, complete_var)  # type: ignore[operator]
         else:
             self._main_shell_completion(extra, prog_name, complete_var)
 
@@ -185,7 +187,7 @@ class RichCommand(click.Command):
                     raise
                 formatter = self._error_formatter()
                 formatter.write_error(e)
-                click.echo(formatter.getvalue().rstrip("\n"), file=sys.stderr)
+                print(formatter.getvalue(), file=sys.stderr, end="")
                 sys.exit(e.exit_code)
             except OSError as e:
                 if e.errno == errno.EPIPE:
@@ -208,7 +210,7 @@ class RichCommand(click.Command):
                 click.echo("Aborted!", file=sys.stderr)
             else:
                 formatter.write_abort()
-                click.echo(formatter.getvalue().rstrip("\n"), file=sys.stderr)
+                print(formatter.getvalue(), file=sys.stderr, end="")
             finally:
                 sys.exit(1)
 
@@ -268,6 +270,34 @@ class RichCommand(click.Command):
         else:
             return super().make_context(info_name, args, parent, **extra)  # type: ignore[return-value]
 
+    def get_help_option(self, ctx: click.Context) -> Union[click.Option, None]:
+        """
+        Return the help option object.
+
+        Skipped if :attr:`add_help_option` is ``False``.
+
+        .. versionchanged:: 8.1.8
+            The help option is now cached to avoid creating it multiple times.
+        """
+        help_option_names = self.get_help_option_names(ctx)
+
+        if not help_option_names or not self.add_help_option:
+            return None
+
+        # Cache the help option object in private _help_option attribute to
+        # avoid creating it multiple times. Not doing this will break the
+        # callback odering by iter_params_for_processing(), which relies on
+        # object comparison.
+        if self._help_option is None:
+            # Avoid circular import.
+            from rich_click.decorators import help_option
+
+            # Apply help_option decorator and pop resulting option
+            help_option(*help_option_names)(self)
+            self._help_option = self.params.pop()  # type: ignore[assignment]
+
+        return self._help_option
+
 
 if CLICK_IS_BEFORE_VERSION_9X:
     with warnings.catch_warnings():
@@ -276,10 +306,10 @@ if CLICK_IS_BEFORE_VERSION_9X:
 
 else:
 
-    MultiCommand = Group  # type: ignore[misc,assignment]
+    MultiCommand = Group  # type: ignore[misc,assignment,unused-ignore]
 
 
-class RichMultiCommand(RichCommand, MultiCommand):
+class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[valid-type,misc]
     """
     Richly formatted click MultiCommand.
 
@@ -289,20 +319,20 @@ class RichMultiCommand(RichCommand, MultiCommand):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize RichMultiCommand class."""
-        MultiCommand.__init__(self, *args, **kwargs)
+        MultiCommand.__init__(self, *args, **kwargs)  # type: ignore[misc]
         self._register_rich_context_settings_from_callback()
 
-    def format_commands(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+    def format_commands(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         from rich_click.rich_help_rendering import get_rich_commands
 
-        get_rich_commands(self, ctx, formatter)
+        get_rich_commands(self, ctx, formatter)  # type: ignore[arg-type]
 
     def format_options(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         from rich_click.rich_help_rendering import get_rich_options
 
         get_rich_options(self, ctx, formatter)  # type: ignore[arg-type]
 
-        self.format_commands(ctx, formatter)  # type: ignore[arg-type]
+        self.format_commands(ctx, formatter)
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         if OVERRIDES_GUARD:

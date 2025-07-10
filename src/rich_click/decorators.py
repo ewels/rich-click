@@ -1,7 +1,9 @@
+from gettext import gettext
 from typing import TYPE_CHECKING, Any, Callable, Dict, Mapping, Optional, Type, TypeVar, Union, cast, overload
 
-from click import Command, Group
+from click import Command, Context, Group, Parameter
 from click import command as click_command
+from click import option as click_option
 from click import pass_context as click_pass_context
 from typing_extensions import Concatenate, ParamSpec
 
@@ -214,3 +216,33 @@ def pass_context(f: Callable[Concatenate[RichContext, P], R]) -> Callable[P, R]:
     # flake8: noqa: D400,D401
     """Marks a callback as wanting to receive the current context object as first argument."""
     return click_pass_context(f)  # type: ignore[arg-type]
+
+
+def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
+    """
+    Pre-configured ``--help`` option which immediately prints the help page
+    and exits the program.
+
+    :param param_decls: One or more option names. Defaults to the single
+        value ``"--help"``.
+    :param kwargs: Extra arguments are passed to :func:`option`.
+    """
+
+    def show_help(ctx: Context, param: Parameter, value: bool) -> None:
+        """Callback that print the help page on ``<stdout>`` and exits."""
+        if value and not ctx.resilient_parsing:
+            # Avoid click.echo() because it ignores console settings like force_terminal.
+            # Also, do not print() if empty string; assume console was record=False.
+            print(ctx.get_help(), end="")
+            ctx.exit()
+
+    if not param_decls:
+        param_decls = ("--help",)
+
+    kwargs.setdefault("is_flag", True)
+    kwargs.setdefault("expose_value", False)
+    kwargs.setdefault("is_eager", True)
+    kwargs.setdefault("help", gettext("Show this message and exit."))
+    kwargs.setdefault("callback", show_help)
+
+    return click_option(*param_decls, **kwargs)
