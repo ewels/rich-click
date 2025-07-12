@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, TypeVar, Uni
 
 from typing_extensions import Literal
 
+from rich_click.rich_click_theme import THEMES, RichClickTheme
 from rich_click.utils import CommandGroupDict, OptionGroupDict, truthy
 
 
@@ -16,6 +17,9 @@ if TYPE_CHECKING:  # pragma: no cover
     import rich.padding
     import rich.style
     import rich.text
+
+    import rich_click.rich_click_theme
+
 
 
 T = TypeVar("T", bound="RichHelpConfiguration")
@@ -59,6 +63,8 @@ class RichHelpConfiguration:
     # (?<field>[a-zA-Z_]+): (?<typ>.*?) = field\(default=.*?\)
     # REPLACE:
     # ${field}: ${typ} = field(default_factory=_get_default(\"\U${field}\E\"))
+
+    theme: "rich_click.rich_click_theme.ThemeType" = field(default=RichClickTheme.default)
 
     # Default styles
     style_option: "rich.style.StyleType" = field(default="bold cyan")
@@ -188,6 +194,18 @@ class RichHelpConfiguration:
         #     )
 
         self.__dataclass_fields__.pop("highlighter", None)
+
+        # Apply theme if specified
+        if self.theme:
+            theme_settings = THEMES.get(self.theme)
+            if theme_settings:
+                for k, v in theme_settings.items():
+                    current = getattr(self, k)
+                    default = self.__dataclass_fields__[k].default
+
+                    # Only override default theme if the user didn't provide a theme value.
+                    if current == default:
+                        setattr(self, k, v)
 
     @classmethod
     def load_from_globals(cls, module: Optional[ModuleType] = None, **extra: Any) -> "RichHelpConfiguration":
