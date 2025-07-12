@@ -1,4 +1,5 @@
 {
+  "theme": "default",
   "style_option": "bold cyan",
   "style_argument": "bold cyan",
   "style_command": "bold cyan",
