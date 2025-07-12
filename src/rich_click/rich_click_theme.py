@@ -1,10 +1,11 @@
 from enum import Enum
 from typing import Union
 
+
 class RichClickTheme(str, Enum):
     """
     Themes available for RichHelpConfiguration.
-    
+
     Use a a Rich Click theme to quickly apply a predefined set of styles.
     """
 
