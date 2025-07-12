@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Union
+from typing import Dict, Union
 
 
 class RichClickTheme(str, Enum):
@@ -22,7 +22,7 @@ class RichClickTheme(str, Enum):
 ThemeType = Union[RichClickTheme, "RichClickTheme"]
 
 
-THEMES: dict = {
+THEMES: Dict[str, Dict[str, str]] = {
     "default": {},
 
     "dracula": {
