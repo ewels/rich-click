@@ -75,7 +75,7 @@
   "errors_suggestion": "Try running the '--help' flag for more information.",
   "errors_epilogue": "To find out more, visit [link=https://mytool.com]https://mytool.com[/link]",
   "aborted_text": "Aborted.",
-  "show_arguments": false,
+  "show_arguments": null,
   "show_metavars_column": true,
   "append_metavars_help": false,
   "group_arguments_options": false,
@@ -92,5 +92,6 @@
     "(^|[^\\w\\-])(?P<option>--([^\\W0-9][\\w\\-]*\\w|[^\\W0-9]))",
     "(?P<metavar><[^>]+>)"
   ],
-  "legacy_windows": null
+  "legacy_windows": null,
+  "print_help_to_stderr": false
 }
