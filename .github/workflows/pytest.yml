@@ -3,12 +3,9 @@ name: Test Coverage
 on:
   push:
   pull_request:
-  schedule:
-    - cron: '0 0 1 * *'  # Once a month
 
 jobs:
   test:
-    if: github.event_name != 'schedule' || github.repository == 'ewels/rich-click'
     runs-on: ubuntu-22.04
     strategy:
       matrix:
