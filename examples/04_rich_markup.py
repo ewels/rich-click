@@ -20,7 +20,7 @@ click.rich_click.USE_RICH_MARKUP = True
 @click.option("--debug", is_flag=True, help="Enable :point_right: [yellow]debug mode[/] :point_left:")
 def cli(input, type, all, debug):
     """
-    My amazing tool does [black on blue] all the things [/].
+    My amazing tool does [black on blue]all the things[/].
 
     This is a [u]minimal example[/] based on documentation
     from the [link=https://click.palletsprojects.com/]'click' package[/].

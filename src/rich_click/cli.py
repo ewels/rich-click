@@ -1,15 +1,11 @@
 """The command line interface."""
 
-# ruff: noqa: D103
-
 import os
 import sys
 from functools import wraps
 from gettext import gettext
 from importlib import import_module
-from typing import Any, List, Optional, Tuple, Union
-
-from typing_extensions import Literal
+from typing import Any, List, Literal, Optional, Tuple, Union
 
 
 try:
@@ -23,6 +19,7 @@ import click
 from rich_click.decorators import command as _rich_command
 from rich_click.decorators import pass_context
 from rich_click.patch import patch as _patch
+from rich_click.rich_command import RichCommand
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 
@@ -38,7 +35,7 @@ def entry_points(*, group: str) -> "metadata.EntryPoints":  # type: ignore[name-
 
 
 @wraps(_patch)
-def patch(*args: Any, **kwargs: Any) -> None:
+def patch(*args: Any, **kwargs: Any) -> None:  # noqa: D103
     import warnings
 
     warnings.warn(
@@ -209,7 +206,7 @@ def main(
     or [b]click.command()[/] classes.
     If in doubt, please suggest to the authors that they use rich_click within their
     tool natively - this will always give a better experience.
-    """  # noqa: D400, D401
+    """  # noqa: D401
     if (show_help or not script_and_args) and not ctx.resilient_parsing:
         if rich_config is None:
             rich_config = RichHelpConfiguration(text_markup="rich")
@@ -218,7 +215,7 @@ def main(
             rich_config.use_rich_markup = True
             rich_config.text_markup = "rich"
         ctx.help_config = rich_config
-        print(ctx.get_help(), end="")
+        print(ctx.get_help())
         ctx.exit()
 
     # patch click before importing the program function
@@ -239,14 +236,11 @@ def main(
 
     function = getattr(module, function_name)
 
-    ctx.export_console_as = output
-    ctx.errors_in_output_format = errors_in_output_format
-    ctx.help_config.errors_epilogue = None
-
     prog = module_path.split(".", 1)[0]
     sys.argv = [prog, *args]
-
-    if ctx.resilient_parsing and isinstance(function, click.Command):
+    if ctx.resilient_parsing and isinstance(function, RichCommand):
         function.main(resilient_parsing=True)
     else:
+        RichContext.export_console_as = ctx.export_console_as = output
+        RichContext.errors_in_output_format = errors_in_output_format
         function()

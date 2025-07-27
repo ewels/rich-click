@@ -5,8 +5,11 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        python: [3.8, 3.12, 3.13]
-        click: [7.0.*, 8.0.*, 8.1.*] # Skip click 7.1 since regression coverage is strictly higher in 7.0.
+        python: ["3.8", "3.13"]
+        click: [8.0.*, 8.1.*, 8.2.*]
+        exclude:
+          - python: "3.8"
+            click: 8.2.*
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4

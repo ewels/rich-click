@@ -2,6 +2,31 @@
 
 ## Version 1.9.0dev0 (WIP)
 
+> [!WARNING]
+>
+> Click 7.x support is removed. The minimum supported Click version is 8.0.
+
+> [!WARNING]
+>
+> Python 3.7 support is removed. The minimum supported Python version is 3.8.
+
+> [!WARNING]
+>
+> Rich 10.x and 11.x support is removed. The minimum supported Rich version is 12.
+
+Big changes:
+
+- TODO
+
+Small changes:
+
+- "Deprecated" text properly handled and stylized in all places.
+
+Backend (mostly invisible) changes:
+
+- Overhauled our test suite to use **inline-snapshot**! 😁
+- Improved test coverage and CI.
+- `typing_extensions` now only required for < Python 3.11.
 - `RichHelpFormatter` now defers printing by default if a user does not specify a Console. [[#231](https://github.com/ewels/rich-click/pull/231)] (With contributions from [@ofek](https://github.com/ofek))
 
 ## Version 1.8.9 (2025-05-19)

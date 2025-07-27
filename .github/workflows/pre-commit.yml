@@ -2,9 +2,12 @@ name: Lint code
 on:
   push:
   pull_request:
+  schedule:
+    - cron: '0 0 1 * *'  # Once a month
 
 jobs:
   pre-commit:
+    if: github.event_name != 'schedule' || github.repository == 'ewels/rich-click'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

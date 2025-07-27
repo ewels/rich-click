@@ -1,5 +1,3 @@
-from click import password_option
-
 import rich_click as click
 
 click.rich_click.OPTION_GROUPS = {
@@ -10,7 +8,7 @@ click.rich_click.OPTION_GROUPS = {
         },
         {
             "name": "Advanced options",
-            "options": ["--version", "--debug"],
+            "options": ["--help", "--version", "--debug"],
             # You can also set table styles at group-level instead of using globals if you want
             "table_styles": {
                 "row_styles": ["bold", "yellow", "cyan"],
@@ -19,36 +17,15 @@ click.rich_click.OPTION_GROUPS = {
     ],
     "cli sync": [
         {
-            "name": "Inputs and outputs",
-            "options": ["--input", "--output"],
-        },
-    ],
-    "* auth": [
-        {
-            "name": "Required",
-            "options": ["--user", "--password"],
-        },
-        {
-            "name": "Misc.",
-            "options": ["--email", "--role"],
-        },
-        {
-            # This should deduplicate the "--help" panels elsewhere.
-            # It should also be guaranteed to occur at the bottom.
-            "name": "Auth help",
-            "options": ["--help"],
+            "name": "Advanced usage",
+            "options": ["--overwrite", "--all", "--help"],
         },
     ],
     "*": [
+        {"name": "Conflict with 'cli' (Do not use this group!)", "options": ["--type"]},
         {
-            "name": "Help",
-            "options": ["--help"],
-        },
-    ],
-    "* *": [
-        {
-            "name": "Subcommand help",
-            "options": ["--help"],
+            "name": "Inputs and outputs",
+            "options": ["--input", "--output"],
         },
     ],
 }
@@ -58,11 +35,13 @@ click.rich_click.COMMAND_GROUPS = {
             "name": "Main usage",
             "commands": ["sync", "download"],
         },
+    ],
+    "*": [
         {
             "name": "Configuration",
             "commands": ["config", "auth"],
         },
-    ]
+    ],
 }
 
 
@@ -101,13 +80,9 @@ def download(all: bool) -> None:
 
 
 @cli.command()
-@click.password_option("--user", "-u", help="User", required=True)
-@click.password_option("--password", "-p", help="Password", required=True)
-@click.password_option("--email", "-e", help="Email")
-@click.password_option("--role", "-r", help="Role", default="admin")
-def auth(user: str, password: str, email: str) -> None:
+def auth() -> None:
     """Authenticate the app."""
-    print("Authenticating")
+    print("Downloading")
 
 
 @cli.command()

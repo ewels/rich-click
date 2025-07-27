@@ -26,35 +26,37 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
 ]
 dynamic = [
     "version",
 ]
 dependencies = [
-    "click>=7",
-    "rich>=10.7",
-    "typing-extensions>=4",
+    "click>=8",
+    "rich>=12",
+    "typing-extensions>=4; python_version<'3.11'",
 ]
 optional-dependencies.dev = [
-    "mypy",
-    "packaging",
-    "pre-commit",
-    "pytest",
-    "pytest-cov",
-    "rich-codex",
-    "ruff",
-    "types-setuptools",
+    "inline-snapshot>=0.24",
+    "jsonschema>=4",                     # for --resolution=lowest support
+    "mypy>=1.14.1",
+    "nodeenv>=1.9.1",                    # for --resolution=lowest support
+    "packaging>=25",
+    "pre-commit>=3.5",
+    "pytest>=8.3.5",
+    "pytest-cov>=5",
+    "rich-codex>=1.2.11",
+    "ruff>=0.12.4",
+    "types-setuptools>=75.8.0.20250110",
 ]
 optional-dependencies.docs = [
-    "markdown-include",
-    "mkdocs",
-    "mkdocs-glightbox",
+    "markdown-include>=0.8.1",
+    "mkdocs[docs]>=1.6.1",
+    "mkdocs-glightbox>=0.4",
     "mkdocs-material[imaging]~=9.5.18",
-    "mkdocs-material-extensions",
-    "mkdocs-rss-plugin",
-    "mkdocstrings[python]",
-    "rich-codex",
+    "mkdocs-material-extensions>=1.3.1",
+    "mkdocs-rss-plugin>=1.15",
+    "mkdocstrings[python]>=0.26.1",
+    "rich-codex>=1.2.11",
 ]
 urls.Documentation = "https://github.com/ewels/rich-click"
 urls.Homepage = "https://github.com/ewels/rich-click"
@@ -99,17 +101,18 @@ lint.ignore = [
     "D212", # Multi-line docstring summary should start at the first line
     "E731", # Do not assign a lambda expression, use a def
 ]
+lint.per-file-ignores."tests/**/*.py" = [
+    "D",
+]
+
 lint.isort.known-first-party = [ "rich_click" ]
-# Todo:
-#   Add vertical hanging indent when supported.
-#   https://github.com/astral-sh/ruff/issues/2600
 lint.isort.lines-after-imports = 2
 
 [tool.pyproject-fmt]
 indent = 4
 
 [tool.pytest.ini_options]
-addopts = "-s -rP -vv --showlocals"
+addopts = "-s -rP -vv --showlocals --cov --cov-report term"
 pythonpath = [ "tests", "src" ]
 testpaths = [ "tests" ]
 
@@ -131,3 +134,9 @@ executionEnvironments = [
         "src",
     ] },
 ]
+
+[tool.inline-snapshot]
+hash-length = 15
+default-flags = [ "report" ]
+default-flags-tui = [ "create", "review" ]
+format-command = "ruff format --stdin-filename {filename}"

@@ -4,18 +4,16 @@ import subprocess
 import sys
 from inspect import cleandoc
 from pathlib import Path
-from typing import Callable, List
+from typing import Callable, List, Protocol
 
 import pytest
 from click.testing import CliRunner
+from inline_snapshot import snapshot
 from pytest import MonkeyPatch
-from typing_extensions import Protocol
 
 import rich_click.rich_click as rc
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
 from rich_click.cli import main
 from rich_click.rich_context import RichContext
-from tests.conftest import AssertStr
 
 
 @pytest.fixture(autouse=True)
@@ -73,31 +71,26 @@ def simple_script(mock_script_writer: WriteScript) -> Path:
         ["--", "mymodule:cli", "--help"],
     ],
 )
-def test_simple_rich_click_cli(simple_script: Path, assert_str: AssertStr, command: List[str]) -> None:
+def test_simple_rich_click_cli(simple_script: Path, command: List[str]) -> None:
     res = subprocess.run(
         [sys.executable, "-m", "src.rich_click", "mymodule:cli", "--help"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
+        env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False", "NO_COLOR": "1"},
     )
     assert res.returncode == 0
-
-    if CLICK_IS_BEFORE_VERSION_8X:
-        usage = "mymodule"
-    else:
-        usage = "python -m src.rich_click.mymodule"
-
-    expected_output = f"""
- Usage: {usage} [OPTIONS]
-
- My help text
-
+    assert res.stdout.decode() == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: python -m src.rich_click.mymodule [OPTIONS]                                                 \n\
+                                                                                                    \n\
+ My help text                                                                                       \n\
+                                                                                                    \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
-
-    assert_str(actual=res.stdout.decode(), expectation=expected_output)
+    )
 
 
 @pytest.mark.parametrize(
@@ -108,9 +101,7 @@ def test_simple_rich_click_cli(simple_script: Path, assert_str: AssertStr, comma
         ["mymodule:cli", "--"],
     ],
 )
-def test_simple_rich_click_cli_execute_command(
-    simple_script: Path, cli_runner: CliRunner, assert_str: AssertStr, command: List[str]
-) -> None:
+def test_simple_rich_click_cli_execute_command(simple_script: Path, cli_runner: CliRunner, command: List[str]) -> None:
     res = cli_runner.invoke(main, command)
 
     assert res.exit_code == 0
@@ -130,7 +121,7 @@ def test_simple_rich_click_cli_execute_command(
     assert subprocess_res.stdout.decode() == "Hello, world!\n"
 
 
-def test_rich_click_cli_help(assert_str: AssertStr) -> None:
+def test_rich_click_cli_help() -> None:
     res = subprocess.run(
         [
             sys.executable,
@@ -144,7 +135,7 @@ def test_rich_click_cli_help(assert_str: AssertStr) -> None:
     assert res.returncode == 0
 
 
-def test_rich_click_cli_help_with_rich_config(assert_str: AssertStr) -> None:
+def test_rich_click_cli_help_with_rich_config() -> None:
     res = subprocess.run(
         [
             sys.executable,
@@ -160,7 +151,7 @@ def test_rich_click_cli_help_with_rich_config(assert_str: AssertStr) -> None:
     assert res.returncode == 0
 
 
-def test_rich_click_cli_help_with_bad_rich_config(assert_str: AssertStr) -> None:
+def test_rich_click_cli_help_with_bad_rich_config() -> None:
     res = subprocess.run(
         [
             sys.executable,
@@ -176,7 +167,7 @@ def test_rich_click_cli_help_with_bad_rich_config(assert_str: AssertStr) -> None
     assert res.returncode == 0
 
 
-def test_custom_config_rich_click_cli(simple_script: Path, assert_str: AssertStr) -> None:
+def test_custom_config_rich_click_cli(simple_script: Path) -> None:
     res = subprocess.run(
         [
             sys.executable,
@@ -191,26 +182,21 @@ def test_custom_config_rich_click_cli(simple_script: Path, assert_str: AssertStr
         env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
     )
     assert res.returncode == 0
-
-    if CLICK_IS_BEFORE_VERSION_8X:
-        usage = "mymodule"
-    else:
-        usage = "python -m src.rich_click.mymodule"
-
-    expected_output = f"""
- Usage: {usage} [OPTIONS]
-
- My help text
-
+    assert res.stdout.decode() == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: python -m src.rich_click.mymodule [OPTIONS]                                                 \n\
+                                                                                                    \n\
+ My help text                                                                                       \n\
+                                                                                                    \n\
 ╭─ Custom Name ────────────────────────────────────────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
+    )
 
-    assert_str(actual=res.stdout.decode(), expectation=expected_output)
 
-
-def test_override_click_command(mock_script_writer: Callable[[str], Path], assert_str: AssertStr) -> None:
+def test_override_click_command(mock_script_writer: Callable[[str], Path]) -> None:
     mock_script_writer(
         '''
         import click
@@ -239,25 +225,21 @@ def test_override_click_command(mock_script_writer: Callable[[str], Path], asser
     )
     assert res.returncode == 0
 
-    if CLICK_IS_BEFORE_VERSION_8X:
-        usage = "mymodule"
-    else:
-        usage = "python -m src.rich_click.mymodule"
-
-    expected_output = f"""
- Usage: {usage} [OPTIONS]
-
- My help text
-
+    assert res.stdout.decode() == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: python -m src.rich_click.mymodule [OPTIONS]                                                 \n\
+                                                                                                    \n\
+ My help text                                                                                       \n\
+                                                                                                    \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-    """
+"""
+    )
 
-    assert_str(actual=res.stdout.decode(), expectation=expected_output)
 
-
-def test_override_click_group(mock_script_writer: Callable[[str], Path], assert_str: AssertStr) -> None:
+def test_override_click_group(mock_script_writer: Callable[[str], Path]) -> None:
     mock_script_writer(
         '''
         import click
@@ -294,26 +276,21 @@ def test_override_click_group(mock_script_writer: Callable[[str], Path], assert_
     )
     assert res.returncode == 0
 
-    if CLICK_IS_BEFORE_VERSION_8X:
-        usage = "mymodule"
-    else:
-        usage = "python -m src.rich_click.mymodule"
-
-    expected_output = f"""
- Usage: {usage} [OPTIONS] COMMAND [ARGS]...
-
- My help text
-
+    assert res.stdout.decode() == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: python -m src.rich_click.mymodule [OPTIONS] COMMAND [ARGS]...                               \n\
+                                                                                                    \n\
+ My help text                                                                                       \n\
+                                                                                                    \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ subcommand                        Subcommand help text                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-
 """
-
-    assert_str(actual=res.stdout.decode(), expectation=expected_output)
+    )
 
 
 def test_override_rich_click_command(mock_script_writer: WriteScript) -> None:
@@ -363,7 +340,7 @@ def test_override_rich_click_command(mock_script_writer: WriteScript) -> None:
     assert res.stdout.decode() == expected_output
 
 
-def test_override_rich_click_group(mock_script_writer: Callable[[str], Path], assert_str: AssertStr) -> None:
+def test_override_rich_click_group(mock_script_writer: Callable[[str], Path]) -> None:
     mock_script_writer(
         '''
         import rich_click as click
@@ -404,20 +381,19 @@ def test_override_rich_click_group(mock_script_writer: Callable[[str], Path], as
     )
     assert res.returncode == 0
 
-    expected_output = """
+    assert res.stdout.decode() == snapshot(
+        """\
 I am overriding RichCommand!
 I am overriding RichCommand!
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 I am overriding RichCommand!
-    """
+"""
+    )
 
-    assert_str(actual=res.stdout.decode(), expectation=expected_output)
 
-
-@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_8X, reason="Warning message gets in the way.")
-def test_error_to_stderr(mock_script_writer: Callable[[str], Path], assert_str: AssertStr) -> None:
+def test_error_to_stderr(mock_script_writer: Callable[[str], Path]) -> None:
     mock_script_writer(
         '''
         import click
@@ -439,18 +415,19 @@ def test_error_to_stderr(mock_script_writer: Callable[[str], Path], assert_str: 
         env={**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"},
     )
     assert res_grp.returncode == 2
-
-    expected_output_grp = """
-     Usage: python -m src.rich_click.mymodule [OPTIONS] COMMAND [ARGS]...
-
-    Try 'python -m src.rich_click.mymodule --help' for help
-    ╭─ Error ──────────────────────────────────────────────────────────────────────────────────────────╮
-    │ No such option: --bad-input                                                                      │
-    ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-    """
-
-    assert_str(actual=res_grp.stdout.decode(), expectation="")
-    assert_str(actual=res_grp.stderr.decode(), expectation=expected_output_grp)
+    assert res_grp.stdout.decode() == ""
+    assert res_grp.stderr.decode() == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: python -m src.rich_click.mymodule [OPTIONS] COMMAND [ARGS]...                               \n\
+                                                                                                    \n\
+ Try 'python -m src.rich_click.mymodule --help' for help                                            \n\
+╭─ Error ──────────────────────────────────────────────────────────────────────────────────────────╮
+│ No such option: --bad-input                                                                      │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+                                                                                                    \n\
+"""
+    )
 
     res_cmd = subprocess.run(
         [sys.executable, "-m", "src.rich_click", "mymodule:foo", "bar", "--bad-input"],
@@ -460,14 +437,16 @@ def test_error_to_stderr(mock_script_writer: Callable[[str], Path], assert_str: 
     )
     assert res_cmd.returncode == 2
 
-    expected_output_grp = """
-     Usage: python -m src.rich_click.mymodule bar [OPTIONS]
-
-    Try 'python -m src.rich_click.mymodule bar --help' for help
-    ╭─ Error ──────────────────────────────────────────────────────────────────────────────────────────╮
-    │ No such option: --bad-input                                                                      │
-    ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-    """
-
-    assert_str(actual=res_cmd.stdout.decode(), expectation="")
-    assert_str(actual=res_cmd.stderr.decode(), expectation=expected_output_grp)
+    assert res_grp.stdout.decode() == ""
+    assert res_grp.stderr.decode() == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: python -m src.rich_click.mymodule [OPTIONS] COMMAND [ARGS]...                               \n\
+                                                                                                    \n\
+ Try 'python -m src.rich_click.mymodule --help' for help                                            \n\
+╭─ Error ──────────────────────────────────────────────────────────────────────────────────────────╮
+│ No such option: --bad-input                                                                      │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+                                                                                                    \n\
+"""
+    )

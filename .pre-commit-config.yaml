@@ -18,13 +18,13 @@ repos:
       - id: actionlint
 
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: 57b6ff7bf72affdd12c7f3fd6de761ba18a33b3a  # frozen: v2.5.1
+    rev: 91d98438175bd32e4eb14a22e50a3ec0f9e55466  # frozen: v2.2.4
     hooks:
       - id: pyproject-fmt
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: e84319e627902e1b348574ecf3238dc511933dc7  # frozen: v0.11.7
+    rev: 73b0f6d59bbfcb75e17a4653d581c9dfaca13969  # frozen: v0.12.5
     hooks:
       - id: ruff
         name: Ruff
