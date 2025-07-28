@@ -80,9 +80,7 @@ class _RichHelpConfigurationParamType(click.ParamType):
                 # In normal circumstances, a bad arg to a CLI doesn't
                 # prevent the help text from rendering.
                 if ctx is not None and ctx.params.get("show_help", False):
-                    import rich
-
-                    rich.print(ctx.get_help())
+                    print(ctx.get_help())
                     ctx.exit()
                 else:
                     raise e

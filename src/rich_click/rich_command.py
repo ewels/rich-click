@@ -11,7 +11,7 @@ import click
 from click import CommandCollection, Group
 from click.utils import PacifyFlushWrapper
 
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_BEFORE_VERSION_82
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
@@ -169,10 +169,12 @@ class RichCommand(click.Command):
             except (EOFError, KeyboardInterrupt):
                 click.echo(file=sys.stderr)
                 raise click.exceptions.Abort() from None
-            except click.exceptions.NoArgsIsHelpError as e:
-                print(self.get_help(e.ctx))
-                sys.exit(e.exit_code)
             except click.exceptions.ClickException as e:
+                if not CLICK_IS_BEFORE_VERSION_82:
+                    # `except click.exceptions.NoArgsIsHelpError as e:` breaks for click<8.2.
+                    if isinstance(e, click.exceptions.NoArgsIsHelpError):
+                        print(self.get_help(e.ctx))
+                        sys.exit(e.exit_code)
                 if not standalone_mode:
                     raise
                 formatter = self._error_formatter()
