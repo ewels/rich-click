@@ -169,6 +169,9 @@ class RichCommand(click.Command):
             except (EOFError, KeyboardInterrupt):
                 click.echo(file=sys.stderr)
                 raise click.exceptions.Abort() from None
+            except click.exceptions.NoArgsIsHelpError as e:
+                print(self.get_help(e.ctx))
+                sys.exit(e.exit_code)
             except click.exceptions.ClickException as e:
                 if not standalone_mode:
                     raise
