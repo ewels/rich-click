@@ -177,7 +177,11 @@ FORCE_TERMINAL = True if getenv("GITHUB_ACTIONS") or getenv("FORCE_COLOR") or ge
 HEADER_TEXT = None
 FOOTER_TEXT = None
 DEPRECATED_STRING = "(Deprecated) "
+<<<<<<< HEAD
 DEPRECATED_WITH_REASON_STRING = "(Deprecated: {})"
+=======
+DEPRECATED_WITH_REASON_STRING = "(Deprecated: {}) "
+>>>>>>> 0f970aaa8a0098055c374f81a374d0849c90ae24
 DEFAULT_STRING = "[default: {}]"
 ENVVAR_STRING = "[env var: {}]"
 REQUIRED_SHORT_STRING = "*"
