@@ -145,7 +145,7 @@ That's it! ✨ Then continue to use Click as you would normally.
 
 ### Declarative
 
-If you prefer, you can use `RichGroup` or `RichCommand` with the `cls` argument in your click usage instead.
+If you prefer, you can use `RichGroup` or `RichCommand` with the `cls` argument instead.
 This means that you can continue to use the unmodified `click` package in parallel.
 
 ```python
