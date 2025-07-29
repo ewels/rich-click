@@ -1,0 +1,397 @@
+{% extends 'base.html' %}
+{% set COLORS = ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"] %}
+{% set
+    DEFAULT_STYLE_DICT = {
+        "style_option": {
+            "color": "cyan",
+            "bold": true,
+            "dim": false,
+            "italic": false,
+        },
+        "style_argument": {
+            "color": "cyan",
+            "bold": true,
+            "dim": false,
+            "italic": false,
+        },
+        "style_command": {
+            "color": "cyan",
+            "bold": true,
+            "dim": false,
+            "italic": false,
+        },
+        "style_switch": {
+            "color": "green",
+            "bold": true,
+            "dim": false,
+            "italic": false,
+        },
+        "style_metavar": {
+            "color": "yellow",
+            "bold": true,
+            "dim": false,
+            "italic": false,
+        },
+        "style_metavar_separator": {
+            "color": none,
+            "bold": false,
+            "dim": true,
+            "italic": false,
+        },
+        "style_usage": {
+            "color": "yellow",
+            "bold": true,
+            "dim": false,
+            "italic": false,
+        },
+        "style_usage_command": {
+            "color": none,
+            "bold": true,
+            "dim": false,
+            "italic": false,
+        },
+        "style_helptext_first_line": {
+            "color": none,
+            "bold": false,
+            "dim": false,
+            "italic": false,
+        },
+        "style_helptext": {
+            "color": none,
+            "bold": false,
+            "dim": true,
+            "italic": false,
+        },
+        "style_option_default": {
+            "color": none,
+            "bold": false,
+            "dim": true,
+            "italic": false,
+        },
+        "style_required_short": {
+            "color": "red",
+            "bold": false,
+            "dim": false,
+            "italic": false,
+        },
+        "style_required_long": {
+            "color": "red",
+            "bold": false,
+            "dim": true,
+            "italic": false,
+        },
+        "style_options_panel_border": {
+            "color": none,
+            "bold": false,
+            "dim": true,
+            "italic": false,
+        },
+        "style_commands_panel_border": {
+            "color": none,
+            "bold": false,
+            "dim": true,
+            "italic": false,
+        },
+    }
+%}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ 'css/editor.css' | url }}">
+{% endblock %}
+{% block extrahead %}
+    {{ super() }}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
+
+{% set live_terminal %}
+ <span class="rc-element c-yellow rccfg-style-usage">Usage:</span> <span class="rc-element rccfg-style-usage-command">docs</span> [<span class="rc-element rccfg-style-argument c-cyan">OPTIONS</span>] <span class="rc-element rccfg-style-argument c-cyan">FOO</span> <span class="rc-element rccfg-style-argument c-cyan">COMMAND</span> [<span class="rc-element rccfg-style-argument c-cyan">ARGS</span>]...
+
+ <span class="rc-element rccfg-style-helptext-first-line">Help text for CLI</span>
+ <span class="rc-element rccfg-style-helptext">Second line of help text.</span>
+
+<span class="rc-element rccfg-style-options-panel-border">╭─ Options ────────────────────────────────────────────────────────────╮</span>
+<span class="rc-element rccfg-style-options-panel-border">│</span>    <span class="rc-element c-cyan rccfg-style-option">--bar</span>   <span class="rc-element c-green rccfg-style-switch">-b</span>  <span class="rc-element c-yellow rccfg-style-metavar">TEXT</span>     Lorem ipsum <span class="rc-element rccfg-style-option-default">[default: (someval)]</span>             <span class="rc-element rccfg-style-options-panel-border">│</span>
+<span class="rc-element rccfg-style-options-panel-border">│</span> <span class="rc-element c-red rccfg-style-required-short">*</span>  <span class="rc-element c-cyan rccfg-style-option">--baz</span>       <span class="rc-element c-yellow rccfg-style-metavar"><span class="rc-element rccfg-style-metavar-separator">[</span>a<span class="rc-element rccfg-style-metavar-separator">|</span>b<span class="rc-element rccfg-style-metavar-separator">|</span>c<span class="rc-element rccfg-style-metavar-separator">]</span></span>  Choose wisely <span class="rc-element c-red rccfg-style-required-long">[required]</span>                     <span class="rc-element rccfg-style-options-panel-border">│</span>
+<span class="rc-element rccfg-style-options-panel-border">│</span>    <span <span class="rc-element c-cyan rccfg-style-option">--help</span>      <span style="color: #808000; text-decoration-color: #808000; font-weight: bold">       </span>  Show this message and exit.                  <span class="rc-element rccfg-style-options-panel-border">│</span>
+<span class="rc-element rccfg-style-options-panel-border">╰──────────────────────────────────────────────────────────────────────╯</span>
+<span class="rc-element rccfg-style-commands-panel-border">╭─ Commands ───────────────────────────────────────────────────────────╮</span>
+<span class="rc-element rccfg-style-commands-panel-border">│</span> <span class="rc-element c-cyan rccfg-style-command">subcommand           </span> Help text for subcommand                       <span class="rc-element rccfg-style-commands-panel-border">│</span>
+<span class="rc-element rccfg-style-commands-panel-border">╰──────────────────────────────────────────────────────────────────────╯</span>
+{% endset %}
+
+{% block content %}
+<h1 id="terminal-header">Live Style Editor</h1>
+
+<p>This page contains a live editor for <strong>rich-click</strong> styles.</p>
+
+<p>At the bottom of the page, there is generated code for the sample output.</p>
+
+<p><strong>The style options here are not exhaustive!</strong>
+There are many more ways to customize your <strong>rich-click</strong> outputs.
+Modern terminals also support more than the 8 colors used on this page; <a href="https://rich.readthedocs.io/en/stable/appendix/colors.html">see here for more information about terminal colors</a>.
+The Live Style Editor seeks to represent a useful subset of the available styling options.</p>
+<div class="container">
+    <div class="left-column">
+        <table id="option-table">
+            <thead>
+                <tr>
+                    <th>
+                        Option
+                    </th>
+                    <th>
+                        Color
+                    </th>
+                    <th>
+                        Other styles
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for option_name, attrs in DEFAULT_STYLE_DICT.items() %}
+                {% set css_cls = "rccfg-" ~ option_name.replace("_", "-") %}
+                <tr>
+                    <td>
+                        <label for="color-select" title="{{ option_name.upper() }}">{{ option_name.upper() }}</label>
+                    </td>
+                    <td>
+                        <div class="{{ css_cls }} color-grid" data-target="{{ css_cls }}">
+                            {% for color in COLORS %}
+                            {% if color == attrs["color"] %}
+                            <div class="color-option selected-color" data-color="{{ color }}"></div>
+                            {% else %}
+                            <div class="color-option" data-color="{{ color }}"></div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </td>
+                    <td>
+                        <button class="rc-button {{ css_cls }} rccfg-bold-button" data-target="{{ css_cls }}"><code>bold</code></button>
+                        <button class="rc-button {{ css_cls }} rccfg-dim-button" data-target="{{ css_cls }}"><code>dim</code></button>
+                        <button class="rc-button {{ css_cls }} rccfg-italic-button" data-target="{{ css_cls }}"><code>italic</code></button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="right-column">
+        <div data-termynal style="height: 500px;">
+        <div><pre>
+{%- for row in live_terminal.split("\n") %}
+<span class="go">{{ row }}</span>
+{%- endfor %}
+        </pre></div>
+        </div>
+    </div>
+</div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1"><code>RichHelpConfiguration()</code></label><label for="__tabbed_1_2">Global config</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><div class="copy highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">rich_click</span> <span class="k">as</span> <span class="nn">click</span><br>
+<span class="n">help_config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span>
+    <span class="n">style_option</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-option">bold </span><span class="rccfg-code-dim rccfg-style-option"></span><span class="rccfg-code-italic rccfg-style-option"></span><span class="rccfg-code-color rccfg-style-option">cyan</span></span>&quot;</span><span class="p">,</span>
+    <span class="n">style_argument</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-argument">bold </span><span class="rccfg-code-dim rccfg-style-argument"></span><span class="rccfg-code-italic rccfg-style-argument"></span><span class="rccfg-code-color rccfg-style-argument">cyan</span></span>&quot;</span><span class="p">,</span>
+    <span class="n">style_command</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-command">bold </span><span class="rccfg-code-dim rccfg-style-command"></span><span class="rccfg-code-italic rccfg-style-command"></span><span class="rccfg-code-color rccfg-style-command">cyan</span></span>&quot;</span><span class="p">,</span>
+    <span class="n">style_switch</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-switch">bold </span><span class="rccfg-code-dim rccfg-style-switch"></span><span class="rccfg-code-italic rccfg-style-switch"></span><span class="rccfg-code-color rccfg-style-switch">green</span></span>&quot;</span><span class="p">,</span>
+    <span class="n">style_metavar</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-metavar">bold </span><span class="rccfg-code-dim rccfg-style-metavar"></span><span class="rccfg-code-italic rccfg-style-metavar"></span><span class="rccfg-code-color rccfg-style-metavar">yellow</span></span>&quot;</span><span class="p">,</span>
+    <span class="n">style_metavar_separator</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-metavar-separator"></span><span class="rccfg-code-dim rccfg-style-metavar-separator">dim</span><span class="rccfg-code-italic rccfg-style-metavar-separator"></span><span class="rccfg-code-color rccfg-style-metavar-separator"></span></span>&quot;</span><span class="p">,</span>
+    <span class="n">style_usage</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-usage">bold </span><span class="rccfg-code-dim rccfg-style-usage"></span><span class="rccfg-code-italic rccfg-style-usage"></span><span class="rccfg-code-color rccfg-style-usage">yellow</span></span>&quot;</span><span class="p">,</span>
+    <span class="n">style_usage_command</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-usage-command">bold </span><span class="rccfg-code-dim rccfg-style-usage-command"></span><span class="rccfg-code-italic rccfg-style-usage-command"></span><span class="rccfg-code-color rccfg-style-usage-command"></span></span>&quot;</span><span class="p">,</span>
+    <span class="n">style_helptext_first_line</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-helptext-first-line"></span><span class="rccfg-code-dim rccfg-style-helptext-first-line"></span><span class="rccfg-code-italic rccfg-style-helptext-first-line"></span><span class="rccfg-code-color rccfg-style-helptext-first-line"></span></span>&quot;</span><span class="p">,</span>
+    <span class="n">style_helptext</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-helptext"></span><span class="rccfg-code-dim rccfg-style-helptext">dim</span><span class="rccfg-code-italic rccfg-style-helptext"></span><span class="rccfg-code-color rccfg-style-helptext"></span></span>&quot;</span><span class="p">,</span>
+    <span class="n">style_option_default</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-option-default"></span><span class="rccfg-code-dim rccfg-style-option-default"></span><span class="rccfg-code-italic rccfg-style-option-default"></span><span class="rccfg-code-color rccfg-style-option-default"></span></span>&quot;</span><span class="p">,</span>
+    <span class="n">style_required_short</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-required-short"></span><span class="rccfg-code-dim rccfg-style-required-short"></span><span class="rccfg-code-italic rccfg-style-required-short"></span><span class="rccfg-code-color rccfg-style-required-short">red</span></span>&quot;</span><span class="p">,</span>
+    <span class="n">style_required_long</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-required-long"></span><span class="rccfg-code-dim rccfg-style-required-long">dim </span><span class="rccfg-code-italic rccfg-style-required-long"></span><span class="rccfg-code-color rccfg-style-required-long">red</span></span>&quot;</span><span class="p">,</span>
+    <span class="n">style_options_panel_border</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-options-panel-border"></span><span class="rccfg-code-dim rccfg-style-options-panel-border">dim</span><span class="rccfg-code-italic rccfg-style-options-panel-border"></span><span class="rccfg-code-color rccfg-style-options-panel-border"></span></span>&quot;</span><span class="p">,</span>
+    <span class="n">style_commands_panel_border</span><span class="o">=</span><span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-commands-panel-border"></span><span class="rccfg-code-dim rccfg-style-commands-panel-border">dim</span><span class="rccfg-code-italic rccfg-style-commands-panel-border"></span><span class="rccfg-code-color rccfg-style-commands-panel-border"></span></span>&quot;</span>
+<span class="p">)</span><br>
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;my-command&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--bar&quot;</span><span class="p">,</span> <span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Lorem ipsum&quot;</span><span class="p">,</span> <span class="n">show_default</span><span class="o">=</span><span class="s2">&quot;someval&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--baz&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Choose wisely&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">]))</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="n">help_config</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cli</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">bar</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Help text for CLI</span><br>
+<span class="sd">    Second line of help text.</span>
+<span class="sd">    &quot;&quot;&quot;</span><br>
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;subcommand&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">subcommand</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">bar</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Help text for subcommand&quot;&quot;&quot;</span><br>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cli</span><span class="p">()</span><br>
+</code></pre></div></p>
+</div>
+<div class="tabbed-block">
+<p><div class="copy highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">rich_click</span> <span class="k">as</span> <span class="nn">click</span><br>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_OPTION</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-option">bold </span><span class="rccfg-code-dim rccfg-style-option"></span><span class="rccfg-code-italic rccfg-style-option"></span><span class="rccfg-code-color rccfg-style-option">cyan</span></span>&quot;</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_ARGUMENT</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-argument">bold </span><span class="rccfg-code-dim rccfg-style-argument"></span><span class="rccfg-code-italic rccfg-style-argument"></span><span class="rccfg-code-color rccfg-style-argument">cyan</span></span>&quot;</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_COMMAND</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-command">bold </span><span class="rccfg-code-dim rccfg-style-command"></span><span class="rccfg-code-italic rccfg-style-command"></span><span class="rccfg-code-color rccfg-style-command">cyan</span></span>&quot;</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_SWITCH</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-switch">bold </span><span class="rccfg-code-dim rccfg-style-switch"></span><span class="rccfg-code-italic rccfg-style-switch"></span><span class="rccfg-code-color rccfg-style-switch">green</span></span>&quot;</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_METAVAR</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-metavar">bold </span><span class="rccfg-code-dim rccfg-style-metavar"></span><span class="rccfg-code-italic rccfg-style-metavar"></span><span class="rccfg-code-color rccfg-style-metavar">yellow</span></span>&quot;</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_METAVAR_SEPARATOR</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-metavar-separator"></span><span class="rccfg-code-dim rccfg-style-metavar-separator">dim</span><span class="rccfg-code-italic rccfg-style-metavar-separator"></span><span class="rccfg-code-color rccfg-style-metavar-separator"></span></span>&quot;</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_USAGE</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-usage">bold </span><span class="rccfg-code-dim rccfg-style-usage"></span><span class="rccfg-code-italic rccfg-style-usage"></span><span class="rccfg-code-color rccfg-style-usage">yellow</span></span>&quot;</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_USAGE_COMMAND</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-usage-command">bold</span><span class="rccfg-code-dim rccfg-style-usage-command"></span><span class="rccfg-code-italic rccfg-style-usage-command"></span><span class="rccfg-code-color rccfg-style-usage-command"></span></span>&quot;</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_HELPTEXT_FIRST_LINE</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-helptext-first-line"></span><span class="rccfg-code-dim rccfg-style-helptext-first-line"></span><span class="rccfg-code-italic rccfg-style-helptext-first-line"></span><span class="rccfg-code-color rccfg-style-helptext-first-line"></span></span>&quot;</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_HELPTEXT</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-helptext"></span><span class="rccfg-code-dim rccfg-style-helptext">dim</span><span class="rccfg-code-italic rccfg-style-helptext"></span><span class="rccfg-code-color rccfg-style-helptext"></span></span>&quot;</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_OPTION_DEFAULT</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-option-default"></span><span class="rccfg-code-dim rccfg-style-option-default"></span><span class="rccfg-code-italic rccfg-style-option-default"></span><span class="rccfg-code-color rccfg-style-option-default"></span></span>&quot;</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_REQUIRED_SHORT</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-required-short"></span><span class="rccfg-code-dim rccfg-style-required-short"></span><span class="rccfg-code-italic rccfg-style-required-short"></span><span class="rccfg-code-color rccfg-style-required-short">red</span></span>&quot;</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_REQUIRED_LONG</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-required-long"></span><span class="rccfg-code-dim rccfg-style-required-long">dim </span><span class="rccfg-code-italic rccfg-style-required-long"></span><span class="rccfg-code-color rccfg-style-required-long">red</span></span>&quot;</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_OPTIONS_PANEL_BORDER</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-options-panel-border"></span><span class="rccfg-code-dim rccfg-style-options-panel-border">dim</span><span class="rccfg-code-italic rccfg-style-options-panel-border"></span><span class="rccfg-code-color rccfg-style-options-panel-border"></span></span>&quot;</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">STYLE_COMMANDS_PANEL_BORDER</span> <span class="o">=</span> <span class="s2">&quot;<span class="rccfg-code-outer"><span class="rccfg-code-bold rccfg-style-commands-panel-border"></span><span class="rccfg-code-dim rccfg-style-commands-panel-border">dim</span><span class="rccfg-code-italic rccfg-style-commands-panel-border"></span><span class="rccfg-code-color rccfg-style-commands-panel-border"></span></span>&quot;</span><br>
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;my-command&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--bar&quot;</span><span class="p">,</span> <span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Lorem ipsum&quot;</span><span class="p">,</span> <span class="n">show_default</span><span class="o">=</span><span class="s2">&quot;someval&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--baz&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Choose wisely&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">]))</span>
+<span class="k">def</span> <span class="nf">cli</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">bar</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Help text for CLI</span><br>
+<span class="sd">    Second line of help text.</span>
+<span class="sd">    &quot;&quot;&quot;</span><br>
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;subcommand&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">subcommand</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">bar</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Help text for subcommand&quot;&quot;&quot;</span><br>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cli</span><span class="p">()</span><br>
+</code></pre></div></p>
+</div>
+</div>
+</div>
+<script>
+    function setDefaultStyle() {
+        $(".rc-button.rccfg-style-argument.rccfg-bold-button").each(function() {
+            $(this).click();
+        });
+        $(".rc-button.rccfg-style-option.rccfg-bold-button").each(function() {
+            $(this).click();
+        });
+        $(".rc-button.rccfg-style-command.rccfg-bold-button").each(function() {
+            $(this).click();
+        });
+        $(".rc-button.rccfg-style-switch.rccfg-bold-button").each(function() {
+            $(this).click();
+        });
+        $(".rc-button.rccfg-style-metavar.rccfg-bold-button").each(function() {
+            $(this).click();
+        });
+        $(".rc-button.rccfg-style-metavar-separator.rccfg-dim-button").each(function() {
+            $(this).click();
+        });
+        $(".rc-button.rccfg-style-usage.rccfg-bold-button").each(function() {
+            $(this).click();
+        });
+        $(".rc-button.rccfg-style-usage-command.rccfg-bold-button").each(function() {
+            $(this).click();
+        });
+        $(".rc-button.rccfg-style-helptext.rccfg-dim-button").each(function() {
+            $(this).click();
+        });
+        $(".rc-button.rccfg-style-option-default.rccfg-dim-button").each(function() {
+            $(this).click();
+        });
+        $(".rc-button.rccfg-style-required-long.rccfg-dim-button").each(function() {
+            $(this).click();
+        });
+        $(".rc-button.rccfg-style-options-panel-border.rccfg-dim-button").each(function() {
+            $(this).click();
+        });
+        $(".rc-button.rccfg-style-commands-panel-border.rccfg-dim-button").each(function() {
+            $(this).click();
+        });
+    }
+    function trimText() {
+        $('.rccfg-code-outer').each(function() {
+            var boldFlagText = $(this).find(".rccfg-code-bold");
+            if ($(this).text().slice(-5) === "bold ") {
+                boldFlagText.text("bold");
+            }
+            else if ((boldFlagText.text() === "bold") && $(this).text().slice(-4) !== "bold") {
+                boldFlagText.text("bold ");
+            }
+            var dimFlagText = $(this).find(".rccfg-code-dim");
+            if ($(this).text().slice(-4) === "dim ") {
+                dimFlagText.text("dim");
+            }
+            else if (dimFlagText.text() === "dim" && $(this).text().slice(-3) !== "dim") {
+                dimFlagText.text("dim ");
+            }
+            var italicFlagText = $(this).find(".rccfg-code-italic");
+            if ($(this).text().slice(-7) === "italic ") {
+                italicFlagText.text("italic");
+            }
+            else if (italicFlagText.text() === "italic" && $(this).text().slice(-6) !== "italic") {
+                italicFlagText.text("italic ");
+            }
+        });
+    }
+
+    $(".color-grid .color-option").click(function() {
+        var colorGrid = $(this).closest(".color-grid");
+        var targetClass = colorGrid.data("target");
+
+        colorGrid.find(".color-option").not(this).removeClass("selected-color");
+
+        $("." + targetClass).removeClass(function(index, className) {
+            return (className.match(/(^|\s)c-\S+/g) || []).join(' ');
+        });
+        var isSelected = $(this).hasClass("selected-color");
+        var selectedColor = $(this).data("color");
+        $("span .rc-element." + targetClass).toggleClass("c-" + selectedColor, !isSelected);
+        $(this).toggleClass("selected-color");
+
+        if (!isSelected) {
+            $("span .rccfg-code-color." + targetClass).text(selectedColor);
+        }
+        else {
+            $("span .rccfg-code-color." + targetClass).text("");
+        }
+        trimText()
+    }).change();
+
+    $(".rccfg-bold-button").click(function() {
+        var targetClass = $(this).data("target");
+        var loc = $("." + targetClass);
+        loc.toggleClass("s-bold");
+        $(this).toggleClass("button-selected");
+        if (loc.hasClass("s-bold")) {
+            $("span .rccfg-code-bold." + targetClass).text("bold ")
+        }
+        else {
+            $("span .rccfg-code-bold." + targetClass).text("")
+        }
+        trimText()
+    });
+
+    $(".rccfg-dim-button").click(function() {
+        var targetClass = $(this).data("target");
+        var loc = $("." + targetClass);
+        loc.toggleClass("s-dim");
+        $(this).toggleClass("button-selected");
+        if (loc.hasClass("s-dim")) {
+            $("span .rccfg-code-dim." + targetClass).text("dim ")
+        }
+        else {
+            $("span .rccfg-code-dim." + targetClass).text("")
+        }
+        trimText()
+    });
+
+    $(".rccfg-italic-button").click(function() {
+        var targetClass = $(this).data("target");
+        var loc = $("." + targetClass);
+        loc.toggleClass("s-italic");
+        $(this).toggleClass("button-selected");
+        if (loc.hasClass("s-italic")) {
+            $("span .rccfg-code-italic." + targetClass).text("italic ")
+        }
+        else {
+            $("span .rccfg-code-italic." + targetClass).text("")
+        }
+        trimText()
+    });
+
+    $(document).ready(function() {
+        setDefaultStyle()
+    });
+</script>
+{% endblock %}

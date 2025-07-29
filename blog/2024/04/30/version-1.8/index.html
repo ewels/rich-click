@@ -1,0 +1,1732 @@
+
+  
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://ewels.github.io/rich-click/blog/2024/04/30/version-1.8/">
+      
+      
+      
+        <link rel="next" href="../../../11/13/three-pre-made-styles/">
+      
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../../../../feed_rss_created.xml">
+        <link rel="alternate" type="application/rss+xml" title="RSS feed of updated content" href="../../../../../feed_rss_updated.xml">
+      
+      <link rel="icon" href="../../../../../images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+    
+    
+      
+        <title>New blog + v1.8 released! - rich-click</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.a40c8224.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Noto Sans";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../css/termynal.css">
+    
+      <link rel="stylesheet" href="../../../../../css/extra.css">
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+      
+        <meta  property="og:type"  content="website" >
+      
+        <meta  property="og:title"  content="New blog + v1.8 released! - rich-click" >
+      
+        <meta  property="og:description"  content="None" >
+      
+        <meta  property="og:image"  content="https://ewels.github.io/rich-click/assets/images/social/blog/posts/version-1.8.png" >
+      
+        <meta  property="og:image:type"  content="image/png" >
+      
+        <meta  property="og:image:width"  content="1200" >
+      
+        <meta  property="og:image:height"  content="630" >
+      
+        <meta  property="og:url"  content="https://ewels.github.io/rich-click/blog/2024/04/30/version-1.8/" >
+      
+        <meta  name="twitter:card"  content="summary_large_image" >
+      
+        <meta  name="twitter:title"  content="New blog + v1.8 released! - rich-click" >
+      
+        <meta  name="twitter:description"  content="None" >
+      
+        <meta  name="twitter:image"  content="https://ewels.github.io/rich-click/assets/images/social/blog/posts/version-1.8.png" >
+      
+    
+    
+   <link href="../../../../../assets/stylesheets/glightbox.min.css" rel="stylesheet"/><style>
+    html.glightbox-open { overflow: initial; height: 100%; }
+    .gslide-title { margin-top: 0px; user-select: text; }
+    .gslide-desc { color: #666; user-select: text; }
+    .gslide-image img { background: white; }
+    .gscrollbar-fixer { padding-right: 15px; }
+    .gdesc-inner { font-size: 0.75rem; }
+    body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color);}
+    body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color);}
+    body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color);}</style> <script src="../../../../../assets/javascripts/glightbox.min.js"></script></head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="navy">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#new-blog-v18-released" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../.." title="rich-click" class="md-header__button md-logo" aria-label="rich-click" data-md-component="logo">
+      
+  <img src="../../../../../images/logo-square-large.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            rich-click
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              New blog + v1.8 released!
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="navy"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="navy"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ewels/rich-click" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ewels/rich-click
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../editor/" class="md-tabs__link">
+        
+  
+    
+  
+  Live Style Editor
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../../../documentation/introduction_to_click/" class="md-tabs__link">
+          
+  
+  Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="../../../../" class="md-tabs__link">
+        
+  
+    
+  
+  Blog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../changelog/" class="md-tabs__link">
+        
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../../../contributing/" class="md-tabs__link">
+        
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="rich-click" class="md-nav__button md-logo" aria-label="rich-click" data-md-component="logo">
+      
+  <img src="../../../../../images/logo-square-large.png" alt="logo">
+
+    </a>
+    rich-click
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ewels/rich-click" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ewels/rich-click
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../editor/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Live Style Editor
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Documentation
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../documentation/introduction_to_click/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction to Click
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../documentation/comparison_of_click_and_rich_click/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Comparison of Click & rich-click
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../documentation/configuration/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Configuration
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../documentation/formatting_and_styles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Formatting & Styles
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../documentation/groups_and_sorting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Groups & Sorting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../documentation/rich_click_cli/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    <code>rich-click</code> CLI tool
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../documentation/accessibility/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Accessibility
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      <a href="../../../../" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../changelog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Changelog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../../contributing/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#new-docs-website-and-blog" class="md-nav__link">
+    <span class="md-ellipsis">
+      New docs website and blog
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="New docs website and blog">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#live-style-editor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Live Style Editor
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rich-click-version-18" class="md-nav__link">
+    <span class="md-ellipsis">
+      rich-click version 1.8
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="rich-click version 1.8">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#generate-html-and-svg-with-the-rich-click-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      Generate HTML and SVG with the rich-click CLI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#easier-decorator-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Easier decorator API
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#more-style-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      More style options
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#improvements-to-option-and-command-group-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Improvements to option and command group API
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Improvements to option and command group API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#better-command-path-resolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Better command path resolution
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wildcards" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wildcards
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#panel_styles-arguments-panel-styling" class="md-nav__link">
+    <span class="md-ellipsis">
+      panel_styles + Arguments panel styling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#improved-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Improved performance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#and-more" class="md-nav__link">
+    <span class="md-ellipsis">
+      And more...
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#plans-for-the-future" class="md-nav__link">
+    <span class="md-ellipsis">
+      Plans for the future
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../../" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+              <div class="md-post__authors md-typeset">
+                
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="https://github.com/dwreeves.png" alt="Daniel Reeves">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          Daniel Reeves
+                        
+                      </strong>
+                      <br>
+                      Co-maintainer
+                    </span>
+                  </div>
+                
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="https://github.com/ewels.png" alt="Phil Ewels">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          Phil Ewels
+                        
+                      </strong>
+                      <br>
+                      rich-click creator
+                    </span>
+                  </div>
+                
+              </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2024-04-30 00:00:00+00:00" class="md-ellipsis">April 30, 2024</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../../category/release-notes/">Release notes</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              12 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+
+  
+  
+
+
+<h1 id="new-blog-v18-released">New blog + v1.8 released!<a class="headerlink" href="#new-blog-v18-released" title="Permanent link">&para;</a></h1>
+<p>Today we are very happy to release version 1.8 of rich-click,
+and along with it - this blog!</p>
+<!-- more -->
+
+<h2 id="new-docs-website-and-blog">New docs website and blog<a class="headerlink" href="#new-docs-website-and-blog" title="Permanent link">&para;</a></h2>
+<p>Until now, <strong>rich-click</strong> has just had a GitHub repo and all documentation has been in the README. Now, we have full docs! We've fleshed out the documentation from the README, and we'll continue to add to it over time.</p>
+<h3 id="live-style-editor">Live Style Editor<a class="headerlink" href="#live-style-editor" title="Permanent link">&para;</a></h3>
+<p>The coolest addition allowed by this change to full documentation is the <a href="https://ewels.github.io/rich-click/editor">Live Style Editor</a>.</p>
+<p>We built this to address a problem we noticed, which is that the vast majority of users rely on the default <strong>rich-click</strong> styles.
+Although we do think <strong>rich-click</strong>'s defaults are pretty good, it pointed to a potential developer experience issue that so many CLIs relied on the defaults.
+We hope that the live style editor makes it easier for users to make style changes and to personalize their CLIs. 😁</p>
+<p>Here is an example of a style that Phil made with the style editor:</p>
+<details class="success">
+<summary>Phil's Generated Code</summary>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="n">help_config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span>
+    <span class="n">style_option</span><span class="o">=</span><span class="s2">&quot;bold cyan&quot;</span><span class="p">,</span>
+    <span class="n">style_argument</span><span class="o">=</span><span class="s2">&quot;bold cyan&quot;</span><span class="p">,</span>
+    <span class="n">style_command</span><span class="o">=</span><span class="s2">&quot;bold green&quot;</span><span class="p">,</span>
+    <span class="n">style_switch</span><span class="o">=</span><span class="s2">&quot;bold green&quot;</span><span class="p">,</span>
+    <span class="n">style_metavar</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span>
+    <span class="n">style_metavar_separator</span><span class="o">=</span><span class="s2">&quot;dim blue&quot;</span><span class="p">,</span>
+    <span class="n">style_usage</span><span class="o">=</span><span class="s2">&quot;bold italic magenta&quot;</span><span class="p">,</span>
+    <span class="n">style_usage_command</span><span class="o">=</span><span class="s2">&quot;bold yellow&quot;</span><span class="p">,</span>
+    <span class="n">style_helptext_first_line</span><span class="o">=</span><span class="s2">&quot;bold italic white&quot;</span><span class="p">,</span>
+    <span class="n">style_helptext</span><span class="o">=</span><span class="s2">&quot;dim italic yellow&quot;</span><span class="p">,</span>
+    <span class="n">style_option_default</span><span class="o">=</span><span class="s2">&quot;bold yellow&quot;</span><span class="p">,</span>
+    <span class="n">style_required_short</span><span class="o">=</span><span class="s2">&quot;bold red&quot;</span><span class="p">,</span>
+    <span class="n">style_required_long</span><span class="o">=</span><span class="s2">&quot;bold red&quot;</span><span class="p">,</span>
+    <span class="n">style_options_panel_border</span><span class="o">=</span><span class="s2">&quot;italic blue&quot;</span><span class="p">,</span>
+    <span class="n">style_commands_panel_border</span><span class="o">=</span><span class="s2">&quot;italic blue&quot;</span>
+<span class="p">)</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;my-command&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--bar&quot;</span><span class="p">,</span> <span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Lorem ipsum&quot;</span><span class="p">,</span> <span class="n">show_default</span><span class="o">=</span><span class="s2">&quot;someval&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--baz&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Choose wisely&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">]))</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="n">help_config</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">bar</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Help text for CLI</span>
+
+<span class="sd">    Second line of help text.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;subcommand&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">subcommand</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">bar</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Help text for subcommand&quot;&quot;&quot;</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cli</span><span class="p">()</span>
+</code></pre></div>
+</details>
+<p><a class="glightbox" href="../../../../../images/blog/version-1.8/phils_example.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="" class="screenshot" src="../../../../../images/blog/version-1.8/phils_example.svg" /></a></p>
+<p>And here's one that Daniel made:</p>
+<details class="success">
+<summary>Daniel's Generated Code</summary>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="n">help_config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span>
+    <span class="n">style_option</span><span class="o">=</span><span class="s2">&quot;bold magenta&quot;</span><span class="p">,</span>
+    <span class="n">style_argument</span><span class="o">=</span><span class="s2">&quot;bold yellow&quot;</span><span class="p">,</span>
+    <span class="n">style_command</span><span class="o">=</span><span class="s2">&quot;bold blue&quot;</span><span class="p">,</span>
+    <span class="n">style_switch</span><span class="o">=</span><span class="s2">&quot;bold magenta&quot;</span><span class="p">,</span>
+    <span class="n">style_metavar</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">,</span>
+    <span class="n">style_metavar_separator</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">style_usage</span><span class="o">=</span><span class="s2">&quot;bold blue&quot;</span><span class="p">,</span>
+    <span class="n">style_usage_command</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">style_helptext_first_line</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span>
+    <span class="n">style_helptext</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">style_option_default</span><span class="o">=</span><span class="s2">&quot;yellow&quot;</span><span class="p">,</span>
+    <span class="n">style_required_short</span><span class="o">=</span><span class="s2">&quot;bold red&quot;</span><span class="p">,</span>
+    <span class="n">style_required_long</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span>
+    <span class="n">style_options_panel_border</span><span class="o">=</span><span class="s2">&quot;magenta&quot;</span><span class="p">,</span>
+    <span class="n">style_commands_panel_border</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span>
+<span class="p">)</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;my-command&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--bar&quot;</span><span class="p">,</span> <span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Lorem ipsum&quot;</span><span class="p">,</span> <span class="n">show_default</span><span class="o">=</span><span class="s2">&quot;someval&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--baz&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Choose wisely&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">]))</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="n">help_config</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">bar</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Help text for CLI</span>
+
+<span class="sd">    Second line of help text.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;subcommand&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">subcommand</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">bar</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Help text for subcommand&quot;&quot;&quot;</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cli</span><span class="p">()</span>
+</code></pre></div>
+</details>
+<p><a class="glightbox" href="../../../../../images/blog/version-1.8/daniels_example.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="" class="screenshot" src="../../../../../images/blog/version-1.8/daniels_example.svg" /></a></p>
+<h2 id="rich-click-version-18"><strong>rich-click</strong> version 1.8<a class="headerlink" href="#rich-click-version-18" title="Permanent link">&para;</a></h2>
+<h3 id="generate-html-and-svg-with-the-rich-click-cli">Generate HTML and SVG with the <code>rich-click</code> CLI<a class="headerlink" href="#generate-html-and-svg-with-the-rich-click-cli" title="Permanent link">&para;</a></h3>
+<p>The <code>rich-click</code> CLI now allows for <code>--output svg</code> and <code>--output html</code> to help easily generate outputs for READMEs and docs:</p>
+<div class="highlight"><pre><span></span><code>rich-click<span class="w"> </span>--output<span class="w"> </span>svg<span class="w"> </span>path.to.my.cli:main<span class="w"> </span>--help
+</code></pre></div>
+<p><a class="glightbox" href="../../../../../images/blog/version-1.8/output_to_svg.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="" class="screenshot" src="../../../../../images/blog/version-1.8/output_to_svg.svg" /></a></p>
+<h3 id="easier-decorator-api">Easier decorator API<a class="headerlink" href="#easier-decorator-api" title="Permanent link">&para;</a></h3>
+<p>The <code>rich_config()</code> decorator API is now easier to use:
+You can pass a <code>dict</code> into the <code>@click.rich_config()</code> decorator. E.g.:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@click</span><span class="o">.</span><span class="n">command</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;max_width&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">})</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
+    <span class="o">...</span>
+</code></pre></div>
+<p>Additionally, <code>dict</code>s behave a little differently than <code>RichHelpConfiguration</code> when dealing with parents,
+and this behavior can be useful in some contexts.
+Basically, the child command uses the parent's help config as a baseline, and only updates the fields specified in the dict.
+So in the following example, <code>my_group</code> will have <code>style_option="red"</code>, and <code>my_subcommand</code> will have <em>both</em> <code>style_option="red"</code> and <code>style_argument="green"</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@click</span><span class="o">.</span><span class="n">group</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;style_option&quot;</span><span class="p">:</span> <span class="s2">&quot;red&quot;</span><span class="p">})</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_group</span><span class="p">():</span>
+    <span class="o">...</span>
+
+<span class="nd">@my_group</span><span class="o">.</span><span class="n">command</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;style_argument&quot;</span><span class="p">:</span> <span class="s2">&quot;green&quot;</span><span class="p">})</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_subcommand</span><span class="p">():</span>
+    <span class="o">...</span>
+</code></pre></div>
+<p>This can be a little confusing, so we've defined explicit rules (and enforced them in unit tests) for how the config is resolved (these are also in our docs):</p>
+<pre class="mermaid"><code>flowchart TD
+    A["Did you pass in a @rich_config(help_config=...)?"]
+    A --&gt; |Yes| Ayes
+    A --&gt; |No| Ano
+
+    Ayes["Was it a dict or a RichHelpConfiguration?"]
+
+    Ayes --&gt; |dict| AyesBdict
+    Ayes --&gt; |RichHelpConfiguration| AyesBrhc
+
+    AyesBdict["Is there a 'parent' config?"]
+
+    AyesBdict --&gt; |Yes| AyesBdictCyes
+    AyesBdict --&gt; |No| AyesBdictCno
+
+    AyesBdictCyes:::StoppingPoint
+    AyesBdictCyes["Merge into the parent config,\nand use that"]
+
+    AyesBdictCno:::StoppingPoint
+    AyesBdictCno["Merge into the global config,\nand use that"]
+
+    AyesBrhc:::StoppingPoint
+    AyesBrhc["Use the RichHelpConfiguration  object.\n\n(Note: RichHelpConfiguration's\ndefaults are independent of the\nglobal config.)"]
+
+    Ano["Is there a 'parent' config?"]
+
+    Ano --&gt; |Yes| AnoByes
+    Ano --&gt; |No| AnoBno
+
+    AnoByes:::StoppingPoint
+    AnoByes["Use the parent config"]
+
+    AnoBno:::StoppingPoint
+    AnoBno["Use the global config"]
+
+    classDef StoppingPoint font-weight: 600;</code></pre>
+<h3 id="more-style-options">More style options<a class="headerlink" href="#more-style-options" title="Permanent link">&para;</a></h3>
+<p>The biggest addition to <strong>rich-click</strong>'s styling options was control over panel styles:</p>
+<ul>
+<li><code>STYLE_OPTIONS_PANEL_BOX</code></li>
+<li><code>STYLE_COMMANDS_PANEL_BOX</code></li>
+<li><code>STYLE_ERRORS_PANEL_BOX</code></li>
+</ul>
+<p>Here's a silly example of what this can do:</p>
+<details class="note">
+<summary>Code for silly example</summary>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="n">help_config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span>
+    <span class="n">style_options_panel_box</span><span class="o">=</span><span class="s2">&quot;ASCII&quot;</span><span class="p">,</span>
+    <span class="n">style_commands_panel_box</span><span class="o">=</span><span class="s2">&quot;HEAVY&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;app&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--env-file&quot;</span><span class="p">,</span> <span class="s2">&quot;-e&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Path</span><span class="p">(),</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;.env file&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="n">help_config</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CLI for `app`</span>
+
+<span class="sd">    This `app` lets you do cool things.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;db&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">deploy</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Database commands for app&quot;&quot;&quot;</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;deploy&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">deploy</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Deploy app&quot;&quot;&quot;</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;self&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">self</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Manage app&quot;&quot;&quot;</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cli</span><span class="p">()</span>
+</code></pre></div>
+</details>
+<p><a class="glightbox" href="../../../../../images/blog/version-1.8/boxes_silly.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="" class="screenshot" src="../../../../../images/blog/version-1.8/boxes_silly.svg" /></a></p>
+<p>Here's a simple, stylish, and sleek example that would look great in your app:</p>
+<details class="note">
+<summary>Code for stylish example</summary>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="n">help_config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span>
+    <span class="n">style_options_panel_box</span><span class="o">=</span><span class="s2">&quot;SIMPLE_HEAD&quot;</span><span class="p">,</span>
+    <span class="n">style_options_table_box</span><span class="o">=</span><span class="s2">&quot;SIMPLE_HEAD&quot;</span><span class="p">,</span>
+    <span class="n">style_commands_panel_box</span><span class="o">=</span><span class="s2">&quot;SIMPLE_HEAD&quot;</span><span class="p">,</span>
+    <span class="n">style_commands_table_box</span><span class="o">=</span><span class="s2">&quot;SIMPLE_HEAD&quot;</span><span class="p">,</span>
+    <span class="n">style_options_panel_border</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span>
+    <span class="n">options_panel_title</span><span class="o">=</span><span class="s2">&quot;[u]Options[/]&quot;</span><span class="p">,</span>
+    <span class="n">use_rich_markup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">style_commands_panel_border</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span>
+    <span class="n">commands_panel_title</span><span class="o">=</span><span class="s2">&quot;[u]Commands[/]&quot;</span><span class="p">,</span>
+    <span class="n">style_option</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span>
+    <span class="n">style_usage</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">style_usage_command</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">style_argument</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span>
+    <span class="n">style_switch</span><span class="o">=</span><span class="s2">&quot;dim green&quot;</span><span class="p">,</span>
+    <span class="n">style_command</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span>
+    <span class="n">style_metavar</span><span class="o">=</span><span class="s2">&quot;dim&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;app&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--env-file&quot;</span><span class="p">,</span> <span class="s2">&quot;-e&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Path</span><span class="p">(),</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;.env file&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="n">help_config</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CLI for `app`</span>
+
+<span class="sd">    This `app` lets you do cool things.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;db&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">deploy</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Database commands for app&quot;&quot;&quot;</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;deploy&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">deploy</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Deploy app&quot;&quot;&quot;</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;self&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">self</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Manage app&quot;&quot;&quot;</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cli</span><span class="p">()</span>
+</code></pre></div>
+</details>
+<p><a class="glightbox" href="../../../../../images/blog/version-1.8/boxes_sleek.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="" class="screenshot" src="../../../../../images/blog/version-1.8/boxes_sleek.svg" /></a></p>
+<h3 id="improvements-to-option-and-command-group-api">Improvements to option and command group API<a class="headerlink" href="#improvements-to-option-and-command-group-api" title="Permanent link">&para;</a></h3>
+<p>The option groups and command groups are a very powerful and useful feature, but historically they've been tricky to work with.
+The changes we've made in 1.8 improve on the API in a few substantial ways.</p>
+<h4 id="better-command-path-resolution">Better command path resolution<a class="headerlink" href="#better-command-path-resolution" title="Permanent link">&para;</a></h4>
+<p>First, group keys used to only read from the <code>ctx.command_path</code>.
+Now they read from the <code>ctx.command_path</code> and the <code>ctx.command.name</code> (or the <code>f"{ctx.parent.command.name} {ctx.command.name}"</code> for subcommands).
+This should cause fewer headaches for users!</p>
+<details class="note">
+<summary>Longer explanation</summary>
+<p>What this means in practical terms is easier to explain by example.
+For example, the command path for <code>python hello.py --name world</code> is <code>hello.py</code>,
+but if you were to set <code>hello</code> as a console script entry point in your <code>pyproject.toml</code> or <code>setup.py</code>,
+then the command path for <code>hello --name world</code> would become <code>hello</code>.</p>
+<p>This causes an annoying issue where running <code>python my_script.py</code> and <code>venv/bin/my_script</code> had different behaviors,
+and it was also unintuitive that the name of the CLI didn't always work, even when it's not an entry point.</p>
+<p>Now, both approaches work! 😊</p>
+</details>
+<div class="highlight"><pre><span></span><code><span class="c1"># cli.py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="c1"># Pick your poison 🧪 Both approaches now work!</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">COMMAND_GROUPS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;super-cool-tool&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>  <span class="c1"># `ctx.command.name`</span>
+    <span class="s2">&quot;cli.py&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>  <span class="c1"># `ctx.command_path` when running &quot;python cli.py&quot;.</span>
+<span class="p">}</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;super-cool-tool&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="o">...</span>
+</code></pre></div>
+<h4 id="wildcards">Wildcards<a class="headerlink" href="#wildcards" title="Permanent link">&para;</a></h4>
+<p>Wildcards now also work, in case you want to globally define options or simply don't want to bother spelling out the whole command path.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">COMMAND_GROUPS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;*&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">],</span>
+<span class="p">}</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;super-cool-tool&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="o">...</span>
+</code></pre></div>
+<p>You can also stick wildcards in the front, middle, or end of a key, e.g.:</p>
+<ul>
+<li><code>cli sub-command *</code></li>
+<li><code>cli * sub-sub-command</code></li>
+<li><code>* sub-command *</code></li>
+</ul>
+<details class="note">
+<summary>Long example</summary>
+<div class="highlight"><pre><span></span><code><span class="c1"># foo.py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">OPTION_GROUPS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;cli * c&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;foo&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;--flag1&quot;</span><span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span> <span class="o">...</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag1&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag2&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">x</span><span class="p">(</span><span class="n">flag1</span><span class="p">,</span> <span class="n">flag2</span><span class="p">):</span> <span class="o">...</span>
+<span class="nd">@x</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag1&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag2&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">xa</span><span class="p">(</span><span class="n">flag1</span><span class="p">,</span> <span class="n">flag2</span><span class="p">):</span> <span class="o">...</span>
+<span class="nd">@x</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag1&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag2&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">xb</span><span class="p">(</span><span class="n">flag1</span><span class="p">,</span> <span class="n">flag2</span><span class="p">):</span> <span class="o">...</span>
+<span class="nd">@x</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag1&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag2&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">xc</span><span class="p">(</span><span class="n">flag1</span><span class="p">,</span> <span class="n">flag2</span><span class="p">):</span> <span class="o">...</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag1&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag2&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">y</span><span class="p">(</span><span class="n">flag1</span><span class="p">,</span> <span class="n">flag2</span><span class="p">):</span> <span class="o">...</span>
+<span class="nd">@y</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag1&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag2&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ya</span><span class="p">(</span><span class="n">flag1</span><span class="p">,</span> <span class="n">flag2</span><span class="p">):</span> <span class="o">...</span>
+<span class="nd">@y</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag1&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag2&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">yb</span><span class="p">(</span><span class="n">flag1</span><span class="p">,</span> <span class="n">flag2</span><span class="p">):</span> <span class="o">...</span>
+<span class="nd">@y</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag1&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag2&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">yc</span><span class="p">(</span><span class="n">flag1</span><span class="p">,</span> <span class="n">flag2</span><span class="p">):</span> <span class="o">...</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag1&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag2&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">z</span><span class="p">(</span><span class="n">flag1</span><span class="p">,</span> <span class="n">flag2</span><span class="p">):</span> <span class="o">...</span>
+<span class="nd">@z</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag1&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag2&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">za</span><span class="p">(</span><span class="n">flag1</span><span class="p">,</span> <span class="n">flag2</span><span class="p">):</span> <span class="o">...</span>
+<span class="nd">@z</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag1&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag2&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">zb</span><span class="p">(</span><span class="n">flag1</span><span class="p">,</span> <span class="n">flag2</span><span class="p">):</span> <span class="o">...</span>
+<span class="nd">@z</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag1&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--flag2&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">zc</span><span class="p">(</span><span class="n">flag1</span><span class="p">,</span> <span class="n">flag2</span><span class="p">):</span> <span class="o">...</span>
+
+<span class="n">cli</span><span class="p">()</span>
+</code></pre></div>
+<p>This works the way you'd expect:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>python<span class="w"> </span>foo.py<span class="w"> </span>x<span class="w"> </span>c<span class="w"> </span>--help
+
+<span class="go"> Usage: foo.py x c [OPTIONS]                                                          </span>
+
+<span class="go">╭─ foo ──────────────────────────────────────────────────────────────────────────────╮</span>
+<span class="go">│ --flag1    TEXT                                                                    │</span>
+<span class="go">╰────────────────────────────────────────────────────────────────────────────────────╯</span>
+<span class="go">╭─ Options ──────────────────────────────────────────────────────────────────────────╮</span>
+<span class="go">│ --flag2    TEXT                                                                    │</span>
+<span class="go">│ --help           Show this message and exit.                                       │</span>
+<span class="go">╰────────────────────────────────────────────────────────────────────────────────────╯</span>
+
+<span class="gp">$ </span>python<span class="w"> </span>foo.py<span class="w"> </span>x<span class="w"> </span>b<span class="w"> </span>--help
+
+<span class="go"> Usage: foo.py x b [OPTIONS]                                                           </span>
+
+<span class="go">╭─ Options ───────────────────────────────────────────────────────────────────────────╮</span>
+<span class="go">│ --flag1    TEXT                                                                     │</span>
+<span class="go">│ --flag2    TEXT                                                                     │</span>
+<span class="go">│ --help           Show this message and exit.                                        │</span>
+<span class="go">╰─────────────────────────────────────────────────────────────────────────────────────╯</span>
+</code></pre></div>
+</details>
+<h4 id="panel_styles-arguments-panel-styling"><code>panel_styles</code> + Arguments panel styling<a class="headerlink" href="#panel_styles-arguments-panel-styling" title="Permanent link">&para;</a></h4>
+<p>The dicts for command+option groups now accept an optional <code>panel_styles</code> key, which passes kwargs to the <code>Panel()</code>.</p>
+<p>Another handy feature is that the "Arguments" panel (which is created when the config option <code>show_arguments</code> is <code>True</code>)
+can now be stylized through the API so long as the following is true:</p>
+<ol>
+<li><code>config.show_arguments</code> is <code>True</code>.</li>
+<li>There is an option group with a <code>name</code> equal to the <code>config.arguments_panel_title</code> (default: <code>'Arguments'</code>)</li>
+<li>The option group does not have any <code>options</code> (The list is empty, undefined, or <code>None</code>).</li>
+</ol>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich</span><span class="w"> </span><span class="kn">import</span> <span class="n">box</span>
+
+<span class="n">help_config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span>
+    <span class="n">show_arguments</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">option_groups</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;my-command&quot;</span><span class="p">:</span> <span class="p">[</span>
+<span class="hll">            <span class="p">{</span>
+</span><span class="hll">                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Arguments&quot;</span><span class="p">,</span>
+</span><span class="hll">                <span class="s2">&quot;panel_styles&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;box&quot;</span><span class="p">:</span> <span class="n">box</span><span class="o">.</span><span class="n">DOUBLE_EDGE</span><span class="p">,</span> <span class="s2">&quot;border_style&quot;</span><span class="p">:</span> <span class="s2">&quot;dim red&quot;</span><span class="p">}</span>
+</span><span class="hll">            <span class="p">}</span>
+</span>        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;my-command&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--baz&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="n">help_config</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">(</span><span class="n">foo</span><span class="p">,</span> <span class="n">bar</span><span class="p">,</span> <span class="n">baz</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cli</span><span class="p">()</span>
+</code></pre></div>
+<p><a class="glightbox" href="../../../../../images/blog/version-1.8/arguments_box_and_panel_styles.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="" class="screenshot" src="../../../../../images/blog/version-1.8/arguments_box_and_panel_styles.svg" /></a></p>
+<h3 id="improved-performance">Improved performance<a class="headerlink" href="#improved-performance" title="Permanent link">&para;</a></h3>
+<p>During command execution, <strong>rich-click</strong> now loads faster and takes up less memory than before:</p>
+<p><a class="glightbox" href="../../../../../images/blog/version-1.8/execution_times.png" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="" src="../../../../../images/blog/version-1.8/execution_times.png" title="Execution times of different CLI frameworks" /></a></p>
+<p><a class="glightbox" href="../../../../../images/blog/version-1.8/memory_profiles.png" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="" src="../../../../../images/blog/version-1.8/memory_profiles.png" title="Memory consumption of different CLI frameworks" /></a></p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Python regularly compiles <code>.py</code> files into <code>.pyc</code> files to speed up code execution.
+The <strong>with bytecode</strong> metrics measure performance <em>with</em> these <code>.pyc</code> files, and the <strong>without bytecode</strong> metrics measure performance <em>without</em> them.</p>
+</div>
+<p>We include the code we ran below. The metrics you see above were gathered by running the below script on an old Macbook.</p>
+<details class="note">
+<summary>Profiling script</summary>
+<p>This is the script we used to generate the data in the bar chart.</p>
+<p>This script requires <code>uv</code> and <code>gdate</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+<span class="nb">set</span><span class="w"> </span>-eo<span class="w"> </span>pipefail
+
+<span class="nb">export</span><span class="w"> </span><span class="nv">VIRTUAL_ENV</span><span class="o">=</span>.venv_benchmarks
+<span class="nb">export</span><span class="w"> </span><span class="nv">PY_VERSION</span><span class="o">=</span><span class="m">3</span>.12
+
+<span class="nv">speed_trials</span><span class="o">=</span><span class="m">40</span>
+<span class="nv">mprof_trials</span><span class="o">=</span><span class="m">10</span>
+
+<span class="c1">###############################################################################</span>
+
+uv<span class="w"> </span>venv<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">VIRTUAL_ENV</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>--python<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PY_VERSION</span><span class="si">}</span><span class="s2">&quot;</span>
+
+cat<span class="w"> </span><span class="s">&lt;&lt;EOF &gt; hello_click.py</span>
+<span class="s">import click</span>
+
+<span class="s">@click.command()</span>
+<span class="s">@click.option(&quot;--name&quot;, default=&quot;World&quot;, help=&quot;Name to greet.&quot;)</span>
+<span class="s">def hello(name):</span>
+<span class="s">    &quot;&quot;&quot;Greet someone.&quot;&quot;&quot;</span>
+<span class="s">    print(f&quot;Hello, {name}!&quot;)</span>
+<span class="s">    if name == &quot;Daniel&quot;:</span>
+<span class="s">        import time</span>
+<span class="s">        time.sleep(0.2)</span>
+
+<span class="s">if __name__ == &quot;__main__&quot;:</span>
+<span class="s">    hello()</span>
+<span class="s">EOF</span>
+
+cat<span class="w"> </span><span class="s">&lt;&lt;EOF &gt; hello_rich_click.py</span>
+<span class="s">import rich_click as click</span>
+
+<span class="s">@click.command()</span>
+<span class="s">@click.option(&quot;--name&quot;, default=&quot;World&quot;, help=&quot;Name to greet.&quot;)</span>
+<span class="s">def hello(name):</span>
+<span class="s">    &quot;&quot;&quot;Greet someone.&quot;&quot;&quot;</span>
+<span class="s">    print(f&quot;Hello, {name}!&quot;)</span>
+<span class="s">    if name == &quot;Daniel&quot;:</span>
+<span class="s">        import time</span>
+<span class="s">        time.sleep(0.2)</span>
+
+<span class="s">if __name__ == &quot;__main__&quot;:</span>
+<span class="s">    hello()</span>
+<span class="s">EOF</span>
+
+cat<span class="w"> </span><span class="s">&lt;&lt;EOF &gt; hello_argparse.py</span>
+<span class="s">import argparse</span>
+
+<span class="s">def main():</span>
+<span class="s">    parser = argparse.ArgumentParser(description=&quot;Greet someone.&quot;)</span>
+<span class="s">    parser.add_argument(&quot;--name&quot;, default=&quot;World&quot;, help=&quot;Name to greet.&quot;)</span>
+<span class="s">    args = parser.parse_args()</span>
+<span class="s">    print(f&quot;Hello, {args.name}!&quot;)</span>
+<span class="s">    if args.name == &quot;Daniel&quot;:</span>
+<span class="s">        import time</span>
+<span class="s">        time.sleep(0.2)</span>
+
+<span class="s">if __name__ == &#39;__main__&#39;:</span>
+<span class="s">    main()</span>
+<span class="s">EOF</span>
+
+cat<span class="w"> </span><span class="s">&lt;&lt;EOF &gt; hello_typer.py</span>
+<span class="s">import typer</span>
+<span class="s">from typing_extensions import Annotated</span>
+
+<span class="s">def main(name: Annotated[str, typer.Option(help=&quot;Name to greet.&quot;)] = &quot;World&quot;):</span>
+<span class="s">    &quot;&quot;&quot;Greet someone.&quot;&quot;&quot;</span>
+<span class="s">    print(f&quot;Hello, {name}!&quot;)</span>
+<span class="s">    if name == &quot;Daniel&quot;:</span>
+<span class="s">        import time</span>
+<span class="s">        time.sleep(0.3)</span>
+
+<span class="s">if __name__ == &#39;__main__&#39;:</span>
+<span class="s">    main()</span>
+<span class="s">EOF</span>
+
+chmod<span class="w"> </span>+x<span class="w"> </span>hello_argparse.py
+chmod<span class="w"> </span>+x<span class="w"> </span>hello_click.py
+chmod<span class="w"> </span>+x<span class="w"> </span>hello_rich_click.py
+chmod<span class="w"> </span>+x<span class="w"> </span>hello_typer.py
+
+<span class="c1">################################################################################</span>
+
+<span class="k">function</span><span class="w"> </span>get_times<span class="w"> </span><span class="o">{</span>
+<span class="w">  </span><span class="nv">total_time</span><span class="o">=</span><span class="m">0</span>
+<span class="w">  </span><span class="nv">filename</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">  </span><span class="nv">clear_pyc_files</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">2</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="w">  </span><span class="c1"># Run once to compile pyc files</span>
+<span class="w">  </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">VIRTUAL_ENV</span><span class="si">}</span><span class="s2">/bin/python&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>--name<span class="w"> </span>Phil<span class="w"> </span>&gt;/dev/null
+
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="o">((</span><span class="w"> </span><span class="nv">i</span><span class="o">=</span><span class="m">0</span><span class="p">;</span><span class="w"> </span>i<span class="w"> </span>&lt;<span class="w"> </span>speed_trials<span class="p">;</span><span class="w"> </span>i++<span class="w"> </span><span class="o">))</span>
+<span class="w">  </span><span class="k">do</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">clear_pyc_files</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">      </span>find<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">VIRTUAL_ENV</span><span class="si">}</span><span class="s2">/lib/python</span><span class="si">${</span><span class="nv">PY_VERSION</span><span class="si">}</span><span class="s2">/site-packages/&quot;</span><span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.pyc&#39;</span><span class="w"> </span>-delete
+<span class="w">    </span><span class="k">fi</span>
+
+<span class="w">    </span><span class="nv">start_time</span><span class="o">=</span><span class="k">$(</span>gdate<span class="w"> </span>+%s.%N<span class="k">)</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">VIRTUAL_ENV</span><span class="si">}</span><span class="s2">/bin/python&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>--name<span class="w"> </span>Phil<span class="w"> </span>&gt;/dev/null
+<span class="w">    </span><span class="nv">end_time</span><span class="o">=</span><span class="k">$(</span>gdate<span class="w"> </span>+%s.%N<span class="k">)</span>
+
+<span class="w">    </span><span class="nv">elapsed</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$end_time</span><span class="s2"> - </span><span class="nv">$start_time</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>bc<span class="k">)</span>
+<span class="w">    </span><span class="nv">total_time</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$total_time</span><span class="s2"> + </span><span class="nv">$elapsed</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>bc<span class="k">)</span>
+
+<span class="w">  </span><span class="k">done</span>
+
+<span class="w">  </span><span class="nv">average_time</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$total_time</span><span class="s2"> / </span><span class="nv">$speed_trials</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>bc<span class="w"> </span>-l<span class="k">)</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Average time for </span><span class="si">${</span><span class="nv">filename</span><span class="si">}</span><span class="s2"> with clear_pyc_files=</span><span class="si">${</span><span class="nv">clear_pyc_files</span><span class="si">}</span><span class="s2">: </span><span class="nv">$average_time</span><span class="s2"> seconds&quot;</span>
+
+<span class="o">}</span>
+
+<span class="k">function</span><span class="w"> </span>get_mprof<span class="w"> </span><span class="o">{</span>
+<span class="w">  </span><span class="nv">total_mib</span><span class="o">=</span><span class="m">0</span>
+<span class="w">  </span><span class="nv">filename</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">  </span><span class="nv">clear_pyc_files</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">2</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="w">  </span><span class="c1"># Run once to compile pyc files</span>
+<span class="w">  </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">VIRTUAL_ENV</span><span class="si">}</span><span class="s2">/bin/python&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>--name<span class="w"> </span>Phil<span class="w"> </span>&gt;/dev/null
+
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="o">((</span><span class="w"> </span><span class="nv">i</span><span class="o">=</span><span class="m">0</span><span class="p">;</span><span class="w"> </span>i<span class="w"> </span>&lt;<span class="w"> </span>mprof_trials<span class="p">;</span><span class="w"> </span>i++<span class="w"> </span><span class="o">))</span>
+<span class="w">  </span><span class="k">do</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">clear_pyc_files</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;true&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">      </span>find<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">VIRTUAL_ENV</span><span class="si">}</span><span class="s2">/lib/python</span><span class="si">${</span><span class="nv">PY_VERSION</span><span class="si">}</span><span class="s2">/site-packages/&quot;</span><span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.pyc&#39;</span><span class="w"> </span>-delete
+<span class="w">    </span><span class="k">fi</span>
+
+<span class="w">    </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">VIRTUAL_ENV</span><span class="si">}</span><span class="s2">/bin/mprof&quot;</span><span class="w"> </span>run<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">VIRTUAL_ENV</span><span class="si">}</span><span class="s2">/bin/python&quot;</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>--name<span class="w"> </span>Daniel<span class="w"> </span>&gt;/dev/null
+<span class="w">    </span><span class="nv">output</span><span class="o">=</span><span class="k">$(</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">VIRTUAL_ENV</span><span class="si">}</span><span class="s2">/bin/mprof&quot;</span><span class="w"> </span>peak<span class="k">)</span>
+<span class="w">    </span><span class="nv">mprof_file</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$output</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;mprofile&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $1}&#39;</span><span class="k">)</span>
+<span class="w">    </span><span class="nv">memory_usage</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$output</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;mprofile&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span><span class="s1">&#39;{print $2}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>bc<span class="k">)</span>
+<span class="w">    </span><span class="nv">total_time</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$total_mib</span><span class="s2"> + </span><span class="nv">$memory_usage</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>bc<span class="k">)</span>
+<span class="w">    </span>rm<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">mprof_file</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">  </span><span class="k">done</span>
+
+<span class="w">  </span><span class="nv">average_memory_usage</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$memory_usage</span><span class="s2"> / </span><span class="nv">$mprof_trials</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>bc<span class="w"> </span>-l<span class="k">)</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Average MiB consumed for </span><span class="si">${</span><span class="nv">filename</span><span class="si">}</span><span class="s2"> with clear_pyc_files=</span><span class="si">${</span><span class="nv">clear_pyc_files</span><span class="si">}</span><span class="s2">: </span><span class="nv">$memory_usage</span><span class="s2"> MiB&quot;</span>
+
+<span class="o">}</span>
+
+<span class="c1">################################################################################</span>
+
+<span class="c1"># Times</span>
+
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-binary<span class="w"> </span>:all:<span class="w"> </span><span class="s2">&quot;rich-click==1.8.0&quot;</span>
+
+get_times<span class="w"> </span>hello_argparse.py<span class="w"> </span><span class="nb">true</span>
+get_times<span class="w"> </span>hello_click.py<span class="w"> </span><span class="nb">true</span>
+get_times<span class="w"> </span>hello_rich_click.py<span class="w"> </span><span class="nb">true</span>
+
+get_times<span class="w"> </span>hello_argparse.py<span class="w"> </span><span class="nb">false</span>
+get_times<span class="w"> </span>hello_click.py<span class="w"> </span><span class="nb">false</span>
+get_times<span class="w"> </span>hello_rich_click.py<span class="w"> </span><span class="nb">false</span>
+
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-binary<span class="w"> </span>:all:<span class="w"> </span><span class="s2">&quot;rich-click==1.7&quot;</span>
+
+get_times<span class="w"> </span>hello_rich_click.py<span class="w"> </span><span class="nb">true</span>
+get_times<span class="w"> </span>hello_rich_click.py<span class="w"> </span><span class="nb">false</span>
+
+<span class="c1">################################################################################</span>
+
+<span class="c1"># Memory profiling</span>
+
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>memory-profiler
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-binary<span class="w"> </span>:all:<span class="w"> </span><span class="s2">&quot;rich-click==1.8.0&quot;</span>
+
+get_mprof<span class="w"> </span>hello_argparse.py<span class="w"> </span><span class="nb">true</span>
+get_mprof<span class="w"> </span>hello_click.py<span class="w"> </span><span class="nb">true</span>
+get_mprof<span class="w"> </span>hello_rich_click.py<span class="w"> </span><span class="nb">true</span>
+
+get_mprof<span class="w"> </span>hello_argparse.py<span class="w"> </span><span class="nb">false</span>
+get_mprof<span class="w"> </span>hello_click.py<span class="w"> </span><span class="nb">false</span>
+get_mprof<span class="w"> </span>hello_rich_click.py<span class="w"> </span><span class="nb">false</span>
+
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-binary<span class="w"> </span>:all:<span class="w"> </span><span class="s2">&quot;rich-click==1.7&quot;</span>
+
+get_mprof<span class="w"> </span>hello_rich_click.py<span class="w"> </span><span class="nb">true</span>
+get_mprof<span class="w"> </span>hello_rich_click.py<span class="w"> </span><span class="nb">false</span>
+</code></pre></div>
+</details>
+<p>We include Typer in our profiling to show a reasonable baseline for a Click wrapper's overhead.
+Typer is an ambitious and great project that's doing quite a bit under the hood, and it's reasonable to expect it to take a little more time and memory.</p>
+<p>Why is <strong>rich-click</strong> 1.8 more performant? 1.7 left a few free optimizations on the table:</p>
+<ol>
+<li>Only import <code>rich</code> when rendering help text.</li>
+<li>Use <code>click.__version__</code> instead of <code>importlib.metadata.version("click")</code> for Click 7 compat.</li>
+</ol>
+<p>For the first change, this meant replacing code like this...:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">IO</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich.console</span><span class="w"> </span><span class="kn">import</span> <span class="n">Console</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich_click.rich_help_configuration</span><span class="w"> </span><span class="kn">import</span> <span class="n">RichHelpConfiguration</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_console</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">RichHelpConfiguration</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">IO</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Console</span><span class="p">:</span>
+    <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">(</span>
+        <span class="c1"># ...</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">console</span>
+</code></pre></div>
+<p>...with code like this...:</p>
+<div class="highlight"><pre><span></span><code><span class="hll"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">IO</span><span class="p">,</span> <span class="n">Optional</span>
+</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich_click.rich_help_configuration</span><span class="w"> </span><span class="kn">import</span> <span class="n">RichHelpConfiguration</span>
+
+<span class="hll"><span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+</span>    <span class="kn">from</span><span class="w"> </span><span class="nn">rich.console</span><span class="w"> </span><span class="kn">import</span> <span class="n">Console</span>
+
+<span class="hll"><span class="k">def</span><span class="w"> </span><span class="nf">create_console</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">RichHelpConfiguration</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">IO</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Console&quot;</span><span class="p">:</span>
+</span><span class="hll">    <span class="kn">from</span><span class="w"> </span><span class="nn">rich.console</span><span class="w"> </span><span class="kn">import</span> <span class="n">Console</span>
+</span>    <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">(</span>
+        <span class="c1"># ...</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">console</span>
+</code></pre></div>
+<p>...so that Rich is only loaded when it is needed!</p>
+<p>Combined, these two changes account for the performance improvements you see.</p>
+<p>Performance isn't everything; if it was, we'd all be using <code>argparse</code>, or we'd abandon Python altogether for Rust.
+This is also peanuts in the grand scheme of things.
+In all likelihood, you've spent more time reading this blog post than the cumulative amount of time you'll save by <code>pip install --upgrade</code>-ing your <strong>rich-click</strong> 1.7 project.
+(There are other reasons to upgrade to 1.8 than performance, of course!)</p>
+<p>So why bother improving <strong>rich-click</strong>'s performance if it's not a big deal?
+Because we're honored every time someone chooses <strong>rich-click</strong> for their applications, and we want to pay it back by keeping things as efficient as we reasonably can.
+Your application is complex and special and all yours.
+We're excited we get to be a very small part of what you're doing, 🫶 and we'll do our best to keep our end of things neat and tidy.</p>
+<h3 id="and-more">And more...<a class="headerlink" href="#and-more" title="Permanent link">&para;</a></h3>
+<p>Under the hood, we've done misc. bugfixes and other small internal improvements+refactors,
+mostly aimed at composability and customizability for advanced use cases.
+(This does not impact 99% of users.)</p>
+<h2 id="plans-for-the-future">Plans for the future<a class="headerlink" href="#plans-for-the-future" title="Permanent link">&para;</a></h2>
+<p><strong>rich-click</strong> is not done evolving; 1.8 is just another step on the journey.
+We already have tons of things planned out for 1.9, which we want to release by the end of 2024.</p>
+<p>Before we get there, we are going to spend a little bit of time rewriting and reorganizing our unit tests and adding coverage requirements.</p>
+<p>Thank you once again for using <strong>rich-click</strong>! ❤️❤️❤️❤️❤️</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+      
+    </article>
+  </div>
+
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../../../..", "features": ["content.tabs.link", "content.code.copy", "navigation.tabs", "navigation.expand"], "search": "../../../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+      
+    
+  <script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "fade", "closeEffect": "fade", "slideEffect": "slide"});
+document$.subscribe(() => { lightbox.reload() });
+</script></body>
+</html>
