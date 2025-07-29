@@ -1,5 +1,5 @@
 ---
-title: This blog post is a hoot!
+title: Changelog
 hide:
   - navigation
 ---

@@ -99,8 +99,14 @@ plugins:
       categories:
         - categories
         - tags
+  - mike:
+      canonical_version: latest
 
 extra_css:
   - css/termynal.css
   - css/extra.css
 
+extra:
+  version:
+    provider: mike
+    default: latest
