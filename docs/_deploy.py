@@ -23,14 +23,13 @@ def get_latest():
 def deploy():
     v = packaging.version.parse(version("rich-click"))
     latest = get_latest()
-    cmd = ["mike", "deploy", "--update-aliases", f"{v.major}.{v.minor}"]
+    cmd = ["mike", "deploy", "--push", "--update-aliases", f"{v.major}.{v.minor}"]
     if v.is_prerelease:
         cmd.append("prerelease")
     elif latest is None or (v.major, v.minor) > latest:
         cmd.append("latest")
     print(f"Running {' '.join(cmd)}")
     subprocess.run(cmd, check=True)
-    subprocess.run(["git", "push", "--force", "origin", "gh-pages"], check=True)
     subprocess.run(["mike", "set-default", "--push", "latest"], check=True)
 
 
