@@ -1,6 +1,11 @@
-from typing import Any, Dict, List, Optional, Type
+import sys
+from typing import Any, Dict, List, Optional, Type, TypedDict
 
-from typing_extensions import NotRequired, TypedDict
+
+if sys.version_info < (3, 11):
+    from typing_extensions import NotRequired
+else:
+    from typing import NotRequired
 
 
 def truthy(o: Any) -> Optional[bool]:

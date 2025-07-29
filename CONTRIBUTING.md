@@ -6,31 +6,17 @@ or better still, dive right in with a pull-request.
 
 ## Local setup
 
-1. Create a new venv with a python3.7+ interpreter using `python3 -m venv venv`
-2. Activate the venv with `source venv/bin/activate`
-3. Install our the package as an editable including all dev dependencies with `pip3 install -e ".[dev]"`
-4. Install pre-commit with `pre-commit install`
-
-### One-shot script (OSX)
-
 Requirements:
 
-- `brew install pyenv pyenv-virtualenv uv`
-- Initialize `pyenv-virtualenv`: run `pyenv virtualenv-init` and follow instructions.
+- `uv` https://docs.astral.sh/uv/getting-started/installation/
 
+```shell
+uv python pin 3.13
+uv venv .venv
+source .venv/bin/activate
+uv sync --extra dev
+pre-commit install
 ```
-pyenv install --skip-existing 3.7 3.12
-pyenv virtualenv 3.7 rich-click-3.7
-pyenv virtualenv 3.12 rich-click-3.12
-echo '#rich-click-3.7
-rich-click-3.12' >.python-version
-uv pip install --all-extras -r pyproject.toml --editable .
-echo 'rich-click-3.7
-#rich-click-3.12' >.python-version
-uv pip install --extra dev -r pyproject.toml --editable .
-```
-
-Note: 3.7 is the minimum supported Python version for **rich-click**, but docs are rendered in 3.12.
 
 ## Pre-commit
 

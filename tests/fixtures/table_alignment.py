@@ -1,5 +1,5 @@
 import rich_click as click
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_VERSION_80
+from rich_click._compat_click import CLICK_IS_VERSION_80
 
 click.rich_click.STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (1, 2)
 
@@ -98,7 +98,7 @@ def auth() -> None:
     print("Downloading")
 
 
-if CLICK_IS_BEFORE_VERSION_8X or CLICK_IS_VERSION_80:
+if CLICK_IS_VERSION_80:
     cmd_dec = cli.command()
 else:
     cmd_dec = cli.command

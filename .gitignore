@@ -1,5 +1,8 @@
-# I use `Untitled.ipynb` and `hello.py` to do some local dev stuff.
-/Untitled.ipynb
+.python-versions
+uv.lock
+.venv_*/
+
+# I use `hello.py` to do some local dev stuff.
 /hello.py
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,linux,windows,pycharm+all,visualstudio,intellij+all,python

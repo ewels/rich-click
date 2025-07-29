@@ -1,6 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
-
-from typing_extensions import Literal
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, Union
 
 from rich_click.rich_help_configuration import force_terminal_default, terminal_width_default
 from rich_click.utils import CommandGroupDict, OptionGroupDict
@@ -9,6 +7,7 @@ from rich_click.utils import CommandGroupDict, OptionGroupDict
 if TYPE_CHECKING:  # pragma: no cover
     import rich.align
     import rich.box
+    import rich.color
     import rich.padding
     import rich.style
     import rich.text
@@ -72,7 +71,8 @@ FORCE_TERMINAL: Optional[bool] = force_terminal_default()
 # Fixed strings
 HEADER_TEXT: Optional[Union[str, "rich.text.Text"]] = None
 FOOTER_TEXT: Optional[Union[str, "rich.text.Text"]] = None
-DEPRECATED_STRING: str = "(Deprecated) "
+DEPRECATED_STRING: str = "(Deprecated)"
+DEPRECATED_WITH_REASON_STRING: str = "(Deprecated: {})"
 DEFAULT_STRING: str = "[default: {}]"
 ENVVAR_STRING: str = "[env var: {}]"
 REQUIRED_SHORT_STRING: str = "*"
