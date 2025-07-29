@@ -10,6 +10,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+   contents: write
+
 jobs:
   rich_codex:
     runs-on: ubuntu-latest
@@ -30,9 +33,9 @@ jobs:
       - name: Generate terminal images with rich-codex
         uses: ewels/rich-codex@v1
         with:
-          commit_changes: "true"
+          commit_changes: true
           clean_img_paths: docs/images/*.svg
-          skip_git_checks: "true"
+          skip_git_checks: true
 
       - name: Build and deploy docs
-        run: mkdocs gh-deploy --force
+        run: uv run --with . docs/_deploy.py

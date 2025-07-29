@@ -42,9 +42,10 @@ dev = [
 ]
 docs = [
     "markdown_include",
+    "mike>=2.1.3",
     "mkdocs",
     "mkdocs-glightbox",
-    "mkdocs-material[imaging]~=9.5.18",
+    'mkdocs-material[imaging]~=9.5.18; python_version >= "3.8"',
     "mkdocs-material-extensions",
     "mkdocs-rss-plugin",
     "mkdocstrings[python]",
