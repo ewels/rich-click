@@ -22,7 +22,7 @@ Until now, **rich-click** has just had a GitHub repo and all documentation has b
 
 ### Live Style Editor
 
-The coolest addition allowed by this change to full documentation is the [Live Style Editor](https://ewels.github.io/rich-click/editor).
+The coolest addition allowed by this change to full documentation is the [Live Style Editor](https://ewels.github.io/rich-click/latest/editor).
 
 We built this to address a problem we noticed, which is that the vast majority of users rely on the default **rich-click** styles.
 Although we do think **rich-click**'s defaults are pretty good, it pointed to a potential developer experience issue that so many CLIs relied on the defaults.
