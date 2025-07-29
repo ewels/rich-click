@@ -101,8 +101,6 @@ plugins:
         - tags
   - mike:
       canonical_version: latest
-  - redirects:
-      redirect_maps:
 
 extra_css:
   - css/termynal.css

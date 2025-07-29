@@ -21,6 +21,7 @@ def get_latest():
 
 
 def deploy():
+    subprocess.run(["git", "fetch", "origin", "gh-pages:gh-pages"], check=True)
     v = packaging.version.parse(version("rich-click"))
     latest = get_latest()
     cmd = ["mike", "deploy", "--push", "--update-aliases", f"{v.major}.{v.minor}"]
