@@ -1,22 +1,31 @@
 import rich_click as click
 
-# Show the positional arguments
-click.rich_click.SHOW_ARGUMENTS = True
-# Uncomment this line to group the arguments together with the options
+
+# click.rich_click.SHOW_ARGUMENTS = True
 # click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
 
 
 @click.command()
 @click.argument("input", type=click.Path(), required=True)
+@click.argument("output", type=click.Path())
+@click.option("--type", default="files", show_default=True, help="Type of file to sync")
+@click.option("--debug", "-d", is_flag=True, help="Enable debug mode")
 @click.option(
-    "--type",
-    default="files",
-    show_default=True,
-    help="Type of file to sync",
+    "--environment",
+    "-e",
+    type=click.Choice(["dev", "staging", "prod"]),
+    show_default="current",
+    envvar="MY_ENV",
+    show_envvar=True,
+    help="Sync to what environment",
 )
-@click.option("--all", is_flag=True, help="Sync all the things?")
-@click.option("--debug", is_flag=True, help="Enable debug mode")
-def cli(input: str, type: str, all: bool, debug: bool) -> None:
+def cli(
+    input: str,
+    output: str,
+    type: str,
+    debug: bool,
+    environment: str,
+) -> None:
     """
     My amazing tool does all the things.
 
@@ -26,7 +35,11 @@ def cli(input: str, type: str, all: bool, debug: bool) -> None:
     You can try using --help at the top level and also for
     specific group subcommands.
     """
+    print(f"Input: {input}")
+    print(f"Output: {output}")
+    print(f"Environment: {environment}")
     print(f"Debug mode is {'on' if debug else 'off'}")
+    print(f"Syncing files of type {type}")
 
 
 if __name__ == "__main__":

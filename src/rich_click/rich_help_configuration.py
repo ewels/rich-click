@@ -2,9 +2,7 @@ import os
 from dataclasses import dataclass, field
 from os import getenv
 from types import ModuleType
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, TypeVar, Union
-
-from typing_extensions import Literal
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
 
 from rich_click.rich_click_theme import THEMES, RichClickTheme
 from rich_click.utils import CommandGroupDict, OptionGroupDict, truthy
@@ -19,7 +17,6 @@ if TYPE_CHECKING:  # pragma: no cover
     import rich.text
 
     import rich_click.rich_click_theme
-
 
 
 T = TypeVar("T", bound="RichHelpConfiguration")
@@ -124,7 +121,8 @@ class RichHelpConfiguration:
     # Fixed strings
     header_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     footer_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
-    deprecated_string: str = field(default="(Deprecated) ")
+    deprecated_string: str = field(default="(Deprecated)")
+    deprecated_with_reason_string: str = field(default="(Deprecated: {})")
     default_string: str = field(default="[default: {}]")
     envvar_string: str = field(default="[env var: {}]")
     required_short_string: str = field(default="*")
@@ -172,6 +170,7 @@ class RichHelpConfiguration:
             r"(^|[^\w\-])(?P<switch>-([^\W0-9][\w\-]*\w|[^\W0-9]))",
             r"(^|[^\w\-])(?P<option>--([^\W0-9][\w\-]*\w|[^\W0-9]))",
             r"(?P<metavar><[^>]+>)",
+            r"(?P<deprecated>\(DEPRECATED(?:\: .*?)?\))$",
         ]
     )
     """Patterns to use with the option highlighter."""

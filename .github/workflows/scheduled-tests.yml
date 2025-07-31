@@ -1,0 +1,29 @@
+name: Scheduled Tests
+
+on:
+  schedule:
+    - cron: '0 0 * * 6'  # Every Saturday at 00:00
+
+jobs:
+  test:
+    if: github.event_name != 'schedule' || github.repository == 'ewels/rich-click'
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        python: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python }}
+          activate-environment: true
+
+      - name: Install dependencies
+        run: |
+          uv pip install --editable --prerelease allow ".[dev]"
+
+      - name: Run tests
+        run: pytest --cov --cov-report term

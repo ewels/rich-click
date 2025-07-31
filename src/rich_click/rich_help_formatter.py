@@ -1,10 +1,10 @@
+import io
 import os
 import sys
 from functools import cached_property
-from typing import IO, TYPE_CHECKING, Any, Dict, Optional
+from typing import IO, TYPE_CHECKING, Any, Dict, Literal, Optional
 
 import click
-from typing_extensions import Literal
 
 from rich_click.rich_help_configuration import RichHelpConfiguration
 
@@ -28,15 +28,6 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
     from rich.console import Console
     from rich.theme import Theme
 
-    if file is not None:
-        import warnings
-
-        warnings.warn(
-            "The file kwarg to `create_console()` is deprecated" " and will be removed in a future release.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-
     console = Console(
         theme=Theme(
             {
@@ -47,15 +38,18 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
                 "metavar": config.style_metavar,
                 "metavar_sep": config.style_metavar_separator,
                 "usage": config.style_usage,
+                "deprecated": config.style_deprecated,
             }
         ),
         color_system=config.color_system,
         force_terminal=config.force_terminal,
-        file=file or open(os.devnull, "w"),
         width=config.width,
         record=True if file is None else False,
         legacy_windows=config.legacy_windows,
     )
+    # Defaults for console.color_system change when file is in __init__.
+    # Workaround: set file after __init__.
+    console.file = file or open(os.devnull, "w")
     if isinstance(config.max_width, int):
         console.width = min(config.max_width, console.size.width)
     return console
@@ -123,10 +117,14 @@ class RichHelpFormatter(click.HelpFormatter):
                 stacklevel=2,
             )
 
+        self.file: Optional[io.StringIO] = None
+        if export_console_as is None:
+            self.file = io.StringIO()
+
         if console:
             self.console = console
         else:
-            self.console = create_console(self.config)
+            self.console = create_console(self.config)  # , file=self.file)
 
         if file is not None:
             self.console.file = file
@@ -172,13 +170,43 @@ class RichHelpFormatter(click.HelpFormatter):
         self.console.print(self.config.aborted_text, style=self.config.style_aborted)
 
     def getvalue(self) -> str:
-        if self.console.record:
+        if not self.export_console_as:
+            from rich.console import COLOR_SYSTEMS
+            from rich.segment import Segment
+
+            if self.console.no_color:
+                res = "".join(
+                    (
+                        style.render(
+                            text,
+                            color_system=(
+                                COLOR_SYSTEMS.get(self.console.color_system) if self.console.color_system else None
+                            ),
+                        )
+                        if style
+                        else text
+                    )
+                    for text, style, _ in Segment.remove_color(self.console._record_buffer)
+                )
+            else:
+                res = "".join(
+                    (
+                        style.render(
+                            text,
+                            color_system=(
+                                COLOR_SYSTEMS.get(self.console.color_system) if self.console.color_system else None
+                            ),
+                        )
+                        if style
+                        else text
+                    )
+                    for text, style, _ in self.console._record_buffer
+                )
+            return res
+        elif self.console.record:
             kw = self.export_kwargs.copy()
             kw.setdefault("clear", False)
-            if self.export_console_as is None:
-                kw.setdefault("styles", True)
-                res = self.console.export_text(**kw)
-            elif self.export_console_as == "text":
+            if self.export_console_as == "text" or self.export_console_as is None:
                 res = self.console.export_text(**kw)
             elif self.export_console_as == "html":
                 res = self.console.export_html(**kw)

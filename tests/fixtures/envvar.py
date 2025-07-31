@@ -1,10 +1,5 @@
 import rich_click as click
 
-# import click
-
-# Example test usage:
-# GREETER_DEBUG=1 GREETER_GREET_USERNAME="test" EMAIL_ADDRESS="foo@bar.com" python examples/09_envvar.py greet
-
 
 @click.group(context_settings=dict(auto_envvar_prefix="GREETER"))
 @click.option("--debug/--no-debug")
@@ -15,11 +10,7 @@ def cli(debug: bool) -> None:
 @cli.command()
 @click.option("--username", help="This can be set via env var GREETER_GREET_USERNAME", show_envvar=True)
 @click.option(
-    "--nickname",
-    envvar="NICKNAME",
-    show_envvar=True,
-    show_default=True,
-    help="This can be set via env var NICKNAME",
+    "--nickname", envvar="NICKNAME", show_envvar=True, show_default=True, help="This can be set via env var NICKNAME"
 )
 @click.option(
     "--email",

@@ -1,3 +1,5 @@
+from click import password_option
+
 import rich_click as click
 
 click.rich_click.OPTION_GROUPS = {
@@ -8,7 +10,7 @@ click.rich_click.OPTION_GROUPS = {
         },
         {
             "name": "Advanced options",
-            "options": ["--help", "--version", "--debug"],
+            "options": ["--version", "--debug"],
             # You can also set table styles at group-level instead of using globals if you want
             "table_styles": {
                 "row_styles": ["bold", "yellow", "cyan"],
@@ -20,9 +22,33 @@ click.rich_click.OPTION_GROUPS = {
             "name": "Inputs and outputs",
             "options": ["--input", "--output"],
         },
+    ],
+    "* auth": [
         {
-            "name": "Advanced usage",
-            "options": ["--overwrite", "--all", "--help"],
+            "name": "Required",
+            "options": ["--user", "--password"],
+        },
+        {
+            "name": "Misc.",
+            "options": ["--email", "--role"],
+        },
+        {
+            # This should deduplicate the "--help" panels elsewhere.
+            # It should also be guaranteed to occur at the bottom.
+            "name": "Auth help",
+            "options": ["--help"],
+        },
+    ],
+    "*": [
+        {
+            "name": "Help",
+            "options": ["--help"],
+        },
+    ],
+    "* *": [
+        {
+            "name": "Subcommand help",
+            "options": ["--help"],
         },
     ],
 }
@@ -41,20 +67,8 @@ click.rich_click.COMMAND_GROUPS = {
 
 
 @click.group(context_settings=dict(help_option_names=["-h", "--help"]))
-@click.option(
-    "--type",
-    default="files",
-    show_default=True,
-    required=True,
-    help="Type of file to sync",
-)
-@click.option(
-    "--debug/--no-debug",
-    "-d/-n",
-    default=False,
-    show_default=True,
-    help="Show the debug log messages",
-)
+@click.option("--type", default="files", show_default=True, required=True, help="Type of file to sync")
+@click.option("--debug/--no-debug", "-d/-n", default=False, show_default=True, help="Show the debug log messages")
 @click.version_option("1.23", prog_name="mytool")
 def cli(type: str, debug: bool) -> None:
     """
@@ -87,9 +101,13 @@ def download(all: bool) -> None:
 
 
 @cli.command()
-def auth() -> None:
+@click.password_option("--user", "-u", help="User", required=True)
+@click.password_option("--password", "-p", help="Password", required=True)
+@click.password_option("--email", "-e", help="Email")
+@click.password_option("--role", "-r", help="Role", default="admin")
+def auth(user: str, password: str, email: str) -> None:
     """Authenticate the app."""
-    print("Downloading")
+    print("Authenticating")
 
 
 @cli.command()

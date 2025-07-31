@@ -1,8 +1,7 @@
-from typing import TYPE_CHECKING, Any, Mapping, Optional, Type, Union
+from typing import TYPE_CHECKING, Any, Literal, Mapping, Optional, Type, Union
 
 import click
 from click.globals import get_current_context as click_get_current_context
-from typing_extensions import Literal
 
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
@@ -50,12 +49,12 @@ class RichContext(click.Context):
         if export_console_as is None and hasattr(parent, "export_console_as"):
             self.export_console_as = parent.export_console_as  # type: ignore[union-attr]
         else:
-            self.export_console_as = export_console_as
+            self.export_console_as = export_console_as or self.export_console_as
 
         if errors_in_output_format is None and hasattr(parent, "export_console_as"):
             self.errors_in_output_format = parent.errors_in_output_format  # type: ignore[union-attr]
         else:
-            self.errors_in_output_format = errors_in_output_format or False
+            self.errors_in_output_format = errors_in_output_format or self.errors_in_output_format
 
         if rich_console is None and hasattr(parent, "console"):
             rich_console = parent.console  # type: ignore[union-attr]

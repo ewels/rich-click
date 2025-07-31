@@ -2,7 +2,7 @@ import inspect
 import re
 import sys
 from fnmatch import fnmatch
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, TypeVar, Union, overload
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Literal, Optional, Tuple, TypeVar, Union, overload
 
 import click
 
@@ -21,10 +21,8 @@ from rich.panel import Panel
 from rich.style import StyleType
 from rich.table import Table
 from rich.text import Text
-from typing_extensions import Literal
 
 from rich_click._compat_click import (
-    CLICK_IS_BEFORE_VERSION_8X,
     CLICK_IS_BEFORE_VERSION_9X,
     CLICK_IS_BEFORE_VERSION_82,
     CLICK_IS_VERSION_80,
@@ -44,7 +42,7 @@ if CLICK_IS_BEFORE_VERSION_9X:
     # We need to load from here to help with patching.
     from rich_click.rich_command import MultiCommand  # type: ignore[attr-defined]
 else:
-    MultiCommand = Group  # type: ignore[misc,assignment]
+    MultiCommand = Group  # type: ignore[misc,assignment,unused-ignore]
 
 
 def _make_rich_rext(text: Union[str, Text], style: StyleType, formatter: RichHelpFormatter) -> Union[Markdown, Text]:
@@ -127,7 +125,12 @@ def _get_help_text(obj: Union[Command, Group], formatter: RichHelpFormatter) -> 
     config = formatter.config
     # Prepend deprecated status
     if obj.deprecated:
-        yield Text(config.deprecated_string, style=config.style_deprecated)
+        if isinstance(obj.deprecated, str):
+            yield Text(
+                formatter.config.deprecated_with_reason_string.format(obj.deprecated), style=config.style_deprecated
+            )
+        else:
+            yield Text(config.deprecated_string, style=config.style_deprecated)
 
     # Fetch and dedent the help text
     help_text = inspect.cleandoc(obj.help)
@@ -138,14 +141,15 @@ def _get_help_text(obj: Union[Command, Group], formatter: RichHelpFormatter) -> 
     # Get the first paragraph
     first_line = help_text.split("\n\n")[0]
     # Remove single linebreaks
-    if not config.use_markdown and not first_line.startswith("\b"):
-        first_line = first_line.replace("\n", " ")
+    if not config.use_markdown and not config.text_markup == "markdown":
+        if not first_line.startswith("\b"):
+            first_line = first_line.replace("\n", " ")
     yield _make_rich_rext(first_line.strip(), config.style_helptext_first_line, formatter)
 
     # Get remaining lines, remove single line breaks and format as dim
     remaining_paragraphs = help_text.split("\n\n")[1:]
     if len(remaining_paragraphs) > 0:
-        if not config.use_markdown:
+        if not config.use_markdown and not config.text_markup == "markdown":
             # Remove single linebreaks
             remaining_paragraphs = [
                 x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
@@ -158,6 +162,17 @@ def _get_help_text(obj: Union[Command, Group], formatter: RichHelpFormatter) -> 
             remaining_lines = "\n\n".join(remaining_paragraphs)
 
         yield _make_rich_rext(remaining_lines, config.style_helptext, formatter)
+
+
+def _get_deprecated_text(
+    deprecated: Union[bool, str],
+    formatter: RichHelpFormatter,
+) -> Text:
+    if isinstance(deprecated, str):
+        s = formatter.config.deprecated_with_reason_string.format(deprecated)
+    else:
+        s = formatter.config.deprecated_string
+    return Text(s, style=formatter.config.style_deprecated)
 
 
 def _get_option_help(
@@ -211,12 +226,20 @@ def _get_option_help(
             assert isinstance(param.help, str)
         paragraphs = param.help.split("\n\n")
         # Remove single linebreaks
-        if not config.use_markdown:
+        if not config.use_markdown and not config.text_markup == "markdown":
             paragraphs = [
                 x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
                 for x in paragraphs
             ]
-        items.append(_make_rich_rext("\n".join(paragraphs).strip(), config.style_option_help, formatter))
+        help_text = "\n".join(paragraphs).strip()
+        if getattr(param, "deprecated", None):
+            if isinstance(getattr(param, "deprecated"), str):
+                help_text = re.sub(r"\(DEPRECATED: .*?\)$", "", help_text)
+            else:
+                help_text = re.sub(r"\(DEPRECATED\)$", "", help_text)
+        items.append(_make_rich_rext(help_text, config.style_option_help, formatter))
+        if getattr(param, "deprecated", None):
+            items.append(_get_deprecated_text(getattr(param, "deprecated"), formatter))
 
     # Append metavar if requested
     if config.append_metavars_help:
@@ -240,11 +263,9 @@ def _get_option_help(
         items.append(Text(config.envvar_string.format(envvar), style=config.style_option_envvar))
 
     # Default value
-    # Click 7.x, 8.0, and 8.1 all behave slightly differently when handling the default value help text.
+    # Click 8.0 and 8.1 behave slightly differently when handling the default value help text.
     if not hasattr(param, "show_default"):
         parse_default = False
-    elif CLICK_IS_BEFORE_VERSION_8X:
-        parse_default = bool(param.default is not None and (param.show_default or getattr(ctx, "show_default", None)))
     elif CLICK_IS_VERSION_80:
         show_default_is_str = isinstance(param.show_default, str)
         parse_default = bool(
@@ -285,7 +306,9 @@ def _get_option_help(
     return Columns(items)
 
 
-def _make_command_help(help_text: str, formatter: RichHelpFormatter, is_deprecated: bool) -> Union[Text, Markdown]:
+def _make_command_help(
+    help_text: str, formatter: RichHelpFormatter, deprecated: Union[bool, str]
+) -> Union[Text, Markdown, Columns]:
     """
     Build cli help text for a click group command.
     That is, when calling help on groups with multiple subcommands
@@ -298,7 +321,7 @@ def _make_command_help(help_text: str, formatter: RichHelpFormatter, is_deprecat
     ----
         help_text (str): Help text
         formatter: formatter object
-        is_deprecated (bool): Object marked by user as deprecated.
+        deprecated (bool or string): Object marked by user as deprecated.
 
     Returns:
     -------
@@ -312,10 +335,18 @@ def _make_command_help(help_text: str, formatter: RichHelpFormatter, is_deprecat
     elif paragraphs[0].startswith("\b"):
         paragraphs[0] = paragraphs[0].replace("\b\n", "")
     help_text = paragraphs[0].strip()
-    if is_deprecated:
-        # TODO: Format the deprecation text.
-        help_text = f"{formatter.config.deprecated_string}{help_text}"
+    renderable: Union[Text, Markdown, Columns]
     renderable = _make_rich_rext(help_text, formatter.config.style_option_help, formatter)
+    if deprecated:
+        dep_txt = _get_deprecated_text(
+            deprecated=deprecated,
+            formatter=formatter,
+        )
+        if isinstance(renderable, Text):
+            renderable.append(" ")
+            renderable.append(dep_txt)
+        else:
+            renderable = Columns([renderable, dep_txt])
     return renderable
 
 
@@ -616,7 +647,7 @@ def get_rich_options(
 
 
 def get_rich_commands(
-    obj: MultiCommand,
+    obj: Group,
     ctx: click.Context,
     formatter: RichHelpFormatter,
 ) -> None:
@@ -683,7 +714,7 @@ def get_rich_commands(
             else:
                 # Use short_help function argument if used, or the full help
                 helptext = cmd.short_help or cmd.help or ""
-            commands_table.add_row(command, _make_command_help(helptext, formatter, is_deprecated=cmd.deprecated))
+            commands_table.add_row(command, _make_command_help(helptext, formatter, deprecated=cmd.deprecated))
         if commands_table.row_count > 0:
 
             kw: Dict[str, Any] = {

@@ -16,7 +16,7 @@ def cli(a: str, b: str, c: str, d: str) -> None:
 
     Note that in click < 8.1, '[default: False]' shows for "--help".
     """
-    print("Hello, world!")
+    print(f"{a or '-'} {b or '-'} {c or '-'} {d or '-'}")
 
 
 if __name__ == "__main__":

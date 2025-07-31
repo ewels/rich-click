@@ -1,12 +1,10 @@
-# ruff: noqa: D101,D103,D401
 import sys
 
 import click
-import pytest
 from click.testing import CliRunner
 
 from rich_click import RichContext, command, group, pass_context
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X, CLICK_IS_BEFORE_VERSION_82
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_82
 
 
 # Don't use the 'invoke' fixture because we want control over the standalone_mode kwarg.
@@ -95,7 +93,6 @@ def test_group_return_value_does_not_raise_exit_code() -> None:
     assert res.exit_code == 0 if CLICK_IS_BEFORE_VERSION_82 else 2
 
 
-@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_8X, reason="Result does not have return_value attribute.")
 def test_command_return_value_is_exit_code_when_not_standalone() -> None:
     for expected_exit_code in range(10):
 
@@ -109,7 +106,6 @@ def test_command_return_value_is_exit_code_when_not_standalone() -> None:
         assert res.return_value == expected_exit_code
 
 
-@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_8X, reason="Result does not have return_value attribute.")
 def test_group_return_value_is_exit_code_when_not_standalone() -> None:
     for expected_exit_code in range(10):
 

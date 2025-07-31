@@ -5,11 +5,7 @@ click.rich_click.USE_MARKDOWN = True
 
 
 @click.command()
-@click.option(
-    "--input",
-    type=click.Path(),
-    help="Input **file**. _[default: a custom default]_",
-)
+@click.option("--input", type=click.Path(), help="Input **file**. _[default: a custom default]_")
 @click.option(
     "--type",
     default="files",

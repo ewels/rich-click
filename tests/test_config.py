@@ -1,17 +1,12 @@
-# ruff: noqa: D101,D103,D401
 import json
 from dataclasses import asdict
+from importlib import reload
 from typing import TYPE_CHECKING
 
 import pytest
 
 import rich_click.rich_click as rc
 from rich_click import RichContext, RichHelpConfiguration, command, group, rich_config
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_8X
-
-
-if CLICK_IS_BEFORE_VERSION_8X:
-    pytest.skip(reason="rich_config not supported for click < 8.", allow_module_level=True)
 
 
 def test_basic_config_for_group() -> None:
@@ -59,6 +54,7 @@ def test_basic_config_for_group() -> None:
 
 
 def test_global_config_equal_config_defaults() -> None:
+    reload(rc)
     config1 = RichHelpConfiguration()
     config2 = RichHelpConfiguration.load_from_globals(rc)
     for k in {*config1.__dict__.keys(), *config2.__dict__.keys()}:
@@ -66,7 +62,7 @@ def test_global_config_equal_config_defaults() -> None:
             continue
         v1 = config1.__dict__[k]
         v2 = config2.__dict__[k]
-        assert v1 == v2, k
+        assert v1 == v2, f"{k}: {v1} != {v2}"
 
 
 def test_config_from_globals_behavior() -> None:

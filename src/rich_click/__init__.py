@@ -1,4 +1,3 @@
-# ruff: noqa: F401
 """
 rich-click is a minimal Python module to combine the efforts of the excellent packages 'rich' and 'click'.
 
