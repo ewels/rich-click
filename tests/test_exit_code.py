@@ -7,9 +7,6 @@ from rich_click import RichContext, command, group, pass_context
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_82
 
 
-# Don't use the 'invoke' fixture because we want control over the standalone_mode kwarg.
-
-
 def test_command_exit_code_with_context() -> None:
     for expected_exit_code in range(10):
 

@@ -90,7 +90,7 @@ ERRORS_EPILOGUE: Optional[Union[str, "rich.text.Text"]] = None
 ABORTED_TEXT: str = "Aborted."
 
 # Behaviours
-SHOW_ARGUMENTS: bool = False  # Show positional arguments
+SHOW_ARGUMENTS: Optional[bool] = None  # Show positional arguments
 SHOW_METAVARS_COLUMN: bool = True  # Show a column with the option metavar (eg. INTEGER)
 APPEND_METAVARS_HELP: bool = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS: bool = False  # Show arguments with options instead of in own panel
@@ -119,18 +119,16 @@ def __getattr__(name: str) -> Any:
 
         return RichHelpConfiguration.load_from_globals
     if name == "highlighter":
-        # TODO: Fix deprecation warning. For now, exclude.
+        import warnings
 
-        # import warnings
-
-        # warnings.warn(
-        #     "`highlighter` config option is deprecated."
-        #     " Please do one of the following instead: either set HIGHLIGHTER_PATTERNS = [...] if you want"
-        #     " to use regex; or for more advanced use cases where you'd like to use a different type"
-        #     " of rich.highlighter.Highlighter, subclass the `RichHelpFormatter` and update its `highlighter`.",
-        #     DeprecationWarning,
-        #     stacklevel=2,
-        # )
+        warnings.warn(
+            "`highlighter` config option is deprecated."
+            " Please do one of the following instead: either set HIGHLIGHTER_PATTERNS = [...] if you want"
+            " to use regex; or for more advanced use cases where you'd like to use a different type"
+            " of rich.highlighter.Highlighter, subclass the `RichHelpFormatter` and update its `highlighter`.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
         from rich_click.rich_help_configuration import OptionHighlighter
 

@@ -12,13 +12,6 @@ from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_82
 from rich_click.rich_command import RichCommand
 
 
-@pytest.fixture(autouse=True)
-def initialize_rich_click() -> None:
-    """Initialize `rich_click` module."""
-    # Isolate global configuration for each test.
-    reload(rc)
-
-
 re_link_ids = re.compile(r"id=[\d.\-]*?;.*?\x1b")
 
 
@@ -33,8 +26,12 @@ def replace_link_ids(render: str) -> str:
 
 
 @pytest.fixture(autouse=True)
-def default_config(initialize_rich_click: None) -> None:
-    # Default config settings from https://github.com/Textualize/rich/blob/master/tests/render.py
+def default_config() -> None:
+    # Isolate rich_click global config module for each test:
+    reload(rc)
+
+    # Default config settings
+    # from https://github.com/Textualize/rich/blob/master/tests/render.py
     rc.WIDTH = 100
     rc.COLOR_SYSTEM = None
     rc.FORCE_TERMINAL = True

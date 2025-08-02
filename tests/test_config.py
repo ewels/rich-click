@@ -1,9 +1,13 @@
+import io
 import json
 from dataclasses import asdict
 from importlib import reload
 from typing import TYPE_CHECKING
 
 import pytest
+from click.testing import CliRunner
+from inline_snapshot import snapshot
+from rich.console import Console
 
 import rich_click.rich_click as rc
 from rich_click import RichContext, RichHelpConfiguration, command, group, rich_config
@@ -126,3 +130,56 @@ def test_config_is_serializable_and_invertible() -> None:
         config2.style_commands_table_column_width_ratio = tuple(config2.style_commands_table_column_width_ratio)  # type: ignore[arg-type,assignment]
 
         assert config == config2
+
+
+def test_multiple_rich_config_passes_is_ok() -> None:
+    # It's not advisable that users do any of this,
+    # but it shouldn't break anything to do so either.
+    c = Console()
+
+    @command()
+    @rich_config(help_config={"style_option": "a"})
+    @rich_config(help_config={"style_option": "b"})  # should be overwritten
+    @rich_config(console=c)
+    def cli() -> None:
+        pass
+
+    assert cli.context_settings.get("rich_help_config") == {"style_option": "a"}
+    assert cli.context_settings.get("rich_console") is c
+
+    @rich_config(help_config={"style_option": "c"})
+    @rich_config(help_config={"style_option": "d"})  # should be overwritten
+    @rich_config(console=c)
+    @command()
+    def cli2() -> None:
+        pass
+
+    assert cli2.context_settings.get("rich_help_config") == {"style_option": "c"}
+    assert cli2.context_settings.get("rich_console") is c
+
+
+def test_custom_console(cli_runner: CliRunner) -> None:
+    # It's not advisable that users do any of this,
+    # but it shouldn't break anything to do so either.
+    f = io.StringIO()
+    c = Console(file=f, width=rc.WIDTH)
+
+    @command()
+    @rich_config(console=c)
+    def cli() -> None:
+        """My CLI help text"""
+
+    cli_runner.invoke(cli, "--help")
+
+    assert f.getvalue() == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: cli [OPTIONS]                                                                               \n\
+                                                                                                    \n\
+ My CLI help text                                                                                   \n\
+                                                                                                    \n\
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+"""
+    )

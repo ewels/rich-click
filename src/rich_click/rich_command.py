@@ -65,6 +65,13 @@ class RichCommand(click.Command):
 
         See `rich_config` decorator for how to apply the settings.
         """
+        import warnings
+
+        warnings.warn(
+            "RichCommand.console is deprecated. Please use the click.Context's console instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self.context_settings.get("rich_console")
 
     @property

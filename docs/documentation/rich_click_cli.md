@@ -92,6 +92,9 @@ _SVG and HTML generated from [`docs/code_snippets/rich_click_cli/app.py`](https:
 
 ## Notes on how the `rich-click` CLI works
 
+!!! note
+    The rest of this document contains technical details most users will not need to know.
+
 Under the hood, the `rich-click` CLI is patching the `click` module, and replacing the Click decorators and `click.Command`, `click.Group`, etc. objects with their equivalent **rich-click** versions.
 
 Sometimes, a subclassed `click.Command` will overwrite one of these methods:
