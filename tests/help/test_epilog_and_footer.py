@@ -3,19 +3,16 @@ from click.testing import CliRunner
 from inline_snapshot import snapshot
 
 import rich_click
-import rich_click.rich_click as rc
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_82
 from tests.conftest import load_command_from_module
 
 
 @pytest.fixture
 def cli() -> rich_click.RichCommand:
-    cmd = load_command_from_module("tests.fixtures.deprecated")
+    cmd = load_command_from_module("tests.fixtures.epilog_and_footer")
     return cmd
 
 
-@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_82, reason="Renders differently in click <8.2.")
-def test_deprecated_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+def test_epilog_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
     assert result.stdout == snapshot(
@@ -24,74 +21,118 @@ def test_deprecated_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> 
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
  My amazing tool does all the things.                                                               \n\
- This is a minimal example based on documentation from the 'click' package.                         \n\
- You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --type             TEXT                Type of file to sync                                      │
-│                                        (Deprecated: All files will be synced)                    │
-│                                        [default: files]                                          │
-│ --debug        -d                      Enable debug mode (Deprecated)                            │
-│ --environment  -e  [dev|staging|prod]  Sync to what environment [env var: MY_ENV]                │
-│                                        [default: (current)]                                      │
-│ --help                                 Show this message and exit.                               │
+│ --debug/--no-debug                                                                               │
+│ --help                  Show this message and exit.                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ download  Pretend to download some files from _somewhere_. (Deprecated)                          │
-│ sync      Synchronise all your files between two places. Example command that doesn't do much    │
-│           except print to the terminal. (Deprecated: Removing in later version)                  │
+│ epilog-is-rich-text                    epilog_is_rich_text help text.                            │
+│ footer-is-rich-text                    footer_is_rich_text help text.                            │
+│ no-epilog                              no_epilog help text.                                      │
+│ no-footer                              no_footer help text.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+                                                                                                    \n\
+ For more information, visit our website.                                                           \n\
+                                                                                                    \n\
+                                                                                                    \n\
+ And here is some footer text!                                                                      \n\
 """
     )
     assert result.stderr == snapshot("")
 
 
-@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_82, reason="Renders differently in click <8.2.")
-def test_deprecated_help_subcommand_bool(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
-    result = cli_runner.invoke(cli, "download --help")
+def test_epilog_help_subcommand_no_footer(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    result = cli_runner.invoke(cli, "no-footer --help")
     assert result.exit_code == 0
     assert result.stdout == snapshot(
         """\
+Debug mode is off
                                                                                                     \n\
- Usage: cli download [OPTIONS]                                                                      \n\
+ Usage: cli no-footer [OPTIONS]                                                                     \n\
                                                                                                     \n\
- (Deprecated)                                                                                       \n\
- Pretend to download some files from _somewhere_.                                                   \n\
+ no_footer help text.                                                                               \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --all       Get everything                                                                       │
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+                                                                                                    \n\
+ This is epilog text                                                                                \n\
+                                                                                                    \n\
 """
     )
     assert result.stderr == snapshot("")
 
 
-@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_82, reason="Renders differently in click <8.2.")
-def test_deprecated_help_subcommand_string(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
-    result = cli_runner.invoke(cli, "sync --help")
+def test_epilog_help_subcommand_no_epilog(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    result = cli_runner.invoke(cli, "no-epilog --help")
     assert result.exit_code == 0
     assert result.stdout == snapshot(
         """\
+Debug mode is off
                                                                                                     \n\
- Usage: cli sync [OPTIONS]                                                                          \n\
+ Usage: cli no-epilog [OPTIONS]                                                                     \n\
                                                                                                     \n\
- (Deprecated: Removing in later version)                                                            \n\
- Synchronise all your files between two places. Example command that doesn't do much except print   \n\
- to the terminal.                                                                                   \n\
+ no_epilog help text.                                                                               \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --all                                                                                            │
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+                                                                                                    \n\
+ This is footer text                                                                                \n\
 """
     )
     assert result.stderr == snapshot("")
 
 
-@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_82, reason="Renders differently in click <8.2.")
-def test_deprecated_help_with_markdown(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
-    rc.TEXT_MARKUP = "markdown"
+def test_epilog_help_subcommand_footer_is_rich_text(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    result = cli_runner.invoke(cli, "footer-is-rich-text --help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot(
+        """\
+Debug mode is off
+                                                                                                    \n\
+ Usage: cli footer-is-rich-text [OPTIONS]                                                           \n\
+                                                                                                    \n\
+ footer_is_rich_text help text.                                                                     \n\
+                                                                                                    \n\
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+                                                                                                    \n\
+ This is epilog text                                                                                \n\
+                                                                                                    \n\
+                                                                                                    \n\
+ Rich text footer                                                                                   \n\
+"""
+    )
+    assert result.stderr == snapshot("")
+
+
+def test_epilog_help_subcommand_epilog_is_rich_text(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    result = cli_runner.invoke(cli, "epilog-is-rich-text --help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot(
+        """\
+Debug mode is off
+                                                                                                    \n\
+ Usage: cli epilog-is-rich-text [OPTIONS]                                                           \n\
+                                                                                                    \n\
+ epilog_is_rich_text help text.                                                                     \n\
+                                                                                                    \n\
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+                                                                                                    \n\
+ Rich text epilog                                                                                   \n\
+                                                                                                    \n\
+"""
+    )
+    assert result.stderr == snapshot("")
+
+
+def test_epilog_help_turn_off_rich_markup(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    cli.context_settings["rich_help_config"]["text_markup"] = None
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
     assert result.stdout == snapshot(
@@ -100,73 +141,22 @@ def test_deprecated_help_with_markdown(cli_runner: CliRunner, cli: rich_click.Ri
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
  My amazing tool does all the things.                                                               \n\
- This is a minimal example based on documentation from the 'click' package.                         \n\
-                                                                                                    \n\
- You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --type             TEXT                Type of file to sync                                      │
-│                                        (Deprecated: All files will be synced)                    │
-│                                        [default: files]                                          │
-│ --debug        -d                      Enable debug mode                                         │
-│                                        (Deprecated)                                              │
-│ --environment  -e  [dev|staging|prod]  Sync to what environment                                  │
-│                                        [env var: MY_ENV]                                         │
-│                                        [default: (current)]                                      │
-│ --help                                 Show this message and exit.                               │
+│ --debug/--no-debug                                                                               │
+│ --help                  Show this message and exit.                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ download  Pretend to download some files from somewhere.                                         │
-│           (Deprecated)                                                                           │
-│ sync      Synchronise all your files between two places. Example command that doesn't do much    │
-│           except print to the terminal.                                                          │
-│           (Deprecated: Removing in later version)                                                │
+│ epilog-is-rich-text                    epilog_is_rich_text help text.                            │
+│ footer-is-rich-text                    footer_is_rich_text help text.                            │
+│ no-epilog                              no_epilog help text.                                      │
+│ no-footer                              no_footer help text.                                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
-    assert result.stderr == snapshot("")
-
-
-@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_82, reason="Renders differently in click <8.2.")
-def test_deprecated_help_subcommand_bool_with_markdown(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
-    rc.TEXT_MARKUP = "markdown"
-    result = cli_runner.invoke(cli, "download --help")
-    assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
                                                                                                     \n\
- Usage: cli download [OPTIONS]                                                                      \n\
+ [bold green]For more information, visit our website.[/]                                            \n\
                                                                                                     \n\
- (Deprecated)                                                                                       \n\
- Pretend to download some files from somewhere.                                                     \n\
                                                                                                     \n\
-╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --all       Get everything                                                                       │
-│ --help      Show this message and exit.                                                          │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
-    assert result.stderr == snapshot("")
-
-
-@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_82, reason="Renders differently in click <8.2.")
-def test_deprecated_help_subcommand_string_with_markdown(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
-    rc.TEXT_MARKUP = "markdown"
-    result = cli_runner.invoke(cli, "sync --help")
-    assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
-                                                                                                    \n\
- Usage: cli sync [OPTIONS]                                                                          \n\
-                                                                                                    \n\
- (Deprecated: Removing in later version)                                                            \n\
- Synchronise all your files between two places. Example command that doesn't do much except print   \n\
- to the terminal.                                                                                   \n\
-                                                                                                    \n\
-╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --all                                                                                            │
-│ --help      Show this message and exit.                                                          │
-╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+ And here is some footer text!                                                                      \n\
 """
     )
     assert result.stderr == snapshot("")

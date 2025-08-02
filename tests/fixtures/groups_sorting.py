@@ -1,6 +1,5 @@
-from click import password_option
-
 import rich_click as click
+
 
 click.rich_click.OPTION_GROUPS = {
     "cli": [

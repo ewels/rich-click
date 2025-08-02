@@ -1,6 +1,14 @@
-from typing import Any, Optional, Sequence
+from typing import TYPE_CHECKING, Any, Optional, Sequence
 
 import click
+
+
+if TYPE_CHECKING:
+    from rich.columns import Columns
+
+    from rich_click.rich_context import RichContext
+    from rich_click.rich_help_formatter import RichHelpFormatter
+    from rich_click.rich_help_rendering import RichPanelRow
 
 
 class RichParameter(click.Parameter):
@@ -15,6 +23,18 @@ class RichParameter(click.Parameter):
         """Create RichParameter instance."""
         super().__init__(*args, **kwargs)
         self.panel = panel
+
+    def get_rich_help(self, ctx: "RichContext", formatter: "RichHelpFormatter") -> "Columns":
+        """Get the rich help text for this parameter."""
+        from rich_click.rich_help_rendering import get_help_parameter
+
+        return get_help_parameter(self, ctx, formatter)
+
+    def get_rich_table_row(self, ctx: "RichContext", formatter: "RichHelpFormatter") -> "RichPanelRow":
+        """Create a row for the rich table corresponding with this parameter."""
+        from rich_click.rich_help_rendering import get_rich_table_row
+
+        return get_rich_table_row(self, ctx, formatter)
 
 
 class RichArgument(click.Argument, RichParameter):

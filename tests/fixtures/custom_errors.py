@@ -2,6 +2,7 @@ from click import UsageError
 
 import rich_click as click
 
+
 # Show custom error messages
 click.rich_click.STYLE_ERRORS_SUGGESTION = "magenta italic"
 click.rich_click.ERRORS_SUGGESTION = "Try running the '--help' flag for more information."

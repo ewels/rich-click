@@ -1,5 +1,6 @@
 import rich_click as click
 
+
 # Use Rich markup
 click.rich_click.USE_RICH_MARKUP = True
 

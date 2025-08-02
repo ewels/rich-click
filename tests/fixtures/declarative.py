@@ -1,6 +1,6 @@
 import click
 
-from rich_click import pass_context, RichCommand, RichContext, RichGroup
+from rich_click import RichCommand, RichContext, RichGroup, pass_context
 
 
 @click.group(cls=RichGroup)

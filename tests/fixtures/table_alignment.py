@@ -1,6 +1,7 @@
 import rich_click as click
 from rich_click._compat_click import CLICK_IS_VERSION_80
 
+
 click.rich_click.STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO = (1, 2)
 
 click.rich_click.OPTION_GROUPS = {

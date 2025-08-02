@@ -23,13 +23,14 @@ Debug mode is off
  Usage: cli greet [OPTIONS]                                                                         \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --username    TEXT  This can be set via env var GREETER_GREET_USERNAME                           │
-│                     [env var: GREETER_GREET_USERNAME]                                            │
-│ --nickname    TEXT  This can be set via env var NICKNAME [env var: NICKNAME]                     │
-│ --email       TEXT  This can be set via env var EMAIL or EMAIL_ADDRESS                           │
-│                     [env var: EMAIL, EMAIL_ADDRESS]                                              │
-│                     [default: foo@bar.com]                                                       │
-│ --help              Show this message and exit.                                                  │
+│ --username      TEXT  This can be set via env var GREETER_GREET_USERNAME                         │
+│                       [env var: GREETER_GREET_USERNAME]                                          │
+│ --nickname      TEXT  This can be set via env var NICKNAME [env var: NICKNAME]                   │
+│ --email         TEXT  This can be set via env var EMAIL or EMAIL_ADDRESS                         │
+│                       [env var: EMAIL, EMAIL_ADDRESS]                                            │
+│                       [default: foo@bar.com]                                                     │
+│ --token     -t  TEXT  [env var: GREETER_GREET_TOKEN]                                             │
+│ --help                Show this message and exit.                                                │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -47,13 +48,14 @@ Debug mode is off
  Usage: cli greet [OPTIONS]                                                                         \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --username    TEXT  This can be set via env var GREETER_GREET_USERNAME                           │
-│                     (ENV: GREETER_GREET_USERNAME)                                                │
-│ --nickname    TEXT  This can be set via env var NICKNAME (ENV: NICKNAME)                         │
-│ --email       TEXT  This can be set via env var EMAIL or EMAIL_ADDRESS                           │
-│                     (ENV: EMAIL, EMAIL_ADDRESS)                                                  │
-│                     [default: foo@bar.com]                                                       │
-│ --help              Show this message and exit.                                                  │
+│ --username      TEXT  This can be set via env var GREETER_GREET_USERNAME                         │
+│                       (ENV: GREETER_GREET_USERNAME)                                              │
+│ --nickname      TEXT  This can be set via env var NICKNAME (ENV: NICKNAME)                       │
+│ --email         TEXT  This can be set via env var EMAIL or EMAIL_ADDRESS                         │
+│                       (ENV: EMAIL, EMAIL_ADDRESS)                                                │
+│                       [default: foo@bar.com]                                                     │
+│ --token     -t  TEXT  (ENV: GREETER_GREET_TOKEN)                                                 │
+│ --help                Show this message and exit.                                                │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
