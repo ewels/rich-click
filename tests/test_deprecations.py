@@ -87,3 +87,27 @@ def test_deprecation_command_console() -> None:
     with pytest.warns(DeprecationWarning):
         con2 = getattr(cli2, "console")
     assert isinstance(con2, Console)
+
+
+def test_not_implemented_warnings_for_help_formatter() -> None:
+
+    formatter = rich_click.RichHelpFormatter()
+
+    with pytest.warns(RuntimeWarning):
+        formatter.indent()
+    with pytest.warns(RuntimeWarning):
+        formatter.dedent()
+    with pytest.warns(RuntimeWarning):
+        formatter.write_heading("")
+    with pytest.warns(RuntimeWarning):
+        formatter.write_paragraph()
+    with pytest.warns(RuntimeWarning):
+        formatter.write_text("")
+    with pytest.warns(RuntimeWarning):
+        formatter.write_dl([])
+    with pytest.warns(RuntimeWarning):
+        with formatter.section(""):
+            pass
+    with pytest.warns(RuntimeWarning):
+        with formatter.indentation():
+            pass

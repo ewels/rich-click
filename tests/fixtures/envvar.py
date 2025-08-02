@@ -20,8 +20,10 @@ def cli(debug: bool) -> None:
     show_default=True,
     help="This can be set via env var EMAIL or EMAIL_ADDRESS",
 )
-def greet(username: str, nickname: str, email: str) -> None:
+@click.option("--token", "-t", show_envvar=True)
+def greet(username: str, nickname: str, email: str, token: str) -> None:
     click.echo(f"Hello {username} ({nickname}) with email {email}!")
+    click.echo(f"Using token {token}")
 
 
 if __name__ == "__main__":

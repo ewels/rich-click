@@ -1,13 +1,9 @@
 import rich_click as click
 
 
-# click.rich_click.SHOW_ARGUMENTS = True
-# click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
-
-
 @click.command()
-@click.argument("input", type=click.Path(), required=True)
-@click.argument("output", type=click.Path())
+@click.argument("input", type=click.Path(), help="Input file", required=True)
+@click.argument("output", type=click.Path(), help="Output file")
 @click.option("--type", default="files", show_default=True, help="Type of file to sync")
 @click.option("--debug", "-d", is_flag=True, help="Enable debug mode")
 @click.option(

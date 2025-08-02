@@ -1,7 +1,5 @@
 import rich_click as click
 
-click.rich_click.USE_MARKDOWN = True
-
 
 @click.group()
 @click.option(

@@ -22,6 +22,7 @@ Small changes:
 
 - "Deprecated" text properly handled and stylized in all places.
 - Improved `rich-click` CLI patching.
+- Parameters (arguments + options) now have composable help text rendering!
 
 Backend (mostly invisible) changes:
 

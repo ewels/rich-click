@@ -79,6 +79,10 @@ from rich_click.rich_command import RichGroup as RichGroup
 from rich_click.rich_context import RichContext as RichContext
 from rich_click.rich_context import get_current_context as get_current_context
 from rich_click.rich_help_configuration import RichHelpConfiguration as RichHelpConfiguration
+from rich_click.rich_help_formatter import RichHelpFormatter as RichHelpFormatter
+from rich_click.rich_parameters import RichArgument as RichArgument
+from rich_click.rich_parameters import RichOption as RichOption
+from rich_click.rich_parameters import RichParameter as RichParameter
 
 from . import rich_click as rich_click
 

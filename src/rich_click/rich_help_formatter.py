@@ -1,8 +1,9 @@
 import io
 import os
 import sys
+from contextlib import contextmanager
 from functools import cached_property
-from typing import IO, TYPE_CHECKING, Any, Dict, Literal, Optional
+from typing import IO, TYPE_CHECKING, Any, Dict, Iterator, Literal, Optional, Sequence, Tuple
 
 import click
 
@@ -220,3 +221,52 @@ class RichHelpFormatter(click.HelpFormatter):
             return res
         else:
             return super().getvalue()
+
+    def indent(self) -> None:
+        import warnings
+
+        warnings.warn("Not implemented.", RuntimeWarning, stacklevel=2)
+
+    def dedent(self) -> None:
+        import warnings
+
+        warnings.warn("Not implemented.", RuntimeWarning, stacklevel=2)
+
+    def write_heading(self, heading: str) -> None:
+        import warnings
+
+        warnings.warn("Not implemented.", RuntimeWarning, stacklevel=2)
+
+    def write_paragraph(self) -> None:
+        import warnings
+
+        warnings.warn("Not implemented.", RuntimeWarning, stacklevel=2)
+
+    def write_text(self, text: str) -> None:
+        import warnings
+
+        warnings.warn("Not implemented.", RuntimeWarning, stacklevel=2)
+
+    def write_dl(
+        self,
+        rows: Sequence[Tuple[str, str]],
+        col_max: int = 30,
+        col_spacing: int = 2,
+    ) -> None:
+        import warnings
+
+        warnings.warn("Not implemented.", RuntimeWarning, stacklevel=2)
+
+    @contextmanager
+    def section(self, name: str) -> Iterator[None]:
+        import warnings
+
+        warnings.warn("Not implemented.", RuntimeWarning, stacklevel=2)
+        yield
+
+    @contextmanager
+    def indentation(self) -> Iterator[None]:
+        import warnings
+
+        warnings.warn("Not implemented.", RuntimeWarning, stacklevel=2)
+        yield
