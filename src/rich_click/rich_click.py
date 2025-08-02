@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, Union
 
 from rich_click.rich_help_configuration import force_terminal_default, terminal_width_default
-from rich_click.utils import CommandGroupDict, OptionGroupDict
+from rich_click.utils import CommandGroupDict, OptionGroupDict, notset
 
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -95,10 +95,12 @@ SHOW_METAVARS_COLUMN: bool = True  # Show a column with the option metavar (eg. 
 APPEND_METAVARS_HELP: bool = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS: bool = False  # Show arguments with options instead of in own panel
 OPTION_ENVVAR_FIRST: bool = False  # Show env vars before option help text instead of avert
-TEXT_MARKUP: Literal["ansi", "rich", "markdown", None] = "ansi"
-USE_MARKDOWN: bool = False  # Parse help strings as markdown
-USE_MARKDOWN_EMOJI: bool = True  # Parse emoji codes in markdown :smile:
-USE_RICH_MARKUP: bool = False  # Parse help strings for rich markup (eg. [red]my text[/])
+TEXT_MARKUP: Literal["ansi", "rich", "markdown", None] = notset  # type: ignore[assignment]
+TEXT_EMOJIS: bool = notset  # type: ignore[assignment]
+# If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -> 😺
+USE_MARKDOWN: Optional[bool] = None  # Parse help strings as markdown
+USE_MARKDOWN_EMOJI: Optional[bool] = None  # Parse emoji codes in markdown :smile:
+USE_RICH_MARKUP: Optional[bool] = None  # Parse help strings for rich markup (eg. [red]my text[/])
 # Define sorted groups of panels to display subcommands
 COMMAND_GROUPS: Dict[str, List[CommandGroupDict]] = {}
 # Define sorted groups of panels to display options and arguments

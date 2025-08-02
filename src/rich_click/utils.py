@@ -8,6 +8,9 @@ else:
     from typing import NotRequired
 
 
+notset = object()
+
+
 def truthy(o: Any) -> Optional[bool]:
     """Check if string or other obj is truthy."""
     if isinstance(o, str):

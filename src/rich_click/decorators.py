@@ -14,7 +14,7 @@ from click import version_option as click_version_option
 from rich_click.rich_command import RichCommand, RichGroup
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
-from rich_click.rich_parameters import RichArgument, RichOption
+from rich_click.rich_parameter import RichArgument, RichOption
 
 from . import rich_click  # noqa: F401
 

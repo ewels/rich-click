@@ -3,7 +3,7 @@ import os
 import sys
 from contextlib import contextmanager
 from functools import cached_property
-from typing import IO, TYPE_CHECKING, Any, Dict, Iterator, Literal, Optional, Sequence, Tuple
+from typing import IO, TYPE_CHECKING, Any, Dict, Iterator, Literal, Optional, Sequence, Tuple, Union
 
 import click
 
@@ -13,6 +13,9 @@ from rich_click.rich_help_configuration import RichHelpConfiguration
 if TYPE_CHECKING:  # pragma: no cover
     from rich.console import Console
     from rich.highlighter import Highlighter
+    from rich.markdown import Markdown
+    from rich.style import StyleType
+    from rich.text import Text
 
 
 def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> "Console":
@@ -169,6 +172,57 @@ class RichHelpFormatter(click.HelpFormatter):
     def write_abort(self) -> None:
         """Print richly formatted abort error."""
         self.console.print(self.config.aborted_text, style=self.config.style_aborted)
+
+    def rich_text(
+        self,
+        text: Union[str, "Text", "Markdown"],
+        style: "StyleType" = "",
+    ) -> Union["Text", "Markdown"]:
+        """
+        Take a string, remove indentations, and return styled text.
+        By default, return the text as a Rich Text with the request style.
+
+        This method uses the config options prefixed `text_` to influence how
+        rendering works.
+
+        Args:
+        ----
+            text (str): Text to style.
+            style (StyleType): Rich style to apply.
+
+        Returns:
+        -------
+            MarkdownElement or Text: Styled text object
+
+        """
+        import inspect
+
+        from rich.markdown import Markdown
+        from rich.text import Text
+
+        if isinstance(text, (Text, Markdown)):
+            return text
+
+        # Remove indentations from input text
+        text = inspect.cleandoc(text)
+        if isinstance(text, (Text, Markdown)):
+            return text
+
+        text = inspect.cleandoc(text)
+
+        if self.config.text_markup != "rich" and self.config.text_emojis:
+            from rich.emoji import Emoji
+
+            text = Emoji.replace(text)
+
+        if self.config.text_markup == "markdown":
+            return Markdown(text, style=style)
+        elif self.config.text_markup == "rich":
+            return self.highlighter(Text.from_markup(text, style=style, emoji=self.config.text_emojis))
+        elif self.config.text_markup == "ansi":
+            return self.highlighter(Text.from_ansi(text, style=style))
+        else:
+            return self.highlighter(Text(text, style=style))
 
     def getvalue(self) -> str:
         if not self.export_console_as:

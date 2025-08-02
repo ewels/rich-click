@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Optional, Sequence
+from typing import TYPE_CHECKING, Any, List, Optional, Sequence, Tuple, Union
 
 import click
 
@@ -19,10 +19,32 @@ class RichParameter(click.Parameter):
     intentionally not finalized.
     """
 
-    def __init__(self, *args: Any, panel: Optional[str] = None, **kwargs: Any):
+    def __init__(
+        self,
+        *args: Any,
+        panel: Optional[Union[str, Tuple[str, int], List[Union[str, Tuple[str, int]]]]] = None,
+        **kwargs: Any,
+    ):
         """Create RichParameter instance."""
         super().__init__(*args, **kwargs)
         self.panel = panel
+
+    @property
+    def panels(self) -> List[Tuple[str, int]]:
+        if self.panel is None:
+            return []
+        elif isinstance(self.panel, str):
+            return [(self.panel, 0)]
+        elif isinstance(self.panel, tuple):
+            return [self.panel]
+        else:
+            panels = []
+            for p in self.panel:
+                if isinstance(p, str):
+                    panels.append((p, 0))
+                else:
+                    panels.append(p)
+            return panels
 
     def get_rich_help(self, ctx: "RichContext", formatter: "RichHelpFormatter") -> "Columns":
         """Get the rich help text for this parameter."""

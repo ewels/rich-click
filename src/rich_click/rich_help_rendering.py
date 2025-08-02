@@ -12,12 +12,10 @@ from rich import box
 from rich.align import Align
 from rich.columns import Columns
 from rich.console import RenderableType
-from rich.emoji import Emoji
 from rich.highlighter import RegexHighlighter
 from rich.markdown import Markdown
 from rich.padding import Padding
 from rich.panel import Panel
-from rich.style import StyleType
 from rich.table import Table
 from rich.text import Text
 
@@ -28,7 +26,7 @@ from rich_click._compat_click import (
 )
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_formatter import RichHelpFormatter
-from rich_click.rich_parameters import RichParameter
+from rich_click.rich_parameter import RichParameter
 from rich_click.utils import CommandGroupDict, OptionGroupDict
 
 
@@ -46,63 +44,6 @@ if CLICK_IS_BEFORE_VERSION_9X:
     from rich_click.rich_command import MultiCommand  # type: ignore[attr-defined]
 else:
     MultiCommand = Group  # type: ignore[misc,assignment,unused-ignore]
-
-
-def _make_rich_rext(text: Union[str, Text], style: StyleType, formatter: RichHelpFormatter) -> Union[Markdown, Text]:
-    """
-    Take a string, remove indentations, and return styled text.
-    By default, return the text as a Rich Text with the request style.
-    If config.use_rich_markup is True, also parse the text for Rich markup strings.
-    If config.use_markdown is True, parse as Markdown.
-    Only one of config.use_markdown or config.use_rich_markup can be True.
-    If both are True, config.use_markdown takes precedence.
-
-    Args:
-    ----
-        text (str): Text to style.
-        style (StyleType): Rich style to apply.
-        formatter: formatter object.
-
-    Returns:
-    -------
-        MarkdownElement or Text: Styled text object
-
-    """
-    if isinstance(text, Text):
-        return text
-
-    config = formatter.config
-    # Remove indentations from input text
-    text = inspect.cleandoc(text)
-
-    use_ansi = False
-    use_markdown = False
-    use_rich = False
-
-    if config.use_markdown:
-        use_markdown = True
-    elif config.use_rich_markup:
-        use_rich = True
-    elif config.text_markup == "markdown":
-        use_markdown = True
-    elif config.text_markup == "rich":
-        use_rich = True
-    elif config.text_markup == "ansi":
-        use_ansi = True
-
-    # TODO:
-    #  In a future major version release, decouple emojis and markdown.
-    #  Decoupling isn't something that is sensible without breaking the API.
-    if use_markdown:
-        if config.use_markdown_emoji:
-            text = Emoji.replace(text)
-        return Markdown(text, style=style)
-    elif use_rich:
-        return formatter.highlighter(Text.from_markup(text, style=style))
-    elif use_ansi:
-        return formatter.highlighter(Text.from_ansi(text, style=style))
-    else:
-        return formatter.highlighter(Text(text, style=style))
 
 
 @group()
@@ -147,7 +88,7 @@ def _get_help_text(obj: Union[Command, Group], formatter: RichHelpFormatter) -> 
     if not config.use_markdown and not config.text_markup == "markdown":
         if not first_line.startswith("\b"):
             first_line = first_line.replace("\n", " ")
-    yield _make_rich_rext(first_line.strip(), config.style_helptext_first_line, formatter)
+    yield formatter.rich_text(first_line.strip(), config.style_helptext_first_line)
 
     # Get remaining lines, remove single line breaks and format as dim
     remaining_paragraphs = help_text.split("\n\n")[1:]
@@ -164,7 +105,7 @@ def _get_help_text(obj: Union[Command, Group], formatter: RichHelpFormatter) -> 
             # Join with double linebreaks if markdown
             remaining_lines = "\n\n".join(remaining_paragraphs)
 
-        yield _make_rich_rext(remaining_lines, config.style_helptext, formatter)
+        yield formatter.rich_text(remaining_lines, config.style_helptext)
 
 
 def _get_deprecated_text(
@@ -244,7 +185,7 @@ def _get_parameter_help(
             help_text = re.sub(r"\(DEPRECATED: .*?\)$", "", help_text)
         else:
             help_text = re.sub(r"\(DEPRECATED\)$", "", help_text)
-    return _make_rich_rext(help_text, formatter.config.style_option_help, formatter)
+    return formatter.rich_text(help_text, formatter.config.style_option_help)
 
 
 def _get_parameter_metavar(
@@ -490,7 +431,7 @@ def _make_command_help(
         paragraphs[0] = paragraphs[0].replace("\b\n", "")
     help_text = paragraphs[0].strip()
     renderable: Union[Text, Markdown, Columns]
-    renderable = _make_rich_rext(help_text, formatter.config.style_option_help, formatter)
+    renderable = formatter.rich_text(help_text, formatter.config.style_option_help)
     if deprecated:
         dep_txt = _get_deprecated_text(
             deprecated=deprecated,
@@ -515,7 +456,7 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", pref
     if config.header_text:
         formatter.write(
             Padding(
-                _make_rich_rext(config.header_text, config.style_header_text, formatter),
+                formatter.rich_text(config.header_text, config.style_header_text),
                 (1, 1, 0, 1),
             ),
         )
@@ -838,14 +779,14 @@ def get_rich_epilog(
             epilog = self.epilog
         else:
             epilog = "\n".join([x.replace("\n", " ").strip() for x in lines])  # type: ignore[assignment]
-            epilog = _make_rich_rext(epilog, formatter.config.style_epilog_text, formatter)  # type: ignore[assignment]
+            epilog = formatter.rich_text(epilog, formatter.config.style_epilog_text)  # type: ignore[assignment]
         formatter.write(Padding(Align(epilog, pad=False), 1))
 
     # Footer text if we have it
     if formatter.config.footer_text:
         formatter.write(
             Padding(
-                _make_rich_rext(formatter.config.footer_text, formatter.config.style_footer_text, formatter),
+                formatter.rich_text(formatter.config.footer_text, formatter.config.style_footer_text),
                 (1, 1, 0, 1),
             )
         )
