@@ -944,6 +944,10 @@ head: 12
 <p><a class="glightbox" href="../../images/code_snippets/rich_click_cli/output_to_html.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="rich-click --output html app:main --help | grep -Eo '.{1,120}'" class="screenshot" src="../../images/code_snippets/rich_click_cli/output_to_html.svg" /></a></p>
 <p><em>SVG and HTML generated from <a href="https://github.com/ewels/rich-click/blob/main/docs/code_snippets/rich_click_cli/app.py"><code>docs/code_snippets/rich_click_cli/app.py</code></a></em></p>
 <h2 id="notes-on-how-the-rich-click-cli-works">Notes on how the <code>rich-click</code> CLI works<a class="headerlink" href="#notes-on-how-the-rich-click-cli-works" title="Permanent link">&para;</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The rest of this document contains technical details most users will not need to know.</p>
+</div>
 <p>Under the hood, the <code>rich-click</code> CLI is patching the <code>click</code> module, and replacing the Click decorators and <code>click.Command</code>, <code>click.Group</code>, etc. objects with their equivalent <strong>rich-click</strong> versions.</p>
 <p>Sometimes, a subclassed <code>click.Command</code> will overwrite one of these methods:</p>
 <ul>

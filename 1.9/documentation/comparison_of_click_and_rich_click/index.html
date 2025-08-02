@@ -898,13 +898,15 @@ meaning its API is designed to mirror the Click API and intercept some of the ca
 <h2 id="click-features-that-rich-click-overrides">Click features that rich-click overrides<a class="headerlink" href="#click-features-that-rich-click-overrides" title="Permanent link">&para;</a></h2>
 <p>The only things that <strong>rich-click</strong> explicitly overrides in the high-level API are the decorators:</p>
 <ul>
-<li><code>click.command()</code></li>
-<li><code>click.group()</code></li>
+<li><code class="highlight"><span class="n">click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span></code></li>
+<li><code class="highlight"><span class="n">click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span></code></li>
+<li><code class="highlight"><span class="n">click</span><span class="o">.</span><span class="n">option</span><span class="p">()</span></code> (+ its variants)</li>
+<li><code class="highlight"><span class="n">click</span><span class="o">.</span><span class="n">argument</span><span class="p">()</span></code></li>
 </ul>
-<p>The only change to these decorators is that by default, their <code>cls=</code> parameters point to the <strong>rich-click</strong> implementations of <code>Command</code> (i.e. <code>RichCommand</code>) and <code>Group</code> (i.e. <code>RichGroup</code>).</p>
+<p>The only change to these decorators is that by default, their <code class="highlight"><span class="bp">cls</span><span class="o">=</span></code> parameters point to the <strong>rich-click</strong> implementations.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>There is also a thin wrapper around <code>pass_context()</code> to cast the <code>click.Context</code> type in the function signature to <code>click.RichContext</code> to assist with static type-checking with MyPy. Aside from different typing, there are no substantive changes to the <code>pass_context()</code> decorator.</p>
+<p>There is also a thin wrapper around <code class="highlight"><span class="n">pass_context</span><span class="p">()</span></code> to cast the <code class="highlight"><span class="n">click</span><span class="o">.</span><span class="n">Context</span></code> type in the function signature to <code class="highlight"><span class="n">click</span><span class="o">.</span><span class="n">RichContext</span></code> to assist with static type-checking with MyPy. Aside from different typing, there are no substantive changes to the <code class="highlight"><span class="n">pass_context</span><span class="p">()</span></code> decorator.</p>
 </div>
 <h2 id="click-features-that-rich-click-does-not-override">Click features that rich-click does <em>not</em> override<a class="headerlink" href="#click-features-that-rich-click-does-not-override" title="Permanent link">&para;</a></h2>
 <h3 id="base-click-command-classes">Base Click command classes<a class="headerlink" href="#base-click-command-classes" title="Permanent link">&para;</a></h3>
@@ -938,23 +940,23 @@ If you'd like Rich markup for your echos and interactive elements, then you can:
 </thead>
 <tbody>
 <tr>
-<td><code>click.echo()</code></td>
-<td><code>rich.print()</code></td>
+<td><code class="highlight"><span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">()</span></code></td>
+<td><code class="highlight"><span class="n">rich</span><span class="o">.</span><span class="n">print</span><span class="p">()</span></code></td>
 <td><a href="https://rich.readthedocs.io/en/stable/introduction.html#quick-start">Quick start</a></td>
 </tr>
 <tr>
-<td><code>click.echo_via_pager()</code></td>
-<td><code>rich.Console().pager()</code></td>
+<td><code class="highlight"><span class="n">click</span><span class="o">.</span><span class="n">echo_via_pager</span><span class="p">()</span></code></td>
+<td><code class="highlight"><span class="n">rich</span><span class="o">.</span><span class="n">Console</span><span class="p">()</span><span class="o">.</span><span class="n">pager</span><span class="p">()</span></code></td>
 <td><a href="https://rich.readthedocs.io/en/stable/console.html#paging">Console</a></td>
 </tr>
 <tr>
-<td><code>click.confirm()</code></td>
-<td><code>rich.prompt.Confirm.ask()</code></td>
+<td><code class="highlight"><span class="n">click</span><span class="o">.</span><span class="n">confirm</span><span class="p">()</span></code></td>
+<td><code class="highlight"><span class="n">rich</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">Confirm</span><span class="o">.</span><span class="n">ask</span><span class="p">()</span></code></td>
 <td><a href="https://rich.readthedocs.io/en/stable/prompt.html">Prompt</a></td>
 </tr>
 <tr>
-<td><code>click.prompt()</code></td>
-<td><code>rich.prompt.Prompt.ask()</code></td>
+<td><code class="highlight"><span class="n">click</span><span class="o">.</span><span class="n">prompt</span><span class="p">()</span></code></td>
+<td><code class="highlight"><span class="n">rich</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">Prompt</span><span class="o">.</span><span class="n">ask</span><span class="p">()</span></code></td>
 <td><a href="https://rich.readthedocs.io/en/stable/prompt.html">Prompt</a></td>
 </tr>
 </tbody>
