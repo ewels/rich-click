@@ -1,6 +1,5 @@
 import os
 from dataclasses import dataclass, field
-from os import getenv
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
 
@@ -24,21 +23,23 @@ def force_terminal_default() -> Optional[bool]:
     env_vars = ["FORCE_COLOR", "PY_COLORS", "GITHUB_ACTIONS"]
     for env_var in env_vars:
         if env_var in os.environ:
-            return truthy(getenv(env_var))
+            return truthy(os.getenv(env_var))
     else:
         return None
 
 
 def terminal_width_default() -> Optional[int]:
     """Use as the default factory for `width` and `max_width`."""
-    width = getenv("TERMINAL_WIDTH")
+    width = os.getenv("TERMINAL_WIDTH")
     if width:
         try:
             return int(width)
         except ValueError:
             import warnings
 
-            warnings.warn("Environment variable `TERMINAL_WIDTH` cannot be cast to an integer.", UserWarning)
+            warnings.warn(
+                "Environment variable `TERMINAL_WIDTH` cannot be cast to an integer.", UserWarning, stacklevel=2
+            )
             return None
     return None
 
@@ -175,17 +176,17 @@ class RichHelpConfiguration:
     def __post_init__(self) -> None:  # noqa: D105
         # Todo: Fix this so that the deprecation warning works properly.
 
-        # if self.highlighter is not None:
-        #     import warnings
-        #
-        #     warnings.warn(
-        #         "`highlighter` kwarg is deprecated in RichHelpConfiguration."
-        #         " Please do one of the following instead: either set highlighter_patterns=[...] if you want"
-        #         " to use regex; or for more advanced use cases where you'd like to use a different type"
-        #         " of rich.highlighter.Highlighter, subclass the `RichHelpFormatter` and update its `highlighter`.",
-        #         DeprecationWarning,
-        #         stacklevel=2,
-        #     )
+        if self.highlighter is not None:
+            import warnings
+
+            warnings.warn(
+                "`highlighter` kwarg is deprecated in RichHelpConfiguration."
+                " Please do one of the following instead: either set highlighter_patterns=[...] if you want"
+                " to use regex; or for more advanced use cases where you'd like to use a different type"
+                " of rich.highlighter.Highlighter, subclass the `RichHelpFormatter` and update its `highlighter`.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
 
         self.__dataclass_fields__.pop("highlighter", None)
 
@@ -204,12 +205,8 @@ class RichHelpConfiguration:
         kw = {}
         for k, v in cls.__dataclass_fields__.items():
             if v.init:
-                if hasattr(module, k.upper()):
+                if k != "highlighter" and hasattr(module, k.upper()):
                     kw[k] = getattr(module, k.upper())
-                # Handle lowercase.
-                # (May deprecate and move everything to uppercase... unsure.)
-                elif k == "highlighter" and hasattr(module, k):
-                    kw[k] = getattr(module, k)
 
         kw.update(extra)
         inst = cls(**kw)
@@ -239,14 +236,13 @@ def __getattr__(name: str) -> Any:
                 r"(?P<metavar><[^>]+>)",
             ]
 
-        # todo: fix
-        # import warnings
-        #
-        # warnings.warn(
-        #     "OptionHighlighter is deprecated and will be removed in a future version.",
-        #     DeprecationWarning,
-        #     stacklevel=2,
-        # )
+        import warnings
+
+        warnings.warn(
+            "OptionHighlighter is deprecated and will be removed in a future version.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
         globals()["OptionHighlighter"] = OptionHighlighter
 

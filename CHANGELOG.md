@@ -21,6 +21,7 @@ Big changes:
 Small changes:
 
 - "Deprecated" text properly handled and stylized in all places.
+- Improved `rich-click` CLI patching.
 
 Backend (mostly invisible) changes:
 
