@@ -90,7 +90,7 @@ ERRORS_EPILOGUE: Optional[Union[str, "rich.text.Text"]] = None
 ABORTED_TEXT: str = "Aborted."
 
 # Behaviours
-SHOW_ARGUMENTS: bool = False  # Show positional arguments
+SHOW_ARGUMENTS: Optional[bool] = None  # Show positional arguments
 SHOW_METAVARS_COLUMN: bool = True  # Show a column with the option metavar (eg. INTEGER)
 APPEND_METAVARS_HELP: bool = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS: bool = False  # Show arguments with options instead of in own panel

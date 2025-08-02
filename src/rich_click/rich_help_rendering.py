@@ -472,10 +472,14 @@ def get_rich_options(
     option_groups = _resolve_groups(ctx=ctx, groups=formatter.config.option_groups, group_attribute="options")
     argument_group_options = []
 
+    show_arguments = formatter.config.show_arguments
+
     for param in obj.get_params(ctx):
-        # Skip positional arguments - they don't have opts or helptext and are covered in usage
-        # See https://click.palletsprojects.com/en/8.0.x/documentation/#documenting-arguments
-        if isinstance(param, click.core.Argument) and not formatter.config.show_arguments:
+        if (
+            isinstance(param, click.core.Argument)
+            and formatter.config.show_arguments is not None
+            and not formatter.config.show_arguments
+        ):
             continue
 
         # Skip if option is hidden
@@ -491,12 +495,14 @@ def get_rich_options(
         else:
             if isinstance(param, click.core.Argument) and not formatter.config.group_arguments_options:
                 argument_group_options.append(param.opts[0])
+                if getattr(param, "help", None) is not None and show_arguments is None:
+                    show_arguments = True
             else:
                 list_of_option_groups = option_groups[-1]["options"]
                 list_of_option_groups.append(param.opts[0])
 
     # If we're not grouping arguments and we got some, prepend before default options
-    if len(argument_group_options) > 0:
+    if len(argument_group_options) > 0 and show_arguments:
         for grp in option_groups:
             if grp.get("name", "") == formatter.config.arguments_panel_title and not grp.get("options"):
                 extra_option_group = grp.copy()

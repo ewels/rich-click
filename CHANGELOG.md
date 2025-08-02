@@ -16,7 +16,7 @@
 
 Big changes:
 
-- TODO
+- `help=` is now a valid kwarg for `@argument()` decorator. See docs for more information.
 
 Small changes:
 
