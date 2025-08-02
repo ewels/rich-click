@@ -1,59 +1,17 @@
 # ruff: noqa: D101,D103,D401,E501
 import json
-import os
-import subprocess
 import sys
 from importlib.metadata import version
-from inspect import cleandoc
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, Protocol
+from typing import Callable, List
 
 import packaging.version
 import pytest
 from click.testing import CliRunner
 from inline_snapshot import snapshot
-from pytest import MonkeyPatch
 
 from rich_click.cli import main
-from rich_click.rich_context import RichContext
-
-
-class WriteScript(Protocol):
-    def __call__(self, script: str, module_name: str = "mymodule.py") -> Path:
-        """Write a script to a directory."""
-        ...
-
-
-def run_as_subprocess(args: List[str], env: Optional[Dict[str, str]] = None) -> "subprocess.CompletedProcess[bytes]":
-    # Throughout most of this test module,
-    # to avoid side effects and to test and uncover potential issues with lazy-loading,
-    # we need to use subprocess.run() instead of cli_runner.invoke().
-
-    _env = {**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"}
-    _env.update(env or {})
-    res = subprocess.run(
-        args,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        env=_env,
-    )
-    return res
-
-
-@pytest.fixture
-def mock_script_writer(tmp_path: Path, monkeypatch: MonkeyPatch) -> WriteScript:
-    def write_script(script: str, module_name: str = "mymodule.py") -> Path:
-        path = tmp_path / "scripts"
-        path.mkdir()
-        py_script = path / module_name
-        py_script.write_text(cleandoc(script))
-
-        monkeypatch.setattr(sys, "path", [path.as_posix(), *sys.path.copy()])
-        monkeypatch.setitem(os.environ, "PYTHONPATH", path.as_posix())
-        monkeypatch.setattr(RichContext, "command_path", "mymodule")
-        return path
-
-    return write_script
+from tests.conftest import WriteScript, run_as_subprocess
 
 
 @pytest.fixture
