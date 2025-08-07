@@ -1,7 +1,7 @@
 import inspect
 import re
 from fnmatch import fnmatch
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Literal, Optional, Tuple, TypeVar, Union, overload
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Literal, Optional, Union
 
 import click
 
@@ -26,8 +26,8 @@ from rich_click._compat_click import (
 )
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_formatter import RichHelpFormatter
+from rich_click.rich_panel import GroupType
 from rich_click.rich_parameter import RichParameter
-from rich_click.utils import CommandGroupDict, OptionGroupDict
 
 
 # Support rich <= 10.6.0
@@ -497,25 +497,11 @@ def get_rich_help_text(self: Command, ctx: RichContext, formatter: RichHelpForma
         )
 
 
-GroupType = TypeVar("GroupType", OptionGroupDict, CommandGroupDict)
-
-
-@overload
-def _resolve_groups(
-    ctx: RichContext, groups: Dict[str, List[OptionGroupDict]], group_attribute: Literal["options"]
-) -> List[OptionGroupDict]: ...
-
-
-@overload
-def _resolve_groups(
-    ctx: RichContext, groups: Dict[str, List[CommandGroupDict]], group_attribute: Literal["commands"]
-) -> List[CommandGroupDict]: ...
-
-
 def _resolve_groups(
     ctx: RichContext, groups: Dict[str, List[GroupType]], group_attribute: Literal["commands", "options"]
 ) -> List[GroupType]:
     """Logic for resolving the groups."""
+    # Step 1: get valid name(s) for the command currently being executed
     cmd_name = ctx.command.name
     _ctx: RichContext = ctx
     while _ctx.parent is not None:
@@ -564,117 +550,78 @@ def get_rich_options(
     """Richly render a click Command's options."""
     # Look through config.option_groups for this command
     # stick anything unmatched into a default group at the end
-    option_groups = _resolve_groups(ctx=ctx, groups=formatter.config.option_groups, group_attribute="options")
-    argument_group_options = []
+    from rich_click.rich_panel import construct_panels
 
-    show_arguments = formatter.config.show_arguments
+    panels = construct_panels(
+        ctx=ctx,
+        command=obj,
+        formatter=formatter,
+        objs=obj.get_params(ctx),
+        panel_cls=formatter.option_panel_class,
+        panel_type="option",
+    )
+    for panel in panels:
+        p = panel.render(obj, ctx, formatter)
+        if not isinstance(p.renderable, Table) or len(p.renderable.rows) > 0:
+            formatter.write(p)
 
-    for param in obj.get_params(ctx):
-        if (
-            isinstance(param, click.core.Argument)
-            and formatter.config.show_arguments is not None
-            and not formatter.config.show_arguments
-        ):
-            continue
+    # option_groups = _resolve_groups(ctx=ctx, groups=formatter.config.option_groups, group_attribute="options")
+    # argument_group_options = []
+    #
+    # show_arguments = formatter.config.show_arguments
 
-        # Skip if option is hidden
-        if getattr(param, "hidden", False):
-            continue
+    # for param in obj.get_params(ctx):
+    #     if (
+    #         isinstance(param, click.core.Argument)
+    #         and formatter.config.show_arguments is not None
+    #         and not formatter.config.show_arguments
+    #     ):
+    #         continue
+    #
+    #     # Skip if option is hidden
+    #     if getattr(param, "hidden", False):
+    #         continue
+    #
+    #     # Already mentioned in a config option group
+    #     for option_group in option_groups:
+    #         if any([opt in (option_group.get("options") or []) for opt in param.opts]):
+    #             break
+    #
+    #     # No break, no mention - add to the default group
+    #     else:
+    #         if isinstance(param, click.core.Argument) and not formatter.config.group_arguments_options:
+    #             argument_group_options.append(param.opts[0])
+    #             if getattr(param, "help", None) is not None and show_arguments is None:
+    #                 show_arguments = True
+    #         else:
+    #             list_of_option_groups = option_groups[-1]["options"]
+    #             list_of_option_groups.append(param.opts[0])
 
-        # Already mentioned in a config option group
-        for option_group in option_groups:
-            if any([opt in (option_group.get("options") or []) for opt in param.opts]):
-                break
-
-        # No break, no mention - add to the default group
-        else:
-            if isinstance(param, click.core.Argument) and not formatter.config.group_arguments_options:
-                argument_group_options.append(param.opts[0])
-                if getattr(param, "help", None) is not None and show_arguments is None:
-                    show_arguments = True
-            else:
-                list_of_option_groups = option_groups[-1]["options"]
-                list_of_option_groups.append(param.opts[0])
-
-    # If we're not grouping arguments and we got some, prepend before default options
-    if len(argument_group_options) > 0 and show_arguments:
-        for grp in option_groups:
-            if grp.get("name", "") == formatter.config.arguments_panel_title and not grp.get("options"):
-                extra_option_group = grp.copy()
-                extra_option_group["options"] = argument_group_options
-                break
-        else:
-            extra_option_group: OptionGroupDict = {  # type: ignore[no-redef]
-                "name": formatter.config.arguments_panel_title,
-                "options": argument_group_options,
-            }
-        option_groups.insert(len(option_groups) - 1, extra_option_group)
-
-    # Print each option group panel
-    for option_group in option_groups:
-        options_rows = []
-        for opt in option_group.get("options") or []:
-            # Get the param
-            for param in obj.get_params(ctx):
-                if any([opt in param.opts]):
-                    break
-            # Skip if option is not listed in this group
-            else:
-                continue
-
-            cols = (
-                param.get_rich_table_row(ctx, formatter)
-                if isinstance(param, RichParameter)
-                else get_rich_table_row(param, ctx, formatter)  # type: ignore[arg-type]
-            )
-
-            options_rows.append(cols)
-
-        if len(options_rows) > 0:
-            t_styles = {
-                "show_lines": formatter.config.style_options_table_show_lines,
-                "leading": formatter.config.style_options_table_leading,
-                "box": formatter.config.style_options_table_box,
-                "border_style": formatter.config.style_options_table_border_style,
-                "row_styles": formatter.config.style_options_table_row_styles,
-                "pad_edge": formatter.config.style_options_table_pad_edge,
-                "padding": formatter.config.style_options_table_padding,
-            }
-            if isinstance(formatter.config.style_options_table_box, str):
-                t_styles["box"] = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
-            t_styles.update(option_group.get("table_styles", {}))
-
-            options_table = Table(
-                highlight=True,
-                show_header=False,
-                expand=True,
-                **t_styles,  # type: ignore[arg-type]
-            )
-            # Strip the required column if none are required
-            if all([x[0] == "" for x in options_rows]):
-                options_rows = [x[1:] for x in options_rows]
-            for row in options_rows:
-                options_table.add_row(*row)
-
-            kw: Dict[str, Any] = {
-                "border_style": formatter.config.style_options_panel_border,
-                "title": option_group.get("name", formatter.config.options_panel_title),
-                "title_align": formatter.config.align_options_panel,
-            }
-
-            if isinstance(formatter.config.style_options_panel_box, str):
-                box_style = getattr(box, formatter.config.style_options_panel_box, None)
-            else:
-                box_style = formatter.config.style_options_panel_box
-
-            if box_style:
-                kw["box"] = box_style
-
-            kw.update(option_group.get("panel_styles", {}))
-
-            options_table.columns[0].overflow = "fold"
-
-            formatter.write(Panel(options_table, **kw))
+    # # If we're not grouping arguments and we got some, prepend before default options
+    # if len(argument_group_options) > 0 and show_arguments:
+    #     for grp in option_groups:
+    #         if grp.get("name", "") == formatter.config.arguments_panel_title and not grp.get("options"):
+    #             extra_option_group = grp.copy()
+    #             extra_option_group["options"] = argument_group_options
+    #             break
+    #     else:
+    #         extra_option_group: OptionGroupDict = {  # type: ignore[no-redef]
+    #             "name": formatter.config.arguments_panel_title,
+    #             "options": argument_group_options,
+    #         }
+    #     option_groups.insert(len(option_groups) - 1, extra_option_group)
+    #
+    # # Print each option group panel
+    # for option_group in option_groups:
+    #     rich_panel = RichOptionPanel(
+    #         name=option_group.get("name", formatter.config.options_panel_title),
+    #         options=option_group.get("options", []),
+    #         table_styles=option_group.get("table_styles", {}),
+    #         panel_styles=option_group.get("panel_styles", {}),
+    #     )
+    #     panel = rich_panel.render(obj, ctx, formatter)
+    #     if not isinstance(panel.renderable, Table) or len(panel.renderable.rows) > 0:
+    #         formatter.write(panel)
 
 
 def get_rich_commands(
@@ -688,82 +635,41 @@ def get_rich_commands(
 
     # Look through COMMAND_GROUPS for this command
     # stick anything unmatched into a default group at the end
-    cmd_groups = _resolve_groups(ctx=ctx, groups=formatter.config.command_groups, group_attribute="commands")
-    for command in obj.list_commands(ctx):
-        for cmd_group in cmd_groups:
-            if command in cmd_group.get("commands", []):
-                break
-        else:
-            commands = cmd_groups[-1]["commands"]
-            commands.append(command)
+
+    # cmd_groups = _resolve_groups(ctx=ctx, groups=formatter.config.command_groups, group_attribute="commands")
+    # for command in obj.list_commands(ctx):
+    #     for cmd_group in cmd_groups:
+    #         if command in cmd_group.get("commands", []):
+    #             break
+    #     else:
+    #         commands = cmd_groups[-1]["commands"]
+    #         commands.append(command)
+    from rich_click.rich_panel import construct_panels
+
+    panels = construct_panels(
+        ctx=ctx,
+        command=obj,
+        formatter=formatter,
+        objs=list(sorted(obj.commands.values(), key=lambda _: _.name)),
+        panel_cls=formatter.command_panel_class,
+        panel_type="command",
+    )
+    for panel in panels:
+        p = panel.render(obj, ctx, formatter)
+        if not isinstance(p.renderable, Table) or len(p.renderable.rows) > 0:
+            formatter.write(p)
 
     # Print each command group panel
-    for cmd_group in cmd_groups:
-        t_styles = {
-            "show_lines": formatter.config.style_commands_table_show_lines,
-            "leading": formatter.config.style_commands_table_leading,
-            "box": formatter.config.style_commands_table_box,
-            "border_style": formatter.config.style_commands_table_border_style,
-            "row_styles": formatter.config.style_commands_table_row_styles,
-            "pad_edge": formatter.config.style_commands_table_pad_edge,
-            "padding": formatter.config.style_commands_table_padding,
-        }
-        if isinstance(formatter.config.style_commands_table_box, str):
-            t_styles["box"] = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
-        t_styles.update(cmd_group.get("table_styles", {}))
-
-        commands_table = Table(
-            highlight=False,
-            show_header=False,
-            expand=True,
-            **t_styles,  # type: ignore[arg-type]
-        )
-        # Define formatting in first column, as commands don't match highlighter regex
-        # and set column ratio for first and second column, if a ratio has been set
-        if formatter.config.style_commands_table_column_width_ratio is None:
-            table_column_width_ratio: Union[Tuple[None, None], Tuple[int, int]] = (None, None)
-        else:
-            table_column_width_ratio = formatter.config.style_commands_table_column_width_ratio
-
-        commands_table.add_column(style=formatter.config.style_command, no_wrap=True, ratio=table_column_width_ratio[0])
-        commands_table.add_column(
-            no_wrap=False,
-            ratio=table_column_width_ratio[1],
-        )
-        for command in cmd_group.get("commands", []):
-            # Skip if command does not exist
-            if command not in obj.list_commands(ctx):
-                continue
-            cmd = obj.get_command(ctx, command)
-            if TYPE_CHECKING:  # pragma: no cover
-                assert cmd is not None
-            if cmd.hidden:
-                continue
-            # Use the truncated short text as with vanilla text if requested
-            if formatter.config.use_click_short_help:
-                helptext = cmd.get_short_help_str()
-            else:
-                # Use short_help function argument if used, or the full help
-                helptext = cmd.short_help or cmd.help or ""
-            commands_table.add_row(command, _make_command_help(helptext, formatter, deprecated=cmd.deprecated))
-        if commands_table.row_count > 0:
-
-            kw: Dict[str, Any] = {
-                "border_style": formatter.config.style_commands_panel_border,
-                "title": cmd_group.get("name", formatter.config.commands_panel_title),
-                "title_align": formatter.config.align_commands_panel,
-            }
-
-            if isinstance(formatter.config.style_commands_panel_box, str):
-                box_style = getattr(box, formatter.config.style_commands_panel_box, None)
-            else:
-                box_style = formatter.config.style_commands_panel_box
-
-            if box_style:
-                kw["box"] = box_style
-
-            kw.update(cmd_group.get("panel_styles", {}))
-            formatter.write(Panel(commands_table, **kw))
+    # for cmd_group in cmd_groups:
+    #     rich_panel = RichCommandPanel(
+    #         name=cmd_group.get("name", formatter.config.commands_panel_title),
+    #         commands=cmd_group.get("commands", []),
+    #         table_styles=cmd_group.get("table_styles", {}),
+    #         panel_styles=cmd_group.get("panel_styles", {}),
+    #     )
+    #     panel = rich_panel.render(obj, ctx, formatter)
+    #     if not isinstance(panel.renderable, Table) or len(panel.renderable.rows) > 0:
+    #         formatter.write(panel)
 
 
 def get_rich_epilog(

@@ -14,6 +14,7 @@ from click import version_option as click_version_option
 from rich_click.rich_command import RichCommand, RichGroup
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
+from rich_click.rich_panel import RichCommandPanel, RichOptionPanel, RichPanel
 from rich_click.rich_parameter import RichArgument, RichOption
 
 from . import rich_click  # noqa: F401
@@ -129,19 +130,59 @@ def command(
 
     Defines the command() function so that it uses the RichCommand class by default.
     """
+    func = None
+    if callable(name):
+        func = name
+        name = None
+        assert cls is None, "Use 'command(cls=cls)(callable)' to specify a class."
+        assert not attrs, "Use 'command(**kwargs)(callable)' to provide arguments."
+
     if cls is None:
         cls = cast(Type[CmdType], RichCommand)
 
-    if callable(name):
-        return click_command(cls=cls, **attrs)(name)
+    def decorator(f: _AnyCallable) -> Command:
+        cs = getattr(f, "__rich_context_settings__", None)
+        if cs is not None:
+            attr_cs = attrs.pop("context_settings", None)
+            attr_cs = attr_cs if attr_cs is not None else {}
+            attr_cs.update(cs)
+            attrs["context_settings"] = attr_cs
+            del f.__rich_context_settings__
 
-    return click_command(name, cls=cls, **attrs)
+        panels = getattr(f, "__rich_panels__", None)
+        if panels is not None:
+            attr_panels = attrs.pop("panels", None)
+            attr_panels = attr_panels if attr_panels is not None else []
+            attr_panels.extend(panels)
+            attrs["panels"] = attr_panels
+            del f.__rich_panels__
+
+        return click_command(name, cls, **attrs)(f)
+
+    if func is not None:
+        return decorator(func)
+
+    return decorator
 
 
-class NotSupportedError(Exception):
-    """Not Supported Error."""
+def _context_settings_memo(f: Callable[..., Any], extra: Dict[str, Any]) -> None:
+    if isinstance(f, RichCommand):
+        f.context_settings.update(extra)
+    else:
+        if not hasattr(f, "__rich_context_settings__"):
+            f.__rich_context_settings__ = {}  # type: ignore
 
-    pass
+        f.__rich_context_settings__.update(extra)  # type: ignore
+
+
+def _rich_panel_memo(f: Callable[..., Any], panel: RichPanel) -> None:
+    if isinstance(f, RichCommand):
+        f.panels.append(panel)
+    else:
+        if not hasattr(f, "__rich_panels__"):
+            f.__rich_panels__ = []  # type: ignore
+
+        f.__rich_panels__.append(panel)  # type: ignore
 
 
 def rich_config(
@@ -180,18 +221,42 @@ def rich_config(
         if help_config is not None:
             extra["rich_help_config"] = help_config
 
-        if isinstance(obj, (RichCommand, RichGroup)):
-            obj.context_settings.update(extra)
-        elif callable(obj) and not isinstance(obj, (Command, Group)):
-            if hasattr(obj, "__rich_context_settings__"):
-                obj.__rich_context_settings__.update(extra)
-            else:
-                setattr(obj, "__rich_context_settings__", extra)
-        else:
-            raise NotSupportedError("`rich_config` requires a `RichCommand` or `RichGroup`. Try using the cls keyword")
+        _context_settings_memo(obj, extra)
+
         return obj
 
     return decorator
+
+
+def _panel(
+    name: str,
+    cls: Type[RichPanel],
+    **attrs: Any,
+) -> Callable[[FC], FC]:
+    def decorator(obj: FC) -> FC:
+        _rich_panel_memo(
+            obj,
+            cls(name=name, **attrs),
+        )
+        return obj
+
+    return decorator
+
+
+def option_panel(
+    name: str,
+    cls: Type[RichPanel] = RichOptionPanel,
+    **attrs: Any,
+) -> Callable[[FC], FC]:
+    return _panel(name, cls, **attrs)
+
+
+def command_panel(
+    name: str,
+    cls: Type[RichPanel] = RichCommandPanel,
+    **attrs: Any,
+) -> Callable[[FC], FC]:
+    return _panel(name, cls, **attrs)
 
 
 # Users of rich_click would face issues using mypy with this code,
@@ -239,6 +304,7 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     kwargs.setdefault("is_eager", True)
     kwargs.setdefault("help", gettext("Show this message and exit."))
     kwargs.setdefault("callback", show_help)
+    kwargs.setdefault("cls", RichOption)
 
     return click_option(*param_decls, **kwargs)
 
@@ -317,6 +383,7 @@ def password_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     kwargs.setdefault("prompt", True)
     kwargs.setdefault("confirmation_prompt", True)
     kwargs.setdefault("hide_input", True)
+    kwargs.setdefault("cls", RichOption)
     return click_password_option(*param_decls, **kwargs)
 
 

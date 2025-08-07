@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, List, Optional, Sequence, Tuple, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Sequence, Union
 
 import click
 
@@ -22,29 +22,12 @@ class RichParameter(click.Parameter):
     def __init__(
         self,
         *args: Any,
-        panel: Optional[Union[str, Tuple[str, int], List[Union[str, Tuple[str, int]]]]] = None,
+        panel: Optional[Union[str, List[str]]] = None,
         **kwargs: Any,
     ):
         """Create RichParameter instance."""
         super().__init__(*args, **kwargs)
         self.panel = panel
-
-    @property
-    def panels(self) -> List[Tuple[str, int]]:
-        if self.panel is None:
-            return []
-        elif isinstance(self.panel, str):
-            return [(self.panel, 0)]
-        elif isinstance(self.panel, tuple):
-            return [self.panel]
-        else:
-            panels = []
-            for p in self.panel:
-                if isinstance(p, str):
-                    panels.append((p, 0))
-                else:
-                    panels.append(p)
-            return panels
 
     def get_rich_help(self, ctx: "RichContext", formatter: "RichHelpFormatter") -> "Columns":
         """Get the rich help text for this parameter."""
@@ -74,14 +57,15 @@ class RichArgument(click.Argument, RichParameter):
         self,
         param_decls: Sequence[str],
         required: Optional[bool] = None,
+        *,
         help: Optional[str] = None,
-        panel: Optional[str] = None,
+        hidden: bool = False,
         **attrs: Any,
     ) -> None:
         """Create RichArgument instance."""
         super().__init__(param_decls, required=required, **attrs)
         self.help = help
-        self.panel = panel
+        self.hidden = hidden
 
 
 class RichOption(click.Option, RichParameter):

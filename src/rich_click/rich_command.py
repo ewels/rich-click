@@ -2,7 +2,7 @@ import errno
 import os
 import sys
 import warnings
-from typing import TYPE_CHECKING, Any, Mapping, Optional, Sequence, TextIO, Type, Union, cast
+from typing import TYPE_CHECKING, Any, Callable, List, Mapping, Optional, Sequence, TextIO, Type, Union, cast, overload
 
 import click
 
@@ -19,6 +19,8 @@ from rich_click.rich_help_formatter import RichHelpFormatter
 
 if TYPE_CHECKING:  # pragma: no cover
     from rich.console import Console
+
+    from rich_click.rich_panel import RichPanel
 
 
 # TLDR: if a subcommand overrides one of the methods called by `RichCommand.format_help`,
@@ -40,20 +42,12 @@ class RichCommand(click.Command):
     context_class: Type[RichContext] = RichContext
     _formatter: Optional[RichHelpFormatter] = None
 
-    def __init__(self, *args: Any, **kwargs: Any):
+    def __init__(self, *args: Any, panels: Optional[List["RichPanel"]] = None, **kwargs: Any):
         """Create Rich Command instance."""
         super().__init__(*args, **kwargs)
-        self._register_rich_context_settings_from_callback()
+        self.panels = panels or []
         if not hasattr(self, "_help_option"):
             self._help_option = None
-
-    def _register_rich_context_settings_from_callback(self) -> None:
-        if self.callback is not None:
-            if hasattr(self.callback, "__rich_context_settings__"):
-                rich_context_settings = getattr(self.callback, "__rich_context_settings__", {})
-                for k, v in rich_context_settings.items():
-                    self.context_settings.setdefault(k, v)
-                del self.callback.__rich_context_settings__
 
     @property
     def console(self) -> Optional["Console"]:
@@ -180,7 +174,7 @@ class RichCommand(click.Command):
                 if not CLICK_IS_BEFORE_VERSION_82:
                     # `except click.exceptions.NoArgsIsHelpError as e:` breaks for click<8.2.
                     if isinstance(e, click.exceptions.NoArgsIsHelpError):
-                        print(self.get_help(e.ctx))
+                        print(e.message)
                         sys.exit(e.exit_code)
                 if not standalone_mode:
                     raise
@@ -262,7 +256,7 @@ class RichCommand(click.Command):
 
         # Cache the help option object in private _help_option attribute to
         # avoid creating it multiple times. Not doing this will break the
-        # callback odering by iter_params_for_processing(), which relies on
+        # callback ordering by iter_params_for_processing(), which relies on
         # object comparison.
         if self._help_option is None:
             # Avoid circular import.
@@ -292,11 +286,6 @@ class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[valid-type,mi
     Inherits click.MultiCommand and overrides help and error methods
     to print richly formatted output.
     """
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        """Initialize RichMultiCommand class."""
-        MultiCommand.__init__(self, *args, **kwargs)  # type: ignore[misc]
-        self._register_rich_context_settings_from_callback()
 
     def format_commands(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         from rich_click.rich_help_rendering import get_rich_commands
@@ -331,13 +320,6 @@ class RichGroup(RichMultiCommand, Group):
     command_class: Optional[Type[RichCommand]] = RichCommand
     group_class: Optional[Union[Type[Group], Type[type]]] = type
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        """Initialize RichGroup class."""
-        Group.__init__(self, *args, **kwargs)
-        self._register_rich_context_settings_from_callback()
-        if not hasattr(self, "_help_option"):
-            self._help_option = None
-
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         if OVERRIDES_GUARD:
             prevent_incompatible_overrides(self, "RichGroup", ctx, formatter)
@@ -354,6 +336,97 @@ class RichGroup(RichMultiCommand, Group):
         # seem to think RichGroups are callable. (No issues with Mypy, though.)
         return super().__call__(*args, **kwargs)
 
+    @overload
+    def command(self, __func: Callable[..., Any]) -> RichCommand: ...
+
+    @overload
+    def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichCommand]: ...
+
+    def command(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], RichCommand], RichCommand]:
+        """
+        A shortcut decorator for declaring and attaching a command to
+        the group. This takes the same arguments as :func:`command` and
+        immediately registers the created command with this group by
+        calling :meth:`add_command`.
+
+        To customize the command class used, set the
+        :attr:`command_class` attribute.
+
+        .. versionchanged:: 8.1
+            This decorator can be applied without parentheses.
+
+        .. versionchanged:: 8.0
+            Added the :attr:`command_class` attribute.
+        """
+        from rich_click.decorators import command
+
+        func: Optional[Callable[..., Any]] = None
+
+        if args and callable(args[0]):
+            assert len(args) == 1 and not kwargs, "Use 'command(**kwargs)(callable)' to provide arguments."
+            (func,) = args
+            args = ()
+
+        if self.command_class and kwargs.get("cls") is None:
+            kwargs["cls"] = self.command_class
+
+        def decorator(f: Callable[..., Any]) -> RichCommand:
+            cmd: RichCommand = command(*args, **kwargs)(f)
+            self.add_command(cmd)
+            return cmd
+
+        if func is not None:
+            return decorator(func)
+
+        return decorator
+
+    @overload
+    def group(self, __func: Callable[..., Any]) -> "RichGroup": ...
+
+    @overload
+    def group(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], "RichGroup"]: ...
+
+    def group(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], "RichGroup"], "RichGroup"]:
+        """
+        A shortcut decorator for declaring and attaching a group to
+        the group. This takes the same arguments as :func:`group` and
+        immediately registers the created group with this group by
+        calling :meth:`add_command`.
+
+        To customize the group class used, set the :attr:`group_class`
+        attribute.
+
+        .. versionchanged:: 8.1
+            This decorator can be applied without parentheses.
+
+        .. versionchanged:: 8.0
+            Added the :attr:`group_class` attribute.
+        """
+        from rich_click.decorators import group
+
+        func: Optional[Callable[..., Any]] = None
+
+        if args and callable(args[0]):
+            assert len(args) == 1 and not kwargs, "Use 'group(**kwargs)(callable)' to provide arguments."
+            (func,) = args
+            args = ()
+
+        if self.group_class is not None and kwargs.get("cls") is None:
+            if self.group_class is type:
+                kwargs["cls"] = type(self)
+            else:
+                kwargs["cls"] = self.group_class
+
+        def decorator(f: Callable[..., Any]) -> Group:
+            cmd: RichGroup = group(*args, **kwargs)(f)
+            self.add_command(cmd)
+            return cmd
+
+        if func is not None:
+            return decorator(func)
+
+        return decorator
+
 
 class RichCommandCollection(CommandCollection, RichGroup):
     """
@@ -362,11 +435,6 @@ class RichCommandCollection(CommandCollection, RichGroup):
     Inherits click.CommandCollection and overrides help and error methods
     to print richly formatted output.
     """
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        """Initialize RichCommandCollection class."""
-        CommandCollection.__init__(self, *args, **kwargs)
-        self._register_rich_context_settings_from_callback()
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         if OVERRIDES_GUARD:

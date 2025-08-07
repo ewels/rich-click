@@ -65,10 +65,12 @@ from click.utils import open_file as open_file
 
 from rich_click.decorators import argument as argument
 from rich_click.decorators import command as command
+from rich_click.decorators import command_panel as command_panel
 from rich_click.decorators import confirmation_option as confirmation_option
 from rich_click.decorators import group as group
 from rich_click.decorators import help_option as help_option
 from rich_click.decorators import option as option
+from rich_click.decorators import option_panel as option_panel
 from rich_click.decorators import pass_context as pass_context
 from rich_click.decorators import password_option as password_option
 from rich_click.decorators import rich_config as rich_config
