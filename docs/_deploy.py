@@ -32,7 +32,7 @@ def deploy():
         cmd.append("latest")
     print(f"Running {' '.join(cmd)}")
     subprocess.run(cmd, check=True)
-    subprocess.run(["mike", "set-default", "--push", "latest"], check=True)
+    subprocess.run(["mike", "set-default", "--push", "latest"], check=False)
 
 
 if __name__ == "__main__":
