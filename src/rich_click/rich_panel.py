@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from fnmatch import fnmatch
 from typing import (
     TYPE_CHECKING,
@@ -8,13 +7,11 @@ from typing import (
     Generator,
     Generic,
     List,
-    Literal,
     Optional,
     Tuple,
     Type,
     TypeVar,
     Union,
-    overload,
 )
 
 import click
@@ -25,6 +22,7 @@ from rich_click.utils import CommandGroupDict, OptionGroupDict
 
 if TYPE_CHECKING:
     from rich.panel import Panel
+    from rich.style import StyleType
     from rich.table import Table
 
     from rich_click.rich_command import RichCommand
@@ -32,11 +30,11 @@ if TYPE_CHECKING:
     from rich_click.rich_help_formatter import RichHelpFormatter
 
 
-T = TypeVar("T")
+CT = TypeVar("CT", click.Command, click.Parameter)
 GroupType = TypeVar("GroupType", OptionGroupDict, CommandGroupDict)
 
 
-class RichPanel(Generic[T]):
+class RichPanel(Generic[CT]):
     """RichPanel base class."""
 
     panel_class: Optional[Type["Panel"]] = None
@@ -48,17 +46,25 @@ class RichPanel(Generic[T]):
         self,
         name: str,
         *,
-        objects: Optional[List[T]] = None,
+        help: Optional[str] = None,
+        help_style: "StyleType" = "",
+        objects: Optional[List[CT]] = None,
         table_styles: Optional[Dict[str, Any]] = None,
         panel_styles: Optional[Dict[str, Any]] = None,
         deduplicate: bool = True,
     ) -> None:
-        """Create RichPanel instance."""
+        """Initialize a RichPanel."""
         self.name = name
+        self.help = help
+        self.help_style = help_style
         self.table_styles = table_styles or {}
         self.panel_styles = panel_styles or {}
         self.deduplicate = deduplicate
-        self.objects: List[T] = objects or []
+        self.objects: List[CT] = objects or []
+
+    @classmethod
+    def get_objs_from_command(cls, command: click.Command, ctx: click.Context) -> List[CT]:
+        raise NotImplementedError()
 
     def _get_base_table(self, **defaults: Any) -> "Table":
         if self.table_class is None:
@@ -73,12 +79,16 @@ class RichPanel(Generic[T]):
         }
         kw.update(defaults)
         kw.update(self.table_styles)
-        return self.table_class(**kw)
+        if "box" in kw and isinstance(kw["box"], str):
+            from rich import box
+
+            kw["box"] = getattr(box, kw.pop("box"), None)
+        return self.table_class(**kw)  # type: ignore[arg-type]
 
     def get_table(
         self,
         command: "RichCommand",
-        ctx: click.Context,
+        ctx: "RichContext",
         formatter: "RichHelpFormatter",
     ) -> "Table":
         raise NotImplementedError()
@@ -91,10 +101,14 @@ class RichPanel(Generic[T]):
         kw = defaults
         kw["title"] = self.name
         kw.update(self.panel_styles)
+        if "box" in kw and isinstance(kw["box"], str):
+            from rich import box
+
+            kw["box"] = getattr(box, kw.pop("box"), None)
         return self.panel_class(table, **kw)
 
-    def list_objects(self) -> List[T]:
-        """Returns objects in order of their priority."""
+    def list_objects(self) -> List[CT]:
+        """Return objects in order of their priority."""
         li = []
         for obj in self.objects:
             panels = getattr(obj, "panels", [])
@@ -104,17 +118,25 @@ class RichPanel(Generic[T]):
                     if self.deduplicate:
                         break
 
-        def _() -> Generator[T]:
+        def _() -> Generator[CT, None, None]:
             for o, *_ in sorted(li, key=lambda _: _[1]):
                 yield o
 
         return list(_())
 
+    def render(
+        self,
+        command: "RichCommand",
+        ctx: "RichContext",
+        formatter: "RichHelpFormatter",
+    ) -> "Panel":
+        raise NotImplementedError()
+
     def get_objects_in_panel(
         self,
         command: click.Command,
         ctx: click.Context,
-    ) -> Generator[T]:
+    ) -> Generator[CT, None, None]:
         raise NotImplementedError()
 
     def __repr__(self) -> str:
@@ -131,15 +153,20 @@ class RichOptionPanel(RichPanel[click.Parameter]):
         self,
         name: str,
         options: Optional[List[str]] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
+        """Initialize a RichOptionPanel."""
         super().__init__(name, **kwargs)
         self.options = options or []
+
+    @classmethod
+    def get_objs_from_command(cls, command: click.Command, ctx: click.Context) -> List[click.Parameter]:
+        return command.get_params(ctx)
 
     def get_table(
         self,
         command: "RichCommand",
-        ctx: click.Context,
+        ctx: "RichContext",
         formatter: "RichHelpFormatter",
     ) -> "Table":
         t_styles = {
@@ -151,10 +178,6 @@ class RichOptionPanel(RichPanel[click.Parameter]):
             "pad_edge": formatter.config.style_options_table_pad_edge,
             "padding": formatter.config.style_options_table_padding,
         }
-        if formatter.config.style_options_table_box and isinstance(formatter.config.style_options_table_box, str):
-            from rich import box
-
-            t_styles["box"] = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
         table = super()._get_base_table(**t_styles)
         options_rows = []
         for opt in self.options:
@@ -193,30 +216,31 @@ class RichOptionPanel(RichPanel[click.Parameter]):
     def render(
         self,
         command: "RichCommand",
-        ctx: click.Context,
+        ctx: "RichContext",
         formatter: "RichHelpFormatter",
     ) -> "Panel":
 
-        table = self.get_table(command, ctx, formatter)
+        inner: Any = self.get_table(command, ctx, formatter)
 
         p_styles = {
             "border_style": formatter.config.style_options_panel_border,
             "title_align": formatter.config.align_options_panel,
             "box": formatter.config.style_options_panel_box,
         }
-        if formatter.config.style_options_panel_box and isinstance(formatter.config.style_options_panel_box, str):
-            from rich import box
 
-            p_styles["box"] = getattr(box, p_styles.pop("box"), None)  # type: ignore[arg-type]
+        if self.help:
+            from rich.console import Group
 
-        panel = self._get_base_panel(table, **p_styles)
+            inner = Group(formatter.rich_text(self.help, self.help_style), inner)
+
+        panel = self._get_base_panel(inner, **p_styles)
         return panel
 
     def get_objects_in_panel(
         self,
         command: click.Command,
         ctx: click.Context,
-    ) -> Generator[click.Parameter]:
+    ) -> Generator[click.Parameter, None, None]:
         li: List[Tuple[click.Parameter, int]] = []
         for param in command.get_params(ctx):
             panels = getattr(param, "panels", [])
@@ -237,17 +261,24 @@ class RichCommandPanel(RichPanel[click.Command]):
     def __init__(
         self,
         name: str,
-        commands: Optional[List[Union[str, Tuple[str, int]]]] = None,
-        **kwargs,
+        commands: Optional[List[str]] = None,
+        **kwargs: Any,
     ) -> None:
+        """Initialize a RichCommandPanel."""
         super().__init__(name, **kwargs)
         self.commands = commands or []
+
+    @classmethod
+    def get_objs_from_command(cls, command: click.Command, ctx: click.Context) -> List[click.Command]:
+        if not isinstance(command, click.Group):
+            return []
+        return list(sorted(command.commands.values(), key=lambda _: _.name))  # type: ignore[arg-type,return-value]
 
     def get_objects_in_panel(
         self,
         command: click.Command,
         ctx: click.Context,
-    ) -> Generator[click.Command]:
+    ) -> Generator[click.Command, None, None]:
         if not isinstance(command, click.Group):
             return
         li: List[Tuple[click.Command, int]] = []
@@ -267,7 +298,7 @@ class RichCommandPanel(RichPanel[click.Command]):
     def get_table(
         self,
         command: "RichCommand",
-        ctx: click.Context,
+        ctx: "RichContext",
         formatter: "RichHelpFormatter",
     ) -> "Table":
         t_styles = {
@@ -279,11 +310,6 @@ class RichCommandPanel(RichPanel[click.Command]):
             "pad_edge": formatter.config.style_commands_table_pad_edge,
             "padding": formatter.config.style_commands_table_padding,
         }
-        if formatter.config.style_commands_table_box and isinstance(formatter.config.style_commands_table_box, str):
-            from rich import box
-
-            t_styles["box"] = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
-
         table = self._get_base_table(**t_styles)
 
         # Define formatting in first column, as commands don't match highlighter regex
@@ -326,11 +352,11 @@ class RichCommandPanel(RichPanel[click.Command]):
     def render(
         self,
         command: "RichCommand",
-        ctx: click.Context,
+        ctx: "RichContext",
         formatter: "RichHelpFormatter",
     ) -> "Panel":
 
-        table = self.get_table(command, ctx, formatter)
+        inner: Any = self.get_table(command, ctx, formatter)
 
         p_styles = {
             "border_style": formatter.config.style_commands_panel_border,
@@ -342,7 +368,12 @@ class RichCommandPanel(RichPanel[click.Command]):
 
             p_styles["box"] = getattr(box, p_styles.pop("box"), None)  # type: ignore[arg-type]
 
-        panel = self._get_base_panel(table, **p_styles)
+        if self.help:
+            from rich.console import Group
+
+            inner = Group(formatter.rich_text(self.help, self.help_style), inner)
+
+        panel = self._get_base_panel(inner, **p_styles)
         return panel
 
 
@@ -353,8 +384,8 @@ class RichCommandPanel(RichPanel[click.Command]):
 def _resolve_panels_from_config(
     ctx: "RichContext",
     groups: Dict[str, List[GroupType]],
-    panel_cls: Type[RichPanel[T]],
-) -> List[RichPanel[T]]:
+    panel_cls: Type[RichPanel[CT]],
+) -> List[RichPanel[CT]]:
     """Logic for resolving the groups."""
     # Step 1: get valid name(s) for the command currently being executed
     assert panel_cls._object_attr is not None, "RichPanel must have a defined _object_attr"
@@ -393,66 +424,48 @@ def _resolve_panels_from_config(
                     ]:
                         opts.remove(opt)
                     traversed.append(opt)
-                grp[panel_cls._object_attr] = opts  # type: ignore[typeddict-unknown-key]
+                grp[panel_cls._object_attr] = opts  # type: ignore[literal-required]
                 final_groups_list.append(grp)
 
-    return [panel_cls(**grp) for grp in final_groups_list]
-
-
-@overload
-def construct_panels(
-    ctx: "RichContext",
-    command: "RichCommand",
-    formatter: "RichHelpFormatter",
-    objs: List[click.Parameter],
-    panel_cls: Type[RichOptionPanel],
-    panel_type: Literal["option"],
-) -> List[RichOptionPanel]: ...
-
-
-@overload
-def construct_panels(
-    ctx: "RichContext",
-    command: "RichCommand",
-    formatter: "RichHelpFormatter",
-    objs: List[click.Command],
-    panel_cls: Type[RichCommandPanel],
-    panel_type: Literal["command"],
-) -> List[RichCommandPanel]: ...
+    return [panel_cls(**grp) for grp in final_groups_list]  # type: ignore[misc]
 
 
 def construct_panels(
     ctx: "RichContext",
     command: "RichCommand",
     formatter: "RichHelpFormatter",
-    objs: List[T],
-    panel_cls: Type[RichPanel[T]],
-    panel_type: Literal["command", "option"],
-) -> List[RichPanel[T]]:
+    panel_cls: Type[RichPanel[CT]],
+) -> List[RichPanel[CT]]:
+    """Construct panels from the command as well as from the old groups config."""
     # First step is building out panel_base
     # We use this later to construct the actual panels more easily.
-    panel_base: Dict[str, List[T]]
+    panel_base: Dict[str, List[str]]
+    cfg_groups: Optional[Union[Dict[str, Union[OptionGroupDict]], Dict[str, Union[CommandGroupDict]]]]
 
-    if panel_type == "command":
+    if panel_cls._object_attr == "commands":
         panel_base = {
             p.name: getattr(p, panel_cls._object_attr, []) for p in command.panels if isinstance(p, RichCommandPanel)
         }
         panel_base.setdefault(formatter.config.commands_panel_title, [])
-        cfg_groups = formatter.config.command_groups
+        cfg_groups = formatter.config.command_groups  # type: ignore[assignment]
 
-        def _default(o: click.Command) -> None:
+        def _default(o: CT) -> None:
+            if TYPE_CHECKING:
+                assert isinstance(o.name, str)
             panel_base[formatter.config.commands_panel_title].append(o.name)
 
-    elif panel_type == "option":
+    elif panel_cls._object_attr == "options":
         panel_base = {
             p.name: getattr(p, panel_cls._object_attr, []) for p in command.panels if isinstance(p, RichOptionPanel)
         }
         panel_base.setdefault(formatter.config.options_panel_title, [])
         if not formatter.config.group_arguments_options:
             panel_base.setdefault(formatter.config.arguments_panel_title, [])
-        cfg_groups = formatter.config.option_groups
+        cfg_groups = formatter.config.option_groups  # type: ignore[assignment]
 
-        def _default(o: click.Parameter) -> None:
+        def _default(o: CT) -> None:  # type: ignore[misc]
+            if TYPE_CHECKING:
+                assert isinstance(o.name, str)
             if isinstance(o, click.Argument):
                 if formatter.config.show_arguments is False:
                     return
@@ -468,16 +481,20 @@ def construct_panels(
 
     _show_arguments = formatter.config.show_arguments
 
-    groups_from_config = []
+    groups_from_config: List[RichPanel[CT]] = []
     if cfg_groups:
-        groups_from_config = _resolve_panels_from_config(ctx, cfg_groups, panel_cls)[::-1]
+        groups_from_config = _resolve_panels_from_config(ctx, cfg_groups, panel_cls)[::-1]  # type: ignore[arg-type]
 
     assigned_objs = set([o for p in panel_base.values() for o in p])
     for p in groups_from_config:
         panel_base[p.name] = getattr(p, panel_cls._object_attr, [])
         assigned_objs.update(panel_base[p.name])
 
+    objs = panel_cls.get_objs_from_command(command, ctx)
+
     for obj in objs:
+        if TYPE_CHECKING:
+            assert isinstance(obj.name, str)
         names = [obj.name]
         if hasattr(obj, "opts"):
             names.extend(obj.opts)
@@ -494,7 +511,7 @@ def construct_panels(
                 panel_list = obj.panel
             for panel in panel_list:
                 panel_base.setdefault(panel, [])
-                panel_base[panel].append(obj)
+                panel_base[panel].append(obj.name)
                 assigned = True
                 if _show_arguments is None and panel == formatter.config.arguments_panel_title:
                     _show_arguments = True
@@ -503,20 +520,19 @@ def construct_panels(
             if _show_arguments is None and isinstance(obj, RichArgument) and obj.help is not None:
                 _show_arguments = True
 
-    if not _show_arguments and panel_type == "option":
+    if (
+        not _show_arguments
+        and panel_cls._object_attr == "options"
+        and formatter.config.arguments_panel_title in panel_base
+    ):
         del panel_base[formatter.config.arguments_panel_title]
 
     # The reason final_panels is split from available_panels
     # is to preserve the order of how things are defined in panel_base.
-    final_panels: Dict[str, Optional[RichPanel]] = {
-        p: None for p in panel_base
-    }
+    final_panels: Dict[str, Optional[RichPanel[CT]]] = {p: None for p in panel_base}
 
-    available_panels: Dict[str, RichPanel] = {
-        p.name: p for p in [
-            *groups_from_config,
-            *filter(lambda _: isinstance(_, panel_cls), command.panels)
-        ]
+    available_panels: Dict[str, RichPanel[CT]] = {
+        p.name: p for p in [*groups_from_config, *filter(lambda _: isinstance(_, panel_cls), command.panels)]
     }
 
     # Now panel_base is done
@@ -532,4 +548,4 @@ def construct_panels(
             if i not in li:
                 li.append(i)
 
-    return list(final_panels.values())[::-1]
+    return list(final_panels.values())[::-1]  # type: ignore[return-value]

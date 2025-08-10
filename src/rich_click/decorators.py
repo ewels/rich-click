@@ -140,14 +140,14 @@ def command(
     if cls is None:
         cls = cast(Type[CmdType], RichCommand)
 
-    def decorator(f: _AnyCallable) -> Command:
+    def decorator(f: _AnyCallable) -> CmdType:
         cs = getattr(f, "__rich_context_settings__", None)
         if cs is not None:
             attr_cs = attrs.pop("context_settings", None)
             attr_cs = attr_cs if attr_cs is not None else {}
             attr_cs.update(cs)
             attrs["context_settings"] = attr_cs
-            del f.__rich_context_settings__
+            del f.__rich_context_settings__  # type: ignore[attr-defined]
 
         panels = getattr(f, "__rich_panels__", None)
         if panels is not None:
@@ -155,7 +155,7 @@ def command(
             attr_panels = attr_panels if attr_panels is not None else []
             attr_panels.extend(panels)
             attrs["panels"] = attr_panels
-            del f.__rich_panels__
+            del f.__rich_panels__  # type: ignore[attr-defined]
 
         return click_command(name, cls, **attrs)(f)
 
@@ -175,7 +175,7 @@ def _context_settings_memo(f: Callable[..., Any], extra: Dict[str, Any]) -> None
         f.__rich_context_settings__.update(extra)  # type: ignore
 
 
-def _rich_panel_memo(f: Callable[..., Any], panel: RichPanel) -> None:
+def _rich_panel_memo(f: Callable[..., Any], panel: RichPanel[Any]) -> None:
     if isinstance(f, RichCommand):
         f.panels.append(panel)
     else:
@@ -230,7 +230,7 @@ def rich_config(
 
 def _panel(
     name: str,
-    cls: Type[RichPanel],
+    cls: Type[RichPanel[Any]],
     **attrs: Any,
 ) -> Callable[[FC], FC]:
     def decorator(obj: FC) -> FC:
@@ -245,17 +245,37 @@ def _panel(
 
 def option_panel(
     name: str,
-    cls: Type[RichPanel] = RichOptionPanel,
+    cls: Type[RichPanel[Parameter]] = RichOptionPanel,
     **attrs: Any,
 ) -> Callable[[FC], FC]:
+    """
+    Use decorator to create a RichOptionPanel.
+
+    Args:
+    ----
+        name: Name of the RichOptionPanel instance being created.
+        cls: The class of the RichPanel; defaults to RichOptionPanel.
+        attrs: Additional attributes to pass to the RichOptionPanel.
+
+    """
     return _panel(name, cls, **attrs)
 
 
 def command_panel(
     name: str,
-    cls: Type[RichPanel] = RichCommandPanel,
+    cls: Type[RichPanel[Command]] = RichCommandPanel,
     **attrs: Any,
 ) -> Callable[[FC], FC]:
+    """
+    Use decorator to create a RichCommandPanel.
+
+    Args:
+    ----
+        name: Name of the RichCommandPanel instance being created.
+        cls: The class of the RichPanel; defaults to RichCommandPanel.
+        attrs: Additional attributes to pass to the RichCommandPanel.
+
+    """
     return _panel(name, cls, **attrs)
 
 

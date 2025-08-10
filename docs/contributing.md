@@ -3,4 +3,4 @@ hide:
   - navigation
 ---
 
-{!../CONTRIBUTING.md!}
+{% include '../CONTRIBUTING.md' %}

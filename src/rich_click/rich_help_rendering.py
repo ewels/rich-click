@@ -30,6 +30,9 @@ from rich_click.rich_panel import GroupType
 from rich_click.rich_parameter import RichParameter
 
 
+if TYPE_CHECKING:
+    from rich_click.rich_command import RichCommand, RichGroup
+
 # Support rich <= 10.6.0
 try:
     from rich.console import group
@@ -543,7 +546,7 @@ def _resolve_groups(
 
 
 def get_rich_options(
-    obj: Command,
+    obj: "RichCommand",
     ctx: RichContext,
     formatter: RichHelpFormatter,
 ) -> None:
@@ -556,120 +559,32 @@ def get_rich_options(
         ctx=ctx,
         command=obj,
         formatter=formatter,
-        objs=obj.get_params(ctx),
         panel_cls=formatter.option_panel_class,
-        panel_type="option",
     )
     for panel in panels:
         p = panel.render(obj, ctx, formatter)
         if not isinstance(p.renderable, Table) or len(p.renderable.rows) > 0:
             formatter.write(p)
-
-    # option_groups = _resolve_groups(ctx=ctx, groups=formatter.config.option_groups, group_attribute="options")
-    # argument_group_options = []
-    #
-    # show_arguments = formatter.config.show_arguments
-
-    # for param in obj.get_params(ctx):
-    #     if (
-    #         isinstance(param, click.core.Argument)
-    #         and formatter.config.show_arguments is not None
-    #         and not formatter.config.show_arguments
-    #     ):
-    #         continue
-    #
-    #     # Skip if option is hidden
-    #     if getattr(param, "hidden", False):
-    #         continue
-    #
-    #     # Already mentioned in a config option group
-    #     for option_group in option_groups:
-    #         if any([opt in (option_group.get("options") or []) for opt in param.opts]):
-    #             break
-    #
-    #     # No break, no mention - add to the default group
-    #     else:
-    #         if isinstance(param, click.core.Argument) and not formatter.config.group_arguments_options:
-    #             argument_group_options.append(param.opts[0])
-    #             if getattr(param, "help", None) is not None and show_arguments is None:
-    #                 show_arguments = True
-    #         else:
-    #             list_of_option_groups = option_groups[-1]["options"]
-    #             list_of_option_groups.append(param.opts[0])
-
-    # # If we're not grouping arguments and we got some, prepend before default options
-    # if len(argument_group_options) > 0 and show_arguments:
-    #     for grp in option_groups:
-    #         if grp.get("name", "") == formatter.config.arguments_panel_title and not grp.get("options"):
-    #             extra_option_group = grp.copy()
-    #             extra_option_group["options"] = argument_group_options
-    #             break
-    #     else:
-    #         extra_option_group: OptionGroupDict = {  # type: ignore[no-redef]
-    #             "name": formatter.config.arguments_panel_title,
-    #             "options": argument_group_options,
-    #         }
-    #     option_groups.insert(len(option_groups) - 1, extra_option_group)
-    #
-    # # Print each option group panel
-    # for option_group in option_groups:
-    #     rich_panel = RichOptionPanel(
-    #         name=option_group.get("name", formatter.config.options_panel_title),
-    #         options=option_group.get("options", []),
-    #         table_styles=option_group.get("table_styles", {}),
-    #         panel_styles=option_group.get("panel_styles", {}),
-    #     )
-    #     panel = rich_panel.render(obj, ctx, formatter)
-    #     if not isinstance(panel.renderable, Table) or len(panel.renderable.rows) > 0:
-    #         formatter.write(panel)
 
 
 def get_rich_commands(
-    obj: Group,
+    obj: "RichGroup",
     ctx: RichContext,
     formatter: RichHelpFormatter,
 ) -> None:
     """Richly render a click Command's options."""
-    # Look through config.option_groups for this command
-    # stick anything unmatched into a default group at the end
-
-    # Look through COMMAND_GROUPS for this command
-    # stick anything unmatched into a default group at the end
-
-    # cmd_groups = _resolve_groups(ctx=ctx, groups=formatter.config.command_groups, group_attribute="commands")
-    # for command in obj.list_commands(ctx):
-    #     for cmd_group in cmd_groups:
-    #         if command in cmd_group.get("commands", []):
-    #             break
-    #     else:
-    #         commands = cmd_groups[-1]["commands"]
-    #         commands.append(command)
     from rich_click.rich_panel import construct_panels
 
     panels = construct_panels(
         ctx=ctx,
         command=obj,
         formatter=formatter,
-        objs=list(sorted(obj.commands.values(), key=lambda _: _.name)),
         panel_cls=formatter.command_panel_class,
-        panel_type="command",
     )
     for panel in panels:
         p = panel.render(obj, ctx, formatter)
         if not isinstance(p.renderable, Table) or len(p.renderable.rows) > 0:
             formatter.write(p)
-
-    # Print each command group panel
-    # for cmd_group in cmd_groups:
-    #     rich_panel = RichCommandPanel(
-    #         name=cmd_group.get("name", formatter.config.commands_panel_title),
-    #         commands=cmd_group.get("commands", []),
-    #         table_styles=cmd_group.get("table_styles", {}),
-    #         panel_styles=cmd_group.get("panel_styles", {}),
-    #     )
-    #     panel = rich_panel.render(obj, ctx, formatter)
-    #     if not isinstance(panel.renderable, Table) or len(panel.renderable.rows) > 0:
-    #         formatter.write(panel)
 
 
 def get_rich_epilog(

@@ -3,16 +3,11 @@
 ## Version 1.9.0dev0 (WIP)
 
 > [!WARNING]
+> Version 1.9.0 deprecates support for a lot of old versions of things:
 >
-> Click 7.x support is removed. The minimum supported Click version is 8.0.
-
-> [!WARNING]
->
-> Python 3.7 support is removed. The minimum supported Python version is 3.8.
-
-> [!WARNING]
->
-> Rich 10.x and 11.x support is removed. The minimum supported Rich version is 12.
+> - **Python 3.7 support is removed.** The minimum supported Python version is 3.8.
+> - **Click 7 support is removed.** The minimum supported Click version is 8.0.
+> - **Rich 10 and 11 support is removed.** The minimum supported Rich version is 12.
 
 Big changes:
 
@@ -172,7 +167,7 @@ In addition:
 
 ## Version 1.5.2 (2022-08-01)
 
-> ⚠️ Important notice! ⚠️
+> [!NOTE]
 >
 > As of [Typer v0.6.0](https://typer.tiangolo.com/release-notes/#060), Typer now supports rich help text natively.
 > Support for Typer in rich-click is now depreciated and will be removed in a future release.

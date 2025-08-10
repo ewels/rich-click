@@ -42,3 +42,5 @@ jobs:
 
       - name: Build and deploy docs
         run: uv run --with . docs/_deploy.py
+        env:
+          PACKAGE_NAME: rich-click

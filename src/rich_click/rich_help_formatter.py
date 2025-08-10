@@ -33,7 +33,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.text import Text
 
 
-RP = TypeVar("RP", bound=RichPanel)
+RP = TypeVar("RP", bound=RichPanel[Any])
 
 
 def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> "Console":
@@ -248,10 +248,10 @@ class RichHelpFormatter(click.HelpFormatter):
         self,
         cls: Type[RP],
         name: str,
-        *args,
+        *args: Any,
         table_styles: Optional[Mapping[str, Any]] = None,
         panel_styles: Optional[Mapping[str, Any]] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> RP:
         from rich import box
 

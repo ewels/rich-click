@@ -2,7 +2,20 @@ import errno
 import os
 import sys
 import warnings
-from typing import TYPE_CHECKING, Any, Callable, List, Mapping, Optional, Sequence, TextIO, Type, Union, cast, overload
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    TextIO,
+    Type,
+    Union,
+    cast,
+    overload,
+)
 
 import click
 
@@ -42,7 +55,7 @@ class RichCommand(click.Command):
     context_class: Type[RichContext] = RichContext
     _formatter: Optional[RichHelpFormatter] = None
 
-    def __init__(self, *args: Any, panels: Optional[List["RichPanel"]] = None, **kwargs: Any):
+    def __init__(self, *args: Any, panels: Optional[List["RichPanel[Any]"]] = None, **kwargs: Any) -> None:
         """Create Rich Command instance."""
         super().__init__(*args, **kwargs)
         self.panels = panels or []
@@ -357,7 +370,7 @@ class RichGroup(RichMultiCommand, Group):
 
         .. versionchanged:: 8.0
             Added the :attr:`command_class` attribute.
-        """
+        """  # noqa: D401
         from rich_click.decorators import command
 
         func: Optional[Callable[..., Any]] = None
@@ -401,7 +414,7 @@ class RichGroup(RichMultiCommand, Group):
 
         .. versionchanged:: 8.0
             Added the :attr:`group_class` attribute.
-        """
+        """  # noqa: D401
         from rich_click.decorators import group
 
         func: Optional[Callable[..., Any]] = None
@@ -417,7 +430,7 @@ class RichGroup(RichMultiCommand, Group):
             else:
                 kwargs["cls"] = self.group_class
 
-        def decorator(f: Callable[..., Any]) -> Group:
+        def decorator(f: Callable[..., Any]) -> RichGroup:
             cmd: RichGroup = group(*args, **kwargs)(f)
             self.add_command(cmd)
             return cmd
