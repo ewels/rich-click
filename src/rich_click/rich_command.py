@@ -308,9 +308,12 @@ class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[valid-type,mi
     def format_options(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         from rich_click.rich_help_rendering import get_rich_options
 
-        get_rich_options(self, ctx, formatter)  # type: ignore[arg-type]
-
-        self.format_commands(ctx, formatter)
+        if isinstance(formatter, RichHelpFormatter) and formatter.config.commands_before_options:
+            self.format_commands(ctx, formatter)
+            get_rich_options(self, ctx, formatter)  # type: ignore[arg-type]
+        else:
+            get_rich_options(self, ctx, formatter)  # type: ignore[arg-type]
+            self.format_commands(ctx, formatter)
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         if OVERRIDES_GUARD:

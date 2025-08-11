@@ -92,6 +92,7 @@ ABORTED_TEXT: str = "Aborted."
 # Behaviours
 SHOW_ARGUMENTS: Optional[bool] = None  # Show positional arguments
 SHOW_METAVARS_COLUMN: bool = True  # Show a column with the option metavar (eg. INTEGER)
+COMMANDS_BEFORE_OPTIONS: bool = False  # If set, the commands panel show above the options panel.
 APPEND_METAVARS_HELP: bool = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS: bool = False  # Show arguments with options instead of in own panel
 OPTION_ENVVAR_FIRST: bool = False  # Show env vars before option help text instead of avert

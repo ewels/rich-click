@@ -139,6 +139,8 @@ class RichHelpConfiguration:
     """Show positional arguments"""
     show_metavars_column: bool = field(default=True)
     """Show a column with the option metavar (eg. INTEGER)"""
+    commands_before_options: bool = field(default=False)
+    """If set, the commands panel show above the options panel."""
     append_metavars_help: bool = field(default=False)
     """Append metavar (eg. [TEXT]) after the help text"""
     group_arguments_options: bool = field(default=False)
