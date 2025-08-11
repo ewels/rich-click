@@ -5,5 +5,12 @@
     "aliases": [
       "prerelease"
     ]
+  },
+  {
+    "version": "1.8",
+    "title": "1.8",
+    "aliases": [
+      "latest"
+    ]
   }
 ]
