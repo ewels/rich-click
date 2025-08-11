@@ -63,11 +63,10 @@ The below code shows both of these things:
 
 ??? Output
 
-    Note that this output is the same as the previous example, even though it was defined differently.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/panels
     -->
-    ![`python panels_simple_kwargs.py --help`](../images/code_snippets/panels/panels_simple_kwargs.svg){.screenshot}
+    ![`python panels_extra_kwargs.py --help`](../images/code_snippets/panels/panels_extra_kwargs.svg){.screenshot}
 
 The `panel_styles` is passed into the outer `rich.panel.Panel()`, and the `table_styles` dict is pass as kwargs into the inner `rich.table.Table()`.
 

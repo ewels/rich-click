@@ -105,3 +105,22 @@ def test_simple_help_commands_before_options(cli_runner: CliRunner, cli: rich_cl
 """
     )
     assert result.stderr == snapshot("")
+
+
+def test_simple_help_bad_input(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    rc.COMMANDS_BEFORE_OPTIONS = True
+    result = cli_runner.invoke(cli, "bad-input")
+    assert result.exit_code == 2
+    assert result.stdout == snapshot("")
+    assert result.stderr == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
+                                                                                                    \n\
+ Try 'cli --help' for help                                                                          \n\
+╭─ Error ──────────────────────────────────────────────────────────────────────────────────────────╮
+│ No such command 'bad-input'.                                                                     │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+                                                                                                    \n\
+"""
+    )
