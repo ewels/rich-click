@@ -1207,10 +1207,6 @@ Renamed panels can still have their panel-level configurations modified.</p>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
-<span class="c1"># TODO: Some behaviors here need to be fixed up.</span>
-<span class="c1">#   - defining Arguments needs to render it.</span>
-<span class="c1">#   - setting panel=&quot;Arguments&quot; for argument needs to only</span>
-<span class="c1">#     render the explicitly defined ones.</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--env&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Environment&quot;</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--log-level&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Log level&quot;</span><span class="p">)</span>

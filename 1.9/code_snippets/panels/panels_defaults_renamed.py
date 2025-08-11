@@ -3,10 +3,6 @@
 # ///
 import rich_click as click
 
-# TODO: Some behaviors here need to be fixed up.
-#   - defining Arguments needs to render it.
-#   - setting panel="Arguments" for argument needs to only
-#     render the explicitly defined ones.
 @click.group()
 @click.option("--env", help="Environment")
 @click.option("--log-level", help="Log level")
