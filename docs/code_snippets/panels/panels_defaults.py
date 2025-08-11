@@ -3,10 +3,6 @@
 # ///
 import rich_click as click
 
-# TODO: Some behaviors here need to be fixed up.
-#   - defining Arguments needs to render it.
-#   - setting panel="Arguments" for argument needs to only
-#     render the explicitly defined ones.
 @click.command()
 @click.argument("src")
 @click.argument("dest")

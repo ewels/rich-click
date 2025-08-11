@@ -179,7 +179,6 @@ class RichHelpConfiguration:
     legacy_windows: Optional[bool] = field(default=None)
 
     def __post_init__(self) -> None:  # noqa: D105
-        # Todo: Fix this so that the deprecation warning works properly.
 
         if self.highlighter is not None:
             import warnings
