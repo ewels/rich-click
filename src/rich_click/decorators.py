@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sys
 from gettext import gettext
 from typing import TYPE_CHECKING, Any, Callable, Dict, Mapping, Optional, Type, TypeVar, Union, cast, overload

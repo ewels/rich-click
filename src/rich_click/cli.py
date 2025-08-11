@@ -1,5 +1,7 @@
 """The command line interface."""
 
+from __future__ import annotations
+
 import os
 import sys
 from functools import wraps

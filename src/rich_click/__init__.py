@@ -5,6 +5,9 @@ The intention is to provide attractive help output from Click, formatted with Ri
 customization required.
 """
 
+from __future__ import annotations
+
+
 __version__ = "1.9.0.dev0"
 
 # Import the entire click API here.

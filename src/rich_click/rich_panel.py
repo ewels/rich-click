@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from fnmatch import fnmatch
 from typing import (
     TYPE_CHECKING,
@@ -39,7 +41,7 @@ class RichPanel(Generic[CT]):
     panel_class: Optional[Type["Panel"]] = None
     table_class: Optional[Type["Table"]] = None
     _highlight: ClassVar[bool] = False
-    _object_attr: ClassVar[Optional[str]] = None
+    _object_attr: ClassVar[str] = NotImplemented
 
     def __init__(
         self,
@@ -47,7 +49,6 @@ class RichPanel(Generic[CT]):
         *,
         help: Optional[str] = None,
         help_style: "StyleType" = "",
-        objects: Optional[List[CT]] = None,
         table_styles: Optional[Dict[str, Any]] = None,
         panel_styles: Optional[Dict[str, Any]] = None,
         deduplicate: bool = True,
@@ -59,10 +60,19 @@ class RichPanel(Generic[CT]):
         self.table_styles = table_styles or {}
         self.panel_styles = panel_styles or {}
         self.deduplicate = deduplicate
-        self.objects: List[CT] = objects or []
+
+    def to_info_dict(self, ctx: click.Context) -> Dict[str, Any]:
+        if self._object_attr is NotImplemented:
+            raise NotImplementedError()
+        return {
+            "name": self.name,
+            "type": self.__class__.__name__,
+            "help": self.help,
+            self._object_attr: [i.name for i in self.list_objects(ctx)],
+        }
 
     @classmethod
-    def get_objs_from_command(cls, command: click.Command, ctx: click.Context) -> List[CT]:
+    def list_objects(cls, ctx: click.Context) -> List[CT]:
         raise NotImplementedError()
 
     def _get_base_table(self, **defaults: Any) -> "Table":
@@ -122,7 +132,7 @@ class RichOptionPanel(RichPanel[click.Parameter]):
     """Panel for parameters."""
 
     _highlight: ClassVar[bool] = True
-    _object_attr: ClassVar[Optional[str]] = "options"
+    _object_attr: ClassVar[str] = "options"
 
     def __init__(
         self,
@@ -135,8 +145,8 @@ class RichOptionPanel(RichPanel[click.Parameter]):
         self.options = options or []
 
     @classmethod
-    def get_objs_from_command(cls, command: click.Command, ctx: click.Context) -> List[click.Parameter]:
-        return command.get_params(ctx)
+    def list_objects(cls, ctx: click.Context) -> List[click.Parameter]:
+        return ctx.command.get_params(ctx)
 
     def get_table(
         self,
@@ -215,7 +225,7 @@ class RichOptionPanel(RichPanel[click.Parameter]):
 class RichCommandPanel(RichPanel[click.Command]):
     """Panel for parameters."""
 
-    _object_attr: ClassVar[Optional[str]] = "commands"
+    _object_attr: ClassVar[str] = "commands"
 
     def __init__(
         self,
@@ -228,10 +238,10 @@ class RichCommandPanel(RichPanel[click.Command]):
         self.commands = commands or []
 
     @classmethod
-    def get_objs_from_command(cls, command: click.Command, ctx: click.Context) -> List[click.Command]:
-        if not isinstance(command, click.Group):
+    def list_objects(cls, ctx: click.Context) -> List[click.Command]:
+        if not isinstance(ctx.command, click.Group):
             return []
-        return list(sorted(command.commands.values(), key=lambda _: _.name))  # type: ignore[arg-type,return-value]
+        return list(sorted(ctx.command.commands.values(), key=lambda _: _.name))  # type: ignore[arg-type,return-value]
 
     def get_table(
         self,
@@ -327,7 +337,7 @@ def _resolve_panels_from_config(
 ) -> List[RichPanel[CT]]:
     """Logic for resolving the groups."""
     # Step 1: get valid name(s) for the command currently being executed
-    assert panel_cls._object_attr is not None, "RichPanel must have a defined _object_attr"
+    assert panel_cls._object_attr is not NotImplemented, "RichPanel must have a defined _object_attr"
 
     cmd_name = ctx.command.name
     _ctx: "RichContext" = ctx
@@ -439,7 +449,7 @@ def construct_panels(
 
     # if not formatter.config.group_arguments_options:
 
-    objs = panel_cls.get_objs_from_command(command, ctx)
+    objs = panel_cls.list_objects(ctx)
 
     for obj in reversed(objs):
         if TYPE_CHECKING:

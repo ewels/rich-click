@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import inspect
 import re
 from fnmatch import fnmatch
@@ -251,7 +253,7 @@ def _get_parameter_default(
             assert isinstance(help_record, tuple)
         default_str_match = re.search(r"\[(?:.+; )?default: (.*)\]", help_record[-1])
         if default_str_match:
-            # Don't show the required string, as we show that afterwards anyway
+            # Don't show the required string, as we show that afterward anyway
             default_str = default_str_match.group(1).replace("; required", "")
             return Text(
                 formatter.config.default_string.format(default_str),

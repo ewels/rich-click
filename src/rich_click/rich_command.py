@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import errno
 import os
 import sys
@@ -6,6 +8,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
+    Dict,
     List,
     Mapping,
     Optional,
@@ -80,6 +83,11 @@ class RichCommand(click.Command):
             stacklevel=2,
         )
         return self.context_settings.get("rich_console")
+
+    def to_info_dict(self, ctx: click.Context) -> Dict[str, Any]:
+        info = super().to_info_dict(ctx)
+        info["panels"] = [p.to_info_dict(ctx) for p in self.panels]
+        return info
 
     @property
     def help_config(self) -> Optional[RichHelpConfiguration]:

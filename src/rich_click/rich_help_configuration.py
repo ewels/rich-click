@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 from dataclasses import dataclass, field
 from types import ModuleType
@@ -53,11 +55,6 @@ class RichHelpConfiguration:
     take precedence over the class's defaults. When there are multiple user-defined values
     for a given field, the right-most field is used.
     """
-
-    # FIND:
-    # (?<field>[a-zA-Z_]+): (?<typ>.*?) = field\(default=.*?\)
-    # REPLACE:
-    # ${field}: ${typ} = field(default_factory=_get_default(\"\U${field}\E\"))
 
     # Default styles
     style_option: "rich.style.StyleType" = field(default="bold cyan")
