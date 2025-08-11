@@ -188,7 +188,12 @@ def _get_parameter_help(
             help_text = re.sub(r"\(DEPRECATED: .*?\)$", "", help_text)
         else:
             help_text = re.sub(r"\(DEPRECATED\)$", "", help_text)
-    return formatter.rich_text(help_text, formatter.config.style_option_help)
+
+    if getattr(param, "help_style", None) is None:
+        style = formatter.config.style_option_help
+    else:
+        style = param.help_style  # type: ignore[attr-defined]
+    return formatter.rich_text(help_text, style)
 
 
 def _get_parameter_metavar(

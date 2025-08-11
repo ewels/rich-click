@@ -5,6 +5,7 @@ import click
 
 if TYPE_CHECKING:
     from rich.columns import Columns
+    from rich.style import StyleType
 
     from rich_click.rich_context import RichContext
     from rich_click.rich_help_formatter import RichHelpFormatter
@@ -23,11 +24,13 @@ class RichParameter(click.Parameter):
         self,
         *args: Any,
         panel: Optional[Union[str, List[str]]] = None,
+        help_style: Optional["StyleType"] = None,
         **kwargs: Any,
     ):
         """Create RichParameter instance."""
         super().__init__(*args, **kwargs)
         self.panel = panel
+        self.help_style = help_style
 
     def get_rich_help(self, ctx: "RichContext", formatter: "RichHelpFormatter") -> "Columns":
         """Get the rich help text for this parameter."""
