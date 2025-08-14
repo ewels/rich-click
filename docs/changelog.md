@@ -4,4 +4,4 @@ hide:
   - navigation
 ---
 
-{!../CHANGELOG.md!}
+{% include '../CHANGELOG.md' %}

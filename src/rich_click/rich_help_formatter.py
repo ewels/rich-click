@@ -1,18 +1,41 @@
+from __future__ import annotations
+
 import io
 import os
 import sys
 from contextlib import contextmanager
 from functools import cached_property
-from typing import IO, TYPE_CHECKING, Any, Dict, Iterator, Literal, Optional, Sequence, Tuple
+from typing import (
+    IO,
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Iterator,
+    Literal,
+    Mapping,
+    Optional,
+    Sequence,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
 
 import click
 
 from rich_click.rich_help_configuration import RichHelpConfiguration
+from rich_click.rich_panel import RichCommandPanel, RichOptionPanel, RichPanel
 
 
 if TYPE_CHECKING:  # pragma: no cover
     from rich.console import Console
     from rich.highlighter import Highlighter
+    from rich.markdown import Markdown
+    from rich.style import StyleType
+    from rich.text import Text
+
+
+RP = TypeVar("RP", bound=RichPanel[Any])
 
 
 def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> "Console":
@@ -70,8 +93,10 @@ class RichHelpFormatter(click.HelpFormatter):
     This console is meant only for use with the formatter and should
     not be created directly
     """
-
     export_console_as: Literal[None, "html", "svg", "text"] = None
+
+    option_panel_class: Type[RichOptionPanel] = RichOptionPanel
+    command_panel_class: Type[RichCommandPanel] = RichCommandPanel
 
     def __init__(
         self,
@@ -169,6 +194,120 @@ class RichHelpFormatter(click.HelpFormatter):
     def write_abort(self) -> None:
         """Print richly formatted abort error."""
         self.console.print(self.config.aborted_text, style=self.config.style_aborted)
+
+    def rich_text(
+        self,
+        text: Union[str, "Text", "Markdown"],
+        style: "StyleType" = "",
+    ) -> Union["Text", "Markdown"]:
+        """
+        Take a string, remove indentations, and return styled text.
+        By default, return the text as a Rich Text with the request style.
+
+        This method uses the config options prefixed `text_` to influence how
+        rendering works.
+
+        Args:
+        ----
+            text (str): Text to style.
+            style (StyleType): Rich style to apply.
+
+        Returns:
+        -------
+            MarkdownElement or Text: Styled text object
+
+        """
+        import inspect
+
+        from rich.markdown import Markdown
+        from rich.text import Text
+
+        if isinstance(text, (Text, Markdown)):
+            return text
+
+        # Remove indentations from input text
+        text = inspect.cleandoc(text)
+        if isinstance(text, (Text, Markdown)):
+            return text
+
+        text = inspect.cleandoc(text)
+
+        if self.config.text_markup != "rich" and self.config.text_emojis:
+            from rich.emoji import Emoji
+
+            text = Emoji.replace(text)
+
+        if self.config.text_markup == "markdown":
+            return Markdown(text, style=style)
+        elif self.config.text_markup == "rich":
+            return self.highlighter(Text.from_markup(text, style=style, emoji=self.config.text_emojis))
+        elif self.config.text_markup == "ansi":
+            return self.highlighter(Text.from_ansi(text, style=style))
+        else:
+            return self.highlighter(Text(text, style=style))
+
+    def rich_panel(
+        self,
+        cls: Type[RP],
+        name: str,
+        *args: Any,
+        table_styles: Optional[Mapping[str, Any]] = None,
+        panel_styles: Optional[Mapping[str, Any]] = None,
+        **kwargs: Any,
+    ) -> RP:
+        from rich import box
+
+        from rich_click.rich_panel import RichCommandPanel, RichOptionPanel
+
+        if issubclass(cls, RichOptionPanel):
+            t_styles = {
+                "show_lines": self.config.style_options_table_show_lines,
+                "leading": self.config.style_options_table_leading,
+                "box": self.config.style_options_table_box,
+                "border_style": self.config.style_options_table_border_style,
+                "row_styles": self.config.style_options_table_row_styles,
+                "pad_edge": self.config.style_options_table_pad_edge,
+                "padding": self.config.style_options_table_padding,
+            }
+            p_styles = {
+                "border_style": self.config.style_options_panel_border,
+                "title_align": self.config.align_options_panel,
+                "box": self.config.style_options_panel_box,
+            }
+            if self.config.style_options_table_box and isinstance(self.config.style_options_table_box, str):
+                t_styles["box"] = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
+            if self.config.style_options_panel_box and isinstance(self.config.style_options_panel_box, str):
+                p_styles["box"] = getattr(box, p_styles.pop("box"), None)  # type: ignore[arg-type]
+        elif issubclass(cls, RichCommandPanel):
+            t_styles = {
+                "show_lines": self.config.style_commands_table_show_lines,
+                "leading": self.config.style_commands_table_leading,
+                "box": self.config.style_commands_table_box,
+                "border_style": self.config.style_commands_table_border_style,
+                "row_styles": self.config.style_commands_table_row_styles,
+                "pad_edge": self.config.style_commands_table_pad_edge,
+                "padding": self.config.style_commands_table_padding,
+            }
+            p_styles = {
+                "border_style": self.config.style_commands_panel_border,
+                "title_align": self.config.align_commands_panel,
+                "box": self.config.style_commands_panel_box,
+            }
+            if self.config.style_commands_table_box and isinstance(self.config.style_commands_table_box, str):
+                t_styles["box"] = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
+            if self.config.style_commands_panel_box and isinstance(self.config.style_commands_panel_box, str):
+                p_styles["box"] = getattr(box, p_styles.pop("box"), None)  # type: ignore[arg-type]
+        else:
+            t_styles = {}
+            p_styles = {}
+
+        if table_styles:
+            t_styles.update(table_styles)
+
+        if panel_styles:
+            p_styles.update(panel_styles)
+
+        return cls(name, *args, table_styles=t_styles, panel_styles=p_styles, **kwargs)
 
     def getvalue(self) -> str:
         if not self.export_console_as:

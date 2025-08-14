@@ -5,6 +5,9 @@ The intention is to provide attractive help output from Click, formatted with Ri
 customization required.
 """
 
+from __future__ import annotations
+
+
 __version__ = "1.9.0.dev0"
 
 # Import the entire click API here.
@@ -65,10 +68,12 @@ from click.utils import open_file as open_file
 
 from rich_click.decorators import argument as argument
 from rich_click.decorators import command as command
+from rich_click.decorators import command_panel as command_panel
 from rich_click.decorators import confirmation_option as confirmation_option
 from rich_click.decorators import group as group
 from rich_click.decorators import help_option as help_option
 from rich_click.decorators import option as option
+from rich_click.decorators import option_panel as option_panel
 from rich_click.decorators import pass_context as pass_context
 from rich_click.decorators import password_option as password_option
 from rich_click.decorators import rich_config as rich_config
@@ -80,9 +85,9 @@ from rich_click.rich_context import RichContext as RichContext
 from rich_click.rich_context import get_current_context as get_current_context
 from rich_click.rich_help_configuration import RichHelpConfiguration as RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter as RichHelpFormatter
-from rich_click.rich_parameters import RichArgument as RichArgument
-from rich_click.rich_parameters import RichOption as RichOption
-from rich_click.rich_parameters import RichParameter as RichParameter
+from rich_click.rich_parameter import RichArgument as RichArgument
+from rich_click.rich_parameter import RichOption as RichOption
+from rich_click.rich_parameter import RichParameter as RichParameter
 
 from . import rich_click as rich_click
 

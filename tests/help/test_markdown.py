@@ -21,7 +21,8 @@ def cli() -> rich_click.RichCommand:
 
 @pytest.mark.skipif(rich_version >= packaging.version.parse("13.0.0"), reason="Rich <13 has different table styles")
 def test_markdown_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
-    result = cli_runner.invoke(cli, "--help")
+    with pytest.warns(PendingDeprecationWarning, match=r"`use_markdown=` will be deprecated.*"):
+        result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
     assert result.stdout == snapshot(
         """\
@@ -56,7 +57,8 @@ def test_markdown_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> No
 
 def test_markdown_help_turn_off_markdown(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     rc.USE_MARKDOWN = False
-    result = cli_runner.invoke(cli, "--help")
+    with pytest.warns(PendingDeprecationWarning, match=r"`use_markdown=` will be deprecated.*"):
+        result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
     assert result.stdout == snapshot(
         """\
@@ -92,7 +94,8 @@ def test_markdown_help_text_markup_field(cli_runner: CliRunner, cli: rich_click.
     rc.USE_MARKDOWN = False
     cli = rich_click.rich_config(help_config={"text_markup": "markdown"})(cli)
 
-    result = cli_runner.invoke(cli, "--help")
+    with pytest.warns(PendingDeprecationWarning, match=r"`use_markdown=` will be deprecated.*"):
+        result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
     assert result.stdout == snapshot(
         """\
@@ -127,7 +130,8 @@ def test_markdown_help_text_markup_field(cli_runner: CliRunner, cli: rich_click.
 
 @pytest.mark.skipif(rich_version < packaging.version.parse("13.0.0"), reason="Rich <13 has different table styles")
 def test_markdown_help_rich_12(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
-    result = cli_runner.invoke(cli, "--help")
+    with pytest.warns(PendingDeprecationWarning, match=r"`use_markdown=` will be deprecated.*"):
+        result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
     assert result.stdout == snapshot(
         """\
@@ -171,7 +175,8 @@ def test_markdown_help_text_markup_field_rich_12(cli_runner: CliRunner, cli: ric
     rc.USE_MARKDOWN = False
     cli = rich_click.rich_config(help_config={"text_markup": "markdown"})(cli)
 
-    result = cli_runner.invoke(cli, "--help")
+    with pytest.warns(PendingDeprecationWarning, match=r"`use_markdown=` will be deprecated.*"):
+        result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
     assert result.stdout == snapshot(
         """\

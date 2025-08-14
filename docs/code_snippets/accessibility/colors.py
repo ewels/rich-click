@@ -1,7 +1,5 @@
 # /// script
-# dependencies = [
-#   "rich",
-# ]
+# dependencies = ["rich"]
 # ///
 from rich.console import Console
 from rich.box import SIMPLE

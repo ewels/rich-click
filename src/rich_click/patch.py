@@ -1,7 +1,8 @@
 """The command line interface."""
 
-# ruff: noqa: D103
+from __future__ import annotations
 
+# ruff: noqa: D103
 from typing import Optional
 
 import click

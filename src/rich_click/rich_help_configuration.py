@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import os
 from dataclasses import dataclass, field
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
 
-from rich_click.utils import CommandGroupDict, OptionGroupDict, truthy
+from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
 
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -53,11 +55,6 @@ class RichHelpConfiguration:
     take precedence over the class's defaults. When there are multiple user-defined values
     for a given field, the right-most field is used.
     """
-
-    # FIND:
-    # (?<field>[a-zA-Z_]+): (?<typ>.*?) = field\(default=.*?\)
-    # REPLACE:
-    # ${field}: ${typ} = field(default_factory=_get_default(\"\U${field}\E\"))
 
     # Default styles
     style_option: "rich.style.StyleType" = field(default="bold cyan")
@@ -139,18 +136,23 @@ class RichHelpConfiguration:
     """Show positional arguments"""
     show_metavars_column: bool = field(default=True)
     """Show a column with the option metavar (eg. INTEGER)"""
+    commands_before_options: bool = field(default=False)
+    """If set, the commands panel show above the options panel."""
     append_metavars_help: bool = field(default=False)
     """Append metavar (eg. [TEXT]) after the help text"""
     group_arguments_options: bool = field(default=False)
     """Show arguments with options instead of in own panel"""
     option_envvar_first: bool = field(default=False)
     """Show env vars before option help text instead of after"""
-    text_markup: Literal["ansi", "rich", "markdown", None] = "ansi"
-    use_markdown: bool = field(default=False)
+    text_markup: Literal["ansi", "rich", "markdown", None] = field(default=notset)  # type: ignore[arg-type]
+    """What engine to use to render the text. Default is 'ansi'."""
+    text_emojis: bool = field(default=notset)  # type: ignore[assignment]
+    """If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -> 😺"""
+    use_markdown: Optional[bool] = field(default=None)
     """Silently deprecated; use `text_markup` field instead."""
-    use_markdown_emoji: bool = field(default=True)
-    """Parse emoji codes in markdown :smile:"""
-    use_rich_markup: bool = field(default=False)
+    use_markdown_emoji: Optional[bool] = field(default=None)
+    """Silently deprecated; use `text_emojis` instead."""
+    use_rich_markup: Optional[bool] = field(default=None)
     """Silently deprecated; use `text_markup` field instead."""
     command_groups: Dict[str, List[CommandGroupDict]] = field(default_factory=lambda: {})
     """Define sorted groups of panels to display subcommands"""
@@ -174,7 +176,6 @@ class RichHelpConfiguration:
     legacy_windows: Optional[bool] = field(default=None)
 
     def __post_init__(self) -> None:  # noqa: D105
-        # Todo: Fix this so that the deprecation warning works properly.
 
         if self.highlighter is not None:
             import warnings
@@ -187,6 +188,48 @@ class RichHelpConfiguration:
                 DeprecationWarning,
                 stacklevel=2,
             )
+
+        if self.use_markdown is not None:
+            import warnings
+
+            warnings.warn(
+                "`use_markdown=` will be deprecated in a future version of rich-click."
+                " Please use `text_markup=` instead.",
+                PendingDeprecationWarning,
+                stacklevel=2,
+            )
+
+        if self.use_rich_markup is not None:
+            import warnings
+
+            warnings.warn(
+                "`use_rich_markup=` will be deprecated in a future version of rich-click."
+                " Please use `text_markup=` instead.",
+                PendingDeprecationWarning,
+                stacklevel=2,
+            )
+
+        if self.text_markup is notset:
+            if self.use_markdown:
+                self.text_markup = "markdown"
+            elif self.use_rich_markup:
+                self.text_markup = "rich"
+            else:
+                self.text_markup = "ansi"
+
+        if self.use_markdown_emoji is not None:
+            import warnings
+
+            warnings.warn(
+                "`use_markdown_emoji=` will be deprecated in a future version of rich-click."
+                " Please use `text_emojis=` instead.",
+                PendingDeprecationWarning,
+                stacklevel=2,
+            )
+            if self.text_emojis is notset:
+                self.text_emojis = self.use_markdown_emoji
+        elif self.text_emojis is notset:
+            self.text_emojis = self.text_markup in {"markdown", "rich"}
 
         self.__dataclass_fields__.pop("highlighter", None)
 
