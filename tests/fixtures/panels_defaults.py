@@ -9,7 +9,7 @@ import rich_click as click
 
 @click.group()
 @click.command_panel("Command Panel A", commands=["cmd4"])
-@click.command_panel("Command Panel B", commands=["cmd5", "cmd6", "cmd7"], panel_styles={"box": "DOUBLE"})
+@click.command_panel("Command Panel B", commands=["cmd5", "cmd6", "cmd7", "cmd8"], panel_styles={"box": "DOUBLE"})
 # Default panel should sort commands alphanumerically
 # Even if commands are defined in different order.
 @click.rich_config({"commands_panel_title": "[b]Custom Default Command Panel[/]", "style_commands_panel_box": "SIMPLE"})
@@ -106,6 +106,21 @@ def cmd7(*args: Any, **kwargs: Any) -> None:
     """
     Test order is preserved and option is still assigned
     when default panel is explicitly defined and ordered.
+    """
+
+
+@cli.command()
+@click.argument("a")
+@click.argument("b", panel="Custom Options Panel Title")
+@click.argument("c")
+@click.option("--d")
+@click.option("--e")
+@click.option("--f", panel="Custom Options Panel Title")
+@click.rich_config({"options_panel_title": "Custom Options Panel Title", "group_arguments_options": True})
+def cmd8(*args: Any, **kwargs: Any) -> None:
+    """
+    Test options and arguments are assigned to a renamed default options panel
+    with group_arguments_options=True
     """
 
 

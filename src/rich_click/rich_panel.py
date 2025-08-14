@@ -51,7 +51,6 @@ class RichPanel(Generic[CT]):
         help_style: "StyleType" = "",
         table_styles: Optional[Dict[str, Any]] = None,
         panel_styles: Optional[Dict[str, Any]] = None,
-        deduplicate: bool = True,
     ) -> None:
         """Initialize a RichPanel."""
         self.name = name
@@ -59,7 +58,6 @@ class RichPanel(Generic[CT]):
         self.help_style = help_style
         self.table_styles = table_styles or {}
         self.panel_styles = panel_styles or {}
-        self.deduplicate = deduplicate
 
     def to_info_dict(self, ctx: click.Context) -> Dict[str, Any]:
         if self._object_attr is NotImplemented:

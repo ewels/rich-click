@@ -40,6 +40,8 @@ def test_panels_defaults_command_panel(cli_runner: CliRunner, cli: rich_click.Ri
 ║       defined and ordered.                                                                       ║
 ║ cmd7  Test order is preserved and option is still assigned when default panel is explicitly      ║
 ║       defined and ordered.                                                                       ║
+║ cmd8  Test options and arguments are assigned to a renamed default options panel with            ║
+║       group_arguments_options=True                                                               ║
 ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝
 """
     )
