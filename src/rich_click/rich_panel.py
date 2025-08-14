@@ -394,7 +394,9 @@ def construct_panels(
 
     if panel_cls._object_attr == "commands":
         panel_base = {
-            p.name: getattr(p, panel_cls._object_attr, []) for p in command.panels if isinstance(p, RichCommandPanel)
+            p.name: list(reversed(getattr(p, panel_cls._object_attr, [])))
+            for p in command.panels
+            if isinstance(p, RichCommandPanel)
         }
         cfg_groups = formatter.config.command_groups  # type: ignore[assignment]
         if cfg_groups:
@@ -408,7 +410,9 @@ def construct_panels(
 
     elif panel_cls._object_attr == "options":
         panel_base = {
-            p.name: getattr(p, panel_cls._object_attr, []) for p in command.panels if isinstance(p, RichOptionPanel)
+            p.name: list(reversed(getattr(p, panel_cls._object_attr, [])))
+            for p in command.panels
+            if isinstance(p, RichOptionPanel)
         }
         cfg_groups = formatter.config.option_groups  # type: ignore[assignment]
         if cfg_groups:
