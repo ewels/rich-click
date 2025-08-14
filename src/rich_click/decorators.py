@@ -327,6 +327,8 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     kwargs.setdefault("help", gettext("Show this message and exit."))
     kwargs.setdefault("callback", show_help)
     kwargs.setdefault("cls", RichOption)
+    # For compatibility with click 8.0.0
+    kwargs.setdefault("show_default", False)
 
     return click_option(*param_decls, **kwargs)
 

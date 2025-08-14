@@ -30,7 +30,7 @@ def test_options_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> Non
  My amazing tool does all the things.                                                               \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ *  --number              INTEGER RANGE [1<=x<=6]  Pick a number [default: 4; 1<=x<=6] [required] │
+│ *  --number              INTEGER RANGE [1<=x<=6]  Pick a number [default: 4] [required]          │
 │    --name                TEXT                     Provide a name                                 │
 │    --location            LOCATION                 Provide a name (Deprecated)                    │
 │    --flag/--no-flag                               Set the flag (or not!).                        │
@@ -38,7 +38,7 @@ def test_options_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> Non
 │ *  --loaded          -l  INTEGER RANGE [x>=0]     This option is loaded with everything (assert  │
 │                                                   preservation of order)                         │
 │                                                   [env var: IS_LOADED]                           │
-│                                                   [default: (Random number); x>=0]               │
+│                                                   [default: (Random number)]                     │
 │                                                   [required]                                     │
 │    --help            -h                           Show help.                                     │
 │    --version         -v                           Show version.                                  │
@@ -60,7 +60,7 @@ def test_options_help_envvar_first(cli_runner: CliRunner, cli: rich_click.RichCo
  My amazing tool does all the things.                                                               \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ *  --number              INTEGER RANGE [1<=x<=6]  Pick a number [default: 4; 1<=x<=6] [required] │
+│ *  --number              INTEGER RANGE [1<=x<=6]  Pick a number [default: 4] [required]          │
 │    --name                TEXT                     Provide a name                                 │
 │    --location            LOCATION                 Provide a name (Deprecated)                    │
 │    --flag/--no-flag                               Set the flag (or not!).                        │
@@ -68,7 +68,7 @@ def test_options_help_envvar_first(cli_runner: CliRunner, cli: rich_click.RichCo
 │ *  --loaded          -l  INTEGER RANGE [x>=0]     [env var: IS_LOADED]                           │
 │                                                   This option is loaded with everything (assert  │
 │                                                   preservation of order)                         │
-│                                                   [default: (Random number); x>=0]               │
+│                                                   [default: (Random number)]                     │
 │                                                   [required]                                     │
 │    --help            -h                           Show help.                                     │
 │    --version         -v                           Show version.                                  │
@@ -90,14 +90,14 @@ def test_options_help_dont_show_metavars(cli_runner: CliRunner, cli: rich_click.
  My amazing tool does all the things.                                                               \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ *  --number              Pick a number [default: 4; 1<=x<=6] [required]                          │
+│ *  --number              Pick a number [default: 4] [required]                                   │
 │    --name                Provide a name                                                          │
 │    --location            Provide a name (Deprecated)                                             │
 │    --flag/--no-flag      Set the flag (or not!).                                                 │
 │    --password            Password to login with                                                  │
 │ *  --loaded          -l  This option is loaded with everything (assert preservation of order)    │
 │                          [env var: IS_LOADED]                                                    │
-│                          [default: (Random number); x>=0]                                        │
+│                          [default: (Random number)]                                              │
 │                          [required]                                                              │
 │    --help            -h  Show help.                                                              │
 │    --version         -v  Show version.                                                           │

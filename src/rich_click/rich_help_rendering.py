@@ -228,39 +228,60 @@ def _get_parameter_metavar(
 def _get_parameter_default(
     param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
 ) -> Optional[Text]:
-    # Click 8.0 and 8.1 behave slightly differently when handling the default value help text.
+
     if not hasattr(param, "show_default"):
-        parse_default = False
-        required_text = ""
-    elif CLICK_IS_VERSION_80:
-        show_default_is_str = isinstance(param.show_default, str)
-        parse_default = bool(
-            show_default_is_str or (param.default is not None and (param.show_default or ctx.show_default))
-        )
-        required_text = ";required"
-    else:
-        show_default_is_str = False
-        if param.show_default is not None:
-            if isinstance(param.show_default, str):
-                show_default_is_str = show_default = True
-            else:
-                show_default = bool(param.show_default)
+        return None
+
+    show_default = False
+    show_default_is_str = False
+
+    resilient = ctx.resilient_parsing
+    ctx.resilient_parsing = True
+    try:
+        default_value = param.get_default(ctx, call=False)
+    finally:
+        ctx.resilient_parsing = resilient
+
+    if param.show_default is not None:
+        if isinstance(param.show_default, str):
+            show_default_is_str = show_default = True
         else:
-            show_default = bool(getattr(ctx, "show_default", False))
-        parse_default = bool(show_default_is_str or (show_default and (param.default is not None)))
-        required_text = "; required"
-    if parse_default:
-        help_record = param.get_help_record(ctx)
-        if TYPE_CHECKING:  # pragma: no cover
-            assert isinstance(help_record, tuple)
-        default_str_match = re.search(r"[\[;](?:.+; )?default: (.*)\]", help_record[-1])
-        if default_str_match:
-            # Don't show the required string, as we show that afterward anyway
-            default_str = default_str_match.group(1).replace(required_text, "")
-            return Text(
-                formatter.config.default_string.format(default_str),
-                style=formatter.config.style_option_default,
-            )
+            show_default = param.show_default
+    elif ctx.show_default is not None:
+        show_default = ctx.show_default
+
+    default_string: Optional[str] = None
+
+    if show_default_is_str or (show_default and (default_value is not None)):
+        if show_default_is_str:
+            default_string = f"({param.show_default})"
+        elif isinstance(default_value, (list, tuple)):
+            default_string = ", ".join(str(d) for d in default_value)
+        elif inspect.isfunction(default_value):
+            default_string = _("(dynamic)")
+        elif param.is_bool_flag and param.secondary_opts:
+            # For boolean flags that have distinct True/False opts,
+            # use the opt without prefix instead of the value.
+            opt = (param.opts if default_value else param.secondary_opts)[0]
+            first = opt[:1]
+            if first.isalnum():
+                default_string = opt
+            if opt[1:2] == first:
+                default_string = opt[2:]
+            else:
+                default_string = opt[1:]
+        elif param.is_bool_flag and not param.secondary_opts and not default_value:
+            default_string = ""
+        elif default_value == "":
+            default_string = '""'
+        else:
+            default_string = str(default_value)
+
+    if default_string is not None:
+        return Text(
+            formatter.config.default_string.format(default_string),
+            style=formatter.config.style_option_default,
+        )
     return None
 
 
