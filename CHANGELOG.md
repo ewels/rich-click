@@ -9,22 +9,28 @@
 > - **Click 7 support is removed.** The minimum supported Click version is 8.0.
 > - **Rich 10 and 11 support is removed.** The minimum supported Rich version is 12.
 
-Big changes:
+**Big changes:**
 
-- `help=` is now a valid kwarg for `@argument()` decorator. See docs for more information.
+- **RichPanels** API introduced. This replaces the "groups" feature going forward (although groups will continue to be supported).
+  - `@click.option_panel()`
+  - `@click.command_panel()`
+- `help=` is now a valid kwarg for `@click.argument()` decorator. See docs for more information.
 
-Small changes:
+**Small changes:**
 
 - "Deprecated" text properly handled and stylized in all places.
 - Improved `rich-click` CLI patching.
-- Parameters (arguments + options) now have composable help text rendering!
 
-Backend (mostly invisible) changes:
+**Backend (mostly invisible) changes:**
 
 - Overhauled our test suite to use **inline-snapshot**! 😁
 - Improved test coverage and CI.
 - `typing_extensions` now only required for < Python 3.11.
 - `RichHelpFormatter` now defers printing by default if a user does not specify a Console. [[#231](https://github.com/ewels/rich-click/pull/231)] (With contributions from [@ofek](https://github.com/ofek))
+  - This more closely aligns the `RichHelpFormatter` with how base Click works.
+- Significant refactors to help text rendering.
+- Reintroduced deprecation warnings for a couple of features deprecated in 1.8.
+- There was an issue where the `rich.highlighter` module could load during CLI execution. We now assert in unit-tests that no `rich` modules are loaded during code execution, so going forward, `rich` imports should no longer ever be a side-effect of CLI execution.
 
 ## Version 1.8.9 (2025-05-19)
 
