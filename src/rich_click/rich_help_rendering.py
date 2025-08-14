@@ -3,6 +3,7 @@ from __future__ import annotations
 import inspect
 import re
 from fnmatch import fnmatch
+from gettext import gettext
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Literal, Optional, Union
 
 import click
@@ -242,7 +243,7 @@ def _get_parameter_default(
     finally:
         ctx.resilient_parsing = resilient
 
-    if param.show_default is not None:
+    if (not CLICK_IS_VERSION_80 and param.show_default is not None) or param.show_default:
         if isinstance(param.show_default, str):
             show_default_is_str = show_default = True
         else:
@@ -258,8 +259,8 @@ def _get_parameter_default(
         elif isinstance(default_value, (list, tuple)):
             default_string = ", ".join(str(d) for d in default_value)
         elif inspect.isfunction(default_value):
-            default_string = _("(dynamic)")
-        elif param.is_bool_flag and param.secondary_opts:
+            default_string = gettext("(dynamic)")
+        elif hasattr(param, "is_bool_flag") and param.is_bool_flag and param.secondary_opts:
             # For boolean flags that have distinct True/False opts,
             # use the opt without prefix instead of the value.
             opt = (param.opts if default_value else param.secondary_opts)[0]
@@ -270,14 +271,17 @@ def _get_parameter_default(
                 default_string = opt[2:]
             else:
                 default_string = opt[1:]
-        elif param.is_bool_flag and not param.secondary_opts and not default_value:
-            default_string = ""
+        elif hasattr(param, "is_bool_flag") and param.is_bool_flag and not param.secondary_opts and not default_value:
+            if CLICK_IS_VERSION_80:
+                default_string = str(param.default)
+            else:
+                default_string = ""
         elif default_value == "":
             default_string = '""'
         else:
             default_string = str(default_value)
 
-    if default_string is not None:
+    if default_string:
         return Text(
             formatter.config.default_string.format(default_string),
             style=formatter.config.style_option_default,

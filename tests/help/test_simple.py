@@ -4,7 +4,7 @@ from inline_snapshot import snapshot
 
 import rich_click
 import rich_click.rich_click as rc
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_82
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_82, CLICK_IS_BEFORE_VERSION_821
 from tests.conftest import load_command_from_module
 
 
@@ -107,9 +107,9 @@ def test_simple_help_commands_before_options(cli_runner: CliRunner, cli: rich_cl
     assert result.stderr == snapshot("")
 
 
-@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_82, reason="CliRunner's stderr capture doesn't work before 8.2.")
+@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_821, reason="CliRunner's stderr capture doesn't work before 8.2.1.")
 def test_simple_help_no_such_command(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
-    rc.COMMANDS_BEFORE_OPTIONS = True
+
     result = cli_runner.invoke(cli, "bad-input")
     assert result.exit_code == 2
     assert result.stdout == snapshot("")

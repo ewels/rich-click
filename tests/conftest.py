@@ -102,6 +102,6 @@ class InvokeCli(Protocol):
 @pytest.fixture
 def cli_runner() -> CliRunner:
     if CLICK_IS_BEFORE_VERSION_82:
-        return CliRunner(mix_stderr=False)  # type: ignore[call-arg]
+        return CliRunner(mix_stderr=False)  # type: ignore[call-arg,unused-ignore]
     else:
         return CliRunner()

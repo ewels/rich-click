@@ -297,7 +297,7 @@ R = TypeVar("R")
 def pass_context(f: Callable[Concatenate[RichContext, P], R]) -> Callable[P, R]:
     # flake8: noqa: D400,D401
     """Marks a callback as wanting to receive the current context object as first argument."""
-    return click_pass_context(f)  # type: ignore[arg-type]
+    return click_pass_context(f)  # type: ignore[arg-type,unused-ignore]
 
 
 def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
@@ -327,8 +327,6 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     kwargs.setdefault("help", gettext("Show this message and exit."))
     kwargs.setdefault("callback", show_help)
     kwargs.setdefault("cls", RichOption)
-    # For compatibility with click 8.0.0
-    kwargs.setdefault("show_default", False)
 
     return click_option(*param_decls, **kwargs)
 
