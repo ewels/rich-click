@@ -30,13 +30,15 @@ def test_panels_defaults_command_panel(cli_runner: CliRunner, cli: rich_click.Ri
   cmd2                             cmd2 help                                                        \n\
   cmd3                             cmd3 help                                                        \n\
                                                                                                     \n\
-   Command Panel 4                                                                                  \n\
+   Command Panel A                                                                                  \n\
   cmd4  Test args assigned to arguments panel when help is defined, and test that arg3 is assigned  \n\
         to default even without help so long as panel shows.                                        \n\
                                                                                                     \n\
-╔═ Command Panel 5 ════════════════════════════════════════════════════════════════════════════════╗
+╔═ Command Panel B ════════════════════════════════════════════════════════════════════════════════╗
 ║ cmd5  Test args and options assigned to respective panels.                                       ║
 ║ cmd6  Test order is preserved and option is still assigned when default panel is explicitly      ║
+║       defined and ordered.                                                                       ║
+║ cmd7  Test order is preserved and option is still assigned when default panel is explicitly      ║
 ║       defined and ordered.                                                                       ║
 ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝
 """

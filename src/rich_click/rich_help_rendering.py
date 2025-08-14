@@ -231,11 +231,13 @@ def _get_parameter_default(
     # Click 8.0 and 8.1 behave slightly differently when handling the default value help text.
     if not hasattr(param, "show_default"):
         parse_default = False
+        required_text = ""
     elif CLICK_IS_VERSION_80:
         show_default_is_str = isinstance(param.show_default, str)
         parse_default = bool(
             show_default_is_str or (param.default is not None and (param.show_default or ctx.show_default))
         )
+        required_text = ";required"
     else:
         show_default_is_str = False
         if param.show_default is not None:
@@ -246,15 +248,15 @@ def _get_parameter_default(
         else:
             show_default = bool(getattr(ctx, "show_default", False))
         parse_default = bool(show_default_is_str or (show_default and (param.default is not None)))
-
+        required_text = "; required"
     if parse_default:
         help_record = param.get_help_record(ctx)
         if TYPE_CHECKING:  # pragma: no cover
             assert isinstance(help_record, tuple)
-        default_str_match = re.search(r"\[(?:.+; )?default: (.*)\]", help_record[-1])
+        default_str_match = re.search(r"[\[;](?:.+; )?default: (.*)\]", help_record[-1])
         if default_str_match:
             # Don't show the required string, as we show that afterward anyway
-            default_str = default_str_match.group(1).replace("; required", "")
+            default_str = default_str_match.group(1).replace(required_text, "")
             return Text(
                 formatter.config.default_string.format(default_str),
                 style=formatter.config.style_option_default,
