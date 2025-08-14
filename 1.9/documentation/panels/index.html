@@ -610,9 +610,19 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Introduction to API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Options
+    </span>
+  </a>
+  
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#arguments" class="md-nav__link">
     <span class="md-ellipsis">
       Arguments
@@ -620,13 +630,18 @@
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#commands" class="md-nav__link">
     <span class="md-ellipsis">
       Commands
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -640,13 +655,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#tips-gotchas" class="md-nav__link">
+  <a href="#tips" class="md-nav__link">
     <span class="md-ellipsis">
-      Tips &amp; Gotchas
+      Tips
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Tips & Gotchas">
+    <nav class="md-nav" aria-label="Tips">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -876,9 +891,19 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Introduction to API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Options
+    </span>
+  </a>
+  
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#arguments" class="md-nav__link">
     <span class="md-ellipsis">
       Arguments
@@ -886,13 +911,18 @@
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
+        
+          <li class="md-nav__item">
   <a href="#commands" class="md-nav__link">
     <span class="md-ellipsis">
       Commands
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -906,13 +936,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#tips-gotchas" class="md-nav__link">
+  <a href="#tips" class="md-nav__link">
     <span class="md-ellipsis">
-      Tips &amp; Gotchas
+      Tips
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Tips & Gotchas">
+    <nav class="md-nav" aria-label="Tips">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -982,7 +1012,9 @@ We will support the old groups API indefinitely, although its use is discouraged
 <p>You can read the 1.8 docs to learn more about groups API <a href="https://ewels.github.io/rich-click/1.8/documentation/groups_and_sorting/">here</a>.</p>
 </div>
 <h2 id="introduction-to-api">Introduction to API<a class="headerlink" href="#introduction-to-api" title="Permanent link">&para;</a></h2>
-<p>The high-level API for defining panels is with the <code class="highlight"><span class="nd">@click</span><span class="o">.</span><span class="n">command_panel</span><span class="p">()</span></code> and <code class="highlight"><span class="nd">@click</span><span class="o">.</span><span class="n">option_panel</span><span class="p">()</span></code> decorators:</p>
+<p>The high-level API for defining panels is with the <code>@click.command_panel()</code> and <code>@click.option_panel()</code> decorators.</p>
+<h3 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h3>
+<p>Options panels handle parameters for your command:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
 <span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
 <span class="c1"># ///</span>
@@ -1045,7 +1077,7 @@ working_dir: docs/code_snippets/panels
 </details>
 <p>RichPanels inherit their base style behaviors from the rich config, although these can be overridden, as we will see in a moment.</p>
 <p>RichPanels accept additional args other than just the name and objects associated with them.</p>
-<p>Additionally, a panel can be defined without <code>options=[]</code>, and the associations between panels and options can be placed inside the <code class="highlight"><span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">()</span></code>s.</p>
+<p>Additionally, a panel can be defined without <code>options=[]</code>, and the associations between panels and options can be placed inside the <code>@click.option()</code>s.</p>
 <p>The below code shows both of these things:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
 <span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
@@ -1086,7 +1118,7 @@ working_dir: docs/code_snippets/panels
 <li><a href="https://github.com/Textualize/rich/blob/master/rich/table.py"><code>rich/table.py</code></a></li>
 <li><a href="https://github.com/Textualize/rich/blob/master/rich/panel.py"><code>rich/panel.py</code></a></li>
 </ul>
-<h2 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h2>
+<h3 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h3>
 <p>Despite the name, options panels handle more than just options; they can also handle arguments.</p>
 <p>Arguments can be given their own panel with the <code>show_arguments</code> config option:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
@@ -1194,11 +1226,55 @@ working_dir: docs/code_snippets/panels
 -->
 <a class="glightbox" href="../../images/code_snippets/panels/panels_simple_arguments_explicit.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python panels_simple_arguments_explicit.py --help" class="screenshot" src="../../images/code_snippets/panels/panels_simple_arguments_explicit.svg" /></a></p>
 </details>
-<h2 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">&para;</a></h2>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>Work in progress</p>
-</div>
+<h3 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">&para;</a></h3>
+<p>Sub-commands also have panels that are defined similarly to option panels:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># ///</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">command_panel</span><span class="p">(</span><span class="s2">&quot;Items&quot;</span><span class="p">,</span>
+                     <span class="n">commands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;move-item&quot;</span><span class="p">,</span> <span class="s2">&quot;update-item&quot;</span><span class="p">])</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">command_panel</span><span class="p">(</span><span class="s2">&quot;Users&quot;</span><span class="p">,</span>
+                     <span class="n">commands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;create-user&quot;</span><span class="p">,</span> <span class="s2">&quot;update-user&quot;</span><span class="p">],</span>
+                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;User management commands&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;CLI&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">move_item</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Move an item&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_item</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update an item&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_user</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a user&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_user</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update a user&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cli</span><span class="p">()</span>
+</code></pre></div>
+<details class="output">
+<summary>Output</summary>
+<p><!-- RICH-CODEX
+working_dir: docs/code_snippets/panels
+-->
+<a class="glightbox" href="../../images/code_snippets/panels/panels_commands.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python panels_commands.py --help" class="screenshot" src="../../images/code_snippets/panels/panels_commands.svg" /></a></p>
+</details>
+<p>Unlike options panels, where a <code>@click.option()</code> can assign itself to a panel, you cannot define assignment to a command panel from <code>@click.RichGroup.command()</code>;
+you must explicitly set inside the Command Panel itself.</p>
 <h2 id="overriding-defaults">Overriding defaults<a class="headerlink" href="#overriding-defaults" title="Permanent link">&para;</a></h2>
 <p>Default panel titles can be overridden with the config.
 Renamed panels can still have their panel-level configurations modified.</p>
@@ -1290,7 +1366,7 @@ working_dir: docs/code_snippets/panels
 -->
 <a class="glightbox" href="../../images/code_snippets/panels/panels_defaults_override_config.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python panels_defaults_override_config.py --help" class="screenshot" src="../../images/code_snippets/panels/panels_defaults_override_config.svg" /></a></p>
 </details>
-<h2 id="tips-gotchas">Tips &amp; Gotchas<a class="headerlink" href="#tips-gotchas" title="Permanent link">&para;</a></h2>
+<h2 id="tips">Tips<a class="headerlink" href="#tips" title="Permanent link">&para;</a></h2>
 <p>There are a few things to keep in mind when using RichPanels.</p>
 <h3 id="handling-help-option">Handling <code>--help</code> option<a class="headerlink" href="#handling-help-option" title="Permanent link">&para;</a></h3>
 <p>The help option is associated with the default options panel.</p>
@@ -1393,7 +1469,7 @@ In a near future update, before 1.9.0 is fully released, you will be able to mix
 <p>The below text references the <strong>intended</strong> behavior for 1.9.0, but does not reflect the current behavior.</p>
 </div>
 <p>Panels are printed in the order that they are defined, from top to bottom.</p>
-<p>If panels are inferred from <code class="highlight"><span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="n">panel</span><span class="o">=...</span><span class="p">)</span></code>, rather than defined by <code class="highlight"><span class="nd">@click</span><span class="o">.</span><span class="n">option_panel</span><span class="p">()</span></code>, then they are defined in the order that they appear in parameters from top to bottom.</p>
+<p>If panels are inferred from <code>@click.option(panel=...)</code>, rather than defined by <code>@click.option_panel()</code>, then they are defined in the order that they appear in parameters from top to bottom.</p>
 <p>This means that the simplest way to control the order panels is to define them explicitly.</p>
 <p>This also means that you can order options panels to come before command panels, and vice-versa, based on the decorator order.</p>
 <p>By default, unless explicitly ordered otherwise, command panels always come after options panels.</p>
