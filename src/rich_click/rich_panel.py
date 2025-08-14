@@ -274,11 +274,18 @@ class RichCommandPanel(RichPanel[click.Command]):
         if not isinstance(command, click.Group):
             return table
 
+        commands_list = command.list_commands(ctx)
+        callback_names = {c.callback.__name__: c for c in command.commands.values() if c.callback is not None}
+
         for cmd_name in self.commands:
             # Skip if command does not exist
-            if cmd_name not in command.list_commands(ctx):
+            if cmd_name in commands_list:
+                cmd = command.get_command(ctx, cmd_name)
+            elif cmd_name in callback_names:
+                cmd = callback_names[cmd_name]
+            else:
                 continue
-            cmd = command.get_command(ctx, cmd_name)
+
             if TYPE_CHECKING:  # pragma: no cover
                 assert cmd is not None
             if cmd.hidden:
@@ -457,8 +464,10 @@ def construct_panels(
         if TYPE_CHECKING:
             assert isinstance(obj.name, str)
         names = [obj.name]
-        if hasattr(obj, "opts"):
+        if isinstance(obj, click.Option):
             names.extend(obj.opts)
+        elif isinstance(obj, click.Command) and obj.callback is not None:
+            names.append(obj.callback.__name__)
         assigned = any(i in assigned_objs for i in names)
         if isinstance(obj, click.Parameter):
             if getattr(obj, "hidden", False):

@@ -19,7 +19,11 @@ By default, `RichCommand`s have a single panel for options named "Options", and 
 
 ## Introduction to API
 
-The high-level API for defining panels is with the `#!python @click.command_panel()` and `#!python @click.option_panel()` decorators:
+The high-level API for defining panels is with the `@click.command_panel()` and `@click.option_panel()` decorators.
+
+### Options
+
+Options panels handle parameters for your command:
 
 ```python
 {% include "../code_snippets/panels/panels_simple_decorators.py" %}
@@ -53,7 +57,7 @@ RichPanels inherit their base style behaviors from the rich config, although the
 
 RichPanels accept additional args other than just the name and objects associated with them.
 
-Additionally, a panel can be defined without `options=[]`, and the associations between panels and options can be placed inside the `#!python @click.option()`s.
+Additionally, a panel can be defined without `options=[]`, and the associations between panels and options can be placed inside the `@click.option()`s.
 
 The below code shows both of these things:
 
@@ -75,7 +79,7 @@ You can view the respective docstrings of the `Table` and `Panel` objects for mo
 - [`rich/table.py`](https://github.com/Textualize/rich/blob/master/rich/table.py)
 - [`rich/panel.py`](https://github.com/Textualize/rich/blob/master/rich/panel.py)
 
-## Arguments
+### Arguments
 
 Despite the name, options panels handle more than just options; they can also handle arguments.
 
@@ -132,10 +136,24 @@ Arguments can also be given their own panels, or combined with other panels.
     -->
     ![`python panels_simple_arguments_explicit.py --help`](../images/code_snippets/panels/panels_simple_arguments_explicit.svg){.screenshot}
 
-## Commands
+### Commands
 
-!!! info
-    Work in progress
+Sub-commands also have panels that are defined similarly to option panels:
+
+```python
+{% include "../code_snippets/panels/panels_commands.py" %}
+```
+
+??? Output
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/panels
+    -->
+    ![`python panels_commands.py --help`](../images/code_snippets/panels/panels_commands.svg){.screenshot}
+
+
+Unlike options panels, where a `@click.option()` can assign itself to a panel, you cannot define assignment to a command panel from `@click.RichGroup.command()`;
+you must explicitly set inside the Command Panel itself.
 
 ## Overriding defaults
 
@@ -180,7 +198,7 @@ The below example also employs an additional trick to underline the text of the 
     -->
     ![`python panels_defaults_override_config.py --help`](../images/code_snippets/panels/panels_defaults_override_config.svg){.screenshot}
 
-## Tips & Gotchas
+## Tips
 
 There are a few things to keep in mind when using RichPanels.
 
@@ -240,7 +258,7 @@ This is probably a mistake, and there are two ways to fix it:
 
 Panels are printed in the order that they are defined, from top to bottom.
 
-If panels are inferred from `#!python @click.option(panel=...)`, rather than defined by `#!python @click.option_panel()`, then they are defined in the order that they appear in parameters from top to bottom.
+If panels are inferred from `@click.option(panel=...)`, rather than defined by `@click.option_panel()`, then they are defined in the order that they appear in parameters from top to bottom.
 
 This means that the simplest way to control the order panels is to define them explicitly.
 
