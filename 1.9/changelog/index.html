@@ -1451,22 +1451,28 @@
 <li><strong>Rich 10 and 11 support is removed.</strong> The minimum supported Rich version is 12.</li>
 </ul>
 </div>
-<p>Big changes:</p>
+<p><strong>Big changes:</strong></p>
 <ul>
-<li><code>help=</code> is now a valid kwarg for <code>@argument()</code> decorator. See docs for more information.</li>
+<li><strong>RichPanels</strong> API introduced. This replaces the "groups" feature going forward (although groups will continue to be supported).</li>
+<li><code>@click.option_panel()</code></li>
+<li><code>@click.command_panel()</code></li>
+<li><code>help=</code> is now a valid kwarg for <code>@click.argument()</code> decorator. See docs for more information.</li>
 </ul>
-<p>Small changes:</p>
+<p><strong>Small changes:</strong></p>
 <ul>
 <li>"Deprecated" text properly handled and stylized in all places.</li>
 <li>Improved <code>rich-click</code> CLI patching.</li>
-<li>Parameters (arguments + options) now have composable help text rendering!</li>
 </ul>
-<p>Backend (mostly invisible) changes:</p>
+<p><strong>Backend (mostly invisible) changes:</strong></p>
 <ul>
 <li>Overhauled our test suite to use <strong>inline-snapshot</strong>! 😁</li>
 <li>Improved test coverage and CI.</li>
 <li><code>typing_extensions</code> now only required for &lt; Python 3.11.</li>
 <li><code>RichHelpFormatter</code> now defers printing by default if a user does not specify a Console. [<a href="https://github.com/ewels/rich-click/pull/231">#231</a>] (With contributions from <a href="https://github.com/ofek">@ofek</a>)</li>
+<li>This more closely aligns the <code>RichHelpFormatter</code> with how base Click works.</li>
+<li>Significant refactors to help text rendering.</li>
+<li>Reintroduced deprecation warnings for a couple of features deprecated in 1.8.</li>
+<li>There was an issue where the <code>rich.highlighter</code> module could load during CLI execution. We now assert in unit-tests that no <code>rich</code> modules are loaded during code execution, so going forward, <code>rich</code> imports should no longer ever be a side-effect of CLI execution.</li>
 </ul>
 <h2 id="version-189-2025-05-19">Version 1.8.9 (2025-05-19)<a class="headerlink" href="#version-189-2025-05-19" title="Permanent link">&para;</a></h2>
 <p>Click 8.2 support:</p>
