@@ -308,6 +308,9 @@ class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[valid-type,mi
     to print richly formatted output.
     """
 
+    def format_panels(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:
+        pass
+
     def format_commands(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         from rich_click.rich_help_rendering import get_rich_commands
 
@@ -479,7 +482,7 @@ def prevent_incompatible_overrides(
 
     cls: Type[RichCommand] = getattr(rich_click.patch, f"_Patched{class_name}")
 
-    for method_name in ["format_usage", "format_help_text", "format_options", "format_epilog"]:
+    for method_name in ["format_usage", "format_help_text", "format_options"]:
         if method_is_from_subclass_of(cmd.__class__, cls, method_name):
             getattr(RichCommand, method_name)(cmd, ctx, formatter)
         else:
@@ -488,3 +491,8 @@ def prevent_incompatible_overrides(
     if hasattr(cmd.__class__, "format_commands"):
         if method_is_from_subclass_of(cmd.__class__, cls, "format_commands"):
             getattr(RichMultiCommand, "format_commands")(cmd, ctx, formatter)
+
+    if method_is_from_subclass_of(cmd.__class__, cls, "format_epilog"):
+        getattr(RichCommand, "format_epilog")(cmd, ctx, formatter)
+    else:
+        getattr(cmd, "format_epilog")(ctx, formatter)
