@@ -1453,15 +1453,17 @@
 </div>
 <p><strong>Big changes:</strong></p>
 <ul>
+<li><strong>IDE tab completion support for decorators</strong>. Now you should no longer need to guess what goes in <code>@click.option()</code> or <code>@click.command(context_settings=...)</code> etc.</li>
 <li><strong>RichPanels</strong> API introduced. This replaces the "groups" feature going forward (although groups will continue to be supported).</li>
 <li><code>@click.option_panel()</code></li>
 <li><code>@click.command_panel()</code></li>
-<li><code>help=</code> is now a valid kwarg for <code>@click.argument()</code> decorator. See docs for more information.</li>
+<li><strong>Help for arguments:</strong> <code>help=</code> is now a valid kwarg for <code>@click.argument()</code> decorator. See docs for more information.</li>
 </ul>
 <p><strong>Small changes:</strong></p>
 <ul>
 <li>"Deprecated" text properly handled and stylized in all places.</li>
 <li>Improved <code>rich-click</code> CLI patching.</li>
+<li><code>context_settings={"help_to_stderr": True}</code> support.</li>
 </ul>
 <p><strong>Backend (mostly invisible) changes:</strong></p>
 <ul>
