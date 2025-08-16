@@ -13,6 +13,7 @@ if TYPE_CHECKING:  # pragma: no cover
     import rich.padding
     import rich.style
     import rich.text
+    from rich.padding import PaddingDimensions
 
 
 # Default styles
@@ -91,6 +92,17 @@ ERRORS_SUGGESTION: Optional[Union[str, "rich.text.Text"]] = (
 ERRORS_EPILOGUE: Optional[Union[str, "rich.text.Text"]] = None
 ABORTED_TEXT: str = "Aborted."
 
+PADDING_HEADER_TEXT: "PaddingDimensions" = (1, 1, 0, 1)
+PADDING_USAGE: "PaddingDimensions" = 1
+PADDING_HELPTEXT: "PaddingDimensions" = (0, 1, 1, 1)
+PADDING_HELPTEXT_DEPRECATED: "PaddingDimensions" = 0
+PADDING_HELPTEXT_FIRST_LINE: "PaddingDimensions" = 0
+PADDING_EPILOG: "PaddingDimensions" = 1
+PADDING_FOOTER_TEXT: "PaddingDimensions" = (1, 1, 0, 1)
+PADDING_ERRORS_PANEL: "PaddingDimensions" = (0, 0, 1, 0)
+PADDING_ERRORS_SUGGESTION: "PaddingDimensions" = (0, 1, 0, 1)
+PADDING_ERRORS_EPILOGUE: "PaddingDimensions" = (0, 1, 1, 1)
+
 # Behaviours
 SHOW_ARGUMENTS: Optional[bool] = None  # Show positional arguments
 SHOW_METAVARS_COLUMN: bool = True  # Show a column with the option metavar (eg. INTEGER)
@@ -101,6 +113,7 @@ OPTION_ENVVAR_FIRST: bool = False  # Show env vars before option help text inste
 TEXT_MARKUP: Literal["ansi", "rich", "markdown", None] = notset  # type: ignore[assignment]
 TEXT_KWARGS: Optional[Dict[str, Any]] = None
 TEXT_EMOJIS: bool = notset  # type: ignore[assignment]
+TEXT_PARAGRAPH_LINEBREAKS: Optional[str] = None
 # If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -> 😺
 USE_MARKDOWN: Optional[bool] = None  # Parse help strings as markdown
 USE_MARKDOWN_EMOJI: Optional[bool] = None  # Parse emoji codes in markdown :smile:

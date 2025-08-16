@@ -15,6 +15,7 @@ if TYPE_CHECKING:  # pragma: no cover
     import rich.padding
     import rich.style
     import rich.text
+    from rich.padding import PaddingDimensions
 
 
 T = TypeVar("T", bound="RichHelpConfiguration")
@@ -131,6 +132,17 @@ class RichHelpConfiguration:
     errors_epilogue: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     aborted_text: str = field(default="Aborted.")
 
+    padding_header_text: "PaddingDimensions" = (1, 1, 0, 1)
+    padding_usage: "PaddingDimensions" = field(default=1)
+    padding_helptext: "PaddingDimensions" = field(default=(0, 1, 1, 1))
+    padding_helptext_deprecated: "PaddingDimensions" = field(default=0)
+    padding_helptext_first_line: "PaddingDimensions" = field(default=0)
+    padding_epilog: "PaddingDimensions" = field(default=1)
+    padding_footer_text: "PaddingDimensions" = field(default=(1, 1, 0, 1))
+    padding_errors_panel: "PaddingDimensions" = field(default=(0, 0, 1, 0))
+    padding_errors_suggestion: "PaddingDimensions" = field(default=(0, 1, 0, 1))
+    padding_errors_epilogue: "PaddingDimensions" = field(default=(0, 1, 1, 1))
+
     # Behaviours
     show_arguments: Optional[bool] = field(default=None)
     """Show positional arguments"""
@@ -148,6 +160,7 @@ class RichHelpConfiguration:
     """What engine to use to render the text. Default is 'ansi'."""
     text_kwargs: Optional[Dict[str, Any]] = field(default=None)
     """Additional kwargs to pass to Rich text rendering. Kwargs differ by text_markup chosen."""
+    text_paragraph_linebreaks: Optional[str] = field(default=None)
     text_emojis: bool = field(default=notset)  # type: ignore[assignment]
     """If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -> 😺"""
     use_markdown: Optional[bool] = field(default=None)

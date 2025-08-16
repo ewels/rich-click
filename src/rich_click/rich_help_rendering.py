@@ -14,7 +14,7 @@ import click.core
 from rich import box
 from rich.align import Align
 from rich.columns import Columns
-from rich.console import RenderableType
+from rich.console import RenderableType, group
 from rich.highlighter import RegexHighlighter
 from rich.markdown import Markdown
 from rich.padding import Padding
@@ -35,12 +35,6 @@ from rich_click.rich_parameter import RichParameter
 if TYPE_CHECKING:
     pass
 
-# Support rich <= 10.6.0
-try:
-    from rich.console import group
-except ImportError:
-    from rich.console import render_group as group  # type: ignore[attr-defined,no-redef]
-
 RichPanelRow = List[RenderableType]
 
 
@@ -54,7 +48,7 @@ else:
 @group()
 def _get_help_text(
     obj: Union[click.core.Command, click.core.Group], formatter: RichHelpFormatter
-) -> Iterable[Union[Markdown, Text]]:
+) -> Iterable[Union[Padding, Markdown, Text]]:
     """
     Build primary help text for a click command or group.
     Returns the prose help text for a command or group, rendered either as a
@@ -77,11 +71,17 @@ def _get_help_text(
     # Prepend deprecated status
     if obj.deprecated:
         if isinstance(obj.deprecated, str):
-            yield Text(
-                formatter.config.deprecated_with_reason_string.format(obj.deprecated), style=config.style_deprecated
+            yield Padding(
+                Text(
+                    formatter.config.deprecated_with_reason_string.format(obj.deprecated), style=config.style_deprecated
+                ),
+                formatter.config.padding_helptext_deprecated,
             )
         else:
-            yield Text(config.deprecated_string, style=config.style_deprecated)
+            yield Padding(
+                Text(config.deprecated_string, style=config.style_deprecated),
+                formatter.config.padding_helptext_deprecated,
+            )
 
     # Fetch and dedent the help text
     help_text = inspect.cleandoc(obj.help)
@@ -95,24 +95,36 @@ def _get_help_text(
     if not config.use_markdown and not config.text_markup == "markdown":
         if not first_line.startswith("\b"):
             first_line = first_line.replace("\n", " ")
-    yield formatter.rich_text(first_line.strip(), config.style_helptext_first_line)
-
+    yield Padding(
+        formatter.rich_text(
+            first_line.strip(),
+        ),
+        formatter.config.padding_helptext_first_line,
+    )
     # Get remaining lines, remove single line breaks and format as dim
     remaining_paragraphs = help_text.split("\n\n")[1:]
+
+    use_markdown = formatter.config.use_markdown or formatter.config.text_markup == "markdown"
+    if formatter.config.text_paragraph_linebreaks is None:
+        if use_markdown:
+            lb = "\n\n"
+        else:
+            lb = "\n"
+    else:
+        lb = formatter.config.text_paragraph_linebreaks
     if len(remaining_paragraphs) > 0:
-        if not config.use_markdown and not config.text_markup == "markdown":
+        if not use_markdown:
             # Remove single linebreaks
             remaining_paragraphs = [
                 x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
                 for x in remaining_paragraphs
             ]
             # Join back together
-            remaining_lines = "\n".join(remaining_paragraphs)
+            remaining_lines = lb.join(remaining_paragraphs)
         else:
             # Join with double linebreaks if markdown
-            remaining_lines = "\n\n".join(remaining_paragraphs)
-
-        yield formatter.rich_text(remaining_lines, config.style_helptext)
+            remaining_lines = lb.join(remaining_paragraphs)
+        yield formatter.rich_text(remaining_lines, formatter.config.style_helptext)
 
 
 def _get_deprecated_text(
@@ -495,7 +507,7 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", pref
         formatter.write(
             Padding(
                 formatter.rich_text(config.header_text, config.style_header_text),
-                (1, 1, 0, 1),
+                config.padding_header_text,
             ),
         )
 
@@ -517,7 +529,7 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", pref
                     usage_highlighter(args),
                 )
             ),
-            1,
+            formatter.config.padding_usage,
         ),
     )
 
@@ -530,7 +542,7 @@ def get_rich_help_text(self: click.core.Command, ctx: RichContext, formatter: Ri
         formatter.write(
             Padding(
                 Align(_get_help_text(self, formatter), pad=False),
-                (0, 1, 1, 1),
+                formatter.config.padding_helptext,
             )
         )
 
@@ -594,14 +606,14 @@ def get_rich_epilog(
         else:
             epilog = "\n".join([x.replace("\n", " ").strip() for x in lines])  # type: ignore[assignment]
             epilog = formatter.rich_text(epilog, formatter.config.style_epilog_text)  # type: ignore[assignment]
-        formatter.write(Padding(Align(epilog, pad=False), 1))
+        formatter.write(Padding(Align(epilog, pad=False), formatter.config.padding_epilog))
 
     # Footer text if we have it
     if formatter.config.footer_text:
         formatter.write(
             Padding(
                 formatter.rich_text(formatter.config.footer_text, formatter.config.style_footer_text),
-                (1, 1, 0, 1),
+                formatter.config.padding_footer_text,
             )
         )
 
@@ -632,7 +644,7 @@ def rich_format_error(
         formatter.write(
             Padding(
                 config.errors_suggestion,
-                (0, 1, 0, 1),
+                config.padding_errors_suggestion,
             ),
             style=config.style_errors_suggestion,
         )
@@ -652,7 +664,7 @@ def rich_format_error(
                         Text("for help"),
                     )
                 ),
-                (0, 1, 0, 1),
+                config.padding_errors_suggestion,
             ),
             style=config.style_errors_suggestion,
         )
@@ -682,8 +694,8 @@ def rich_format_error(
                     title_align=config.align_errors_panel,
                     **kw,
                 ),
-                (0, 0, 1, 0),
+                config.padding_errors_panel,
             )
         )
     if config.errors_epilogue:
-        formatter.write(Padding(config.errors_epilogue, (0, 1, 1, 1)))
+        formatter.write(Padding(config.errors_epilogue, config.padding_errors_epilogue))
