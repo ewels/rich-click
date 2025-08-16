@@ -99,6 +99,7 @@ APPEND_METAVARS_HELP: bool = False  # Append metavar (eg. [TEXT]) after the help
 GROUP_ARGUMENTS_OPTIONS: bool = False  # Show arguments with options instead of in own panel
 OPTION_ENVVAR_FIRST: bool = False  # Show env vars before option help text instead of avert
 TEXT_MARKUP: Literal["ansi", "rich", "markdown", None] = notset  # type: ignore[assignment]
+TEXT_KWARGS: Optional[Dict[str, Any]] = None
 TEXT_EMOJIS: bool = notset  # type: ignore[assignment]
 # If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -> 😺
 USE_MARKDOWN: Optional[bool] = None  # Parse help strings as markdown

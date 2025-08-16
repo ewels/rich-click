@@ -232,19 +232,26 @@ class RichHelpFormatter(click.HelpFormatter):
 
         text = inspect.cleandoc(text)
 
-        if self.config.text_markup != "rich" and self.config.text_emojis:
-            from rich.emoji import Emoji
+        kw: Dict[str, Any]
+        if self.config.text_markup != "rich":
+            kw = {"style": style}
+            if self.config.text_emojis:
+                from rich.emoji import Emoji
 
-            text = Emoji.replace(text)
+                text = Emoji.replace(text)
+        else:
+            kw = {"style": style, "emoji": self.config.text_emojis}
+
+        kw.update(self.config.text_kwargs or {})
 
         if self.config.text_markup == "markdown":
-            return Markdown(text, style=style)
+            return Markdown(text, **kw)
         elif self.config.text_markup == "rich":
-            return self.highlighter(Text.from_markup(text, style=style, emoji=self.config.text_emojis))
+            return self.highlighter(Text.from_markup(text, **kw))
         elif self.config.text_markup == "ansi":
-            return self.highlighter(Text.from_ansi(text, style=style))
+            return self.highlighter(Text.from_ansi(text, **kw))
         else:
-            return self.highlighter(Text(text, style=style))
+            return self.highlighter(Text(text, **kw))
 
     def rich_panel(
         self,
