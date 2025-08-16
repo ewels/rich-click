@@ -35,3 +35,26 @@ def test_truthy() -> None:
     assert truthy(None) is None
     assert truthy(10) is True
     assert truthy("a") is None
+
+
+@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_821, reason="CliRunner's stderr capture doesn't work before 8.2.1.")
+def test_help_to_stderr(cli_runner: CliRunner) -> None:
+    @rich_click.command(context_settings={"help_to_stderr": True})
+    def cli() -> None:
+        """CLI help text"""
+
+    res = cli_runner.invoke(cli, "--help")
+
+    assert res.stdout == snapshot("")
+    assert res.stderr == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: cli [OPTIONS]                                                                               \n\
+                                                                                                    \n\
+ CLI help text                                                                                      \n\
+                                                                                                    \n\
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --help      Show this message and exit.                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+"""
+    )
