@@ -146,6 +146,8 @@ class RichHelpConfiguration:
     """Show env vars before option help text instead of after"""
     text_markup: Literal["ansi", "rich", "markdown", None] = field(default=notset)  # type: ignore[arg-type]
     """What engine to use to render the text. Default is 'ansi'."""
+    text_kwargs: Optional[Dict[str, Any]] = field(default=None)
+    """Additional kwargs to pass to Rich text rendering. Kwargs differ by text_markup chosen."""
     text_emojis: bool = field(default=notset)  # type: ignore[assignment]
     """If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -> 😺"""
     use_markdown: Optional[bool] = field(default=None)

@@ -206,6 +206,7 @@ class RichHelpConfigurationDict(TypedDict):
     group_arguments_options: NotRequired[bool]
     option_envvar_first: NotRequired[bool]
     text_markup: NotRequired[Literal["ansi", "rich", "markdown", None]]
+    text_kwargs: NotRequired[Optional[Dict[str, Any]]]
     text_emojis: NotRequired[bool]
     use_markdown: NotRequired[Optional[bool]]
     use_markdown_emoji: NotRequired[Optional[bool]]
