@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 from gettext import gettext
-from typing import TYPE_CHECKING, Any, Callable, Dict, Mapping, Optional, Type, TypeVar, Union, cast, overload
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Type, TypeVar, Union, cast, overload
 
 from click import Argument, Command, Context, Group, Option, Parameter
 from click import argument as click_argument
@@ -15,7 +15,7 @@ from click import version_option as click_version_option
 
 from rich_click.rich_command import RichCommand, RichGroup
 from rich_click.rich_context import RichContext
-from rich_click.rich_help_configuration import RichHelpConfiguration
+from rich_click.rich_help_configuration import RichHelpConfiguration, RichHelpConfigurationDict
 from rich_click.rich_panel import RichCommandPanel, RichOptionPanel, RichPanel
 from rich_click.rich_parameter import RichArgument, RichOption
 
@@ -35,6 +35,7 @@ if TYPE_CHECKING:  # pragma: no cover
 _AnyCallable = Callable[..., Any]
 F = TypeVar("F", bound=Callable[..., Any])
 FC = TypeVar("FC", bound=Union[Command, _AnyCallable])
+C = TypeVar("C", bound=Command)
 
 
 GrpType = TypeVar("GrpType", bound=Group)
@@ -187,8 +188,26 @@ def _rich_panel_memo(f: Callable[..., Any], panel: RichPanel[Any]) -> None:
         f.__rich_panels__.append(panel)  # type: ignore
 
 
+# This is a way to trick PyCharm into adding autocompletion for typed dicts
+# without jeopardizing anything on Mypy's side.
+@overload
 def rich_config(
-    help_config: Optional[Union[Mapping[str, Any], RichHelpConfiguration]] = None,
+    help_config: RichHelpConfigurationDict,
+    *,
+    console: Optional["Console"] = None,
+) -> Callable[[FC], FC]: ...
+
+
+@overload
+def rich_config(
+    help_config: Optional[Union[Dict[str, str], RichHelpConfigurationDict, RichHelpConfiguration]] = None,
+    *,
+    console: Optional["Console"] = None,
+) -> Callable[[FC], FC]: ...
+
+
+def rich_config(
+    help_config: Optional[Union[Dict[str, str], RichHelpConfigurationDict, RichHelpConfiguration]] = None,
     *,
     console: Optional["Console"] = None,
 ) -> Callable[[FC], FC]:

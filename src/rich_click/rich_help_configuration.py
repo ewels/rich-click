@@ -1,11 +1,18 @@
 from __future__ import annotations
 
 import os
+import sys
 from dataclasses import dataclass, field
 from types import ModuleType
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypedDict, TypeVar, Union
 
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
+
+
+if sys.version_info < (3, 11):
+    from typing_extensions import NotRequired
+else:
+    from typing import NotRequired
 
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -264,6 +271,97 @@ class RichHelpConfiguration:
             if v.init:
                 if hasattr(module, k.upper()):
                     setattr(module, k.upper(), getattr(self, k))
+
+
+class RichHelpConfigurationDict(TypedDict):
+    """Typed dict for rich_config() kwargs."""
+
+    style_option: NotRequired["rich.style.StyleType"]
+    style_argument: NotRequired["rich.style.StyleType"]
+    style_command: NotRequired["rich.style.StyleType"]
+    style_switch: NotRequired["rich.style.StyleType"]
+    style_metavar: NotRequired["rich.style.StyleType"]
+    style_metavar_append: NotRequired["rich.style.StyleType"]
+    style_metavar_separator: NotRequired["rich.style.StyleType"]
+    style_header_text: NotRequired["rich.style.StyleType"]
+    style_epilog_text: NotRequired["rich.style.StyleType"]
+    style_footer_text: NotRequired["rich.style.StyleType"]
+    style_usage: NotRequired["rich.style.StyleType"]
+    style_usage_command: NotRequired["rich.style.StyleType"]
+    style_deprecated: NotRequired["rich.style.StyleType"]
+    style_helptext_first_line: NotRequired["rich.style.StyleType"]
+    style_helptext: NotRequired["rich.style.StyleType"]
+    style_option_help: NotRequired["rich.style.StyleType"]
+    style_option_default: NotRequired["rich.style.StyleType"]
+    style_option_envvar: NotRequired["rich.style.StyleType"]
+    style_required_short: NotRequired["rich.style.StyleType"]
+    style_required_long: NotRequired["rich.style.StyleType"]
+    style_options_panel_border: NotRequired["rich.style.StyleType"]
+    style_options_panel_box: NotRequired[Optional[Union[str, "rich.box.Box"]]]
+    align_options_panel: NotRequired["rich.align.AlignMethod"]
+    style_options_table_show_lines: NotRequired[bool]
+    style_options_table_leading: NotRequired[int]
+    style_options_table_pad_edge: NotRequired[bool]
+    style_options_table_padding: NotRequired["rich.padding.PaddingDimensions"]
+    style_options_table_box: NotRequired[Optional[Union[str, "rich.box.Box"]]]
+    style_options_table_row_styles: NotRequired[Optional[List["rich.style.StyleType"]]]
+    style_options_table_border_style: NotRequired[Optional["rich.style.StyleType"]]
+    style_commands_panel_border: NotRequired["rich.style.StyleType"]
+    style_commands_panel_box: NotRequired[Optional[Union[str, "rich.box.Box"]]]
+    align_commands_panel: NotRequired["rich.align.AlignMethod"]
+    style_commands_table_show_lines: NotRequired[bool]
+    style_commands_table_leading: NotRequired[int]
+    style_commands_table_pad_edge: NotRequired[bool]
+    style_commands_table_padding: NotRequired["rich.padding.PaddingDimensions"]
+    style_commands_table_box: NotRequired[Optional[Union[str, "rich.box.Box"]]]
+    style_commands_table_row_styles: NotRequired[Optional[List["rich.style.StyleType"]]]
+    style_commands_table_border_style: NotRequired[Optional["rich.style.StyleType"]]
+    style_commands_table_column_width_ratio: NotRequired[Optional[Union[Tuple[None, None], Tuple[int, int]]]]
+    style_errors_panel_border: NotRequired["rich.style.StyleType"]
+    style_errors_panel_box: NotRequired[Optional[Union[str, "rich.box.Box"]]]
+    align_errors_panel: NotRequired["rich.align.AlignMethod"]
+    style_errors_suggestion: NotRequired["rich.style.StyleType"]
+    style_errors_suggestion_command: NotRequired["rich.style.StyleType"]
+    style_aborted: NotRequired["rich.style.StyleType"]
+    width: NotRequired[Optional[int]]
+    max_width: NotRequired[Optional[int]]
+    color_system: NotRequired[Optional[Literal["auto", "standard", "256", "truecolor", "windows"]]]
+    force_terminal: NotRequired[Optional[bool]]
+    header_text: NotRequired[Optional[Union[str, "rich.text.Text"]]]
+    footer_text: NotRequired[Optional[Union[str, "rich.text.Text"]]]
+    deprecated_string: NotRequired[str]
+    deprecated_with_reason_string: NotRequired[str]
+    default_string: NotRequired[str]
+    envvar_string: NotRequired[str]
+    required_short_string: NotRequired[str]
+    required_long_string: NotRequired[str]
+    range_string: NotRequired[str]
+    append_metavars_help_string: NotRequired[str]
+    arguments_panel_title: NotRequired[str]
+    options_panel_title: NotRequired[str]
+    commands_panel_title: NotRequired[str]
+    errors_panel_title: NotRequired[str]
+    errors_suggestion: NotRequired[Optional[Union[str, "rich.text.Text"]]]
+    errors_epilogue: NotRequired[Optional[Union[str, "rich.text.Text"]]]
+    aborted_text: NotRequired[str]
+
+    # Behaviours
+    show_arguments: NotRequired[Optional[bool]]
+    show_metavars_column: NotRequired[bool]
+    commands_before_options: NotRequired[bool]
+    append_metavars_help: NotRequired[bool]
+    group_arguments_options: NotRequired[bool]
+    option_envvar_first: NotRequired[bool]
+    text_markup: NotRequired[Literal["ansi", "rich", "markdown", None]]
+    text_emojis: NotRequired[bool]
+    use_markdown: NotRequired[Optional[bool]]
+    use_markdown_emoji: NotRequired[Optional[bool]]
+    use_rich_markup: NotRequired[Optional[bool]]
+    command_groups: NotRequired[Dict[str, List[CommandGroupDict]]]
+    option_groups: NotRequired[Dict[str, List[OptionGroupDict]]]
+    use_click_short_help: NotRequired[bool]
+    highlighter_patterns: NotRequired[List[str]]
+    legacy_windows: NotRequired[Optional[bool]]
 
 
 def __getattr__(name: str) -> Any:
