@@ -30,7 +30,7 @@ def test_deprecation_warning_on_highlighter(cli_runner: CliRunner) -> None:
 
     # console should be allowed to be first argument,
     with pytest.warns(DeprecationWarning):
-        cli = rich_click.rich_config(c)(cli)  # type: ignore[call-overload]
+        cli = rich_click.rich_config(c)(cli)  # type: ignore[arg-type]
 
     cli = rich_click.command()(cli)
 
