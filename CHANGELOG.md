@@ -22,6 +22,9 @@
 - "Deprecated" text properly handled and stylized in all places.
 - Improved `rich-click` CLI patching.
 - `context_settings={"help_to_stderr": True}` support.
+- Added suite of `padding_*` config options to control padding.
+- Added newline control in help text with `text_paragraph_linebreaks` config option.
+- Added a few `text_*` config options, including notably `text_kwargs` which can control code styles in Markdown.
 
 **Backend (mostly invisible) changes:**
 
