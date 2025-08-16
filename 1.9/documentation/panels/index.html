@@ -674,9 +674,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ordering-of-panels" class="md-nav__link">
+  <a href="#sort-order-of-panels" class="md-nav__link">
     <span class="md-ellipsis">
-      Ordering of panels
+      Sort order of panels
     </span>
   </a>
   
@@ -955,9 +955,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ordering-of-panels" class="md-nav__link">
+  <a href="#sort-order-of-panels" class="md-nav__link">
     <span class="md-ellipsis">
-      Ordering of panels
+      Sort order of panels
     </span>
   </a>
   
@@ -1461,16 +1461,10 @@ working_dir: docs/code_snippets/panels
 </div>
 </div>
 </div>
-<h3 id="ordering-of-panels">Ordering of panels<a class="headerlink" href="#ordering-of-panels" title="Permanent link">&para;</a></h3>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p><strong>In 1.9.0dev0, options panels always come first and command panels always come after them.</strong>
-In a near future update, before 1.9.0 is fully released, you will be able to mix the order of panels.</p>
-<p>The below text references the <strong>intended</strong> behavior for 1.9.0, but does not reflect the current behavior.</p>
-</div>
+<h3 id="sort-order-of-panels">Sort order of panels<a class="headerlink" href="#sort-order-of-panels" title="Permanent link">&para;</a></h3>
 <p>Panels are printed in the order that they are defined, from top to bottom.</p>
 <p>If panels are inferred from <code>@click.option(panel=...)</code>, rather than defined by <code>@click.option_panel()</code>, then they are defined in the order that they appear in parameters from top to bottom.</p>
-<p>This means that the simplest way to control the order panels is to define them explicitly.</p>
+<p><strong>This means that the simplest way to control the order panels is to define them explicitly!</strong></p>
 <p>This also means that you can order options panels to come before command panels, and vice-versa, based on the decorator order.</p>
 <p>By default, unless explicitly ordered otherwise, command panels always come after options panels.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
@@ -1499,7 +1493,7 @@ working_dir: docs/code_snippets/panels
 <a class="glightbox" href="../../images/code_snippets/panels/panels_panel_order_explicit.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python panels_panel_order_explicit.py --help" class="screenshot" src="../../images/code_snippets/panels/panels_panel_order_explicit.svg" /></a></p>
 </details>
 <p>There exists a config option <code>commands_before_options</code> (default <code>False</code>), which changes the default behavior so that commands come before options.
-<strong>When explicitly defining panel order with decorators, this config option is ignored.</strong>
+When explicitly defining panels of multiple types with decorators (i.e. both option panels and command panels), this config option is ignored.
 So for example, the below code will set options <em>above</em> commands:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
 <span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
@@ -1517,6 +1511,11 @@ So for example, the below code will set options <em>above</em> commands:</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;CLI help text&quot;&quot;&quot;</span>
     <span class="k">pass</span>
 
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">subcommand</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Subcommand help text&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">cli</span><span class="p">()</span>
 </code></pre></div>
@@ -1527,6 +1526,9 @@ working_dir: docs/code_snippets/panels
 -->
 <a class="glightbox" href="../../images/code_snippets/panels/panels_panel_order_explicit_override.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python panels_panel_order_explicit_override.py --help" class="screenshot" src="../../images/code_snippets/panels/panels_panel_order_explicit_override.svg" /></a></p>
 </details>
+<p>If you do not explicitly define panels, then the sort order behavior is more advanced.
+The sort order in all situations is deliberate and also thoroughly tested, but it's not worth going into detail about.
+In short, if you want to have full control over panel sorting, then you should define each panel!</p>
 <h3 id="ordering-of-rows-within-panels">Ordering of rows within panels<a class="headerlink" href="#ordering-of-rows-within-panels" title="Permanent link">&para;</a></h3>
 <p>The easiest way to control the order of elements within a panel is to explicitly define the order within the panel itself.</p>
 <p>If you are having trouble with ordering things, set the order within <code>options=</code> or <code>commands=</code>.</p>
