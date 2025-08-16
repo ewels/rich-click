@@ -13,5 +13,5 @@ jobs:
           python-version: 3
       - name: Install dependencies
         run: |
-          pip install --editable ".[dev]"
+          pip install ".[dev]"
       - uses: pre-commit-ci/lite-action@v1.1.0

@@ -252,9 +252,15 @@ class RichCommand(click.Command):
     #  or (c) we use incorrect types here.
     #  We are looking for a solution that fixes all 3. For now, we opt for (c).
     def format_options(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
-        from rich_click.rich_help_rendering import get_rich_options
+        from rich.table import Table
 
-        get_rich_options(self, ctx, formatter)  # type: ignore[arg-type]
+        from rich_click.rich_panel import construct_panels
+
+        panels = construct_panels(self, ctx, formatter)  # type: ignore[arg-type]
+        for panel in panels:
+            p = panel.render(self, ctx, formatter)  # type: ignore[arg-type]
+            if not isinstance(p.renderable, Table) or len(p.renderable.rows) > 0:
+                formatter.write(p)  # type: ignore[arg-type]
 
     def format_epilog(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         from rich_click.rich_help_rendering import get_rich_epilog
@@ -309,19 +315,8 @@ class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[valid-type,mi
     """
 
     def format_commands(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
-        from rich_click.rich_help_rendering import get_rich_commands
-
-        get_rich_commands(self, ctx, formatter)  # type: ignore[arg-type]
-
-    def format_options(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
-        from rich_click.rich_help_rendering import get_rich_options
-
-        if isinstance(formatter, RichHelpFormatter) and formatter.config.commands_before_options:
-            self.format_commands(ctx, formatter)
-            get_rich_options(self, ctx, formatter)  # type: ignore[arg-type]
-        else:
-            get_rich_options(self, ctx, formatter)  # type: ignore[arg-type]
-            self.format_commands(ctx, formatter)
+        # Not used
+        pass
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         if OVERRIDES_GUARD:
@@ -484,7 +479,3 @@ def prevent_incompatible_overrides(
             getattr(RichCommand, method_name)(cmd, ctx, formatter)
         else:
             getattr(cmd, method_name)(ctx, formatter)
-
-    if hasattr(cmd.__class__, "format_commands"):
-        if method_is_from_subclass_of(cmd.__class__, cls, "format_commands"):
-            getattr(RichMultiCommand, "format_commands")(cmd, ctx, formatter)

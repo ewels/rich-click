@@ -25,11 +25,6 @@ def test_panels_defaults_command_panel(cli_runner: CliRunner, cli: rich_click.Ri
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-   Custom Default Command Panel                                                                     \n\
-  cmd1                             cmd1 help                                                        \n\
-  cmd2                             cmd2 help                                                        \n\
-  cmd3                             cmd3 help                                                        \n\
-                                                                                                    \n\
    Command Panel A                                                                                  \n\
   cmd4  Test args assigned to arguments panel when help is defined, and test that arg3 is assigned  \n\
         to default even without help so long as panel shows.                                        \n\
@@ -43,6 +38,11 @@ def test_panels_defaults_command_panel(cli_runner: CliRunner, cli: rich_click.Ri
 ║ cmd8  Test options and arguments are assigned to a renamed default options panel with            ║
 ║       group_arguments_options=True                                                               ║
 ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝
+   Custom Default Command Panel                                                                     \n\
+  cmd1                             cmd1 help                                                        \n\
+  cmd2                             cmd2 help                                                        \n\
+  cmd3                             cmd3 help                                                        \n\
+                                                                                                    \n\
 """
     )
     assert result.stderr == snapshot("")

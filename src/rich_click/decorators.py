@@ -155,7 +155,7 @@ def command(
         if panels is not None:
             attr_panels = attrs.pop("panels", None)
             attr_panels = attr_panels if attr_panels is not None else []
-            attr_panels.extend(panels)
+            attr_panels.extend(reversed(panels))
             attrs["panels"] = attr_panels
             del f.__rich_panels__  # type: ignore[attr-defined]
 

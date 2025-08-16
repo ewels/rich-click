@@ -248,19 +248,13 @@ This is probably a mistake, and there are two ways to fix it:
         -->
         ![`python panels_handling_help_fix_2.py --help`](../images/code_snippets/panels/panels_handling_help_fix_2.svg){.screenshot}
 
-### Ordering of panels
-
-!!! warning
-    **In 1.9.0dev0, options panels always come first and command panels always come after them.**
-    In a near future update, before 1.9.0 is fully released, you will be able to mix the order of panels.
-
-    The below text references the **intended** behavior for 1.9.0, but does not reflect the current behavior.
+### Sort order of panels
 
 Panels are printed in the order that they are defined, from top to bottom.
 
 If panels are inferred from `@click.option(panel=...)`, rather than defined by `@click.option_panel()`, then they are defined in the order that they appear in parameters from top to bottom.
 
-This means that the simplest way to control the order panels is to define them explicitly.
+**This means that the simplest way to control the order panels is to define them explicitly!**
 
 This also means that you can order options panels to come before command panels, and vice-versa, based on the decorator order.
 
@@ -279,7 +273,7 @@ By default, unless explicitly ordered otherwise, command panels always come afte
 
 
 There exists a config option `commands_before_options` (default `False`), which changes the default behavior so that commands come before options.
-**When explicitly defining panel order with decorators, this config option is ignored.**
+When explicitly defining panels of multiple types with decorators (i.e. both option panels and command panels), this config option is ignored.
 So for example, the below code will set options _above_ commands:
 
 ```python
@@ -292,6 +286,10 @@ So for example, the below code will set options _above_ commands:
     working_dir: docs/code_snippets/panels
     -->
     ![`python panels_panel_order_explicit_override.py --help`](../images/code_snippets/panels/panels_panel_order_explicit_override.svg){.screenshot}
+
+If you do not explicitly define panels, then the sort order behavior is more advanced.
+The sort order in all situations is deliberate and also thoroughly tested, but it's not worth going into detail about.
+In short, if you want to have full control over panel sorting, then you should define each panel!
 
 ### Ordering of rows within panels
 

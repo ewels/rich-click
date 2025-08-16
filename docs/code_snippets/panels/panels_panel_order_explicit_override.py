@@ -14,5 +14,10 @@ def cli():
     """CLI help text"""
     pass
 
+@cli.command()
+def subcommand():
+    """Subcommand help text"""
+    pass
+
 if __name__ == "__main__":
     cli()

@@ -9,6 +9,7 @@ from typing import (
     Generic,
     List,
     Optional,
+    Set,
     Tuple,
     Type,
     TypeVar,
@@ -16,6 +17,7 @@ from typing import (
 )
 
 import click
+import click.core
 
 from rich_click.rich_parameter import RichArgument, RichParameter
 from rich_click.utils import CommandGroupDict, OptionGroupDict
@@ -59,6 +61,16 @@ class RichPanel(Generic[CT]):
         self.table_styles = table_styles or {}
         self.panel_styles = panel_styles or {}
 
+    def get_objects(self) -> List[str]:
+        if self._object_attr is NotImplemented:
+            raise NotImplementedError()
+        return getattr(self, self._object_attr)  # type: ignore[no-any-return]
+
+    def add_object(self, o: str) -> None:
+        if self._object_attr is NotImplemented:
+            raise NotImplementedError()
+        getattr(self, self._object_attr).append(o)
+
     def to_info_dict(self, ctx: click.Context) -> Dict[str, Any]:
         if self._object_attr is NotImplemented:
             raise NotImplementedError()
@@ -66,11 +78,11 @@ class RichPanel(Generic[CT]):
             "name": self.name,
             "type": self.__class__.__name__,
             "help": self.help,
-            self._object_attr: [i.name for i in self.list_objects(ctx)],
+            self._object_attr: [i[0] for i in self.list_objects(ctx)],
         }
 
     @classmethod
-    def list_objects(cls, ctx: click.Context) -> List[CT]:
+    def list_objects(cls, ctx: click.Context) -> List[Tuple[str, CT]]:
         raise NotImplementedError()
 
     def _get_base_table(self, **defaults: Any) -> "Table":
@@ -101,6 +113,7 @@ class RichPanel(Generic[CT]):
         raise NotImplementedError()
 
     def _get_base_panel(self, table: "Table", **defaults: Any) -> "Panel":
+
         if self.panel_class is None:
             from rich.panel import Panel
 
@@ -143,8 +156,8 @@ class RichOptionPanel(RichPanel[click.Parameter]):
         self.options = options or []
 
     @classmethod
-    def list_objects(cls, ctx: click.Context) -> List[click.Parameter]:
-        return ctx.command.get_params(ctx)
+    def list_objects(cls, ctx: click.Context) -> List[Tuple[str, click.Parameter]]:
+        return [(i.name, i) for i in ctx.command.get_params(ctx)]  # type: ignore[misc]
 
     def get_table(
         self,
@@ -161,7 +174,7 @@ class RichOptionPanel(RichPanel[click.Parameter]):
             "pad_edge": formatter.config.style_options_table_pad_edge,
             "padding": formatter.config.style_options_table_padding,
         }
-        table = super()._get_base_table(**t_styles)
+        table = self._get_base_table(**t_styles)
         options_rows = []
         for opt in self.options:
             # Get the param
@@ -236,10 +249,10 @@ class RichCommandPanel(RichPanel[click.Command]):
         self.commands = commands or []
 
     @classmethod
-    def list_objects(cls, ctx: click.Context) -> List[click.Command]:
-        if not isinstance(ctx.command, click.Group):
+    def list_objects(cls, ctx: click.Context) -> List[Tuple[str, click.Command]]:
+        if not isinstance(ctx.command, click.core.Group):
             return []
-        return list(sorted(ctx.command.commands.values(), key=lambda _: _.name))  # type: ignore[arg-type,return-value]
+        return list(sorted(list(ctx.command.commands.items())))
 
     def get_table(
         self,
@@ -271,7 +284,7 @@ class RichCommandPanel(RichPanel[click.Command]):
             ratio=table_column_width_ratio[1],
         )
 
-        if not isinstance(command, click.Group):
+        if not isinstance(command, click.core.Group):
             return table
 
         commands_list = command.list_commands(ctx)
@@ -308,7 +321,6 @@ class RichCommandPanel(RichPanel[click.Command]):
         ctx: "RichContext",
         formatter: "RichHelpFormatter",
     ) -> "Panel":
-
         inner: Any = self.get_table(command, ctx, formatter)
 
         p_styles = {
@@ -368,7 +380,7 @@ def _resolve_panels_from_config(
             wildcard_option_groups = groups[mtch]
             for grp in wildcard_option_groups:
                 grp = grp.copy()
-                opts = list(reversed(grp.get(panel_cls._object_attr, [])))  # type: ignore[call-overload]
+                opts: List[str] = grp.get(panel_cls._object_attr, [])  # type: ignore[assignment]
                 traversed = []
                 for opt in grp.get(panel_cls._object_attr, []):  # type: ignore[attr-defined]
                     if grp.get("deduplicate", True) and opt in [
@@ -385,138 +397,213 @@ def _resolve_panels_from_config(
 
 
 def construct_panels(
-    ctx: "RichContext",
     command: "RichCommand",
+    ctx: "RichContext",
     formatter: "RichHelpFormatter",
-    panel_cls: Type[RichPanel[CT]],
-) -> List[RichPanel[CT]]:
+) -> List[RichPanel[Any]]:
     """Construct panels from the command as well as from the old groups config."""
-    # First step is building out panel_base
-    # We use this later to construct the actual panels more easily.
-    panel_base: Dict[str, List[str]]
-    cfg_groups: Optional[Union[Dict[str, Union[OptionGroupDict]], Dict[str, Union[CommandGroupDict]]]]
     _show_arguments = formatter.config.show_arguments
 
-    if panel_cls._object_attr == "commands":
-        panel_base = {
-            p.name: list(reversed(getattr(p, panel_cls._object_attr, [])))
-            for p in command.panels
-            if isinstance(p, RichCommandPanel)
-        }
-        cfg_groups = formatter.config.command_groups  # type: ignore[assignment]
-        if cfg_groups:
-            panel_base.setdefault(formatter.config.commands_panel_title, [])
+    # If only an options or a commands panel is defined,
+    # then we respect intra-type sort order but not inter-type sort order.
+    defined_commands = False
+    defined_options = False
 
-        def _default(o: CT) -> None:
-            if TYPE_CHECKING:
-                assert isinstance(o.name, str)
-            panel_base.setdefault(formatter.config.commands_panel_title, [])
-            panel_base[formatter.config.commands_panel_title].append(o.name)
+    # Start with list of panels already defined.
+    defined_panels: Dict[Tuple[str, str], RichPanel[Any]] = {}
 
-    elif panel_cls._object_attr == "options":
-        panel_base = {
-            p.name: list(reversed(getattr(p, panel_cls._object_attr, [])))
-            for p in command.panels
-            if isinstance(p, RichOptionPanel)
-        }
-        cfg_groups = formatter.config.option_groups  # type: ignore[assignment]
-        if cfg_groups:
-            if _show_arguments:
-                panel_base.setdefault(formatter.config.arguments_panel_title, [])
-            panel_base.setdefault(formatter.config.options_panel_title, [])
+    for p in command.panels:
+        defined_panels[(p._object_attr, p.name)] = p
+        if p._object_attr == "options":
+            defined_options = True
+        elif p._object_attr == "commands":
+            defined_commands = True
 
-        def _default(o: CT) -> None:  # type: ignore[misc]
-            if TYPE_CHECKING:
-                assert isinstance(o.name, str)
-            if isinstance(o, click.Argument):
-                if _show_arguments is False:
-                    return
-                elif formatter.config.group_arguments_options:
-                    panel_base.setdefault(formatter.config.options_panel_title, [])
-                    panel_base[formatter.config.options_panel_title].append(o.name)
-                else:
-                    panel_base.setdefault(formatter.config.arguments_panel_title, [])
-                    panel_base[formatter.config.arguments_panel_title].append(o.name)
+    if formatter.config.option_groups:
+        option_groups_from_config = _resolve_panels_from_config(
+            ctx, formatter, formatter.config.option_groups, formatter.option_panel_class
+        )
+        if option_groups_from_config:
+            defined_panels.update({(p._object_attr, p.name): p for p in option_groups_from_config})
+            defined_options = True
+
+    if isinstance(command, click.core.Group):
+        if formatter.config.command_groups:
+            command_groups_from_config = _resolve_panels_from_config(
+                ctx, formatter, formatter.config.command_groups, formatter.command_panel_class
+            )
+            if command_groups_from_config:
+                defined_panels.update({(p._object_attr, p.name): p for p in command_groups_from_config})
+                defined_commands = True
+
+    # Separate out default panels because we need to sort them properly later.
+    # We will reversed() through this so order is flipped.
+    # Also-- we have to decouple name from obj because commands can have different names
+    # than their mappings to a Group.
+    new_panels: Dict[Tuple[str, str], List[str]] = {}
+    pre_default_panels: Dict[Tuple[str, str], List[str]] = {}
+    post_default_panels: Dict[Tuple[str, str], List[str]]
+    if isinstance(command, click.core.Group):
+        if formatter.config.commands_before_options:
+            if defined_commands != defined_options:
+                pre_default_panels = {
+                    ("commands", formatter.config.commands_panel_title): [],
+                }
+                post_default_panels = {
+                    ("options", formatter.config.arguments_panel_title): [],
+                    ("options", formatter.config.options_panel_title): [],
+                }
             else:
-                panel_base.setdefault(formatter.config.options_panel_title, [])
-                panel_base[formatter.config.options_panel_title].append(o.name)
-
+                post_default_panels = {
+                    ("commands", formatter.config.commands_panel_title): [],
+                    ("options", formatter.config.arguments_panel_title): [],
+                    ("options", formatter.config.options_panel_title): [],
+                }
+        else:
+            if defined_commands != defined_options:
+                pre_default_panels = {
+                    ("options", formatter.config.arguments_panel_title): [],
+                    ("options", formatter.config.options_panel_title): [],
+                }
+                post_default_panels = {
+                    ("commands", formatter.config.commands_panel_title): [],
+                }
+            else:
+                post_default_panels = {
+                    ("options", formatter.config.arguments_panel_title): [],
+                    ("options", formatter.config.options_panel_title): [],
+                    ("commands", formatter.config.commands_panel_title): [],
+                }
     else:
-        raise ValueError("panel_type must be one of 'parameter' or 'command'")
+        post_default_panels = {
+            ("options", formatter.config.arguments_panel_title): [],
+            ("options", formatter.config.options_panel_title): [],
+        }
 
-    groups_from_config: List[RichPanel[CT]] = []
-    if cfg_groups:
-        groups_from_config = _resolve_panels_from_config(ctx, formatter, cfg_groups, panel_cls)[::-1]  # type: ignore[arg-type]
+    if ("commands", formatter.config.commands_panel_title) in defined_panels:
+        pre_default_panels.pop(("commands", formatter.config.commands_panel_title), None)
+        post_default_panels.pop(("commands", formatter.config.commands_panel_title), None)
 
-    assigned_objs = set([o for p in panel_base.values() for o in p])
-    for p in groups_from_config:
-        panel_base[p.name] = getattr(p, panel_cls._object_attr, [])
-        assigned_objs.update(panel_base[p.name])
+    if ("options", formatter.config.options_panel_title) in defined_panels:
+        pre_default_panels.pop(("options", formatter.config.options_panel_title), None)
+        post_default_panels.pop(("options", formatter.config.options_panel_title), None)
 
-    if formatter.config.arguments_panel_title in panel_base:
+    if ("options", formatter.config.arguments_panel_title) in defined_panels:
+        pre_default_panels.pop(("options", formatter.config.arguments_panel_title), None)
+        post_default_panels.pop(("options", formatter.config.arguments_panel_title), None)
+
+    # Go through objects to see whether they are assigned.
+    # Need to do tuples because commands and options can have same name.
+    assigned_objects: Dict[Tuple[str, str], Set[str]] = {}
+    for p in defined_panels.values():
+        for o in p.get_objects():
+            assigned_objects.setdefault((p._object_attr, o), set())
+            assigned_objects[(p._object_attr, o)].add(p.name)
+
+    if ("options", formatter.config.arguments_panel_title) in defined_panels:
         _show_arguments = True
 
-    # if not formatter.config.group_arguments_options:
+    objs: List[Tuple[str, str, Union[click.core.Parameter, click.core.Command]]] = [
+        ("options", name, o) for name, o in formatter.option_panel_class.list_objects(ctx)
+    ]
+    if isinstance(command, click.core.Group):
+        objs.extend([("commands", name, o) for name, o in formatter.command_panel_class.list_objects(ctx)])
 
-    objs = panel_cls.list_objects(ctx)
-
-    for obj in reversed(objs):
+    # Here we are interested in:
+    # 1. assigning objs based on panel=...
+    # 2. getting unassigned objs
+    for typ, name, obj in objs:
         if TYPE_CHECKING:
             assert isinstance(obj.name, str)
-        names = [obj.name]
-        if isinstance(obj, click.Option):
-            names.extend(obj.opts)
-        elif isinstance(obj, click.Command) and obj.callback is not None:
-            names.append(obj.callback.__name__)
-        assigned = any(i in assigned_objs for i in names)
-        if isinstance(obj, click.Parameter):
-            if getattr(obj, "hidden", False):
-                continue
+        if getattr(obj, "hidden", False):
+            continue
+        names = {name, obj.name}
+        if isinstance(obj, click.core.Parameter):
+            names.update(obj.opts)
+        elif isinstance(obj, click.core.Command) and obj.callback is not None:
+            names.add(obj.callback.__name__)
+        assigned_to = set()
+        for n in names:
+            _assigned_panels = assigned_objects.get((typ, n), set())
+            for ap in _assigned_panels:
+                assigned_to.add((typ, ap))
+        assigned = bool(assigned_to)
+        inferred = False
+        panel_list = None
         if hasattr(obj, "panel"):
             if isinstance(obj.panel, str):
                 panel_list = [obj.panel]
             elif obj.panel is None:
-                panel_list = []
+                if assigned:
+                    continue
             else:
                 panel_list = obj.panel
-            for panel in panel_list:
-                panel_base.setdefault(panel, [])
-                panel_base[panel].append(obj.name)
-                assigned = True
-                if _show_arguments is None and panel == formatter.config.arguments_panel_title:
-                    _show_arguments = True
-        if not assigned:
-            _default(obj)
+        if panel_list is None:
+            inferred = True
+            if typ == "options":
+                if not formatter.config.group_arguments_options and isinstance(obj, click.Argument):
+                    if _show_arguments is not False:
+                        panel_list = [formatter.config.arguments_panel_title]
+                    else:
+                        panel_list = []
+                else:
+                    panel_list = [formatter.config.options_panel_title]
+            elif typ == "commands":
+                panel_list = [formatter.config.commands_panel_title]
+            else:
+                panel_list = []
+        for panel_name in panel_list:
+            # Ensure we don't reassign if already assigned.
+            if (typ, panel_name) not in assigned_to:
+                if (typ, panel_name) in defined_panels:
+                    defined_panels[(typ, panel_name)].add_object(name)
+                elif assigned:
+                    pass
+                elif (typ, panel_name) in pre_default_panels:
+                    pre_default_panels[(typ, panel_name)].append(name)
+                elif (typ, panel_name) in post_default_panels:
+                    post_default_panels[(typ, panel_name)].append(name)
+                else:
+                    new_panels.setdefault((typ, panel_name), []).append(name)
             if (
                 _show_arguments is None
+                and panel_name == formatter.config.arguments_panel_title
                 and isinstance(obj, RichArgument)
-                and obj.help is not None
-                and (obj.panel is None or obj.panel == formatter.config.arguments_panel_title)
+                and (not inferred or obj.help is not None)
             ):
                 _show_arguments = True
 
-    if (
-        not _show_arguments
-        and panel_cls._object_attr == "options"
-        and formatter.config.arguments_panel_title in panel_base
-    ):
-        del panel_base[formatter.config.arguments_panel_title]
-    # The reason final_panels is split from available_panels
-    # is to preserve the order of how things are defined in panel_base.
-    final_panels: Dict[str, Optional[RichPanel[CT]]] = {p: None for p in panel_base}
+    if not _show_arguments:
+        pre_default_panels.pop(("options", formatter.config.arguments_panel_title), None)
+        post_default_panels.pop(("options", formatter.config.arguments_panel_title), None)
 
-    available_panels: Dict[str, RichPanel[CT]] = {
-        p.name: p for p in [*groups_from_config, *filter(lambda _: isinstance(_, panel_cls), command.panels)]
-    }
+    final_panels: List[RichPanel[Any]] = []
 
-    # Now panel_base is done
-    # we can construct the final list of panels
-    for panel_name, obj_list in panel_base.items():
-        if not final_panels.get(panel_name):
-            if panel_name in available_panels:
-                final_panels[panel_name] = available_panels.pop(panel_name)
+    all_panel_mappings: List[Union[Dict[Tuple[str, str], List[str]], Dict[Tuple[str, str], RichPanel[Any]]]] = [
+        pre_default_panels,
+        defined_panels,
+        new_panels,
+        post_default_panels,
+    ]
+    for d in all_panel_mappings:
+        for (typ, panel_name), obj_list in d.items():
+            cls: Type[RichPanel[Any]]
+            if typ == "options":
+                cls = formatter.option_panel_class
+            elif typ == "commands":
+                cls = formatter.command_panel_class
             else:
-                final_panels[panel_name] = panel_cls(panel_name)
-        setattr(final_panels[panel_name], panel_cls._object_attr, list(reversed(obj_list)))
+                continue
+            panel: RichPanel[Any]
+            if isinstance(obj_list, RichPanel):
+                panel = obj_list
+            elif (typ, panel_name) not in defined_panels:
+                panel = cls(panel_name)
+                setattr(panel, panel._object_attr, [i for i in obj_list])
+            else:
+                panel = defined_panels[(typ, panel_name)]
+                for _obj in obj_list:
+                    panel.add_object(_obj)
+            final_panels.append(panel)
 
-    return list(final_panels.values())[::-1]  # type: ignore[return-value]
+    return final_panels
