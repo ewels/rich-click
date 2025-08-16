@@ -128,6 +128,12 @@ def test_config_is_serializable_and_invertible() -> None:
         config2.style_options_table_padding = tuple(config2.style_options_table_padding)  # type: ignore[arg-type,assignment]
         config2.style_commands_table_padding = tuple(config2.style_commands_table_padding)  # type: ignore[arg-type,assignment]
         config2.style_commands_table_column_width_ratio = tuple(config2.style_commands_table_column_width_ratio)  # type: ignore[arg-type,assignment]
+        config2.padding_header_text = tuple(config2.padding_header_text)  # type: ignore[arg-type,assignment]
+        config2.padding_helptext = tuple(config2.padding_helptext)  # type: ignore[arg-type,assignment]
+        config2.padding_footer_text = tuple(config2.padding_footer_text)  # type: ignore[arg-type,assignment]
+        config2.padding_errors_panel = tuple(config2.padding_errors_panel)  # type: ignore[arg-type,assignment]
+        config2.padding_errors_suggestion = tuple(config2.padding_errors_suggestion)  # type: ignore[arg-type,assignment]
+        config2.padding_errors_epilogue = tuple(config2.padding_errors_epilogue)  # type: ignore[arg-type,assignment]
 
         assert config == config2
 

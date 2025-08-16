@@ -12,7 +12,6 @@ from typing import (
     Dict,
     Iterator,
     Literal,
-    Mapping,
     Optional,
     Sequence,
     Tuple,
@@ -252,69 +251,6 @@ class RichHelpFormatter(click.HelpFormatter):
             return self.highlighter(Text.from_ansi(text, **kw))
         else:
             return self.highlighter(Text(text, **kw))
-
-    def rich_panel(
-        self,
-        cls: Type[RP],
-        name: str,
-        *args: Any,
-        table_styles: Optional[Mapping[str, Any]] = None,
-        panel_styles: Optional[Mapping[str, Any]] = None,
-        **kwargs: Any,
-    ) -> RP:
-        from rich import box
-
-        from rich_click.rich_panel import RichCommandPanel, RichOptionPanel
-
-        if issubclass(cls, RichOptionPanel):
-            t_styles = {
-                "show_lines": self.config.style_options_table_show_lines,
-                "leading": self.config.style_options_table_leading,
-                "box": self.config.style_options_table_box,
-                "border_style": self.config.style_options_table_border_style,
-                "row_styles": self.config.style_options_table_row_styles,
-                "pad_edge": self.config.style_options_table_pad_edge,
-                "padding": self.config.style_options_table_padding,
-            }
-            p_styles = {
-                "border_style": self.config.style_options_panel_border,
-                "title_align": self.config.align_options_panel,
-                "box": self.config.style_options_panel_box,
-            }
-            if self.config.style_options_table_box and isinstance(self.config.style_options_table_box, str):
-                t_styles["box"] = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
-            if self.config.style_options_panel_box and isinstance(self.config.style_options_panel_box, str):
-                p_styles["box"] = getattr(box, p_styles.pop("box"), None)  # type: ignore[arg-type]
-        elif issubclass(cls, RichCommandPanel):
-            t_styles = {
-                "show_lines": self.config.style_commands_table_show_lines,
-                "leading": self.config.style_commands_table_leading,
-                "box": self.config.style_commands_table_box,
-                "border_style": self.config.style_commands_table_border_style,
-                "row_styles": self.config.style_commands_table_row_styles,
-                "pad_edge": self.config.style_commands_table_pad_edge,
-                "padding": self.config.style_commands_table_padding,
-            }
-            p_styles = {
-                "border_style": self.config.style_commands_panel_border,
-                "title_align": self.config.align_commands_panel,
-                "box": self.config.style_commands_panel_box,
-            }
-            if self.config.style_commands_table_box and isinstance(self.config.style_commands_table_box, str):
-                t_styles["box"] = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
-            if self.config.style_commands_panel_box and isinstance(self.config.style_commands_panel_box, str):
-                p_styles["box"] = getattr(box, p_styles.pop("box"), None)  # type: ignore[arg-type]
-        else:
-            t_styles = {}
-            p_styles = {}
-
-        if table_styles:
-            t_styles.update(table_styles)
-
-        if panel_styles:
-            p_styles.update(panel_styles)
-
-        return cls(name, *args, table_styles=t_styles, panel_styles=p_styles, **kwargs)
 
     def getvalue(self) -> str:
         if not self.export_console_as:
