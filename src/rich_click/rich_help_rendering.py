@@ -230,6 +230,7 @@ def _get_parameter_metavar(
         if isinstance(param, click.core.Argument) or (
             metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag
         ):
+
             metavar_str = metavar_str.replace("[", "").replace("]", "")
             return Text(
                 formatter.config.append_metavars_help_string.format(metavar_str),
@@ -361,7 +362,11 @@ def get_help_parameter(
 
     # Use Columns - this allows us to group different renderable types
     # (Text, Markdown) onto a single line.
-    return Columns(items)
+    use_markdown = formatter.config.use_markdown or formatter.config.text_markup == "markdown"
+    if use_markdown:
+        return Columns(items)
+    else:
+        return Text(" ").join(items)
 
 
 def get_rich_table_row(
@@ -432,21 +437,19 @@ def get_rich_table_row(
 
     metavar_highlighter = MetavarHighlighter()
 
-    cols: RichPanelRow = [
-        required,
-        formatter.highlighter(formatter.highlighter(",".join(opt_long_strs))),
-        formatter.highlighter(formatter.highlighter(",".join(opt_short_strs))),
-        metavar_highlighter(metavar),
-        (
-            param.get_rich_help(ctx, formatter)
-            if isinstance(param, RichParameter)
-            else get_help_parameter(param, ctx, formatter)
-        ),
-    ]
+    cols: RichPanelRow = []
+    if formatter.config.show_required_column:
+        cols.append(required)
+    cols.append(formatter.highlighter(formatter.highlighter(",".join(opt_long_strs))))
+    cols.append(formatter.highlighter(formatter.highlighter(",".join(opt_short_strs))))
+    if formatter.config.show_metavars_column:
+        cols.append(metavar_highlighter(metavar))
+    cols.append(
+        param.get_rich_help(ctx, formatter)
+        if isinstance(param, RichParameter)
+        else get_help_parameter(param, ctx, formatter)
+    )
 
-    # Remove metavar if specified in config
-    if not formatter.config.show_metavars_column:
-        cols.pop(3)
 
     return cols
 
