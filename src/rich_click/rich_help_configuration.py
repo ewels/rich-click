@@ -5,6 +5,8 @@ from dataclasses import dataclass, field
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
 
+from rich_click.rich_click_theme import THEMES, RichClickTheme
+from rich_click.utils import CommandGroupDict, OptionGroupDict, truthy
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
 
 
@@ -16,6 +18,8 @@ if TYPE_CHECKING:  # pragma: no cover
     import rich.style
     import rich.text
     from rich.padding import PaddingDimensions
+
+    import rich_click.rich_click_theme
 
 
 T = TypeVar("T", bound="RichHelpConfiguration")
@@ -56,6 +60,8 @@ class RichHelpConfiguration:
     take precedence over the class's defaults. When there are multiple user-defined values
     for a given field, the right-most field is used.
     """
+
+    theme: "rich_click.rich_click_theme.ThemeType" = field(default=RichClickTheme.default)
 
     # Default styles
     style_option: "rich.style.StyleType" = field(default="bold cyan")
@@ -247,6 +253,18 @@ class RichHelpConfiguration:
             self.text_emojis = self.text_markup in {"markdown", "rich"}
 
         self.__dataclass_fields__.pop("highlighter", None)
+
+        # Apply theme if specified
+        if self.theme:
+            theme_settings = THEMES.get(self.theme)
+            if theme_settings:
+                for k, v in theme_settings.items():
+                    current = getattr(self, k)
+                    default = self.__dataclass_fields__[k].default
+
+                    # Only override default theme if the user didn't provide a theme value.
+                    if current == default:
+                        setattr(self, k, v)
 
     @classmethod
     def load_from_globals(cls, module: Optional[ModuleType] = None, **extra: Any) -> "RichHelpConfiguration":
