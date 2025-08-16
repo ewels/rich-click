@@ -3,31 +3,39 @@
 ## Version 1.9.0dev0 (WIP)
 
 > [!WARNING]
+> Version 1.9.0 deprecates support for a lot of old versions of things:
 >
-> Click 7.x support is removed. The minimum supported Click version is 8.0.
+> - **Python 3.7 support is removed.** The minimum supported Python version is 3.8.
+> - **Click 7 support is removed.** The minimum supported Click version is 8.0.
+> - **Rich 10 and 11 support is removed.** The minimum supported Rich version is 12.
 
-> [!WARNING]
->
-> Python 3.7 support is removed. The minimum supported Python version is 3.8.
+**Big changes:**
 
-> [!WARNING]
->
-> Rich 10.x and 11.x support is removed. The minimum supported Rich version is 12.
+- **IDE tab completion support for decorators**. Now you should no longer need to guess what goes in `@click.option()` or `@click.command(context_settings=...)` etc.
+- **RichPanels** API introduced. This replaces the "groups" feature going forward (although groups will continue to be supported).
+  - `@click.option_panel()`
+  - `@click.command_panel()`
+- **Help for arguments:** `help=` is now a valid kwarg for `@click.argument()` decorator. See docs for more information.
 
-Big changes:
-
-- TODO
-
-Small changes:
+**Small changes:**
 
 - "Deprecated" text properly handled and stylized in all places.
+- Improved `rich-click` CLI patching.
+- `context_settings={"help_to_stderr": True}` support.
+- Added suite of `padding_*` config options to control padding.
+- Added newline control in help text with `text_paragraph_linebreaks` config option.
+- Added a few `text_*` config options, including notably `text_kwargs` which can control code styles in Markdown.
 
-Backend (mostly invisible) changes:
+**Backend (mostly invisible) changes:**
 
 - Overhauled our test suite to use **inline-snapshot**! 😁
 - Improved test coverage and CI.
 - `typing_extensions` now only required for < Python 3.11.
 - `RichHelpFormatter` now defers printing by default if a user does not specify a Console. [[#231](https://github.com/ewels/rich-click/pull/231)] (With contributions from [@ofek](https://github.com/ofek))
+  - This more closely aligns the `RichHelpFormatter` with how base Click works.
+- Significant refactors to help text rendering.
+- Reintroduced deprecation warnings for a couple of features deprecated in 1.8.
+- There was an issue where the `rich.highlighter` module could load during CLI execution. We now assert in unit-tests that no `rich` modules are loaded during code execution, so going forward, `rich` imports should no longer ever be a side-effect of CLI execution.
 
 ## Version 1.8.9 (2025-05-19)
 
@@ -170,7 +178,7 @@ In addition:
 
 ## Version 1.5.2 (2022-08-01)
 
-> ⚠️ Important notice! ⚠️
+> [!NOTE]
 >
 > As of [Typer v0.6.0](https://typer.tiangolo.com/release-notes/#060), Typer now supports rich help text natively.
 > Support for Typer in rich-click is now depreciated and will be removed in a future release.

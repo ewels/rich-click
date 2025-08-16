@@ -53,6 +53,7 @@ Click, formatted with Rich, with minimal customization required.
 - ❌ Well formatted error messages
 - 🔢 Easily give custom sort order for options and commands
 - 🎨 Extensive customization of styling and behaviour possible
+- 🤖 IDE autocomplete of Click decorators for smooth developer experience.
 
 ## Installation
 
@@ -145,7 +146,7 @@ That's it! ✨ Then continue to use Click as you would normally.
 
 ### Declarative
 
-If you prefer, you can use `RichGroup` or `RichCommand` with the `cls` argument in your click usage instead.
+If you prefer, you can use `RichGroup` or `RichCommand` with the `cls` argument instead.
 This means that you can continue to use the unmodified `click` package in parallel.
 
 ```python

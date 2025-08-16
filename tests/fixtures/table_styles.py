@@ -1,5 +1,6 @@
 import rich_click as click
 
+
 click.rich_click.STYLE_OPTIONS_TABLE_LEADING = 1
 click.rich_click.STYLE_OPTIONS_TABLE_BOX = "SIMPLE"
 click.rich_click.STYLE_OPTIONS_TABLE_ROW_STYLES = ["bold", ""]

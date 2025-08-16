@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any, Literal, Mapping, Optional, Type, Union
 
 import click
@@ -20,6 +22,7 @@ class RichContext(click.Context):
     console: Optional["Console"] = None
     export_console_as: Optional[Literal["html", "svg", "text"]] = None
     errors_in_output_format: bool = False
+    help_to_stderr: bool = False
 
     def __init__(
         self,
@@ -28,6 +31,7 @@ class RichContext(click.Context):
         rich_help_config: Optional[Union[Mapping[str, Any], RichHelpConfiguration]] = None,
         export_console_as: Optional[Literal["html", "svg", "text"]] = None,
         errors_in_output_format: Optional[bool] = None,
+        help_to_stderr: Optional[bool] = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -40,11 +44,17 @@ class RichContext(click.Context):
             rich_help_config: Rich help configuration.  Defaults to None.
             export_console_as: Arg is passed to RichHelpFormatter().
             errors_in_output_format: Arg is passed to RichHelpFormatter().
+            help_to_stderr: If set, help is printed to stderr.
             **kwargs: Kwargs that get passed to click.Context.
 
         """
         super().__init__(*args, **kwargs)
         parent: Optional[RichContext] = kwargs.pop("parent", None)
+
+        if help_to_stderr is None and hasattr(parent, "help_to_stderr"):
+            self.help_to_stderr = parent.help_to_stderr  # type: ignore[union-attr]
+        else:
+            self.help_to_stderr = help_to_stderr or self.help_to_stderr
 
         if export_console_as is None and hasattr(parent, "export_console_as"):
             self.export_console_as = parent.export_console_as  # type: ignore[union-attr]

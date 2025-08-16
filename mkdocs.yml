@@ -44,6 +44,7 @@ nav:
       - Introduction to Click: documentation/introduction_to_click.md
       - "Comparison of Click & rich-click": documentation/comparison_of_click_and_rich_click.md
       - Configuration: documentation/configuration.md
+      - "Panels": documentation/panels.md
       - "Formatting & Styles": documentation/formatting_and_styles.md
       - "Groups & Sorting": documentation/groups_and_sorting.md
       - "<code>rich-click</code> CLI tool": documentation/rich_click_cli.md
@@ -82,6 +83,8 @@ markdown_extensions:
 plugins:
   - search
   - blog
+  - include-markdown
+  - gh-admonitions
   - social:
       cards_layout_options:
         font_family: Kode Mono
@@ -99,8 +102,15 @@ plugins:
       categories:
         - categories
         - tags
+  - mike:
+      canonical_version: latest
 
 extra_css:
   - css/termynal.css
   - css/extra.css
 
+extra:
+  version:
+    provider: mike
+    default: latest
+    alias: true

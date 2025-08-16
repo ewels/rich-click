@@ -1,25 +1,24 @@
+from __future__ import annotations
+
 import inspect
 import re
-import sys
 from fnmatch import fnmatch
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Literal, Optional, Tuple, TypeVar, Union, overload
+from gettext import gettext
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Literal, Optional, Union
 
 import click
 
-# Due to how rich_click.cli.patch() works, it is safer to import Command types directly
-# rather than use the click module e.g. click.Command
-from click import Command, Group
+# Due to how rich_click.cli.patch() works, it is safer to import types
+# from click.core rather than use the click module e.g. click.Command
+import click.core
 from rich import box
 from rich.align import Align
 from rich.columns import Columns
-from rich.console import RenderableType
-from rich.emoji import Emoji
+from rich.console import RenderableType, group
 from rich.highlighter import RegexHighlighter
 from rich.markdown import Markdown
 from rich.padding import Padding
 from rich.panel import Panel
-from rich.style import StyleType
-from rich.table import Table
 from rich.text import Text
 
 from rich_click._compat_click import (
@@ -27,83 +26,29 @@ from rich_click._compat_click import (
     CLICK_IS_BEFORE_VERSION_82,
     CLICK_IS_VERSION_80,
 )
+from rich_click.rich_context import RichContext
 from rich_click.rich_help_formatter import RichHelpFormatter
-from rich_click.utils import CommandGroupDict, OptionGroupDict
+from rich_click.rich_panel import GroupType
+from rich_click.rich_parameter import RichParameter
 
 
-# Support rich <= 10.6.0
-try:
-    from rich.console import group
-except ImportError:
-    from rich.console import render_group as group  # type: ignore[attr-defined,no-redef]
+if TYPE_CHECKING:
+    pass
+
+RichPanelRow = List[RenderableType]
 
 
 if CLICK_IS_BEFORE_VERSION_9X:
     # We need to load from here to help with patching.
     from rich_click.rich_command import MultiCommand  # type: ignore[attr-defined]
 else:
-    MultiCommand = Group  # type: ignore[misc,assignment,unused-ignore]
-
-
-def _make_rich_rext(text: Union[str, Text], style: StyleType, formatter: RichHelpFormatter) -> Union[Markdown, Text]:
-    """
-    Take a string, remove indentations, and return styled text.
-    By default, return the text as a Rich Text with the request style.
-    If config.use_rich_markup is True, also parse the text for Rich markup strings.
-    If config.use_markdown is True, parse as Markdown.
-    Only one of config.use_markdown or config.use_rich_markup can be True.
-    If both are True, config.use_markdown takes precedence.
-
-    Args:
-    ----
-        text (str): Text to style.
-        style (StyleType): Rich style to apply.
-        formatter: formatter object.
-
-    Returns:
-    -------
-        MarkdownElement or Text: Styled text object
-
-    """
-    if isinstance(text, Text):
-        return text
-
-    config = formatter.config
-    # Remove indentations from input text
-    text = inspect.cleandoc(text)
-
-    use_ansi = False
-    use_markdown = False
-    use_rich = False
-
-    if config.use_markdown:
-        use_markdown = True
-    elif config.use_rich_markup:
-        use_rich = True
-    elif config.text_markup == "markdown":
-        use_markdown = True
-    elif config.text_markup == "rich":
-        use_rich = True
-    elif config.text_markup == "ansi":
-        use_ansi = True
-
-    # TODO:
-    #  In a future major version release, decouple emojis and markdown.
-    #  Decoupling isn't something that is sensible without breaking the API.
-    if use_markdown:
-        if config.use_markdown_emoji:
-            text = Emoji.replace(text)
-        return Markdown(text, style=style)
-    elif use_rich:
-        return formatter.highlighter(Text.from_markup(text, style=style))
-    elif use_ansi:
-        return formatter.highlighter(Text.from_ansi(text, style=style))
-    else:
-        return formatter.highlighter(Text(text, style=style))
+    MultiCommand = click.core.Group  # type: ignore[misc,assignment,unused-ignore]
 
 
 @group()
-def _get_help_text(obj: Union[Command, Group], formatter: RichHelpFormatter) -> Iterable[Union[Markdown, Text]]:
+def _get_help_text(
+    obj: Union[click.core.Command, click.core.Group], formatter: RichHelpFormatter
+) -> Iterable[Union[Padding, Markdown, Text]]:
     """
     Build primary help text for a click command or group.
     Returns the prose help text for a command or group, rendered either as a
@@ -126,11 +71,17 @@ def _get_help_text(obj: Union[Command, Group], formatter: RichHelpFormatter) -> 
     # Prepend deprecated status
     if obj.deprecated:
         if isinstance(obj.deprecated, str):
-            yield Text(
-                formatter.config.deprecated_with_reason_string.format(obj.deprecated), style=config.style_deprecated
+            yield Padding(
+                Text(
+                    formatter.config.deprecated_with_reason_string.format(obj.deprecated), style=config.style_deprecated
+                ),
+                formatter.config.padding_helptext_deprecated,
             )
         else:
-            yield Text(config.deprecated_string, style=config.style_deprecated)
+            yield Padding(
+                Text(config.deprecated_string, style=config.style_deprecated),
+                formatter.config.padding_helptext_deprecated,
+            )
 
     # Fetch and dedent the help text
     help_text = inspect.cleandoc(obj.help)
@@ -144,24 +95,36 @@ def _get_help_text(obj: Union[Command, Group], formatter: RichHelpFormatter) -> 
     if not config.use_markdown and not config.text_markup == "markdown":
         if not first_line.startswith("\b"):
             first_line = first_line.replace("\n", " ")
-    yield _make_rich_rext(first_line.strip(), config.style_helptext_first_line, formatter)
-
+    yield Padding(
+        formatter.rich_text(
+            first_line.strip(),
+        ),
+        formatter.config.padding_helptext_first_line,
+    )
     # Get remaining lines, remove single line breaks and format as dim
     remaining_paragraphs = help_text.split("\n\n")[1:]
+
+    use_markdown = formatter.config.use_markdown or formatter.config.text_markup == "markdown"
+    if formatter.config.text_paragraph_linebreaks is None:
+        if use_markdown:
+            lb = "\n\n"
+        else:
+            lb = "\n"
+    else:
+        lb = formatter.config.text_paragraph_linebreaks
     if len(remaining_paragraphs) > 0:
-        if not config.use_markdown and not config.text_markup == "markdown":
+        if not use_markdown:
             # Remove single linebreaks
             remaining_paragraphs = [
                 x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
                 for x in remaining_paragraphs
             ]
             # Join back together
-            remaining_lines = "\n".join(remaining_paragraphs)
+            remaining_lines = lb.join(remaining_paragraphs)
         else:
             # Join with double linebreaks if markdown
-            remaining_lines = "\n\n".join(remaining_paragraphs)
-
-        yield _make_rich_rext(remaining_lines, config.style_helptext, formatter)
+            remaining_lines = lb.join(remaining_paragraphs)
+        yield formatter.rich_text(remaining_lines, formatter.config.style_helptext)
 
 
 def _get_deprecated_text(
@@ -175,8 +138,180 @@ def _get_deprecated_text(
     return Text(s, style=formatter.config.style_deprecated)
 
 
-def _get_option_help(
-    param: Union[click.Argument, click.Option], ctx: click.Context, formatter: RichHelpFormatter
+def _get_parameter_env_var(
+    param: Union[click.Argument, click.Option, RichParameter],
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+) -> Optional[Text]:
+    if not getattr(param, "show_envvar", None):
+        return None
+
+    envvar = getattr(param, "envvar", None)
+
+    # https://github.com/pallets/click/blob/0aec1168ac591e159baf6f61026d6ae322c53aaf/src/click/core.py#L2720-L2726
+    if envvar is None:
+        if (
+            getattr(param, "allow_from_autoenv", None)
+            and getattr(ctx, "auto_envvar_prefix", None) is not None
+            and param.name is not None
+        ):
+            envvar = f"{ctx.auto_envvar_prefix}_{param.name.upper()}"
+    if envvar is not None:
+        envvar = ", ".join(envvar) if isinstance(envvar, list) else envvar
+
+    if envvar is not None:
+        return Text(formatter.config.envvar_string.format(envvar), style=formatter.config.style_option_envvar)
+    return None
+
+
+def _get_parameter_deprecated(
+    param: Union[click.Argument, click.Option, RichParameter],
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+) -> Optional[Text]:
+    if not getattr(param, "deprecated", None):
+        return None
+    return _get_deprecated_text(getattr(param, "deprecated"), formatter)
+
+
+def _get_parameter_help(
+    param: Union[click.Argument, click.Option, RichParameter],
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+) -> Optional[Union[Markdown, Text]]:
+    base_help_txt = getattr(param, "help", None)
+    if not base_help_txt:
+        return None
+
+    if TYPE_CHECKING:  # pragma: no cover
+        assert isinstance(param, click.Option)
+        assert hasattr(param, "help")
+        assert isinstance(param.help, str)
+
+    paragraphs = base_help_txt.split("\n\n")
+
+    # Remove single linebreaks
+    if not formatter.config.use_markdown and not formatter.config.text_markup == "markdown":
+        paragraphs = [
+            x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
+            for x in paragraphs
+        ]
+    help_text = "\n".join(paragraphs).strip()
+
+    # `Deprecated` is included in base help text; remove it here.
+    if getattr(param, "deprecated", None):
+        if isinstance(getattr(param, "deprecated"), str):
+            help_text = re.sub(r"\(DEPRECATED: .*?\)$", "", help_text)
+        else:
+            help_text = re.sub(r"\(DEPRECATED\)$", "", help_text)
+
+    if getattr(param, "help_style", None) is None:
+        style = formatter.config.style_option_help
+    else:
+        style = param.help_style  # type: ignore[attr-defined]
+    return formatter.rich_text(help_text, style)
+
+
+def _get_parameter_metavar(
+    param: Union[click.Argument, click.Option, RichParameter],
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+) -> Optional[Text]:
+    if formatter.config.append_metavars_help:
+        metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
+        # Do it ourselves if this is a positional argument
+        if (
+            isinstance(param, click.core.Argument)
+            and param.name is not None
+            and re.match(rf"\[?{param.name.upper()}]?", metavar_str)
+        ):
+            metavar_str = param.type.name.upper()
+        # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option
+        if isinstance(param, click.core.Argument) or (
+            metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag
+        ):
+            metavar_str = metavar_str.replace("[", "").replace("]", "")
+            return Text(
+                formatter.config.append_metavars_help_string.format(metavar_str),
+                style=formatter.config.style_metavar_append,
+                overflow="fold",
+            )
+    return None
+
+
+def _get_parameter_default(
+    param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
+) -> Optional[Text]:
+
+    if not hasattr(param, "show_default"):
+        return None
+
+    show_default = False
+    show_default_is_str = False
+
+    resilient = ctx.resilient_parsing
+    ctx.resilient_parsing = True
+    try:
+        default_value = param.get_default(ctx, call=False)
+    finally:
+        ctx.resilient_parsing = resilient
+
+    if (not CLICK_IS_VERSION_80 and param.show_default is not None) or param.show_default:
+        if isinstance(param.show_default, str):
+            show_default_is_str = show_default = True
+        else:
+            show_default = param.show_default
+    elif ctx.show_default is not None:
+        show_default = ctx.show_default
+
+    default_string: Optional[str] = None
+
+    if show_default_is_str or (show_default and (default_value is not None)):
+        if show_default_is_str:
+            default_string = f"({param.show_default})"
+        elif isinstance(default_value, (list, tuple)):
+            default_string = ", ".join(str(d) for d in default_value)
+        elif inspect.isfunction(default_value):
+            default_string = gettext("(dynamic)")
+        elif hasattr(param, "is_bool_flag") and param.is_bool_flag and param.secondary_opts:
+            # For boolean flags that have distinct True/False opts,
+            # use the opt without prefix instead of the value.
+            opt = (param.opts if default_value else param.secondary_opts)[0]
+            first = opt[:1]
+            if first.isalnum():
+                default_string = opt
+            if opt[1:2] == first:
+                default_string = opt[2:]
+            else:
+                default_string = opt[1:]
+        elif hasattr(param, "is_bool_flag") and param.is_bool_flag and not param.secondary_opts and not default_value:
+            if CLICK_IS_VERSION_80:
+                default_string = str(param.default)
+            else:
+                default_string = ""
+        elif default_value == "":
+            default_string = '""'
+        else:
+            default_string = str(default_value)
+
+    if default_string:
+        return Text(
+            formatter.config.default_string.format(default_string),
+            style=formatter.config.style_option_default,
+        )
+    return None
+
+
+def _get_parameter_required(
+    param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
+) -> Optional[Text]:
+    if param.required:
+        return Text(formatter.config.required_long_string, style=formatter.config.style_required_long)
+    return None
+
+
+def get_help_parameter(
+    param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
 ) -> Columns:
     """
     Build primary help text for a click option or argument.
@@ -202,108 +337,118 @@ def _get_option_help(
         assert isinstance(param.name, str)
 
     # Get the environment variable first
-    envvar = getattr(param, "envvar", None)
-    # https://github.com/pallets/click/blob/0aec1168ac591e159baf6f61026d6ae322c53aaf/src/click/core.py#L2720-L2726
-    if envvar is None:
-        if (
-            getattr(param, "allow_from_autoenv", None)
-            and getattr(ctx, "auto_envvar_prefix", None) is not None
-            and param.name is not None
-        ):
-            envvar = f"{ctx.auto_envvar_prefix}_{param.name.upper()}"
-    if envvar is not None:
-        envvar = ", ".join(envvar) if isinstance(envvar, list) else envvar
+    envvar_text = _get_parameter_env_var(param, ctx, formatter)
+    help_text = _get_parameter_help(param, ctx, formatter)
+    deprecated_text = _get_parameter_deprecated(param, ctx, formatter)
+    metavar_text = _get_parameter_metavar(param, ctx, formatter)
+    default_text = _get_parameter_default(param, ctx, formatter)
+    required_text = _get_parameter_required(param, ctx, formatter)
 
-    # Environment variable config.before help text
-    if getattr(param, "show_envvar", None) and config.option_envvar_first and envvar is not None:
-        items.append(Text(config.envvar_string.format(envvar), style=config.style_option_envvar))
-
-    # Main help text
-    if getattr(param, "help", None):
-        if TYPE_CHECKING:  # pragma: no cover
-            assert isinstance(param, click.Option)
-            assert hasattr(param, "help")
-            assert isinstance(param.help, str)
-        paragraphs = param.help.split("\n\n")
-        # Remove single linebreaks
-        if not config.use_markdown and not config.text_markup == "markdown":
-            paragraphs = [
-                x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
-                for x in paragraphs
-            ]
-        help_text = "\n".join(paragraphs).strip()
-        if getattr(param, "deprecated", None):
-            if isinstance(getattr(param, "deprecated"), str):
-                help_text = re.sub(r"\(DEPRECATED: .*?\)$", "", help_text)
-            else:
-                help_text = re.sub(r"\(DEPRECATED\)$", "", help_text)
-        items.append(_make_rich_rext(help_text, config.style_option_help, formatter))
-        if getattr(param, "deprecated", None):
-            items.append(_get_deprecated_text(getattr(param, "deprecated"), formatter))
-
-    # Append metavar if requested
-    if config.append_metavars_help:
-        metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
-        # Do it ourselves if this is a positional argument
-        if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
-            metavar_str = param.type.name.upper()
-        # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option
-        if isinstance(param, click.core.Argument) or (metavar_str != "BOOLEAN" and not param.is_flag):
-            metavar_str = metavar_str.replace("[", "").replace("]", "")
-            items.append(
-                Text(
-                    config.append_metavars_help_string.format(metavar_str),
-                    style=config.style_metavar_append,
-                    overflow="fold",
-                )
-            )
-
-    # Environment variable config.after help text
-    if getattr(param, "show_envvar", None) and not config.option_envvar_first and envvar is not None:
-        items.append(Text(config.envvar_string.format(envvar), style=config.style_option_envvar))
-
-    # Default value
-    # Click 8.0 and 8.1 behave slightly differently when handling the default value help text.
-    if not hasattr(param, "show_default"):
-        parse_default = False
-    elif CLICK_IS_VERSION_80:
-        show_default_is_str = isinstance(param.show_default, str)
-        parse_default = bool(
-            show_default_is_str or (param.default is not None and (param.show_default or ctx.show_default))
-        )
-    else:
-        show_default_is_str = False
-        if param.show_default is not None:
-            if isinstance(param.show_default, str):
-                show_default_is_str = show_default = True
-            else:
-                show_default = bool(param.show_default)
-        else:
-            show_default = bool(getattr(ctx, "show_default", False))
-        parse_default = bool(show_default_is_str or (show_default and (param.default is not None)))
-
-    if parse_default:
-        help_record = param.get_help_record(ctx)
-        if TYPE_CHECKING:  # pragma: no cover
-            assert isinstance(help_record, tuple)
-        default_str_match = re.search(r"\[(?:.+; )?default: (.*)\]", help_record[-1])
-        if default_str_match:
-            # Don't show the required string, as we show that afterwards anyway
-            default_str = default_str_match.group(1).replace("; required", "")
-            items.append(
-                Text(
-                    config.default_string.format(default_str),
-                    style=config.style_option_default,
-                )
-            )
-
-    # Required?
-    if param.required:
-        items.append(Text(config.required_long_string, style=config.style_required_long))
+    if envvar_text is not None and config.option_envvar_first:
+        items.append(envvar_text)
+    if help_text is not None:
+        items.append(help_text)
+    if deprecated_text is not None:
+        items.append(deprecated_text)
+    if metavar_text is not None:
+        items.append(metavar_text)
+    if envvar_text is not None and not config.option_envvar_first:
+        items.append(envvar_text)
+    if default_text is not None:
+        items.append(default_text)
+    if required_text is not None:
+        items.append(required_text)
 
     # Use Columns - this allows us to group different renderable types
     # (Text, Markdown) onto a single line.
     return Columns(items)
+
+
+def get_rich_table_row(
+    param: Union[click.Argument, click.Option, RichParameter],
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+) -> RichPanelRow:
+    """Create a row for the rich table corresponding with this parameter."""
+    # Short and long form
+    opt_long_strs = []
+    opt_short_strs = []
+    for idx, opt in enumerate(param.opts):
+        opt_str = opt
+        try:
+            opt_str += "/" + param.secondary_opts[idx]
+        except IndexError:
+            pass
+
+        if isinstance(param, click.core.Argument):
+            opt_long_strs.append(opt_str.upper())
+        elif "--" in opt:
+            opt_long_strs.append(opt_str)
+        else:
+            opt_short_strs.append(opt_str)
+
+    # Column for a metavar, if we have one
+    metavar = Text(style=formatter.config.style_metavar, overflow="fold")
+    metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
+
+    if TYPE_CHECKING:  # pragma: no cover
+        assert isinstance(param.name, str)
+        assert isinstance(param, click.core.Option)
+
+    # Do it ourselves if this is a positional argument
+    if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
+        metavar_str = param.type.name.upper()
+
+    # Attach metavar if param is a positional argument, or if it is a non-boolean and non flag option
+    if isinstance(param, click.core.Argument) or (metavar_str != "BOOLEAN" and not getattr(param, "is_flag", None)):
+        metavar.append(metavar_str)
+
+    # Range - from
+    # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706  # noqa: E501
+    try:
+        # skip count with default range type
+        if isinstance(param.type, click.types._NumberRangeBase) and not (
+            param.count and param.type.min == 0 and param.type.max is None
+        ):
+            range_str = param.type._describe_range()
+            if range_str:
+                metavar.append(formatter.config.range_string.format(range_str))
+    except AttributeError:
+        # click.types._NumberRangeBase is only in Click 8x onwards
+        pass
+
+    # Required asterisk
+    required: Union[Text, str] = ""
+    if param.required:
+        required = Text(formatter.config.required_short_string, style=formatter.config.style_required_short)
+
+    # Highlighter to make [ | ] and <> dim
+    class MetavarHighlighter(RegexHighlighter):
+        highlights = [
+            r"^(?P<metavar_sep>(\[|<))",
+            r"(?P<metavar_sep>\|)",
+            r"(?P<metavar_sep>(\]|>)$)",
+        ]
+
+    metavar_highlighter = MetavarHighlighter()
+
+    cols: RichPanelRow = [
+        required,
+        formatter.highlighter(formatter.highlighter(",".join(opt_long_strs))),
+        formatter.highlighter(formatter.highlighter(",".join(opt_short_strs))),
+        metavar_highlighter(metavar),
+        (
+            param.get_rich_help(ctx, formatter)
+            if isinstance(param, RichParameter)
+            else get_help_parameter(param, ctx, formatter)
+        ),
+    ]
+
+    # Remove metavar if specified in config
+    if not formatter.config.show_metavars_column:
+        cols.pop(3)
+
+    return cols
 
 
 def _make_command_help(
@@ -336,7 +481,7 @@ def _make_command_help(
         paragraphs[0] = paragraphs[0].replace("\b\n", "")
     help_text = paragraphs[0].strip()
     renderable: Union[Text, Markdown, Columns]
-    renderable = _make_rich_rext(help_text, formatter.config.style_option_help, formatter)
+    renderable = formatter.rich_text(help_text, formatter.config.style_option_help)
     if deprecated:
         dep_txt = _get_deprecated_text(
             deprecated=deprecated,
@@ -361,8 +506,8 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", pref
     if config.header_text:
         formatter.write(
             Padding(
-                _make_rich_rext(config.header_text, config.style_header_text, formatter),
-                (1, 1, 0, 1),
+                formatter.rich_text(config.header_text, config.style_header_text),
+                config.padding_header_text,
             ),
         )
 
@@ -384,12 +529,12 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", pref
                     usage_highlighter(args),
                 )
             ),
-            1,
+            formatter.config.padding_usage,
         ),
     )
 
 
-def get_rich_help_text(self: Command, ctx: click.Context, formatter: RichHelpFormatter) -> None:
+def get_rich_help_text(self: click.core.Command, ctx: RichContext, formatter: RichHelpFormatter) -> None:
     """Write rich help text to the formatter if it exists."""
     # Print command / group help if we have some
     if self.help:
@@ -397,34 +542,20 @@ def get_rich_help_text(self: Command, ctx: click.Context, formatter: RichHelpFor
         formatter.write(
             Padding(
                 Align(_get_help_text(self, formatter), pad=False),
-                (0, 1, 1, 1),
+                formatter.config.padding_helptext,
             )
         )
 
 
-GroupType = TypeVar("GroupType", OptionGroupDict, CommandGroupDict)
-
-
-@overload
 def _resolve_groups(
-    ctx: click.Context, groups: Dict[str, List[OptionGroupDict]], group_attribute: Literal["options"]
-) -> List[OptionGroupDict]: ...
-
-
-@overload
-def _resolve_groups(
-    ctx: click.Context, groups: Dict[str, List[CommandGroupDict]], group_attribute: Literal["commands"]
-) -> List[CommandGroupDict]: ...
-
-
-def _resolve_groups(
-    ctx: click.Context, groups: Dict[str, List[GroupType]], group_attribute: Literal["commands", "options"]
+    ctx: RichContext, groups: Dict[str, List[GroupType]], group_attribute: Literal["commands", "options"]
 ) -> List[GroupType]:
     """Logic for resolving the groups."""
+    # Step 1: get valid name(s) for the command currently being executed
     cmd_name = ctx.command.name
-    _ctx = ctx
+    _ctx: RichContext = ctx
     while _ctx.parent is not None:
-        _ctx = _ctx.parent
+        _ctx = _ctx.parent  # type: ignore[assignment]
         cmd_name = f"{_ctx.command.name} {cmd_name}"
     # 'command_path' is sometimes the file name, e.g. hello.py.
     # We also want to make sure that the actual command name is supported as well.
@@ -461,300 +592,28 @@ def _resolve_groups(
     return final_groups_list
 
 
-def get_rich_options(
-    obj: Command,
-    ctx: click.Context,
-    formatter: RichHelpFormatter,
-) -> None:
-    """Richly render a click Command's options."""
-    # Look through config.option_groups for this command
-    # stick anything unmatched into a default group at the end
-    option_groups = _resolve_groups(ctx=ctx, groups=formatter.config.option_groups, group_attribute="options")
-    argument_group_options = []
-
-    for param in obj.get_params(ctx):
-        # Skip positional arguments - they don't have opts or helptext and are covered in usage
-        # See https://click.palletsprojects.com/en/8.0.x/documentation/#documenting-arguments
-        if isinstance(param, click.core.Argument) and not formatter.config.show_arguments:
-            continue
-
-        # Skip if option is hidden
-        if getattr(param, "hidden", False):
-            continue
-
-        # Already mentioned in a config option group
-        for option_group in option_groups:
-            if any([opt in (option_group.get("options") or []) for opt in param.opts]):
-                break
-
-        # No break, no mention - add to the default group
-        else:
-            if isinstance(param, click.core.Argument) and not formatter.config.group_arguments_options:
-                argument_group_options.append(param.opts[0])
-            else:
-                list_of_option_groups = option_groups[-1]["options"]
-                list_of_option_groups.append(param.opts[0])
-
-    # If we're not grouping arguments and we got some, prepend before default options
-    if len(argument_group_options) > 0:
-        for grp in option_groups:
-            if grp.get("name", "") == formatter.config.arguments_panel_title and not grp.get("options"):
-                extra_option_group = grp.copy()
-                extra_option_group["options"] = argument_group_options
-                break
-        else:
-            extra_option_group: OptionGroupDict = {  # type: ignore[no-redef]
-                "name": formatter.config.arguments_panel_title,
-                "options": argument_group_options,
-            }
-        option_groups.insert(len(option_groups) - 1, extra_option_group)
-
-    # Print each option group panel
-    for option_group in option_groups:
-        options_rows = []
-        for opt in option_group.get("options") or []:
-            # Get the param
-            for param in obj.get_params(ctx):
-                if any([opt in param.opts]):
-                    break
-            # Skip if option is not listed in this group
-            else:
-                continue
-
-            # Short and long form
-            opt_long_strs = []
-            opt_short_strs = []
-            for idx, opt in enumerate(param.opts):
-                opt_str = opt
-                try:
-                    opt_str += "/" + param.secondary_opts[idx]
-                except IndexError:
-                    pass
-
-                if isinstance(param, click.core.Argument):
-                    opt_long_strs.append(opt_str.upper())
-                elif "--" in opt:
-                    opt_long_strs.append(opt_str)
-                else:
-                    opt_short_strs.append(opt_str)
-
-            # Column for a metavar, if we have one
-            metavar = Text(style=formatter.config.style_metavar, overflow="fold")
-            metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
-
-            if TYPE_CHECKING:  # pragma: no cover
-                assert isinstance(param.name, str)
-                assert isinstance(param, click.Option)
-
-            # Do it ourselves if this is a positional argument
-            if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
-                metavar_str = param.type.name.upper()
-
-            # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option
-            if isinstance(param, click.core.Argument) or (
-                metavar_str != "BOOLEAN" and not getattr(param, "is_flag", None)
-            ):
-                metavar.append(metavar_str)
-
-            # Range - from
-            # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706  # noqa: E501
-            try:
-                # skip count with default range type
-                if isinstance(param.type, click.types._NumberRangeBase) and not (
-                    param.count and param.type.min == 0 and param.type.max is None
-                ):
-                    range_str = param.type._describe_range()
-                    if range_str:
-                        metavar.append(formatter.config.range_string.format(range_str))
-            except AttributeError:
-                # click.types._NumberRangeBase is only in Click 8x onwards
-                pass
-
-            # Required asterisk
-            required: Union[Text, str] = ""
-            if param.required:
-                required = Text(formatter.config.required_short_string, style=formatter.config.style_required_short)
-
-            # Highlighter to make [ | ] and <> dim
-            class MetavarHighlighter(RegexHighlighter):
-                highlights = [
-                    r"^(?P<metavar_sep>(\[|<))",
-                    r"(?P<metavar_sep>\|)",
-                    r"(?P<metavar_sep>(\]|>)$)",
-                ]
-
-            metavar_highlighter = MetavarHighlighter()
-
-            rows = [
-                required,
-                formatter.highlighter(formatter.highlighter(",".join(opt_long_strs))),
-                formatter.highlighter(formatter.highlighter(",".join(opt_short_strs))),
-                metavar_highlighter(metavar),
-                _get_option_help(param, ctx, formatter),
-            ]
-
-            # Remove metavar if specified in config
-            if not formatter.config.show_metavars_column:
-                rows.pop(3)
-
-            options_rows.append(rows)
-
-        if len(options_rows) > 0:
-            t_styles = {
-                "show_lines": formatter.config.style_options_table_show_lines,
-                "leading": formatter.config.style_options_table_leading,
-                "box": formatter.config.style_options_table_box,
-                "border_style": formatter.config.style_options_table_border_style,
-                "row_styles": formatter.config.style_options_table_row_styles,
-                "pad_edge": formatter.config.style_options_table_pad_edge,
-                "padding": formatter.config.style_options_table_padding,
-            }
-            if isinstance(formatter.config.style_options_table_box, str):
-                t_styles["box"] = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
-            t_styles.update(option_group.get("table_styles", {}))
-
-            options_table = Table(
-                highlight=True,
-                show_header=False,
-                expand=True,
-                **t_styles,  # type: ignore[arg-type]
-            )
-            # Strip the required column if none are required
-            if all([x[0] == "" for x in options_rows]):
-                options_rows = [x[1:] for x in options_rows]
-            for row in options_rows:
-                options_table.add_row(*row)
-
-            kw: Dict[str, Any] = {
-                "border_style": formatter.config.style_options_panel_border,
-                "title": option_group.get("name", formatter.config.options_panel_title),
-                "title_align": formatter.config.align_options_panel,
-            }
-
-            if isinstance(formatter.config.style_options_panel_box, str):
-                box_style = getattr(box, formatter.config.style_options_panel_box, None)
-            else:
-                box_style = formatter.config.style_options_panel_box
-
-            if box_style:
-                kw["box"] = box_style
-
-            kw.update(option_group.get("panel_styles", {}))
-
-            options_table.columns[0].overflow = "fold"
-
-            formatter.write(Panel(options_table, **kw))
-
-
-def get_rich_commands(
-    obj: Group,
-    ctx: click.Context,
-    formatter: RichHelpFormatter,
-) -> None:
-    """Richly render a click Command's options."""
-    # Look through config.option_groups for this command
-    # stick anything unmatched into a default group at the end
-
-    # Look through COMMAND_GROUPS for this command
-    # stick anything unmatched into a default group at the end
-    cmd_groups = _resolve_groups(ctx=ctx, groups=formatter.config.command_groups, group_attribute="commands")
-    for command in obj.list_commands(ctx):
-        for cmd_group in cmd_groups:
-            if command in cmd_group.get("commands", []):
-                break
-        else:
-            commands = cmd_groups[-1]["commands"]
-            commands.append(command)
-
-    # Print each command group panel
-    for cmd_group in cmd_groups:
-        t_styles = {
-            "show_lines": formatter.config.style_commands_table_show_lines,
-            "leading": formatter.config.style_commands_table_leading,
-            "box": formatter.config.style_commands_table_box,
-            "border_style": formatter.config.style_commands_table_border_style,
-            "row_styles": formatter.config.style_commands_table_row_styles,
-            "pad_edge": formatter.config.style_commands_table_pad_edge,
-            "padding": formatter.config.style_commands_table_padding,
-        }
-        if isinstance(formatter.config.style_commands_table_box, str):
-            t_styles["box"] = getattr(box, t_styles.pop("box"), None)  # type: ignore[arg-type]
-        t_styles.update(cmd_group.get("table_styles", {}))
-
-        commands_table = Table(
-            highlight=False,
-            show_header=False,
-            expand=True,
-            **t_styles,  # type: ignore[arg-type]
-        )
-        # Define formatting in first column, as commands don't match highlighter regex
-        # and set column ratio for first and second column, if a ratio has been set
-        if formatter.config.style_commands_table_column_width_ratio is None:
-            table_column_width_ratio: Union[Tuple[None, None], Tuple[int, int]] = (None, None)
-        else:
-            table_column_width_ratio = formatter.config.style_commands_table_column_width_ratio
-
-        commands_table.add_column(style=formatter.config.style_command, no_wrap=True, ratio=table_column_width_ratio[0])
-        commands_table.add_column(
-            no_wrap=False,
-            ratio=table_column_width_ratio[1],
-        )
-        for command in cmd_group.get("commands", []):
-            # Skip if command does not exist
-            if command not in obj.list_commands(ctx):
-                continue
-            cmd = obj.get_command(ctx, command)
-            if TYPE_CHECKING:  # pragma: no cover
-                assert cmd is not None
-            if cmd.hidden:
-                continue
-            # Use the truncated short text as with vanilla text if requested
-            if formatter.config.use_click_short_help:
-                helptext = cmd.get_short_help_str()
-            else:
-                # Use short_help function argument if used, or the full help
-                helptext = cmd.short_help or cmd.help or ""
-            commands_table.add_row(command, _make_command_help(helptext, formatter, deprecated=cmd.deprecated))
-        if commands_table.row_count > 0:
-
-            kw: Dict[str, Any] = {
-                "border_style": formatter.config.style_commands_panel_border,
-                "title": cmd_group.get("name", formatter.config.commands_panel_title),
-                "title_align": formatter.config.align_commands_panel,
-            }
-
-            if isinstance(formatter.config.style_commands_panel_box, str):
-                box_style = getattr(box, formatter.config.style_commands_panel_box, None)
-            else:
-                box_style = formatter.config.style_commands_panel_box
-
-            if box_style:
-                kw["box"] = box_style
-
-            kw.update(cmd_group.get("panel_styles", {}))
-            formatter.write(Panel(commands_table, **kw))
-
-
 def get_rich_epilog(
-    self: Command,
-    ctx: click.Context,
+    self: click.core.Command,
+    ctx: RichContext,
     formatter: RichHelpFormatter,
 ) -> None:
     """Richly render a click Command's epilog if it exists."""
     if self.epilog:
         # Remove single linebreaks, replace double with single
         lines = self.epilog.split("\n\n")
-        epilog = "\n".join([x.replace("\n", " ").strip() for x in lines])
-        formatter.write(
-            Padding(Align(_make_rich_rext(epilog, formatter.config.style_epilog_text, formatter), pad=False), 1)
-        )
+        if isinstance(self.epilog, (Text, Markdown)):
+            epilog = self.epilog
+        else:
+            epilog = "\n".join([x.replace("\n", " ").strip() for x in lines])  # type: ignore[assignment]
+            epilog = formatter.rich_text(epilog, formatter.config.style_epilog_text)  # type: ignore[assignment]
+        formatter.write(Padding(Align(epilog, pad=False), formatter.config.padding_epilog))
 
     # Footer text if we have it
     if formatter.config.footer_text:
         formatter.write(
             Padding(
-                _make_rich_rext(formatter.config.footer_text, formatter.config.style_footer_text, formatter),
-                (1, 1, 0, 1),
+                formatter.rich_text(formatter.config.footer_text, formatter.config.style_footer_text),
+                formatter.config.padding_footer_text,
             )
         )
 
@@ -785,7 +644,7 @@ def rich_format_error(
         formatter.write(
             Padding(
                 config.errors_suggestion,
-                (0, 1, 0, 1),
+                config.padding_errors_suggestion,
             ),
             style=config.style_errors_suggestion,
         )
@@ -805,7 +664,7 @@ def rich_format_error(
                         Text("for help"),
                     )
                 ),
-                (0, 1, 0, 1),
+                config.padding_errors_suggestion,
             ),
             style=config.style_errors_suggestion,
         )
@@ -835,18 +694,8 @@ def rich_format_error(
                     title_align=config.align_errors_panel,
                     **kw,
                 ),
-                (0, 0, 1, 0),
+                config.padding_errors_panel,
             )
         )
     if config.errors_epilogue:
-        formatter.write(Padding(config.errors_epilogue, (0, 1, 1, 1)))
-    if formatter.console.record:
-        if export_console_as == "html":
-            print(formatter.console.export_html(inline_styles=True, code_format="{code}"))
-        elif export_console_as == "svg":
-            print(formatter.console.export_svg(title="rich-click " + " ".join(sys.argv)))
-
-
-def rich_abort_error(formatter: RichHelpFormatter) -> None:
-    """Print richly formatted abort error."""
-    formatter.write(formatter.config.aborted_text, style=formatter.config.style_aborted)
+        formatter.write(Padding(config.errors_epilogue, config.padding_errors_epilogue))

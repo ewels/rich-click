@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import warnings
 
 from rich_click.rich_command import RichGroup

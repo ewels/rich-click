@@ -29,7 +29,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv pip install --editable ".[dev]"
+          uv pip install ".[dev]"
           uv pip install --upgrade "click==$CLICK_VERSION" --prerelease=allow
           uv pip install --upgrade "rich==$RICH_VERSION" --prerelease=allow
         env:

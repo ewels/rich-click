@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sys
 from typing import Any, Dict, List, Optional, Type, TypedDict
 
@@ -6,6 +8,9 @@ if sys.version_info < (3, 11):
     from typing_extensions import NotRequired
 else:
     from typing import NotRequired
+
+
+notset = object()
 
 
 def truthy(o: Any) -> Optional[bool]:
@@ -30,9 +35,10 @@ def method_is_from_subclass_of(cls: Type[object], base_cls: Type[object], method
     This is used under the hood to see whether we would expect a patched RichCommand's help text
     methods to be compatible or incompatible with rich-click or not.
     """
-    return any(
-        getattr(c, method_name, None) == getattr(cls, method_name) for c in cls.__mro__ if issubclass(c, base_cls)
-    )
+    method = getattr(cls, method_name, None)
+    if method is None:
+        return False
+    return any(getattr(c, method_name, None) == method for c in cls.__mro__ if base_cls in c.__mro__)
 
 
 class CommandGroupDict(TypedDict):

@@ -88,11 +88,14 @@ There are 16 total ANSI colors: 8 base ANSI colors, with each one having a "brig
 
 Additionally, each one of these can be modified with `dim`, which in modern terminals just applies a change to the opacity of the color, giving developers a total of 32 different colors that can be shown.
 
-Below is a quick script that renders all of these colors:
+Below is a script that renders all of these colors:
 
-```python
-{!code_snippets/accessibility/colors.py!}
-```
+??? Code
+    ```python
+    {%
+        include "../code_snippets/accessibility/colors.py"
+    %}
+    ```
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/accessibility

@@ -1,21 +1,20 @@
 """The command line interface."""
 
+from __future__ import annotations
+
 import os
 import sys
 from functools import wraps
 from gettext import gettext
-from importlib import import_module
+from importlib import (
+    import_module,
+    metadata,  # type: ignore[import,unused-ignore]
+)
 from typing import Any, List, Literal, Optional, Tuple, Union
-
-
-try:
-    from importlib import metadata  # type: ignore[import,unused-ignore]
-except ImportError:
-    # Python < 3.8
-    import importlib_metadata as metadata  # type: ignore[no-redef,import-not-found,unused-ignore]
 
 import click
 
+from rich_click.decorators import argument as _rich_argument
 from rich_click.decorators import command as _rich_command
 from rich_click.decorators import pass_context
 from rich_click.patch import patch as _patch
@@ -135,7 +134,15 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
 
 
 @_rich_command("rich-click", context_settings=dict(allow_interspersed_args=False, help_option_names=[]))
-@click.argument("script_and_args", nargs=-1, metavar="[SCRIPT | MODULE:CLICK_COMMAND] [-- SCRIPT_ARGS...]")
+@_rich_argument(
+    "script_and_args",
+    nargs=-1,
+    metavar="[SCRIPT | MODULE:CLICK_COMMAND] [-- SCRIPT_ARGS...]",
+    help="The script you want to run. If it's a Click CLI and you are rendering help text;"
+    " then the help text will render"
+    " [#FF6B6B bold]r[/][#FF8E53 bold]i[/][#FFB347 bold]c[/][#4ECDC4 bold]h[/]"
+    "[#45B7D1 bold]l[/][#74B9FF bold]y[/]. Otherwise, the script will run normally.",
+)
 @click.option(
     "--rich-config",
     "-c",
@@ -167,6 +174,12 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
     " (This option is hidden because this situation is extremely rare).",
 )
 @click.option(
+    "--patch-rich-click/--no-patch-rich-click",
+    is_flag=True,
+    default=True,
+    help="If set, patch [code]rich_click.Command[/code], not just [code]click.Command[/code].",
+)
+@click.option(
     # The rich-click CLI uses a special implementation of --help,
     # which is aware of the --rich-config object.
     "--help",
@@ -184,13 +197,19 @@ def main(
     output: Literal[None, "html", "svg"],
     errors_in_output_format: bool,
     suppress_warnings: bool,
+    patch_rich_click: bool,
     rich_config: Optional[RichHelpConfiguration],
     show_help: bool,
 ) -> None:
     """
-    The [link=https://github.com/ewels/rich-click]rich-click[/] CLI provides attractive help output from any
+    The [link=https://github.com/ewels/rich-click]rich-click[/] CLI provides
+    [#FF6B6B bold]r[/][#FF8E53 bold]i[/][#FFB347 bold]c[/][#4ECDC4 bold]h[/][#45B7D1 bold]l[/][#74B9FF bold]y[/]
+    formatted help output from any
     tool using [link=https://click.palletsprojects.com/]click[/], formatted with
     [link=https://github.com/Textualize/rich]rich[/].
+
+    Full docs here: [link=https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/]\
+https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
 
     The rich-click command line tool can be prepended before any Python package
     using native click to provide attractive richified click help output.
@@ -200,10 +219,10 @@ def main(
 
     >>> [command]rich-click[/] [argument]my_package[/] [option]--help[/]
 
-    This does not always work if the package is using customized [b]click.group()[/]
-    or [b]click.command()[/] classes.
-    If in doubt, please suggest to the authors that they use rich_click within their
-    tool natively - this will always give a better experience.
+    When not rendering help text, the provided command will run normally,
+    so it is safe to replace calls to the tool with [command]rich-click[/] in front, e.g.:
+
+    >>> [command]rich-click[/] [argument]my_package[/] [argument]cmd[/] [option]--foo[/] 3
     """  # noqa: D401
     if (show_help or not script_and_args) and not ctx.resilient_parsing:
         if rich_config is None:
@@ -212,12 +231,14 @@ def main(
             rich_config.use_markdown = False
             rich_config.use_rich_markup = True
             rich_config.text_markup = "rich"
+            if rich_config.show_arguments is None:
+                rich_config.show_arguments = False
         ctx.help_config = rich_config
         print(ctx.get_help())
         ctx.exit()
 
     # patch click before importing the program function
-    _patch(rich_config=rich_config)
+    _patch(rich_config=rich_config, patch_rich_click=patch_rich_click)
 
     script, *args = script_and_args
 

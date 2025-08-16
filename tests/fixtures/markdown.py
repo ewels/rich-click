@@ -1,5 +1,6 @@
 import rich_click as click
 
+
 # Use Markdown (bit of a ridiculous example!)
 click.rich_click.USE_MARKDOWN = True
 

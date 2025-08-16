@@ -3,7 +3,7 @@ from click.testing import CliRunner
 from inline_snapshot import snapshot
 
 import rich_click
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_82
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_821
 from tests.conftest import load_command_from_module
 
 
@@ -13,7 +13,7 @@ def cli() -> rich_click.RichCommand:
     return cmd
 
 
-@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_82, reason="CliRunner's stderr capture doesn't work before 8.2.")
+@pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_821, reason="CliRunner's stderr capture doesn't work before 8.2.1.")
 def test_custom_errors_bad_input(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "bad_input")
     assert result.exit_code == 2

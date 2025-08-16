@@ -25,26 +25,21 @@ def test_deprecated_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> 
                                                                                                     \n\
  My amazing tool does all the things.                                                               \n\
  This is a minimal example based on documentation from the 'click' package.                         \n\
-                                                                                                    \n\
  You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --type             TEXT                Type of file to sync                                      │
 │                                        (Deprecated: All files will be synced)                    │
 │                                        [default: files]                                          │
-│ --debug        -d                      Enable debug mode                                         │
-│                                        (Deprecated)                                              │
-│ --environment  -e  [dev|staging|prod]  Sync to what environment                                  │
-│                                        [env var: MY_ENV]                                         │
+│ --debug        -d                      Enable debug mode (Deprecated)                            │
+│ --environment  -e  [dev|staging|prod]  Sync to what environment [env var: MY_ENV]                │
 │                                        [default: (current)]                                      │
 │ --help                                 Show this message and exit.                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ download  Pretend to download some files from somewhere.                                         │
-│           (Deprecated)                                                                           │
+│ download  Pretend to download some files from _somewhere_. (Deprecated)                          │
 │ sync      Synchronise all your files between two places. Example command that doesn't do much    │
-│           except print to the terminal.                                                          │
-│           (Deprecated: Removing in later version)                                                │
+│           except print to the terminal. (Deprecated: Removing in later version)                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -61,7 +56,7 @@ def test_deprecated_help_subcommand_bool(cli_runner: CliRunner, cli: rich_click.
  Usage: cli download [OPTIONS]                                                                      \n\
                                                                                                     \n\
  (Deprecated)                                                                                       \n\
- Pretend to download some files from somewhere.                                                     \n\
+ Pretend to download some files from _somewhere_.                                                   \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --all       Get everything                                                                       │

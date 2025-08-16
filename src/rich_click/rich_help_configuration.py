@@ -1,11 +1,13 @@
+from __future__ import annotations
+
 import os
 from dataclasses import dataclass, field
-from os import getenv
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
 
 from rich_click.rich_click_theme import THEMES, RichClickTheme
 from rich_click.utils import CommandGroupDict, OptionGroupDict, truthy
+from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
 
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -15,6 +17,7 @@ if TYPE_CHECKING:  # pragma: no cover
     import rich.padding
     import rich.style
     import rich.text
+    from rich.padding import PaddingDimensions
 
     import rich_click.rich_click_theme
 
@@ -27,21 +30,23 @@ def force_terminal_default() -> Optional[bool]:
     env_vars = ["FORCE_COLOR", "PY_COLORS", "GITHUB_ACTIONS"]
     for env_var in env_vars:
         if env_var in os.environ:
-            return truthy(getenv(env_var))
+            return truthy(os.getenv(env_var))
     else:
         return None
 
 
 def terminal_width_default() -> Optional[int]:
     """Use as the default factory for `width` and `max_width`."""
-    width = getenv("TERMINAL_WIDTH")
+    width = os.getenv("TERMINAL_WIDTH")
     if width:
         try:
             return int(width)
         except ValueError:
             import warnings
 
-            warnings.warn("Environment variable `TERMINAL_WIDTH` cannot be cast to an integer.", UserWarning)
+            warnings.warn(
+                "Environment variable `TERMINAL_WIDTH` cannot be cast to an integer.", UserWarning, stacklevel=2
+            )
             return None
     return None
 
@@ -55,11 +60,6 @@ class RichHelpConfiguration:
     take precedence over the class's defaults. When there are multiple user-defined values
     for a given field, the right-most field is used.
     """
-
-    # FIND:
-    # (?<field>[a-zA-Z_]+): (?<typ>.*?) = field\(default=.*?\)
-    # REPLACE:
-    # ${field}: ${typ} = field(default_factory=_get_default(\"\U${field}\E\"))
 
     theme: "rich_click.rich_click_theme.ThemeType" = field(default=RichClickTheme.default)
 
@@ -138,23 +138,42 @@ class RichHelpConfiguration:
     errors_epilogue: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     aborted_text: str = field(default="Aborted.")
 
+    padding_header_text: "PaddingDimensions" = (1, 1, 0, 1)
+    padding_usage: "PaddingDimensions" = field(default=1)
+    padding_helptext: "PaddingDimensions" = field(default=(0, 1, 1, 1))
+    padding_helptext_deprecated: "PaddingDimensions" = field(default=0)
+    padding_helptext_first_line: "PaddingDimensions" = field(default=0)
+    padding_epilog: "PaddingDimensions" = field(default=1)
+    padding_footer_text: "PaddingDimensions" = field(default=(1, 1, 0, 1))
+    padding_errors_panel: "PaddingDimensions" = field(default=(0, 0, 1, 0))
+    padding_errors_suggestion: "PaddingDimensions" = field(default=(0, 1, 0, 1))
+    padding_errors_epilogue: "PaddingDimensions" = field(default=(0, 1, 1, 1))
+
     # Behaviours
-    show_arguments: bool = field(default=False)
+    show_arguments: Optional[bool] = field(default=None)
     """Show positional arguments"""
     show_metavars_column: bool = field(default=True)
     """Show a column with the option metavar (eg. INTEGER)"""
+    commands_before_options: bool = field(default=False)
+    """If set, the commands panel show above the options panel."""
     append_metavars_help: bool = field(default=False)
     """Append metavar (eg. [TEXT]) after the help text"""
     group_arguments_options: bool = field(default=False)
     """Show arguments with options instead of in own panel"""
     option_envvar_first: bool = field(default=False)
     """Show env vars before option help text instead of after"""
-    text_markup: Literal["ansi", "rich", "markdown", None] = "ansi"
-    use_markdown: bool = field(default=False)
+    text_markup: Literal["ansi", "rich", "markdown", None] = field(default=notset)  # type: ignore[arg-type]
+    """What engine to use to render the text. Default is 'ansi'."""
+    text_kwargs: Optional[Dict[str, Any]] = field(default=None)
+    """Additional kwargs to pass to Rich text rendering. Kwargs differ by text_markup chosen."""
+    text_paragraph_linebreaks: Optional[str] = field(default=None)
+    text_emojis: bool = field(default=notset)  # type: ignore[assignment]
+    """If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -> 😺"""
+    use_markdown: Optional[bool] = field(default=None)
     """Silently deprecated; use `text_markup` field instead."""
-    use_markdown_emoji: bool = field(default=True)
-    """Parse emoji codes in markdown :smile:"""
-    use_rich_markup: bool = field(default=False)
+    use_markdown_emoji: Optional[bool] = field(default=None)
+    """Silently deprecated; use `text_emojis` instead."""
+    use_rich_markup: Optional[bool] = field(default=None)
     """Silently deprecated; use `text_markup` field instead."""
     command_groups: Dict[str, List[CommandGroupDict]] = field(default_factory=lambda: {})
     """Define sorted groups of panels to display subcommands"""
@@ -178,19 +197,60 @@ class RichHelpConfiguration:
     legacy_windows: Optional[bool] = field(default=None)
 
     def __post_init__(self) -> None:  # noqa: D105
-        # Todo: Fix this so that the deprecation warning works properly.
 
-        # if self.highlighter is not None:
-        #     import warnings
-        #
-        #     warnings.warn(
-        #         "`highlighter` kwarg is deprecated in RichHelpConfiguration."
-        #         " Please do one of the following instead: either set highlighter_patterns=[...] if you want"
-        #         " to use regex; or for more advanced use cases where you'd like to use a different type"
-        #         " of rich.highlighter.Highlighter, subclass the `RichHelpFormatter` and update its `highlighter`.",
-        #         DeprecationWarning,
-        #         stacklevel=2,
-        #     )
+        if self.highlighter is not None:
+            import warnings
+
+            warnings.warn(
+                "`highlighter` kwarg is deprecated in RichHelpConfiguration."
+                " Please do one of the following instead: either set highlighter_patterns=[...] if you want"
+                " to use regex; or for more advanced use cases where you'd like to use a different type"
+                " of rich.highlighter.Highlighter, subclass the `RichHelpFormatter` and update its `highlighter`.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
+        if self.use_markdown is not None:
+            import warnings
+
+            warnings.warn(
+                "`use_markdown=` will be deprecated in a future version of rich-click."
+                " Please use `text_markup=` instead.",
+                PendingDeprecationWarning,
+                stacklevel=2,
+            )
+
+        if self.use_rich_markup is not None:
+            import warnings
+
+            warnings.warn(
+                "`use_rich_markup=` will be deprecated in a future version of rich-click."
+                " Please use `text_markup=` instead.",
+                PendingDeprecationWarning,
+                stacklevel=2,
+            )
+
+        if self.text_markup is notset:
+            if self.use_markdown:
+                self.text_markup = "markdown"
+            elif self.use_rich_markup:
+                self.text_markup = "rich"
+            else:
+                self.text_markup = "ansi"
+
+        if self.use_markdown_emoji is not None:
+            import warnings
+
+            warnings.warn(
+                "`use_markdown_emoji=` will be deprecated in a future version of rich-click."
+                " Please use `text_emojis=` instead.",
+                PendingDeprecationWarning,
+                stacklevel=2,
+            )
+            if self.text_emojis is notset:
+                self.text_emojis = self.use_markdown_emoji
+        elif self.text_emojis is notset:
+            self.text_emojis = self.text_markup in {"markdown", "rich"}
 
         self.__dataclass_fields__.pop("highlighter", None)
 
@@ -221,12 +281,8 @@ class RichHelpConfiguration:
         kw = {}
         for k, v in cls.__dataclass_fields__.items():
             if v.init:
-                if hasattr(module, k.upper()):
+                if k != "highlighter" and hasattr(module, k.upper()):
                     kw[k] = getattr(module, k.upper())
-                # Handle lowercase.
-                # (May deprecate and move everything to uppercase... unsure.)
-                elif k == "highlighter" and hasattr(module, k):
-                    kw[k] = getattr(module, k)
 
         kw.update(extra)
         inst = cls(**kw)
@@ -256,14 +312,13 @@ def __getattr__(name: str) -> Any:
                 r"(?P<metavar><[^>]+>)",
             ]
 
-        # todo: fix
-        # import warnings
-        #
-        # warnings.warn(
-        #     "OptionHighlighter is deprecated and will be removed in a future version.",
-        #     DeprecationWarning,
-        #     stacklevel=2,
-        # )
+        import warnings
+
+        warnings.warn(
+            "OptionHighlighter is deprecated and will be removed in a future version.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
         globals()["OptionHighlighter"] = OptionHighlighter
 

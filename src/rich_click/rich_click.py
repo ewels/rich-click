@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, Union
 
 from rich_click.rich_help_configuration import force_terminal_default, terminal_width_default
-from rich_click.utils import CommandGroupDict, OptionGroupDict
+from rich_click.utils import CommandGroupDict, OptionGroupDict, notset
 
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -11,6 +13,7 @@ if TYPE_CHECKING:  # pragma: no cover
     import rich.padding
     import rich.style
     import rich.text
+    from rich.padding import PaddingDimensions
 
 
 # Default styles
@@ -89,16 +92,32 @@ ERRORS_SUGGESTION: Optional[Union[str, "rich.text.Text"]] = (
 ERRORS_EPILOGUE: Optional[Union[str, "rich.text.Text"]] = None
 ABORTED_TEXT: str = "Aborted."
 
+PADDING_HEADER_TEXT: "PaddingDimensions" = (1, 1, 0, 1)
+PADDING_USAGE: "PaddingDimensions" = 1
+PADDING_HELPTEXT: "PaddingDimensions" = (0, 1, 1, 1)
+PADDING_HELPTEXT_DEPRECATED: "PaddingDimensions" = 0
+PADDING_HELPTEXT_FIRST_LINE: "PaddingDimensions" = 0
+PADDING_EPILOG: "PaddingDimensions" = 1
+PADDING_FOOTER_TEXT: "PaddingDimensions" = (1, 1, 0, 1)
+PADDING_ERRORS_PANEL: "PaddingDimensions" = (0, 0, 1, 0)
+PADDING_ERRORS_SUGGESTION: "PaddingDimensions" = (0, 1, 0, 1)
+PADDING_ERRORS_EPILOGUE: "PaddingDimensions" = (0, 1, 1, 1)
+
 # Behaviours
-SHOW_ARGUMENTS: bool = False  # Show positional arguments
+SHOW_ARGUMENTS: Optional[bool] = None  # Show positional arguments
 SHOW_METAVARS_COLUMN: bool = True  # Show a column with the option metavar (eg. INTEGER)
+COMMANDS_BEFORE_OPTIONS: bool = False  # If set, the commands panel show above the options panel.
 APPEND_METAVARS_HELP: bool = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS: bool = False  # Show arguments with options instead of in own panel
 OPTION_ENVVAR_FIRST: bool = False  # Show env vars before option help text instead of avert
-TEXT_MARKUP: Literal["ansi", "rich", "markdown", None] = "ansi"
-USE_MARKDOWN: bool = False  # Parse help strings as markdown
-USE_MARKDOWN_EMOJI: bool = True  # Parse emoji codes in markdown :smile:
-USE_RICH_MARKUP: bool = False  # Parse help strings for rich markup (eg. [red]my text[/])
+TEXT_MARKUP: Literal["ansi", "rich", "markdown", None] = notset  # type: ignore[assignment]
+TEXT_KWARGS: Optional[Dict[str, Any]] = None
+TEXT_EMOJIS: bool = notset  # type: ignore[assignment]
+TEXT_PARAGRAPH_LINEBREAKS: Optional[str] = None
+# If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -> 😺
+USE_MARKDOWN: Optional[bool] = None  # Parse help strings as markdown
+USE_MARKDOWN_EMOJI: Optional[bool] = None  # Parse emoji codes in markdown :smile:
+USE_RICH_MARKUP: Optional[bool] = None  # Parse help strings for rich markup (eg. [red]my text[/])
 # Define sorted groups of panels to display subcommands
 COMMAND_GROUPS: Dict[str, List[CommandGroupDict]] = {}
 # Define sorted groups of panels to display options and arguments
@@ -119,18 +138,16 @@ def __getattr__(name: str) -> Any:
 
         return RichHelpConfiguration.load_from_globals
     if name == "highlighter":
-        # TODO: Fix deprecation warning. For now, exclude.
+        import warnings
 
-        # import warnings
-
-        # warnings.warn(
-        #     "`highlighter` config option is deprecated."
-        #     " Please do one of the following instead: either set HIGHLIGHTER_PATTERNS = [...] if you want"
-        #     " to use regex; or for more advanced use cases where you'd like to use a different type"
-        #     " of rich.highlighter.Highlighter, subclass the `RichHelpFormatter` and update its `highlighter`.",
-        #     DeprecationWarning,
-        #     stacklevel=2,
-        # )
+        warnings.warn(
+            "`highlighter` config option is deprecated."
+            " Please do one of the following instead: either set HIGHLIGHTER_PATTERNS = [...] if you want"
+            " to use regex; or for more advanced use cases where you'd like to use a different type"
+            " of rich.highlighter.Highlighter, subclass the `RichHelpFormatter` and update its `highlighter`.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
         from rich_click.rich_help_configuration import OptionHighlighter
 
