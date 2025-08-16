@@ -1,6 +1,6 @@
 # Panels
 
-The containers in help text that contain options and subcommands are defined by objects in the code called `RichPanel`s.
+The containers in help text which contain options and subcommands are called `RichPanel`s. RichPanels are object inside the code.
 
 By default, `RichCommand`s have a single panel for options named "Options", and `RichGroup`s have an additional panel for commands named "Commands".
 
@@ -29,7 +29,7 @@ Options panels handle parameters for your command:
 {% include "../code_snippets/panels/panels_simple_decorators.py" %}
 ```
 
-??? Output
+???+ Output
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/panels
@@ -44,7 +44,7 @@ The below code generates the same output as the above code:
 {% include "../code_snippets/panels/panels_simple_kwargs.py" %}
 ```
 
-??? Output
+???+ Output
 
     Note that this output is the same as the previous example, even though it was defined differently.
     <!-- RICH-CODEX
@@ -65,7 +65,7 @@ The below code shows both of these things:
 {% include "../code_snippets/panels/panels_extra_kwargs.py" %}
 ```
 
-??? Output
+???+ Output
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/panels
@@ -89,7 +89,7 @@ Arguments can be given their own panel with the `show_arguments` config option:
 {% include "../code_snippets/panels/panels_simple_arguments.py" %}
 ```
 
-??? Output
+???+ Output
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/panels
@@ -102,7 +102,7 @@ Arguments can also be included in the options panel with the `group_arguments_op
 {% include "../code_snippets/panels/panels_simple_arguments_combined.py" %}
 ```
 
-??? Output
+???+ Output
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/panels
@@ -116,7 +116,7 @@ If `help=` if set for arguments, then the argument panel is shown:
 {% include "../code_snippets/panels/panels_simple_arguments_help.py" %}
 ```
 
-??? Output
+???+ Output
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/panels
@@ -129,7 +129,7 @@ Arguments can also be given their own panels, or combined with other panels.
 {% include "../code_snippets/panels/panels_simple_arguments_explicit.py" %}
 ```
 
-??? Output
+???+ Output
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/panels
@@ -144,7 +144,7 @@ Sub-commands also have panels that are defined similarly to option panels:
 {% include "../code_snippets/panels/panels_commands.py" %}
 ```
 
-??? Output
+???+ Output
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/panels
@@ -164,7 +164,7 @@ Renamed panels can still have their panel-level configurations modified.
 {% include "../code_snippets/panels/panels_defaults_renamed.py" %}
 ```
 
-??? Output
+???+ Output
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/panels
@@ -174,7 +174,7 @@ Renamed panels can still have their panel-level configurations modified.
 Note that the rich config passes to subcommands, but panels are defined at the command level.
 So running `move-item --help` from the above example will rename the children's panels (because that's set in the parent's config), but it does not pass the `panel_styles=` to the subcommand:
 
-??? Output
+???+ Output
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/panels
@@ -191,7 +191,7 @@ The below example also employs an additional trick to underline the text of the 
 {% include "../code_snippets/panels/panels_defaults_override_config.py" %}
 ```
 
-??? Output
+???+ Output
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/panels
@@ -216,7 +216,7 @@ This is probably a mistake, and there are two ways to fix it:
     {% include "../code_snippets/panels/panels_handling_help_mistake.py" %}
     ```
 
-    ??? Output
+    ???+ Output
 
         <!-- RICH-CODEX
         working_dir: docs/code_snippets/panels
@@ -229,7 +229,7 @@ This is probably a mistake, and there are two ways to fix it:
     {% include "../code_snippets/panels/panels_handling_help_fix_1.py" %}
     ```
 
-    ??? Output
+    ???+ Output
 
         <!-- RICH-CODEX
         working_dir: docs/code_snippets/panels
@@ -241,7 +241,7 @@ This is probably a mistake, and there are two ways to fix it:
     {% include "../code_snippets/panels/panels_handling_help_fix_2.py" %}
     ```
 
-    ??? Output
+    ???+ Output
 
         <!-- RICH-CODEX
         working_dir: docs/code_snippets/panels
@@ -264,7 +264,7 @@ By default, unless explicitly ordered otherwise, command panels always come afte
 {% include "../code_snippets/panels/panels_panel_order_explicit.py" %}
 ```
 
-??? Output
+???+ Output
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/panels
@@ -280,7 +280,7 @@ So for example, the below code will set options _above_ commands:
 {% include "../code_snippets/panels/panels_panel_order_explicit_override.py" %}
 ```
 
-??? Output
+???+ Output
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/panels
@@ -303,7 +303,7 @@ Additionally, it is suggested you set _every_ object you intend on including in 
 {% include "../code_snippets/panels/panels_row_order.py" %}
 ```
 
-??? Output
+???+ Output
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/panels
@@ -314,3 +314,22 @@ That said, the default behavior is also predictable and follows what base Click 
 
 - Arguments + options are presented in the order they occur in the decorators, from top to bottom.
 - Subcommands are alphanumerically sorted.
+
+### (Advanced) Custom RichPanel Classes
+
+!!! warning
+    The `RichPanel` API may be unstable across minor versions, since it is a new concept that we are still trying to find the best API for.
+    If you subclass `RichPanel`, you may want to pin your **rich-click** version to `rich-click>=1.9,<1.10`.
+
+RichPanels can be subclassed for additional functionality, if you so choose:
+
+```python
+{% include "../code_snippets/panels/panels_subclass.py" %}
+```
+
+???+ Output
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/panels
+    -->
+    ![`python panels_subclass.py --help`](../images/code_snippets/panels/panels_subclass.svg){.screenshot}

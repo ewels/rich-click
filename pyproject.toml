@@ -123,6 +123,7 @@ testpaths = [ "tests" ]
 python_version = "3.8"
 scripts_are_modules = true
 strict = true
+follow_imports = true
 exclude = [
     '.*?live_style_editor\.py$',
 ]

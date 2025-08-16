@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 from gettext import gettext
-from typing import TYPE_CHECKING, Any, Callable, Dict, Mapping, Optional, Type, TypeVar, Union, cast, overload
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Type, TypeVar, Union, cast, overload
 
 from click import Argument, Command, Context, Group, Option, Parameter
 from click import argument as click_argument
@@ -19,8 +19,6 @@ from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_panel import RichCommandPanel, RichOptionPanel, RichPanel
 from rich_click.rich_parameter import RichArgument, RichOption
 
-from . import rich_click  # noqa: F401
-
 
 if sys.version_info < (3, 10):
     from typing_extensions import Concatenate, ParamSpec
@@ -35,9 +33,10 @@ if TYPE_CHECKING:  # pragma: no cover
 _AnyCallable = Callable[..., Any]
 F = TypeVar("F", bound=Callable[..., Any])
 FC = TypeVar("FC", bound=Union[Command, _AnyCallable])
+C = TypeVar("C", bound=Command)
 
 
-GrpType = TypeVar("GrpType", bound=Group)
+G = TypeVar("G", bound=Group)
 
 
 # variant: no call, directly as decorator for a function.
@@ -50,9 +49,9 @@ def group(name: _AnyCallable) -> RichGroup: ...
 @overload
 def group(
     name: Optional[str],
-    cls: Type[GrpType],
+    cls: Type[G],
     **attrs: Any,
-) -> Callable[[_AnyCallable], GrpType]: ...
+) -> Callable[[_AnyCallable], G]: ...
 
 
 # variant: name omitted, cls _must_ be a keyword argument, @group(cmd=GroupCls, ...)
@@ -60,9 +59,9 @@ def group(
 def group(
     name: None = None,
     *,
-    cls: Type[GrpType],
+    cls: Type[G],
     **attrs: Any,
-) -> Callable[[_AnyCallable], GrpType]: ...
+) -> Callable[[_AnyCallable], G]: ...
 
 
 # variant: with optional string name, no cls argument provided.
@@ -72,16 +71,16 @@ def group(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable
 
 def group(
     name: Union[str, _AnyCallable, None] = None,
-    cls: Optional[Type[GrpType]] = None,
+    cls: Optional[Type[G]] = None,
     **attrs: Any,
-) -> Union[Group, Callable[[_AnyCallable], Union[RichGroup, GrpType]]]:
+) -> Union[Group, Callable[[_AnyCallable], Union[RichGroup, G]]]:
     """
     Group decorator function.
 
     Defines the group() function so that it uses the RichGroup class by default.
     """
     if cls is None:
-        cls = cast(Type[GrpType], RichGroup)
+        cls = cast(Type[G], RichGroup)
 
     if callable(name):
         return command(cls=cls, **attrs)(name)
@@ -188,7 +187,7 @@ def _rich_panel_memo(f: Callable[..., Any], panel: RichPanel[Any]) -> None:
 
 
 def rich_config(
-    help_config: Optional[Union[Mapping[str, Any], RichHelpConfiguration]] = None,
+    help_config: Optional[Union[Dict[str, Any], RichHelpConfiguration]] = None,
     *,
     console: Optional["Console"] = None,
 ) -> Callable[[FC], FC]:

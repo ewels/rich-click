@@ -85,6 +85,9 @@ from rich_click.rich_context import RichContext as RichContext
 from rich_click.rich_context import get_current_context as get_current_context
 from rich_click.rich_help_configuration import RichHelpConfiguration as RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter as RichHelpFormatter
+from rich_click.rich_panel import RichCommandPanel as RichCommandPanel
+from rich_click.rich_panel import RichOptionPanel as RichOptionPanel
+from rich_click.rich_panel import RichPanel as RichPanel
 from rich_click.rich_parameter import RichArgument as RichArgument
 from rich_click.rich_parameter import RichOption as RichOption
 from rich_click.rich_parameter import RichParameter as RichParameter
