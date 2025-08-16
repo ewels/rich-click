@@ -315,7 +315,10 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
         if value and not ctx.resilient_parsing:
             # Avoid click.echo() because it ignores console settings like force_terminal.
             # Also, do not print() if empty string; assume console was record=False.
-            print(ctx.get_help())
+            if getattr(ctx, "help_to_stderr", False):
+                print(ctx.get_help(), file=sys.stderr)
+            else:
+                print(ctx.get_help())
             ctx.exit()
 
     if not param_decls:
