@@ -8,9 +8,9 @@ from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Literal, Optional, 
 
 import click
 
-# Due to how rich_click.cli.patch() works, it is safer to import Command types directly
-# rather than use the click module e.g. click.Command
-from click import Command, Group
+# Due to how rich_click.cli.patch() works, it is safer to import types
+# from click.core rather than use the click module e.g. click.Command
+import click.core
 from rich import box
 from rich.align import Align
 from rich.columns import Columns
@@ -19,7 +19,6 @@ from rich.highlighter import RegexHighlighter
 from rich.markdown import Markdown
 from rich.padding import Padding
 from rich.panel import Panel
-from rich.table import Table
 from rich.text import Text
 
 from rich_click._compat_click import (
@@ -34,7 +33,7 @@ from rich_click.rich_parameter import RichParameter
 
 
 if TYPE_CHECKING:
-    from rich_click.rich_command import RichCommand, RichGroup
+    pass
 
 # Support rich <= 10.6.0
 try:
@@ -49,11 +48,13 @@ if CLICK_IS_BEFORE_VERSION_9X:
     # We need to load from here to help with patching.
     from rich_click.rich_command import MultiCommand  # type: ignore[attr-defined]
 else:
-    MultiCommand = Group  # type: ignore[misc,assignment,unused-ignore]
+    MultiCommand = click.core.Group  # type: ignore[misc,assignment,unused-ignore]
 
 
 @group()
-def _get_help_text(obj: Union[Command, Group], formatter: RichHelpFormatter) -> Iterable[Union[Markdown, Text]]:
+def _get_help_text(
+    obj: Union[click.core.Command, click.core.Group], formatter: RichHelpFormatter
+) -> Iterable[Union[Markdown, Text]]:
     """
     Build primary help text for a click command or group.
     Returns the prose help text for a command or group, rendered either as a
@@ -380,7 +381,7 @@ def get_rich_table_row(
 
     if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(param.name, str)
-        assert isinstance(param, click.Option)
+        assert isinstance(param, click.core.Option)
 
     # Do it ourselves if this is a positional argument
     if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
@@ -521,7 +522,7 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", pref
     )
 
 
-def get_rich_help_text(self: Command, ctx: RichContext, formatter: RichHelpFormatter) -> None:
+def get_rich_help_text(self: click.core.Command, ctx: RichContext, formatter: RichHelpFormatter) -> None:
     """Write rich help text to the formatter if it exists."""
     # Print command / group help if we have some
     if self.help:
@@ -579,50 +580,8 @@ def _resolve_groups(
     return final_groups_list
 
 
-def get_rich_options(
-    obj: "RichCommand",
-    ctx: RichContext,
-    formatter: RichHelpFormatter,
-) -> None:
-    """Richly render a click Command's options."""
-    # Look through config.option_groups for this command
-    # stick anything unmatched into a default group at the end
-    from rich_click.rich_panel import construct_panels
-
-    panels = construct_panels(
-        ctx=ctx,
-        command=obj,
-        formatter=formatter,
-        panel_cls=formatter.option_panel_class,
-    )
-    for panel in panels:
-        p = panel.render(obj, ctx, formatter)
-        if not isinstance(p.renderable, Table) or len(p.renderable.rows) > 0:
-            formatter.write(p)
-
-
-def get_rich_commands(
-    obj: "RichGroup",
-    ctx: RichContext,
-    formatter: RichHelpFormatter,
-) -> None:
-    """Richly render a click Command's options."""
-    from rich_click.rich_panel import construct_panels
-
-    panels = construct_panels(
-        ctx=ctx,
-        command=obj,
-        formatter=formatter,
-        panel_cls=formatter.command_panel_class,
-    )
-    for panel in panels:
-        p = panel.render(obj, ctx, formatter)
-        if not isinstance(p.renderable, Table) or len(p.renderable.rows) > 0:
-            formatter.write(p)
-
-
 def get_rich_epilog(
-    self: Command,
+    self: click.core.Command,
     ctx: RichContext,
     formatter: RichHelpFormatter,
 ) -> None:

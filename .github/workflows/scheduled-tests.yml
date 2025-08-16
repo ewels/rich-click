@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv pip install --editable --prerelease allow ".[dev]"
+          uv pip install --prerelease allow ".[dev]"
 
       - name: Run tests
         run: pytest --cov --cov-report term
