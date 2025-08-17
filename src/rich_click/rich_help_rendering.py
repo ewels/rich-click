@@ -4,7 +4,7 @@ import inspect
 import re
 from fnmatch import fnmatch
 from gettext import gettext
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Callable, Tuple, Any, Dict, Iterable, List, Literal, Optional, Union
 
 import click
 
@@ -30,12 +30,14 @@ from rich_click.rich_context import RichContext
 from rich_click.rich_help_formatter import RichHelpFormatter
 from rich_click.rich_panel import GroupType
 from rich_click.rich_parameter import RichParameter
+from rich_click.rich_help_configuration import OptionColumnType
+from rich.console import Console, ConsoleOptions
 
 
 if TYPE_CHECKING:
     pass
 
-RichPanelRow = List[RenderableType]
+RichPanelRow = List[Union[RenderableType, Tuple[RenderableType, Optional[int]]]]
 
 
 if CLICK_IS_BEFORE_VERSION_9X:
@@ -44,6 +46,129 @@ if CLICK_IS_BEFORE_VERSION_9X:
 else:
     MultiCommand = click.core.Group  # type: ignore[misc,assignment,unused-ignore]
 
+
+
+class FoldOverflowColumns(Columns):
+
+    def __rich_console__(
+        self, console: Console, options: ConsoleOptions
+    ):
+        from collections import defaultdict
+        from rich.measure import Measurement
+        from rich.table import Table
+        from rich.constrain import Constrain
+        from itertools import chain
+        from operator import itemgetter
+
+        render_str = console.render_str
+        renderables = [
+            render_str(renderable) if isinstance(renderable, str) else renderable
+            for renderable in self.renderables
+        ]
+        if not renderables:
+            return
+        _top, right, _bottom, left = Padding.unpack(self.padding)
+        width_padding = max(left, right)
+        max_width = options.max_width
+        widths: Dict[int, int] = defaultdict(int)
+        column_count = len(renderables)
+
+        get_measurement = Measurement.get
+        renderable_widths = [
+            get_measurement(console, options, renderable).maximum
+            for renderable in renderables
+        ]
+        if self.equal:
+            renderable_widths = [max(renderable_widths)] * len(renderable_widths)
+
+        def iter_renderables(
+            column_count: int,
+        ) -> Iterable[Tuple[int, Optional[RenderableType]]]:
+            item_count = len(renderables)
+            if self.column_first:
+                width_renderables = list(zip(renderable_widths, renderables))
+
+                column_lengths: List[int] = [item_count // column_count] * column_count
+                for col_no in range(item_count % column_count):
+                    column_lengths[col_no] += 1
+
+                row_count = (item_count + column_count - 1) // column_count
+                cells = [[-1] * column_count for _ in range(row_count)]
+                row = col = 0
+                for index in range(item_count):
+                    cells[row][col] = index
+                    column_lengths[col] -= 1
+                    if column_lengths[col]:
+                        row += 1
+                    else:
+                        col += 1
+                        row = 0
+                for index in chain.from_iterable(cells):
+                    if index == -1:
+                        break
+                    yield width_renderables[index]
+            else:
+                yield from zip(renderable_widths, renderables)
+            # Pad odd elements with spaces
+            if item_count % column_count:
+                for _ in range(column_count - (item_count % column_count)):
+                    yield 0, None
+
+        table = Table.grid(padding=self.padding, collapse_padding=True, pad_edge=False)
+        table.expand = self.expand
+        table.title = self.title
+
+        if self.width is not None:
+            column_count = (max_width) // (self.width + width_padding)
+            for _ in range(column_count):
+                table.add_column(width=self.width, overflow="fold")
+        else:
+            while column_count > 1:
+                widths.clear()
+                column_no = 0
+                for renderable_width, _ in iter_renderables(column_count):
+                    widths[column_no] = max(widths[column_no], renderable_width)
+                    total_width = sum(widths.values()) + width_padding * (
+                        len(widths) - 1
+                    )
+                    if total_width > max_width:
+                        column_count = len(widths) - 1
+                        break
+                    else:
+                        column_no = (column_no + 1) % column_count
+                else:
+                    break
+
+        get_renderable = itemgetter(1)
+        _renderables = [
+            get_renderable(_renderable)
+            for _renderable in iter_renderables(column_count)
+        ]
+        if self.equal:
+            _renderables = [
+                None
+                if renderable is None
+                else Constrain(renderable, renderable_widths[0])
+                for renderable in _renderables
+            ]
+        if self.align:
+            align = self.align
+            _Align = Align
+            _renderables = [
+                None if renderable is None else _Align(renderable, align)
+                for renderable in _renderables
+            ]
+
+        right_to_left = self.right_to_left
+        add_row = table.add_row
+        for start in range(0, len(_renderables), column_count):
+            row = _renderables[start : start + column_count]
+            if right_to_left:
+                row = row[::-1]
+            add_row(*row)
+        for c in table.columns:
+            c.overflow = "fold"
+        yield table
 
 @group()
 def _get_help_text(
@@ -138,13 +263,11 @@ def _get_deprecated_text(
     return Text(s, style=formatter.config.style_deprecated)
 
 
-def _get_parameter_env_var(
+def _get_parameter_help_env_var(
     param: Union[click.Argument, click.Option, RichParameter],
     ctx: RichContext,
     formatter: RichHelpFormatter,
 ) -> Optional[Text]:
-    if not getattr(param, "show_envvar", None):
-        return None
 
     envvar = getattr(param, "envvar", None)
 
@@ -164,7 +287,7 @@ def _get_parameter_env_var(
     return None
 
 
-def _get_parameter_deprecated(
+def _get_parameter_help_deprecated(
     param: Union[click.Argument, click.Option, RichParameter],
     ctx: RichContext,
     formatter: RichHelpFormatter,
@@ -172,6 +295,115 @@ def _get_parameter_deprecated(
     if not getattr(param, "deprecated", None):
         return None
     return _get_deprecated_text(getattr(param, "deprecated"), formatter)
+
+
+Cell = Tuple[Any, Optional[int]]
+
+
+def _get_parameter_help_opt(
+        param: Union[click.Argument, click.Option, RichParameter],
+        ctx: RichContext,
+        formatter: RichHelpFormatter,
+) -> Tuple[Cell, Cell, Cell, Cell, Cell]:
+    # This may seem convoluted to return tuples with widths instead of just renderables,
+    # but there are two things we want to do that are impossible otherwise:
+    # 1. Prevent splitting of options. If we just use Text() and allow wrapping,
+    #    then something like --foo/--bar may split in the middle of an option
+    #    instead of at the "/".
+    # 2. Make it so the table doesn't expand. We solve the first problem by using
+    #    Columns(), but the issue is there is no way to prevent the expansion of
+    #    the outer table column other than to explicitly set the width.
+    # Attempting to solve both of those problems simultaneously leads to this mess.
+
+    opt_long_primary = []
+    opt_short_primary = []
+    opt_long_secondary = []
+    opt_short_secondary = []
+
+    for opt in param.opts:
+        if isinstance(param, click.core.Argument):
+            opt_long_primary.append(opt.upper())
+        elif "--" in opt:
+            opt_long_primary.append(opt)
+        else:
+            opt_short_primary.append(opt)
+    for opt in param.secondary_opts:
+        if isinstance(param, click.core.Argument):
+            opt_long_secondary.append(opt.upper())
+        elif "--" in opt:
+            opt_long_secondary.append(opt)
+        else:
+            opt_short_secondary.append(opt)
+
+    from rich.text import Text
+
+    opt_long_primary_len = len("".join(opt_long_primary)) + len(opt_long_primary) - 1
+    opt_short_primary_len = len("".join(opt_short_primary)) + len(opt_short_primary) - 1
+    opt_long_secondary_len = len("".join(opt_long_secondary)) + len(opt_long_secondary) - 1
+    opt_short_secondary_len = len("".join(opt_short_secondary)) + len(opt_short_secondary) - 1
+
+    primary_cols = []
+    secondary_cols = []
+    long_cols = []
+    short_cols = []
+    all_cols = []
+
+    for o in opt_short_primary:
+        oh = formatter.highlighter(o.strip())
+        primary_cols.append(oh)
+        primary_cols.append(Text(","))
+        short_cols.append(oh)
+        short_cols.append(Text(","))
+
+    for o in opt_long_primary:
+        oh = formatter.highlighter(o.strip())
+        primary_cols.append(oh)
+        primary_cols.append(Text(","))
+        long_cols.append(oh)
+        long_cols.append(Text(","))
+
+    if opt_short_secondary:
+        short_cols = short_cols[:-1]
+        short_cols.append("/")
+        for o in opt_short_secondary:
+            oh = formatter.highlighter(o.strip())
+            secondary_cols.append(oh)
+            secondary_cols.append(Text(","))
+            short_cols.append(oh)
+            short_cols.append(Text(","))
+
+    if opt_long_secondary:
+        long_cols = long_cols[:-1]
+        long_cols.append(Text("/"))
+        for o in opt_long_secondary:
+            oh = formatter.highlighter(o.strip())
+            secondary_cols.append(oh)
+            secondary_cols.append(Text(","))
+            long_cols.append(oh)
+            long_cols.append(Text(","))
+
+    all_cols = primary_cols
+    if secondary_cols:
+        all_cols = [*primary_cols[:-1], Text("/"), *secondary_cols]
+
+    def _renderable(cols):
+        if not cols:
+            return None
+        if len(cols) == 1:
+            return cols[0]
+        c = FoldOverflowColumns(
+            cols, padding=0, expand=False
+        )
+        return c
+
+    primary_final = _renderable(primary_cols[:-1]), opt_long_primary_len + opt_short_primary_len + 1
+    secondary_final = _renderable(secondary_cols[:-1]), opt_long_secondary_len + opt_short_secondary_len + 1
+    long_final = _renderable(long_cols[:-1]), opt_long_primary_len + opt_long_secondary_len + 1
+    short_final = _renderable(short_cols[:-1]), opt_short_primary_len + opt_short_secondary_len + 1
+    all_final = _renderable(all_cols[:-1]), primary_final[1] + secondary_final[1]
+
+    return primary_final, secondary_final, long_final, short_final, all_final
+
 
 
 def _get_parameter_help(
@@ -212,7 +444,54 @@ def _get_parameter_help(
     return formatter.rich_text(help_text, style)
 
 
-def _get_parameter_metavar(
+def _get_parameter_help_metavar_col(
+        param: Union[click.Argument, click.Option, RichParameter],
+        ctx: RichContext,
+        formatter: RichHelpFormatter,
+) -> Text:
+    # Column for a metavar, if we have one
+    metavar = Text(style=formatter.config.style_metavar, overflow="fold")
+    metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
+
+    if TYPE_CHECKING:  # pragma: no cover
+        assert isinstance(param.name, str)
+        assert isinstance(param, click.core.Option)
+
+    # Do it ourselves if this is a positional argument
+    if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
+        metavar_str = param.type.name.upper()
+
+    # Attach metavar if param is a positional argument, or if it is a non-boolean and non flag option
+    if isinstance(param, click.core.Argument) or (metavar_str != "BOOLEAN" and not getattr(param, "is_flag", None)):
+        metavar.append(metavar_str)
+
+    # Range - from
+    # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706  # noqa: E501
+    try:
+        # skip count with default range type
+        if isinstance(param.type, click.types._NumberRangeBase) and not (
+            param.count and param.type.min == 0 and param.type.max is None
+        ):
+            range_str = param.type._describe_range()
+            if range_str:
+                metavar.append(formatter.config.range_string.format(range_str))
+    except AttributeError:
+        # click.types._NumberRangeBase is only in Click 8x onwards
+        pass
+
+    # Highlighter to make [ | ] and <> dim
+    class MetavarHighlighter(RegexHighlighter):
+        highlights = [
+            r"^(?P<metavar_sep>(\[|<))",
+            r"(?P<metavar_sep>\|)",
+            r"(?P<metavar_sep>(\]|>)$)",
+        ]
+
+    metavar_highlighter = MetavarHighlighter()
+    return metavar_highlighter(metavar)
+
+
+def _get_parameter_help_metavar(
     param: Union[click.Argument, click.Option, RichParameter],
     ctx: RichContext,
     formatter: RichHelpFormatter,
@@ -240,8 +519,10 @@ def _get_parameter_metavar(
     return None
 
 
-def _get_parameter_default(
-    param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
+def _get_parameter_help_default(
+        param: Union[click.Argument, click.Option, RichParameter],
+        ctx: RichContext,
+        formatter: RichHelpFormatter
 ) -> Optional[Text]:
 
     if not hasattr(param, "show_default"):
@@ -303,7 +584,16 @@ def _get_parameter_default(
     return None
 
 
-def _get_parameter_required(
+def _get_parameter_help_required_short(
+        param: Union[click.Argument, click.Option, RichParameter],
+        ctx: RichContext,
+        formatter: RichHelpFormatter
+) -> Optional[Text]:
+    if param.required:
+        return Text(formatter.config.required_short_string, style=formatter.config.style_required_short)
+    return None
+
+def _get_parameter_help_required(
     param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
 ) -> Optional[Text]:
     if param.required:
@@ -311,8 +601,10 @@ def _get_parameter_required(
     return None
 
 
-def get_help_parameter(
-    param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
+def get_parameter_help(
+        param: Union[click.Argument, click.Option, RichParameter],
+        ctx: RichContext,
+        formatter: RichHelpFormatter
 ) -> Columns:
     """
     Build primary help text for a click option or argument.
@@ -338,12 +630,15 @@ def get_help_parameter(
         assert isinstance(param.name, str)
 
     # Get the environment variable first
-    envvar_text = _get_parameter_env_var(param, ctx, formatter)
+    if getattr(param, "show_envvar", None):
+        envvar_text = _get_parameter_help_env_var(param, ctx, formatter)
+    else:
+        envvar_text = None
     help_text = _get_parameter_help(param, ctx, formatter)
-    deprecated_text = _get_parameter_deprecated(param, ctx, formatter)
-    metavar_text = _get_parameter_metavar(param, ctx, formatter)
-    default_text = _get_parameter_default(param, ctx, formatter)
-    required_text = _get_parameter_required(param, ctx, formatter)
+    deprecated_text = _get_parameter_help_deprecated(param, ctx, formatter)
+    metavar_text = _get_parameter_help_metavar(param, ctx, formatter)
+    default_text = _get_parameter_help_default(param, ctx, formatter)
+    required_text = _get_parameter_help_required(param, ctx, formatter)
 
     if envvar_text is not None and config.option_envvar_first:
         items.append(envvar_text)
@@ -370,86 +665,50 @@ def get_help_parameter(
 
 
 def get_rich_table_row(
-    param: Union[click.Argument, click.Option, RichParameter],
-    ctx: RichContext,
-    formatter: RichHelpFormatter,
+        param: Union[click.Argument, click.Option, RichParameter],
+        ctx: RichContext,
+        formatter: RichHelpFormatter,
+        columns: Optional[List[OptionColumnType]] = None
 ) -> RichPanelRow:
     """Create a row for the rich table corresponding with this parameter."""
     # Short and long form
-    opt_long_strs = []
-    opt_short_strs = []
-    for idx, opt in enumerate(param.opts):
-        opt_str = opt
-        try:
-            opt_str += "/" + param.secondary_opts[idx]
-        except IndexError:
-            pass
 
-        if isinstance(param, click.core.Argument):
-            opt_long_strs.append(opt_str.upper())
-        elif "--" in opt:
-            opt_long_strs.append(opt_str)
-        else:
-            opt_short_strs.append(opt_str)
-
-    # Column for a metavar, if we have one
-    metavar = Text(style=formatter.config.style_metavar, overflow="fold")
-    metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
-
-    if TYPE_CHECKING:  # pragma: no cover
-        assert isinstance(param.name, str)
-        assert isinstance(param, click.core.Option)
-
-    # Do it ourselves if this is a positional argument
-    if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
-        metavar_str = param.type.name.upper()
-
-    # Attach metavar if param is a positional argument, or if it is a non-boolean and non flag option
-    if isinstance(param, click.core.Argument) or (metavar_str != "BOOLEAN" and not getattr(param, "is_flag", None)):
-        metavar.append(metavar_str)
-
-    # Range - from
-    # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706  # noqa: E501
-    try:
-        # skip count with default range type
-        if isinstance(param.type, click.types._NumberRangeBase) and not (
-            param.count and param.type.min == 0 and param.type.max is None
-        ):
-            range_str = param.type._describe_range()
-            if range_str:
-                metavar.append(formatter.config.range_string.format(range_str))
-    except AttributeError:
-        # click.types._NumberRangeBase is only in Click 8x onwards
-        pass
-
-    # Required asterisk
-    required: Union[Text, str] = ""
-    if param.required:
-        required = Text(formatter.config.required_short_string, style=formatter.config.style_required_short)
-
-    # Highlighter to make [ | ] and <> dim
-    class MetavarHighlighter(RegexHighlighter):
-        highlights = [
-            r"^(?P<metavar_sep>(\[|<))",
-            r"(?P<metavar_sep>\|)",
-            r"(?P<metavar_sep>(\]|>)$)",
+    if columns is None:
+        columns = [
+            "required", "opt_long", "opt_short", "metavar", "help"
         ]
 
-    metavar_highlighter = MetavarHighlighter()
+    def _help(
+            param: Union[click.Argument, click.Option, RichParameter],
+            ctx: RichContext,
+            formatter: RichHelpFormatter,
+    ) -> Columns:
+        return (
+            param.get_rich_help(ctx, formatter)
+            if isinstance(param, RichParameter)
+            else get_parameter_help(param, ctx, formatter)
+        ), None
+
+    _pri, _sec, _lon, _sho, _all = _get_parameter_help_opt(param, ctx, formatter)
+
+    column_callbacks: Dict[str, OptionColumnType, Callable[..., Any]] = {
+        "required": _get_parameter_help_required_short,
+        "opt_long": lambda *args, **kwargs: _lon,
+        "opt_short": lambda *args, **kwargs: _sho,
+        "opt_primary": lambda *args, **kwargs: _pri,
+        "opt_secondary": lambda *args, **kwargs: _sec,
+        "opt_all": lambda *args, **kwargs: _all,
+        "metavar": _get_parameter_help_metavar_col,
+        "help": _help,
+        "default": _get_parameter_help_default,
+        "envvar": _get_parameter_help_env_var,
+    }
 
     cols: RichPanelRow = []
-    if formatter.config.show_required_column:
-        cols.append(required)
-    cols.append(formatter.highlighter(formatter.highlighter(",".join(opt_long_strs))))
-    cols.append(formatter.highlighter(formatter.highlighter(",".join(opt_short_strs))))
-    if formatter.config.show_metavars_column:
-        cols.append(metavar_highlighter(metavar))
-    cols.append(
-        param.get_rich_help(ctx, formatter)
-        if isinstance(param, RichParameter)
-        else get_help_parameter(param, ctx, formatter)
-    )
-
+    for col in columns:
+        cols.append(
+            column_callbacks[col](param, ctx, formatter)
+        )
 
     return cols
 

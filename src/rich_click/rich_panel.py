@@ -21,6 +21,7 @@ import click.core
 
 from rich_click.rich_parameter import RichArgument, RichParameter
 from rich_click.utils import CommandGroupDict, OptionGroupDict
+from rich_click.rich_help_configuration import ColumnType
 
 
 if TYPE_CHECKING:
@@ -53,6 +54,7 @@ class RichPanel(Generic[CT]):
         help_style: Optional["StyleType"] = None,
         table_styles: Optional[Dict[str, Any]] = None,
         panel_styles: Optional[Dict[str, Any]] = None,
+        columns: Optional[List[ColumnType]] = None,
     ) -> None:
         """Initialize a RichPanel."""
         self.name = name
@@ -60,6 +62,7 @@ class RichPanel(Generic[CT]):
         self.help_style = help_style
         self.table_styles = table_styles or {}
         self.panel_styles = panel_styles or {}
+        self.columns = columns or []
 
     def get_objects(self) -> List[str]:
         if self._object_attr is NotImplemented:
@@ -93,7 +96,8 @@ class RichPanel(Generic[CT]):
         kw = {
             "highlight": self._highlight,
             "show_header": False,
-            "expand": True,
+            "expand": False,
+            "pad_edge": False
         }
         kw.update(defaults)
         kw.update(self.table_styles)
@@ -195,24 +199,42 @@ class RichOptionPanel(RichPanel[click.Parameter]):
             from rich_click.rich_help_rendering import get_rich_table_row
 
             cols = (
-                param.get_rich_table_row(ctx, formatter)
+                param.get_rich_table_row(
+                    ctx,
+                    formatter,
+                    columns=["required", "opt_long", "opt_short", "metavar", "help"]
+                )
                 if isinstance(param, RichParameter)
-                else get_rich_table_row(param, ctx, formatter)  # type: ignore[arg-type]
+                else get_rich_table_row(
+                    param,
+                    ctx,
+                    formatter,
+                    columns=["required", "opt_long", "opt_short", "metavar", "help"]
+                )
             )
 
             options_rows.append(cols)
 
-        if all([x[0] == "" for x in options_rows]):
-            options_rows = [x[1:] for x in options_rows]
-            _opt_col = 0
-        else:
-            _opt_col = 1
+        if True:
+            options_rows = list(map(list, zip(*[
+                col for col in zip(*options_rows)
+                if any(cell[0] if isinstance(cell, tuple) else cell for cell in col)
+            ])))
+
+        widths = [
+            max(
+                cell[1] if isinstance(cell, tuple) and cell[1] is not None else 0
+                for cell in col
+            )
+            for col in zip(*options_rows)
+        ]
 
         for row in options_rows:
-            table.add_row(*row)
+            table.add_row(*[i[0] if isinstance(i, tuple) else i for i in row])
 
-        if len(table.columns) > _opt_col:
-            table.columns[_opt_col].overflow = "fold"
+        # for w, col in zip(widths, table.columns):
+        #     if w > 0:
+        #         col.max_width = w
 
         return table
 

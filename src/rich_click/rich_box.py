@@ -14,6 +14,17 @@ HORIZONTALS_TOP: Box = Box(
     "    \n"
 )
 
+HORIZONTALS_DOUBLE_TOP: Box = Box(
+    " ══ \n"
+    "    \n"
+    "    \n"
+    "    \n"
+    "    \n"
+    "    \n"
+    "    \n"
+    "    \n"
+)
+
 BLANK: Box = Box(
     "    \n"
     "    \n"

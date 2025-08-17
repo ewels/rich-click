@@ -25,6 +25,27 @@ if TYPE_CHECKING:  # pragma: no cover
 T = TypeVar("T", bound="RichHelpConfiguration")
 
 
+OptionColumnType = Literal[
+    "required",
+    "opt_primary",
+    "opt_secondary",
+    "opt_long",
+    "opt_short",
+    "opt_all",
+    "metavar",
+    "help",
+    "default",
+    "envvar",
+]
+
+CommandColumnType = Literal[
+    "name",
+    "help"
+]
+
+ColumnType = Union[OptionColumnType, CommandColumnType]
+
+
 def force_terminal_default() -> Optional[bool]:
     """Use as the default factory for `force_terminal`."""
     env_vars = ["FORCE_COLOR", "PY_COLORS", "GITHUB_ACTIONS"]
@@ -121,6 +142,16 @@ class RichHelpConfiguration:
     max_width: Optional[int] = field(default_factory=terminal_width_default)
     color_system: Optional[Literal["auto", "standard", "256", "truecolor", "windows"]] = field(default="auto")
     force_terminal: Optional[bool] = field(default_factory=force_terminal_default)
+
+    options_table_columns: List[OptionColumnType] = field(
+        default_factory=lambda: ["required", "opt_long", "opt_short", "metavar", "help"]
+    )
+    arguments_table_columns: List[OptionColumnType] = field(
+        default_factory=lambda: ["required", "opt_long", "opt_short", "metavar", "help"]
+    )
+    commands_table_columns: List[CommandColumnType] = field(
+        default_factory=lambda: ["name", "help"]
+    )
 
     # Fixed strings
     header_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
@@ -221,6 +252,18 @@ class RichHelpConfiguration:
             warnings.warn(
                 "`use_markdown=` will be deprecated in a future version of rich-click."
                 " Please use `text_markup=` instead.",
+                PendingDeprecationWarning,
+                stacklevel=2,
+            )
+
+        if self.show_metavars_column is not None:
+            import warnings
+
+            warnings.warn(
+                "`show_metavars_column=` will be deprecated in a future version of rich-click."
+                " Please use `options_table_columns=` instead."
+                " The `option_table_columns` config option lets you specify an ordered list"
+                " of which columns are rendered.",
                 PendingDeprecationWarning,
                 stacklevel=2,
             )
