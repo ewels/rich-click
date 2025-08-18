@@ -16,7 +16,7 @@ from rich.align import Align
 from rich.columns import Columns
 from rich.console import RenderableType, group
 from rich.highlighter import RegexHighlighter
-from rich.markdown import Markdown
+from rich.jupyter import JupyterMixin
 from rich.padding import Padding
 from rich.panel import Panel
 from rich.text import Text
@@ -33,7 +33,8 @@ from rich_click.rich_parameter import RichParameter
 
 
 if TYPE_CHECKING:
-    pass
+    from rich.markdown import Markdown
+
 
 RichPanelRow = List[RenderableType]
 
@@ -48,7 +49,7 @@ else:
 @group()
 def _get_help_text(
     obj: Union[click.core.Command, click.core.Group], formatter: RichHelpFormatter
-) -> Iterable[Union[Padding, Markdown, Text]]:
+) -> Iterable[Union[Padding, "Markdown", Text]]:
     """
     Build primary help text for a click command or group.
     Returns the prose help text for a command or group, rendered either as a
@@ -178,7 +179,7 @@ def _get_parameter_help(
     param: Union[click.Argument, click.Option, RichParameter],
     ctx: RichContext,
     formatter: RichHelpFormatter,
-) -> Optional[Union[Markdown, Text]]:
+) -> Optional[Union["Markdown", Text]]:
     base_help_txt = getattr(param, "help", None)
     if not base_help_txt:
         return None
@@ -453,7 +454,7 @@ def get_rich_table_row(
 
 def _make_command_help(
     help_text: str, formatter: RichHelpFormatter, deprecated: Union[bool, str]
-) -> Union[Text, Markdown, Columns]:
+) -> Union[Text, "Markdown", Columns]:
     """
     Build cli help text for a click group command.
     That is, when calling help on groups with multiple subcommands
@@ -480,7 +481,7 @@ def _make_command_help(
     elif paragraphs[0].startswith("\b"):
         paragraphs[0] = paragraphs[0].replace("\b\n", "")
     help_text = paragraphs[0].strip()
-    renderable: Union[Text, Markdown, Columns]
+    renderable: Union[Text, "Markdown", Columns]
     renderable = formatter.rich_text(help_text, formatter.config.style_option_help)
     if deprecated:
         dep_txt = _get_deprecated_text(
@@ -601,7 +602,7 @@ def get_rich_epilog(
     if self.epilog:
         # Remove single linebreaks, replace double with single
         lines = self.epilog.split("\n\n")
-        if isinstance(self.epilog, (Text, Markdown)):
+        if isinstance(self.epilog, JupyterMixin):  # Handles Text and Markdown
             epilog = self.epilog
         else:
             epilog = "\n".join([x.replace("\n", " ").strip() for x in lines])  # type: ignore[assignment]

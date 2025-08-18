@@ -222,12 +222,17 @@ class RichOptionPanel(RichPanel[click.Parameter]):
             "border_style": formatter.config.style_options_panel_border,
             "title_align": formatter.config.align_options_panel,
             "box": formatter.config.style_options_panel_box,
+            "padding": formatter.config.style_options_panel_padding,
         }
 
         if self.help:
-            from rich.console import Group
+            from rich.containers import Renderables
 
-            inner = Group(formatter.rich_text(self.help, self.help_style), inner)
+            if self.help_style is None:
+                help_style = formatter.config.style_options_panel_help_style
+            else:
+                help_style = self.help_style
+            inner = Renderables([formatter.rich_text(self.help, help_style), inner])
 
         panel = self._get_base_panel(inner, **p_styles)
         return panel
@@ -327,6 +332,7 @@ class RichCommandPanel(RichPanel[click.Command]):
             "border_style": formatter.config.style_commands_panel_border,
             "title_align": formatter.config.align_commands_panel,
             "box": formatter.config.style_commands_panel_box,
+            "padding": formatter.config.style_commands_panel_padding,
         }
         if formatter.config.style_commands_panel_box and isinstance(formatter.config.style_commands_panel_box, str):
             from rich import box
@@ -334,9 +340,13 @@ class RichCommandPanel(RichPanel[click.Command]):
             p_styles["box"] = getattr(box, p_styles.pop("box"), None)  # type: ignore[arg-type]
 
         if self.help:
-            from rich.console import Group
+            from rich.containers import Renderables
 
-            inner = Group(formatter.rich_text(self.help, self.help_style), inner)
+            if self.help_style is None:
+                help_style = formatter.config.style_options_panel_help_style
+            else:
+                help_style = self.help_style
+            inner = Renderables([formatter.rich_text(self.help, help_style), inner])
 
         panel = self._get_base_panel(inner, **p_styles)
         return panel
