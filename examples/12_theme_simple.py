@@ -2,6 +2,7 @@ import rich_click as click
 from rich_click import rich_config, RichHelpConfiguration
 from rich_click.rich_click_theme import RichClickTheme
 
+
 @rich_config(RichHelpConfiguration(theme=RichClickTheme.material))
 @click.group()
 @click.option(

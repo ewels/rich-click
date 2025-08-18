@@ -9,14 +9,14 @@ class RichClickTheme(str, Enum):
     Use a a Rich Click theme to quickly apply a predefined set of styles.
     """
 
-    default = "default"         #: The default Rich Click theme.
-    dracula = "dracula"         #: Vibrant high-contract dark theme.
-    gruvbox = "gruvbox"         #: Warm and earthy color theme.
-    material = "material"       #: Google Material inspired theme.
-    monochrome = "monochrome"   #: Minimal grayscale theme.
-    nord = "nord"               #: Cool blues and soft color theme.
-    onedark = "onedark"         #: One Dark syntax based theme.
-    solarized = "solarized"     #: Solarized color theme.
+    default = "default"  #: The default Rich Click theme.
+    dracula = "dracula"  #: Vibrant high-contract dark theme.
+    gruvbox = "gruvbox"  #: Warm and earthy color theme.
+    material = "material"  #: Google Material inspired theme.
+    monochrome = "monochrome"  #: Minimal grayscale theme.
+    nord = "nord"  #: Cool blues and soft color theme.
+    onedark = "onedark"  #: One Dark syntax based theme.
+    solarized = "solarized"  #: Solarized color theme.
 
 
 ThemeType = Union[RichClickTheme, "RichClickTheme"]
@@ -24,7 +24,6 @@ ThemeType = Union[RichClickTheme, "RichClickTheme"]
 
 THEMES: Dict[str, Dict[str, str]] = {
     "default": {},
-
     "dracula": {
         "style_option": "bold magenta",
         "style_argument": "bold green",
@@ -33,7 +32,6 @@ THEMES: Dict[str, Dict[str, str]] = {
         "style_usage": "bright_blue",
         "style_deprecated": "bright_red",
     },
-
     "gruvbox": {
         "style_option": "bold yellow",
         "style_argument": "bold red",
@@ -42,7 +40,6 @@ THEMES: Dict[str, Dict[str, str]] = {
         "style_usage": "bright_magenta",
         "style_deprecated": "red",
     },
-
     "material": {
         "style_option": "bold cyan",
         "style_argument": "bold purple3",
@@ -58,7 +55,6 @@ THEMES: Dict[str, Dict[str, str]] = {
         "style_options_panel_box": "SQUARE",
         "style_errors_panel_box": "SQUARE",
     },
-
     "monochrome": {
         "style_option": "white",
         "style_argument": "white",
@@ -67,7 +63,6 @@ THEMES: Dict[str, Dict[str, str]] = {
         "style_usage": "dim",
         "style_deprecated": "dim",
     },
-
     "nord": {
         "style_option": "bold bright_cyan",
         "style_argument": "bold white",
@@ -76,7 +71,6 @@ THEMES: Dict[str, Dict[str, str]] = {
         "style_usage": "bright_white",
         "style_deprecated": "bright_magenta",
     },
-
     "onedark": {
         "style_option": "bold turquoise4",
         "style_argument": "bold orange1",
@@ -85,7 +79,6 @@ THEMES: Dict[str, Dict[str, str]] = {
         "style_usage": "gray62",
         "style_deprecated": "red",
     },
-
     "solarized": {
         "style_option": "bold blue",
         "style_argument": "bold green",

@@ -6,7 +6,6 @@ from types import ModuleType
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
 
 from rich_click.rich_click_theme import THEMES, RichClickTheme
-from rich_click.utils import CommandGroupDict, OptionGroupDict, truthy
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
 
 
@@ -86,6 +85,8 @@ class RichHelpConfiguration:
     style_required_long: "rich.style.StyleType" = field(default="dim red")
     style_options_panel_border: "rich.style.StyleType" = field(default="dim")
     style_options_panel_box: Optional[Union[str, "rich.box.Box"]] = field(default="ROUNDED")
+    style_options_panel_help_style: "rich.style.StyleType" = field(default="")
+    style_options_panel_padding: "rich.padding.PaddingDimensions" = field(default=(0, 1))
     align_options_panel: "rich.align.AlignMethod" = field(default="left")
     style_options_table_show_lines: bool = field(default=False)
     style_options_table_leading: int = field(default=0)
@@ -96,6 +97,8 @@ class RichHelpConfiguration:
     style_options_table_border_style: Optional["rich.style.StyleType"] = field(default=None)
     style_commands_panel_border: "rich.style.StyleType" = field(default="dim")
     style_commands_panel_box: Optional[Union[str, "rich.box.Box"]] = field(default="ROUNDED")
+    style_commands_panel_help_style: "rich.style.StyleType" = field(default="")
+    style_commands_panel_padding: "rich.padding.PaddingDimensions" = field(default=(0, 1))
     align_commands_panel: "rich.align.AlignMethod" = field(default="left")
     style_commands_table_show_lines: bool = field(default=False)
     style_commands_table_leading: int = field(default=0)
@@ -121,14 +124,14 @@ class RichHelpConfiguration:
     # Fixed strings
     header_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     footer_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
-    deprecated_string: str = field(default="(Deprecated)")
-    deprecated_with_reason_string: str = field(default="(Deprecated: {})")
+    deprecated_string: str = field(default="[deprecated]")
+    deprecated_with_reason_string: str = field(default="[deprecated: {}]")
     default_string: str = field(default="[default: {}]")
     envvar_string: str = field(default="[env var: {}]")
     required_short_string: str = field(default="*")
     required_long_string: str = field(default="[required]")
     range_string: str = field(default=" [{}]")
-    append_metavars_help_string: str = field(default="({})")
+    append_metavars_help_string: str = field(default="[{}]")
     arguments_panel_title: str = field(default="Arguments")
     options_panel_title: str = field(default="Options")
     commands_panel_title: str = field(default="Commands")

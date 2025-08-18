@@ -29,17 +29,17 @@ def test_deprecated_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> 
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --type             TEXT                Type of file to sync                                      │
-│                                        (Deprecated: All files will be synced)                    │
+│                                        [deprecated: All files will be synced]                    │
 │                                        [default: files]                                          │
-│ --debug        -d                      Enable debug mode (Deprecated)                            │
+│ --debug        -d                      Enable debug mode [deprecated]                            │
 │ --environment  -e  [dev|staging|prod]  Sync to what environment [env var: MY_ENV]                │
 │                                        [default: (current)]                                      │
 │ --help                                 Show this message and exit.                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ download  Pretend to download some files from _somewhere_. (Deprecated)                          │
+│ download  Pretend to download some files from _somewhere_. [deprecated]                          │
 │ sync      Synchronise all your files between two places. Example command that doesn't do much    │
-│           except print to the terminal. (Deprecated: Removing in later version)                  │
+│           except print to the terminal. [deprecated: Removing in later version]                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -55,7 +55,7 @@ def test_deprecated_help_subcommand_bool(cli_runner: CliRunner, cli: rich_click.
                                                                                                     \n\
  Usage: cli download [OPTIONS]                                                                      \n\
                                                                                                     \n\
- (Deprecated)                                                                                       \n\
+ [deprecated]                                                                                       \n\
  Pretend to download some files from _somewhere_.                                                   \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
@@ -76,7 +76,7 @@ def test_deprecated_help_subcommand_string(cli_runner: CliRunner, cli: rich_clic
                                                                                                     \n\
  Usage: cli sync [OPTIONS]                                                                          \n\
                                                                                                     \n\
- (Deprecated: Removing in later version)                                                            \n\
+ [deprecated: Removing in later version]                                                            \n\
  Synchronise all your files between two places. Example command that doesn't do much except print   \n\
  to the terminal.                                                                                   \n\
                                                                                                     \n\
@@ -106,10 +106,10 @@ def test_deprecated_help_with_markdown(cli_runner: CliRunner, cli: rich_click.Ri
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --type             TEXT                Type of file to sync                                      │
-│                                        (Deprecated: All files will be synced)                    │
+│                                        [deprecated: All files will be synced]                    │
 │                                        [default: files]                                          │
 │ --debug        -d                      Enable debug mode                                         │
-│                                        (Deprecated)                                              │
+│                                        [deprecated]                                              │
 │ --environment  -e  [dev|staging|prod]  Sync to what environment                                  │
 │                                        [env var: MY_ENV]                                         │
 │                                        [default: (current)]                                      │
@@ -117,10 +117,10 @@ def test_deprecated_help_with_markdown(cli_runner: CliRunner, cli: rich_click.Ri
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ download  Pretend to download some files from somewhere.                                         │
-│           (Deprecated)                                                                           │
+│           [deprecated]                                                                           │
 │ sync      Synchronise all your files between two places. Example command that doesn't do much    │
 │           except print to the terminal.                                                          │
-│           (Deprecated: Removing in later version)                                                │
+│           [deprecated: Removing in later version]                                                │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -137,7 +137,7 @@ def test_deprecated_help_subcommand_bool_with_markdown(cli_runner: CliRunner, cl
                                                                                                     \n\
  Usage: cli download [OPTIONS]                                                                      \n\
                                                                                                     \n\
- (Deprecated)                                                                                       \n\
+ [deprecated]                                                                                       \n\
  Pretend to download some files from somewhere.                                                     \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
@@ -159,7 +159,7 @@ def test_deprecated_help_subcommand_string_with_markdown(cli_runner: CliRunner, 
                                                                                                     \n\
  Usage: cli sync [OPTIONS]                                                                          \n\
                                                                                                     \n\
- (Deprecated: Removing in later version)                                                            \n\
+ [deprecated: Removing in later version]                                                            \n\
  Synchronise all your files between two places. Example command that doesn't do much except print   \n\
  to the terminal.                                                                                   \n\
                                                                                                     \n\
