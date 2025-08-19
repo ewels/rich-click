@@ -282,7 +282,7 @@ class RichOptionPanel(RichPanel[click.Parameter]):
                 p_styles["title"] = Text("", overflow="ellipsis").join(
                     [
                         Text(self.name, style=title_style),
-                        Text(" - ", style=title_style),
+                        Text(" - "),
                         Text(self.help, style=help_style),
                     ]
                 )
@@ -420,7 +420,7 @@ class RichCommandPanel(RichPanel[click.Command]):
                 p_styles["title"] = Text("", overflow="ellipsis").join(
                     [
                         Text(self.name, style=title_style),
-                        Text(" - ", style=title_style),
+                        Text(" - "),
                         Text(self.help, style=help_style),
                     ]
                 )
