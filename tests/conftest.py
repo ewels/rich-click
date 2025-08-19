@@ -71,8 +71,9 @@ def replace_link_ids(render: str) -> str:
 
 
 @pytest.fixture(autouse=True)
-def default_config() -> None:
+def default_config(monkeypatch) -> None:
     # Isolate rich_click global config module for each test:
+    monkeypatch.delenv("RICH_CLICK_THEME")
     reload(rc)
 
     # Default config settings
