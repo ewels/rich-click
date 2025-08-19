@@ -19,11 +19,13 @@ from typing import (
 import click
 import click.core
 
+from rich_click.rich_help_configuration import ColumnType
 from rich_click.rich_parameter import RichArgument, RichParameter
 from rich_click.utils import CommandGroupDict, OptionGroupDict
 
 
 if TYPE_CHECKING:
+    from rich.box import Box
     from rich.panel import Panel
     from rich.style import StyleType
     from rich.table import Table
@@ -53,6 +55,7 @@ class RichPanel(Generic[CT]):
         help_style: "StyleType" = "",
         table_styles: Optional[Dict[str, Any]] = None,
         panel_styles: Optional[Dict[str, Any]] = None,
+        columns: Optional[List[ColumnType]] = None,
     ) -> None:
         """Initialize a RichPanel."""
         self.name = name
@@ -60,6 +63,7 @@ class RichPanel(Generic[CT]):
         self.help_style = help_style
         self.table_styles = table_styles or {}
         self.panel_styles = panel_styles or {}
+        self.columns = columns
 
     def get_objects(self) -> List[str]:
         if self._object_attr is NotImplemented:
@@ -70,6 +74,13 @@ class RichPanel(Generic[CT]):
         if self._object_attr is NotImplemented:
             raise NotImplementedError()
         getattr(self, self._object_attr).append(o)
+
+    def get_box(self, box: Optional[Union[str, "Box"]]) -> Optional["Box"]:
+        if box is None:
+            return None
+        from rich_click.rich_box import get_box
+
+        return get_box(box)
 
     def to_info_dict(self, ctx: click.Context) -> Dict[str, Any]:
         if self._object_attr is NotImplemented:
@@ -91,18 +102,17 @@ class RichPanel(Generic[CT]):
 
             self.table_class = Table
 
-        kw = {
+        kw: Dict[str, Any] = {
             "highlight": self._highlight,
             "show_header": False,
             "expand": True,
         }
+
         kw.update(defaults)
         kw.update(self.table_styles)
-        if "box" in kw and isinstance(kw["box"], str):
-            from rich import box
-
-            kw["box"] = getattr(box, kw.pop("box"), None)
-        return self.table_class(**kw)  # type: ignore[arg-type]
+        if "box" in kw and kw["box"] is not None:
+            kw["box"] = self.get_box(kw.pop("box", None))
+        return self.table_class(**kw)
 
     def get_table(
         self,
@@ -121,10 +131,13 @@ class RichPanel(Generic[CT]):
         kw = defaults
         kw["title"] = self.name
         kw.update(self.panel_styles)
-        if "box" in kw and isinstance(kw["box"], str):
-            from rich import box
+        if "box" in kw:
+            if kw["box"] is None:
+                kw.pop("box")
+                kw["box"] = self.get_box("SIMPLE")
+            else:
+                kw["box"] = self.get_box(kw.pop("box", None))
 
-            kw["box"] = getattr(box, kw.pop("box"), None)
         return self.panel_class(table, **kw)
 
     def render(
@@ -187,15 +200,17 @@ class RichOptionPanel(RichPanel[click.Parameter]):
 
             from rich_click.rich_help_rendering import get_rich_table_row
 
+            columns = self.columns or formatter.config.options_table_columns
+
             cols = (
-                param.get_rich_table_row(ctx, formatter)
+                param.get_rich_table_row(ctx, formatter, columns)  # type: ignore[arg-type]
                 if isinstance(param, RichParameter)
-                else get_rich_table_row(param, ctx, formatter)  # type: ignore[arg-type]
+                else get_rich_table_row(param, ctx, formatter, columns)  # type: ignore[arg-type]
             )
 
             options_rows.append(cols)
 
-        if all([x[0] == "" for x in options_rows]):
+        if all([x[0] == "" or x[0] is None for x in options_rows]):
             options_rows = [x[1:] for x in options_rows]
             _opt_col = 0
         else:
@@ -282,6 +297,9 @@ class RichCommandPanel(RichPanel[click.Command]):
             table_column_width_ratio: Union[Tuple[None, None], Tuple[int, int]] = (None, None)
         else:
             table_column_width_ratio = formatter.config.style_commands_table_column_width_ratio
+
+        # TODO
+        # columns = self.columns or formatter.config.commands_table_columns
 
         table.add_column(style=formatter.config.style_command, no_wrap=True, ratio=table_column_width_ratio[0])
         table.add_column(

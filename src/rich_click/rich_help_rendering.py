@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import inspect
 import re
-from fnmatch import fnmatch
 from gettext import gettext
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, List, Literal, Optional, Union
 
 import click
 
@@ -28,12 +27,13 @@ from rich_click._compat_click import (
 )
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_formatter import RichHelpFormatter
-from rich_click.rich_panel import GroupType
 from rich_click.rich_parameter import RichParameter
 
 
 if TYPE_CHECKING:
     from rich.markdown import Markdown
+
+    from rich_click.rich_help_configuration import OptionColumnType
 
 
 RichPanelRow = List[RenderableType]
@@ -240,6 +240,53 @@ def _get_parameter_metavar(
     return None
 
 
+def _get_parameter_help_metavar_col(
+    param: Union[click.Argument, click.Option, RichParameter],
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+) -> Text:
+    # Column for a metavar, if we have one
+    metavar = Text(style=formatter.config.style_metavar, overflow="fold")
+    metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
+
+    if TYPE_CHECKING:  # pragma: no cover
+        assert isinstance(param.name, str)
+        assert isinstance(param, click.core.Option)
+
+    # Do it ourselves if this is a positional argument
+    if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
+        metavar_str = param.type.name.upper()
+
+    # Attach metavar if param is a positional argument, or if it is a non-boolean and non flag option
+    if isinstance(param, click.core.Argument) or (metavar_str != "BOOLEAN" and not getattr(param, "is_flag", None)):
+        metavar.append(metavar_str)
+
+    # Range - from
+    # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706  # noqa: E501
+    try:
+        # skip count with default range type
+        if isinstance(param.type, click.types._NumberRangeBase) and not (
+            param.count and param.type.min == 0 and param.type.max is None
+        ):
+            range_str = param.type._describe_range()
+            if range_str:
+                metavar.append(formatter.config.range_string.format(range_str))
+    except AttributeError:
+        # click.types._NumberRangeBase is only in Click 8x onwards
+        pass
+
+    # Highlighter to make [ | ] and <> dim
+    class MetavarHighlighter(RegexHighlighter):
+        highlights = [
+            r"^(?P<metavar_sep>(\[|<))",
+            r"(?P<metavar_sep>\|)",
+            r"(?P<metavar_sep>(\]|>)$)",
+        ]
+
+    metavar_highlighter = MetavarHighlighter()
+    return metavar_highlighter(metavar)
+
+
 def _get_parameter_default(
     param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
 ) -> Optional[Text]:
@@ -311,6 +358,14 @@ def _get_parameter_required(
     return None
 
 
+def _get_parameter_help_required_short(
+    param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
+) -> Optional[Text]:
+    if param.required:
+        return Text(formatter.config.required_short_string, style=formatter.config.style_required_short)
+    return None
+
+
 def get_help_parameter(
     param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
 ) -> Columns:
@@ -369,9 +424,12 @@ def get_rich_table_row(
     param: Union[click.Argument, click.Option, RichParameter],
     ctx: RichContext,
     formatter: RichHelpFormatter,
+    columns: Optional[List["OptionColumnType"]] = None,
 ) -> RichPanelRow:
     """Create a row for the rich table corresponding with this parameter."""
     # Short and long form
+    columns = columns or formatter.config.options_table_columns
+
     opt_long_strs = []
     opt_short_strs = []
     for idx, opt in enumerate(param.opts):
@@ -388,66 +446,30 @@ def get_rich_table_row(
         else:
             opt_short_strs.append(opt_str)
 
-    # Column for a metavar, if we have one
-    metavar = Text(style=formatter.config.style_metavar, overflow="fold")
-    metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
-
     if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(param.name, str)
         assert isinstance(param, click.core.Option)
 
-    # Do it ourselves if this is a positional argument
-    if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
-        metavar_str = param.type.name.upper()
-
-    # Attach metavar if param is a positional argument, or if it is a non-boolean and non flag option
-    if isinstance(param, click.core.Argument) or (metavar_str != "BOOLEAN" and not getattr(param, "is_flag", None)):
-        metavar.append(metavar_str)
-
-    # Range - from
-    # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706  # noqa: E501
-    try:
-        # skip count with default range type
-        if isinstance(param.type, click.types._NumberRangeBase) and not (
-            param.count and param.type.min == 0 and param.type.max is None
-        ):
-            range_str = param.type._describe_range()
-            if range_str:
-                metavar.append(formatter.config.range_string.format(range_str))
-    except AttributeError:
-        # click.types._NumberRangeBase is only in Click 8x onwards
-        pass
-
-    # Required asterisk
-    required: Union[Text, str] = ""
-    if param.required:
-        required = Text(formatter.config.required_short_string, style=formatter.config.style_required_short)
-
-    # Highlighter to make [ | ] and <> dim
-    class MetavarHighlighter(RegexHighlighter):
-        highlights = [
-            r"^(?P<metavar_sep>(\[|<))",
-            r"(?P<metavar_sep>\|)",
-            r"(?P<metavar_sep>(\]|>)$)",
-        ]
-
-    metavar_highlighter = MetavarHighlighter()
-
-    cols: RichPanelRow = [
-        required,
-        formatter.highlighter(formatter.highlighter(",".join(opt_long_strs))),
-        formatter.highlighter(formatter.highlighter(",".join(opt_short_strs))),
-        metavar_highlighter(metavar),
-        (
+    column_callbacks: Dict["OptionColumnType", Callable[..., Any]] = {
+        "required": _get_parameter_help_required_short,
+        "opt_long": lambda *args, **kwargs: formatter.highlighter(formatter.highlighter(",".join(opt_long_strs))),
+        "opt_short": lambda *args, **kwargs: formatter.highlighter(formatter.highlighter(",".join(opt_short_strs))),
+        "opt_primary": lambda *args, **kwargs: None,  # TODO
+        "opt_secondary": lambda *args, **kwargs: None,  # TODO
+        "opt_all": lambda *args, **kwargs: None,  # TODO
+        "metavar": _get_parameter_help_metavar_col,
+        "help": lambda *args, **kwargs: (
             param.get_rich_help(ctx, formatter)
             if isinstance(param, RichParameter)
             else get_help_parameter(param, ctx, formatter)
         ),
-    ]
+        "default": lambda *args, **kwargs: None,
+        "envvar": lambda *args, **kwargs: None,
+    }
 
-    # Remove metavar if specified in config
-    if not formatter.config.show_metavars_column:
-        cols.pop(3)
+    cols: RichPanelRow = []
+    for col in columns:
+        cols.append(column_callbacks[col](param, ctx, formatter))
 
     return cols
 
@@ -546,51 +568,6 @@ def get_rich_help_text(self: click.core.Command, ctx: RichContext, formatter: Ri
                 formatter.config.padding_helptext,
             )
         )
-
-
-def _resolve_groups(
-    ctx: RichContext, groups: Dict[str, List[GroupType]], group_attribute: Literal["commands", "options"]
-) -> List[GroupType]:
-    """Logic for resolving the groups."""
-    # Step 1: get valid name(s) for the command currently being executed
-    cmd_name = ctx.command.name
-    _ctx: RichContext = ctx
-    while _ctx.parent is not None:
-        _ctx = _ctx.parent  # type: ignore[assignment]
-        cmd_name = f"{_ctx.command.name} {cmd_name}"
-    # 'command_path' is sometimes the file name, e.g. hello.py.
-    # We also want to make sure that the actual command name is supported as well.
-    if cmd_name != ctx.command_path:
-        paths = [cmd_name, ctx.command_path]
-    else:
-        paths = [cmd_name]
-    # Also handle 'python -m foo' when the user specifies a key of 'foo':
-    if ctx.command_path.startswith("python -m "):
-        extra = ctx.command_path.replace("python -m ", "", 1)
-        paths.append(extra)
-    final_groups_list: List[GroupType] = []
-
-    # Assign wildcards, but make sure we do not overwrite anything already defined.
-    for _path in paths:
-        for mtch in reversed(sorted([_ for _ in groups if fnmatch(_path, _)])):
-            wildcard_option_groups = groups[mtch]
-            for grp in wildcard_option_groups:
-                grp = grp.copy()
-                opts = grp.get(group_attribute, []).copy()  # type: ignore[attr-defined]
-                traversed = []
-                for opt in grp.get(group_attribute, []):  # type: ignore[attr-defined]
-                    if grp.get("deduplicate", True) and opt in [
-                        _opt
-                        for _grp in final_groups_list
-                        for _opt in [*traversed, *_grp.get(group_attribute, [])]  # type: ignore[has-type]
-                    ]:
-                        opts.remove(opt)
-                    traversed.append(opt)
-                grp[group_attribute] = opts  # type: ignore[typeddict-unknown-key]
-                final_groups_list.append(grp)
-
-    final_groups_list.append({group_attribute: []})  # type: ignore[misc]
-    return final_groups_list
 
 
 def get_rich_epilog(
