@@ -1,5 +1,5 @@
 # /// script
-# dependencies = ["rich-click>=1.9.0dev0"]
+# dependencies = ["rich-click>=1.9.0dev1"]
 # ///
 import rich_click as click
 

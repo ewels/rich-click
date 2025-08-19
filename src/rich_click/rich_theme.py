@@ -1,27 +1,9 @@
-from enum import Enum
 from typing import Any, Dict
-
-
-class RichClickTheme(str, Enum):
-    """
-    Themes available for RichHelpConfiguration.
-
-    Use a a Rich Click theme to quickly apply a predefined set of styles.
-    """
-
-    default = "default"  #: The default Rich Click theme.
-    dracula = "dracula"  #: Vibrant high-contract dark theme.
-    gruvbox = "gruvbox"  #: Warm and earthy color theme.
-    material = "material"  #: Google Material inspired theme.
-    monochrome = "monochrome"  #: Minimal grayscale theme.
-    nord = "nord"  #: Cool blues and soft color theme.
-    onedark = "onedark"  #: One Dark syntax based theme.
-    solarized = "solarized"  #: Solarized color theme.
 
 
 COLORS: Dict[str, Dict[str, Any]] = {
     "default": {},
-    "solarized": {
+    "solarized": {  # 30% done
         "style_option": "bold blue",
         "style_argument": "bold green",
         "style_command": "bold yellow",
@@ -31,7 +13,7 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_commands_panel_help_style": "green",
         "style_options_panel_help_style": "green",
     },
-    "dracula": {
+    "dracula": {  # 30% done
         "style_option": "bold magenta",
         "style_argument": "bold green",
         "style_command": "bold cyan",
@@ -39,7 +21,7 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_usage": "bright_blue",
         "style_deprecated": "bright_red",
     },
-    "star": {
+    "star": {  # 80% done
         "style_option": "yellow",
         "style_command": "yellow",
         "style_usage_command": "yellow",
@@ -49,12 +31,40 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_usage": "bold yellow",
         "style_metavar_append": "dim blue",
         "style_metavar": "dim blue",
+        "style_options_panel_border": "",
+        "style_commands_panel_border": "",
         "style_options_panel_help_style": "dim blue",
         "style_commands_panel_help_style": "dim blue",
         "style_deprecated": "dim red",
         "style_required_short": "dim red",
     },
-    "quartz": {
+    # Earthy
+    "forest": {  # 80% done
+        "style_option": "green",
+        "style_command": "green",
+        "style_usage_command": "green",
+        "style_header_text": "",
+        "style_switch": "green",
+        "style_argument": "yellow",
+        "style_usage": "bold",
+        "style_metavar_append": "yellow",
+        "style_metavar": "yellow",
+        "style_options_panel_help_style": "italic cyan",
+        "style_commands_panel_help_style": "italic cyan",
+        "style_deprecated": "dim green",
+        "style_options_table_border_style": "dim yellow",
+        "style_commands_table_border_style": "dim yellow",
+        "style_options_panel_border": "dim yellow",
+        "style_commands_panel_border": "dim yellow",
+        "style_options_panel_title_style": "yellow not dim",
+        "style_commands_panel_title_style": "yellow not dim",
+        "style_required_long": "bright_green",
+        "style_required_short": "bright_green",
+        "style_option_default": "yellow",
+        "style_option_envvar": "yellow",
+    },
+    # Dark and unified color scheme, looks great with complex CLIs.
+    "quartz": {  # 80% done
         "style_option": "bold magenta",
         "style_command": "bold blue",
         "style_usage_command": "blue",
@@ -75,7 +85,33 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_options_table_border_style": "dim magenta",
         "style_commands_table_border_style": "dim blue",
     },
-    "cargo": {
+    # Remix of quartz with accents
+    "quartz2": {  # 80% done
+        "style_option": "magenta",
+        "style_command": "blue",
+        "style_usage_command": "",
+        "style_header_text": "",
+        "style_switch": "magenta bold",
+        "style_argument": "yellow",
+        "style_usage": "blue",
+        "style_metavar_append": "yellow",
+        "style_metavar": "yellow",
+        "style_options_panel_help_style": "yellow not dim italic",
+        "style_commands_panel_help_style": "yellow not dim italic",
+        "style_options_panel_title_style": "bold not dim",
+        "style_commands_panel_title_style": "bold not dim",
+        "style_deprecated": "dim",
+        "style_required_short": "dim red",
+        "style_required_long": "dim red",
+        "style_option_envvar": "dim yellow",
+        "style_option_default": "dim",
+        "style_options_panel_border": "dim magenta",
+        "style_commands_panel_border": "dim blue",
+        "style_options_table_border_style": "dim magenta",
+        "style_commands_table_border_style": "dim blue",
+    },
+    # Theme based on cargo CLI. Legible and bold style.
+    "cargo": {  # 80% done
         "style_option": "bold cyan",
         "style_command": "bold cyan",
         "style_usage_command": "bold cyan",
@@ -88,25 +124,137 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_commands_panel_title_style": "bold",
         "style_options_panel_border": "green",
         "style_commands_panel_border": "green",
-        "style_options_panel_help_style": "default not bold",
-        "style_commands_panel_help_style": "default not bold",
+        "style_options_panel_help_style": "default not bold italic",
+        "style_commands_panel_help_style": "default not bold italic",
         "style_option_envvar": "dim",
         "style_option_default": "dim",
         "style_required_long": "dim bold",
     },
-    "material": {
-        "style_option": "bold cyan",
-        "style_argument": "bold purple3",
-        "style_command": "bold light_sky_blue1",
-        "style_switch": "medium_purple3",
-        "style_usage": "bold sea_green3",
-        "style_deprecated": "bright_red",
-        "style_options_panel_border": "dim medium_purple3",
-        "style_commands_panel_border": "dim medium_purple3",
-        "style_helptext_first_line": "sea_green3",
-        "style_helptext": "dim sea_green3",
+    "mono": {  # 100% done
+        "style_option": "",
+        "style_command": "",
+        "style_usage_command": "bold",
+        "style_switch": "",
+        "style_argument": "",
+        "style_usage": "bold",
+        "style_metavar_append": "dim",
+        "style_metavar": "dim",
+        "style_metavar_separator": "",
+        "style_options_panel_help_style": "dim italic",
+        "style_commands_panel_help_style": "dim italic",
+        "style_deprecated": "bold",
+        "style_options_table_border_style": "",
+        "style_commands_table_border_style": "",
+        "style_options_panel_border": "dim",
+        "style_commands_panel_border": "dim",
+        "style_options_panel_title_style": "bold not dim",
+        "style_commands_panel_title_style": "bold not dim",
+        "style_required_long": "bold",
+        "style_required_short": "dim bold",
+        "style_option_default": "dim",
+        "style_option_envvar": "dim",
+        "style_helptext_first_line": "",
+        "style_helptext": "dim",
+        "style_header_text": "",
+        "style_epilog_text": "",
+        "style_footer_text": "",
     },
-    "monochrome": {
+    "news": {  # 100% done
+        "style_option": "",
+        "style_command": "",
+        "style_usage_command": "bold",
+        "style_switch": "",
+        "style_argument": "",
+        "style_usage": "bold red",
+        "style_metavar_append": "dim red",
+        "style_metavar": "dim red",
+        "style_metavar_separator": "",
+        "style_options_panel_help_style": "dim italic red",
+        "style_commands_panel_help_style": "dim italic red",
+        "style_deprecated": "bold",
+        "style_options_table_border_style": "dim",
+        "style_commands_table_border_style": "dim",
+        "style_options_panel_border": "dim",
+        "style_commands_panel_border": "dim",
+        "style_options_panel_title_style": "bold not dim red",
+        "style_commands_panel_title_style": "bold not dim red",
+        "style_required_long": "bold red",
+        "style_required_short": "dim bold red",
+        "style_option_default": "dim red",
+        "style_option_envvar": "dim red",
+        "style_helptext_first_line": "",
+        "style_helptext": "dim",
+        "style_header_text": "",
+        "style_epilog_text": "",
+        "style_footer_text": "",
+    },
+    "ice": {  # 100% done
+        "style_option": "",
+        "style_command": "",
+        "style_usage_command": "bold",
+        "style_switch": "",
+        "style_argument": "",
+        "style_usage": "bold blue",
+        "style_metavar_append": "dim blue",
+        "style_metavar": "dim blue",
+        "style_metavar_separator": "",
+        "style_options_panel_help_style": "dim italic blue",
+        "style_commands_panel_help_style": "dim italic blue",
+        "style_deprecated": "bold",
+        "style_options_table_border_style": "dim",
+        "style_commands_table_border_style": "dim",
+        "style_options_panel_border": "dim",
+        "style_commands_panel_border": "dim",
+        "style_options_panel_title_style": "bold not dim blue",
+        "style_commands_panel_title_style": "bold not dim blue",
+        "style_required_long": "bold blue",
+        "style_required_short": "dim bold blue",
+        "style_option_default": "dim blue",
+        "style_option_envvar": "dim blue",
+        "style_helptext_first_line": "",
+        "style_helptext": "dim",
+        "style_header_text": "",
+        "style_epilog_text": "",
+        "style_footer_text": "",
+    },
+    "nord": {  # 100% done
+        "style_option": "bold bright_blue",
+        "style_command": "bold bright_cyan",
+        "style_usage_command": "bold bright_cyan",
+        "style_switch": "blue",
+        "style_argument": "bold bright_blue",
+        "style_usage": "",
+        "style_metavar_append": "dim magenta",
+        "style_metavar": "not bold magenta",
+        "style_metavar_separator": "bold",
+        "style_options_panel_help_style": "default",
+        "style_commands_panel_help_style": "default",
+        "style_deprecated": "bright_magenta",
+        "style_options_table_border_style": "dim blue",
+        "style_commands_table_border_style": "dim cyan",
+        "style_options_panel_border": "dim bright_blue",
+        "style_commands_panel_border": "dim bright_cyan",
+        "style_options_panel_title_style": "bold",
+        "style_commands_panel_title_style": "bold",
+        "style_required_long": "magenta",
+        "style_required_short": "bold white",
+        "style_option_default": "magenta",
+        "style_option_envvar": "magenta",
+        "style_helptext_first_line": "blue",
+        "style_helptext": "",
+        "style_header_text": "",
+        "style_epilog_text": "",
+        "style_footer_text": "",
+    },
+    # "nord": {
+    #     "style_option": "bold bright_cyan",
+    #     "style_argument": "bold white",
+    #     "style_command": "bold bright_blue",
+    #     "style_switch": "cyan",
+    #     "style_usage": "bright_white",
+    #     "style_deprecated": "bright_magenta",
+    # },
+    "plain": {  # 100% done
         "style_option": "",
         "style_command": "",
         "style_usage_command": "",
@@ -115,31 +263,33 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_usage": "",
         "style_metavar_append": "",
         "style_metavar": "",
-        "style_deprecated": "bold",
-        "style_options_panel_border": "dim",
-        "style_commands_panel_border": "dim",
+        "style_metavar_separator": "",
         "style_options_panel_help_style": "",
         "style_commands_panel_help_style": "",
-        "style_options_panel_title_style": "bold",
-        "style_commands_panel_title_style": "bold",
-        "style_option_envvar": "dim",
-        "style_option_default": "dim",
-        "style_required_long": "bold",
-        "style_required_short": "dim bold",
-    },
-    "nord": {
-        "style_option": "bold bright_cyan",
-        "style_argument": "bold white",
-        "style_command": "bold bright_blue",
-        "style_switch": "cyan",
-        "style_usage": "bright_white",
-        "style_deprecated": "bright_magenta",
+        "style_deprecated": "",
+        "style_options_table_border_style": "",
+        "style_commands_table_border_style": "",
+        "style_options_panel_border": "",
+        "style_commands_panel_border": "",
+        "style_options_panel_title_style": "",
+        "style_commands_panel_title_style": "",
+        "style_required_long": "",
+        "style_required_short": "",
+        "style_option_default": "",
+        "style_option_envvar": "",
+        "style_helptext_first_line": "",
+        "style_helptext": "",
+        "style_header_text": "",
+        "style_epilog_text": "",
+        "style_footer_text": "",
     },
 }
 
 FORMATS: Dict[str, Dict[str, Any]] = {
-    "default": {},
-    "ray": {
+    # Classic rich-click format with boxes
+    "box": {},
+    # Great balance of compactness, legibility, and style
+    "nu": {
         "style_options_panel_box": "HORIZONTALS_DOUBLE_TOP",
         "style_commands_panel_box": "HORIZONTALS_DOUBLE_TOP",
         # "commands_before_options": True,
@@ -149,12 +299,18 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "style_commands_table_box": None,
         "style_options_panel_padding": 0,
         "style_commands_panel_padding": 0,
-        "deprecated_string": "[deprecated]",
-        "deprecated_with_reason_string": "[deprecated ({})]",
-        "envvar_string": "[env={}]",
-        "default_string": "[default={}]",
+        "deprecated_string": "(Deprecated)",
+        "deprecated_with_reason_string": "(Deprecated: {})",
+        "default_string": "(Default: {})",
+        "envvar_string": "(Env: {})",
+        "required_long_string": "(Required)",
+        "range_string": " {}",
         "required_short_string": "#",
+        "padding_header_text": (0, 1, 1, 1),
+        "padding_helptext": (0, 1, 1, 1),
+        "padding_usage": (0, 1, 1, 1),
     },
+    # Simple, classic, no-fuss CLI format
     "slim": {
         "style_options_panel_box": "BLANK",
         "style_commands_panel_box": "BLANK",
@@ -172,6 +328,7 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "append_metavars_help_string": "[{}]",
         "envvar_string": "[env: {}=]",
     },
+    # Beautiful modern look
     "modern": {
         "style_options_panel_box": None,
         "style_commands_panel_box": None,
@@ -185,14 +342,19 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "padding_header_text": (1, 0, 0, 2),
         "padding_helptext": (0, 0, 1, 2),
         "padding_usage": (1, 0, 1, 2),
+        "options_table_columns": ["opt_short", "opt_long", "metavar", "help"],
+        "deprecated_string": "[deprecated]",
+        "deprecated_with_reason_string": "[deprecated - {}]",
+        "envvar_string": "[env={}]",
+        "default_string": "[default={}]",
         "append_metavars_help_string": "[{}]",
-        "envvar_string": "[env: {}=]",
         "style_options_panel_inline_help_in_title": True,
         "style_commands_panel_inline_help_in_title": True,
     },
-    "xp": {
-        "style_options_panel_box": "ROUNDED",
-        "style_commands_panel_box": "ROUNDED",
+    # Spacious with sharp corners
+    "robo": {
+        "style_options_panel_box": "SQUARE",
+        "style_commands_panel_box": "SQUARE",
         "commands_before_options": True,
         "style_options_panel_border": "dim",
         "style_commands_panel_border": "dim",
@@ -200,13 +362,14 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "style_commands_table_box": None,
         "style_options_panel_padding": (1, 2),
         "style_commands_panel_padding": (1, 2),
-        "deprecated_string": "(Deprecated)",
-        "deprecated_with_reason_string": "(Deprecated: {})",
-        "default_string": "(Default: {})",
-        "envvar_string": "(Env: {})",
+        "deprecated_string": "❮DEPRECATED❯",
+        "deprecated_with_reason_string": "❮DEPRECATED: {}❯",
+        "envvar_string": "❮ENV: {}❯",
+        "default_string": "❮DEFAULT: {}❯",
+        "append_metavars_help_string": "[{}]",
         "required_short_string": "*",
-        "required_long_string": "(Required)",
-        "range_string": " {}",
+        "required_long_string": "❮REQUIRED❯",
+        "range_string": "{}",
         # deprecated_string: str = "[deprecated]"
         # deprecated_with_reason_string: str = "[deprecated: {}]"
         # default_string: str = "[default: {}]"
@@ -219,6 +382,8 @@ FORMATS: Dict[str, Dict[str, Any]] = {
 }
 
 
+# TODO: Optimize loading themes
+#  No need to iterate over everything and store in memory.
 THEMES: Dict[str, Dict[str, Any]] = {}
 
 for k, v in FORMATS.items():

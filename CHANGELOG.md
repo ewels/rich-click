@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 1.9.0dev0 (WIP)
+## Version 1.9.0dev1 (WIP)
 
 > [!WARNING]
 > Version 1.9.0 deprecates support for a lot of old versions of things:
@@ -11,10 +11,11 @@
 
 **Big changes:**
 
-- **IDE tab completion support for decorators**. Now you should no longer need to guess what goes in `@click.option()` or `@click.command(context_settings=...)` etc.
+- **Themes!** Check them out with `rich-click --themes`.
 - **RichPanels** API introduced. This replaces the "groups" feature going forward (although groups will continue to be supported).
   - `@click.option_panel()`
   - `@click.command_panel()`
+- **IDE tab completion support for decorators**. Now you should no longer need to guess what goes in `@click.option()` or `@click.command(context_settings=...)` etc.
 - **Help for arguments:** `help=` is now a valid kwarg for `@click.argument()` decorator. See docs for more information.
 
 **Small changes:**

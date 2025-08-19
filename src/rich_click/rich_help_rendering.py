@@ -97,9 +97,7 @@ def _get_help_text(
         if not first_line.startswith("\b"):
             first_line = first_line.replace("\n", " ")
     yield Padding(
-        formatter.rich_text(
-            first_line.strip(),
-        ),
+        formatter.rich_text(first_line.strip(), formatter.config.style_helptext_first_line),
         formatter.config.padding_helptext_first_line,
     )
     # Get remaining lines, remove single line breaks and format as dim
@@ -270,7 +268,7 @@ def _get_parameter_help_metavar_col(
         ):
             range_str = param.type._describe_range()
             if range_str:
-                metavar.append(formatter.config.range_string.format(range_str))
+                metavar.append(" " + formatter.config.range_string.format(range_str))
     except AttributeError:
         # click.types._NumberRangeBase is only in Click 8x onwards
         pass
