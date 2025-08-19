@@ -37,18 +37,18 @@ def test_markdown_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> No
  ▌  • Also for specific group subcommands.                                                          \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --input    PATH  Input file. [default: a custom default]                                         │
-│ --type     TEXT  Type of file to sync                                                            │
-│                  [default: files]                                                                │
-│ --all            Sync                                                                            │
+│ --input  PATH  Input file. [default: a custom default]                                           │
+│ --type   TEXT  Type of file to sync                                                              │
+│                [default: files]                                                                  │
+│ --all          Sync                                                                              │
 │                                                                                                  │
-│                   1 all                                                                          │
-│                   2 the                                                                          │
-│                   3 things?                                                                      │
-│ --debug          ╔═════════════════════════════════════════════════════════════════════════════╗ │
-│                  ║                              Enable debug mode                              ║ │
-│                  ╚═════════════════════════════════════════════════════════════════════════════╝ │
-│ --help           Show this message and exit.                                                     │
+│                 1 all                                                                            │
+│                 2 the                                                                            │
+│                 3 things?                                                                        │
+│ --debug        ╔═══════════════════════════════════════════════════════════════════════════════╗ │
+│                ║                               Enable debug mode                               ║ │
+│                ╚═══════════════════════════════════════════════════════════════════════════════╝ │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -110,18 +110,18 @@ def test_markdown_help_text_markup_field(cli_runner: CliRunner, cli: rich_click.
  ▌  • Also for specific group subcommands.                                                          \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --input    PATH  Input file. [default: a custom default]                                         │
-│ --type     TEXT  Type of file to sync                                                            │
-│                  [default: files]                                                                │
-│ --all            Sync                                                                            │
+│ --input  PATH  Input file. [default: a custom default]                                           │
+│ --type   TEXT  Type of file to sync                                                              │
+│                [default: files]                                                                  │
+│ --all          Sync                                                                              │
 │                                                                                                  │
-│                   1 all                                                                          │
-│                   2 the                                                                          │
-│                   3 things?                                                                      │
-│ --debug          ╔═════════════════════════════════════════════════════════════════════════════╗ │
-│                  ║                              Enable debug mode                              ║ │
-│                  ╚═════════════════════════════════════════════════════════════════════════════╝ │
-│ --help           Show this message and exit.                                                     │
+│                 1 all                                                                            │
+│                 2 the                                                                            │
+│                 3 things?                                                                        │
+│ --debug        ╔═══════════════════════════════════════════════════════════════════════════════╗ │
+│                ║                               Enable debug mode                               ║ │
+│                ╚═══════════════════════════════════════════════════════════════════════════════╝ │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
