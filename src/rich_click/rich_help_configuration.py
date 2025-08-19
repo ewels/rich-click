@@ -76,7 +76,8 @@ class RichHelpConfiguration:
     for a given field, the right-most field is used.
     """
 
-    theme: str = field(default=RichClickTheme.default)
+    theme: Optional[str] = field(default=None)
+    enable_theme_env_var: bool = field(default=True)
 
     # Default styles
     style_option: "rich.style.StyleType" = field(default="bold cyan")
@@ -298,6 +299,9 @@ class RichHelpConfiguration:
             self.text_emojis = self.text_markup in {"markdown", "rich"}
 
         self.__dataclass_fields__.pop("highlighter", None)
+
+        if self.enable_theme_env_var and self.theme is None:
+            self.theme = os.environ.get("RICH_CLICK_THEME")
 
         # Apply theme if specified
         if self.theme:

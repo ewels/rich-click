@@ -17,6 +17,9 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 # Default styles
+THEME: Optional[str] = None
+ENABLE_THEME_ENV_VAR: bool = True
+
 STYLE_OPTION: "rich.style.StyleType" = "bold cyan"
 STYLE_ARGUMENT: "rich.style.StyleType" = "bold cyan"
 STYLE_COMMAND: "rich.style.StyleType" = "bold cyan"
