@@ -97,7 +97,7 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_metavar_append": "yellow",
         "style_metavar": "yellow",
         "style_options_panel_help_style": "yellow not dim italic",
-        "style_commands_panel_help_style": "yellow not dim italic" ,
+        "style_commands_panel_help_style": "yellow not dim italic",
         "style_options_panel_title_style": "bold not dim",
         "style_commands_panel_title_style": "bold not dim",
         "style_deprecated": "dim",
@@ -282,7 +282,7 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_header_text": "",
         "style_epilog_text": "",
         "style_footer_text": "",
-    }
+    },
 }
 
 FORMATS: Dict[str, Dict[str, Any]] = {

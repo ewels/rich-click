@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+import json
 import os
 from dataclasses import MISSING, dataclass, field
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
-import json
 
 from rich_click.rich_theme import THEMES
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
@@ -316,11 +316,9 @@ class RichHelpConfiguration:
                             raise TypeError(f"'{type(self)}' has no attribute '{k}'")
             except Exception as e:
                 import warnings
-                warnings.warn(
-                    f"RICH_CLICK_THEME= failed to parse: {e.__class__.__name__}{e.args}",
-                    UserWarning
-                )
-        theme_settings = THEMES.get(self.theme)
+
+                warnings.warn(f"RICH_CLICK_THEME= failed to parse: {e.__class__.__name__}{e.args}", UserWarning)
+        theme_settings = THEMES.get(self.theme)  # type: ignore[arg-type]
         if theme_settings:
             for k, v in theme_settings.items():
                 current = getattr(self, k)

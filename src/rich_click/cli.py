@@ -139,19 +139,15 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
     """Print all themes."""
     if value:
         import rich
-
-        from rich.table import Table
-        from rich.text import Text
-        from rich.columns import Columns
-        from rich.panel import Panel
+        from rich import box
         from rich.containers import Renderables
         from rich.padding import Padding
-        from rich_click.rich_theme import THEMES
-        from rich import box
-        from rich.rule import Rule
+        from rich.panel import Panel
+        from rich.table import Table
+        from rich.text import Text
 
-        check = "✓"
-        unchecked = ""
+        from rich_click.rich_theme import THEMES
+
         found = False
         c, f = None, None
 
@@ -159,6 +155,7 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
         if selected is not None:
             if selected.startswith("{"):
                 import json
+
                 try:
                     data = json.loads(selected)
                     _theme = data.get("theme")
@@ -169,10 +166,12 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
             if "-" in _theme:
                 c, f, *_ = _theme.split("-")
                 from rich_click.rich_theme import THEMES
+
                 if _theme in THEMES:
                     found = True
             elif _theme is not None:
                 from rich_click.rich_theme import COLORS, FORMATS
+
                 if _theme in FORMATS:
                     f = _theme
                     found = True
@@ -192,7 +191,10 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
             )
 
         colors = Table(
-            "", "Style", "Colors", "Description",
+            "",
+            "Style",
+            "Colors",
+            "Description",
             padding=(0, 1),
             border_style="dim",
             box=box.SIMPLE_HEAD,
@@ -201,22 +203,78 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
         )
         colors.columns[0].max_width = 1
         colors.columns[1].style = "bold"
-        colors.add_row(check if c == "default" or c is None else "", "default", "[cyan]▓▓[/] [yellow]▓▓[/] [green]▓▓[/]", "[b](Default)[/b] Original rich-click colors")
-        colors.add_row(check if c == "solarized" else "", "solarized", "[bright_green]▓▓[/] [bright_red]▓▓[/] [bright_cyan]▓▓[/]", "Bright, colorful, vibrant accents")
-        colors.add_row(check if c == "nord" else "", "nord", "[blue]▓▓[/] [bright_blue]▓▓[/] [cyan]▓▓[/]", "Many shades of cool colors")
-        colors.add_row(check if c == "star" else "", "star", "[yellow]▓▓[/] [blue]▓▓[/] [default]▓▓[/]", "Litestar theme; astrological feel")
-        colors.add_row(check if c == "news" else "", "news", "[default]▓▓[/] [red]▓▓[/] [dim]▓▓[/]", "White and black and red all over")
-        colors.add_row(check if c == "quartz" else "", "quartz", "[magenta]▓▓[/] [dim magenta]▓▓[/] [blue]▓▓[/]", "Dark and radiant")
-        colors.add_row(check if c == "quartz2" else "", "quartz2", "[magenta]▓▓[/] [blue]▓▓[/] [yellow]▓▓[/]", "Remix of 'quartz' with accents")
-        colors.add_row(check if c == "cargo" else "", "cargo", "[green]▓▓[/] [cyan]▓▓[/] [default]▓▓[/]", "Cargo CLI theme; legible and bold")
-        colors.add_row(check if c == "ice" else "", "ice", "[default]▓▓[/] [blue]▓▓[/] [dim]▓▓[/]", "Simple blue accented theme")
-        colors.add_row(check if c == "forest" else "", "forest", "[green]▓▓[/] [yellow]▓▓[/] [cyan]▓▓[/]", "Earthy tones with analogous colors")
-        colors.add_row(check if c == "dracula" else "", "dracula", "[magenta]▓▓[/] [red]▓▓[/] [default]▓▓[/]", "Vibrant high-contract dark theme")
-        colors.add_row(check if c == "mono" else "", "mono", "[default]▓▓[/] [dim]▓▓[/]", "Monochromatic theme with no colors")
-        colors.add_row(check if c == "plain" else "", "plain", "[default]▓▓[/]", "No style at all.")
+        colors.add_row(
+            "✓" if c == "default" or c is None else "",
+            "default",
+            "[cyan]▓▓[/] [yellow]▓▓[/] [green]▓▓[/]",
+            "[b](Default)[/b] Original rich-click colors",
+        )
+        colors.add_row(
+            "✓" if c == "solarized" else "",
+            "solarized",
+            "[bright_green]▓▓[/] [bright_red]▓▓[/] [bright_cyan]▓▓[/]",
+            "Bright, colorful, vibrant accents",
+        )
+        colors.add_row(
+            "✓" if c == "nord" else "",
+            "nord",
+            "[blue]▓▓[/] [bright_blue]▓▓[/] [cyan]▓▓[/]",
+            "Many shades of cool colors",
+        )
+        colors.add_row(
+            "✓" if c == "star" else "",
+            "star",
+            "[yellow]▓▓[/] [blue]▓▓[/] [default]▓▓[/]",
+            "Litestar theme; astrological feel",
+        )
+        colors.add_row(
+            "✓" if c == "news" else "",
+            "news",
+            "[default]▓▓[/] [red]▓▓[/] [dim]▓▓[/]",
+            "White and black and red all over",
+        )
+        colors.add_row(
+            "✓" if c == "quartz" else "",
+            "quartz",
+            "[magenta]▓▓[/] [dim magenta]▓▓[/] [blue]▓▓[/]",
+            "Dark and radiant",
+        )
+        colors.add_row(
+            "✓" if c == "quartz2" else "",
+            "quartz2",
+            "[magenta]▓▓[/] [blue]▓▓[/] [yellow]▓▓[/]",
+            "Remix of 'quartz' with accents",
+        )
+        colors.add_row(
+            "✓" if c == "cargo" else "",
+            "cargo",
+            "[green]▓▓[/] [cyan]▓▓[/] [default]▓▓[/]",
+            "Cargo CLI theme; legible and bold",
+        )
+        colors.add_row(
+            "✓" if c == "ice" else "", "ice", "[default]▓▓[/] [blue]▓▓[/] [dim]▓▓[/]", "Simple blue accented theme"
+        )
+        colors.add_row(
+            "✓" if c == "forest" else "",
+            "forest",
+            "[green]▓▓[/] [yellow]▓▓[/] [cyan]▓▓[/]",
+            "Earthy tones with analogous colors",
+        )
+        colors.add_row(
+            "✓" if c == "dracula" else "",
+            "dracula",
+            "[magenta]▓▓[/] [red]▓▓[/] [default]▓▓[/]",
+            "Vibrant high-contract dark theme",
+        )
+        colors.add_row(
+            "✓" if c == "mono" else "", "mono", "[default]▓▓[/] [dim]▓▓[/]", "Monochromatic theme with no colors"
+        )
+        colors.add_row("✓" if c == "plain" else "", "plain", "[default]▓▓[/]", "No style at all.")
 
         formats = Table(
-            "", "Formats", "Description",
+            "",
+            "Formats",
+            "Description",
             padding=(0, 1),
             border_style="dim",
             box=box.SIMPLE_HEAD,
@@ -224,40 +282,54 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
             expand=True,
         )
         formats.columns[0].style = "bold"
-        formats.add_row(check if f == "box" or f is None else "", "box", "[b](Default)[/b] Original rich-click format with boxes")
-        formats.add_row(check if f == "slim" else "", "slim", "Simple, classic, no-fuss CLI format")
-        formats.add_row(check if f == "modern" else "", "modern", "Beautiful modern look")
-        formats.add_row(check if f == "robo" else "", "robo", "Spacious with sharp corners")
-        formats.add_row(check if f == "nu" else "", "nu", "Great balance of compactness, legibility, and style")
+        formats.add_row(
+            "✓" if f == "box" or f is None else "", "box", "[b](Default)[/b] Original rich-click format with boxes"
+        )
+        formats.add_row("✓" if f == "slim" else "", "slim", "Simple, classic, no-fuss CLI format")
+        formats.add_row("✓" if f == "modern" else "", "modern", "Beautiful modern look")
+        formats.add_row("✓" if f == "robo" else "", "robo", "Spacious with sharp corners")
+        formats.add_row("✓" if f == "nu" else "", "nu", "Great balance of compactness, legibility, and style")
 
-        how_to_use = Padding(Text("\n\n", overflow="fold").join([
-            Text.from_markup("[b]Themes[/b] are an easy way to style a rich-click CLI."),
-            Text.from_markup(
-                "As an end-user of CLIs, you can set the [blue b]RICH_CLICK_THEME=[/blue b] env var"
-                " to style all rich-click CLIs you use."
+        how_to_use = Padding(
+            Text("\n\n", overflow="fold").join(
+                [
+                    Text.from_markup("[b]Themes[/b] are an easy way to style a rich-click CLI."),
+                    Text.from_markup(
+                        "As an end-user of CLIs, you can set the [blue b]RICH_CLICK_THEME=[/blue b] env var"
+                        " to style all rich-click CLIs you use."
+                    ),
+                    Text.from_markup(
+                        "As a developer, you can add a theme to your CLI with one line of code:"
+                        " [green b]@click.rich_config({'theme': 'name'})[/green b]."
+                    ),
+                    Text.from_markup(
+                        "Themes consist of [b]Color Palettes[/b] and [b]Formats[/b], which can be mixed and matched:"
+                        " The name of a full theme has the following schema: [red]{color_palette}-{format}[/red]."
+                    ),
+                    Text.from_markup(
+                        "For example, the [b]forest-slim[/b] theme uses the [b]forest[/b]"
+                        " color palette and the [b]slim[/b] format."
+                    ),
+                ]
             ),
-            Text.from_markup(
-                "As a developer, you can add a theme to your CLI with one line of code: [green b]@click.rich_config({'theme': 'name'})[/green b]."
-            ),
-            Text.from_markup(
-                "Themes consist of [b]Color Palettes[/b] and [b]Formats[/b], which can be mixed and matched:"
-                " The name of a full theme has the following schema: [red]{color_palette}-{format}[/red]."
-            ),
-            Text.from_markup(
-                "For example, the [b]forest-slim[/b] theme uses the [b]forest[/b] color palette and the [b]slim[/b] format."
-            ),
-        ]), pad=1, expand=False)
-
-        rich.print(Panel(
-            Renderables([
-                Panel(how_to_use, title="How to use", width=100),
-                Panel(Padding(selected_text, pad=1), title="RICH_CLICK_THEME=", width=100),
-                Panel(colors, title="Color Palettes"),
-                Panel(formats, title="Formats"),
-            ]),
+            pad=1,
             expand=False,
-            box=box.SIMPLE,
-        ))
+        )
+
+        rich.print(
+            Panel(
+                Renderables(
+                    [
+                        Panel(how_to_use, title="How to use", width=100),
+                        Panel(Padding(selected_text, pad=1), title="RICH_CLICK_THEME=", width=100),
+                        Panel(colors, title="Color Palettes"),
+                        Panel(formats, title="Formats"),
+                    ]
+                ),
+                expand=False,
+                box=box.SIMPLE,
+            )
+        )
         rich.print()
 
         ctx.exit(0)
