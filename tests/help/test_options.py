@@ -80,7 +80,8 @@ def test_options_help_envvar_first(cli_runner: CliRunner, cli: rich_click.RichCo
 
 def test_options_help_dont_show_metavars(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     rc.SHOW_METAVARS_COLUMN = False
-    result = cli_runner.invoke(cli, "--help")
+    with pytest.warns(PendingDeprecationWarning, match=r"`show_metavars_column=` will be deprecated.*"):
+        result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
     assert result.stdout == snapshot(
         """\

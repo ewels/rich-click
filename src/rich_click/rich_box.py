@@ -43,10 +43,10 @@ BLANK.top_left = ""
 BLANK.top_right = "\t" * 20  # Reasonably ensure padding
 BLANK.top_divider = ""
 
-def get_box(name: Union[str, Box]) -> Box:
+def get_box(box: Union[str, Box]) -> Box:
     """Retrieve a Rich Box by name."""
-    if isinstance(name, Box):
-        return name
-    if name == name.upper() and name in globals():
-        return globals()[name]  # type: ignore[no-any-return]
-    return getattr(rich.box, name)  # type: ignore[no-any-return]
+    if isinstance(box, Box):
+        return box
+    if box == box.upper() and box in globals():
+        return globals()[box]  # type: ignore[no-any-return]
+    return getattr(rich.box, box)  # type: ignore[no-any-return]

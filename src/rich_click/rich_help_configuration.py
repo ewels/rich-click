@@ -24,6 +24,24 @@ if TYPE_CHECKING:  # pragma: no cover
 T = TypeVar("T", bound="RichHelpConfiguration")
 
 
+OptionColumnType = Literal[
+    "required",
+    "opt_primary",
+    "opt_secondary",
+    "opt_long",
+    "opt_short",
+    "opt_all",
+    "metavar",
+    "help",
+    "default",
+    "envvar",
+]
+
+CommandColumnType = Literal["name", "help"]
+
+ColumnType = Union[OptionColumnType, CommandColumnType]
+
+
 def force_terminal_default() -> Optional[bool]:
     """Use as the default factory for `force_terminal`."""
     env_vars = ["FORCE_COLOR", "PY_COLORS", "GITHUB_ACTIONS"]
@@ -92,7 +110,7 @@ class RichHelpConfiguration:
     style_options_table_leading: int = field(default=0)
     style_options_table_pad_edge: bool = field(default=False)
     style_options_table_padding: "rich.padding.PaddingDimensions" = field(default_factory=lambda: (0, 1))
-    style_options_table_box: Optional[Union[str, "rich.box.Box"]] = field(default="")
+    style_options_table_box: Optional[Union[str, "rich.box.Box"]] = field(default=None)
     style_options_table_row_styles: Optional[List["rich.style.StyleType"]] = field(default=None)
     style_options_table_border_style: Optional["rich.style.StyleType"] = field(default=None)
     style_commands_panel_border: "rich.style.StyleType" = field(default="dim")
@@ -104,7 +122,7 @@ class RichHelpConfiguration:
     style_commands_table_leading: int = field(default=0)
     style_commands_table_pad_edge: bool = field(default=False)
     style_commands_table_padding: "rich.padding.PaddingDimensions" = field(default_factory=lambda: (0, 1))
-    style_commands_table_box: Optional[Union[str, "rich.box.Box"]] = field(default="")
+    style_commands_table_box: Optional[Union[str, "rich.box.Box"]] = field(default=None)
     style_commands_table_row_styles: Optional[List["rich.style.StyleType"]] = field(default=None)
     style_commands_table_border_style: Optional["rich.style.StyleType"] = field(default=None)
     style_commands_table_column_width_ratio: Optional[Union[Tuple[None, None], Tuple[int, int]]] = field(
@@ -120,6 +138,14 @@ class RichHelpConfiguration:
     max_width: Optional[int] = field(default_factory=terminal_width_default)
     color_system: Optional[Literal["auto", "standard", "256", "truecolor", "windows"]] = field(default="auto")
     force_terminal: Optional[bool] = field(default_factory=force_terminal_default)
+
+    options_table_columns: List[OptionColumnType] = field(
+        default_factory=lambda: ["required", "opt_long", "opt_short", "metavar", "help"]
+    )
+    arguments_table_columns: List[OptionColumnType] = field(
+        default_factory=lambda: ["required", "opt_long", "opt_short", "metavar", "help"]
+    )
+    commands_table_columns: List[CommandColumnType] = field(default_factory=lambda: ["name", "help"])
 
     # Fixed strings
     header_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
@@ -155,7 +181,7 @@ class RichHelpConfiguration:
     # Behaviours
     show_arguments: Optional[bool] = field(default=None)
     """Show positional arguments"""
-    show_metavars_column: bool = field(default=True)
+    show_metavars_column: Optional[bool] = field(default=None)
     """Show a column with the option metavar (eg. INTEGER)"""
     commands_before_options: bool = field(default=False)
     """If set, the commands panel show above the options panel."""
@@ -240,6 +266,20 @@ class RichHelpConfiguration:
                 self.text_markup = "rich"
             else:
                 self.text_markup = "ansi"
+
+        if self.show_metavars_column is not None:
+            import warnings
+
+            warnings.warn(
+                "`show_metavars_column=` will be deprecated in a future version of rich-click."
+                " Please use `options_table_columns=` instead."
+                " The `option_table_columns` config option lets you specify an ordered list"
+                " of which columns are rendered.",
+                PendingDeprecationWarning,
+                stacklevel=2,
+            )
+            if self.show_metavars_column is False:
+                self.options_table_columns.remove("metavar")
 
         if self.use_markdown_emoji is not None:
             import warnings
