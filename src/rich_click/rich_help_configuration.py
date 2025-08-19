@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
 
-from rich_click.rich_click_theme import THEMES, RichClickTheme
+from rich_click.rich_theme import THEMES, RichClickTheme
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
 
 
@@ -16,9 +16,10 @@ if TYPE_CHECKING:  # pragma: no cover
     import rich.padding
     import rich.style
     import rich.text
+    import rich.padding
     from rich.padding import PaddingDimensions
 
-    import rich_click.rich_click_theme
+    import rich_click.rich_theme
 
 
 T = TypeVar("T", bound="RichHelpConfiguration")
@@ -37,7 +38,10 @@ OptionColumnType = Literal[
     "envvar",
 ]
 
-CommandColumnType = Literal["name", "help"]
+CommandColumnType = Literal[
+    "name",
+    "help"
+]
 
 ColumnType = Union[OptionColumnType, CommandColumnType]
 
@@ -103,7 +107,7 @@ class RichHelpConfiguration:
     style_required_long: "rich.style.StyleType" = field(default="dim red")
     style_options_panel_border: "rich.style.StyleType" = field(default="dim")
     style_options_panel_box: Optional[Union[str, "rich.box.Box"]] = field(default="ROUNDED")
-    style_options_panel_help_style: "rich.style.StyleType" = field(default="")
+    style_options_panel_help_style: "rich.style.styletype" = field(default="")
     style_options_panel_padding: "rich.padding.PaddingDimensions" = field(default=(0, 1))
     align_options_panel: "rich.align.AlignMethod" = field(default="left")
     style_options_table_show_lines: bool = field(default=False)
@@ -115,7 +119,7 @@ class RichHelpConfiguration:
     style_options_table_border_style: Optional["rich.style.StyleType"] = field(default=None)
     style_commands_panel_border: "rich.style.StyleType" = field(default="dim")
     style_commands_panel_box: Optional[Union[str, "rich.box.Box"]] = field(default="ROUNDED")
-    style_commands_panel_help_style: "rich.style.StyleType" = field(default="")
+    style_commands_panel_help_style: "rich.style.styletype" = field(default="")
     style_commands_panel_padding: "rich.padding.PaddingDimensions" = field(default=(0, 1))
     align_commands_panel: "rich.align.AlignMethod" = field(default="left")
     style_commands_table_show_lines: bool = field(default=False)
@@ -145,7 +149,9 @@ class RichHelpConfiguration:
     arguments_table_columns: List[OptionColumnType] = field(
         default_factory=lambda: ["required", "opt_long", "opt_short", "metavar", "help"]
     )
-    commands_table_columns: List[CommandColumnType] = field(default_factory=lambda: ["name", "help"])
+    commands_table_columns: List[CommandColumnType] = field(
+        default_factory=lambda: ["name", "help"]
+    )
 
     # Fixed strings
     header_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
@@ -181,8 +187,9 @@ class RichHelpConfiguration:
     # Behaviours
     show_arguments: Optional[bool] = field(default=None)
     """Show positional arguments"""
-    show_metavars_column: Optional[bool] = field(default=None)
+    show_metavars_column: bool = field(default=True)
     """Show a column with the option metavar (eg. INTEGER)"""
+    show_required_column: bool = field(default=True)
     commands_before_options: bool = field(default=False)
     """If set, the commands panel show above the options panel."""
     append_metavars_help: bool = field(default=False)
@@ -249,6 +256,18 @@ class RichHelpConfiguration:
                 stacklevel=2,
             )
 
+        if self.show_metavars_column is not None:
+            import warnings
+
+            warnings.warn(
+                "`show_metavars_column=` will be deprecated in a future version of rich-click."
+                " Please use `options_table_columns=` instead."
+                " The `option_table_columns` config option lets you specify an ordered list"
+                " of which columns are rendered.",
+                PendingDeprecationWarning,
+                stacklevel=2,
+            )
+
         if self.use_rich_markup is not None:
             import warnings
 
@@ -266,20 +285,6 @@ class RichHelpConfiguration:
                 self.text_markup = "rich"
             else:
                 self.text_markup = "ansi"
-
-        if self.show_metavars_column is not None:
-            import warnings
-
-            warnings.warn(
-                "`show_metavars_column=` will be deprecated in a future version of rich-click."
-                " Please use `options_table_columns=` instead."
-                " The `option_table_columns` config option lets you specify an ordered list"
-                " of which columns are rendered.",
-                PendingDeprecationWarning,
-                stacklevel=2,
-            )
-            if self.show_metavars_column is False:
-                self.options_table_columns.remove("metavar")
 
         if self.use_markdown_emoji is not None:
             import warnings

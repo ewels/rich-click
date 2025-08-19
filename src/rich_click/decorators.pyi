@@ -214,7 +214,8 @@ class RichHelpConfigurationDict(TypedDict):
 
     # Behaviours
     show_arguments: NotRequired[Optional[bool]]
-    show_metavars_column: NotRequired[Optional[bool]]
+    show_metavars_column: NotRequired[bool]
+    show_required_column: NotRequired[bool]
     commands_before_options: NotRequired[bool]
     append_metavars_help: NotRequired[bool]
     group_arguments_options: NotRequired[bool]

@@ -19,13 +19,12 @@ from typing import (
 import click
 import click.core
 
-from rich_click.rich_help_configuration import ColumnType
 from rich_click.rich_parameter import RichArgument, RichParameter
 from rich_click.utils import CommandGroupDict, OptionGroupDict
+from rich_click.rich_help_configuration import ColumnType
 
 
 if TYPE_CHECKING:
-    from rich.box import Box
     from rich.panel import Panel
     from rich.style import StyleType
     from rich.table import Table
@@ -52,7 +51,7 @@ class RichPanel(Generic[CT]):
         name: str,
         *,
         help: Optional[str] = None,
-        help_style: "StyleType" = "",
+        help_style: Optional["StyleType"] = None,
         table_styles: Optional[Dict[str, Any]] = None,
         panel_styles: Optional[Dict[str, Any]] = None,
         columns: Optional[List[ColumnType]] = None,
@@ -63,7 +62,7 @@ class RichPanel(Generic[CT]):
         self.help_style = help_style
         self.table_styles = table_styles or {}
         self.panel_styles = panel_styles or {}
-        self.columns = columns
+        self.columns = columns or []
 
     def get_objects(self) -> List[str]:
         if self._object_attr is NotImplemented:
@@ -74,13 +73,6 @@ class RichPanel(Generic[CT]):
         if self._object_attr is NotImplemented:
             raise NotImplementedError()
         getattr(self, self._object_attr).append(o)
-
-    def get_box(self, box: Optional[Union[str, "Box"]]) -> Optional["Box"]:
-        if box is None:
-            return None
-        from rich_click.rich_box import get_box
-
-        return get_box(box)
 
     def to_info_dict(self, ctx: click.Context) -> Dict[str, Any]:
         if self._object_attr is NotImplemented:
@@ -101,18 +93,24 @@ class RichPanel(Generic[CT]):
             from rich.table import Table
 
             self.table_class = Table
-
-        kw: Dict[str, Any] = {
+        kw = {
             "highlight": self._highlight,
             "show_header": False,
-            "expand": True,
+            "expand": False,
+            "pad_edge": False
         }
-
         kw.update(defaults)
         kw.update(self.table_styles)
-        if "box" in kw and kw["box"] is not None:
-            kw["box"] = self.get_box(kw.pop("box", None))
-        return self.table_class(**kw)
+        if "box" in kw:
+            from rich_click.rich_box import get_box
+            if kw["box"] is None:
+                kw.pop("box")
+                kw["box"] = get_box("SIMPLE")
+                kw.setdefault("show_edge", False)
+            else:
+                kw["box"] = get_box(kw.pop("box"))
+
+        return self.table_class(**kw)  # type: ignore[arg-type]
 
     def get_table(
         self,
@@ -132,12 +130,12 @@ class RichPanel(Generic[CT]):
         kw["title"] = self.name
         kw.update(self.panel_styles)
         if "box" in kw:
+            from rich_click.rich_box import get_box
             if kw["box"] is None:
                 kw.pop("box")
-                kw["box"] = self.get_box("SIMPLE")
+                kw["box"] = get_box("SIMPLE")
             else:
-                kw["box"] = self.get_box(kw.pop("box", None))
-
+                kw["box"] = get_box(kw.pop("box"))
         return self.panel_class(table, **kw)
 
     def render(
@@ -200,27 +198,43 @@ class RichOptionPanel(RichPanel[click.Parameter]):
 
             from rich_click.rich_help_rendering import get_rich_table_row
 
-            columns = self.columns or formatter.config.options_table_columns
-
             cols = (
-                param.get_rich_table_row(ctx, formatter, columns)  # type: ignore[arg-type]
+                param.get_rich_table_row(
+                    ctx,
+                    formatter,
+                    columns=["required", "opt_long", "opt_short", "metavar", "help"]
+                )
                 if isinstance(param, RichParameter)
-                else get_rich_table_row(param, ctx, formatter, columns)  # type: ignore[arg-type]
+                else get_rich_table_row(
+                    param,
+                    ctx,
+                    formatter,
+                    columns=["required", "opt_long", "opt_short", "metavar", "help"]
+                )
             )
 
             options_rows.append(cols)
 
-        if all([x[0] == "" or x[0] is None for x in options_rows]):
-            options_rows = [x[1:] for x in options_rows]
-            _opt_col = 0
-        else:
-            _opt_col = 1
+        if True:
+            options_rows = list(map(list, zip(*[
+                col for col in zip(*options_rows)
+                if any(cell[0] if isinstance(cell, tuple) else cell for cell in col)
+            ])))
+
+        widths = [
+            max(
+                cell[1] if isinstance(cell, tuple) and cell[1] is not None else 0
+                for cell in col
+            )
+            for col in zip(*options_rows)
+        ]
 
         for row in options_rows:
-            table.add_row(*row)
+            table.add_row(*[i[0] if isinstance(i, tuple) else i for i in row])
 
-        if len(table.columns) > _opt_col:
-            table.columns[_opt_col].overflow = "fold"
+        # for w, col in zip(widths, table.columns):
+        #     if w > 0:
+        #         col.max_width = w
 
         return table
 
@@ -237,12 +251,11 @@ class RichOptionPanel(RichPanel[click.Parameter]):
             "border_style": formatter.config.style_options_panel_border,
             "title_align": formatter.config.align_options_panel,
             "box": formatter.config.style_options_panel_box,
-            "padding": formatter.config.style_options_panel_padding,
+            "padding": formatter.config.style_options_panel_padding
         }
 
         if self.help:
             from rich.containers import Renderables
-
             if self.help_style is None:
                 help_style = formatter.config.style_options_panel_help_style
             else:
@@ -298,9 +311,6 @@ class RichCommandPanel(RichPanel[click.Command]):
         else:
             table_column_width_ratio = formatter.config.style_commands_table_column_width_ratio
 
-        # TODO
-        # columns = self.columns or formatter.config.commands_table_columns
-
         table.add_column(style=formatter.config.style_command, no_wrap=True, ratio=table_column_width_ratio[0])
         table.add_column(
             no_wrap=False,
@@ -350,18 +360,13 @@ class RichCommandPanel(RichPanel[click.Command]):
             "border_style": formatter.config.style_commands_panel_border,
             "title_align": formatter.config.align_commands_panel,
             "box": formatter.config.style_commands_panel_box,
-            "padding": formatter.config.style_commands_panel_padding,
+            "padding": formatter.config.style_commands_panel_padding
         }
-        if formatter.config.style_commands_panel_box and isinstance(formatter.config.style_commands_panel_box, str):
-            from rich import box
-
-            p_styles["box"] = getattr(box, p_styles.pop("box"), None)  # type: ignore[arg-type]
 
         if self.help:
             from rich.containers import Renderables
-
             if self.help_style is None:
-                help_style = formatter.config.style_options_panel_help_style
+                help_style = formatter.config.style_commands_panel_help_style
             else:
                 help_style = self.help_style
             inner = Renderables([formatter.rich_text(self.help, help_style), inner])
