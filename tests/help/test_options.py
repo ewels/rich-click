@@ -32,7 +32,7 @@ def test_options_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> Non
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ *  --number              INTEGER RANGE [1<=x<=6]  Pick a number [default: 4] [required]          │
 │    --name                TEXT                     Provide a name                                 │
-│    --location            LOCATION                 Provide a name (Deprecated)                    │
+│    --location            LOCATION                 Provide a name [deprecated]                    │
 │    --flag/--no-flag                               Set the flag (or not!).                        │
 │    --password            TEXT                     Password to login with                         │
 │ *  --loaded          -l  INTEGER RANGE [x>=0]     This option is loaded with everything (assert  │
@@ -62,7 +62,7 @@ def test_options_help_envvar_first(cli_runner: CliRunner, cli: rich_click.RichCo
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ *  --number              INTEGER RANGE [1<=x<=6]  Pick a number [default: 4] [required]          │
 │    --name                TEXT                     Provide a name                                 │
-│    --location            LOCATION                 Provide a name (Deprecated)                    │
+│    --location            LOCATION                 Provide a name [deprecated]                    │
 │    --flag/--no-flag                               Set the flag (or not!).                        │
 │    --password            TEXT                     Password to login with                         │
 │ *  --loaded          -l  INTEGER RANGE [x>=0]     [env var: IS_LOADED]                           │
@@ -80,7 +80,8 @@ def test_options_help_envvar_first(cli_runner: CliRunner, cli: rich_click.RichCo
 
 def test_options_help_dont_show_metavars(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     rc.SHOW_METAVARS_COLUMN = False
-    result = cli_runner.invoke(cli, "--help")
+    with pytest.warns(PendingDeprecationWarning, match=r"`show_metavars_column=` will be deprecated.*"):
+        result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
     assert result.stdout == snapshot(
         """\
@@ -92,7 +93,7 @@ def test_options_help_dont_show_metavars(cli_runner: CliRunner, cli: rich_click.
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ *  --number              Pick a number [default: 4] [required]                                   │
 │    --name                Provide a name                                                          │
-│    --location            Provide a name (Deprecated)                                             │
+│    --location            Provide a name [deprecated]                                             │
 │    --flag/--no-flag      Set the flag (or not!).                                                 │
 │    --password            Password to login with                                                  │
 │ *  --loaded          -l  This option is loaded with everything (assert preservation of order)    │

@@ -218,17 +218,13 @@ class RichHelpFormatter(click.HelpFormatter):
         """
         import inspect
 
-        from rich.markdown import Markdown
+        from rich.jupyter import JupyterMixin
         from rich.text import Text
 
-        if isinstance(text, (Text, Markdown)):
+        if isinstance(text, JupyterMixin):
             return text
 
         # Remove indentations from input text
-        text = inspect.cleandoc(text)
-        if isinstance(text, (Text, Markdown)):
-            return text
-
         text = inspect.cleandoc(text)
 
         kw: Dict[str, Any]
@@ -244,6 +240,9 @@ class RichHelpFormatter(click.HelpFormatter):
         kw.update(self.config.text_kwargs or {})
 
         if self.config.text_markup == "markdown":
+            # Lazy load Markdown because it slows down rendering
+            from rich.markdown import Markdown
+
             return Markdown(text, **kw)
         elif self.config.text_markup == "rich":
             return self.highlighter(Text.from_markup(text, **kw))

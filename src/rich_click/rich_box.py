@@ -1,7 +1,9 @@
+# fmt: off
 from typing import Union
 
 import rich.box
 from rich.box import Box
+
 
 HORIZONTALS_TOP: Box = Box(
     " ── \n"
@@ -41,9 +43,10 @@ BLANK.top_left = ""
 BLANK.top_right = "\t" * 20  # Reasonably ensure padding
 BLANK.top_divider = ""
 
-def get_box(name: Union[str, Box]) -> Box:
-    if isinstance(name, Box):
-        return name
-    if name == name.upper() and name in globals():
-        return globals()[name]
-    return getattr(rich.box, name)
+def get_box(box: Union[str, Box]) -> Box:
+    """Retrieve a Rich Box by name."""
+    if isinstance(box, Box):
+        return box
+    if box == box.upper() and box in globals():
+        return globals()[box]  # type: ignore[no-any-return]
+    return getattr(rich.box, box)  # type: ignore[no-any-return]

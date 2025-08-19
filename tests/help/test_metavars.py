@@ -42,7 +42,8 @@ def test_metavars_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> No
 
 
 def test_metavars_help_flipped(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
-    cfg = RichHelpConfiguration.load_from_globals(show_metavars_column=False, append_metavars_help=True)
+    with pytest.warns(PendingDeprecationWarning, match=r"`show_metavars_column=` will be deprecated.*"):
+        cfg = RichHelpConfiguration.load_from_globals(show_metavars_column=False, append_metavars_help=True)
     cli = rich_click.rich_config(help_config=cfg)(cli)
 
     result = cli_runner.invoke(cli, "--help")
@@ -59,9 +60,9 @@ def test_metavars_help_flipped(cli_runner: CliRunner, cli: rich_click.RichComman
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --debug     Enable debug mode.                                                                   │
 │ --number    This click choice has loads of options.                                              │
-│             (one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fi │
+│             [one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fi │
 │             fteen|sixteen|seventeen|eighteen|nineteen|twenty|twenty-one|twenty-two|twenty-three| │
-│             twenty-four|twenty-five|twenty-six|twenty-seven|twenty-eight|twenty-nine|thirty)     │
+│             twenty-four|twenty-five|twenty-six|twenty-seven|twenty-eight|twenty-nine|thirty]     │
 │ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
@@ -70,9 +71,10 @@ def test_metavars_help_flipped(cli_runner: CliRunner, cli: rich_click.RichComman
 
 
 def test_metavars_help_flipped_help_string(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
-    cfg = RichHelpConfiguration.load_from_globals(
-        show_metavars_column=False, append_metavars_help=True, append_metavars_help_string="[choices: {}]"
-    )
+    with pytest.warns(PendingDeprecationWarning, match=r"`show_metavars_column=` will be deprecated.*"):
+        cfg = RichHelpConfiguration.load_from_globals(
+            show_metavars_column=False, append_metavars_help=True, append_metavars_help_string="[choices: {}]"
+        )
     cli = rich_click.rich_config(help_config=cfg)(cli)
 
     result = cli_runner.invoke(cli, "--help")

@@ -59,26 +59,3 @@ class OptionGroupDict(TypedDict):
     table_styles: NotRequired[Dict[str, Any]]
     panel_styles: NotRequired[Dict[str, Any]]
     deduplicate: NotRequired[bool]
-
-
-def zip_longest(*iterables, fillvalue=None):
-    from itertools import repeat
-
-    iterators = list(map(iter, iterables))
-    num_active = len(iterators)
-    if not num_active:
-        return
-
-    while True:
-        values = []
-        for i, iterator in enumerate(iterators):
-            try:
-                value = next(iterator)
-            except StopIteration:
-                num_active -= 1
-                if not num_active:
-                    return
-                iterators[i] = repeat(fillvalue)
-                value = fillvalue
-            values.append(value)
-        yield tuple(values)
