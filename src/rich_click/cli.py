@@ -10,13 +10,15 @@ from importlib import (
     import_module,
     metadata,  # type: ignore[import,unused-ignore]
 )
-from typing import Any, List, Literal, Optional, Tuple, Union
+from typing import Any, Dict, List, Literal, Optional, Tuple
 
 import click
 
 from rich_click.decorators import argument as _rich_argument
 from rich_click.decorators import command as _rich_command
-from rich_click.decorators import pass_context
+from rich_click.decorators import option as _rich_option
+from rich_click.decorators import option_panel, pass_context
+from rich_click.decorators import version_option as _rich_version_option
 from rich_click.patch import patch as _patch
 from rich_click.rich_command import RichCommand
 from rich_click.rich_context import RichContext
@@ -56,12 +58,12 @@ class _RichHelpConfigurationParamType(click.ParamType):
 
     def convert(
         self,
-        value: Optional[Union[RichHelpConfiguration, str]],
+        value: Optional[str],
         param: Optional[click.Parameter],
         ctx: Optional[click.Context],
-    ) -> Optional[RichHelpConfiguration]:
+    ) -> Optional[Dict[str, Any]]:
 
-        if value is None or isinstance(value, RichHelpConfiguration):
+        if value is None:
             return value
         else:
             try:
@@ -74,7 +76,7 @@ class _RichHelpConfigurationParamType(click.ParamType):
                     data = json.loads(value)
                 if not isinstance(data, dict):
                     raise ValueError("--rich-config needs to be a JSON.")
-                return RichHelpConfiguration.load_from_globals(**data)
+                return data
             except Exception as e:
                 # In normal circumstances, a bad arg to a CLI doesn't
                 # prevent the help text from rendering.
@@ -133,17 +135,37 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
     return module_path, function_name
 
 
-@_rich_command("rich-click", context_settings=dict(allow_interspersed_args=False, help_option_names=[]))
+def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None:
+    """Print all themes."""
+    if value:
+        from rich_click.rich_theme import THEMES
+
+        for theme in sorted(THEMES):
+            print(theme)
+        ctx.exit(0)
+
+
+@_rich_command(
+    "rich-click",
+    context_settings={"allow_interspersed_args": False},
+    add_help_option=False,
+)
 @_rich_argument(
     "script_and_args",
     nargs=-1,
-    metavar="[SCRIPT | MODULE:CLICK_COMMAND] [-- SCRIPT_ARGS...]",
+    metavar="SCRIPT | MODULE:CLICK_COMMAND [ARG...]",
     help="The script you want to run. If it's a Click CLI and you are rendering help text;"
     " then the help text will render"
     " [#FF6B6B bold]r[/][#FF8E53 bold]i[/][#FFB347 bold]c[/][#4ECDC4 bold]h[/]"
     "[#45B7D1 bold]l[/][#74B9FF bold]y[/]. Otherwise, the script will run normally.",
 )
-@click.option(
+@_rich_option(
+    "--theme",
+    "-t",
+    help="Set the theme to render the CLI with.",
+    metavar="THEME",
+)
+@_rich_option(
     "--rich-config",
     "-c",
     type=_RichHelpConfigurationParamType(),
@@ -152,34 +174,44 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
     " prefixed with `@` (for example: '@rich_config.json'). Note that the --rich-config"
     " option is also used to render this help text you're reading right now!",
 )
-@click.option(
+@_rich_option(
     "--output",
     "-o",
     type=click.Choice(["html", "svg", "text"], case_sensitive=False),
     help="Optionally render help text as HTML or SVG or plain text. By default, help text is rendered normally.",
 )
-@click.option(
+@_rich_option(
     "--errors-in-output-format",
     is_flag=True,
+    panel="Advanced Options",
     help="If set, forces the CLI to render CLI error messages"
     " in the format specified by the --output option."
     " By default, error messages render normally, i.e. they are not converted to html or svg.",
 )
-@click.option(
+@_rich_option(
     "--suppress-warnings/--do-not-suppress-warnings",
     is_flag=True,
     default=False,
-    hidden=True,
-    help="Suppress warnings when there are conflicting entry_points."
-    " (This option is hidden because this situation is extremely rare).",
+    panel="Advanced Options",
+    help="Suppress warnings when there are conflicting entry_points." " This situation is extremely rare.",
 )
-@click.option(
+@_rich_option(
     "--patch-rich-click/--no-patch-rich-click",
     is_flag=True,
     default=True,
+    panel="Advanced Options",
     help="If set, patch [code]rich_click.Command[/code], not just [code]click.Command[/code].",
 )
-@click.option(
+@_rich_option(
+    "--themes",
+    help="List all available themes and exit",
+    panel="Extra",
+    callback=list_themes,
+    expose_value=False,
+    is_flag=True,
+)
+@_rich_version_option(panel="Extra")
+@_rich_option(
     # The rich-click CLI uses a special implementation of --help,
     # which is aware of the --rich-config object.
     "--help",
@@ -188,17 +220,22 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
     is_eager=True,
     is_flag=True,
     help=gettext("Show this message and exit."),
+    panel="Extra",
     # callback=help_callback
 )
+@option_panel("Options")
+@option_panel("Advanced Options", help="Options that most users won't need.")
+@option_panel("Extra", help="Additional utilities.")
 @pass_context
 def main(
     ctx: RichContext,
-    script_and_args: List[str],
+    script_and_args: Tuple[str, ...],
+    theme: str,
     output: Literal[None, "html", "svg"],
     errors_in_output_format: bool,
     suppress_warnings: bool,
     patch_rich_click: bool,
-    rich_config: Optional[RichHelpConfiguration],
+    rich_config: Optional[Dict[str, Any]],
     show_help: bool,
 ) -> None:
     """
@@ -226,19 +263,31 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
     """  # noqa: D401
     if (show_help or not script_and_args) and not ctx.resilient_parsing:
         if rich_config is None:
-            rich_config = RichHelpConfiguration(text_markup="rich")
+            cfg = RichHelpConfiguration(theme=theme, text_markup="rich", show_arguments=False)
         else:
-            rich_config.use_markdown = False
-            rich_config.use_rich_markup = True
-            rich_config.text_markup = "rich"
-            if rich_config.show_arguments is None:
-                rich_config.show_arguments = False
-        ctx.help_config = rich_config
+            cfg = RichHelpConfiguration.load_from_globals(**rich_config)
+            cfg.use_markdown = False
+            cfg.use_rich_markup = True
+            cfg.text_markup = "rich"
+            if cfg.show_arguments is None:
+                cfg.show_arguments = False
+        ctx.help_config = cfg
         print(ctx.get_help())
-        ctx.exit()
+        if not show_help and not script_and_args:
+            ctx.exit(2)
+        ctx.exit(0)
+
+    if rich_config:
+        if theme:
+            rich_config.setdefault("theme", theme)
+        cfg = RichHelpConfiguration.load_from_globals(**rich_config)
+    elif theme:
+        cfg = RichHelpConfiguration.load_from_globals(theme=theme)
+    else:
+        cfg = RichHelpConfiguration.load_from_globals()
 
     # patch click before importing the program function
-    _patch(rich_config=rich_config, patch_rich_click=patch_rich_click)
+    _patch(rich_config=cfg, patch_rich_click=patch_rich_click)
 
     script, *args = script_and_args
 

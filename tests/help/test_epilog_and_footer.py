@@ -24,7 +24,7 @@ def test_epilog_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --debug/--no-debug                                                                               │
-│ --help                  Show this message and exit.                                              │
+│ --help              Show this message and exit.                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ epilog-is-rich-text                    epilog_is_rich_text help text.                            │
@@ -54,7 +54,7 @@ Debug mode is off
  no_footer help text.                                                                               \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                                          │
+│ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     \n\
  This is epilog text                                                                                \n\
@@ -76,7 +76,7 @@ Debug mode is off
  no_epilog help text.                                                                               \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                                          │
+│ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     \n\
  This is footer text                                                                                \n\
@@ -97,7 +97,7 @@ Debug mode is off
  footer_is_rich_text help text.                                                                     \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                                          │
+│ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     \n\
  This is epilog text                                                                                \n\
@@ -121,7 +121,7 @@ Debug mode is off
  epilog_is_rich_text help text.                                                                     \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                                          │
+│ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     \n\
  Rich text epilog                                                                                   \n\
@@ -144,7 +144,7 @@ def test_epilog_help_turn_off_rich_markup(cli_runner: CliRunner, cli: rich_click
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --debug/--no-debug                                                                               │
-│ --help                  Show this message and exit.                                              │
+│ --help              Show this message and exit.                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ epilog-is-rich-text                    epilog_is_rich_text help text.                            │

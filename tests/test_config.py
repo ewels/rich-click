@@ -187,7 +187,7 @@ def test_custom_console(cli_runner: CliRunner) -> None:
  My CLI help text                                                                                   \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                                          │
+│ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )

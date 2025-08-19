@@ -51,8 +51,8 @@ Debug mode is off
  Download files                                                                                     \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --files    TEXT  What files to download [default: (All files)]                                   │
-│ --help           Show this message and exit.                                                     │
+│ --files  TEXT  What files to download [default: (All files)]                                     │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -75,9 +75,9 @@ Debug mode is off
  Download files                                                                                     \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --files    TEXT  What files to download                                                          │
-│                  [default: (All files)]                                                          │
-│ --help           Show this message and exit.                                                     │
+│ --files  TEXT  What files to download                                                            │
+│                [default: (All files)]                                                            │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )

@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass, field
+from dataclasses import MISSING, dataclass, field
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
 
-from rich_click.rich_click_theme import THEMES, RichClickTheme
+from rich_click.rich_theme import THEMES, RichClickTheme
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
 
 
@@ -17,8 +17,6 @@ if TYPE_CHECKING:  # pragma: no cover
     import rich.style
     import rich.text
     from rich.padding import PaddingDimensions
-
-    import rich_click.rich_click_theme
 
 
 T = TypeVar("T", bound="RichHelpConfiguration")
@@ -78,7 +76,7 @@ class RichHelpConfiguration:
     for a given field, the right-most field is used.
     """
 
-    theme: "rich_click.rich_click_theme.ThemeType" = field(default=RichClickTheme.default)
+    theme: str = field(default=RichClickTheme.default)
 
     # Default styles
     style_option: "rich.style.StyleType" = field(default="bold cyan")
@@ -102,8 +100,10 @@ class RichHelpConfiguration:
     style_required_short: "rich.style.StyleType" = field(default="red")
     style_required_long: "rich.style.StyleType" = field(default="dim red")
     style_options_panel_border: "rich.style.StyleType" = field(default="dim")
+    style_options_panel_inline_help_in_title: bool = field(default=False)
     style_options_panel_box: Optional[Union[str, "rich.box.Box"]] = field(default="ROUNDED")
     style_options_panel_help_style: "rich.style.StyleType" = field(default="")
+    style_options_panel_title_style: "rich.style.StyleType" = field(default="")
     style_options_panel_padding: "rich.padding.PaddingDimensions" = field(default=(0, 1))
     align_options_panel: "rich.align.AlignMethod" = field(default="left")
     style_options_table_show_lines: bool = field(default=False)
@@ -114,8 +114,10 @@ class RichHelpConfiguration:
     style_options_table_row_styles: Optional[List["rich.style.StyleType"]] = field(default=None)
     style_options_table_border_style: Optional["rich.style.StyleType"] = field(default=None)
     style_commands_panel_border: "rich.style.StyleType" = field(default="dim")
+    style_commands_panel_inline_help_in_title: bool = field(default=False)
     style_commands_panel_box: Optional[Union[str, "rich.box.Box"]] = field(default="ROUNDED")
     style_commands_panel_help_style: "rich.style.StyleType" = field(default="")
+    style_commands_panel_title_style: "rich.style.StyleType" = field(default="")
     style_commands_panel_padding: "rich.padding.PaddingDimensions" = field(default=(0, 1))
     align_commands_panel: "rich.align.AlignMethod" = field(default="left")
     style_commands_table_show_lines: bool = field(default=False)
@@ -306,7 +308,7 @@ class RichHelpConfiguration:
                     default = self.__dataclass_fields__[k].default
 
                     # Only override default theme if the user didn't provide a theme value.
-                    if current == default:
+                    if current == default or default is MISSING:
                         setattr(self, k, v)
 
     @classmethod

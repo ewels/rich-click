@@ -41,7 +41,7 @@ def rich_group(*args, **kwargs):  # type: ignore[no-untyped-def]
     return _rich_group(*args, **kwargs)
 
 
-def patch(rich_config: Optional[RichHelpConfiguration] = None, patch_rich_click: bool = False) -> None:
+def patch(rich_config: Optional[RichHelpConfiguration] = None, *, patch_rich_click: bool = False) -> None:
     """Patch Click internals to use rich-click types."""
     from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X
 
@@ -61,5 +61,6 @@ def patch(rich_config: Optional[RichHelpConfiguration] = None, patch_rich_click:
         rich_click.CommandCollection = _PatchedRichCommandCollection  # type: ignore[misc]
         if CLICK_IS_BEFORE_VERSION_9X:
             rich_click.MultiCommand = _PatchedRichMultiCommand  # type: ignore[assignment,misc,unused-ignore]
+
     if rich_config is not None:
         rich_config.dump_to_globals()

@@ -27,13 +27,12 @@ def test_metavars_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> No
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --debug                                               Enable debug mode.                         │
-│ --number    [one|two|three|four|five|six|seven|eight  This click choice has loads of options.    │
-│             |nine|ten|eleven|twelve|thirteen|fourtee                                             │
-│             n|fifteen|sixteen|seventeen|eighteen|nin                                             │
-│             eteen|twenty|twenty-one|twenty-two|twent                                             │
-│             y-three|twenty-four|twenty-five|twenty-s                                             │
-│             ix|twenty-seven|twenty-eight|twenty-nine                                             │
-│             |thirty]                                                                             │
+│ --number  [one|two|three|four|five|six|seven|eight|n  This click choice has loads of options.    │
+│           ine|ten|eleven|twelve|thirteen|fourteen|fi                                             │
+│           fteen|sixteen|seventeen|eighteen|nineteen|                                             │
+│           twenty|twenty-one|twenty-two|twenty-three|                                             │
+│           twenty-four|twenty-five|twenty-six|twenty-                                             │
+│           seven|twenty-eight|twenty-nine|thirty]                                                 │
 │ --help                                                Show this message and exit.                │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
@@ -58,12 +57,12 @@ def test_metavars_help_flipped(cli_runner: CliRunner, cli: rich_click.RichComman
  You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --debug     Enable debug mode.                                                                   │
-│ --number    This click choice has loads of options.                                              │
-│             [one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fi │
-│             fteen|sixteen|seventeen|eighteen|nineteen|twenty|twenty-one|twenty-two|twenty-three| │
-│             twenty-four|twenty-five|twenty-six|twenty-seven|twenty-eight|twenty-nine|thirty]     │
-│ --help      Show this message and exit.                                                          │
+│ --debug   Enable debug mode.                                                                     │
+│ --number  This click choice has loads of options.                                                │
+│           [one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fift │
+│           een|sixteen|seventeen|eighteen|nineteen|twenty|twenty-one|twenty-two|twenty-three|twen │
+│           ty-four|twenty-five|twenty-six|twenty-seven|twenty-eight|twenty-nine|thirty]           │
+│ --help    Show this message and exit.                                                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -89,13 +88,13 @@ def test_metavars_help_flipped_help_string(cli_runner: CliRunner, cli: rich_clic
  You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --debug     Enable debug mode.                                                                   │
-│ --number    This click choice has loads of options.                                              │
-│             [choices:                                                                            │
-│             one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fif │
-│             teen|sixteen|seventeen|eighteen|nineteen|twenty|twenty-one|twenty-two|twenty-three|t │
-│             wenty-four|twenty-five|twenty-six|twenty-seven|twenty-eight|twenty-nine|thirty]      │
-│ --help      Show this message and exit.                                                          │
+│ --debug   Enable debug mode.                                                                     │
+│ --number  This click choice has loads of options.                                                │
+│           [choices:                                                                              │
+│           one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifte │
+│           en|sixteen|seventeen|eighteen|nineteen|twenty|twenty-one|twenty-two|twenty-three|twent │
+│           y-four|twenty-five|twenty-six|twenty-seven|twenty-eight|twenty-nine|thirty]            │
+│ --help    Show this message and exit.                                                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )

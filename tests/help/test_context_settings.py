@@ -26,14 +26,14 @@ def test_context_settings_help_for_click_8_1_plus(cli_runner: CliRunner, cli: ri
  Note that in click < 8.1, '[default: False]' shows for "--help".                                   \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --a          TEXT  This works in all supported click versions. [default: show me always]         │
-│ --b          TEXT  This works in all supported click versions. [default: show me always]         │
-│ --c          TEXT  Hide default only in click>=8.1                                               │
-│ --d          TEXT  Show 'default: (show me in c8+)' in click>=8.0. In click 7, no default is     │
-│                    shown.                                                                        │
-│                    [default: (show me in c8+)]                                                   │
-│ --version          Show the version and exit.                                                    │
-│ --help             Show this message and exit.                                                   │
+│ --a        TEXT  This works in all supported click versions. [default: show me always]           │
+│ --b        TEXT  This works in all supported click versions. [default: show me always]           │
+│ --c        TEXT  Hide default only in click>=8.1                                                 │
+│ --d        TEXT  Show 'default: (show me in c8+)' in click>=8.0. In click 7, no default is       │
+│                  shown.                                                                          │
+│                  [default: (show me in c8+)]                                                     │
+│ --version        Show the version and exit.                                                      │
+│ --help           Show this message and exit.                                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -53,14 +53,14 @@ def test_context_settings_help_for_click_8_0(cli_runner: CliRunner, cli: rich_cl
  Note that in click < 8.1, '[default: False]' shows for "--help".                                   \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --a          TEXT  This works in all supported click versions. [default: show me always]         │
-│ --b          TEXT  This works in all supported click versions. [default: show me always]         │
-│ --c          TEXT  Hide default only in click>=8.1 [default: show me in old versions]            │
-│ --d          TEXT  Show 'default: (show me in c8+)' in click>=8.0. In click 7, no default is     │
-│                    shown.                                                                        │
-│                    [default: (show me in c8+)]                                                   │
-│ --version          Show the version and exit. [default: False]                                   │
-│ --help             Show this message and exit. [default: False]                                  │
+│ --a        TEXT  This works in all supported click versions. [default: show me always]           │
+│ --b        TEXT  This works in all supported click versions. [default: show me always]           │
+│ --c        TEXT  Hide default only in click>=8.1 [default: show me in old versions]              │
+│ --d        TEXT  Show 'default: (show me in c8+)' in click>=8.0. In click 7, no default is       │
+│                  shown.                                                                          │
+│                  [default: (show me in c8+)]                                                     │
+│ --version        Show the version and exit. [default: False]                                     │
+│ --help           Show this message and exit. [default: False]                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
