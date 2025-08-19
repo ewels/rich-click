@@ -4,8 +4,9 @@ import os
 from dataclasses import MISSING, dataclass, field
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
+import json
 
-from rich_click.rich_theme import THEMES, RichClickTheme
+from rich_click.rich_theme import THEMES
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
 
 
@@ -305,15 +306,29 @@ class RichHelpConfiguration:
 
         # Apply theme if specified
         if self.theme:
-            theme_settings = THEMES.get(self.theme)
-            if theme_settings:
-                for k, v in theme_settings.items():
-                    current = getattr(self, k)
-                    default = self.__dataclass_fields__[k].default
+            try:
+                if self.theme.strip().startswith("{"):
+                    data = json.loads(self.theme.strip())
+                    for k, v in data.items():
+                        if hasattr(self, k):
+                            setattr(self, k, v)
+                        else:
+                            raise TypeError(f"'{type(self)}' has no attribute '{k}'")
+            except Exception as e:
+                import warnings
+                warnings.warn(
+                    f"RICH_CLICK_THEME= failed to parse: {e.__class__.__name__}{e.args}",
+                    UserWarning
+                )
+        theme_settings = THEMES.get(self.theme)
+        if theme_settings:
+            for k, v in theme_settings.items():
+                current = getattr(self, k)
+                default = self.__dataclass_fields__[k].default
 
-                    # Only override default theme if the user didn't provide a theme value.
-                    if current == default or default is MISSING:
-                        setattr(self, k, v)
+                # Only override default theme if the user didn't provide a theme value.
+                if current == default or default is MISSING:
+                    setattr(self, k, v)
 
     @classmethod
     def load_from_globals(cls, module: Optional[ModuleType] = None, **extra: Any) -> "RichHelpConfiguration":
