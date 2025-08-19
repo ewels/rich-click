@@ -1034,7 +1034,7 @@ We will support the old groups API indefinitely, although its use is discouraged
 <h3 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h3>
 <p>Options panels handle parameters for your command:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1066,7 +1066,7 @@ working_dir: docs/code_snippets/panels
 <p>You can also specify what options that panels are associated with in the option itself. If the panel is not created in a decorator, then one is created on the fly.</p>
 <p>The below code generates the same output as the above code:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1098,7 +1098,7 @@ working_dir: docs/code_snippets/panels
 <p>Additionally, a panel can be defined without <code>options=[]</code>, and the associations between panels and options can be placed inside the <code>@click.option()</code>s.</p>
 <p>The below code shows both of these things:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1140,7 +1140,7 @@ working_dir: docs/code_snippets/panels
 <p>Despite the name, options panels handle more than just options; they can also handle arguments.</p>
 <p>Arguments can be given their own panel with the <code>show_arguments</code> config option:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1166,7 +1166,7 @@ working_dir: docs/code_snippets/panels
 </details>
 <p>Arguments can also be included in the options panel with the <code>group_arguments_options</code> config option (the <code>show_arguments</code> config option does not need to be set).</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1193,7 +1193,7 @@ working_dir: docs/code_snippets/panels
 <p>In <strong>rich-click</strong>, unlike base Click, arguments can have <code>help</code> text.
 If <code>help=</code> if set for arguments, then the argument panel is shown:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1218,7 +1218,7 @@ working_dir: docs/code_snippets/panels
 </details>
 <p>Arguments can also be given their own panels, or combined with other panels.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1247,7 +1247,7 @@ working_dir: docs/code_snippets/panels
 <h3 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">&para;</a></h3>
 <p>Sub-commands also have panels that are defined similarly to option panels:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1297,7 +1297,7 @@ you must explicitly set inside the Command Panel itself.</p>
 <p>Default panel titles can be overridden with the config.
 Renamed panels can still have their panel-level configurations modified.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1348,7 +1348,7 @@ working_dir: docs/code_snippets/panels
 However, defaults are overridden on an arg-by-arg basis, so the config level <code>box</code> is not overridden.
 The below example also employs an additional trick to underline the text of the title.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1394,7 +1394,7 @@ working_dir: docs/code_snippets/panels
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1422,7 +1422,7 @@ working_dir: docs/code_snippets/panels
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1451,7 +1451,7 @@ working_dir: docs/code_snippets/panels
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1486,7 +1486,7 @@ working_dir: docs/code_snippets/panels
 <p>This also means that you can order options panels to come before command panels, and vice-versa, based on the decorator order.</p>
 <p>By default, unless explicitly ordered otherwise, command panels always come after options panels.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1514,7 +1514,7 @@ working_dir: docs/code_snippets/panels
 When explicitly defining panels of multiple types with decorators (i.e. both option panels and command panels), this config option is ignored.
 So for example, the below code will set options <em>above</em> commands:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1552,7 +1552,7 @@ In short, if you want to have full control over panel sorting, then you should d
 <p>If you are having trouble with ordering things, set the order within <code>options=</code> or <code>commands=</code>.</p>
 <p>Additionally, it is suggested you set <em>every</em> object you intend on including in the panel.</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev0&quot;]</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
 <span class="c1"># ///</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
