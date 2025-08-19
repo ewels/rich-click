@@ -52,10 +52,12 @@ class RichPanel(Generic[CT]):
         name: str,
         *,
         help: Optional[str] = None,
-        help_style: "StyleType" = "",
+        help_style: Optional["StyleType"] = None,
         table_styles: Optional[Dict[str, Any]] = None,
         panel_styles: Optional[Dict[str, Any]] = None,
         columns: Optional[List[ColumnType]] = None,
+        inline_help_in_title: Optional[bool] = None,
+        title_style: Optional["StyleType"] = None,
     ) -> None:
         """Initialize a RichPanel."""
         self.name = name
@@ -64,6 +66,8 @@ class RichPanel(Generic[CT]):
         self.table_styles = table_styles or {}
         self.panel_styles = panel_styles or {}
         self.columns = columns
+        self.inline_help_in_title = inline_help_in_title
+        self.title_style = title_style
 
     def get_objects(self) -> List[str]:
         if self._object_attr is NotImplemented:
@@ -129,7 +133,6 @@ class RichPanel(Generic[CT]):
 
             self.panel_class = Panel
         kw = defaults
-        kw["title"] = self.name
         kw.update(self.panel_styles)
         if "box" in kw:
             if kw["box"] is None:
@@ -210,6 +213,21 @@ class RichOptionPanel(RichPanel[click.Parameter]):
 
             options_rows.append(cols)
 
+        if True:
+            options_rows = list(
+                map(
+                    list,
+                    zip(
+                        *[
+                            col
+                            for col in zip(*options_rows)
+                            if any(cell for cell in col)
+                            # if any(cell[0] if isinstance(cell, tuple) else cell for cell in col)
+                        ]
+                    ),
+                )
+            )
+
         if all([x[0] == "" or x[0] is None for x in options_rows]):
             options_rows = [x[1:] for x in options_rows]
             _opt_col = 0
@@ -219,8 +237,11 @@ class RichOptionPanel(RichPanel[click.Parameter]):
         for row in options_rows:
             table.add_row(*row)
 
-        if len(table.columns) > _opt_col:
-            table.columns[_opt_col].overflow = "fold"
+        # todo: realign columns; the "zip" thing above obfuscates which columns get deleted
+        #  the test "test_rich_click_cli_help_with_rich_config_from_file" has ellipses;
+        #  this should go away if done properly.
+        # if len(table.columns) > _opt_col:
+        #     table.columns[_opt_col].overflow = "fold"
 
         return table
 
@@ -230,24 +251,48 @@ class RichOptionPanel(RichPanel[click.Parameter]):
         ctx: "RichContext",
         formatter: "RichHelpFormatter",
     ) -> "Panel":
+        from rich.text import Text
 
         inner: Any = self.get_table(command, ctx, formatter)
 
-        p_styles = {
+        p_styles: Dict[str, Any] = {
             "border_style": formatter.config.style_options_panel_border,
             "title_align": formatter.config.align_options_panel,
             "box": formatter.config.style_options_panel_box,
             "padding": formatter.config.style_options_panel_padding,
         }
 
-        if self.help:
-            from rich.containers import Renderables
+        if self.title_style is None:
+            title_style = formatter.config.style_options_panel_title_style
+        else:
+            title_style = self.title_style
 
+        if self.help:
             if self.help_style is None:
                 help_style = formatter.config.style_options_panel_help_style
             else:
                 help_style = self.help_style
-            inner = Renderables([formatter.rich_text(self.help, help_style), inner])
+            if self.inline_help_in_title is None:
+                inline_help_in_title = formatter.config.style_options_panel_inline_help_in_title
+            else:
+                inline_help_in_title = self.inline_help_in_title
+
+            if inline_help_in_title:
+
+                p_styles["title"] = Text("", overflow="ellipsis").join(
+                    [
+                        Text(self.name, style=title_style),
+                        Text(" - ", style=title_style),
+                        Text(self.help, style=help_style),
+                    ]
+                )
+            else:
+                p_styles["title"] = Text(self.name, style=title_style)
+                from rich.containers import Renderables
+
+                inner = Renderables([formatter.rich_text(self.help, style=help_style), inner])
+        else:
+            p_styles["title"] = Text(self.name, style=title_style)
 
         panel = self._get_base_panel(inner, **p_styles)
         return panel
@@ -344,27 +389,48 @@ class RichCommandPanel(RichPanel[click.Command]):
         ctx: "RichContext",
         formatter: "RichHelpFormatter",
     ) -> "Panel":
+        from rich.text import Text
+
         inner: Any = self.get_table(command, ctx, formatter)
 
-        p_styles = {
+        p_styles: Dict[str, Any] = {
             "border_style": formatter.config.style_commands_panel_border,
             "title_align": formatter.config.align_commands_panel,
             "box": formatter.config.style_commands_panel_box,
             "padding": formatter.config.style_commands_panel_padding,
         }
-        if formatter.config.style_commands_panel_box and isinstance(formatter.config.style_commands_panel_box, str):
-            from rich import box
 
-            p_styles["box"] = getattr(box, p_styles.pop("box"), None)  # type: ignore[arg-type]
+        if self.title_style is None:
+            title_style = formatter.config.style_commands_panel_title_style
+        else:
+            title_style = self.title_style
 
         if self.help:
-            from rich.containers import Renderables
-
             if self.help_style is None:
-                help_style = formatter.config.style_options_panel_help_style
+                help_style = formatter.config.style_commands_panel_help_style
             else:
                 help_style = self.help_style
-            inner = Renderables([formatter.rich_text(self.help, help_style), inner])
+            if self.inline_help_in_title is None:
+                inline_help_in_title = formatter.config.style_commands_panel_inline_help_in_title
+            else:
+                inline_help_in_title = self.inline_help_in_title
+
+            if inline_help_in_title:
+
+                p_styles["title"] = Text("", overflow="ellipsis").join(
+                    [
+                        Text(self.name, style=title_style),
+                        Text(" - ", style=title_style),
+                        Text(self.help, style=help_style),
+                    ]
+                )
+            else:
+                p_styles["title"] = Text(self.name, style=title_style)
+                from rich.containers import Renderables
+
+                inner = Renderables([formatter.rich_text(self.help, style=help_style), inner])
+        else:
+            p_styles["title"] = Text(self.name, style=title_style)
 
         panel = self._get_base_panel(inner, **p_styles)
         return panel

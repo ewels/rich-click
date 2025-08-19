@@ -23,7 +23,7 @@ def test_styles_command_panel(cli_runner: CliRunner, cli: rich_click.RichCommand
  Test basic styles for command panel.                                                               \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                                          │
+│ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
    Custom Panel                                                                                     \n\
   This is help text for the command panel.                                                          \n\
@@ -53,7 +53,7 @@ def test_styles_options_panel(cli_runner: CliRunner, cli: rich_click.RichCommand
                                          Additional Options                                         \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                                          │
+│ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )

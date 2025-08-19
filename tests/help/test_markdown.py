@@ -72,11 +72,11 @@ def test_markdown_help_turn_off_markdown(cli_runner: CliRunner, cli: rich_click.
  subcommands.                                                                                       \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --input    PATH  Input **file**. _[default: a custom default]_                                   │
-│ --type     TEXT  Type of file to sync [default: files]                                           │
-│ --all            Sync 1. all 2. the 3. things?                                                   │
-│ --debug          # Enable `debug mode`                                                           │
-│ --help           Show this message and exit.                                                     │
+│ --input  PATH  Input **file**. _[default: a custom default]_                                     │
+│ --type   TEXT  Type of file to sync [default: files]                                             │
+│ --all          Sync 1. all 2. the 3. things?                                                     │
+│ --debug        # Enable `debug mode`                                                             │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -146,18 +146,18 @@ def test_markdown_help_rich_12(cli_runner: CliRunner, cli: rich_click.RichComman
  ▌  • Also for specific group subcommands.                                                          \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --input    PATH  Input file. [default: a custom default]                                         │
-│ --type     TEXT  Type of file to sync                                                            │
-│                  [default: files]                                                                │
-│ --all            Sync                                                                            │
+│ --input  PATH  Input file. [default: a custom default]                                           │
+│ --type   TEXT  Type of file to sync                                                              │
+│                [default: files]                                                                  │
+│ --all          Sync                                                                              │
 │                                                                                                  │
-│                   1 all                                                                          │
-│                   2 the                                                                          │
-│                   3 things?                                                                      │
-│ --debug          ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ │
-│                  ┃                              Enable debug mode                              ┃ │
-│                  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ │
-│ --help           Show this message and exit.                                                     │
+│                 1 all                                                                            │
+│                 2 the                                                                            │
+│                 3 things?                                                                        │
+│ --debug        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ │
+│                ┃                               Enable debug mode                               ┃ │
+│                ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -191,18 +191,18 @@ def test_markdown_help_text_markup_field_rich_12(cli_runner: CliRunner, cli: ric
  ▌  • Also for specific group subcommands.                                                          \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --input    PATH  Input file. [default: a custom default]                                         │
-│ --type     TEXT  Type of file to sync                                                            │
-│                  [default: files]                                                                │
-│ --all            Sync                                                                            │
+│ --input  PATH  Input file. [default: a custom default]                                           │
+│ --type   TEXT  Type of file to sync                                                              │
+│                [default: files]                                                                  │
+│ --all          Sync                                                                              │
 │                                                                                                  │
-│                   1 all                                                                          │
-│                   2 the                                                                          │
-│                   3 things?                                                                      │
-│ --debug          ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ │
-│                  ┃                              Enable debug mode                              ┃ │
-│                  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ │
-│ --help           Show this message and exit.                                                     │
+│                 1 all                                                                            │
+│                 2 the                                                                            │
+│                 3 things?                                                                        │
+│ --debug        ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ │
+│                ┃                               Enable debug mode                               ┃ │
+│                ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )

@@ -24,7 +24,7 @@ def test_declarative_help(cli_runner: CliRunner, cli: rich_click.RichCommand) ->
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --debug/--no-debug                                                                               │
-│ --help                  Show this message and exit.                                              │
+│ --help              Show this message and exit.                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ check                Check the context type.                                                     │
@@ -46,7 +46,7 @@ Debug mode is off
  Check the context type.                                                                            \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help      Show this message and exit.                                                          │
+│ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )

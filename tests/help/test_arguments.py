@@ -27,8 +27,8 @@ def test_arguments_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> N
  You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────╮
-│ *  INPUT     PATH  Input file [required]                                                         │
-│ *  OUTPUT    PATH  Output file [required]                                                        │
+│ *  INPUT   PATH  Input file [required]                                                           │
+│ *  OUTPUT  PATH  Output file [required]                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --type             TEXT                Type of file to sync [default: files]                     │
@@ -81,8 +81,8 @@ def test_arguments_help_with_help_panel_title(cli_runner: CliRunner, cli: rich_c
  You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ My amazing tool arguments ──────────────────────────────────────────────────────────────────────╮
-│ *  INPUT     PATH  Input file [required]                                                         │
-│ *  OUTPUT    PATH  Output file [required]                                                        │
+│ *  INPUT   PATH  Input file [required]                                                           │
+│ *  OUTPUT  PATH  Output file [required]                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --type             TEXT                Type of file to sync [default: files]                     │
@@ -111,8 +111,8 @@ def test_arguments_help_with_help_panel_config(cli_runner: CliRunner, cli: rich_
  You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╔═ My amazing tool arguments ══════════════════════════════════════════════════════════════════════╗
-║ *  INPUT     PATH  Input file [required]                                                         ║
-║ *  OUTPUT    PATH  Output file [required]                                                        ║
+║ *  INPUT   PATH  Input file [required]                                                           ║
+║ *  OUTPUT  PATH  Output file [required]                                                          ║
 ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --type             TEXT                Type of file to sync [default: files]                     │

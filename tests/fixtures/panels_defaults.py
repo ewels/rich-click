@@ -12,7 +12,7 @@ import rich_click as click
 @click.command_panel("Command Panel B", commands=["cmd5", "cmd6", "cmd7", "cmd8"], panel_styles={"box": "DOUBLE"})
 # Default panel should sort commands alphanumerically
 # Even if commands are defined in different order.
-@click.rich_config({"commands_panel_title": "[b]Custom Default Command Panel[/]", "style_commands_panel_box": "SIMPLE"})
+@click.rich_config({"commands_panel_title": "Custom Default Command Panel", "style_commands_panel_box": "SIMPLE"})
 def cli() -> None:
     """CLI help text"""
 

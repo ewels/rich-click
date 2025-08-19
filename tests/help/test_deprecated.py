@@ -59,8 +59,8 @@ def test_deprecated_help_subcommand_bool(cli_runner: CliRunner, cli: rich_click.
  Pretend to download some files from _somewhere_.                                                   \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --all       Get everything                                                                       │
-│ --help      Show this message and exit.                                                          │
+│ --all   Get everything                                                                           │
+│ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -82,7 +82,7 @@ def test_deprecated_help_subcommand_string(cli_runner: CliRunner, cli: rich_clic
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --all                                                                                            │
-│ --help      Show this message and exit.                                                          │
+│ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -141,8 +141,8 @@ def test_deprecated_help_subcommand_bool_with_markdown(cli_runner: CliRunner, cl
  Pretend to download some files from somewhere.                                                     \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --all       Get everything                                                                       │
-│ --help      Show this message and exit.                                                          │
+│ --all   Get everything                                                                           │
+│ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -165,7 +165,7 @@ def test_deprecated_help_subcommand_string_with_markdown(cli_runner: CliRunner, 
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --all                                                                                            │
-│ --help      Show this message and exit.                                                          │
+│ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
