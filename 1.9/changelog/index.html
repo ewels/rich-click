@@ -1454,9 +1454,11 @@
 <p><strong>Big changes:</strong></p>
 <ul>
 <li><strong>Themes!</strong> Check them out with <code>rich-click --themes</code>.</li>
-<li><strong>RichPanels</strong> API introduced. This replaces the "groups" feature going forward (although groups will continue to be supported).</li>
+<li><strong>RichPanels</strong> API introduced. This replaces the "groups" feature going forward (although groups will continue to be supported).<ul>
 <li><code>@click.option_panel()</code></li>
 <li><code>@click.command_panel()</code></li>
+</ul>
+</li>
 <li><strong>IDE tab completion support for decorators</strong>. Now you should no longer need to guess what goes in <code>@click.option()</code> or <code>@click.command(context_settings=...)</code> etc.</li>
 <li><strong>Help for arguments:</strong> <code>help=</code> is now a valid kwarg for <code>@click.argument()</code> decorator. See docs for more information.</li>
 </ul>
@@ -1474,8 +1476,10 @@
 <li>Overhauled our test suite to use <strong>inline-snapshot</strong>! 😁</li>
 <li>Improved test coverage and CI.</li>
 <li><code>typing_extensions</code> now only required for &lt; Python 3.11.</li>
-<li><code>RichHelpFormatter</code> now defers printing by default if a user does not specify a Console. [<a href="https://github.com/ewels/rich-click/pull/231">#231</a>] (With contributions from <a href="https://github.com/ofek">@ofek</a>)</li>
+<li><code>RichHelpFormatter</code> now defers printing by default if a user does not specify a Console. [<a href="https://github.com/ewels/rich-click/pull/231">#231</a>] (With contributions from <a href="https://github.com/ofek">@ofek</a>)<ul>
 <li>This more closely aligns the <code>RichHelpFormatter</code> with how base Click works.</li>
+</ul>
+</li>
 <li>Significant refactors to help text rendering.</li>
 <li>Reintroduced deprecation warnings for a couple of features deprecated in 1.8.</li>
 <li>There was an issue where the <code>rich.highlighter</code> module could load during CLI execution. We now assert in unit-tests that no <code>rich</code> modules are loaded during code execution, so going forward, <code>rich</code> imports should no longer ever be a side-effect of CLI execution.</li>
@@ -1543,8 +1547,10 @@
 </ul>
 </li>
 <li>Moved exclusively to <code>pyproject.toml</code> and removed <code>setup.py</code> / <code>setup.cfg</code>; thank you <a href="https://github.com/Stealthii">@Stealthii</a>!</li>
-<li>Moved to <code>text_markup: Literal["markdown", "rich", "ansi", None]</code> instead of booleans.</li>
+<li>Moved to <code>text_markup: Literal["markdown", "rich", "ansi", None]</code> instead of booleans.<ul>
 <li>The default is now <code>ansi</code> instead of <code>None</code> to help support usage of <code>click.style()</code>. <code>None</code> is still supported.</li>
+</ul>
+</li>
 <li>Fixed issue where error messages would not print to <code>stderr</code> by default.</li>
 <li>New configuration options: [<a href="https://github.com/ewels/rich-click/pull/178">#178</a>]<ul>
 <li><code>STYLE_OPTIONS_PANEL_BOX</code></li>
