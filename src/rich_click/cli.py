@@ -281,7 +281,7 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
             show_lines=True,
             expand=True,
         )
-        formats.columns[0].style = "bold"
+        formats.columns[1].style = "bold"
         formats.add_row(
             "✓" if f == "box" or f is None else "", "box", "[b](Default)[/b] Original rich-click format with boxes"
         )
