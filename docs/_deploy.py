@@ -1,3 +1,4 @@
+# fmt: off
 # /// script
 # requires-python = ">=3.13"
 # dependencies = [
@@ -13,7 +14,7 @@ import packaging.version
 
 
 def get_latest():
-    res = subprocess.run(["mike", "list", "latest", "-j"], stdout=subprocess.PIPE)
+    res = subprocess.run(["mike", "list", "latest", "-j"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True,)
     if not res.stdout:  # First deploy
         return None
     data = json.loads(res.stdout)
@@ -22,7 +23,10 @@ def get_latest():
 
 
 def deploy():
-    subprocess.run(["git", "fetch", "origin", "gh-pages:gh-pages"], check=True)
+    subprocess.run(
+        ["git", "fetch", "origin", "gh-pages:gh-pages"],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True
+    )
     v = packaging.version.parse(version(os.environ["PACKAGE_NAME"]))
     latest = get_latest()
     cmd = ["mike", "deploy", "--push", "--update-aliases", f"{v.major}.{v.minor}"]
@@ -31,8 +35,13 @@ def deploy():
     elif latest is None or (v.major, v.minor) > latest:
         cmd.append("latest")
     print(f"Running {' '.join(cmd)}")
-    subprocess.run(cmd, check=True)
-    subprocess.run(["mike", "set-default", "--push", "latest"], check=False)
+    subprocess.run(
+        cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True
+    )
+    subprocess.run([
+        "mike", "set-default", "--push", "latest"],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False
+    )
 
 
 if __name__ == "__main__":
