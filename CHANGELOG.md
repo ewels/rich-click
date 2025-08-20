@@ -13,8 +13,8 @@
 
 - **Themes!** Check them out with `rich-click --themes`.
 - **RichPanels** API introduced. This replaces the "groups" feature going forward (although groups will continue to be supported).
-  - `@click.option_panel()`
-  - `@click.command_panel()`
+    - `@click.option_panel()`
+    - `@click.command_panel()`
 - **IDE tab completion support for decorators**. Now you should no longer need to guess what goes in `@click.option()` or `@click.command(context_settings=...)` etc.
 - **Help for arguments:** `help=` is now a valid kwarg for `@click.argument()` decorator. See docs for more information.
 
@@ -33,7 +33,7 @@
 - Improved test coverage and CI.
 - `typing_extensions` now only required for < Python 3.11.
 - `RichHelpFormatter` now defers printing by default if a user does not specify a Console. [[#231](https://github.com/ewels/rich-click/pull/231)] (With contributions from [@ofek](https://github.com/ofek))
-  - This more closely aligns the `RichHelpFormatter` with how base Click works.
+    - This more closely aligns the `RichHelpFormatter` with how base Click works.
 - Significant refactors to help text rendering.
 - Reintroduced deprecation warnings for a couple of features deprecated in 1.8.
 - There was an issue where the `rich.highlighter` module could load during CLI execution. We now assert in unit-tests that no `rich` modules are loaded during code execution, so going forward, `rich` imports should no longer ever be a side-effect of CLI execution.
@@ -99,7 +99,7 @@ Click 8.2 support:
     - Related: `highlighter` is now deprecated in `RichHelpConfiguration`; please use `highlighter_patterns` instead.
 - Moved exclusively to `pyproject.toml` and removed `setup.py` / `setup.cfg`; thank you [@Stealthii](https://github.com/Stealthii)!
 - Moved to `text_markup: Literal["markdown", "rich", "ansi", None]` instead of booleans.
-  - The default is now `ansi` instead of `None` to help support usage of `click.style()`. `None` is still supported.
+    - The default is now `ansi` instead of `None` to help support usage of `click.style()`. `None` is still supported.
 - Fixed issue where error messages would not print to `stderr` by default.
 - New configuration options: [[#178](https://github.com/ewels/rich-click/pull/178)]
     - `STYLE_OPTIONS_PANEL_BOX`
