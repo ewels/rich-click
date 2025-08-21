@@ -236,6 +236,9 @@ class RichHelpConfigurationDict(TypedDict):
     highlighter_patterns: NotRequired[List[str]]
     legacy_windows: NotRequired[Optional[bool]]
 
+# variant: no call, directly as decorator for a function.
+@overload
+def command(name: _AnyCallable) -> RichCommand: ...
 @overload
 def command(
     name: Optional[str] = None,
@@ -291,9 +294,35 @@ def command(
     panels: Optional[List[RichPanel[Any]]] = None,
     **attrs: Any,
 ) -> Callable[[_AnyCallable], C]: ...
+
+# variant: with positional name and with positional or keyword cls argument:
+# @command(namearg, CommandCls, ...) or @command(namearg, cls=CommandCls, ...)
+@overload
+def command(
+    name: Optional[str],
+    cls: Type[C],
+    **attrs: Any,
+) -> Callable[[_AnyCallable], C]: ...
+
+# variant: name omitted, cls _must_ be a keyword argument, @command(cls=CommandCls, ...)
+@overload
+def command(
+    name: None = None,
+    *,
+    cls: Type[C],
+    **attrs: Any,
+) -> Callable[[_AnyCallable], C]: ...
+
+# variant: with optional string name, no cls argument provided.
+@overload
+def command(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichCommand]: ...
 def command(
     name: Optional[str] = None, *, aliases: Optional[Iterable[str]] = None, cls: Optional[Type[C]] = None, **kwargs: Any
 ) -> Callable[[_AnyCallable], Union[click.Command, C]]: ...
+
+# variant: no call, directly as decorator for a function.
+@overload
+def group(name: _AnyCallable) -> RichGroup: ...
 @overload
 def group(
     name: Optional[str] = None,
@@ -363,6 +392,28 @@ def group(
     deprecated: bool | str = False,
     panels: Optional[List[RichPanel[Any]]] = None,
 ) -> Callable[[_AnyCallable], G]: ...
+
+# variant: with positional name and with positional or keyword cls argument:
+# @group(namearg, GroupCls, ...) or @group(namearg, cls=GroupCls, ...)
+@overload
+def group(
+    name: Optional[str],
+    cls: Type[G],
+    **attrs: Any,
+) -> Callable[[_AnyCallable], G]: ...
+
+# variant: name omitted, cls _must_ be a keyword argument, @group(cmd=GroupCls, ...)
+@overload
+def group(
+    name: None = None,
+    *,
+    cls: Type[G],
+    **attrs: Any,
+) -> Callable[[_AnyCallable], G]: ...
+
+# variant: with optional string name, no cls argument provided.
+@overload
+def group(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichGroup]: ...
 def group(
     name: Union[str, _AnyCallable, None] = None,
     cls: Optional[Type[G]] = None,
