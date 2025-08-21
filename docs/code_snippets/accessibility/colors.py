@@ -17,7 +17,7 @@ for color in colors:
     table.add_row(
         color,
         *[
-            f"[{style}{color}]██████[/{style}{color}]"
+            f"[{style}{color}]▓▓▓▓▓▓[/{style}{color}]"
             for style in ["", "dim ", "bright_", "dim bright_"]
         ]
     )

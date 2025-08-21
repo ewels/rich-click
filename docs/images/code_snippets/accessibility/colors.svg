@@ -19,96 +19,96 @@
         font-weight: 700;
     }
 
-    .terminal-3112216171-matrix {
+    .terminal-2124525227-matrix {
         font-family: Fira Code, monospace;
         font-size: 20px;
         line-height: 24.4px;
         font-variant-east-asian: full-width;
     }
 
-    .terminal-3112216171-title {
+    .terminal-2124525227-title {
         font-size: 18px;
         font-weight: bold;
         font-family: arial;
     }
 
-    .terminal-3112216171-r1 { fill: #c5c8c6;font-style: italic; }
-.terminal-3112216171-r2 { fill: #c5c8c6 }
-.terminal-3112216171-r3 { fill: #c5c8c6;font-weight: bold }
-.terminal-3112216171-r4 { fill: #4b4e55;font-weight: bold }
-.terminal-3112216171-r5 { fill: #3d3f43;font-weight: bold }
-.terminal-3112216171-r6 { fill: #9a9b99;font-weight: bold }
-.terminal-3112216171-r7 { fill: #6c6d6c;font-weight: bold }
-.terminal-3112216171-r8 { fill: #cc555a;font-weight: bold }
-.terminal-3112216171-r9 { fill: #8a4346;font-weight: bold }
-.terminal-3112216171-r10 { fill: #ff2627;font-weight: bold }
-.terminal-3112216171-r11 { fill: #a92727;font-weight: bold }
-.terminal-3112216171-r12 { fill: #98a84b;font-weight: bold }
-.terminal-3112216171-r13 { fill: #6b753d;font-weight: bold }
-.terminal-3112216171-r14 { fill: #00823d;font-weight: bold }
-.terminal-3112216171-r15 { fill: #105e35;font-weight: bold }
-.terminal-3112216171-r16 { fill: #d0b344;font-weight: bold }
-.terminal-3112216171-r17 { fill: #8d7b39;font-weight: bold }
-.terminal-3112216171-r18 { fill: #d08442;font-weight: bold }
-.terminal-3112216171-r19 { fill: #8d5f38;font-weight: bold }
-.terminal-3112216171-r20 { fill: #608ab1;font-weight: bold }
-.terminal-3112216171-r21 { fill: #4a637a;font-weight: bold }
-.terminal-3112216171-r22 { fill: #1984e9;font-weight: bold }
-.terminal-3112216171-r23 { fill: #1f5f9c;font-weight: bold }
-.terminal-3112216171-r24 { fill: #98729f;font-weight: bold }
-.terminal-3112216171-r25 { fill: #6b546f;font-weight: bold }
-.terminal-3112216171-r26 { fill: #ff2c7a;font-weight: bold }
-.terminal-3112216171-r27 { fill: #a92a59;font-weight: bold }
-.terminal-3112216171-r28 { fill: #68a0b3;font-weight: bold }
-.terminal-3112216171-r29 { fill: #4e707b;font-weight: bold }
-.terminal-3112216171-r30 { fill: #398280;font-weight: bold }
-.terminal-3112216171-r31 { fill: #325e5d;font-weight: bold }
-.terminal-3112216171-r32 { fill: #868887;font-weight: bold }
-.terminal-3112216171-r33 { fill: #fdfdc5;font-weight: bold }
-.terminal-3112216171-r34 { fill: #a8a886;font-weight: bold }
+    .terminal-2124525227-r1 { fill: #c5c8c6;font-style: italic; }
+.terminal-2124525227-r2 { fill: #c5c8c6 }
+.terminal-2124525227-r3 { fill: #c5c8c6;font-weight: bold }
+.terminal-2124525227-r4 { fill: #4b4e55;font-weight: bold }
+.terminal-2124525227-r5 { fill: #3d3f43;font-weight: bold }
+.terminal-2124525227-r6 { fill: #9a9b99;font-weight: bold }
+.terminal-2124525227-r7 { fill: #6c6d6c;font-weight: bold }
+.terminal-2124525227-r8 { fill: #cc555a;font-weight: bold }
+.terminal-2124525227-r9 { fill: #8a4346;font-weight: bold }
+.terminal-2124525227-r10 { fill: #ff2627;font-weight: bold }
+.terminal-2124525227-r11 { fill: #a92727;font-weight: bold }
+.terminal-2124525227-r12 { fill: #98a84b;font-weight: bold }
+.terminal-2124525227-r13 { fill: #6b753d;font-weight: bold }
+.terminal-2124525227-r14 { fill: #00823d;font-weight: bold }
+.terminal-2124525227-r15 { fill: #105e35;font-weight: bold }
+.terminal-2124525227-r16 { fill: #d0b344;font-weight: bold }
+.terminal-2124525227-r17 { fill: #8d7b39;font-weight: bold }
+.terminal-2124525227-r18 { fill: #d08442;font-weight: bold }
+.terminal-2124525227-r19 { fill: #8d5f38;font-weight: bold }
+.terminal-2124525227-r20 { fill: #608ab1;font-weight: bold }
+.terminal-2124525227-r21 { fill: #4a637a;font-weight: bold }
+.terminal-2124525227-r22 { fill: #1984e9;font-weight: bold }
+.terminal-2124525227-r23 { fill: #1f5f9c;font-weight: bold }
+.terminal-2124525227-r24 { fill: #98729f;font-weight: bold }
+.terminal-2124525227-r25 { fill: #6b546f;font-weight: bold }
+.terminal-2124525227-r26 { fill: #ff2c7a;font-weight: bold }
+.terminal-2124525227-r27 { fill: #a92a59;font-weight: bold }
+.terminal-2124525227-r28 { fill: #68a0b3;font-weight: bold }
+.terminal-2124525227-r29 { fill: #4e707b;font-weight: bold }
+.terminal-2124525227-r30 { fill: #398280;font-weight: bold }
+.terminal-2124525227-r31 { fill: #325e5d;font-weight: bold }
+.terminal-2124525227-r32 { fill: #868887;font-weight: bold }
+.terminal-2124525227-r33 { fill: #fdfdc5;font-weight: bold }
+.terminal-2124525227-r34 { fill: #a8a886;font-weight: bold }
     </style>
 
     <defs>
-    <clipPath id="terminal-3112216171-clip-terminal">
+    <clipPath id="terminal-2124525227-clip-terminal">
       <rect x="0" y="0" width="584.5999999999999" height="340.59999999999997" />
     </clipPath>
-    <clipPath id="terminal-3112216171-line-0">
+    <clipPath id="terminal-2124525227-line-0">
     <rect x="0" y="1.5" width="585.6" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3112216171-line-1">
+<clipPath id="terminal-2124525227-line-1">
     <rect x="0" y="25.9" width="585.6" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3112216171-line-2">
+<clipPath id="terminal-2124525227-line-2">
     <rect x="0" y="50.3" width="585.6" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3112216171-line-3">
+<clipPath id="terminal-2124525227-line-3">
     <rect x="0" y="74.7" width="585.6" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3112216171-line-4">
+<clipPath id="terminal-2124525227-line-4">
     <rect x="0" y="99.1" width="585.6" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3112216171-line-5">
+<clipPath id="terminal-2124525227-line-5">
     <rect x="0" y="123.5" width="585.6" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3112216171-line-6">
+<clipPath id="terminal-2124525227-line-6">
     <rect x="0" y="147.9" width="585.6" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3112216171-line-7">
+<clipPath id="terminal-2124525227-line-7">
     <rect x="0" y="172.3" width="585.6" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3112216171-line-8">
+<clipPath id="terminal-2124525227-line-8">
     <rect x="0" y="196.7" width="585.6" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3112216171-line-9">
+<clipPath id="terminal-2124525227-line-9">
     <rect x="0" y="221.1" width="585.6" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3112216171-line-10">
+<clipPath id="terminal-2124525227-line-10">
     <rect x="0" y="245.5" width="585.6" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3112216171-line-11">
+<clipPath id="terminal-2124525227-line-11">
     <rect x="0" y="269.9" width="585.6" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3112216171-line-12">
+<clipPath id="terminal-2124525227-line-12">
     <rect x="0" y="294.3" width="585.6" height="24.65"/>
             </clipPath>
     </defs>
@@ -120,23 +120,23 @@
             <circle cx="44" cy="0" r="7" fill="#28c840"/>
             </g>
         
-    <g transform="translate(9, 41)" clip-path="url(#terminal-3112216171-clip-terminal)">
+    <g transform="translate(9, 41)" clip-path="url(#terminal-2124525227-clip-terminal)">
     
-    <g class="terminal-3112216171-matrix">
-    <text class="terminal-3112216171-r1" x="0" y="20" textLength="573.4" clip-path="url(#terminal-3112216171-line-0)">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;ANSI&#160;Colors&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-3112216171-r2" x="585.6" y="20" textLength="12.2" clip-path="url(#terminal-3112216171-line-0)">
-</text><text class="terminal-3112216171-r2" x="585.6" y="44.4" textLength="12.2" clip-path="url(#terminal-3112216171-line-1)">
-</text><text class="terminal-3112216171-r3" x="475.8" y="68.8" textLength="73.2" clip-path="url(#terminal-3112216171-line-2)">Dim&#160;+&#160;</text><text class="terminal-3112216171-r2" x="585.6" y="68.8" textLength="12.2" clip-path="url(#terminal-3112216171-line-2)">
-</text><text class="terminal-3112216171-r3" x="24.4" y="93.2" textLength="85.4" clip-path="url(#terminal-3112216171-line-3)">Color&#160;&#160;</text><text class="terminal-3112216171-r3" x="146.4" y="93.2" textLength="73.2" clip-path="url(#terminal-3112216171-line-3)">Normal</text><text class="terminal-3112216171-r3" x="256.2" y="93.2" textLength="73.2" clip-path="url(#terminal-3112216171-line-3)">Dim&#160;&#160;&#160;</text><text class="terminal-3112216171-r3" x="366" y="93.2" textLength="73.2" clip-path="url(#terminal-3112216171-line-3)">Bright</text><text class="terminal-3112216171-r3" x="475.8" y="93.2" textLength="73.2" clip-path="url(#terminal-3112216171-line-3)">Bright</text><text class="terminal-3112216171-r2" x="585.6" y="93.2" textLength="12.2" clip-path="url(#terminal-3112216171-line-3)">
-</text><text class="terminal-3112216171-r2" x="0" y="117.6" textLength="573.4" clip-path="url(#terminal-3112216171-line-4)">&#160;─────────────────────────────────────────────&#160;</text><text class="terminal-3112216171-r2" x="585.6" y="117.6" textLength="12.2" clip-path="url(#terminal-3112216171-line-4)">
-</text><text class="terminal-3112216171-r3" x="24.4" y="142" textLength="85.4" clip-path="url(#terminal-3112216171-line-5)">black&#160;&#160;</text><text class="terminal-3112216171-r4" x="146.4" y="142" textLength="73.2" clip-path="url(#terminal-3112216171-line-5)">██████</text><text class="terminal-3112216171-r5" x="256.2" y="142" textLength="73.2" clip-path="url(#terminal-3112216171-line-5)">██████</text><text class="terminal-3112216171-r6" x="366" y="142" textLength="73.2" clip-path="url(#terminal-3112216171-line-5)">██████</text><text class="terminal-3112216171-r7" x="475.8" y="142" textLength="73.2" clip-path="url(#terminal-3112216171-line-5)">██████</text><text class="terminal-3112216171-r2" x="585.6" y="142" textLength="12.2" clip-path="url(#terminal-3112216171-line-5)">
-</text><text class="terminal-3112216171-r3" x="24.4" y="166.4" textLength="85.4" clip-path="url(#terminal-3112216171-line-6)">red&#160;&#160;&#160;&#160;</text><text class="terminal-3112216171-r8" x="146.4" y="166.4" textLength="73.2" clip-path="url(#terminal-3112216171-line-6)">██████</text><text class="terminal-3112216171-r9" x="256.2" y="166.4" textLength="73.2" clip-path="url(#terminal-3112216171-line-6)">██████</text><text class="terminal-3112216171-r10" x="366" y="166.4" textLength="73.2" clip-path="url(#terminal-3112216171-line-6)">██████</text><text class="terminal-3112216171-r11" x="475.8" y="166.4" textLength="73.2" clip-path="url(#terminal-3112216171-line-6)">██████</text><text class="terminal-3112216171-r2" x="585.6" y="166.4" textLength="12.2" clip-path="url(#terminal-3112216171-line-6)">
-</text><text class="terminal-3112216171-r3" x="24.4" y="190.8" textLength="85.4" clip-path="url(#terminal-3112216171-line-7)">green&#160;&#160;</text><text class="terminal-3112216171-r12" x="146.4" y="190.8" textLength="73.2" clip-path="url(#terminal-3112216171-line-7)">██████</text><text class="terminal-3112216171-r13" x="256.2" y="190.8" textLength="73.2" clip-path="url(#terminal-3112216171-line-7)">██████</text><text class="terminal-3112216171-r14" x="366" y="190.8" textLength="73.2" clip-path="url(#terminal-3112216171-line-7)">██████</text><text class="terminal-3112216171-r15" x="475.8" y="190.8" textLength="73.2" clip-path="url(#terminal-3112216171-line-7)">██████</text><text class="terminal-3112216171-r2" x="585.6" y="190.8" textLength="12.2" clip-path="url(#terminal-3112216171-line-7)">
-</text><text class="terminal-3112216171-r3" x="24.4" y="215.2" textLength="85.4" clip-path="url(#terminal-3112216171-line-8)">yellow&#160;</text><text class="terminal-3112216171-r16" x="146.4" y="215.2" textLength="73.2" clip-path="url(#terminal-3112216171-line-8)">██████</text><text class="terminal-3112216171-r17" x="256.2" y="215.2" textLength="73.2" clip-path="url(#terminal-3112216171-line-8)">██████</text><text class="terminal-3112216171-r18" x="366" y="215.2" textLength="73.2" clip-path="url(#terminal-3112216171-line-8)">██████</text><text class="terminal-3112216171-r19" x="475.8" y="215.2" textLength="73.2" clip-path="url(#terminal-3112216171-line-8)">██████</text><text class="terminal-3112216171-r2" x="585.6" y="215.2" textLength="12.2" clip-path="url(#terminal-3112216171-line-8)">
-</text><text class="terminal-3112216171-r3" x="24.4" y="239.6" textLength="85.4" clip-path="url(#terminal-3112216171-line-9)">blue&#160;&#160;&#160;</text><text class="terminal-3112216171-r20" x="146.4" y="239.6" textLength="73.2" clip-path="url(#terminal-3112216171-line-9)">██████</text><text class="terminal-3112216171-r21" x="256.2" y="239.6" textLength="73.2" clip-path="url(#terminal-3112216171-line-9)">██████</text><text class="terminal-3112216171-r22" x="366" y="239.6" textLength="73.2" clip-path="url(#terminal-3112216171-line-9)">██████</text><text class="terminal-3112216171-r23" x="475.8" y="239.6" textLength="73.2" clip-path="url(#terminal-3112216171-line-9)">██████</text><text class="terminal-3112216171-r2" x="585.6" y="239.6" textLength="12.2" clip-path="url(#terminal-3112216171-line-9)">
-</text><text class="terminal-3112216171-r3" x="24.4" y="264" textLength="85.4" clip-path="url(#terminal-3112216171-line-10)">magenta</text><text class="terminal-3112216171-r24" x="146.4" y="264" textLength="73.2" clip-path="url(#terminal-3112216171-line-10)">██████</text><text class="terminal-3112216171-r25" x="256.2" y="264" textLength="73.2" clip-path="url(#terminal-3112216171-line-10)">██████</text><text class="terminal-3112216171-r26" x="366" y="264" textLength="73.2" clip-path="url(#terminal-3112216171-line-10)">██████</text><text class="terminal-3112216171-r27" x="475.8" y="264" textLength="73.2" clip-path="url(#terminal-3112216171-line-10)">██████</text><text class="terminal-3112216171-r2" x="585.6" y="264" textLength="12.2" clip-path="url(#terminal-3112216171-line-10)">
-</text><text class="terminal-3112216171-r3" x="24.4" y="288.4" textLength="85.4" clip-path="url(#terminal-3112216171-line-11)">cyan&#160;&#160;&#160;</text><text class="terminal-3112216171-r28" x="146.4" y="288.4" textLength="73.2" clip-path="url(#terminal-3112216171-line-11)">██████</text><text class="terminal-3112216171-r29" x="256.2" y="288.4" textLength="73.2" clip-path="url(#terminal-3112216171-line-11)">██████</text><text class="terminal-3112216171-r30" x="366" y="288.4" textLength="73.2" clip-path="url(#terminal-3112216171-line-11)">██████</text><text class="terminal-3112216171-r31" x="475.8" y="288.4" textLength="73.2" clip-path="url(#terminal-3112216171-line-11)">██████</text><text class="terminal-3112216171-r2" x="585.6" y="288.4" textLength="12.2" clip-path="url(#terminal-3112216171-line-11)">
-</text><text class="terminal-3112216171-r3" x="24.4" y="312.8" textLength="85.4" clip-path="url(#terminal-3112216171-line-12)">white&#160;&#160;</text><text class="terminal-3112216171-r3" x="146.4" y="312.8" textLength="73.2" clip-path="url(#terminal-3112216171-line-12)">██████</text><text class="terminal-3112216171-r32" x="256.2" y="312.8" textLength="73.2" clip-path="url(#terminal-3112216171-line-12)">██████</text><text class="terminal-3112216171-r33" x="366" y="312.8" textLength="73.2" clip-path="url(#terminal-3112216171-line-12)">██████</text><text class="terminal-3112216171-r34" x="475.8" y="312.8" textLength="73.2" clip-path="url(#terminal-3112216171-line-12)">██████</text><text class="terminal-3112216171-r2" x="585.6" y="312.8" textLength="12.2" clip-path="url(#terminal-3112216171-line-12)">
-</text><text class="terminal-3112216171-r2" x="585.6" y="337.2" textLength="12.2" clip-path="url(#terminal-3112216171-line-13)">
+    <g class="terminal-2124525227-matrix">
+    <text class="terminal-2124525227-r1" x="0" y="20" textLength="573.4" clip-path="url(#terminal-2124525227-line-0)">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;ANSI&#160;Colors&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-2124525227-r2" x="585.6" y="20" textLength="12.2" clip-path="url(#terminal-2124525227-line-0)">
+</text><text class="terminal-2124525227-r2" x="585.6" y="44.4" textLength="12.2" clip-path="url(#terminal-2124525227-line-1)">
+</text><text class="terminal-2124525227-r3" x="475.8" y="68.8" textLength="73.2" clip-path="url(#terminal-2124525227-line-2)">Dim&#160;+&#160;</text><text class="terminal-2124525227-r2" x="585.6" y="68.8" textLength="12.2" clip-path="url(#terminal-2124525227-line-2)">
+</text><text class="terminal-2124525227-r3" x="24.4" y="93.2" textLength="85.4" clip-path="url(#terminal-2124525227-line-3)">Color&#160;&#160;</text><text class="terminal-2124525227-r3" x="146.4" y="93.2" textLength="73.2" clip-path="url(#terminal-2124525227-line-3)">Normal</text><text class="terminal-2124525227-r3" x="256.2" y="93.2" textLength="73.2" clip-path="url(#terminal-2124525227-line-3)">Dim&#160;&#160;&#160;</text><text class="terminal-2124525227-r3" x="366" y="93.2" textLength="73.2" clip-path="url(#terminal-2124525227-line-3)">Bright</text><text class="terminal-2124525227-r3" x="475.8" y="93.2" textLength="73.2" clip-path="url(#terminal-2124525227-line-3)">Bright</text><text class="terminal-2124525227-r2" x="585.6" y="93.2" textLength="12.2" clip-path="url(#terminal-2124525227-line-3)">
+</text><text class="terminal-2124525227-r2" x="0" y="117.6" textLength="573.4" clip-path="url(#terminal-2124525227-line-4)">&#160;─────────────────────────────────────────────&#160;</text><text class="terminal-2124525227-r2" x="585.6" y="117.6" textLength="12.2" clip-path="url(#terminal-2124525227-line-4)">
+</text><text class="terminal-2124525227-r3" x="24.4" y="142" textLength="85.4" clip-path="url(#terminal-2124525227-line-5)">black&#160;&#160;</text><text class="terminal-2124525227-r4" x="146.4" y="142" textLength="73.2" clip-path="url(#terminal-2124525227-line-5)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r5" x="256.2" y="142" textLength="73.2" clip-path="url(#terminal-2124525227-line-5)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r6" x="366" y="142" textLength="73.2" clip-path="url(#terminal-2124525227-line-5)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r7" x="475.8" y="142" textLength="73.2" clip-path="url(#terminal-2124525227-line-5)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r2" x="585.6" y="142" textLength="12.2" clip-path="url(#terminal-2124525227-line-5)">
+</text><text class="terminal-2124525227-r3" x="24.4" y="166.4" textLength="85.4" clip-path="url(#terminal-2124525227-line-6)">red&#160;&#160;&#160;&#160;</text><text class="terminal-2124525227-r8" x="146.4" y="166.4" textLength="73.2" clip-path="url(#terminal-2124525227-line-6)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r9" x="256.2" y="166.4" textLength="73.2" clip-path="url(#terminal-2124525227-line-6)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r10" x="366" y="166.4" textLength="73.2" clip-path="url(#terminal-2124525227-line-6)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r11" x="475.8" y="166.4" textLength="73.2" clip-path="url(#terminal-2124525227-line-6)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r2" x="585.6" y="166.4" textLength="12.2" clip-path="url(#terminal-2124525227-line-6)">
+</text><text class="terminal-2124525227-r3" x="24.4" y="190.8" textLength="85.4" clip-path="url(#terminal-2124525227-line-7)">green&#160;&#160;</text><text class="terminal-2124525227-r12" x="146.4" y="190.8" textLength="73.2" clip-path="url(#terminal-2124525227-line-7)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r13" x="256.2" y="190.8" textLength="73.2" clip-path="url(#terminal-2124525227-line-7)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r14" x="366" y="190.8" textLength="73.2" clip-path="url(#terminal-2124525227-line-7)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r15" x="475.8" y="190.8" textLength="73.2" clip-path="url(#terminal-2124525227-line-7)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r2" x="585.6" y="190.8" textLength="12.2" clip-path="url(#terminal-2124525227-line-7)">
+</text><text class="terminal-2124525227-r3" x="24.4" y="215.2" textLength="85.4" clip-path="url(#terminal-2124525227-line-8)">yellow&#160;</text><text class="terminal-2124525227-r16" x="146.4" y="215.2" textLength="73.2" clip-path="url(#terminal-2124525227-line-8)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r17" x="256.2" y="215.2" textLength="73.2" clip-path="url(#terminal-2124525227-line-8)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r18" x="366" y="215.2" textLength="73.2" clip-path="url(#terminal-2124525227-line-8)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r19" x="475.8" y="215.2" textLength="73.2" clip-path="url(#terminal-2124525227-line-8)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r2" x="585.6" y="215.2" textLength="12.2" clip-path="url(#terminal-2124525227-line-8)">
+</text><text class="terminal-2124525227-r3" x="24.4" y="239.6" textLength="85.4" clip-path="url(#terminal-2124525227-line-9)">blue&#160;&#160;&#160;</text><text class="terminal-2124525227-r20" x="146.4" y="239.6" textLength="73.2" clip-path="url(#terminal-2124525227-line-9)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r21" x="256.2" y="239.6" textLength="73.2" clip-path="url(#terminal-2124525227-line-9)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r22" x="366" y="239.6" textLength="73.2" clip-path="url(#terminal-2124525227-line-9)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r23" x="475.8" y="239.6" textLength="73.2" clip-path="url(#terminal-2124525227-line-9)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r2" x="585.6" y="239.6" textLength="12.2" clip-path="url(#terminal-2124525227-line-9)">
+</text><text class="terminal-2124525227-r3" x="24.4" y="264" textLength="85.4" clip-path="url(#terminal-2124525227-line-10)">magenta</text><text class="terminal-2124525227-r24" x="146.4" y="264" textLength="73.2" clip-path="url(#terminal-2124525227-line-10)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r25" x="256.2" y="264" textLength="73.2" clip-path="url(#terminal-2124525227-line-10)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r26" x="366" y="264" textLength="73.2" clip-path="url(#terminal-2124525227-line-10)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r27" x="475.8" y="264" textLength="73.2" clip-path="url(#terminal-2124525227-line-10)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r2" x="585.6" y="264" textLength="12.2" clip-path="url(#terminal-2124525227-line-10)">
+</text><text class="terminal-2124525227-r3" x="24.4" y="288.4" textLength="85.4" clip-path="url(#terminal-2124525227-line-11)">cyan&#160;&#160;&#160;</text><text class="terminal-2124525227-r28" x="146.4" y="288.4" textLength="73.2" clip-path="url(#terminal-2124525227-line-11)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r29" x="256.2" y="288.4" textLength="73.2" clip-path="url(#terminal-2124525227-line-11)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r30" x="366" y="288.4" textLength="73.2" clip-path="url(#terminal-2124525227-line-11)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r31" x="475.8" y="288.4" textLength="73.2" clip-path="url(#terminal-2124525227-line-11)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r2" x="585.6" y="288.4" textLength="12.2" clip-path="url(#terminal-2124525227-line-11)">
+</text><text class="terminal-2124525227-r3" x="24.4" y="312.8" textLength="85.4" clip-path="url(#terminal-2124525227-line-12)">white&#160;&#160;</text><text class="terminal-2124525227-r3" x="146.4" y="312.8" textLength="73.2" clip-path="url(#terminal-2124525227-line-12)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r32" x="256.2" y="312.8" textLength="73.2" clip-path="url(#terminal-2124525227-line-12)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r33" x="366" y="312.8" textLength="73.2" clip-path="url(#terminal-2124525227-line-12)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r34" x="475.8" y="312.8" textLength="73.2" clip-path="url(#terminal-2124525227-line-12)">▓▓▓▓▓▓</text><text class="terminal-2124525227-r2" x="585.6" y="312.8" textLength="12.2" clip-path="url(#terminal-2124525227-line-12)">
+</text><text class="terminal-2124525227-r2" x="585.6" y="337.2" textLength="12.2" clip-path="url(#terminal-2124525227-line-13)">
 </text>
     </g>
     </g>
