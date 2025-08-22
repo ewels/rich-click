@@ -1,6 +1,7 @@
-import click
+import rich_click as click
 from rich_click import RichGroup, RichCommand
 
+# click.tree_option( )
 # Define the CLI as RichGroup with configuration
 @click.group(
     cls=RichGroup,
