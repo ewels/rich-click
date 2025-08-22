@@ -3,13 +3,12 @@ from __future__ import annotations
 import os
 import sys
 import textwrap
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 import click
 from rich.console import Console
 from rich.text import Text
 from rich.tree import Tree
-from io import StringIO
 
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_formatter import RichHelpFormatter
@@ -459,4 +458,3 @@ def add_to_tree(
                     is_top_level,
                     path_len,
                 )
-
