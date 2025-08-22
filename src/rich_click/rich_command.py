@@ -31,10 +31,13 @@ from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_BEFORE
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
+from rich_click.rich_panel import construct_panels
 from rich_click.tree_help_rendering import tree_format_help
 
 
 if TYPE_CHECKING:  # pragma: no cover
+    from types import TracebackType
+
     from rich.console import Console
 
     from rich_click.rich_panel import RichPanel
@@ -271,7 +274,7 @@ class RichCommand(click.Command):
 
         ctx = self.context_class(self, info_name=info_name, parent=parent, **extra)
 
-        # with self.augment_usage_errors(ctx):
+        # with augment_usage_errors(self, ctx=ctx):
         with ctx.scope(cleanup=False):
             self.parse_args(ctx, args)
 
@@ -281,7 +284,11 @@ class RichCommand(click.Command):
     # We opt to ignore mypy here.
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        if OVERRIDES_GUARD:
+        from rich_click import TREE_OPTION_NAMES
+
+        if TREE_OPTION_NAMES and set(TREE_OPTION_NAMES) & set(ctx.help_option_names):
+            self.tree_format_help(ctx, formatter)
+        elif OVERRIDES_GUARD:
             prevent_incompatible_overrides(self, "RichCommand", ctx, formatter)
         else:
             self.format_usage(ctx, formatter)
@@ -411,7 +418,11 @@ class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[valid-type,mi
         pass
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        if OVERRIDES_GUARD:
+        from rich_click import TREE_OPTION_NAMES
+
+        if TREE_OPTION_NAMES and set(TREE_OPTION_NAMES) & set(ctx.help_option_names):
+            self.tree_format_help(ctx, formatter)
+        elif OVERRIDES_GUARD:
             prevent_incompatible_overrides(self, "RichMultiCommand", ctx, formatter)
         else:
             self.format_usage(ctx, formatter)
@@ -440,13 +451,16 @@ class RichGroup(RichMultiCommand, Group):
     group_class: Optional[Union[Type[Group], Type[type]]] = type
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        if OVERRIDES_GUARD:
-            prevent_incompatible_overrides(self, "RichGroup", ctx, formatter)
-        else:
-            self.format_usage(ctx, formatter)
-            self.format_help_text(ctx, formatter)
-            self.format_options(ctx, formatter)
-            self.format_epilog(ctx, formatter)
+        # from rich_click import TREE_OPTION_NAMES
+        # if TREE_OPTION_NAMES and set(TREE_OPTION_NAMES) & set(ctx.help_option_names):
+        #     self.tree_format_help(ctx, formatter)
+        # elif OVERRIDES_GUARD:
+        #     prevent_incompatible_overrides(self, "RichGroup", ctx, formatter)
+        # else:
+        self.format_usage(ctx, formatter)
+        self.format_help_text(ctx, formatter)
+        self.format_options(ctx, formatter)
+        self.format_epilog(ctx, formatter)
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
         """Alias for :meth:`main`."""
@@ -556,7 +570,11 @@ class RichCommandCollection(CommandCollection, RichGroup):
     """
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        if OVERRIDES_GUARD:
+        from rich_click import TREE_OPTION_NAMES
+
+        if TREE_OPTION_NAMES and set(TREE_OPTION_NAMES) & set(ctx.help_option_names):
+            self.tree_format_help(ctx, formatter)
+        elif OVERRIDES_GUARD:
             prevent_incompatible_overrides(self, "RichCommandCollection", ctx, formatter)
         else:
             self.format_usage(ctx, formatter)

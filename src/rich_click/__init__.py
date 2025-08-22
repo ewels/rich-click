@@ -96,6 +96,16 @@ from rich_click.rich_parameter import RichParameter as RichParameter
 from . import rich_click as rich_click
 
 
+# TREE_OPTION_NAMES = None
+
+# def tree_option(*names):
+#     global TREE_OPTION_NAMES
+#     TREE_OPTION_NAMES = names or ["--help"]
+#     from .patch import patch
+#     patch(patch_rich_click=True)
+#     return lambda f: f
+
+
 def __getattr__(name: str) -> object:
     from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X
 

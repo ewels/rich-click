@@ -109,18 +109,19 @@ def tree_format_help(ctx: "RichContext", formatter: "RichHelpFormatter", is_grou
                 star_space = star + " "
                 star_space_len = term_console.measure(Text(star_space)).maximum
                 help_text_str = param.help or ""
-                help_start_relative = left_len + pad + star_space_len
+                help_start_relative = left_len + pad
                 help_start_absolute = help_start_relative  # level 0
-                available_width = term_console.width - help_start_absolute
+                available_width = term_console.width - help_start_absolute - 1
                 if available_width < 10:
                     available_width = term_console.width // 2
                 lines = textwrap.wrap(help_text_str, width=available_width)
                 option_label = left_text + pad_text + Text(star_space)
                 if lines:
+                    option_label.append(" ")
                     option_label.append(lines[0], style="italic yellow")
                     for line in lines[1:]:
                         option_label.append("\n")
-                        indent_text = Text(" " * help_start_relative)
+                        indent_text = Text(" " * (help_start_relative + 1))
                         option_label.append_text(indent_text)
                         option_label.append(line, style="italic yellow")
                 term_console.print(option_label)
@@ -145,7 +146,7 @@ def tree_format_help(ctx: "RichContext", formatter: "RichHelpFormatter", is_grou
     help_text_str = root_command.help or ""
     help_start_relative = left_len + pad
     help_start_absolute = level * indent_size + help_start_relative
-    available_width = term_console.width - help_start_absolute
+    available_width = term_console.width - help_start_absolute - 1
     if available_width < 10:
         available_width = term_console.width // 2
     lines = textwrap.wrap(help_text_str, width=available_width)
@@ -154,10 +155,11 @@ def tree_format_help(ctx: "RichContext", formatter: "RichHelpFormatter", is_grou
         label.append_text(left_text)
         label.append_text(pad_text)
         if lines:
+            label.append(" ")
             label.append(lines[0], style="bold")
             for line in lines[1:]:
                 label.append("\n")
-                indent_text = Text(" " * help_start_relative)
+                indent_text = Text(" " * (help_start_relative + 1))
                 label.append_text(indent_text)
                 label.append(line, style="bold")
     else:
@@ -166,12 +168,13 @@ def tree_format_help(ctx: "RichContext", formatter: "RichHelpFormatter", is_grou
         label.append_text(dim_left)
         label.append_text(pad_text)
         if lines:
+            label.append(" ")
             dim_help = Text(lines[0])
             dim_help.stylize("dim")
             label.append_text(dim_help)
             for line in lines[1:]:
                 label.append("\n")
-                indent_text = Text(" " * help_start_relative)
+                indent_text = Text(" " * (help_start_relative + 1))
                 indent_text.stylize("dim")
                 label.append_text(indent_text)
                 dim_line = Text(line)
@@ -267,9 +270,9 @@ def add_option_branch(
     star_space_len = console.measure(star_space_text).maximum
     help_text_str = param.help or ""
     label_start = (level + 1) * indent_size
-    help_start_relative = left_len + pad + star_space_len
+    help_start_relative = left_len + pad
     help_start_absolute = label_start + help_start_relative
-    available_width = console.width - help_start_absolute
+    available_width = console.width - help_start_absolute - 1
     if available_width < 10:
         available_width = console.width // 2
     lines = textwrap.wrap(help_text_str, width=available_width)
@@ -285,12 +288,13 @@ def add_option_branch(
         dim_star.stylize("dim")
         option_label.append_text(dim_star)
         if lines:
+            option_label.append(" ")
             dim_help = Text(lines[0], style="italic yellow")
             dim_help.stylize("dim")
             option_label.append_text(dim_help)
             for line in lines[1:]:
                 option_label.append("\n")
-                indent_text = Text(" " * help_start_relative)
+                indent_text = Text(" " * (help_start_relative + 1))
                 indent_text.stylize("dim")
                 option_label.append_text(indent_text)
                 dim_line = Text(line, style="italic yellow")
@@ -301,10 +305,11 @@ def add_option_branch(
         option_label.append_text(pad_text)
         option_label.append(star_space)
         if lines:
+            option_label.append(" ")
             option_label.append(lines[0], style="italic yellow")
             for line in lines[1:]:
                 option_label.append("\n")
-                indent_text = Text(" " * help_start_relative)
+                indent_text = Text(" " * (help_start_relative + 1))
                 option_label.append_text(indent_text)
                 option_label.append(line, style="italic yellow")
     parent_branch.add(option_label)
@@ -342,7 +347,7 @@ def add_to_tree(
             help_text_str = cmd.help or ""
             help_start_relative = left_len + pad
             help_start_absolute = level * indent_size + help_start_relative
-            available_width = console.width - help_start_absolute
+            available_width = console.width - help_start_absolute - 1
             if available_width < 10:
                 available_width = console.width // 2
             lines = textwrap.wrap(help_text_str, width=available_width)
@@ -350,10 +355,11 @@ def add_to_tree(
             label.append_text(left_text)
             label.append_text(pad_text)
             if lines:
+                label.append(" ")
                 label.append(lines[0])
                 for line in lines[1:]:
                     label.append("\n")
-                    indent_text = Text(" " * help_start_relative)
+                    indent_text = Text(" " * (help_start_relative + 1))
                     label.append_text(indent_text)
                     label.append(line)
             cmd_branch = branch.add(label)
@@ -393,7 +399,7 @@ def add_to_tree(
             help_text_str = cmd.help or ""
             help_start_relative = left_len + pad
             help_start_absolute = level * indent_size + help_start_relative
-            available_width = console.width - help_start_absolute
+            available_width = console.width - help_start_absolute - 1
             if available_width < 10:
                 available_width = console.width // 2
             lines = textwrap.wrap(help_text_str, width=available_width)
@@ -402,10 +408,11 @@ def add_to_tree(
                 label.append_text(left_text)
                 label.append_text(pad_text)
                 if lines:
+                    label.append(" ")
                     label.append(lines[0], style="bold")
                     for line in lines[1:]:
                         label.append("\n")
-                        indent_text = Text(" " * help_start_relative)
+                        indent_text = Text(" " * (help_start_relative + 1))
                         label.append_text(indent_text)
                         label.append(line, style="bold")
             else:
@@ -414,12 +421,13 @@ def add_to_tree(
                 label.append_text(dim_left)
                 label.append_text(pad_text)
                 if lines:
+                    label.append(" ")
                     dim_help = Text(lines[0])
                     dim_help.stylize("dim")
                     label.append_text(dim_help)
                     for line in lines[1:]:
                         label.append("\n")
-                        indent_text = Text(" " * help_start_relative)
+                        indent_text = Text(" " * (help_start_relative + 1))
                         indent_text.stylize("dim")
                         label.append_text(indent_text)
                         dim_line = Text(line)
@@ -450,3 +458,4 @@ def add_to_tree(
                     is_top_level,
                     path_len,
                 )
+
