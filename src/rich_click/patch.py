@@ -13,7 +13,6 @@ from rich_click.decorators import command as _rich_command
 from rich_click.decorators import group as _rich_group
 from rich_click.rich_command import RichCommand, RichCommandCollection, RichGroup, RichMultiCommand
 from rich_click.rich_help_configuration import RichHelpConfiguration
-
 from rich_click.tree_command import TreeRichCommand, TreeRichGroup
 
 
