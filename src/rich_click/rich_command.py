@@ -36,7 +36,6 @@ from rich_click.tree_help_rendering import tree_format_help
 
 
 if TYPE_CHECKING:  # pragma: no cover
-    from types import TracebackType
 
     from rich.console import Console
 
@@ -310,7 +309,6 @@ class RichCommand(click.Command):
     def format_options(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         from rich.table import Table
 
-        from rich_click.rich_panel import construct_panels
 
         panels = construct_panels(self, ctx, formatter)  # type: ignore[arg-type]
         for panel in panels:
