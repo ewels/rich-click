@@ -1,16 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Optional, Type, Union
+from typing import Optional, Type, Union
 
 from click import Group
 
 from rich_click.rich_command import RichCommand, RichGroup
-
-from rich_click.tree_help_rendering import tree_format_help
-
 from rich_click.rich_context import RichContext
-
 from rich_click.rich_help_formatter import RichHelpFormatter
+from rich_click.tree_help_rendering import tree_format_help
 
 
 class TreeRichCommand(RichCommand):
@@ -35,8 +32,9 @@ class TreeRichGroup(RichGroup):
 
     def command(self, *args, **kwargs):
         parent_command = super().command
+
         def decorator(f):
             cmd = parent_command(*args, **kwargs)(f)
             return cmd
-        return decorator
 
+        return decorator
