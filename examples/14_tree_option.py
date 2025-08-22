@@ -1,12 +1,14 @@
 import rich_click as click
-from rich_click import RichGroup, RichCommand
+click.tree_option()
 
-# click.tree_option()
+# from rich_click import RichGroup, RichCommand
+from rich_click import TreeRichGroup 
+from rich_click import TreeRichCommand 
+
 
 # Define the CLI as RichGroup with configuration
 @click.group(
-    cls=RichGroup,
-    context_settings={"tree_option_names": ["--tree","-h"]},
+    cls=TreeRichGroup,
     name="demo",
     help="This CLI provides commands to handle various tasks with subcommands for specific actions.",
 )
@@ -15,8 +17,7 @@ def cli():
 
 # First subgroup (config propagated automatically)
 @click.group(
-    cls=RichGroup,
-    context_settings={"tree_option_names": ["--tree","-h"]},
+    cls=TreeRichGroup,
     name="user",
     help="Manage user-related operations.",
 )
@@ -27,8 +28,7 @@ cli.add_command(user)
 
 # Sub-subgroup under user
 @click.group(
-    cls=RichGroup,
-    context_settings={"tree_option_names": ["--tree","-h"]},
+    cls=TreeRichGroup,
     name="manage",
     help="Manage user settings and permissions.",
 )
@@ -38,7 +38,7 @@ def manage():
 user.add_command(manage)
 
 # Subcommand under manage (third layer)
-@click.command(name="set-role", cls=RichCommand)
+@click.command(name="set-role", cls=TreeRichCommand)
 @click.argument("role", type=str)
 @click.argument("user_id", type=str)
 @click.argument("reason", type=str)
@@ -61,7 +61,7 @@ def set_role(role, user_id, reason):
 manage.add_command(set_role)
 
 # Subcommand under manage (third layer)
-@click.command(name="remove-role", cls=RichCommand)
+@click.command(name="remove-role", cls=TreeRichCommand)
 @click.argument("role", type=str)
 @click.argument("user_id", type=str)
 def remove_role(role, user_id):
@@ -71,7 +71,7 @@ def remove_role(role, user_id):
 manage.add_command(remove_role)
 
 # Subcommand for user group
-@click.command(name="add", cls=RichCommand)
+@click.command(name="add", cls=TreeRichCommand)
 @click.argument("name", type=str)
 @click.option("--email", "-e", help="Email address of the user")
 def add_user(name, email):
@@ -83,7 +83,7 @@ def add_user(name, email):
 user.add_command(add_user)
 
 # Subcommand for user group
-@click.command(name="list", cls=RichCommand)
+@click.command(name="list", cls=TreeRichCommand)
 def list_users():
     """List all users in the system."""
     click.echo("Listing all users...")
@@ -92,7 +92,7 @@ user.add_command(list_users)
 
 # Second subgroup (no subcommands to test robustness)
 @click.group(
-    cls=RichGroup,
+    cls=TreeRichGroup,
     name="project",
     help="Manage project-related operations.",
 )
@@ -102,7 +102,7 @@ def project():
 cli.add_command(project)
 
 # Standalone command (to test robustness)
-@click.command(name="info", cls=RichCommand)
+@click.command(name="info", cls=TreeRichCommand)
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed information.")
 def info(verbose):
     """Display CLI information."""
@@ -114,8 +114,7 @@ cli.add_command(info)
 
 # Define permissions group under manage
 @click.group(
-    cls=RichGroup,
-    context_settings={"tree_option_names": ["--tree","-h"]},
+    cls=TreeRichGroup,
     name="permissions",
     help="Manage user permissions.",
 )
@@ -126,8 +125,7 @@ manage.add_command(permissions)
 
 # Define set group under permissions
 @click.group(
-    cls=RichGroup,
-    context_settings={"tree_option_names": ["--tree","-h"]},
+    cls=TreeRichGroup,
     name="set",
     help="Manage user permissions.",
 )
@@ -136,8 +134,8 @@ def set_permissions():
 
 permissions.add_command(set_permissions)
 
-# Add command under set
-@click.command(name="add", cls=RichCommand)
+# Add command under set_permissions
+@click.command(name="add", cls=TreeRichCommand)
 @click.argument("user_id", type=str)
 @click.argument("permission", type=str)
 def add_permission(user_id, permission):

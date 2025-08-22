@@ -451,11 +451,7 @@ class RichGroup(RichMultiCommand, Group):
     group_class: Optional[Union[Type[Group], Type[type]]] = type
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        from rich_click import TREE_OPTION_NAMES
-
-        if TREE_OPTION_NAMES and set(TREE_OPTION_NAMES) & set(ctx.help_option_names):
-            self.tree_format_help(ctx, formatter)
-        elif OVERRIDES_GUARD:
+        if OVERRIDES_GUARD:
             prevent_incompatible_overrides(self, "RichGroup", ctx, formatter)
         else:
             self.format_usage(ctx, formatter)

@@ -92,18 +92,10 @@ from rich_click.rich_panel import RichPanel as RichPanel
 from rich_click.rich_parameter import RichArgument as RichArgument
 from rich_click.rich_parameter import RichOption as RichOption
 from rich_click.rich_parameter import RichParameter as RichParameter
+from rich_click.tree_command import TreeRichCommand as TreeRichCommand
+from rich_click.tree_command import TreeRichGroup as TreeRichGroup
 
 from . import rich_click as rich_click
-
-
-TREE_OPTION_NAMES = None
-
-def tree_option(*names):
-    global TREE_OPTION_NAMES
-    TREE_OPTION_NAMES = names or ["--tree"]
-    from .patch import patch
-    patch(patch_rich_click=True, tree=True)
-    return lambda f: f
 
 
 def __getattr__(name: str) -> object:
@@ -125,5 +117,3 @@ def __getattr__(name: str) -> object:
         import click
 
         return getattr(click, name)
-
-

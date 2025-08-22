@@ -14,7 +14,7 @@ from rich_click.decorators import group as _rich_group
 from rich_click.rich_command import RichCommand, RichCommandCollection, RichGroup, RichMultiCommand
 from rich_click.rich_help_configuration import RichHelpConfiguration
 
-from rich_click.tree_help_rendering import TreeRichCommand, TreeRichGroup
+from rich_click.tree_command import TreeRichCommand, TreeRichGroup
 
 
 class _PatchedRichCommand(RichCommand):
@@ -61,7 +61,9 @@ def tree_group(*args, **kwargs):  # type: ignore[no-untyped-def]
     return _rich_group(*args, **kwargs)
 
 
-def patch(rich_config: Optional[RichHelpConfiguration] = None, *, patch_rich_click: bool = False, tree: bool = False) -> None:
+def patch(
+    rich_config: Optional[RichHelpConfiguration] = None, *, patch_rich_click: bool = False, tree: bool = False
+) -> None:
     """Patch Click internals to use rich-click types."""
     from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X
 
@@ -101,4 +103,3 @@ def patch(rich_config: Optional[RichHelpConfiguration] = None, *, patch_rich_cli
 
     if rich_config is not None:
         rich_config.dump_to_globals()
-
