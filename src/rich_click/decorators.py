@@ -333,6 +333,40 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     return click_option(*param_decls, **kwargs)
 
 
+def tree_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
+    """
+    Pre-configured ``--tree`` option which immediately prints the tree help page
+    and exits the program.
+
+    :param param_decls: One or more option names. Defaults to the single
+        value ``"--tree"``.
+    :param kwargs: Extra arguments are passed to :func:`option`.
+    """
+
+    def show_tree(ctx: Context, param: Parameter, value: bool) -> None:
+        """Callback that prints the tree help page on ``<stdout>`` and exits."""
+        if value and not ctx.resilient_parsing:
+            # Avoid click.echo() because it ignores console settings like force_terminal.
+            # Also, do not print() if empty string; assume console was record=False.
+            if getattr(ctx, "help_to_stderr", False):
+                print(ctx.get_tree_help(), file=sys.stderr)
+            else:
+                print(ctx.get_tree_help())
+            ctx.exit()
+
+    if not param_decls:
+        param_decls = ("--tree",)
+
+    kwargs.setdefault("is_flag", True)
+    kwargs.setdefault("expose_value", False)
+    kwargs.setdefault("is_eager", True)
+    kwargs.setdefault("help", gettext("Show the tree message and exit."))
+    kwargs.setdefault("callback", show_tree)
+    kwargs.setdefault("cls", RichOption)
+
+    return click_option(*param_decls, **kwargs)
+
+
 def argument(*param_decls: str, cls: Optional[Type[Argument]] = None, **attrs: Any) -> Callable[[FC], FC]:
     """
     Attaches an argument to the command.  All positional arguments are
