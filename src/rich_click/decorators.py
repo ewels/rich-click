@@ -349,9 +349,9 @@ def tree_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
             # Avoid click.echo() because it ignores console settings like force_terminal.
             # Also, do not print() if empty string; assume console was record=False.
             if getattr(ctx, "help_to_stderr", False):
-                print(ctx.get_tree_help(), file=sys.stderr)
+                print(ctx.command.get_tree_help(ctx), file=sys.stderr)
             else:
-                print(ctx.get_tree_help())
+                print(ctx.command.get_tree_help(ctx))
             ctx.exit()
 
     if not param_decls:
