@@ -5,6 +5,7 @@ import sys
 import textwrap
 from typing import Dict, List
 
+import click
 from rich.console import Console
 from rich.text import Text
 from rich.tree import Tree
