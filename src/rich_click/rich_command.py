@@ -232,6 +232,52 @@ class RichCommand(click.Command):
             finally:
                 sys.exit(1)
 
+    def make_context(
+        self,
+        info_name: str | None,
+        args: list[str],
+        parent: Context | None = None,
+        **extra: Any,
+    ) -> Context:
+        known_context_keys = {
+            "help_option_names",
+            "auto_envvar_prefix",
+            "default_map",
+            "token_normalize_func",
+            "ignore_unknown_options",
+            "allow_extra_args",
+            "allow_interspersed_args",
+            "color",
+            "max_content_width",
+            "terminal_width",
+            "show_default",
+            "resilient_parsing",
+        }
+        known_rich_keys = {
+            "rich_console",
+            "rich_help_config",
+            "export_console_as",
+            "errors_in_output_format",
+            "help_to_stderr",
+        }
+        custom_keys = known_rich_keys | {"tree_option_names"}
+
+        # Merge only known context_settings
+        for key, value in self.context_settings.items():
+            if key in known_context_keys and key not in extra:
+                extra[key] = value
+            elif key in known_rich_keys and key not in extra:
+                extra[key] = value
+            # ignore other custom like tree_option_names
+
+        ctx = self.context_class(self, info_name=info_name, parent=parent, **extra)
+
+        # with self.augment_usage_errors(ctx):
+        with ctx.scope(cleanup=False):
+            self.parse_args(ctx, args)
+
+        return ctx
+
     # Mypy complains about Liskov substitution principle violations.
     # We opt to ignore mypy here.
 
