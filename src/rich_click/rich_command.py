@@ -35,7 +35,6 @@ from rich_click.tree_help_rendering import tree_format_help
 
 
 if TYPE_CHECKING:  # pragma: no cover
-
     from rich.console import Console
 
     from rich_click.rich_panel import RichPanel
