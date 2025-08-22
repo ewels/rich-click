@@ -18,6 +18,7 @@ from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_panel import RichCommandPanel, RichOptionPanel, RichPanel
 from rich_click.rich_parameter import RichArgument, RichOption
+from rich_click.tree_command import TreeRichCommand, TreeRichGroup
 
 
 if sys.version_info < (3, 10):
@@ -83,9 +84,24 @@ def group(
         cls = cast(Type[G], RichGroup)
 
     if callable(name):
-        return command(cls=cls, **attrs)(name)
+        func = name
+        name = None
+        tree_help = getattr(func, "__tree_help__", False)
+        if tree_help:
+            if cls == RichGroup:
+                cls = TreeRichGroup
+            del func.__tree_help__
+        return command(cls=cls, **attrs)(func)
 
-    return command(name, cls, **attrs)
+    def decorator(f: _AnyCallable) -> G:
+        tree_help = getattr(f, "__tree_help__", False)
+        if tree_help:
+            if cls == RichGroup:
+                cls = TreeRichGroup
+            del f.__tree_help__
+        return click.group(name, cls, **attrs)(f)
+
+    return decorator
 
 
 CmdType = TypeVar("CmdType", bound=Command)
@@ -157,6 +173,12 @@ def command(
             attr_panels.extend(reversed(panels))
             attrs["panels"] = attr_panels
             del f.__rich_panels__  # type: ignore[attr-defined]
+
+        tree_help = getattr(f, "__tree_help__", False)
+        if tree_help:
+            if cls == RichCommand:
+                cls = TreeRichCommand
+            del f.__tree_help__
 
         return click_command(name, cls, **attrs)(f)
 
@@ -364,7 +386,11 @@ def tree_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     kwargs.setdefault("callback", show_tree)
     kwargs.setdefault("cls", RichOption)
 
-    return click_option(*param_decls, **kwargs)
+    def decorator(f: _AnyCallable) -> _AnyCallable:
+        setattr(f, "__tree_help__", True)
+        return click_option(*param_decls, **kwargs)(f)
+
+    return decorator
 
 
 def argument(*param_decls: str, cls: Optional[Type[Argument]] = None, **attrs: Any) -> Callable[[FC], FC]:
