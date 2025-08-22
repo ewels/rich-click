@@ -3,7 +3,8 @@ import click
 from rich_click import RichCommand, RichGroup
 
 
-@click.group(cls=RichGroup)
+@click.group(cls=RichGroup, 
+             context_settings={"tree_option_names": ["--tree", "-h"]},)
 @click.option("--debug/--no-debug", default=False)
 def cli(debug):
     """
