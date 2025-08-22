@@ -36,7 +36,6 @@ from rich_click.tree_help_rendering import tree_format_help
 
 
 if TYPE_CHECKING:  # pragma: no cover
-
     from rich.console import Console
 
     from rich_click.rich_panel import RichPanel
@@ -283,11 +282,7 @@ class RichCommand(click.Command):
     # We opt to ignore mypy here.
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        from rich_click import TREE_OPTION_NAMES
-
-        if TREE_OPTION_NAMES and set(TREE_OPTION_NAMES) & set(ctx.help_option_names):
-            self.tree_format_help(ctx, formatter)
-        elif OVERRIDES_GUARD:
+        if OVERRIDES_GUARD:
             prevent_incompatible_overrides(self, "RichCommand", ctx, formatter)
         else:
             self.format_usage(ctx, formatter)
@@ -308,7 +303,6 @@ class RichCommand(click.Command):
     #  We are looking for a solution that fixes all 3. For now, we opt for (c).
     def format_options(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         from rich.table import Table
-
 
         panels = construct_panels(self, ctx, formatter)  # type: ignore[arg-type]
         for panel in panels:
