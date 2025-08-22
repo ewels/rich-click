@@ -3,15 +3,19 @@ from __future__ import annotations
 import os
 import sys
 import textwrap
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import click
 from rich.console import Console
 from rich.text import Text
 from rich.tree import Tree
+from io import StringIO
+
+from rich_click.rich_context import RichContext
+from rich_click.rich_help_formatter import RichHelpFormatter
 
 
-def tree_format_help(ctx: "RichContext", formatter: "RichHelpFormatter", is_group: bool) -> None:
+def tree_format_help(ctx: RichContext, formatter: RichHelpFormatter, is_group: bool) -> None:
     """Format the help in tree style. Adapted from treeclick."""
     term_width = formatter.width
     term_console = formatter.console
@@ -109,19 +113,18 @@ def tree_format_help(ctx: "RichContext", formatter: "RichHelpFormatter", is_grou
                 star_space = star + " "
                 star_space_len = term_console.measure(Text(star_space)).maximum
                 help_text_str = param.help or ""
-                help_start_relative = left_len + pad
+                help_start_relative = left_len + pad + star_space_len
                 help_start_absolute = help_start_relative  # level 0
-                available_width = term_console.width - help_start_absolute - 1
+                available_width = term_console.width - help_start_absolute
                 if available_width < 10:
                     available_width = term_console.width // 2
                 lines = textwrap.wrap(help_text_str, width=available_width)
                 option_label = left_text + pad_text + Text(star_space)
                 if lines:
-                    option_label.append(" ")
                     option_label.append(lines[0], style="italic yellow")
                     for line in lines[1:]:
                         option_label.append("\n")
-                        indent_text = Text(" " * (help_start_relative + 1))
+                        indent_text = Text(" " * help_start_relative)
                         option_label.append_text(indent_text)
                         option_label.append(line, style="italic yellow")
                 term_console.print(option_label)
@@ -146,7 +149,7 @@ def tree_format_help(ctx: "RichContext", formatter: "RichHelpFormatter", is_grou
     help_text_str = root_command.help or ""
     help_start_relative = left_len + pad
     help_start_absolute = level * indent_size + help_start_relative
-    available_width = term_console.width - help_start_absolute - 1
+    available_width = term_console.width - help_start_absolute
     if available_width < 10:
         available_width = term_console.width // 2
     lines = textwrap.wrap(help_text_str, width=available_width)
@@ -155,11 +158,10 @@ def tree_format_help(ctx: "RichContext", formatter: "RichHelpFormatter", is_grou
         label.append_text(left_text)
         label.append_text(pad_text)
         if lines:
-            label.append(" ")
             label.append(lines[0], style="bold")
             for line in lines[1:]:
                 label.append("\n")
-                indent_text = Text(" " * (help_start_relative + 1))
+                indent_text = Text(" " * help_start_relative)
                 label.append_text(indent_text)
                 label.append(line, style="bold")
     else:
@@ -168,13 +170,12 @@ def tree_format_help(ctx: "RichContext", formatter: "RichHelpFormatter", is_grou
         label.append_text(dim_left)
         label.append_text(pad_text)
         if lines:
-            label.append(" ")
             dim_help = Text(lines[0])
             dim_help.stylize("dim")
             label.append_text(dim_help)
             for line in lines[1:]:
                 label.append("\n")
-                indent_text = Text(" " * (help_start_relative + 1))
+                indent_text = Text(" " * help_start_relative)
                 indent_text.stylize("dim")
                 label.append_text(indent_text)
                 dim_line = Text(line)
@@ -270,7 +271,7 @@ def add_option_branch(
     star_space_len = console.measure(star_space_text).maximum
     help_text_str = param.help or ""
     label_start = (level + 1) * indent_size
-    help_start_relative = left_len + pad
+    help_start_relative = left_len + pad + star_space_len
     help_start_absolute = label_start + help_start_relative
     available_width = console.width - help_start_absolute - 1
     if available_width < 10:

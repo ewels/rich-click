@@ -451,16 +451,17 @@ class RichGroup(RichMultiCommand, Group):
     group_class: Optional[Union[Type[Group], Type[type]]] = type
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        # from rich_click import TREE_OPTION_NAMES
-        # if TREE_OPTION_NAMES and set(TREE_OPTION_NAMES) & set(ctx.help_option_names):
-        #     self.tree_format_help(ctx, formatter)
-        # elif OVERRIDES_GUARD:
-        #     prevent_incompatible_overrides(self, "RichGroup", ctx, formatter)
-        # else:
-        self.format_usage(ctx, formatter)
-        self.format_help_text(ctx, formatter)
-        self.format_options(ctx, formatter)
-        self.format_epilog(ctx, formatter)
+        from rich_click import TREE_OPTION_NAMES
+
+        if TREE_OPTION_NAMES and set(TREE_OPTION_NAMES) & set(ctx.help_option_names):
+            self.tree_format_help(ctx, formatter)
+        elif OVERRIDES_GUARD:
+            prevent_incompatible_overrides(self, "RichGroup", ctx, formatter)
+        else:
+            self.format_usage(ctx, formatter)
+            self.format_help_text(ctx, formatter)
+            self.format_options(ctx, formatter)
+            self.format_epilog(ctx, formatter)
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
         """Alias for :meth:`main`."""
@@ -589,6 +590,36 @@ class RichCommandCollection(CommandCollection, RichGroup):
 
     def tree_format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:
         tree_format_help(ctx, formatter, isinstance(self, MultiCommand))
+
+
+class TreeRichCommand(RichCommand):
+    """Custom Command with tree-formatted help."""
+
+    def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:
+        tree_format_help(ctx, formatter, False)
+
+
+class TreeRichGroup(RichGroup):
+    """Custom Group with tree-formatted help."""
+
+    command_class: Optional[Type[RichCommand]] = TreeRichCommand
+    group_class: Optional[Union[Type[Group], Type[type]]] = type
+
+    def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:
+        tree_format_help(ctx, formatter, True)
+
+    def add_command(self, cmd, name=None):
+        name = name or cmd.name
+        super().add_command(cmd, name)
+
+    def command(self, *args, **kwargs):
+        parent_command = super().command
+
+        def decorator(f):
+            cmd = parent_command(*args, **kwargs)(f)
+            return cmd
+
+        return decorator
 
 
 def prevent_incompatible_overrides(
