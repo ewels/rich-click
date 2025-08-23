@@ -130,6 +130,7 @@ class RichHelpConfigurationDict(TypedDict):
     """Typed dict for rich_config() kwargs."""
 
     style_option: NotRequired[StyleType]
+    style_option_secondary: NotRequired[Optional[StyleType]]
     style_argument: NotRequired[StyleType]
     style_command: NotRequired[StyleType]
     style_switch: NotRequired[StyleType]

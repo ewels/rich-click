@@ -432,26 +432,47 @@ def get_rich_table_row(
     opt_short_strs = []
     for idx, opt in enumerate(param.opts):
         opt_str = opt
+        secondary = None
         try:
-            opt_str += "/" + param.secondary_opts[idx]
+            secondary = param.secondary_opts[idx]
         except IndexError:
             pass
 
         if isinstance(param, click.core.Argument):
-            opt_long_strs.append(opt_str.upper())
+            opt_long_strs.append(Text.from_markup(opt_str.upper(), style=formatter.config.style_option))
         elif "--" in opt:
-            opt_long_strs.append(opt_str)
+            if secondary:
+                opt_long_strs.append(Text("/", style=formatter.config.style_option_help).join(
+                    [Text(opt_str, style=formatter.config.style_option),
+                     Text(secondary, style=formatter.config.style_option_secondary
+                          if formatter.config.style_option_secondary is not None
+                          else formatter.config.style_option)]
+                ))
+            else:
+                opt_long_strs.append(Text.from_markup(opt_str, style=formatter.config.style_option))
         else:
-            opt_short_strs.append(opt_str)
+            if secondary:
+                opt_short_strs.append(Text("/", style=formatter.config.style_option_help).join(
+                    [Text(opt_str, style=formatter.config.style_option),
+                     Text(secondary, style=formatter.config.style_option_secondary
+                          if formatter.config.style_option_secondary is not None
+                          else formatter.config.style_option)]
+                ))
+            else:
+                opt_short_strs.append(Text.from_markup(opt_str, style=formatter.config.style_option))
 
     if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(param.name, str)
         assert isinstance(param, click.core.Option)
 
+
     column_callbacks: Dict["OptionColumnType", Callable[..., Any]] = {
         "required": _get_parameter_help_required_short,
-        "opt_long": lambda *args, **kwargs: formatter.highlighter(formatter.highlighter(",".join(opt_long_strs))),
-        "opt_short": lambda *args, **kwargs: formatter.highlighter(formatter.highlighter(",".join(opt_short_strs))),
+        "opt_long": lambda *args, **kwargs: Text(",", style=formatter.config.style_option_help).join(opt_long_strs),
+        "opt_short": lambda *args, **kwargs: Text(",", style=formatter.config.style_option_help).join(opt_short_strs),
+
+        # "opt_long": lambda *args, **kwargs: formatter.highlighter(",".join(opt_long_strs)),
+        # "opt_short": lambda *args, **kwargs: formatter.highlighter(",".join(opt_short_strs)),
         "opt_primary": lambda *args, **kwargs: None,  # TODO
         "opt_secondary": lambda *args, **kwargs: None,  # TODO
         "opt_all": lambda *args, **kwargs: None,  # TODO

@@ -82,6 +82,7 @@ class RichHelpConfiguration:
 
     # Default styles
     style_option: "rich.style.StyleType" = field(default="bold cyan")
+    style_option_secondary: Optional["rich.style.StyleType"] = field(default=None)
     style_argument: "rich.style.StyleType" = field(default="bold cyan")
     style_command: "rich.style.StyleType" = field(default="bold cyan")
     style_switch: "rich.style.StyleType" = field(default="bold green")
