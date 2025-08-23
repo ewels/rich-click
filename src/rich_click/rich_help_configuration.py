@@ -30,6 +30,8 @@ OptionColumnType = Literal[
     "opt_long",
     "opt_short",
     "opt_all",
+    "opt_all_metavar",
+    "opt_long_metavar",
     "metavar",
     "help",
     "default",
@@ -86,6 +88,7 @@ class RichHelpConfiguration:
     style_argument: "rich.style.StyleType" = field(default="bold cyan")
     style_command: "rich.style.StyleType" = field(default="bold cyan")
     style_switch: "rich.style.StyleType" = field(default="bold green")
+    style_switch_secondary: Optional["rich.style.StyleType"] = field(default=None)
     style_metavar: "rich.style.StyleType" = field(default="bold yellow")
     style_metavar_append: "rich.style.StyleType" = field(default="dim yellow")
     style_metavar_separator: "rich.style.StyleType" = field(default="dim")
@@ -161,7 +164,7 @@ class RichHelpConfiguration:
     envvar_string: str = field(default="[env var: {}]")
     required_short_string: str = field(default="*")
     required_long_string: str = field(default="[required]")
-    range_string: str = field(default=" [{}]")
+    range_string: str = field(default="[{}]")
     append_metavars_help_string: str = field(default="[{}]")
     arguments_panel_title: str = field(default="Arguments")
     options_panel_title: str = field(default="Options")

@@ -192,7 +192,7 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
 
         colors = Table(
             "",
-            "Style",
+            "Name",
             "Colors",
             "Description",
             padding=(0, 1),
@@ -225,13 +225,7 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
             "✓" if c == "star" else "",
             "star",
             "[yellow]▓▓[/] [blue]▓▓[/] [default]▓▓[/]",
-            "Litestar theme; astrological feel",
-        )
-        colors.add_row(
-            "✓" if c == "news" else "",
-            "news",
-            "[default]▓▓[/] [red]▓▓[/] [dim]▓▓[/]",
-            "White and black and red all over",
+            "Litestar theme; royal feel",
         )
         colors.add_row(
             "✓" if c == "quartz" else "",
@@ -252,9 +246,6 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
             "Cargo CLI theme; legible and bold",
         )
         colors.add_row(
-            "✓" if c == "ice" else "", "ice", "[default]▓▓[/] [blue]▓▓[/] [dim]▓▓[/]", "Simple blue accented theme"
-        )
-        colors.add_row(
             "✓" if c == "forest" else "",
             "forest",
             "[green]▓▓[/] [yellow]▓▓[/] [cyan]▓▓[/]",
@@ -267,13 +258,31 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
             "Vibrant high-contract dark theme",
         )
         colors.add_row(
+            "✓" if c == "news" else "",
+            "news",
+            "[default]▓▓[/] [red]▓▓[/] [dim]▓▓[/]",
+            "Simple red accented theme (white and black and red all over)",
+        )
+        colors.add_row(
+            "✓" if c == "ice" else "", "ice", "[default]▓▓[/] [blue]▓▓[/] [dim]▓▓[/]", "Simple blue accented theme"
+        )
+        colors.add_row(
+            "✓" if c == "lime" else "", "lime", "[default]▓▓[/] [green]▓▓[/] [dim]▓▓[/]", "Simple green accented theme"
+        )
+        colors.add_row(
+            "✓" if c == "lemon" else "",
+            "lemon",
+            "[default]▓▓[/] [yellow]▓▓[/] [dim]▓▓[/]",
+            "Simple yellow accented theme",
+        )
+        colors.add_row(
             "✓" if c == "mono" else "", "mono", "[default]▓▓[/] [dim]▓▓[/]", "Monochromatic theme with no colors"
         )
         colors.add_row("✓" if c == "plain" else "", "plain", "[default]▓▓[/]", "No style at all.")
 
         formats = Table(
             "",
-            "Formats",
+            "Name",
             "Description",
             padding=(0, 1),
             border_style="dim",
@@ -394,7 +403,7 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
 )
 @_rich_option(
     "--themes",
-    help="List all available themes and exit",
+    help="List all available themes and exit.",
     panel="Extra",
     callback=list_themes,
     expose_value=False,

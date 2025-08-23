@@ -3,7 +3,7 @@ from __future__ import annotations
 import inspect
 import re
 from gettext import gettext
-from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, List, Literal, Optional, Tuple, Union
 
 import click
 
@@ -215,26 +215,26 @@ def _get_parameter_metavar(
     param: Union[click.Argument, click.Option, RichParameter],
     ctx: RichContext,
     formatter: RichHelpFormatter,
+    append: bool = True,
 ) -> Optional[Text]:
-    if formatter.config.append_metavars_help:
-        metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
-        # Do it ourselves if this is a positional argument
-        if (
-            isinstance(param, click.core.Argument)
-            and param.name is not None
-            and re.match(rf"\[?{param.name.upper()}]?", metavar_str)
-        ):
-            metavar_str = param.type.name.upper()
-        # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option
-        if isinstance(param, click.core.Argument) or (
-            metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag
-        ):
-            metavar_str = metavar_str.replace("[", "").replace("]", "")
-            return Text(
-                formatter.config.append_metavars_help_string.format(metavar_str),
-                style=formatter.config.style_metavar_append,
-                overflow="fold",
-            )
+    metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
+    # Do it ourselves if this is a positional argument
+    if (
+        isinstance(param, click.core.Argument)
+        and param.name is not None
+        and re.match(rf"\[?{param.name.upper()}]?", metavar_str)
+    ):
+        metavar_str = param.type.name.upper()
+    # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option
+    if isinstance(param, click.core.Argument) or (
+        metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag
+    ):
+        metavar_str = metavar_str.replace("[", "").replace("]", "")
+        return Text(
+            formatter.config.append_metavars_help_string.format(metavar_str),
+            style=formatter.config.style_metavar_append if append else formatter.config.style_metavar,
+            overflow="fold",
+        )
     return None
 
 
@@ -242,7 +242,7 @@ def _get_parameter_help_metavar_col(
     param: Union[click.Argument, click.Option, RichParameter],
     ctx: RichContext,
     formatter: RichHelpFormatter,
-) -> Text:
+) -> Optional[Text]:
     # Column for a metavar, if we have one
     metavar = Text(style=formatter.config.style_metavar, overflow="fold")
     metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
@@ -281,8 +281,139 @@ def _get_parameter_help_metavar_col(
             r"(?P<metavar_sep>(\]|>)$)",
         ]
 
+    if "".join(metavar._text) == "":
+        return None
+
     metavar_highlighter = MetavarHighlighter()
     return metavar_highlighter(metavar)
+
+
+def _get_parameter_help_opt(
+    param: Union[click.Argument, click.Option, RichParameter],
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+) -> Tuple[
+    Optional[Text],
+    Optional[Text],
+    Optional[Text],
+    Optional[Text],
+    Optional[Text],
+]:
+    # This may seem convoluted to return tuples with widths instead of just renderables,
+    # but there are two things we want to do that are impossible otherwise:
+    # 1. Prevent splitting of options. If we just use Text() and allow wrapping,
+    #    then something like --foo/--bar may split in the middle of an option
+    #    instead of at the "/".
+    # 2. Make it so the table doesn't expand. We solve the first problem by using
+    #    Columns(), but the issue is there is no way to prevent the expansion of
+    #    the outer table column other than to explicitly set the width.
+    # Attempting to solve both of those problems simultaneously leads to this mess.
+
+    opt_long_primary = []
+    opt_short_primary = []
+    opt_long_secondary = []
+    opt_short_secondary = []
+
+    for opt in param.opts:
+        if isinstance(param, click.core.Argument):
+            opt_long_primary.append(opt.upper())
+        elif "--" in opt:
+            opt_long_primary.append(opt)
+        else:
+            opt_short_primary.append(opt)
+    for opt in param.secondary_opts:
+        if isinstance(param, click.core.Argument):
+            opt_long_secondary.append(opt.upper())
+        elif "--" in opt:
+            opt_long_secondary.append(opt)
+        else:
+            opt_short_secondary.append(opt)
+
+    from rich.text import Text
+
+    # opt_long_primary_len = len("".join(opt_long_primary)) + len(opt_long_primary) - 1
+    # opt_short_primary_len = len("".join(opt_short_primary)) + len(opt_short_primary) - 1
+    # opt_long_secondary_len = len("".join(opt_long_secondary)) + len(opt_long_secondary) - 1
+    # opt_short_secondary_len = len("".join(opt_short_secondary)) + len(opt_short_secondary) - 1
+
+    primary_cols = []
+    secondary_cols = []
+    long_cols = []
+    short_cols = []
+    all_cols = []
+
+    comma = Text(", ", style=formatter.config.style_option_help)
+    slash = Text("/", style=formatter.config.style_option_help)
+
+    for o in opt_short_primary:
+        oh = Text(o.strip(), style=formatter.config.style_switch)
+        primary_cols.append(oh)
+        primary_cols.append(comma)
+        short_cols.append(oh)
+        short_cols.append(Text(","))
+
+    for o in opt_long_primary:
+        oh = Text(o.strip(), style=formatter.config.style_option)
+        primary_cols.append(oh)
+        primary_cols.append(comma)
+        long_cols.append(oh)
+        long_cols.append(comma)
+
+    if opt_short_secondary:
+        short_cols = short_cols[:-1]
+        short_cols.append(slash)
+        for o in opt_short_secondary:
+            oh = Text(
+                o.strip(),
+                style=(
+                    formatter.config.style_switch_secondary
+                    if formatter.config.style_switch_secondary is not None
+                    else formatter.config.style_switch
+                ),
+            )
+            secondary_cols.append(oh)
+            secondary_cols.append(comma)
+            short_cols.append(oh)
+            short_cols.append(comma)
+
+    if opt_long_secondary:
+        long_cols = long_cols[:-1]
+        long_cols.append(slash)
+        for o in opt_long_secondary:
+            oh = Text(
+                o.strip(),
+                style=(
+                    formatter.config.style_option_secondary
+                    if formatter.config.style_option_secondary is not None
+                    else formatter.config.style_option
+                ),
+            )
+            secondary_cols.append(oh)
+            secondary_cols.append(comma)
+            long_cols.append(oh)
+            long_cols.append(comma)
+
+    all_cols = primary_cols
+    if secondary_cols:
+        all_cols = [*primary_cols[:-1], slash, *secondary_cols]
+
+    def _renderable(cols: List[Text]) -> Optional[Text]:
+        if not cols:
+            return None
+        if len(cols) == 1:
+            return cols[0]
+        # Todo - make the text fold at the slashes without adding whitespace.
+        #   this is very tricky.
+        t = Text("", overflow="fold").join(cols)
+        return t
+
+    primary_final = _renderable(primary_cols[:-1])
+    secondary_final = _renderable(secondary_cols[:-1])
+    long_final = _renderable(long_cols[:-1])
+    short_final = _renderable(short_cols[:-1])
+    all_final = _renderable(all_cols[:-1])
+
+    return primary_final, secondary_final, long_final, short_final, all_final
 
 
 def _get_parameter_default(
@@ -394,7 +525,10 @@ def get_help_parameter(
     envvar_text = _get_parameter_env_var(param, ctx, formatter)
     help_text = _get_parameter_help(param, ctx, formatter)
     deprecated_text = _get_parameter_deprecated(param, ctx, formatter)
-    metavar_text = _get_parameter_metavar(param, ctx, formatter)
+    if formatter.config.append_metavars_help:
+        metavar_text = _get_parameter_metavar(param, ctx, formatter)
+    else:
+        metavar_text = None
     default_text = _get_parameter_default(param, ctx, formatter)
     required_text = _get_parameter_required(param, ctx, formatter)
 
@@ -442,22 +576,40 @@ def get_rich_table_row(
             opt_long_strs.append(Text.from_markup(opt_str.upper(), style=formatter.config.style_option))
         elif "--" in opt:
             if secondary:
-                opt_long_strs.append(Text("/", style=formatter.config.style_option_help).join(
-                    [Text(opt_str, style=formatter.config.style_option),
-                     Text(secondary, style=formatter.config.style_option_secondary
-                          if formatter.config.style_option_secondary is not None
-                          else formatter.config.style_option)]
-                ))
+                opt_long_strs.append(
+                    Text("/", style=formatter.config.style_option_help).join(
+                        [
+                            Text(opt_str, style=formatter.config.style_option),
+                            Text(
+                                secondary,
+                                style=(
+                                    formatter.config.style_option_secondary
+                                    if formatter.config.style_option_secondary is not None
+                                    else formatter.config.style_option
+                                ),
+                            ),
+                        ]
+                    )
+                )
             else:
                 opt_long_strs.append(Text.from_markup(opt_str, style=formatter.config.style_option))
         else:
             if secondary:
-                opt_short_strs.append(Text("/", style=formatter.config.style_option_help).join(
-                    [Text(opt_str, style=formatter.config.style_option),
-                     Text(secondary, style=formatter.config.style_option_secondary
-                          if formatter.config.style_option_secondary is not None
-                          else formatter.config.style_option)]
-                ))
+                opt_short_strs.append(
+                    Text("/", style=formatter.config.style_option_help).join(
+                        [
+                            Text(opt_str, style=formatter.config.style_option),
+                            Text(
+                                secondary,
+                                style=(
+                                    formatter.config.style_option_secondary
+                                    if formatter.config.style_option_secondary is not None
+                                    else formatter.config.style_option
+                                ),
+                            ),
+                        ]
+                    )
+                )
             else:
                 opt_short_strs.append(Text.from_markup(opt_str, style=formatter.config.style_option))
 
@@ -465,18 +617,36 @@ def get_rich_table_row(
         assert isinstance(param.name, str)
         assert isinstance(param, click.core.Option)
 
+    _primary, _secondary, _long, _short, _all = _get_parameter_help_opt(param, ctx, formatter)
+
+    _metavar_padded = None
+    if any(i in columns for i in ["opt_all_metavar", "opt_long_metavar"]):
+        _metavar_padded = _get_parameter_metavar(param, ctx, formatter, append=False)
+
+    def _opt_all_metavar() -> Optional[RenderableType]:
+        if _metavar_padded is None:
+            return _all
+        if _all is None:
+            return _metavar_padded
+        return Text(" ", style=formatter.config.style_option_help).join([_all, _metavar_padded])
+
+    def _opt_long_metavar() -> Optional[RenderableType]:
+        if _metavar_padded is None:
+            return _long
+        if _long is None:
+            return _metavar_padded
+        return Text(" ", style=formatter.config.style_option_help).join([_long, _metavar_padded])
 
     column_callbacks: Dict["OptionColumnType", Callable[..., Any]] = {
         "required": _get_parameter_help_required_short,
-        "opt_long": lambda *args, **kwargs: Text(",", style=formatter.config.style_option_help).join(opt_long_strs),
-        "opt_short": lambda *args, **kwargs: Text(",", style=formatter.config.style_option_help).join(opt_short_strs),
-
-        # "opt_long": lambda *args, **kwargs: formatter.highlighter(",".join(opt_long_strs)),
-        # "opt_short": lambda *args, **kwargs: formatter.highlighter(",".join(opt_short_strs)),
-        "opt_primary": lambda *args, **kwargs: None,  # TODO
-        "opt_secondary": lambda *args, **kwargs: None,  # TODO
-        "opt_all": lambda *args, **kwargs: None,  # TODO
+        "opt_long": lambda *args, **kwargs: _long,
+        "opt_short": lambda *args, **kwargs: _short,
+        "opt_primary": lambda *args, **kwargs: _primary,
+        "opt_secondary": lambda *args, **kwargs: _secondary,
+        "opt_all": lambda *args, **kwargs: _all,
         "metavar": _get_parameter_help_metavar_col,
+        "opt_all_metavar": lambda *args, **kwargs: _opt_all_metavar(),
+        "opt_long_metavar": lambda *args, **kwargs: _opt_long_metavar(),
         "help": lambda *args, **kwargs: (
             param.get_rich_help(ctx, formatter)
             if isinstance(param, RichParameter)
