@@ -129,6 +129,7 @@ class PanelKwargs(TypedDict):
 class RichHelpConfigurationDict(TypedDict):
     """Typed dict for rich_config() kwargs."""
 
+    theme: NotRequired[str]
     style_option: NotRequired[StyleType]
     style_option_secondary: NotRequired[Optional[StyleType]]
     style_argument: NotRequired[StyleType]
