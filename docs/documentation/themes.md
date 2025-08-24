@@ -285,7 +285,7 @@ There are currently over a dozen different color palettes.
     -->
     ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_nord_box.svg){.screenshot}
 
-=== "`nord`"
+=== "`star`"
     Litestar theme; royal feel.
 
     <!-- RICH-CODEX
@@ -349,65 +349,127 @@ There are currently over a dozen different color palettes.
 
 The following palettes all focus on just a single color. They are all the same, except for the color.
 
-=== "`ice`"
-    Simple blue accented theme.
+The below palettes are presented with the `modern` format.
+
+=== "`red1`"
+    Simple theme with red accents on section headers.
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
-        RICH_CLICK_THEME: ice-box
+        RICH_CLICK_THEME: ice-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ice_box.svg){.screenshot}
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_red1_modern.svg){.screenshot}
 
-=== "`news`"
-    Simple red accented theme (white and black and red all over).
+=== "`red2`"
+    Simple theme with red accents on object names.
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
-        RICH_CLICK_THEME: news-box
+        RICH_CLICK_THEME: red2-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_news_box.svg){.screenshot}
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_red2_modern.svg){.screenshot}
 
-=== "`lemon`"
-    Simple yellow accented theme.
+=== "`green1`"
+    Simple theme with green accents on section headers.
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
-        RICH_CLICK_THEME: lemon-box
+        RICH_CLICK_THEME: ice-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_lemon_box.svg){.screenshot}
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_green1_modern.svg){.screenshot}
 
-=== "`lime`"
-    Simple green accented theme.
+=== "`green2`"
+    Simple theme with green accents on object names.
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
-        RICH_CLICK_THEME: lime-box
+        RICH_CLICK_THEME: green2-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_lime_box.svg){.screenshot}
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_green2_modern.svg){.screenshot}
 
-=== "`sea`"
-    Simple cyan accented theme.
+=== "`yellow1`"
+    Simple theme with yellow accents on section headers.
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
-        RICH_CLICK_THEME: sea-box
+        RICH_CLICK_THEME: ice-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_sea_box.svg){.screenshot}
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_yellow1_modern.svg){.screenshot}
 
-=== "`rose`"
-    Simple magenta accented theme.
+=== "`yellow2`"
+    Simple theme with yellow accents on object names.
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
-        RICH_CLICK_THEME: rose-box
+        RICH_CLICK_THEME: yellow2-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_rose_box.svg){.screenshot}
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_yellow2_modern.svg){.screenshot}
+
+=== "`blue1`"
+    Simple theme with blue accents on section headers.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: ice-modern
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_blue1_modern.svg){.screenshot}
+
+=== "`blue2`"
+    Simple theme with blue accents on object names.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: blue2-modern
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_blue2_modern.svg){.screenshot}
+
+=== "`magenta1`"
+    Simple theme with magenta accents on section headers.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: ice-modern
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_magenta1_modern.svg){.screenshot}
+
+=== "`magenta2`"
+    Simple theme with magenta accents on object names.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: magenta2-modern
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_magenta2_modern.svg){.screenshot}
+
+=== "`cyan1`"
+    Simple theme with cyan accents on section headers.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: ice-modern
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_cyan1_modern.svg){.screenshot}
+
+=== "`cyan2`"
+    Simple theme with cyan accents on object names.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: cyan2-modern
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_cyan2_modern.svg){.screenshot}
 
 
 ### Monochromatic palettes

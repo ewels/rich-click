@@ -257,33 +257,19 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
             "[magenta]▓▓[/] [red]▓▓[/] [default]▓▓[/]",
             "Vibrant high-contract dark theme",
         )
-        colors.add_row(
-            "✓" if c == "news" else "",
-            "news",
-            "[default]▓▓[/] [red]▓▓[/] [dim]▓▓[/]",
-            "Simple red accented theme (white and black and red all over)",
-        )
-        colors.add_row(
-            "✓" if c == "ice" else "", "ice", "[default]▓▓[/] [blue]▓▓[/] [dim]▓▓[/]", "Simple blue accented theme"
-        )
-        colors.add_row(
-            "✓" if c == "sea" else "", "sea", "[default]▓▓[/] [cyan]▓▓[/] [dim]▓▓[/]", "Simple cyan accented theme"
-        )
-        colors.add_row(
-            "✓" if c == "lime" else "", "lime", "[default]▓▓[/] [green]▓▓[/] [dim]▓▓[/]", "Simple green accented theme"
-        )
-        colors.add_row(
-            "✓" if c == "lemon" else "",
-            "lemon",
-            "[default]▓▓[/] [yellow]▓▓[/] [dim]▓▓[/]",
-            "Simple yellow accented theme",
-        )
-        colors.add_row(
-            "✓" if c == "rose" else "",
-            "rose",
-            "[default]▓▓[/] [magenta]▓▓[/] [dim]▓▓[/]",
-            "Simple magenta accented theme",
-        )
+        for _c in ["red", "green", "yellow", "blue", "magenta", "cyan"]:
+            colors.add_row(
+                "✓" if c == f"{_c}1" else "",
+                f"{_c}1",
+                f"[default]▓▓[/] [{_c}]▓▓[/] [dim {_c}]▓▓[/]",
+                f"Simple theme with {_c} accents on section headers",
+            )
+            colors.add_row(
+                "✓" if c == f"{_c}2" else "",
+                f"{_c}2",
+                f"[{_c}]▓▓[/] [default]▓▓[/] [dim]▓▓[/]",
+                f"Simple theme with {_c} accents on object names",
+            )
         colors.add_row(
             "✓" if c == "mono" else "", "mono", "[default]▓▓[/] [dim]▓▓[/]", "Monochromatic theme with no colors"
         )
