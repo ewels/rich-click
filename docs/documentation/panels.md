@@ -29,7 +29,7 @@ Under the hood, these decorators create **`RichPanel`** objects (`RichCommandPan
 
 Options panels handle parameters for your command:
 
-```python
+```python hl_lines="12-15"
 {% include "../code_snippets/panels/panels_simple_decorators.py" %}
 ```
 
@@ -44,7 +44,7 @@ You can also specify what options that panels are associated with in the option 
 
 The below code generates the same output as the above code:
 
-```python
+```python hl_lines="7-12"
 {% include "../code_snippets/panels/panels_simple_kwargs.py" %}
 ```
 
@@ -89,7 +89,7 @@ Despite the name, options panels handle more than just options; they can also ha
 
 Arguments can be given their own panel with the `show_arguments` config option:
 
-```python
+```python hl_lines="11"
 {% include "../code_snippets/panels/panels_simple_arguments.py" %}
 ```
 
@@ -102,7 +102,7 @@ Arguments can be given their own panel with the `show_arguments` config option:
 
 Arguments can also be included in the options panel with the `group_arguments_options` config option (the `show_arguments` config option does not need to be set).
 
-```python
+```python hl_lines="11"
 {% include "../code_snippets/panels/panels_simple_arguments_combined.py" %}
 ```
 
@@ -116,7 +116,7 @@ Arguments can also be included in the options panel with the `group_arguments_op
 In **rich-click**, unlike base Click, arguments can have `help` text.
 If `help=` if set for arguments, then the argument panel is shown:
 
-```python
+```python hl_lines="7-8"
 {% include "../code_snippets/panels/panels_simple_arguments_help.py" %}
 ```
 
@@ -129,7 +129,7 @@ If `help=` if set for arguments, then the argument panel is shown:
 
 Arguments can also be given their own panels, or combined with other panels.
 
-```python
+```python hl_lines="7-8 11-12" 
 {% include "../code_snippets/panels/panels_simple_arguments_explicit.py" %}
 ```
 
@@ -144,7 +144,7 @@ Arguments can also be given their own panels, or combined with other panels.
 
 Sub-commands also have panels that are defined similarly to option panels:
 
-```python
+```python hl_lines="7-11"
 {% include "../code_snippets/panels/panels_commands.py" %}
 ```
 
@@ -164,7 +164,7 @@ you must explicitly set inside the Command Panel itself.
 Default panel titles can be overridden with the config.
 Renamed panels can still have their panel-level configurations modified.
 
-```python
+```python hl_lines="14-16"
 {% include "../code_snippets/panels/panels_defaults_renamed.py" %}
 ```
 
@@ -229,7 +229,7 @@ This is probably a mistake, and there are two ways to fix it:
 
 
 === "Fix (method 1)"
-    ```python
+    ```python hl_lines="13"
     {% include "../code_snippets/panels/panels_handling_help_fix_1.py" %}
     ```
 
@@ -241,7 +241,7 @@ This is probably a mistake, and there are two ways to fix it:
         ![`python panels_handling_help_fix_1.py --help`](../images/code_snippets/panels/panels_handling_help_fix_1.svg){.screenshot}
 
 === "Fix (method 2)"
-    ```python
+    ```python hl_lines="12"
     {% include "../code_snippets/panels/panels_handling_help_fix_2.py" %}
     ```
 
