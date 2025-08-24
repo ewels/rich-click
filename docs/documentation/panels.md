@@ -185,7 +185,7 @@ Default panel styles are also handled by the config, and will be overridden when
 
 In the below example, `Main` does not have any styles set, but `Extra` has the border style overridden.
 However, defaults are overridden on an arg-by-arg basis, so the config level `box` is not overridden.
-The below example also employs an additional trick to underline the text of the title.
+The below example also overrides the title text style using `title_style=`.
 
 ```python
 {% include "../code_snippets/panels/panels_defaults_override_config.py" %}

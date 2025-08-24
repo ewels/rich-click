@@ -4,15 +4,16 @@
 import rich_click as click
 
 @click.command()
-@click.argument("src", help="Source", panel="[u b]Main[/]")
-@click.argument("dest", help="Destination", panel="[u b]Main[/]")
-@click.option("--env", help="Environment", panel="[u b]Extra[/]")
-@click.option("--log-level", help="Log level", panel="[u b]Extra[/]")
-@click.help_option(panel="[u b]Extra[/]")
-@click.version_option("1.2.3", panel="[u b]Extra[/]")
-@click.option_panel("[u b]Main[/]")
-@click.option_panel("[u b]Extra[/]",
-                    panel_styles={"border_style": "blue"})
+@click.argument("src", help="Source", panel="Main")
+@click.argument("dest", help="Destination", panel="Main")
+@click.option("--env", help="Environment", panel="Extra")
+@click.option("--log-level", help="Log level", panel="Extra")
+@click.help_option(panel="Extra")
+@click.version_option("1.2.3", panel="Extra")
+@click.option_panel("Main", title_style="u b")
+@click.option_panel("Extra",
+                    panel_styles={"border_style": "blue"},
+                    title_style="u b")
 @click.rich_config({
     "style_options_panel_border": "bright_red",
     "style_options_panel_box": "SIMPLE",

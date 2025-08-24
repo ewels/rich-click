@@ -654,6 +654,7 @@ def option_panel(
     options: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: TableKwargs,
     panel_styles: PanelKwargs,
 ) -> Callable[[FC], FC]: ...
@@ -665,6 +666,7 @@ def option_panel(
     options: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: Optional[Dict[str, Any]] = None,
     panel_styles: Optional[Dict[str, Any]] = None,
 ) -> Callable[[FC], FC]: ...
@@ -676,6 +678,7 @@ def option_panel(
     options: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: None,
     panel_styles: None,
 ) -> Callable[[FC], FC]: ...
@@ -686,6 +689,7 @@ def option_panel(
     options: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: Optional[Union[TableKwargs, Dict[str, Any]]] = None,
     panel_styles: Optional[Union[PanelKwargs, Dict[str, Any]]] = None,
 ) -> Callable[[FC], FC]: ...
@@ -697,6 +701,7 @@ def command_panel(
     commands: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: TableKwargs,
     panel_styles: PanelKwargs,
 ) -> Callable[[FC], FC]: ...
@@ -708,6 +713,7 @@ def command_panel(
     commands: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: Optional[Dict[str, Any]] = None,
     panel_styles: Optional[Dict[str, Any]] = None,
 ) -> Callable[[FC], FC]: ...
@@ -719,6 +725,7 @@ def command_panel(
     commands: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: None,
     panel_styles: None,
 ) -> Callable[[FC], FC]: ...
@@ -729,6 +736,7 @@ def command_panel(
     commands: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: Optional[Dict[str, Any]] = None,
     panel_styles: Optional[Dict[str, Any]] = None,
 ) -> Callable[[FC], FC]: ...
