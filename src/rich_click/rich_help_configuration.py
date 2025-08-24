@@ -84,11 +84,11 @@ class RichHelpConfiguration:
 
     # Default styles
     style_option: "rich.style.StyleType" = field(default="bold cyan")
-    style_option_secondary: Optional["rich.style.StyleType"] = field(default=None)
+    style_option_negative: Optional["rich.style.StyleType"] = field(default=None)
     style_argument: "rich.style.StyleType" = field(default="bold cyan")
     style_command: "rich.style.StyleType" = field(default="bold cyan")
     style_switch: "rich.style.StyleType" = field(default="bold green")
-    style_switch_secondary: Optional["rich.style.StyleType"] = field(default=None)
+    style_switch_negative: Optional["rich.style.StyleType"] = field(default=None)
     style_metavar: "rich.style.StyleType" = field(default="bold yellow")
     style_metavar_append: "rich.style.StyleType" = field(default="dim yellow")
     style_metavar_separator: "rich.style.StyleType" = field(default="dim")

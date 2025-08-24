@@ -21,11 +21,11 @@ THEME: Optional[str] = None
 ENABLE_THEME_ENV_VAR: bool = True
 
 STYLE_OPTION: "rich.style.StyleType" = "bold cyan"
-STYLE_OPTION_SECONDARY: Optional["rich.style.StyleType"] = None
+STYLE_OPTION_NEGATIVE: Optional["rich.style.StyleType"] = None
 STYLE_ARGUMENT: "rich.style.StyleType" = "bold cyan"
 STYLE_COMMAND: "rich.style.StyleType" = "bold cyan"
 STYLE_SWITCH: "rich.style.StyleType" = "bold green"
-STYLE_SWITCH_SECONDARY: Optional["rich.style.StyleType"] = None
+STYLE_SWITCH_NEGATIVE: Optional["rich.style.StyleType"] = None
 STYLE_METAVAR: "rich.style.StyleType" = "bold yellow"
 STYLE_METAVAR_APPEND: "rich.style.StyleType" = "dim yellow"
 STYLE_METAVAR_SEPARATOR: "rich.style.StyleType" = "dim"

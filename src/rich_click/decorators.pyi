@@ -131,11 +131,11 @@ class RichHelpConfigurationDict(TypedDict):
 
     theme: NotRequired[str]
     style_option: NotRequired[StyleType]
-    style_option_secondary: NotRequired[Optional[StyleType]]
+    style_option_negative: NotRequired[Optional[StyleType]]
     style_argument: NotRequired[StyleType]
     style_command: NotRequired[StyleType]
     style_switch: NotRequired[StyleType]
-    style_switch_secondary: NotRequired[Optional[StyleType]]
+    style_switch_negative: NotRequired[Optional[StyleType]]
     style_metavar: NotRequired[StyleType]
     style_metavar_append: NotRequired[StyleType]
     style_metavar_separator: NotRequired[StyleType]

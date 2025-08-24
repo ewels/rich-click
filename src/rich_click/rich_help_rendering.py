@@ -366,8 +366,8 @@ def _get_parameter_help_opt(
             oh = Text(
                 o.strip(),
                 style=(
-                    formatter.config.style_switch_secondary
-                    if formatter.config.style_switch_secondary is not None
+                    formatter.config.style_switch_negative
+                    if formatter.config.style_switch_negative is not None
                     else formatter.config.style_switch
                 ),
             )
@@ -383,8 +383,8 @@ def _get_parameter_help_opt(
             oh = Text(
                 o.strip(),
                 style=(
-                    formatter.config.style_option_secondary
-                    if formatter.config.style_option_secondary is not None
+                    formatter.config.style_option_negative
+                    if formatter.config.style_option_negative is not None
                     else formatter.config.style_option
                 ),
             )
@@ -583,8 +583,8 @@ def get_rich_table_row(
                             Text(
                                 secondary,
                                 style=(
-                                    formatter.config.style_option_secondary
-                                    if formatter.config.style_option_secondary is not None
+                                    formatter.config.style_option_negative
+                                    if formatter.config.style_option_negative is not None
                                     else formatter.config.style_option
                                 ),
                             ),
@@ -602,8 +602,8 @@ def get_rich_table_row(
                             Text(
                                 secondary,
                                 style=(
-                                    formatter.config.style_option_secondary
-                                    if formatter.config.style_option_secondary is not None
+                                    formatter.config.style_option_negative
+                                    if formatter.config.style_option_negative is not None
                                     else formatter.config.style_option
                                 ),
                             ),
