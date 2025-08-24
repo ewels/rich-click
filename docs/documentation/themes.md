@@ -3,33 +3,19 @@
 **Themes** are a simple way to customize the style of CLI help text as both an end-user and as a developer.
 Themes are one of **rich-click**'s most powerful features.
 
-=== "`lime-modern`"
+=== "`quartz-modern`"
 
     ```shell
-    export RICH_CLICK_THEME=lime-modern
+    export RICH_CLICK_THEME=quartz-modern
     python hello_rich.py --help
     ```
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
-        RICH_CLICK_THEME: lime-modern
+        RICH_CLICK_THEME: quartz-modern
     -->
     ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
-
-=== "`quartz-slim`"
-
-    ```shell
-    export RICH_CLICK_THEME=quartz-slim
-    python hello_rich.py --help
-    ```
-
-    <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
-    extra_env:
-        RICH_CLICK_THEME: quartz-slim
-    -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
 
 === "`nord-nu`"
 
@@ -43,7 +29,7 @@ Themes are one of **rich-click**'s most powerful features.
     extra_env:
         RICH_CLICK_THEME: nord-nu
     -->
-    ![` python hello_rich.py --help`](../images/code_snippets/themes/themes_ex3.svg){.screenshot}
+    ![` python hello_rich.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
 
 === "`cargo-slim`"
 
@@ -57,7 +43,7 @@ Themes are one of **rich-click**'s most powerful features.
     extra_env:
         RICH_CLICK_THEME: cargo-slim
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ex3.svg){.screenshot}
 
 === "`forest-robo`"
 
@@ -71,20 +57,14 @@ Themes are one of **rich-click**'s most powerful features.
     extra_env:
         RICH_CLICK_THEME: forest-robo
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ex5.svg){.screenshot}
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
 
 Themes consist of **Color Palettes** and **Formats**, which can be mixed and matched.
 The name of a full theme has the following schema: `{color_palette}-{format}`.
 
 For example, the **forest-slim** theme uses the **forest** color palette and the **slim** format.
 
-??? info "All themes"
-    Running `rich-click --themes` will provide help text that lists every theme available to you:
-
-    <!-- RICH-CODEX
-    fake_command: rich-click --themes
-    -->
-    ![`rich-click -c '{"color_system": "truecolor"}' --themes`](../images/code_snippets/themes/all_themes.svg){.screenshot}
+For more information, 
 
 ## Themes as an end-user
 
@@ -157,8 +137,7 @@ You can set a theme for your CLI by setting it in the config:
     ```
 
 By default, a theme can still be overridden by a user.
-For CLIs which are already highly customized, this may cause unintended stylistic consequences;
-you may also just want to enforce your own branding.
+For CLIs which are already highly customized, this may cause unintended stylistic consequences.
 You can disable overrides with the `enable_theme_env_var` option:
 
 === "`{}`"
@@ -263,10 +242,20 @@ There are currently over a dozen different color palettes.
 === "`default`"
     **Default** Original rich-click colors.
 
+    ```shell
+    export RICH_CLICK_THEME=default-box
+    python hello_rich.py --help
+    ```
+
     ![python hello_rich.py --help](../images/code_snippets/themes/themes_default_box.svg){.screenshot}
 
 === "`solarized`"
     Bright, colorful, vibrant accents.
+
+    ```shell
+    export RICH_CLICK_THEME=solarized-box
+    python hello_rich.py --help
+    ```
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
@@ -278,6 +267,11 @@ There are currently over a dozen different color palettes.
 === "`nord`"
     Many shades of cool colors.
 
+    ```shell
+    export RICH_CLICK_THEME=nord-box
+    python hello_rich.py --help
+    ```
+
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
@@ -287,6 +281,11 @@ There are currently over a dozen different color palettes.
 
 === "`star`"
     Litestar theme; royal feel.
+
+    ```shell
+    export RICH_CLICK_THEME=star-box
+    python hello_rich.py --help
+    ```
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
@@ -298,6 +297,11 @@ There are currently over a dozen different color palettes.
 === "`quartz`"
     Dark and radiant.
 
+    ```shell
+    export RICH_CLICK_THEME=quartz-box
+    python hello_rich.py --help
+    ```
+
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
@@ -307,6 +311,11 @@ There are currently over a dozen different color palettes.
 
 === "`quartz2`"
     Remix of 'quartz' with accents.
+
+    ```shell
+    export RICH_CLICK_THEME=quartz2-box
+    python hello_rich.py --help
+    ```
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
@@ -318,6 +327,11 @@ There are currently over a dozen different color palettes.
 === "`cargo`"
     Cargo CLI theme; legible and bold.
 
+    ```shell
+    export RICH_CLICK_THEME=cargo-box
+    python hello_rich.py --help
+    ```
+
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
@@ -327,6 +341,11 @@ There are currently over a dozen different color palettes.
 
 === "`forest`"
     Earthy tones with analogous colors.
+
+    ```shell
+    export RICH_CLICK_THEME=forest-box
+    python hello_rich.py --help
+    ```
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
@@ -338,6 +357,11 @@ There are currently over a dozen different color palettes.
 === "`dracula`"
     Vibrant high-contract dark theme.
 
+    ```shell
+    export RICH_CLICK_THEME=dracula-box
+    python hello_rich.py --help
+    ```
+
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
@@ -347,12 +371,17 @@ There are currently over a dozen different color palettes.
 
 #### Simple palettes
 
-The following palettes all focus on just a single color. They are all the same, except for the color.
+The following palettes all focus on just a single color.
 
 The below palettes are presented with the `modern` format.
 
 === "`red1`"
     Simple theme with red accents on section headers.
+
+    ```shell
+    export RICH_CLICK_THEME=red1-modern
+    python hello_rich.py --help
+    ```
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
@@ -364,6 +393,11 @@ The below palettes are presented with the `modern` format.
 === "`red2`"
     Simple theme with red accents on object names.
 
+    ```shell
+    export RICH_CLICK_THEME=red2-modern
+    python hello_rich.py --help
+    ```
+
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
@@ -373,6 +407,11 @@ The below palettes are presented with the `modern` format.
 
 === "`green1`"
     Simple theme with green accents on section headers.
+
+    ```shell
+    export RICH_CLICK_THEME=green1-modern
+    python hello_rich.py --help
+    ```
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
@@ -384,6 +423,11 @@ The below palettes are presented with the `modern` format.
 === "`green2`"
     Simple theme with green accents on object names.
 
+    ```shell
+    export RICH_CLICK_THEME=green2-modern
+    python hello_rich.py --help
+    ```
+
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
@@ -393,6 +437,11 @@ The below palettes are presented with the `modern` format.
 
 === "`yellow1`"
     Simple theme with yellow accents on section headers.
+
+    ```shell
+    export RICH_CLICK_THEME=yellow1-modern
+    python hello_rich.py --help
+    ```
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
@@ -404,6 +453,11 @@ The below palettes are presented with the `modern` format.
 === "`yellow2`"
     Simple theme with yellow accents on object names.
 
+    ```shell
+    export RICH_CLICK_THEME=yellow2-modern
+    python hello_rich.py --help
+    ```
+
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
@@ -413,6 +467,11 @@ The below palettes are presented with the `modern` format.
 
 === "`blue1`"
     Simple theme with blue accents on section headers.
+
+    ```shell
+    export RICH_CLICK_THEME=blue1-modern
+    python hello_rich.py --help
+    ```
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
@@ -424,6 +483,11 @@ The below palettes are presented with the `modern` format.
 === "`blue2`"
     Simple theme with blue accents on object names.
 
+    ```shell
+    export RICH_CLICK_THEME=blue2-modern
+    python hello_rich.py --help
+    ```
+
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
@@ -433,6 +497,11 @@ The below palettes are presented with the `modern` format.
 
 === "`magenta1`"
     Simple theme with magenta accents on section headers.
+
+    ```shell
+    export RICH_CLICK_THEME=magenta1-modern
+    python hello_rich.py --help
+    ```
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
@@ -444,6 +513,11 @@ The below palettes are presented with the `modern` format.
 === "`magenta2`"
     Simple theme with magenta accents on object names.
 
+    ```shell
+    export RICH_CLICK_THEME=magenta2-modern
+    python hello_rich.py --help
+    ```
+
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
@@ -454,6 +528,11 @@ The below palettes are presented with the `modern` format.
 === "`cyan1`"
     Simple theme with cyan accents on section headers.
 
+    ```shell
+    export RICH_CLICK_THEME=cyan1-modern
+    python hello_rich.py --help
+    ```
+
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
@@ -463,6 +542,11 @@ The below palettes are presented with the `modern` format.
 
 === "`cyan2`"
     Simple theme with cyan accents on object names.
+
+    ```shell
+    export RICH_CLICK_THEME=cyan2-modern
+    python hello_rich.py --help
+    ```
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
@@ -479,6 +563,11 @@ The following palettes have zero color.
 === "`mono`"
     Monochromatic theme with no colors.
 
+    ```shell
+    export RICH_CLICK_THEME=mono-box
+    python hello_rich.py --help
+    ```
+
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
@@ -489,6 +578,11 @@ The following palettes have zero color.
 === "`plain`"
     No style at all.
 
+    ```shell
+    export RICH_CLICK_THEME=plain-box
+    python hello_rich.py --help
+    ```
+
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
@@ -496,3 +590,16 @@ The following palettes have zero color.
     -->
     ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_plain_box.svg){.screenshot}
 
+
+### List all themes in command line
+
+Running `rich-click --themes` will provide help text that lists every theme available to you.
+The command will also tell you which theme you currently have enabled.
+
+??? info "Output of `rich-click --themes`"
+
+    <!-- RICH-CODEX
+    fake_command: rich-click --themes
+    terminal_width: 120
+    -->
+    ![`rich-click -c '{"color_system": "truecolor"}' --themes`](../images/code_snippets/themes/all_themes.svg){.screenshot}
