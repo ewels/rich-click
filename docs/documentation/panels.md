@@ -1,6 +1,8 @@
 # Panels
 
-The containers in help text which contain options and subcommands are called `RichPanel`s. RichPanels are object inside the code.
+The containers which contain options and subcommands are called panels:
+
+![](../images/panels.svg)
 
 By default, `RichCommand`s have a single panel for options named "Options", and `RichGroup`s have an additional panel for commands named "Commands".
 
@@ -20,6 +22,8 @@ By default, `RichCommand`s have a single panel for options named "Options", and 
 ## Introduction to API
 
 The high-level API for defining panels is with the `@click.command_panel()` and `@click.option_panel()` decorators.
+
+Under the hood, these decorators create **`RichPanel`** objects (`RichCommandPanel` and `RichOptionPanel`) that get attached to the command.
 
 ### Options
 
