@@ -64,8 +64,6 @@ The name of a full theme has the following schema: `{color_palette}-{format}`.
 
 For example, the **forest-slim** theme uses the **forest** color palette and the **slim** format.
 
-For more information, 
-
 ## Themes as an end-user
 
 Unless a developer specifies otherwise, every **rich-click** CLI can have a theme applied by an end-user by setting the `RICH_CLICK_THEME` env var.
@@ -181,7 +179,7 @@ For more information on config resolution order, read [the **Configuration** doc
 
 ### Formats
 
-There are currently 5 available formats.
+There are currently 5 available **formats**.
 
 === "`box`"
     **(Default)** Original rich-click format with boxes.
@@ -235,7 +233,7 @@ There are currently 5 available formats.
 
 ### Color palettes
 
-There are currently over a dozen different color palettes.
+There are currently over a dozen different **color palettes**.
 
 #### Multi-colored palettes
 
@@ -600,6 +598,8 @@ The command will also tell you which theme you currently have enabled.
 
     <!-- RICH-CODEX
     fake_command: rich-click --themes
-    terminal_width: 120
+    terminal_width: 140
+    extra_env:
+        TERMINAL_WIDTH: 140
     -->
-    ![`rich-click -c '{"color_system": "truecolor"}' --themes`](../images/code_snippets/themes/all_themes.svg){.screenshot}
+    ![`rich-click --themes`](../images/code_snippets/themes/all_themes.svg){.screenshot}
