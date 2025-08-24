@@ -357,7 +357,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
-        RICH_CLICK_THEME: ice-modern
+        RICH_CLICK_THEME: red1-modern
     -->
     ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_red1_modern.svg){.screenshot}
 
@@ -377,7 +377,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
-        RICH_CLICK_THEME: ice-modern
+        RICH_CLICK_THEME: green1-modern
     -->
     ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_green1_modern.svg){.screenshot}
 
@@ -397,7 +397,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
-        RICH_CLICK_THEME: ice-modern
+        RICH_CLICK_THEME: yellow1-modern
     -->
     ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_yellow1_modern.svg){.screenshot}
 
@@ -417,7 +417,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
-        RICH_CLICK_THEME: ice-modern
+        RICH_CLICK_THEME: blue1-modern
     -->
     ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_blue1_modern.svg){.screenshot}
 
@@ -437,7 +437,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
-        RICH_CLICK_THEME: ice-modern
+        RICH_CLICK_THEME: magenta1-modern
     -->
     ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_magenta1_modern.svg){.screenshot}
 
@@ -457,7 +457,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
     extra_env:
-        RICH_CLICK_THEME: ice-modern
+        RICH_CLICK_THEME: cyan1-modern
     -->
     ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_cyan1_modern.svg){.screenshot}
 
