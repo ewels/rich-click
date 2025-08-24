@@ -310,7 +310,6 @@ FORMATS: Dict[str, Dict[str, Any]] = {
     "nu": {
         "style_options_panel_box": "HORIZONTALS_DOUBLE_TOP",
         "style_commands_panel_box": "HORIZONTALS_DOUBLE_TOP",
-        # "commands_before_options": True,
         "style_options_table_box": None,
         "style_commands_table_box": None,
         "style_options_panel_padding": 0,
@@ -367,7 +366,6 @@ FORMATS: Dict[str, Dict[str, Any]] = {
     "robo": {
         "style_options_panel_box": "SQUARE",
         "style_commands_panel_box": "SQUARE",
-        "commands_before_options": True,
         "style_options_table_box": None,
         "style_commands_table_box": None,
         "style_options_panel_padding": (1, 2),

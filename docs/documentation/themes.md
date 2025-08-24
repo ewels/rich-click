@@ -82,11 +82,11 @@ If you'd like to set a global theme, add the following to your shell's config fi
 
 Themes will also be used when you wrap a base Click CLI in the `rich-click` CLI, e.g.:
 
-![](../images/code_snippets/flask_themed.svg "RICH_CLICK_THEME=star-modern rich-click flask --help"){.screenshot}
+![](../images/code_snippets/themes/flask_themed.svg "RICH_CLICK_THEME=star-modern rich-click flask --help"){.screenshot}
 
 Alternatively, when using the `rich-click [cmd]` CLI, you can pass a theme via the `--theme`/`-t` option:
 
-![](../images/code_snippets/flask_themed_2.svg "rich-click -t star-slim flask --help"){.screenshot}
+![](../images/code_snippets/themes/flask_themed_2.svg "rich-click -t star-slim flask --help"){.screenshot}
 
 The `RICH_CLICK_THEME` env var can also be a full JSON representation of a config.
 For example, let's say you prefer having commands above options. There is a config option for this, `commands_before_options`, and you can place that in the `RICH_CLICK_THEME` env var:
