@@ -1,34 +1,63 @@
 # Themes
 
 **Themes** are a simple way to customize the style of CLI help text as both an end-user and as a developer.
-
-=== "`quartz-slim`"
-
-    <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
-    -->
-    ![`RICH_CLICK_THEME=quartz-slim python hello_rich.py --help`](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
+Themes are one of **rich-click**'s most powerful features.
 
 === "`lime-modern`"
 
+    ```shell
+    export RICH_CLICK_THEME=lime-modern
+    python hello_rich.py --help
+    ```
+
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: lime-modern
     -->
-    ![`RICH_CLICK_THEME=lime-modern python hello_rich.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
+
+=== "`quartz-slim`"
+
+    ```shell
+    export RICH_CLICK_THEME=quartz-slim
+    python hello_rich.py --help
+    ```
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: quartz-slim
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
 
 === "`nord-nu`"
 
+    ```shell
+    export RICH_CLICK_THEME=nord-nu
+    python hello_rich.py --help
+    ```
+
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: nord-nu
     -->
-    ![`RICH_CLICK_THEME=nord-nu python hello_rich.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
+    ![` python hello_rich.py --help`](../images/code_snippets/themes/themes_ex3.svg){.screenshot}
 
 === "`cargo-slim`"
 
+    ```shell
+    export RICH_CLICK_THEME=cargo-slim
+    python hello_rich.py --help
+    ```
+
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: cargo-slim
     -->
-    ![`RICH_CLICK_THEME=cargo-slim python hello_rich.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
 
 Themes consist of **Color Palettes** and **Formats**, which can be mixed and matched.
 The name of a full theme has the following schema: `{color_palette}-{format}`.
@@ -38,7 +67,10 @@ For example, the **forest-slim** theme uses the **forest** color palette and the
 ??? info "All themes"
     Running `rich-click --themes` will provide help text that lists every theme available to you:
 
-    ![`rich-click --themes`](../images/code_snippets/themes/all_themes.svg){.screenshot}
+    <!-- RICH-CODEX
+    fake_command: rich-click --themes
+    -->
+    ![`rich-click -c '{"color_system": "truecolor"}' --themes`](../images/code_snippets/themes/all_themes.svg){.screenshot}
 
 ## Themes as an end-user
 
@@ -151,3 +183,64 @@ You can disable overrides with the `enable_theme_env_var` option:
 Note that themes never override existing config options; they are essentially the defaults for a config,
 so explicitly set options always take precedence over a theme.
 For more information on config resolution order, read [the **Configuration** docs](configuration.md).
+
+# All themes
+
+## Formats
+
+There are currently 5 available formats.
+
+=== "`box`"
+    **(Default)** Original rich-click format with boxes.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: default-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_default_box.svg){.screenshot}
+
+=== "`slim`"
+    Simple, classic, no-fuss CLI format.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: default-slim
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_default_slim.svg){.screenshot}
+
+=== "`modern`"
+    Beautiful modern look.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: default-modern
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_default_modern.svg){.screenshot}
+
+=== "`robo`"
+    Spacious with sharp corners.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: default-robo
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_default_robo.svg){.screenshot}
+
+=== "`nu`"
+    Great balance of compactness, legibility, and style.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: default-nu
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_default_nu.svg){.screenshot}
+
+
+
+**Nu**: Great balance of compactness, legibility, and style
+
