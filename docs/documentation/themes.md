@@ -198,9 +198,9 @@ Note that themes never override existing config options; they are essentially th
 so explicitly set options always take precedence over a theme.
 For more information on config resolution order, read [the **Configuration** docs](configuration.md).
 
-# All themes
+## All themes
 
-## Formats
+### Formats
 
 There are currently 5 available formats.
 
@@ -254,11 +254,11 @@ There are currently 5 available formats.
     -->
     ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_default_nu.svg){.screenshot}
 
-## Color palettes
+### Color palettes
 
 There are currently over a dozen different color palettes.
 
-### Multi-colored palettes
+#### Multi-colored palettes
 
 === "`default`"
     **Default** Original rich-click colors.
@@ -345,7 +345,7 @@ There are currently over a dozen different color palettes.
     -->
     ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_dracula_box.svg){.screenshot}
 
-### Simple palettes
+#### Simple palettes
 
 The following palettes all focus on just a single color. They are all the same, except for the color.
 
@@ -472,7 +472,7 @@ The below palettes are presented with the `modern` format.
     ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_cyan2_modern.svg){.screenshot}
 
 
-### Monochromatic palettes
+#### Monochromatic palettes
 
 The following palettes have zero color.
 

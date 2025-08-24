@@ -135,11 +135,11 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
     return module_path, function_name
 
 
-def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None:
+def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
     """Print all themes."""
     if value:
-        import rich
         from rich import box
+        from rich.console import Console
         from rich.containers import Renderables
         from rich.padding import Padding
         from rich.panel import Panel
@@ -147,6 +147,15 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
         from rich.text import Text
 
         from rich_click.rich_theme import THEMES
+
+        formatter = ctx.make_formatter()
+
+        console = Console(
+            color_system=formatter.config.color_system,
+            force_terminal=formatter.config.force_terminal,
+            width=formatter.config.width,
+            legacy_windows=formatter.config.legacy_windows,
+        )
 
         found = False
         c, f = None, None
@@ -320,7 +329,7 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
             expand=False,
         )
 
-        rich.print(
+        console.print(
             Panel(
                 Renderables(
                     [
@@ -334,8 +343,6 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
                 box=box.SIMPLE,
             )
         )
-        rich.print()
-
         ctx.exit(0)
 
 
