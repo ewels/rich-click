@@ -44,10 +44,9 @@ nav:
       - Introduction to Click: documentation/introduction_to_click.md
       - "Comparison of Click & rich-click": documentation/comparison_of_click_and_rich_click.md
       - "Themes": documentation/themes.md
-      - Configuration: documentation/configuration.md
       - "Panels": documentation/panels.md
+      - Configuration: documentation/configuration.md
       - "Formatting & Styles": documentation/formatting_and_styles.md
-      - "Groups & Sorting": documentation/groups_and_sorting.md
       - "<code>rich-click</code> CLI tool": documentation/rich_click_cli.md
       - Accessibility: documentation/accessibility.md
       # - API Reference: documentation/api_reference.md
