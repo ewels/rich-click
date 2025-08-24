@@ -59,6 +59,20 @@ Themes are one of **rich-click**'s most powerful features.
     -->
     ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
 
+=== "`forest-robo`"
+
+    ```shell
+    export RICH_CLICK_THEME=forest-robo
+    python hello_rich.py --help
+    ```
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: forest-robo
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ex5.svg){.screenshot}
+
 Themes consist of **Color Palettes** and **Formats**, which can be mixed and matched.
 The name of a full theme has the following schema: `{color_palette}-{format}`.
 
@@ -240,7 +254,183 @@ There are currently 5 available formats.
     -->
     ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_default_nu.svg){.screenshot}
 
+## Color palettes
+
+There are currently over a dozen different color palettes.
+
+### Multi-colored palettes
+
+=== "`default`"
+    **Default** Original rich-click colors.
+
+    ![python hello_rich.py --help](../images/code_snippets/themes/themes_default_box.svg){.screenshot}
+
+=== "`solarized`"
+    Bright, colorful, vibrant accents.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: solarized-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_solarized_box.svg){.screenshot}
+
+=== "`nord`"
+    Many shades of cool colors.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: nord-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_nord_box.svg){.screenshot}
+
+=== "`nord`"
+    Litestar theme; royal feel.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: star-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_star_box.svg){.screenshot}
+
+=== "`quartz`"
+    Dark and radiant.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: quartz-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_quartz_box.svg){.screenshot}
+
+=== "`quartz2`"
+    Remix of 'quartz' with accents.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: quartz2-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_quartz2_box.svg){.screenshot}
+
+=== "`cargo`"
+    Cargo CLI theme; legible and bold.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: cargo-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_cargo_box.svg){.screenshot}
+
+=== "`forest`"
+    Earthy tones with analogous colors.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: forest-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_forest_box.svg){.screenshot}
+
+=== "`dracula`"
+    Vibrant high-contract dark theme.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: dracula-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_dracula_box.svg){.screenshot}
+
+### Simple palettes
+
+The following palettes all focus on just a single color. They are all the same, except for the color.
+
+=== "`ice`"
+    Simple blue accented theme.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: ice-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ice_box.svg){.screenshot}
+
+=== "`news`"
+    Simple red accented theme (white and black and red all over).
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: news-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_news_box.svg){.screenshot}
+
+=== "`lemon`"
+    Simple yellow accented theme.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: lemon-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_lemon_box.svg){.screenshot}
+
+=== "`lime`"
+    Simple green accented theme.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: lime-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_lime_box.svg){.screenshot}
+
+=== "`sea`"
+    Simple cyan accented theme.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: sea-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_sea_box.svg){.screenshot}
+
+=== "`rose`"
+    Simple magenta accented theme.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: rose-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_rose_box.svg){.screenshot}
 
 
-**Nu**: Great balance of compactness, legibility, and style
+### Monochromatic palettes
+
+The following palettes have zero color.
+
+=== "`mono`"
+    Monochromatic theme with no colors.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: mono-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_mono_box.svg){.screenshot}
+
+=== "`plain`"
+    No style at all.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/introduction_to_click
+    extra_env:
+        RICH_CLICK_THEME: plain-box
+    -->
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_plain_box.svg){.screenshot}
 

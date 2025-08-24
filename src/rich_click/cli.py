@@ -267,6 +267,9 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
             "✓" if c == "ice" else "", "ice", "[default]▓▓[/] [blue]▓▓[/] [dim]▓▓[/]", "Simple blue accented theme"
         )
         colors.add_row(
+            "✓" if c == "sea" else "", "sea", "[default]▓▓[/] [cyan]▓▓[/] [dim]▓▓[/]", "Simple cyan accented theme"
+        )
+        colors.add_row(
             "✓" if c == "lime" else "", "lime", "[default]▓▓[/] [green]▓▓[/] [dim]▓▓[/]", "Simple green accented theme"
         )
         colors.add_row(
@@ -276,9 +279,15 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
             "Simple yellow accented theme",
         )
         colors.add_row(
+            "✓" if c == "rose" else "",
+            "rose",
+            "[default]▓▓[/] [magenta]▓▓[/] [dim]▓▓[/]",
+            "Simple magenta accented theme",
+        )
+        colors.add_row(
             "✓" if c == "mono" else "", "mono", "[default]▓▓[/] [dim]▓▓[/]", "Monochromatic theme with no colors"
         )
-        colors.add_row("✓" if c == "plain" else "", "plain", "[default]▓▓[/]", "No style at all.")
+        colors.add_row("✓" if c == "plain" else "", "plain", "[default]▓▓[/]", "No style at all")
 
         formats = Table(
             "",
