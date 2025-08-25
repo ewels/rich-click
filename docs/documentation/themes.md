@@ -120,7 +120,7 @@ For example, let's say you prefer having commands above options. There is a conf
     ```
 === "uv command"
     ```shell
-    export RICH_CLICK_THEME='{"commands_before_options": true, "theme": "red2-robo"}'
+    export RICH_CLICK_THEME='{"commands_before_options": true, "theme": "red1-nu"}'
     uv run --with=flask --with=rich-click \
         rich-click flask --help
     ```
