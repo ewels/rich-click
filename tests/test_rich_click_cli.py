@@ -125,7 +125,7 @@ def test_rich_click_cli_help_with_rich_config_from_file(tmp_path: Path) -> None:
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Extra ──────────────────────────────────────────────────────────────────────────────────────────╮
 │ Additional utilities.                                                                            │
-│ --themes       List all available themes and exit                                                │
+│ --themes       List all available themes and exit.                                               │
 │ --version      Show the version and exit.                                                        │
 │ --help     -h  Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯

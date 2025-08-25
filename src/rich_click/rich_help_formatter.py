@@ -291,6 +291,7 @@ class RichHelpFormatter(click.HelpFormatter):
             if self.export_console_as == "text" or self.export_console_as is None:
                 res = self.console.export_text(**kw)
             elif self.export_console_as == "html":
+                kw.setdefault("inline_styles", True)
                 res = self.console.export_html(**kw)
             elif self.export_console_as == "svg":
                 kw.setdefault("title", " ".join(sys.argv))

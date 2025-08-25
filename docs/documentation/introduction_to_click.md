@@ -5,7 +5,9 @@
 
 **rich-click** is a drop-in replacement for [Click](https://click.palletsprojects.com/en/8.1.x/), a Python CLI framework.
 This means that if you know Click, you already know **rich-click**.
-The docs to Click are the appropriate place to
+
+The Click documentation is the appropriate place to learn more advanced things about Click.
+We are providing a quick overview of Click here to catch users up to speed.
 
 ## Click 101
 
@@ -127,6 +129,6 @@ However, the two libraries have since drifted apart, so note that not all **rich
 
 !!! tip "Why Click?"
     If you're interested in why people choose to use Click, check out the
-    [Why Click? docs](https://click.palletsprojects.com/en/8.1.x/why).
+    [Why Click? docs](https://click.palletsprojects.com/en/stable/why/).
     These are good, but be aware that they were written a really long time ago.
     The landscape has changed quite a bit since that page was first written.

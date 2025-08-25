@@ -135,11 +135,11 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
     return module_path, function_name
 
 
-def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None:
+def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
     """Print all themes."""
     if value:
-        import rich
         from rich import box
+        from rich.console import Console
         from rich.containers import Renderables
         from rich.padding import Padding
         from rich.panel import Panel
@@ -147,6 +147,15 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
         from rich.text import Text
 
         from rich_click.rich_theme import THEMES
+
+        formatter = ctx.make_formatter()
+
+        console = Console(
+            color_system=formatter.config.color_system,
+            force_terminal=formatter.config.force_terminal,
+            width=formatter.config.width,
+            legacy_windows=formatter.config.legacy_windows,
+        )
 
         found = False
         c, f = None, None
@@ -192,7 +201,7 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
 
         colors = Table(
             "",
-            "Style",
+            "Name",
             "Colors",
             "Description",
             padding=(0, 1),
@@ -225,13 +234,7 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
             "✓" if c == "star" else "",
             "star",
             "[yellow]▓▓[/] [blue]▓▓[/] [default]▓▓[/]",
-            "Litestar theme; astrological feel",
-        )
-        colors.add_row(
-            "✓" if c == "news" else "",
-            "news",
-            "[default]▓▓[/] [red]▓▓[/] [dim]▓▓[/]",
-            "White and black and red all over",
+            "Litestar theme; royal feel",
         )
         colors.add_row(
             "✓" if c == "quartz" else "",
@@ -252,9 +255,6 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
             "Cargo CLI theme; legible and bold",
         )
         colors.add_row(
-            "✓" if c == "ice" else "", "ice", "[default]▓▓[/] [blue]▓▓[/] [dim]▓▓[/]", "Simple blue accented theme"
-        )
-        colors.add_row(
             "✓" if c == "forest" else "",
             "forest",
             "[green]▓▓[/] [yellow]▓▓[/] [cyan]▓▓[/]",
@@ -266,14 +266,27 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
             "[magenta]▓▓[/] [red]▓▓[/] [default]▓▓[/]",
             "Vibrant high-contract dark theme",
         )
+        for _c in ["red", "green", "yellow", "blue", "magenta", "cyan"]:
+            colors.add_row(
+                "✓" if c == f"{_c}1" else "",
+                f"{_c}1",
+                f"[default]▓▓[/] [{_c}]▓▓[/] [dim {_c}]▓▓[/]",
+                f"Simple theme with {_c} accents on section headers",
+            )
+            colors.add_row(
+                "✓" if c == f"{_c}2" else "",
+                f"{_c}2",
+                f"[{_c}]▓▓[/] [default]▓▓[/] [dim]▓▓[/]",
+                f"Simple theme with {_c} accents on object names",
+            )
         colors.add_row(
             "✓" if c == "mono" else "", "mono", "[default]▓▓[/] [dim]▓▓[/]", "Monochromatic theme with no colors"
         )
-        colors.add_row("✓" if c == "plain" else "", "plain", "[default]▓▓[/]", "No style at all.")
+        colors.add_row("✓" if c == "plain" else "", "plain", "[default]▓▓[/]", "No style at all")
 
         formats = Table(
             "",
-            "Formats",
+            "Name",
             "Description",
             padding=(0, 1),
             border_style="dim",
@@ -316,7 +329,7 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
             expand=False,
         )
 
-        rich.print(
+        console.print(
             Panel(
                 Renderables(
                     [
@@ -330,8 +343,6 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
                 box=box.SIMPLE,
             )
         )
-        rich.print()
-
         ctx.exit(0)
 
 
@@ -394,7 +405,7 @@ def list_themes(ctx: click.Context, param: click.Parameter, value: bool) -> None
 )
 @_rich_option(
     "--themes",
-    help="List all available themes and exit",
+    help="List all available themes and exit.",
     panel="Extra",
     callback=list_themes,
     expose_value=False,

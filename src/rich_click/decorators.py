@@ -135,8 +135,12 @@ def command(
     if callable(name):
         func = name
         name = None
-        assert cls is None, "Use 'command(cls=cls)(callable)' to specify a class."
+        if "__rich_click_cli_patch" not in attrs:
+            assert cls is None, "Use 'command(cls=cls)(callable)' to specify a class."
+        attrs.pop("__rich_click_cli_patch", None)
         assert not attrs, "Use 'command(**kwargs)(callable)' to provide arguments."
+    else:
+        attrs.pop("__rich_click_cli_patch", None)
 
     if cls is None:
         cls = cast(Type[CmdType], RichCommand)

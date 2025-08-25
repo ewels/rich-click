@@ -129,10 +129,13 @@ class PanelKwargs(TypedDict):
 class RichHelpConfigurationDict(TypedDict):
     """Typed dict for rich_config() kwargs."""
 
+    theme: NotRequired[str]
     style_option: NotRequired[StyleType]
+    style_option_negative: NotRequired[Optional[StyleType]]
     style_argument: NotRequired[StyleType]
     style_command: NotRequired[StyleType]
     style_switch: NotRequired[StyleType]
+    style_switch_negative: NotRequired[Optional[StyleType]]
     style_metavar: NotRequired[StyleType]
     style_metavar_append: NotRequired[StyleType]
     style_metavar_separator: NotRequired[StyleType]
@@ -651,6 +654,7 @@ def option_panel(
     options: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: TableKwargs,
     panel_styles: PanelKwargs,
 ) -> Callable[[FC], FC]: ...
@@ -662,6 +666,7 @@ def option_panel(
     options: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: Optional[Dict[str, Any]] = None,
     panel_styles: Optional[Dict[str, Any]] = None,
 ) -> Callable[[FC], FC]: ...
@@ -673,6 +678,7 @@ def option_panel(
     options: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: None,
     panel_styles: None,
 ) -> Callable[[FC], FC]: ...
@@ -683,6 +689,7 @@ def option_panel(
     options: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: Optional[Union[TableKwargs, Dict[str, Any]]] = None,
     panel_styles: Optional[Union[PanelKwargs, Dict[str, Any]]] = None,
 ) -> Callable[[FC], FC]: ...
@@ -694,6 +701,7 @@ def command_panel(
     commands: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: TableKwargs,
     panel_styles: PanelKwargs,
 ) -> Callable[[FC], FC]: ...
@@ -705,6 +713,7 @@ def command_panel(
     commands: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: Optional[Dict[str, Any]] = None,
     panel_styles: Optional[Dict[str, Any]] = None,
 ) -> Callable[[FC], FC]: ...
@@ -716,6 +725,7 @@ def command_panel(
     commands: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: None,
     panel_styles: None,
 ) -> Callable[[FC], FC]: ...
@@ -726,6 +736,7 @@ def command_panel(
     commands: Optional[List[str]] = None,
     help: Optional[str] = None,
     help_style: StyleType = "",
+    title_style: StyleType = "",
     table_styles: Optional[Dict[str, Any]] = None,
     panel_styles: Optional[Dict[str, Any]] = None,
 ) -> Callable[[FC], FC]: ...

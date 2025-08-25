@@ -33,11 +33,13 @@ class _PatchedRichGroup(RichGroup, _PatchedRichCommand):
 
 def rich_command(*args, **kwargs):  # type: ignore[no-untyped-def]
     kwargs.setdefault("cls", _PatchedRichCommand)
+    kwargs["__rich_click_cli_patch"] = True
     return _rich_command(*args, **kwargs)
 
 
 def rich_group(*args, **kwargs):  # type: ignore[no-untyped-def]
     kwargs.setdefault("cls", _PatchedRichGroup)
+    kwargs["__rich_click_cli_patch"] = True
     return _rich_group(*args, **kwargs)
 
 
