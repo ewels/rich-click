@@ -2,7 +2,6 @@ import importlib
 import io
 import json
 import sys
-import typing as t
 from dataclasses import asdict
 from importlib import reload
 from pathlib import Path
@@ -221,41 +220,37 @@ def test_annotations_in_interface_match_config(
 
     IGNORED_KEYS = {"highlighter"}
 
-    def teardown() -> None:
-        # remove all patches done in this test
-        t.TYPE_CHECKING = False  # type: ignore[misc]
-        reload(rich_click.rich_help_configuration)
-        reload(rich.style)
-
-    request.addfinalizer(teardown)
-
-    import rich.style
-
-    import rich_click.rich_help_configuration
-
-    # Note:
-    #   pyright does not like rich.styles.StyleType, so it's annotated as str in decorators.pyi
-    #   patch over it here.
-    rich.style.StyleType = str  # type: ignore[assignment]
-
-    # load module with type checking enabled
-    t.TYPE_CHECKING = True  # type: ignore[misc]
-    reload(rich_click.rich_help_configuration)
-
     with open("src/rich_click/decorators.pyi") as f:
-        mock_script_writer(f.read(), "decorators_annotations.py")
+        mock_script_writer(f.read(), "_decorators_annotations_pytest.py")
 
-    mod = importlib.import_module("decorators_annotations")
+    # When importing directly from the config module, this test causes side-effects that
+    # are very difficult to fully squash.
+    #
+    # Importing from a copy of the module and editing it in place prevents requiring side-effects
+    # which could negatively impact other tests.
+    with open("src/rich_click/rich_help_configuration.py") as f:
+        mod_str = f.read()
+        mod_str = mod_str.replace("\nif TYPE_CHECKING:", "\nif True:")
+        # pyright gets mad at StyleType in decorators.pyi
+        # so we have to replace it with `str`.
+        mod_str = mod_str.replace("from rich.style import StyleType", "StyleType = str")
+        mock_script_writer(mod_str, "_rich_configuration_pytest.py")
+
+    config_mod = importlib.import_module("_rich_configuration_pytest")
+    RichHelpConfiguration = config_mod.RichHelpConfiguration
+
+    annotations_mod = importlib.import_module("_decorators_annotations_pytest")
+    RichHelpConfigurationDict = annotations_mod.RichHelpConfigurationDict
 
     for attr, field in RichHelpConfiguration.__dataclass_fields__.items():
         if attr in IGNORED_KEYS:
             continue
         expected_ann = field.type
-        actual_ann = mod.RichHelpConfigurationDict.__annotations__[attr]
+        actual_ann = RichHelpConfigurationDict.__annotations__[attr]
 
-        actual_typ = eval_type(actual_ann, mod.__dict__, {})
-        expected_typ = eval_type(NotRequired[expected_ann], rich_click.rich_help_configuration.__dict__, {})
+        actual_typ = eval_type(actual_ann, annotations_mod.__dict__, {})
+        expected_typ = eval_type(NotRequired[expected_ann], config_mod.__dict__, {})
         assert actual_typ == expected_typ
 
     # Assert the reverse
-    assert all(k in RichHelpConfiguration.__dataclass_fields__ for k in mod.RichHelpConfigurationDict.__annotations__)
+    assert all(k in RichHelpConfiguration.__dataclass_fields__ for k in RichHelpConfigurationDict.__annotations__)

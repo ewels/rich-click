@@ -45,7 +45,7 @@ def run_as_subprocess(args: List[str], env: Optional[Dict[str, str]] = None) -> 
 def mock_script_writer(tmp_path: Path, monkeypatch: MonkeyPatch) -> WriteScript:
     def write_script(script: str, module_name: str = "mymodule.py") -> Path:
         path = tmp_path / "scripts"
-        path.mkdir()
+        path.mkdir(exist_ok=True)
         py_script = path / module_name
         py_script.write_text(cleandoc(script))
 
