@@ -237,7 +237,6 @@ class RichHelpConfiguration:
     legacy_windows: Optional[bool] = field(default=None)
 
     def __post_init__(self) -> None:  # noqa: D105
-
         if self.highlighter is not None:
             import warnings
 

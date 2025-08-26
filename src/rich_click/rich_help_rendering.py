@@ -418,7 +418,6 @@ def _get_parameter_help_opt(
 def _get_parameter_default(
     param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
 ) -> Optional[Text]:
-
     if not hasattr(param, "show_default"):
         return None
 
@@ -840,7 +839,6 @@ def rich_format_error(
     # attribute. Checking for the 'message' attribute works to make the
     # rich-click CLI compatible.
     if hasattr(self, "message"):
-
         kw: Dict[str, Any] = {}
 
         if isinstance(formatter.config.style_errors_panel_box, str):

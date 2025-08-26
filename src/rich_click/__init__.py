@@ -77,6 +77,7 @@ from rich_click.decorators import option_panel as option_panel
 from rich_click.decorators import pass_context as pass_context
 from rich_click.decorators import password_option as password_option
 from rich_click.decorators import rich_config as rich_config
+from rich_click.decorators import tree_option as tree_option
 from rich_click.decorators import version_option as version_option
 from rich_click.rich_command import RichCommand as RichCommand
 from rich_click.rich_command import RichCommandCollection as RichCommandCollection
@@ -91,6 +92,8 @@ from rich_click.rich_panel import RichPanel as RichPanel
 from rich_click.rich_parameter import RichArgument as RichArgument
 from rich_click.rich_parameter import RichOption as RichOption
 from rich_click.rich_parameter import RichParameter as RichParameter
+from rich_click.tree_command import TreeRichCommand as TreeRichCommand
+from rich_click.tree_command import TreeRichGroup as TreeRichGroup
 
 from . import rich_click as rich_click
 

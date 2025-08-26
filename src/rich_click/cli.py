@@ -50,7 +50,6 @@ def patch(*args: Any, **kwargs: Any) -> None:  # noqa: D103
 
 
 class _RichHelpConfigurationParamType(click.ParamType):
-
     name = "JSON"
 
     def __repr__(self) -> str:
@@ -62,7 +61,6 @@ class _RichHelpConfigurationParamType(click.ParamType):
         param: Optional[click.Parameter],
         ctx: Optional[click.Context],
     ) -> Optional[Dict[str, Any]]:
-
         if value is None:
             return value
         else:
@@ -394,7 +392,7 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
     is_flag=True,
     default=False,
     panel="Advanced Options",
-    help="Suppress warnings when there are conflicting entry_points." " This situation is extremely rare.",
+    help="Suppress warnings when there are conflicting entry_points. This situation is extremely rare.",
 )
 @_rich_option(
     "--patch-rich-click/--no-patch-rich-click",

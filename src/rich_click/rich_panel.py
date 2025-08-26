@@ -127,7 +127,6 @@ class RichPanel(Generic[CT]):
         raise NotImplementedError()
 
     def _get_base_panel(self, table: "Table", **defaults: Any) -> "Panel":
-
         if self.panel_class is None:
             from rich.panel import Panel
 
@@ -272,7 +271,6 @@ class RichOptionPanel(RichPanel[click.Parameter]):
                 inline_help_in_title = self.inline_help_in_title
 
             if inline_help_in_title:
-
                 p_styles["title"] = Text("", overflow="ellipsis").join(
                     [
                         Text(title, style=title_style),
@@ -411,7 +409,6 @@ class RichCommandPanel(RichPanel[click.Command]):
                 inline_help_in_title = self.inline_help_in_title
 
             if inline_help_in_title:
-
                 p_styles["title"] = Text("", overflow="ellipsis").join(
                     [
                         Text(title, style=title_style),

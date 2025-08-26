@@ -31,6 +31,8 @@ from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_BEFORE
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
+from rich_click.rich_panel import construct_panels
+from rich_click.tree_help_rendering import tree_format_help
 
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -64,6 +66,8 @@ class RichCommand(click.Command):
         self.panels = panels or []
         if not hasattr(self, "_help_option"):
             self._help_option = None
+        if not hasattr(self, "_tree_option"):
+            self._tree_option = None
 
     @property
     def console(self) -> Optional["Console"]:
@@ -228,6 +232,52 @@ class RichCommand(click.Command):
             finally:
                 sys.exit(1)
 
+    def make_context(
+        self,
+        info_name: str | None,
+        args: list[str],
+        parent: Context | None = None,
+        **extra: Any,
+    ) -> Context:
+        known_context_keys = {
+            "help_option_names",
+            "auto_envvar_prefix",
+            "default_map",
+            "token_normalize_func",
+            "ignore_unknown_options",
+            "allow_extra_args",
+            "allow_interspersed_args",
+            "color",
+            "max_content_width",
+            "terminal_width",
+            "show_default",
+            "resilient_parsing",
+        }
+        known_rich_keys = {
+            "rich_console",
+            "rich_help_config",
+            "export_console_as",
+            "errors_in_output_format",
+            "help_to_stderr",
+        }
+        custom_keys = known_rich_keys | {"tree_option_names"}
+
+        # Merge only known context_settings
+        for key, value in self.context_settings.items():
+            if key in known_context_keys and key not in extra:
+                extra[key] = value
+            elif key in known_rich_keys and key not in extra:
+                extra[key] = value
+            # ignore other custom like tree_option_names
+
+        ctx = self.context_class(self, info_name=info_name, parent=parent, **extra)
+
+        # with augment_usage_errors(self, ctx=ctx):
+        with ctx.scope(cleanup=False):
+            self.parse_args(ctx, args)
+
+        return ctx
+
     # Mypy complains about Liskov substitution principle violations.
     # We opt to ignore mypy here.
 
@@ -253,8 +303,6 @@ class RichCommand(click.Command):
     #  We are looking for a solution that fixes all 3. For now, we opt for (c).
     def format_options(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         from rich.table import Table
-
-        from rich_click.rich_panel import construct_panels
 
         panels = construct_panels(self, ctx, formatter)  # type: ignore[arg-type]
         for panel in panels:
@@ -295,6 +343,50 @@ class RichCommand(click.Command):
 
         return self._help_option
 
+    def get_tree_option(self, ctx: click.Context) -> Union[click.Option, None]:
+        """
+        Return the tree option object.
+
+        Skipped if :attr:`add_help_option` is ``False`` (reusing the flag for simplicity).
+        """
+        tree_option_names = self.context_settings.get("tree_option_names")
+
+        if not tree_option_names or not self.add_help_option:
+            return None
+
+        # Check if it overrides help
+        if set(tree_option_names) & set(ctx.help_option_names):
+            self.add_help_option = False
+
+        # Cache the tree option object in private _tree_option attribute to
+        # avoid creating it multiple times. Not doing this will break the
+        # callback ordering by iter_params_for_processing(), which relies on
+        # object comparison.
+        if self._tree_option is None:
+            # Avoid circular import.
+            from rich_click.decorators import tree_option
+
+            # Apply tree_option decorator and pop resulting option
+            tree_option(*tree_option_names)(self)
+            self._tree_option = self.params.pop()  # type: ignore[assignment]
+
+        return self._tree_option
+
+    def get_params(self, ctx: click.Context) -> List[click.Parameter]:
+        params = super().get_params(ctx)
+        tree_option = self.get_tree_option(ctx)
+        if tree_option is not None:
+            params.append(tree_option)
+        return params
+
+    def get_tree_help(self, ctx: RichContext) -> str:
+        formatter = ctx.make_formatter()
+        self.tree_format_help(ctx, formatter)
+        return formatter.getvalue().rstrip("\n")
+
+    def tree_format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:
+        tree_format_help(ctx, formatter, isinstance(self, MultiCommand))
+
 
 if CLICK_IS_BEFORE_VERSION_9X:
     with warnings.catch_warnings():
@@ -302,7 +394,6 @@ if CLICK_IS_BEFORE_VERSION_9X:
         from click import MultiCommand
 
 else:
-
     MultiCommand = Group  # type: ignore[misc,assignment,unused-ignore]
 
 
@@ -319,13 +410,25 @@ class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[valid-type,mi
         pass
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        if OVERRIDES_GUARD:
+        from rich_click import TREE_OPTION_NAMES
+
+        if TREE_OPTION_NAMES and set(TREE_OPTION_NAMES) & set(ctx.help_option_names):
+            self.tree_format_help(ctx, formatter)
+        elif OVERRIDES_GUARD:
             prevent_incompatible_overrides(self, "RichMultiCommand", ctx, formatter)
         else:
             self.format_usage(ctx, formatter)
             self.format_help_text(ctx, formatter)
             self.format_options(ctx, formatter)
             self.format_epilog(ctx, formatter)
+
+    def get_tree_help(self, ctx: RichContext) -> str:
+        formatter = ctx.make_formatter()
+        self.tree_format_help(ctx, formatter)
+        return formatter.getvalue().rstrip("\n")
+
+    def tree_format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:
+        tree_format_help(ctx, formatter, isinstance(self, MultiCommand))
 
 
 class RichGroup(RichMultiCommand, Group):
@@ -456,13 +559,55 @@ class RichCommandCollection(CommandCollection, RichGroup):
     """
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        if OVERRIDES_GUARD:
+        from rich_click import TREE_OPTION_NAMES
+
+        if TREE_OPTION_NAMES and set(TREE_OPTION_NAMES) & set(ctx.help_option_names):
+            self.tree_format_help(ctx, formatter)
+        elif OVERRIDES_GUARD:
             prevent_incompatible_overrides(self, "RichCommandCollection", ctx, formatter)
         else:
             self.format_usage(ctx, formatter)
             self.format_help_text(ctx, formatter)
             self.format_options(ctx, formatter)
             self.format_epilog(ctx, formatter)
+
+    def get_tree_help(self, ctx: RichContext) -> str:
+        formatter = ctx.make_formatter()
+        self.tree_format_help(ctx, formatter)
+        return formatter.getvalue().rstrip("\n")
+
+    def tree_format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:
+        tree_format_help(ctx, formatter, isinstance(self, MultiCommand))
+
+
+class TreeRichCommand(RichCommand):
+    """Custom Command with tree-formatted help."""
+
+    def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:
+        tree_format_help(ctx, formatter, False)
+
+
+class TreeRichGroup(RichGroup):
+    """Custom Group with tree-formatted help."""
+
+    command_class: Optional[Type[RichCommand]] = TreeRichCommand
+    group_class: Optional[Union[Type[Group], Type[type]]] = type
+
+    def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:
+        tree_format_help(ctx, formatter, True)
+
+    def add_command(self, cmd, name=None):
+        name = name or cmd.name
+        super().add_command(cmd, name)
+
+    def command(self, *args, **kwargs):
+        parent_command = super().command
+
+        def decorator(f):
+            cmd = parent_command(*args, **kwargs)(f)
+            return cmd
+
+        return decorator
 
 
 def prevent_incompatible_overrides(
