@@ -1,11 +1,12 @@
 # Comparison of Click and rich-click
 
-**rich-click** is a [shim](https://en.wikipedia.org/wiki/Shim_(computing)) around Click,
-meaning its API is designed to mirror the Click API and intercept some of the calls to slightly different functions.
+**rich-click** is a thin wrapper around Click. The **rich-click** API is designed to mirror the Click API and intercept some of the calls to slightly different functions.
 
 Everything available via `#!python import click` is also available via `#!python import rich_click as click`.
 
 **rich-click** is designed to keep the additional API surface introduced on top of Click as lightweight as possible.
+In other words, **rich-click** does not introduce many additional concepts not already in Click.
+If you know Click, you already mostly know **rich-click**!
 
 ## Click features that rich-click overrides
 
@@ -109,5 +110,35 @@ Below is a side-by-side comparison of Click and Rich implementations of echos an
 
 ## Additional rich-click features
 
-- **rich-click** has a configuration object, `RichHelpConfiguration()`, that allows for control over how **rich-click** help text renders, so you are not just locked into the defaults. More information about this is described in [the **Configuration** docs](configuration.md).
-- **rich-click** comes with a CLI tool that allows you to convert regular Click CLIs into **rich-click** CLIs, and also lets you render your **rich-click** CLI help text as HTML and SVG. More information about this is described in [the **rich-click CLI** docs](rich_click_cli.md).
+- **rich-click** arguments can be given `help=` text:
+    ```python
+    import rich_click as click
+
+    @click.command()
+    @click.argument("src", help="Source location")
+    @click.argument("dest", help="Destination location")
+    def move_item(src, dest):
+        """Move an item from a src location to a dest location"""
+        ...
+    ```
+- **rich-click** has **themes** to beautify all CLIs, whether you're an end-user or a CLI developer. More information about this is described in [the **Themes** docs](themes.md). 
+- **rich-click** help text is formatted using highly configurable **option panels** and **command panels**:
+    ```python
+    import rich_click as click
+
+    @click.group()
+    @click.option("--environment", help="Environment")
+    @click.option("--log-level", help="Log level")
+    @click.option_panel("Config",
+                        options=["--environment", "--log-level"],
+                        help="Global runtime configuration")
+    @click.command_panel("Admin Commands",
+                         commands=["user", "resource", "self"],
+                         help="Commands available to administrators")
+    def cli(environment, log_level):
+        """My application"""
+        ...
+    ```
+    More information about this is described in [the **Panels** docs](panels.md).
+- **rich-click** has a configuration object, **`RichHelpConfiguration()`**, that allows for control over how **rich-click** help text renders, so you are not locked into the defaults. More information about this is described in [the **Configuration** docs](configuration.md).
+- **rich-click** comes with a CLI tool that allows you to convert regular Click CLIs into **rich-click** CLIs, and also lets you render your **rich-click** CLI help text as HTML, SVG, JSON, and trees. More information about this is described in [the **rich-click CLI** docs](rich_click_cli.md), or you can run **`rich-click --help`** to view the CLI.

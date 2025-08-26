@@ -30,6 +30,8 @@ OptionColumnType = Literal[
     "opt_long",
     "opt_short",
     "opt_all",
+    "opt_all_metavar",
+    "opt_long_metavar",
     "metavar",
     "help",
     "default",
@@ -82,9 +84,11 @@ class RichHelpConfiguration:
 
     # Default styles
     style_option: "rich.style.StyleType" = field(default="bold cyan")
+    style_option_negative: Optional["rich.style.StyleType"] = field(default=None)
     style_argument: "rich.style.StyleType" = field(default="bold cyan")
     style_command: "rich.style.StyleType" = field(default="bold cyan")
     style_switch: "rich.style.StyleType" = field(default="bold green")
+    style_switch_negative: Optional["rich.style.StyleType"] = field(default=None)
     style_metavar: "rich.style.StyleType" = field(default="bold yellow")
     style_metavar_append: "rich.style.StyleType" = field(default="dim yellow")
     style_metavar_separator: "rich.style.StyleType" = field(default="dim")
@@ -154,18 +158,21 @@ class RichHelpConfiguration:
     # Fixed strings
     header_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     footer_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
+    panel_title_string: str = field(default="{}")
     deprecated_string: str = field(default="[deprecated]")
     deprecated_with_reason_string: str = field(default="[deprecated: {}]")
     default_string: str = field(default="[default: {}]")
     envvar_string: str = field(default="[env var: {}]")
     required_short_string: str = field(default="*")
     required_long_string: str = field(default="[required]")
-    range_string: str = field(default=" [{}]")
+    range_string: str = field(default="[{}]")
     append_metavars_help_string: str = field(default="[{}]")
     arguments_panel_title: str = field(default="Arguments")
     options_panel_title: str = field(default="Options")
     commands_panel_title: str = field(default="Commands")
     errors_panel_title: str = field(default="Error")
+    option_delimiter_comma: str = field(default=",")
+    option_delimiter_slash: str = field(default="/")
     errors_suggestion: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     """Defaults to Try 'cmd -h' for help. Set to False to disable."""
     errors_epilogue: Optional[Union[str, "rich.text.Text"]] = field(default=None)

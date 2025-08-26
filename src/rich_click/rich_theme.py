@@ -1,6 +1,12 @@
 from typing import Any, Dict
 
 
+# TODO: Optimize loading themes
+#  No need to iterate over everything and store in memory.
+#  Behaviors when combining themes is also weird
+#  and can allow for more interesting variety.
+
+
 COLORS: Dict[str, Dict[str, Any]] = {
     "default": {},
     "solarized": {  # 30% done
@@ -23,10 +29,12 @@ COLORS: Dict[str, Dict[str, Any]] = {
     },
     "star": {  # 80% done
         "style_option": "yellow",
+        "style_option_negative": None,
         "style_command": "yellow",
         "style_usage_command": "yellow",
         "style_header_text": "",
         "style_switch": "yellow",
+        "style_switch_negative": None,
         "style_argument": "bright_blue",
         "style_usage": "bold yellow",
         "style_metavar_append": "dim blue",
@@ -41,10 +49,12 @@ COLORS: Dict[str, Dict[str, Any]] = {
     # Earthy
     "forest": {  # 80% done
         "style_option": "green",
+        "style_option_negative": "magenta",
         "style_command": "green",
         "style_usage_command": "green",
         "style_header_text": "",
-        "style_switch": "green",
+        "style_switch": "bold green",
+        "style_switch_negative": "magenta",
         "style_argument": "yellow",
         "style_usage": "bold",
         "style_metavar_append": "yellow",
@@ -66,10 +76,12 @@ COLORS: Dict[str, Dict[str, Any]] = {
     # Dark and unified color scheme, looks great with complex CLIs.
     "quartz": {  # 80% done
         "style_option": "bold magenta",
+        "style_option_negative": None,
         "style_command": "bold blue",
         "style_usage_command": "blue",
         "style_header_text": "",
         "style_switch": "bold magenta",
+        "style_switch_negative": None,
         "style_argument": "magenta",
         "style_usage": "bold",
         "style_metavar_append": "dim magenta",
@@ -88,10 +100,12 @@ COLORS: Dict[str, Dict[str, Any]] = {
     # Remix of quartz with accents
     "quartz2": {  # 80% done
         "style_option": "magenta",
+        "style_option_negative": None,
         "style_command": "blue",
         "style_usage_command": "",
         "style_header_text": "",
         "style_switch": "magenta bold",
+        "style_switch_negative": None,
         "style_argument": "yellow",
         "style_usage": "blue",
         "style_metavar_append": "yellow",
@@ -113,9 +127,11 @@ COLORS: Dict[str, Dict[str, Any]] = {
     # Theme based on cargo CLI. Legible and bold style.
     "cargo": {  # 80% done
         "style_option": "bold cyan",
+        "style_option_negative": None,
         "style_command": "bold cyan",
         "style_usage_command": "bold cyan",
         "style_switch": "bold cyan",
+        "style_switch_negative": None,
         "style_argument": "cyan",
         "style_usage": "bold green",
         "style_metavar_append": "cyan",
@@ -132,9 +148,11 @@ COLORS: Dict[str, Dict[str, Any]] = {
     },
     "mono": {  # 100% done
         "style_option": "",
+        "style_option_negative": None,
         "style_command": "",
         "style_usage_command": "bold",
         "style_switch": "",
+        "style_switch_negative": None,
         "style_argument": "",
         "style_usage": "bold",
         "style_metavar_append": "dim",
@@ -159,69 +177,81 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_epilog_text": "",
         "style_footer_text": "",
     },
-    "news": {  # 100% done
-        "style_option": "",
-        "style_command": "",
-        "style_usage_command": "bold",
-        "style_switch": "",
-        "style_argument": "",
-        "style_usage": "bold red",
-        "style_metavar_append": "dim red",
-        "style_metavar": "dim red",
-        "style_metavar_separator": "",
-        "style_options_panel_help_style": "dim italic red",
-        "style_commands_panel_help_style": "dim italic red",
-        "style_deprecated": "bold",
-        "style_options_table_border_style": "dim",
-        "style_commands_table_border_style": "dim",
-        "style_options_panel_border": "dim",
-        "style_commands_panel_border": "dim",
-        "style_options_panel_title_style": "bold not dim red",
-        "style_commands_panel_title_style": "bold not dim red",
-        "style_required_long": "bold red",
-        "style_required_short": "dim bold red",
-        "style_option_default": "dim red",
-        "style_option_envvar": "dim red",
-        "style_helptext_first_line": "",
-        "style_helptext": "dim",
-        "style_header_text": "",
-        "style_epilog_text": "",
-        "style_footer_text": "",
+    **{
+        f"{c}1": {  # 100% done
+            "style_option": "",
+            "style_option_negative": None,
+            "style_command": "",
+            "style_usage_command": "bold",
+            "style_switch": "",
+            "style_switch_negative": None,
+            "style_argument": "",
+            "style_usage": f"bold {c}",
+            "style_metavar_append": f"dim {c}",
+            "style_metavar": f"dim {c}",
+            "style_metavar_separator": "",
+            "style_options_panel_help_style": f"dim italic {c}",
+            "style_commands_panel_help_style": f"dim italic {c}",
+            "style_deprecated": "bold",
+            "style_options_table_border_style": f"dim {c}",
+            "style_commands_table_border_style": f"dim {c}",
+            "style_options_panel_border": f"dim {c}",
+            "style_commands_panel_border": f"dim {c}",
+            "style_options_panel_title_style": f"bold {c}",
+            "style_commands_panel_title_style": f"bold {c}",
+            "style_required_long": f"bold {c}",
+            "style_required_short": f"dim bold {c}",
+            "style_option_default": f"dim {c}",
+            "style_option_envvar": f"dim {c}",
+            "style_helptext_first_line": "",
+            "style_helptext": "dim",
+            "style_header_text": "",
+            "style_epilog_text": "",
+            "style_footer_text": "",
+        }
+        for c in ["red", "green", "yellow", "blue", "magenta", "cyan"]
     },
-    "ice": {  # 100% done
-        "style_option": "",
-        "style_command": "",
-        "style_usage_command": "bold",
-        "style_switch": "",
-        "style_argument": "",
-        "style_usage": "bold blue",
-        "style_metavar_append": "dim blue",
-        "style_metavar": "dim blue",
-        "style_metavar_separator": "",
-        "style_options_panel_help_style": "dim italic blue",
-        "style_commands_panel_help_style": "dim italic blue",
-        "style_deprecated": "bold",
-        "style_options_table_border_style": "dim",
-        "style_commands_table_border_style": "dim",
-        "style_options_panel_border": "dim",
-        "style_commands_panel_border": "dim",
-        "style_options_panel_title_style": "bold not dim blue",
-        "style_commands_panel_title_style": "bold not dim blue",
-        "style_required_long": "bold blue",
-        "style_required_short": "dim bold blue",
-        "style_option_default": "dim blue",
-        "style_option_envvar": "dim blue",
-        "style_helptext_first_line": "",
-        "style_helptext": "dim",
-        "style_header_text": "",
-        "style_epilog_text": "",
-        "style_footer_text": "",
+    **{
+        f"{c}2": {  # 100% done
+            "style_option": f"{c}",
+            "style_option_negative": None,
+            "style_command": f"{c}",
+            "style_usage_command": "bold",
+            "style_switch": f"bold {c}",
+            "style_switch_negative": None,
+            "style_argument": f"{c}",
+            "style_usage": f"bold {c}",
+            "style_metavar_append": f"dim {c}",
+            "style_metavar": f"dim {c}",
+            "style_metavar_separator": "",
+            "style_options_panel_help_style": "dim italic",
+            "style_commands_panel_help_style": "dim italic",
+            "style_deprecated": "bold",
+            "style_options_table_border_style": "dim",
+            "style_commands_table_border_style": "dim",
+            "style_options_panel_border": "dim",
+            "style_commands_panel_border": "dim",
+            "style_options_panel_title_style": "not dim",
+            "style_commands_panel_title_style": "not dim",
+            "style_required_long": f"bold {c}",
+            "style_required_short": f"dim bold {c}",
+            "style_option_default": f"dim {c}",
+            "style_option_envvar": f"dim {c}",
+            "style_helptext_first_line": "",
+            "style_helptext": "dim",
+            "style_header_text": "",
+            "style_epilog_text": "",
+            "style_footer_text": "",
+        }
+        for c in ["red", "green", "yellow", "blue", "magenta", "cyan"]
     },
     "nord": {  # 100% done
         "style_option": "bold bright_blue",
+        "style_option_negative": None,
         "style_command": "bold bright_cyan",
         "style_usage_command": "bold bright_cyan",
         "style_switch": "blue",
+        "style_switch_negative": None,
         "style_argument": "bold bright_blue",
         "style_usage": "",
         "style_metavar_append": "dim magenta",
@@ -246,19 +276,13 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_epilog_text": "",
         "style_footer_text": "",
     },
-    # "nord": {
-    #     "style_option": "bold bright_cyan",
-    #     "style_argument": "bold white",
-    #     "style_command": "bold bright_blue",
-    #     "style_switch": "cyan",
-    #     "style_usage": "bright_white",
-    #     "style_deprecated": "bright_magenta",
-    # },
     "plain": {  # 100% done
         "style_option": "",
+        "style_option_negative": "",
         "style_command": "",
         "style_usage_command": "",
         "style_switch": "",
+        "style_switch_negative": "",
         "style_argument": "",
         "style_usage": "",
         "style_metavar_append": "",
@@ -292,11 +316,9 @@ FORMATS: Dict[str, Dict[str, Any]] = {
     "nu": {
         "style_options_panel_box": "HORIZONTALS_DOUBLE_TOP",
         "style_commands_panel_box": "HORIZONTALS_DOUBLE_TOP",
-        # "commands_before_options": True,
-        "style_options_panel_border": "dim",
-        "style_commands_panel_border": "dim",
         "style_options_table_box": None,
         "style_commands_table_box": None,
+        "panel_title_string": "{}",
         "style_options_panel_padding": 0,
         "style_commands_panel_padding": 0,
         "deprecated_string": "(Deprecated)",
@@ -309,34 +331,36 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "padding_header_text": (0, 1, 1, 1),
         "padding_helptext": (0, 1, 1, 1),
         "padding_usage": (0, 1, 1, 1),
+        "option_delimiter_comma": ",",
+        "option_delimiter_slash": "/",
     },
     # Simple, classic, no-fuss CLI format
     "slim": {
         "style_options_panel_box": "BLANK",
         "style_commands_panel_box": "BLANK",
-        "style_options_panel_border": "bold",
-        "style_commands_panel_border": "bold",
         "style_options_table_box": None,
         "style_commands_table_box": None,
+        "panel_title_string": "{}:",
         "style_options_panel_padding": (0, 0, 0, 1),
         "style_commands_panel_padding": (0, 0, 0, 1),
         "padding_header_text": (0, 0, 1, 0),
         "padding_helptext": (0, 0, 1, 1),
         "padding_usage": (0, 0, 1, 0),
-        "options_table_columns": ["opt_short", "opt_long", "metavar", "help"],
+        "options_table_columns": ["opt_short", "opt_long_metavar", "help"],
         # "options_table_columns": ["opt_all", "metavar", "help"],
-        "append_metavars_help_string": "[{}]",
+        "append_metavars_help_string": "<{}>",
         "envvar_string": "[env: {}=]",
+        "option_delimiter_comma": ",",
+        "option_delimiter_slash": "/",
     },
     # Beautiful modern look
     "modern": {
         "style_options_panel_box": None,
         "style_commands_panel_box": None,
         "style_errors_panel_box": None,
-        "style_options_panel_border": "",
-        "style_commands_panel_border": "",
         "style_options_table_box": "HORIZONTALS_TOP",
         "style_commands_table_box": "HORIZONTALS_TOP",
+        "panel_title_string": "{}",
         "style_options_panel_padding": (0, 1),
         "style_commands_panel_padding": (0, 1),
         "padding_header_text": (1, 0, 0, 2),
@@ -350,16 +374,16 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "append_metavars_help_string": "[{}]",
         "style_options_panel_inline_help_in_title": True,
         "style_commands_panel_inline_help_in_title": True,
+        "option_delimiter_comma": ", ",
+        "option_delimiter_slash": " / ",
     },
     # Spacious with sharp corners
     "robo": {
         "style_options_panel_box": "SQUARE",
         "style_commands_panel_box": "SQUARE",
-        "commands_before_options": True,
-        "style_options_panel_border": "dim",
-        "style_commands_panel_border": "dim",
         "style_options_table_box": None,
         "style_commands_table_box": None,
+        "panel_title_string": " {} ",
         "style_options_panel_padding": (1, 2),
         "style_commands_panel_padding": (1, 2),
         "deprecated_string": "❮DEPRECATED❯",
@@ -370,6 +394,9 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "required_short_string": "*",
         "required_long_string": "❮REQUIRED❯",
         "range_string": "{}",
+        "options_table_columns": ["opt_primary", "opt_secondary", "metavar", "help"],
+        "option_delimiter_comma": ", ",
+        "option_delimiter_slash": " / ",
         # deprecated_string: str = "[deprecated]"
         # deprecated_with_reason_string: str = "[deprecated: {}]"
         # default_string: str = "[default: {}]"
@@ -381,20 +408,23 @@ FORMATS: Dict[str, Dict[str, Any]] = {
     },
 }
 
-
-# TODO: Optimize loading themes
-#  No need to iterate over everything and store in memory.
 THEMES: Dict[str, Dict[str, Any]] = {}
+
+for fk, fv in FORMATS.items():
+    for ck, cv in COLORS.items():
+        THEMES[f"{ck}-{fk}"] = {**cv, **fv}
+        if ck in {"plain", "mono"}:
+            THEMES[f"{ck}-{fk}"]["option_delimiter_comma"] = ", "
+            THEMES[f"{ck}-{fk}"]["option_delimiter_slash"] = " / "
+        if fk in {"modern", "slim", "robo"}:
+            for k in ["style_options_panel_title_style", "style_commands_panel_title_style"]:
+                v = THEMES[f"{ck}-{fk}"].get(k, "")
+                if "dim" not in v.split(" "):
+                    v = f"{v} not dim"
+                THEMES[f"{ck}-{fk}"][k] = v
 
 for k, v in FORMATS.items():
     THEMES[k] = v
 
 for k, v in COLORS.items():
     THEMES[k] = v
-
-for fk, fv in FORMATS.items():
-    for ck, cv in COLORS.items():
-        THEMES[f"{ck}-{fk}"] = {**fv, **cv}
-
-
-ThemeType = str

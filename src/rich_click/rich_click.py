@@ -21,9 +21,11 @@ THEME: Optional[str] = None
 ENABLE_THEME_ENV_VAR: bool = True
 
 STYLE_OPTION: "rich.style.StyleType" = "bold cyan"
+STYLE_OPTION_NEGATIVE: Optional["rich.style.StyleType"] = None
 STYLE_ARGUMENT: "rich.style.StyleType" = "bold cyan"
 STYLE_COMMAND: "rich.style.StyleType" = "bold cyan"
 STYLE_SWITCH: "rich.style.StyleType" = "bold green"
+STYLE_SWITCH_NEGATIVE: Optional["rich.style.StyleType"] = None
 STYLE_METAVAR: "rich.style.StyleType" = "bold yellow"
 STYLE_METAVAR_APPEND: "rich.style.StyleType" = "dim yellow"
 STYLE_METAVAR_SEPARATOR: "rich.style.StyleType" = "dim"
@@ -85,18 +87,21 @@ FORCE_TERMINAL: Optional[bool] = force_terminal_default()
 # Fixed strings
 HEADER_TEXT: Optional[Union[str, "rich.text.Text"]] = None
 FOOTER_TEXT: Optional[Union[str, "rich.text.Text"]] = None
+PANEL_TITLE_STRING: str = "{}"
 DEPRECATED_STRING: str = "[deprecated]"
 DEPRECATED_WITH_REASON_STRING: str = "[deprecated: {}]"
 DEFAULT_STRING: str = "[default: {}]"
 ENVVAR_STRING: str = "[env var: {}]"
 REQUIRED_SHORT_STRING: str = "*"
 REQUIRED_LONG_STRING: str = "[required]"
-RANGE_STRING: str = " [{}]"
+RANGE_STRING: str = "[{}]"
 APPEND_METAVARS_HELP_STRING: str = "[{}]"
 ARGUMENTS_PANEL_TITLE: str = "Arguments"
 OPTIONS_PANEL_TITLE: str = "Options"
 COMMANDS_PANEL_TITLE: str = "Commands"
 ERRORS_PANEL_TITLE: str = "Error"
+OPTION_DELIMITER_COMMA: str = ","
+OPTION_DELIMITER_SLASH: str = "/"
 ERRORS_SUGGESTION: Optional[Union[str, "rich.text.Text"]] = (
     None  # Default: Try 'cmd -h' for help. Set to False to disable.
 )
