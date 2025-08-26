@@ -653,10 +653,7 @@ def test_cli_output_html(mock_script_writer: Callable[[str], Path]) -> None:
 <head>
 <meta charset="UTF-8">
 <style>
-.r1 {color: #808000; text-decoration-color: #808000}
-.r2 {font-weight: bold}
-.r3 {color: #008080; text-decoration-color: #008080; font-weight: bold}
-.r4 {color: #7f7f7f; text-decoration-color: #7f7f7f}
+
 body {
     color: #000000;
     background-color: #ffffff;
@@ -665,13 +662,13 @@ body {
 </head>
 <body>
     <pre style="font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><code style="font-family:inherit">                                                                                                    \n\
- <span class="r1">Usage:</span> <span class="r2">python -m src.rich_click.mymodule</span> [<span class="r3">OPTIONS</span>]                                                 \n\
+ <span style="color: #808000; text-decoration-color: #808000">Usage:</span> <span style="font-weight: bold">python -m src.rich_click.mymodule</span> [<span style="color: #008080; text-decoration-color: #008080; font-weight: bold">OPTIONS</span>]                                                 \n\
                                                                                                     \n\
  My help text                                                                                       \n\
                                                                                                     \n\
-<span class="r4">╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮</span>
-<span class="r4">│</span> <span class="r3">--help</span>  Show this message and exit.                                                              <span class="r4">│</span>
-<span class="r4">╰──────────────────────────────────────────────────────────────────────────────────────────────────╯</span>
+<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮</span>
+<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--help</span>  Show this message and exit.                                                              <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
+<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╰──────────────────────────────────────────────────────────────────────────────────────────────────╯</span>
 </code></pre>
 </body>
 </html>

@@ -158,6 +158,7 @@ class RichHelpConfiguration:
     # Fixed strings
     header_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     footer_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
+    panel_title_string: str = field(default="{}")
     deprecated_string: str = field(default="[deprecated]")
     deprecated_with_reason_string: str = field(default="[deprecated: {}]")
     default_string: str = field(default="[default: {}]")
@@ -170,6 +171,8 @@ class RichHelpConfiguration:
     options_panel_title: str = field(default="Options")
     commands_panel_title: str = field(default="Commands")
     errors_panel_title: str = field(default="Error")
+    option_delimiter_comma: str = field(default=",")
+    option_delimiter_slash: str = field(default="/")
     errors_suggestion: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     """Defaults to Try 'cmd -h' for help. Set to False to disable."""
     errors_epilogue: Optional[Union[str, "rich.text.Text"]] = field(default=None)

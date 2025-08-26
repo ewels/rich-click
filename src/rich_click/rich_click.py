@@ -87,6 +87,7 @@ FORCE_TERMINAL: Optional[bool] = force_terminal_default()
 # Fixed strings
 HEADER_TEXT: Optional[Union[str, "rich.text.Text"]] = None
 FOOTER_TEXT: Optional[Union[str, "rich.text.Text"]] = None
+PANEL_TITLE_STRING: str = "{}"
 DEPRECATED_STRING: str = "[deprecated]"
 DEPRECATED_WITH_REASON_STRING: str = "[deprecated: {}]"
 DEFAULT_STRING: str = "[default: {}]"
@@ -99,6 +100,8 @@ ARGUMENTS_PANEL_TITLE: str = "Arguments"
 OPTIONS_PANEL_TITLE: str = "Options"
 COMMANDS_PANEL_TITLE: str = "Commands"
 ERRORS_PANEL_TITLE: str = "Error"
+OPTION_DELIMITER_COMMA: str = ","
+OPTION_DELIMITER_SLASH: str = "/"
 ERRORS_SUGGESTION: Optional[Union[str, "rich.text.Text"]] = (
     None  # Default: Try 'cmd -h' for help. Set to False to disable.
 )

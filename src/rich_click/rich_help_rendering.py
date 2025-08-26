@@ -340,17 +340,16 @@ def _get_parameter_help_opt(
     secondary_cols = []
     long_cols = []
     short_cols = []
-    all_cols = []
 
-    comma = Text(", ", style=formatter.config.style_option_help)
-    slash = Text("/", style=formatter.config.style_option_help)
+    comma = Text(formatter.config.option_delimiter_comma, style=formatter.config.style_option_help)
+    slash = Text(formatter.config.option_delimiter_slash, style=formatter.config.style_option_help)
 
     for o in opt_short_primary:
         oh = Text(o.strip(), style=formatter.config.style_switch)
         primary_cols.append(oh)
         primary_cols.append(comma)
         short_cols.append(oh)
-        short_cols.append(Text(","))
+        short_cols.append(comma)
 
     for o in opt_long_primary:
         oh = Text(o.strip(), style=formatter.config.style_option)

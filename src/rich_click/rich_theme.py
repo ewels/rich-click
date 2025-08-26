@@ -1,6 +1,12 @@
 from typing import Any, Dict
 
 
+# TODO: Optimize loading themes
+#  No need to iterate over everything and store in memory.
+#  Behaviors when combining themes is also weird
+#  and can allow for more interesting variety.
+
+
 COLORS: Dict[str, Dict[str, Any]] = {
     "default": {},
     "solarized": {  # 30% done
@@ -43,12 +49,12 @@ COLORS: Dict[str, Dict[str, Any]] = {
     # Earthy
     "forest": {  # 80% done
         "style_option": "green",
-        "style_option_negative": "cyan",
+        "style_option_negative": "magenta",
         "style_command": "green",
         "style_usage_command": "green",
         "style_header_text": "",
-        "style_switch": "green",
-        "style_switch_negative": "cyan",
+        "style_switch": "bold green",
+        "style_switch_negative": "magenta",
         "style_argument": "yellow",
         "style_usage": "bold",
         "style_metavar_append": "yellow",
@@ -191,8 +197,8 @@ COLORS: Dict[str, Dict[str, Any]] = {
             "style_commands_table_border_style": f"dim {c}",
             "style_options_panel_border": f"dim {c}",
             "style_commands_panel_border": f"dim {c}",
-            "style_options_panel_title_style": f"bold not dim {c}",
-            "style_commands_panel_title_style": f"bold not dim {c}",
+            "style_options_panel_title_style": f"bold {c}",
+            "style_commands_panel_title_style": f"bold {c}",
             "style_required_long": f"bold {c}",
             "style_required_short": f"dim bold {c}",
             "style_option_default": f"dim {c}",
@@ -312,6 +318,7 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "style_commands_panel_box": "HORIZONTALS_DOUBLE_TOP",
         "style_options_table_box": None,
         "style_commands_table_box": None,
+        "panel_title_string": "{}",
         "style_options_panel_padding": 0,
         "style_commands_panel_padding": 0,
         "deprecated_string": "(Deprecated)",
@@ -324,6 +331,8 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "padding_header_text": (0, 1, 1, 1),
         "padding_helptext": (0, 1, 1, 1),
         "padding_usage": (0, 1, 1, 1),
+        "option_delimiter_comma": ",",
+        "option_delimiter_slash": "/",
     },
     # Simple, classic, no-fuss CLI format
     "slim": {
@@ -331,6 +340,7 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "style_commands_panel_box": "BLANK",
         "style_options_table_box": None,
         "style_commands_table_box": None,
+        "panel_title_string": "{}:",
         "style_options_panel_padding": (0, 0, 0, 1),
         "style_commands_panel_padding": (0, 0, 0, 1),
         "padding_header_text": (0, 0, 1, 0),
@@ -340,6 +350,8 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         # "options_table_columns": ["opt_all", "metavar", "help"],
         "append_metavars_help_string": "<{}>",
         "envvar_string": "[env: {}=]",
+        "option_delimiter_comma": ",",
+        "option_delimiter_slash": "/",
     },
     # Beautiful modern look
     "modern": {
@@ -348,6 +360,7 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "style_errors_panel_box": None,
         "style_options_table_box": "HORIZONTALS_TOP",
         "style_commands_table_box": "HORIZONTALS_TOP",
+        "panel_title_string": "{}",
         "style_options_panel_padding": (0, 1),
         "style_commands_panel_padding": (0, 1),
         "padding_header_text": (1, 0, 0, 2),
@@ -361,6 +374,8 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "append_metavars_help_string": "[{}]",
         "style_options_panel_inline_help_in_title": True,
         "style_commands_panel_inline_help_in_title": True,
+        "option_delimiter_comma": ", ",
+        "option_delimiter_slash": " / ",
     },
     # Spacious with sharp corners
     "robo": {
@@ -368,6 +383,7 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "style_commands_panel_box": "SQUARE",
         "style_options_table_box": None,
         "style_commands_table_box": None,
+        "panel_title_string": " {} ",
         "style_options_panel_padding": (1, 2),
         "style_commands_panel_padding": (1, 2),
         "deprecated_string": "❮DEPRECATED❯",
@@ -379,6 +395,8 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "required_long_string": "❮REQUIRED❯",
         "range_string": "{}",
         "options_table_columns": ["opt_primary", "opt_secondary", "metavar", "help"],
+        "option_delimiter_comma": ", ",
+        "option_delimiter_slash": " / ",
         # deprecated_string: str = "[deprecated]"
         # deprecated_with_reason_string: str = "[deprecated: {}]"
         # default_string: str = "[default: {}]"
@@ -390,20 +408,23 @@ FORMATS: Dict[str, Dict[str, Any]] = {
     },
 }
 
-
-# TODO: Optimize loading themes
-#  No need to iterate over everything and store in memory.
 THEMES: Dict[str, Dict[str, Any]] = {}
+
+for fk, fv in FORMATS.items():
+    for ck, cv in COLORS.items():
+        THEMES[f"{ck}-{fk}"] = {**cv, **fv}
+        if ck in {"plain", "mono"}:
+            THEMES[f"{ck}-{fk}"]["option_delimiter_comma"] = ", "
+            THEMES[f"{ck}-{fk}"]["option_delimiter_slash"] = " / "
+        if fk in {"modern", "slim", "robo"}:
+            for k in ["style_options_panel_title_style", "style_commands_panel_title_style"]:
+                v = THEMES[f"{ck}-{fk}"].get(k, "")
+                if "dim" not in v.split(" "):
+                    v = f"{v} not dim"
+                THEMES[f"{ck}-{fk}"][k] = v
 
 for k, v in FORMATS.items():
     THEMES[k] = v
 
 for k, v in COLORS.items():
     THEMES[k] = v
-
-for fk, fv in FORMATS.items():
-    for ck, cv in COLORS.items():
-        THEMES[f"{ck}-{fk}"] = {**fv, **cv}
-
-
-ThemeType = str
