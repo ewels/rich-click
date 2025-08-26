@@ -1,8 +1,12 @@
+import importlib
 import io
 import json
+import sys
+import typing as t
 from dataclasses import asdict
 from importlib import reload
-from typing import TYPE_CHECKING
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Callable, Dict
 
 import pytest
 from click.testing import CliRunner
@@ -11,6 +15,12 @@ from rich.console import Console
 
 import rich_click.rich_click as rc
 from rich_click import RichContext, RichHelpConfiguration, command, group, rich_config
+
+
+if sys.version_info < (3, 11):
+    from typing_extensions import NotRequired
+else:
+    from typing import NotRequired
 
 
 def test_basic_config_for_group() -> None:
@@ -191,3 +201,61 @@ def test_custom_console(cli_runner: CliRunner) -> None:
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
+
+
+def eval_type(t: Any, globalns: Dict[str, Any], localns: Dict[str, Any]) -> Any:
+    import typing
+
+    if sys.version_info >= (3, 12):
+        return typing._eval_type(t, globalns, localns, type_params=None)  # type: ignore[attr-defined]
+    else:
+        return typing._eval_type(t, globalns, localns)  # type: ignore[attr-defined]
+
+
+@pytest.mark.skipif(sys.version_info < (3, 9), reason="typing._eval_type doesn't work how we need it to before 3.9")
+def test_annotations_in_interface_match_config(
+    request: pytest.FixtureRequest, mock_script_writer: Callable[[str, str], Path]
+) -> None:
+    # import decorators.pyi as a normal Python module.
+    # use this to test that annotations are not out of sync.
+
+    IGNORED_KEYS = {"highlighter"}
+
+    def teardown() -> None:
+        # remove all patches done in this test
+        t.TYPE_CHECKING = False  # type: ignore[misc]
+        reload(rich_click.rich_help_configuration)
+        reload(rich.style)
+
+    request.addfinalizer(teardown)
+
+    import rich.style
+
+    import rich_click.rich_help_configuration
+
+    # Note:
+    #   pyright does not like rich.styles.StyleType, so it's annotated as str in decorators.pyi
+    #   patch over it here.
+    rich.style.StyleType = str  # type: ignore[assignment]
+
+    # load module with type checking enabled
+    t.TYPE_CHECKING = True  # type: ignore[misc]
+    reload(rich_click.rich_help_configuration)
+
+    with open("src/rich_click/decorators.pyi") as f:
+        mock_script_writer(f.read(), "decorators_annotations.py")
+
+    mod = importlib.import_module("decorators_annotations")
+
+    for attr, field in RichHelpConfiguration.__dataclass_fields__.items():
+        if attr in IGNORED_KEYS:
+            continue
+        expected_ann = field.type
+        actual_ann = mod.RichHelpConfigurationDict.__annotations__[attr]
+
+        actual_typ = eval_type(actual_ann, mod.__dict__, {})
+        expected_typ = eval_type(NotRequired[expected_ann], rich_click.rich_help_configuration.__dict__, {})
+        assert actual_typ == expected_typ
+
+    # Assert the reverse
+    assert all(k in RichHelpConfiguration.__dataclass_fields__ for k in mod.RichHelpConfigurationDict.__annotations__)

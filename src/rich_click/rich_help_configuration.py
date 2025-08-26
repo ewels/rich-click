@@ -150,9 +150,6 @@ class RichHelpConfiguration:
     options_table_columns: List[OptionColumnType] = field(
         default_factory=lambda: ["required", "opt_long", "opt_short", "metavar", "help"]
     )
-    arguments_table_columns: List[OptionColumnType] = field(
-        default_factory=lambda: ["required", "opt_long", "opt_short", "metavar", "help"]
-    )
     commands_table_columns: List[CommandColumnType] = field(default_factory=lambda: ["name", "help"])
 
     # Fixed strings
