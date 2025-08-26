@@ -15,7 +15,7 @@
         <link rel="prev" href="../introduction_to_click/">
       
       
-        <link rel="next" href="../configuration/">
+        <link rel="next" href="../themes/">
       
       
         <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../feed_rss_created.xml">
@@ -628,11 +628,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../configuration/" class="md-nav__link">
+      <a href="../themes/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Configuration
+    Themes
   </span>
   
 
@@ -670,11 +670,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../formatting_and_styles/" class="md-nav__link">
+      <a href="../configuration/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Formatting & Styles
+    Configuration
   </span>
   
 
@@ -691,11 +691,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../groups_and_sorting/" class="md-nav__link">
+      <a href="../formatting_and_styles/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Groups & Sorting
+    Formatting & Styles
   </span>
   
 
@@ -912,10 +912,11 @@
 
 
 <h1 id="comparison-of-click-and-rich-click">Comparison of Click and rich-click<a class="headerlink" href="#comparison-of-click-and-rich-click" title="Permanent link">&para;</a></h1>
-<p><strong>rich-click</strong> is a <a href="https://en.wikipedia.org/wiki/Shim_(computing)">shim</a> around Click,
-meaning its API is designed to mirror the Click API and intercept some of the calls to slightly different functions.</p>
+<p><strong>rich-click</strong> is a thin wrapper around Click. The <strong>rich-click</strong> API is designed to mirror the Click API and intercept some of the calls to slightly different functions.</p>
 <p>Everything available via <code class="highlight"><span class="kn">import</span><span class="w"> </span><span class="nn">click</span></code> is also available via <code class="highlight"><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span></code>.</p>
-<p><strong>rich-click</strong> is designed to keep the additional API surface introduced on top of Click as lightweight as possible.</p>
+<p><strong>rich-click</strong> is designed to keep the additional API surface introduced on top of Click as lightweight as possible.
+In other words, <strong>rich-click</strong> does not introduce many additional concepts not already in Click.
+If you know Click, you already mostly know <strong>rich-click</strong>!</p>
 <h2 id="click-features-that-rich-click-overrides">Click features that rich-click overrides<a class="headerlink" href="#click-features-that-rich-click-overrides" title="Permanent link">&para;</a></h2>
 <p>The only things that <strong>rich-click</strong> explicitly overrides in the high-level API are the decorators:</p>
 <ul>
@@ -1025,8 +1026,36 @@ If you'd like Rich markup for your echos and interactive elements, then you can:
 </div>
 <h2 id="additional-rich-click-features">Additional rich-click features<a class="headerlink" href="#additional-rich-click-features" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>rich-click</strong> has a configuration object, <code>RichHelpConfiguration()</code>, that allows for control over how <strong>rich-click</strong> help text renders, so you are not just locked into the defaults. More information about this is described in <a href="../configuration/">the <strong>Configuration</strong> docs</a>.</li>
-<li><strong>rich-click</strong> comes with a CLI tool that allows you to convert regular Click CLIs into <strong>rich-click</strong> CLIs, and also lets you render your <strong>rich-click</strong> CLI help text as HTML and SVG. More information about this is described in <a href="../rich_click_cli/">the <strong>rich-click CLI</strong> docs</a>.</li>
+<li><strong>rich-click</strong> arguments can be given <code>help=</code> text:
+    <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;src&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Source location&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;dest&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Destination location&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">move_item</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Move an item from a src location to a dest location&quot;&quot;&quot;</span>
+    <span class="o">...</span>
+</code></pre></div></li>
+<li><strong>rich-click</strong> has <strong>themes</strong> to beautify all CLIs, whether you're an end-user or a CLI developer. More information about this is described in <a href="../themes/">the <strong>Themes</strong> docs</a>. </li>
+<li><strong>rich-click</strong> help text is formatted using highly configurable <strong>option panels</strong> and <strong>command panels</strong>:
+    <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--environment&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Environment&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--log-level&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Log level&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option_panel</span><span class="p">(</span><span class="s2">&quot;Config&quot;</span><span class="p">,</span>
+                    <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;--environment&quot;</span><span class="p">,</span> <span class="s2">&quot;--log-level&quot;</span><span class="p">],</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Global runtime configuration&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">command_panel</span><span class="p">(</span><span class="s2">&quot;Admin Commands&quot;</span><span class="p">,</span>
+                     <span class="n">commands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;resource&quot;</span><span class="p">,</span> <span class="s2">&quot;self&quot;</span><span class="p">],</span>
+                     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Commands available to administrators&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">(</span><span class="n">environment</span><span class="p">,</span> <span class="n">log_level</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;My application&quot;&quot;&quot;</span>
+    <span class="o">...</span>
+</code></pre></div>
+    More information about this is described in <a href="../panels/">the <strong>Panels</strong> docs</a>.</li>
+<li><strong>rich-click</strong> has a configuration object, <strong><code>RichHelpConfiguration()</code></strong>, that allows for control over how <strong>rich-click</strong> help text renders, so you are not locked into the defaults. More information about this is described in <a href="../configuration/">the <strong>Configuration</strong> docs</a>.</li>
+<li><strong>rich-click</strong> comes with a CLI tool that allows you to convert regular Click CLIs into <strong>rich-click</strong> CLIs, and also lets you render your <strong>rich-click</strong> CLI help text as HTML, SVG, JSON, and trees. More information about this is described in <a href="../rich_click_cli/">the <strong>rich-click CLI</strong> docs</a>, or you can run <strong><code>rich-click --help</code></strong> to view the CLI.</li>
 </ul>
 
 
