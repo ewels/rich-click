@@ -1,5 +1,6 @@
 import rich_click as click
 
+click.rich_click.THEME = "magenta2-modern"
 click.rich_click.OPTION_GROUPS = {
     "03_groups_sorting.py": [
         {
@@ -10,9 +11,6 @@ click.rich_click.OPTION_GROUPS = {
             "name": "Advanced options",
             "options": ["--help", "--version", "--debug"],
             # You can also set table styles at group-level instead of using globals if you want
-            "table_styles": {
-                "row_styles": ["bold", "yellow", "cyan"],
-            },
         },
     ],
     "03_groups_sorting.py sync": [

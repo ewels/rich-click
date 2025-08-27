@@ -150,7 +150,7 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_option": "",
         "style_option_negative": None,
         "style_command": "",
-        "style_usage_command": "bold",
+        "style_usage_command": "bold default",
         "style_switch": "",
         "style_switch_negative": None,
         "style_argument": "",

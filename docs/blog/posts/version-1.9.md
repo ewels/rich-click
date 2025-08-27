@@ -30,12 +30,7 @@ Here are some simple examples of themes:
     python hello_rich.py --help
     ```
 
-    <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
-    extra_env:
-        RICH_CLICK_THEME: quartz-modern
-    -->
-    ![python hello_rich.py --help](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
+    ![](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
 
 === "`nord-nu`"
 
@@ -44,12 +39,7 @@ Here are some simple examples of themes:
     python hello_rich.py --help
     ```
 
-    <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
-    extra_env:
-        RICH_CLICK_THEME: nord-nu
-    -->
-    ![python hello_rich.py --help](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
+    ![](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
 
 === "`cargo-slim`"
 
@@ -58,12 +48,7 @@ Here are some simple examples of themes:
     python hello_rich.py --help
     ```
 
-    <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
-    extra_env:
-        RICH_CLICK_THEME: cargo-slim
-    -->
-    ![python hello_rich.py --help](../images/code_snippets/themes/themes_ex3.svg){.screenshot}
+    ![](../images/code_snippets/themes/themes_ex3.svg){.screenshot}
 
 === "`forest-robo`"
 
@@ -72,12 +57,7 @@ Here are some simple examples of themes:
     python hello_rich.py --help
     ```
 
-    <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
-    extra_env:
-        RICH_CLICK_THEME: forest-robo
-    -->
-    ![python hello_rich.py --help](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
+    ![](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
 
 As you can see, themes are not _just_ colors, they can also completely change the formatting, too!
 
@@ -87,7 +67,7 @@ If you want to see all the options available to you, you can run the CLI command
 
 ??? info "Output of `rich-click --themes`"
 
-    ![rich-click --themes](../images/code_snippets/themes/all_themes.svg){.screenshot}
+    ![](../images/code_snippets/themes/all_themes.svg){.screenshot}
 
 
 If you are interested in learning more about themes, read about them in [the **Themes** docs](https://ewels.github.io/rich-click/1.9/documentation/panels/).
@@ -123,7 +103,7 @@ if __name__ == "__main__":
     move_item()
 ```
 
-![]() <!-- todo -->
+![](../../images/blog/version-1.9/panels_simple.svg){.screenshot}
 
 You can also define the objects mapped to a panel in the panel itself.
 The below code is effectively equivalent to the above code:
@@ -184,7 +164,7 @@ if __name__ == "__main__":
     move_item()
 ```
 
-![]() <!-- todo -->
+![](../../images/blog/version-1.9/panels_complex.svg){.screenshot}
 
 Neat, huh? If you are interested in learning more, read about panels in [the **Panels** docs](https://ewels.github.io/rich-click/1.9/documentation/panels/).
 
@@ -198,11 +178,11 @@ I love Click! That's why we maintain this repo, after all. That said, one thing 
 
 Well, we have fixed this issue in **rich-click** 1.9.0:
 
-![](bad.jpg) <!-- todo -->
+![](../../images/blog/version-1.9/ide1.png){.screenshot} <!-- todo -->
 
 We even typed the more opaque dicts, such as `context_settings`:
 
-![](bad.jpg) <!-- todo -->
+![](../../images/blog/version-1.9/ide2.png){.screenshot} <!-- todo -->
 
 Adding a feature like this is somewhat outside of the intended scope of **rich-click**, but we feel it is such a huge quality of life upgrade for the developer experience that we'd be silly to not add it. You're welcome!
 
