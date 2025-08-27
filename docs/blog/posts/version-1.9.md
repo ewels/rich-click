@@ -94,7 +94,7 @@ import rich_click as click
 @click.help_option("--help", "-h", panel="Extra")
 @click.option_panel("Main")
 @click.option_panel("Extra")
-@click.rich_config({"theme": "star-nu", "max_width": 120})
+@click.rich_config({"theme": "star-nu", "max_width": 80})
 def move_item(src, dest, env, log_level):
     """Move an item from a src location to a dest location"""
     pass
@@ -122,7 +122,7 @@ import rich_click as click
                     options=["src", "dest"])
 @click.option_panel("Extra",
                     options=["--env", "--log-level", "--version", "--help"])
-@click.rich_config({"theme": "star-nu", "max_width": 120})
+@click.rich_config({"theme": "star-nu", "max_width": 80})
 def move_item(src, dest, env, log_level):
     """Move an item from a src location to a dest location"""
     pass
@@ -155,7 +155,7 @@ import rich_click as click
                     help_style="dim blue",
                     columns=["opt_all", "metavar", "help"],
                     panel_styles={"border_style": "dim blue"})
-@click.rich_config({"theme": "star-nu", "max_width": 120})
+@click.rich_config({"theme": "star-nu", "max_width": 80})
 def move_item(src, dest, env, log_level):
     """Move an item from a src location to a dest location"""
     pass
