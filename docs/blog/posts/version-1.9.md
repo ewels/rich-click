@@ -21,8 +21,6 @@ The biggest theme (pun intended) of **rich-click** 1.9 is **themes**. These can 
 
 Here are some simple examples of themes:
 
-![]() <!-- todo -->
-
 === "`quartz-modern`"
 
     ```shell
@@ -168,21 +166,17 @@ if __name__ == "__main__":
 
 Neat, huh? If you are interested in learning more, read about panels in [the **Panels** docs](https://ewels.github.io/rich-click/1.9/documentation/panels/).
 
-## Trees
-
-WIP <!-- todo -->
-
 ## IDE autocomplete support
 
 I love Click! That's why we maintain this repo, after all. That said, one thing that is a nuisance with Click is that it doesn't have great type annotations for its core API, meaning your IDE doesn't autocomplete args for Click decorators.
 
 Well, we have fixed this issue in **rich-click** 1.9.0:
 
-![](../../images/blog/version-1.9/ide1.png){.screenshot} <!-- todo -->
+![](../../images/blog/version-1.9/ide1.png){.screenshot}
 
 We even typed the more opaque dicts, such as `context_settings`:
 
-![](../../images/blog/version-1.9/ide2.png){.screenshot} <!-- todo -->
+![](../../images/blog/version-1.9/ide2.png){.screenshot}
 
 Adding a feature like this is somewhat outside of the intended scope of **rich-click**, but we feel it is such a huge quality of life upgrade for the developer experience that we'd be silly to not add it. You're welcome!
 
@@ -226,10 +220,9 @@ In [the 1.8 release blog post](https://ewels.github.io/rich-click/latest/blog/20
 we said we anticipated 1.9 coming out by end of year 2024. Oops!
 Making promises about when things will happen is hard, especially when work and personal obligations get in the way.
 So, I won't make the same mistake again: we have no promises or hints for when a 1.10 (or a 2.0?) will release.
-We do have [a roadmap]() in place for **1.10**, so we have a good sense of what we want out of future releases.
+We do have [a roadmap](https://github.com/ewels/rich-click/issues/275) in place for **1.10**, so we have a good sense of what we want out of future releases.
 Will that be next year, or the year after? Will the roadmap change substantially when that time comes? It's tough to say!
 
-<!-- todo -->
 But, why spend so much time dwelling on the future, when the present state of things is so great and we've barely had time to enjoy it?
 We're **_extremely_** happy with where 1.9 leaves **rich-click**! And we hope you agree!
 
