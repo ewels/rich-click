@@ -45,6 +45,7 @@ def test_help_to_stderr(cli_runner: CliRunner) -> None:
 
     res = cli_runner.invoke(cli, "--help")
 
+    assert res.exit_code == 0
     assert res.stdout == snapshot("")
     assert res.stderr == snapshot(
         """\

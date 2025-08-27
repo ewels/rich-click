@@ -129,7 +129,8 @@ class PanelKwargs(TypedDict):
 class RichHelpConfigurationDict(TypedDict):
     """Typed dict for rich_config() kwargs."""
 
-    theme: NotRequired[str]
+    theme: NotRequired[Optional[str]]
+    enable_theme_env_var: NotRequired[bool]
     style_option: NotRequired[StyleType]
     style_option_negative: NotRequired[Optional[StyleType]]
     style_argument: NotRequired[StyleType]
@@ -191,6 +192,8 @@ class RichHelpConfigurationDict(TypedDict):
     max_width: NotRequired[Optional[int]]
     color_system: NotRequired[Optional[Literal["auto", "standard", "256", "truecolor", "windows"]]]
     force_terminal: NotRequired[Optional[bool]]
+    options_table_columns: NotRequired[List[OptionColumnType]]
+    commands_table_columns: NotRequired[List[CommandColumnType]]
     header_text: NotRequired[Optional[Union[str, Text]]]
     footer_text: NotRequired[Optional[Union[str, Text]]]
     panel_title_string: NotRequired[str]
