@@ -10,7 +10,9 @@ from typing import (
     Callable,
     Dict,
     List,
+    Literal,
     Mapping,
+    NoReturn,
     Optional,
     Sequence,
     TextIO,
@@ -138,6 +140,26 @@ class RichCommand(click.Command):
         else:
             formatter = ctx.make_formatter(error_mode=True)
         return formatter
+
+    @overload
+    def main(
+        self,
+        args: Sequence[str] | None = None,
+        prog_name: str | None = None,
+        complete_var: str | None = None,
+        standalone_mode: Literal[True] = True,
+        **extra: Any,
+    ) -> NoReturn: ...
+
+    @overload
+    def main(
+        self,
+        args: Sequence[str] | None = None,
+        prog_name: str | None = None,
+        complete_var: str | None = None,
+        standalone_mode: bool = ...,
+        **extra: Any,
+    ) -> Any: ...
 
     def main(
         self,
