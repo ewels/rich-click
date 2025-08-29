@@ -10,7 +10,9 @@ from typing import (
     Callable,
     Dict,
     List,
+    Literal,
     Mapping,
+    NoReturn,
     Optional,
     Sequence,
     TextIO,
@@ -18,8 +20,6 @@ from typing import (
     Union,
     cast,
     overload,
-    Literal,
-    NoReturn
 )
 
 import click
@@ -216,7 +216,7 @@ class RichCommand(click.Command):
             except click.exceptions.ClickException as e:
                 if not CLICK_IS_BEFORE_VERSION_82:
                     # `except click.exceptions.NoArgsIsHelpError as e:` breaks for click<8.2.
-                    if isinstance(e, click.exceptions.NoArgsIsHelpError):
+                    if isinstance(e, click.exceptions.NoArgsIsHelpError):  #
                         print(e.message)
                         sys.exit(e.exit_code)
                 if not standalone_mode:
@@ -328,7 +328,7 @@ else:
     MultiCommand = Group  # type: ignore[misc,assignment,unused-ignore]
 
 
-class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[valid-type,misc]
+class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[valid-type,misc,unused-ignore]
     """
     Richly formatted click MultiCommand.
 

@@ -115,7 +115,7 @@ lint.isort.lines-after-imports = 2
 indent = 4
 
 [tool.pytest.ini_options]
-addopts = "-s -rP -vv --showlocals --cov --cov-report term"
+addopts = "-s -rP -v --showlocals --cov --cov-report term"
 pythonpath = [ "tests", "src" ]
 testpaths = [ "tests" ]
 

@@ -16,9 +16,9 @@ except Exception:
     CLICK_IS_BEFORE_VERSION_9X = False
     CLICK_IS_VERSION_80 = False
 else:
-    _major = int(click_version.split(".")[0])  # type: ignore[attr-defined]
-    _minor = int(click_version.split(".")[1])  # type: ignore[attr-defined]
-    _patch = int(click_version.split(".")[2])  # type: ignore[attr-defined]
+    _major = int(click_version.split(".")[0])  # type: ignore[attr-defined,unused-ignore]
+    _minor = int(click_version.split(".")[1])  # type: ignore[attr-defined,unused-ignore]
+    _patch = int(click_version.split(".")[2])  # type: ignore[attr-defined,unused-ignore]
 
     CLICK_IS_BEFORE_VERSION_821 = (_major, _minor, _patch) < (8, 2, 1)
     CLICK_IS_BEFORE_VERSION_82 = (_major, _minor) < (8, 2)

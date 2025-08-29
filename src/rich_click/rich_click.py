@@ -2,7 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, Union
 
-from rich_click.rich_help_configuration import force_terminal_default, terminal_width_default
+from rich_click.rich_help_configuration import (
+    CommandColumnType,
+    OptionColumnType,
+    force_terminal_default,
+    terminal_width_default,
+)
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset
 
 
@@ -83,6 +88,9 @@ COLOR_SYSTEM: Optional[Literal["auto", "standard", "256", "truecolor", "windows"
     "auto"  # Set to None to disable colors
 )
 FORCE_TERMINAL: Optional[bool] = force_terminal_default()
+
+OPTIONS_TABLE_COLUMNS: List[OptionColumnType] = ["required", "opt_long", "opt_short", "metavar", "help"]
+COMMANDS_TABLE_COLUMNS: List[CommandColumnType] = ["name", "help"]
 
 # Fixed strings
 HEADER_TEXT: Optional[Union[str, "rich.text.Text"]] = None

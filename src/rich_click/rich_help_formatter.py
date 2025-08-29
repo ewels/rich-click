@@ -38,10 +38,10 @@ RP = TypeVar("RP", bound=RichPanel[Any])
 
 
 def create_console(
-        config: RichHelpConfiguration,
-        file: Optional[IO[str]] = None,
-        width: Optional[int] = None,
-        max_width: Optional[int] = None,
+    config: RichHelpConfiguration,
+    file: Optional[IO[str]] = None,
+    width: Optional[int] = None,
+    max_width: Optional[int] = None,
 ) -> "Console":
     """
     Create a Rich Console configured from Rich Help Configuration.
@@ -51,6 +51,8 @@ def create_console(
         config: Rich Help Configuration instance
         file: Optional IO stream to write Rich Console output
             Defaults to None.
+        width: Width of the Console; overrides config.width if set.
+        max_width: Max width of the Console; overrides config.max_width if set.
 
     """
     from rich.console import Console
