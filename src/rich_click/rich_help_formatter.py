@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import io
 import os
 import sys
 from contextlib import contextmanager
@@ -37,7 +36,12 @@ if TYPE_CHECKING:  # pragma: no cover
 RP = TypeVar("RP", bound=RichPanel[Any])
 
 
-def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> "Console":
+def create_console(
+    config: RichHelpConfiguration,
+    file: Optional[IO[str]] = None,
+    width: Optional[int] = None,
+    max_width: Optional[int] = None,
+) -> "Console":
     """
     Create a Rich Console configured from Rich Help Configuration.
 
@@ -46,6 +50,8 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
         config: Rich Help Configuration instance
         file: Optional IO stream to write Rich Console output
             Defaults to None.
+        width: Width of the Console; overrides config.width if set.
+        max_width: Max width of the Console; overrides config.max_width if set.
 
     """
     from rich.console import Console
@@ -66,15 +72,16 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
         ),
         color_system=config.color_system,
         force_terminal=config.force_terminal,
-        width=config.width,
+        width=width if width is not None else config.width,
         record=True if file is None else False,
         legacy_windows=config.legacy_windows,
     )
     # Defaults for console.color_system change when file is in __init__.
     # Workaround: set file after __init__.
     console.file = file or open(os.devnull, "w")
-    if isinstance(config.max_width, int):
-        console.width = min(config.max_width, console.size.width)
+    max_width = max_width if max_width is not None else config.max_width
+    if isinstance(max_width, int):
+        console.width = min(max_width, console.size.width)
     return console
 
 
@@ -142,28 +149,25 @@ class RichHelpFormatter(click.HelpFormatter):
                 stacklevel=2,
             )
 
-        self.file: Optional[io.StringIO] = None
-        if export_console_as is None:
-            self.file = io.StringIO()
-
         if console:
             self.console = console
         else:
-            self.console = create_console(self.config)  # , file=self.file)
+            self.console = create_console(self.config, file=file, width=width, max_width=max_width)
 
-        if file is not None:
-            self.console.file = file
-
-        # TODO: Revisit this. I don't think this does anything.
-        if width is None:
-            width = self.config.width
-        if max_width is None:
-            max_width = self.config.max_width
+        width = self.console.width
 
         self.export_console_as = export_console_as
         self.export_kwargs = export_kwargs or {}
 
         super().__init__(indent_increment, width, max_width, *args, **kwargs)
+
+    @property
+    def width(self) -> int:
+        return self.console.width
+
+    @width.setter
+    def width(self, v: int) -> None:
+        self.console.width = v
 
     @cached_property
     def highlighter(self) -> "Highlighter":

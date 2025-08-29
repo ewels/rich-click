@@ -651,8 +651,8 @@ def get_rich_table_row(
             if isinstance(param, RichParameter)
             else get_help_parameter(param, ctx, formatter)
         ),
-        "default": lambda *args, **kwargs: None,
-        "envvar": lambda *args, **kwargs: None,
+        # "default": lambda *args, **kwargs: None,
+        # "envvar": lambda *args, **kwargs: None,
     }
 
     cols: RichPanelRow = []
