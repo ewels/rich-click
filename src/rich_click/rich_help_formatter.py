@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import io
 import os
 import sys
 from contextlib import contextmanager
@@ -150,17 +149,10 @@ class RichHelpFormatter(click.HelpFormatter):
                 stacklevel=2,
             )
 
-        self.file: Optional[io.StringIO] = None
-        if export_console_as is None:
-            self.file = io.StringIO()
-
         if console:
             self.console = console
         else:
-            self.console = create_console(self.config, width=width, max_width=max_width)
-
-        if file is not None:
-            self.console.file = file
+            self.console = create_console(self.config, file=file, width=width, max_width=max_width)
 
         width = self.console.width
 

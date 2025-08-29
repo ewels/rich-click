@@ -34,8 +34,8 @@ OptionColumnType = Literal[
     "opt_long_metavar",
     "metavar",
     "help",
-    "default",
-    "envvar",
+    # "default",
+    # "envvar",
 ]
 
 CommandColumnType = Literal["name", "help"]
