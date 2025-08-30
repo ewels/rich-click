@@ -13,6 +13,7 @@ Themes are one of **rich-click**'s most powerful features.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: quartz-modern
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
@@ -27,6 +28,7 @@ Themes are one of **rich-click**'s most powerful features.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: nord-nu
     -->
     ![` python cli.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
@@ -41,6 +43,7 @@ Themes are one of **rich-click**'s most powerful features.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: cargo-slim
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_ex3.svg){.screenshot}
@@ -55,6 +58,7 @@ Themes are one of **rich-click**'s most powerful features.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: forest-robo
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
@@ -66,7 +70,7 @@ For example, the **forest-slim** theme uses the **forest** color palette and the
 
 ??? info "Code for `cli.py`"
 
-    The following CLI code is used througohut this module to show off themes.
+    The following CLI code is used throughout this module to show off themes.
 
     ```python
     {% include "../code_snippets/themes/cli.py" %}
@@ -224,6 +228,7 @@ There are currently 5 available **formats**.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: default-box
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_default_box.svg){.screenshot}
@@ -234,6 +239,7 @@ There are currently 5 available **formats**.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: default-slim
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_default_slim.svg){.screenshot}
@@ -244,6 +250,7 @@ There are currently 5 available **formats**.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: default-modern
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_default_modern.svg){.screenshot}
@@ -254,6 +261,7 @@ There are currently 5 available **formats**.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: default-robo
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_default_robo.svg){.screenshot}
@@ -264,6 +272,7 @@ There are currently 5 available **formats**.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: default-nu
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_default_nu.svg){.screenshot}
@@ -271,6 +280,8 @@ There are currently 5 available **formats**.
 ### Color palettes
 
 There are currently over a dozen different **color palettes**.
+
+All color palettes use ANSI colors, meaning they will render differently on each terminal.
 
 #### Multi-colored palettes
 
@@ -295,6 +306,7 @@ There are currently over a dozen different **color palettes**.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: solarized-box
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_solarized_box.svg){.screenshot}
@@ -310,6 +322,7 @@ There are currently over a dozen different **color palettes**.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: nord-box
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_nord_box.svg){.screenshot}
@@ -325,6 +338,7 @@ There are currently over a dozen different **color palettes**.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: star-box
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_star_box.svg){.screenshot}
@@ -340,6 +354,7 @@ There are currently over a dozen different **color palettes**.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: quartz-box
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_quartz_box.svg){.screenshot}
@@ -355,6 +370,7 @@ There are currently over a dozen different **color palettes**.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: quartz2-box
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_quartz2_box.svg){.screenshot}
@@ -370,6 +386,7 @@ There are currently over a dozen different **color palettes**.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: cargo-box
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_cargo_box.svg){.screenshot}
@@ -385,6 +402,7 @@ There are currently over a dozen different **color palettes**.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: forest-box
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_forest_box.svg){.screenshot}
@@ -400,6 +418,7 @@ There are currently over a dozen different **color palettes**.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: dracula-box
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_dracula_box.svg){.screenshot}
@@ -421,6 +440,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: red1-modern
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_red1_modern.svg){.screenshot}
@@ -436,6 +456,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: red2-modern
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_red2_modern.svg){.screenshot}
@@ -451,6 +472,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: green1-modern
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_green1_modern.svg){.screenshot}
@@ -466,6 +488,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: green2-modern
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_green2_modern.svg){.screenshot}
@@ -481,6 +504,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: yellow1-modern
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_yellow1_modern.svg){.screenshot}
@@ -496,6 +520,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: yellow2-modern
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_yellow2_modern.svg){.screenshot}
@@ -511,6 +536,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: blue1-modern
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_blue1_modern.svg){.screenshot}
@@ -526,6 +552,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: blue2-modern
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_blue2_modern.svg){.screenshot}
@@ -541,6 +568,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: magenta1-modern
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_magenta1_modern.svg){.screenshot}
@@ -556,6 +584,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: magenta2-modern
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_magenta2_modern.svg){.screenshot}
@@ -571,6 +600,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: cyan1-modern
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_cyan1_modern.svg){.screenshot}
@@ -586,6 +616,7 @@ The below palettes are presented with the `modern` format.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: cyan2-modern
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_cyan2_modern.svg){.screenshot}
@@ -606,6 +637,7 @@ The following palettes have zero color.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: mono-box
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_mono_box.svg){.screenshot}
@@ -621,6 +653,7 @@ The following palettes have zero color.
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: plain-box
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_plain_box.svg){.screenshot}
@@ -637,6 +670,7 @@ The command will also tell you which theme you currently have enabled.
     fake_command: rich-click --themes
     terminal_width: 140
     extra_env:
+        TERMINAL_WIDTH: 120
         TERMINAL_WIDTH: 140
     -->
     ![`rich-click --themes`](../images/code_snippets/themes/all_themes.svg){.screenshot}
