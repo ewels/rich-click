@@ -658,6 +658,28 @@ The following palettes have zero color.
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_plain_box.svg){.screenshot}
 
+??? example "`plain-slim`"
+    Of course, the most plain style of them all is `plain-slim`, which renders CLI help text in the most conventional way that **rich-click** can.
+
+    For fun, we've included it here!
+
+    (Or, maybe you really dislike **rich-click**'s styles and you want to add `export RICH_CLICK_THEME=plain-slim` to your `.zshrc`.
+    We won't judge!)
+
+    ```shell
+    export RICH_CLICK_THEME=plain-slim
+    python docs/code_snippets/themes/cli.py --help
+    ```
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/themes
+    extra_env:
+        TERMINAL_WIDTH: 120
+        RICH_CLICK_THEME: plain-slim
+    -->
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_plain_slim.svg){.screenshot}
+
+
 
 ### List all themes in command line
 
