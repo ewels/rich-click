@@ -263,8 +263,14 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
         colors.add_row(
             "✓" if c == "dracula" else "",
             "dracula",
-            "[magenta]▓▓[/] [red]▓▓[/] [default]▓▓[/]",
+            "[magenta]▓▓[/] [red]▓▓[/] [yellow]▓▓[/]",
             "Vibrant high-contract dark theme",
+        )
+        colors.add_row(
+            "✓" if c == "dracula2" else "",
+            "dracula2",
+            "[magenta on black]▓▓[/] [red on black]▓▓[/] [black]▓▓[/]",
+            "Dracula theme with forced black background",
         )
         for _c in ["red", "green", "yellow", "blue", "magenta", "cyan"]:
             colors.add_row(
@@ -407,7 +413,7 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
     "--themes",
     help="List all available themes and exit.",
     panel="Extra",
-    callback=list_themes,
+    callback=list_themes,  # type: ignore[arg-type]
     expose_value=False,
     is_flag=True,
 )

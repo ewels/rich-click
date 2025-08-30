@@ -423,6 +423,22 @@ All color palettes use ANSI colors, meaning they will render differently on each
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_dracula_box.svg){.screenshot}
 
+=== "`dracula2`"
+    Dracula theme with forced black background.
+
+    ```shell
+    export RICH_CLICK_THEME=dracula2-box
+    python docs/code_snippets/themes/cli.py --help
+    ```
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/themes
+    extra_env:
+        TERMINAL_WIDTH: 120
+        RICH_CLICK_THEME: dracula2-box
+    -->
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_dracula2_box.svg){.screenshot}
+
 #### Simple palettes
 
 The following palettes all focus on just a single color.
