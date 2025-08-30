@@ -29,7 +29,7 @@ Themes are one of **rich-click**'s most powerful features.
     extra_env:
         RICH_CLICK_THEME: nord-nu
     -->
-    ![` python hello_rich.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
+    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
 
 === "`cargo-slim`"
 

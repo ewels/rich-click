@@ -1,0 +1,9 @@
+terminal_width: 80
+working_dir: "."
+outputs:
+  - command: ""
+    img_paths:
+      - docs/images/hello.svg
+  - command: ""
+    img_paths:
+      - docs/images/command_groups.svg
