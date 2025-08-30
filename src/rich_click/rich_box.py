@@ -40,7 +40,7 @@ BLANK: Box = Box(
 
 BLANK.top = ""
 BLANK.top_left = ""
-BLANK.top_right = "\t" * 20  # Reasonably ensure padding
+BLANK.top_right = " " * 800  # Reasonably ensure padding
 BLANK.top_divider = ""
 
 def get_box(box: Union[str, Box]) -> Box:

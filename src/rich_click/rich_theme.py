@@ -102,7 +102,10 @@ COLORS: Dict[str, Dict[str, Any]] = {
         # "style_helptext": "XXX",
         # "style_header_text": "XXX",
         # "style_epilog_text": "XXX",
-        # "style_footer_text": "XXX"
+        # "style_footer_text": "XXX",
+        # "style_options_panel_style": "none",
+        # "style_commands_panel_style": "none",
+        # "style_padding_usage": "none"
     },
     "solarized": {  # 30% done
         "style_option": "bold bright_blue",
@@ -137,12 +140,17 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_header_text": "cyan",
         "style_epilog_text": "cyan",
         "style_footer_text": "cyan",
+        "style_options_panel_style": "none",
+        "style_commands_panel_style": "none",
+        "style_padding_usage": "none",
+        "style_padding_helptext": "none",
+        "style_padding_epilog": "none",
     },
     "dracula": {  # 30% done
         "style_option": "bright_magenta",
         "style_option_negative": None,
         "style_command": "bright_cyan",
-        "style_usage_command": "",
+        "style_usage_command": "white",
         "style_usage_separator": "dim bold bright_cyan",
         "style_switch": "bold bright_magenta",
         "style_switch_negative": None,
@@ -150,10 +158,10 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_usage": "bold bright_red",
         "style_metavar_append": "bright_yellow",
         "style_metavar": "bright_yellow",
-        "style_metavar_separator": "",
+        "style_metavar_separator": "white",
         "style_options_panel_help_style": "not dim",
         "style_commands_panel_help_style": "not dim",
-        "style_deprecated": "",
+        "style_deprecated": "red",
         "style_options_table_border_style": "bold dim red",
         "style_commands_table_border_style": "bold dim cyan",
         "style_options_panel_border": "dim red",
@@ -162,15 +170,20 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_commands_panel_title_style": "not dim bold cyan",
         "style_required_long": "bright_red",
         "style_required_short": "bright_red",
-        "style_option_help": "",
+        "style_option_help": "white",
         "style_command_help": "bright_yellow",
         "style_option_default": "bright_green",
         "style_option_envvar": "bright_yellow",
         "style_helptext_first_line": "bright_magenta",
-        "style_helptext": "",
+        "style_helptext": "white",
         "style_header_text": "",
         "style_epilog_text": "",
         "style_footer_text": "",
+        "style_options_panel_style": "white on black",
+        "style_commands_panel_style": "white on black",
+        "style_padding_usage": "white on black",
+        "style_padding_helptext": "white on black",
+        "style_padding_epilog": "white on black",
     },
     "star": {  # 100% done
         "style_option": "yellow",
@@ -205,6 +218,11 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_header_text": "",
         "style_epilog_text": "",
         "style_footer_text": "",
+        "style_options_panel_style": "none",
+        "style_commands_panel_style": "none",
+        "style_padding_usage": "none",
+        "style_padding_helptext": "none",
+        "style_padding_epilog": "none",
     },
     # Earthy
     "forest": {  # 100% done
@@ -240,6 +258,11 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_header_text": "cyan",
         "style_epilog_text": "cyan",
         "style_footer_text": "cyan",
+        "style_options_panel_style": "none",
+        "style_commands_panel_style": "none",
+        "style_padding_usage": "none",
+        "style_padding_helptext": "none",
+        "style_padding_epilog": "none",
     },
     # Dark and unified color scheme, looks great with complex CLIs.
     "quartz": {  # 100% done
@@ -275,6 +298,11 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_header_text": "",
         "style_epilog_text": "dim",
         "style_footer_text": "dim",
+        "style_options_panel_style": "none",
+        "style_commands_panel_style": "none",
+        "style_padding_usage": "none",
+        "style_padding_helptext": "none",
+        "style_padding_epilog": "none",
     },
     # Remix of quartz with accents
     "quartz2": {  # 100% done
@@ -310,6 +338,11 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_header_text": "blue",
         "style_epilog_text": "dim",
         "style_footer_text": "dim",
+        "style_options_panel_style": "none",
+        "style_commands_panel_style": "none",
+        "style_padding_usage": "none",
+        "style_padding_helptext": "none",
+        "style_padding_epilog": "none",
     },
     # Theme based on cargo CLI. Legible and bold style.
     "cargo": {  # 100% done
@@ -345,6 +378,11 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_header_text": "",
         "style_epilog_text": "",
         "style_footer_text": "",
+        "style_options_panel_style": "none",
+        "style_commands_panel_style": "none",
+        "style_padding_usage": "none",
+        "style_padding_helptext": "none",
+        "style_padding_epilog": "none",
     },
     "mono": {  # 100% done
         "style_option": "",
@@ -379,6 +417,11 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_header_text": "",
         "style_epilog_text": "",
         "style_footer_text": "",
+        "style_options_panel_style": "none",
+        "style_commands_panel_style": "none",
+        "style_padding_usage": "none",
+        "style_padding_helptext": "none",
+        "style_padding_epilog": "none",
     },
     **{
         f"{c}1": {  # 100% done
@@ -414,6 +457,11 @@ COLORS: Dict[str, Dict[str, Any]] = {
             "style_header_text": "",
             "style_epilog_text": "",
             "style_footer_text": "",
+            "style_options_panel_style": "none",
+            "style_commands_panel_style": "none",
+            "style_padding_usage": "none",
+            "style_padding_helptext": "none",
+            "style_padding_epilog": "none",
         }
         for c in ["red", "green", "yellow", "blue", "magenta", "cyan"]
     },
@@ -451,6 +499,11 @@ COLORS: Dict[str, Dict[str, Any]] = {
             "style_header_text": "",
             "style_epilog_text": "",
             "style_footer_text": "",
+            "style_options_panel_style": "none",
+            "style_commands_panel_style": "none",
+            "style_padding_usage": "none",
+            "style_padding_helptext": "none",
+            "style_padding_epilog": "none",
         }
         for c in ["red", "green", "yellow", "blue", "magenta", "cyan"]
     },
@@ -487,6 +540,11 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_header_text": "",
         "style_epilog_text": "",
         "style_footer_text": "",
+        "style_options_panel_style": "none",
+        "style_commands_panel_style": "none",
+        "style_padding_usage": "none",
+        "style_padding_helptext": "none",
+        "style_padding_epilog": "none",
     },
     "plain": {  # 100% done
         "style_option": "",
@@ -521,6 +579,11 @@ COLORS: Dict[str, Dict[str, Any]] = {
         "style_header_text": "",
         "style_epilog_text": "",
         "style_footer_text": "",
+        "style_options_panel_style": "none",
+        "style_commands_panel_style": "none",
+        "style_padding_usage": "none",
+        "style_padding_helptext": "none",
+        "style_padding_epilog": "none",
     },
 }
 

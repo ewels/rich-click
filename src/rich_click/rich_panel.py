@@ -254,6 +254,7 @@ class RichOptionPanel(RichPanel[click.Parameter]):
             "title_align": formatter.config.align_options_panel,
             "box": formatter.config.style_options_panel_box,
             "padding": formatter.config.style_options_panel_padding,
+            "style": formatter.config.style_options_panel_style,
         }
         if self.panel_class is None or issubclass(self.panel_class, RichClickRichPanel):
             p_styles["title_padding"] = formatter.config.panel_title_padding
@@ -397,6 +398,7 @@ class RichCommandPanel(RichPanel[click.Command]):
             "title_align": formatter.config.align_commands_panel,
             "box": formatter.config.style_commands_panel_box,
             "padding": formatter.config.style_commands_panel_padding,
+            "style": formatter.config.style_commands_panel_style,
         }
         if self.panel_class is None or issubclass(self.panel_class, RichClickRichPanel):
             p_styles["title_padding"] = formatter.config.panel_title_padding

@@ -113,11 +113,13 @@ def _get_help_text(
                     style=config.style_deprecated,
                 ),
                 formatter.config.padding_helptext_deprecated,
+                style=formatter.config.style_padding_helptext,
             )
         else:
             yield Padding(
                 Text.from_markup(config.deprecated_string, style=config.style_deprecated),
                 formatter.config.padding_helptext_deprecated,
+                style=formatter.config.style_padding_helptext,
             )
 
     # Fetch and dedent the help text
@@ -135,6 +137,7 @@ def _get_help_text(
     yield Padding(
         formatter.rich_text(first_line.strip(), formatter.config.style_helptext_first_line),
         formatter.config.padding_helptext_first_line,
+        style=formatter.config.style_padding_helptext,
     )
     # Get remaining lines, remove single line breaks and format as dim
     remaining_paragraphs = help_text.split("\n\n")[1:]
@@ -757,6 +760,7 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", pref
             Padding(
                 formatter.rich_text(config.header_text, config.style_header_text),
                 config.padding_header_text,
+                style=formatter.config.style_padding_usage,
             ),
         )
 
@@ -779,6 +783,7 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", pref
                 )
             ),
             formatter.config.padding_usage,
+            style=formatter.config.style_padding_usage,
         ),
     )
 
@@ -792,6 +797,7 @@ def get_rich_help_text(self: click.core.Command, ctx: RichContext, formatter: Ri
             Padding(
                 Align(_get_help_text(self, formatter), pad=False),
                 formatter.config.padding_helptext,
+                style=formatter.config.style_padding_helptext,
             )
         )
 
@@ -810,7 +816,11 @@ def get_rich_epilog(
         else:
             epilog = "\n".join([x.replace("\n", " ").strip() for x in lines])  # type: ignore[assignment]
             epilog = formatter.rich_text(epilog, formatter.config.style_epilog_text)  # type: ignore[assignment]
-        formatter.write(Padding(Align(epilog, pad=False), formatter.config.padding_epilog))
+        formatter.write(
+            Padding(
+                Align(epilog, pad=False), formatter.config.padding_epilog, style=formatter.config.style_padding_epilog
+            )
+        )
 
     # Footer text if we have it
     if formatter.config.footer_text:
@@ -818,6 +828,7 @@ def get_rich_epilog(
             Padding(
                 formatter.rich_text(formatter.config.footer_text, formatter.config.style_footer_text),
                 formatter.config.padding_footer_text,
+                style=formatter.config.style_padding_epilog,
             )
         )
 

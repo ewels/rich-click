@@ -61,9 +61,7 @@ RichPanels inherit their base style behaviors from the rich config, although the
 
 RichPanels accept additional args other than just the name and objects associated with them.
 
-Additionally, a panel can be defined without `options=[]`, and the associations between panels and options can be placed inside the `@click.option()`s.
-
-The below code shows both of these things:
+The below code shows how you can use this:
 
 ```python
 {% include "../code_snippets/panels/panels_extra_kwargs.py" %}
