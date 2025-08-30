@@ -46,6 +46,41 @@ else:
     MultiCommand = click.core.Group  # type: ignore[misc,assignment,unused-ignore]
 
 
+class RichClickRichPanel(Panel):
+    """
+    A console renderable that draws a border around its contents.
+
+    This is a patched version of rich.panel.Panel that has additional features useful
+    for rendering help text with rich-click.
+    """
+
+    def __init__(self, *args: Any, title_padding: int = 1, **kwargs: Any) -> None:
+        """
+        Create RichClickRichPanel instance.
+
+        Args:
+        ----
+            *args: Args that get passed to rich.panel.Panel.
+            title_padding: Controls padding on panel title.
+            **kwargs: Kwargs that get passed to rich.panel.Panel.
+
+        """
+        super().__init__(*args, **kwargs)
+        self.title_padding = title_padding
+
+    @property
+    def _title(self) -> Optional[Text]:
+        if self.title:
+            title_text = Text.from_markup(self.title) if isinstance(self.title, str) else self.title.copy()
+            title_text.end = ""
+            title_text.plain = title_text.plain.replace("\n", " ")
+            title_text.no_wrap = True
+            title_text.expand_tabs()
+            title_text.pad(self.title_padding)
+            return title_text
+        return None
+
+
 @group()
 def _get_help_text(
     obj: Union[click.core.Command, click.core.Group], formatter: RichHelpFormatter
@@ -692,7 +727,7 @@ def _make_command_help(
         paragraphs[0] = paragraphs[0].replace("\b\n", "")
     help_text = paragraphs[0].strip()
     renderable: Union[Text, "Markdown", Columns]
-    renderable = formatter.rich_text(help_text, formatter.config.style_option_help)
+    renderable = formatter.rich_text(help_text, formatter.config.style_command_help)
     if deprecated:
         dep_txt = _get_deprecated_text(
             deprecated=deprecated,
@@ -737,7 +772,7 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", pref
                 (
                     Text(prefix, style=config.style_usage),
                     Text(prog, style=config.style_usage_command),
-                    usage_highlighter(args),
+                    usage_highlighter(Text(args, style=config.style_usage_separator)),
                 )
             ),
             formatter.config.padding_usage,

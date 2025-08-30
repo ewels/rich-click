@@ -129,9 +129,9 @@ class RichPanel(Generic[CT]):
     def _get_base_panel(self, table: "Table", **defaults: Any) -> "Panel":
 
         if self.panel_class is None:
-            from rich.panel import Panel
+            from rich_click.rich_help_rendering import RichClickRichPanel
 
-            self.panel_class = Panel
+            self.panel_class = RichClickRichPanel
         kw = defaults
         kw.update(self.panel_styles)
         if "box" in kw:
@@ -245,6 +245,8 @@ class RichOptionPanel(RichPanel[click.Parameter]):
     ) -> "Panel":
         from rich.text import Text
 
+        from rich_click.rich_help_rendering import RichClickRichPanel
+
         inner: Any = self.get_table(command, ctx, formatter)
 
         p_styles: Dict[str, Any] = {
@@ -253,6 +255,8 @@ class RichOptionPanel(RichPanel[click.Parameter]):
             "box": formatter.config.style_options_panel_box,
             "padding": formatter.config.style_options_panel_padding,
         }
+        if self.panel_class is None or issubclass(self.panel_class, RichClickRichPanel):
+            p_styles["title_padding"] = formatter.config.panel_title_padding
 
         if self.title_style is None:
             title_style = formatter.config.style_options_panel_title_style
@@ -267,7 +271,7 @@ class RichOptionPanel(RichPanel[click.Parameter]):
             else:
                 help_style = self.help_style
             if self.inline_help_in_title is None:
-                inline_help_in_title = formatter.config.style_options_panel_inline_help_in_title
+                inline_help_in_title = formatter.config.panel_inline_help_in_title
             else:
                 inline_help_in_title = self.inline_help_in_title
 
@@ -276,7 +280,7 @@ class RichOptionPanel(RichPanel[click.Parameter]):
                 p_styles["title"] = Text("", overflow="ellipsis").join(
                     [
                         Text(title, style=title_style),
-                        Text(" - "),
+                        Text(formatter.config.panel_inline_help_delimiter),
                         Text(self.help, style=help_style),
                     ]
                 )
@@ -384,6 +388,8 @@ class RichCommandPanel(RichPanel[click.Command]):
     ) -> "Panel":
         from rich.text import Text
 
+        from rich_click.rich_help_rendering import RichClickRichPanel
+
         inner: Any = self.get_table(command, ctx, formatter)
 
         p_styles: Dict[str, Any] = {
@@ -392,6 +398,8 @@ class RichCommandPanel(RichPanel[click.Command]):
             "box": formatter.config.style_commands_panel_box,
             "padding": formatter.config.style_commands_panel_padding,
         }
+        if self.panel_class is None or issubclass(self.panel_class, RichClickRichPanel):
+            p_styles["title_padding"] = formatter.config.panel_title_padding
 
         if self.title_style is None:
             title_style = formatter.config.style_commands_panel_title_style
@@ -406,7 +414,7 @@ class RichCommandPanel(RichPanel[click.Command]):
             else:
                 help_style = self.help_style
             if self.inline_help_in_title is None:
-                inline_help_in_title = formatter.config.style_commands_panel_inline_help_in_title
+                inline_help_in_title = formatter.config.panel_inline_help_in_title
             else:
                 inline_help_in_title = self.inline_help_in_title
 
@@ -415,7 +423,7 @@ class RichCommandPanel(RichPanel[click.Command]):
                 p_styles["title"] = Text("", overflow="ellipsis").join(
                     [
                         Text(title, style=title_style),
-                        Text(" - "),
+                        Text(formatter.config.panel_inline_help_delimiter),
                         Text(self.help, style=help_style),
                     ]
                 )
