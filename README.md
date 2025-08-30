@@ -4,7 +4,6 @@
         <img alt="rich-click logo" src="https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich-click-logo.png">
     </picture>
 </p>
-<!--include-start-->
 <p align="center">
     <em>Richly rendered command line interfaces in click.</em>
 </p>
@@ -22,6 +21,7 @@
 
 ---
 
+<!--include-start-->
 **rich-click** is a wrapper around [Click](https://click.palletsprojects.com/) that renders help output nicely using [Rich](https://github.com/Textualize/rich).
 
 - Click is a _"Python package for creating beautiful command line interfaces"_.
