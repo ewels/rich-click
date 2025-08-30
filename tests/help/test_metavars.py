@@ -72,7 +72,7 @@ def test_metavars_help_flipped(cli_runner: CliRunner, cli: rich_click.RichComman
 def test_metavars_help_flipped_help_string(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     with pytest.warns(PendingDeprecationWarning, match=r"`show_metavars_column=` will be deprecated.*"):
         cfg = RichHelpConfiguration.load_from_globals(
-            show_metavars_column=False, append_metavars_help=True, append_metavars_help_string="[choices: {}]"
+            show_metavars_column=False, append_metavars_help=True, append_metavars_help_string="\\[choices: {}]"
         )
     cli = rich_click.rich_config(help_config=cfg)(cli)
 

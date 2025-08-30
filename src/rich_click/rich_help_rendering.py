@@ -108,14 +108,15 @@ def _get_help_text(
     if obj.deprecated:
         if isinstance(obj.deprecated, str):
             yield Padding(
-                Text(
-                    formatter.config.deprecated_with_reason_string.format(obj.deprecated), style=config.style_deprecated
+                Text.from_markup(
+                    formatter.config.deprecated_with_reason_string.format(obj.deprecated.replace("[", r"\[")),
+                    style=config.style_deprecated,
                 ),
                 formatter.config.padding_helptext_deprecated,
             )
         else:
             yield Padding(
-                Text(config.deprecated_string, style=config.style_deprecated),
+                Text.from_markup(config.deprecated_string, style=config.style_deprecated),
                 formatter.config.padding_helptext_deprecated,
             )
 
@@ -166,10 +167,10 @@ def _get_deprecated_text(
     formatter: RichHelpFormatter,
 ) -> Text:
     if isinstance(deprecated, str):
-        s = formatter.config.deprecated_with_reason_string.format(deprecated)
+        s = formatter.config.deprecated_with_reason_string.format(deprecated.replace("[", r"\["))
     else:
         s = formatter.config.deprecated_string
-    return Text(s, style=formatter.config.style_deprecated)
+    return Text.from_markup(s, style=formatter.config.style_deprecated)
 
 
 def _get_parameter_env_var(
@@ -194,7 +195,9 @@ def _get_parameter_env_var(
         envvar = ", ".join(envvar) if isinstance(envvar, list) else envvar
 
     if envvar is not None:
-        return Text(formatter.config.envvar_string.format(envvar), style=formatter.config.style_option_envvar)
+        return Text.from_markup(
+            formatter.config.envvar_string.format(envvar), style=formatter.config.style_option_envvar
+        )
     return None
 
 
@@ -265,7 +268,7 @@ def _get_parameter_metavar(
         metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag
     ):
         metavar_str = metavar_str.replace("[", "").replace("]", "")
-        return Text(
+        return Text.from_markup(
             formatter.config.append_metavars_help_string.format(metavar_str),
             style=formatter.config.style_metavar_append if append else formatter.config.style_metavar,
             overflow="fold",
@@ -506,8 +509,8 @@ def _get_parameter_default(
             default_string = str(default_value)
 
     if default_string:
-        return Text(
-            formatter.config.default_string.format(default_string),
+        return Text.from_markup(
+            formatter.config.default_string.format(default_string.replace("[", r"\[")),
             style=formatter.config.style_option_default,
         )
     return None
@@ -517,7 +520,7 @@ def _get_parameter_required(
     param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
 ) -> Optional[Text]:
     if param.required:
-        return Text(formatter.config.required_long_string, style=formatter.config.style_required_long)
+        return Text.from_markup(formatter.config.required_long_string, style=formatter.config.style_required_long)
     return None
 
 
