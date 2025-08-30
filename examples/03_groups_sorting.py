@@ -10,7 +10,6 @@ click.rich_click.OPTION_GROUPS = {
         {
             "name": "Advanced options",
             "options": ["--help", "--version", "--debug"],
-            # You can also set table styles at group-level instead of using globals if you want
         },
     ],
     "03_groups_sorting.py sync": [
