@@ -12,84 +12,83 @@ from rich_click.utils import CommandGroupDict, OptionGroupDict, notset
 
 
 if TYPE_CHECKING:  # pragma: no cover
-    import rich.align
-    import rich.box
-    import rich.color
-    import rich.padding
-    import rich.style
-    import rich.text
+    from rich.align import AlignMethod
+    from rich.box import Box
     from rich.padding import PaddingDimensions
+    from rich.style import StyleType
+    from rich.text import Text
 
+#!STARTCONFIG
 
 # Default styles
 THEME: Optional[str] = None
 ENABLE_THEME_ENV_VAR: bool = True
 
-STYLE_OPTION: "rich.style.StyleType" = "bold cyan"
-STYLE_OPTION_NEGATIVE: Optional["rich.style.StyleType"] = None
-STYLE_ARGUMENT: "rich.style.StyleType" = "bold cyan"
-STYLE_COMMAND: "rich.style.StyleType" = "bold cyan"
-STYLE_COMMAND_ALIASES: "rich.style.StyleType" = "bold green"
-STYLE_SWITCH: "rich.style.StyleType" = "bold green"
-STYLE_SWITCH_NEGATVE: Optional["rich.style.StyleType"] = None
-STYLE_METAVAR: "rich.style.StyleType" = "bold yellow"
-STYLE_METAVAR_APPEND: "rich.style.StyleType" = "dim yellow"
-STYLE_METAVAR_SEPARATOR: "rich.style.StyleType" = "dim"
-STYLE_HEADER_TEXT: "rich.style.StyleType" = ""
-STYLE_EPILOG_TEXT: "rich.style.StyleType" = ""
-STYLE_FOOTER_TEXT: "rich.style.StyleType" = ""
-STYLE_USAGE: "rich.style.StyleType" = "yellow"
-STYLE_USAGE_COMMAND: "rich.style.StyleType" = "bold"
-STYLE_USAGE_SEPARATOR: "rich.style.StyleType" = ""
-STYLE_DEPRECATED: "rich.style.StyleType" = "red"
-STYLE_HELPTEXT_FIRST_LINE: "rich.style.StyleType" = ""
-STYLE_HELPTEXT: "rich.style.StyleType" = "dim"
-STYLE_OPTION_HELP: "rich.style.StyleType" = ""
-STYLE_COMMAND_HELP: "rich.style.StyleType" = ""
-STYLE_OPTION_DEFAULT: "rich.style.StyleType" = "dim"
-STYLE_OPTION_ENVVAR: "rich.style.StyleType" = "dim yellow"
-STYLE_REQUIRED_SHORT: "rich.style.StyleType" = "red"
-STYLE_REQUIRED_LONG: "rich.style.StyleType" = "dim red"
-STYLE_OPTIONS_PANEL_BORDER: "rich.style.StyleType" = "dim"
-STYLE_OPTIONS_PANEL_BOX: Optional[Union[str, "rich.box.Box"]] = "ROUNDED"
-STYLE_OPTIONS_PANEL_HELP_STYLE: "rich.style.StyleType" = "dim"
-STYLE_OPTIONS_PANEL_TITLE_STYLE: "rich.style.StyleType" = ""
-STYLE_OPTIONS_PANEL_PADDING: "rich.padding.PaddingDimensions" = (0, 1)
-STYLE_OPTIONS_PANEL_STYLE: "rich.style.StyleType" = "none"
-ALIGN_OPTIONS_PANEL: "rich.align.AlignMethod" = "left"
+STYLE_OPTION: "StyleType" = "bold cyan"
+STYLE_OPTION_NEGATIVE: Optional["StyleType"] = None
+STYLE_ARGUMENT: "StyleType" = "bold cyan"
+STYLE_COMMAND: "StyleType" = "bold cyan"
+STYLE_COMMAND_ALIASES: "StyleType" = "bold green"
+STYLE_SWITCH: "StyleType" = "bold green"
+STYLE_SWITCH_NEGATVE: Optional["StyleType"] = None
+STYLE_METAVAR: "StyleType" = "bold yellow"
+STYLE_METAVAR_APPEND: "StyleType" = "dim yellow"
+STYLE_METAVAR_SEPARATOR: "StyleType" = "dim"
+STYLE_HEADER_TEXT: "StyleType" = ""
+STYLE_EPILOG_TEXT: "StyleType" = ""
+STYLE_FOOTER_TEXT: "StyleType" = ""
+STYLE_USAGE: "StyleType" = "yellow"
+STYLE_USAGE_COMMAND: "StyleType" = "bold"
+STYLE_USAGE_SEPARATOR: "StyleType" = ""
+STYLE_DEPRECATED: "StyleType" = "red"
+STYLE_HELPTEXT_FIRST_LINE: "StyleType" = ""
+STYLE_HELPTEXT: "StyleType" = "dim"
+STYLE_OPTION_HELP: "StyleType" = ""
+STYLE_COMMAND_HELP: "StyleType" = ""
+STYLE_OPTION_DEFAULT: "StyleType" = "dim"
+STYLE_OPTION_ENVVAR: "StyleType" = "dim yellow"
+STYLE_REQUIRED_SHORT: "StyleType" = "red"
+STYLE_REQUIRED_LONG: "StyleType" = "dim red"
+STYLE_OPTIONS_PANEL_BORDER: "StyleType" = "dim"
+STYLE_OPTIONS_PANEL_BOX: Optional[Union[str, "Box"]] = "ROUNDED"
+STYLE_OPTIONS_PANEL_HELP_STYLE: "StyleType" = "dim"
+STYLE_OPTIONS_PANEL_TITLE_STYLE: "StyleType" = ""
+STYLE_OPTIONS_PANEL_PADDING: "PaddingDimensions" = (0, 1)
+STYLE_OPTIONS_PANEL_STYLE: "StyleType" = "none"
+ALIGN_OPTIONS_PANEL: "AlignMethod" = "left"
 STYLE_OPTIONS_TABLE_SHOW_LINES: bool = False
 STYLE_OPTIONS_TABLE_LEADING: int = 0
 STYLE_OPTIONS_TABLE_PAD_EDGE: bool = False
-STYLE_OPTIONS_TABLE_PADDING: "rich.padding.PaddingDimensions" = (0, 1)
-STYLE_OPTIONS_TABLE_BOX: Optional[Union[str, "rich.box.Box"]] = None
-STYLE_OPTIONS_TABLE_ROW_STYLES: Optional[List["rich.style.StyleType"]] = None
-STYLE_OPTIONS_TABLE_BORDER_STYLE: Optional["rich.style.StyleType"] = "dim"
-STYLE_COMMANDS_PANEL_BORDER: "rich.style.StyleType" = "dim"
+STYLE_OPTIONS_TABLE_PADDING: "PaddingDimensions" = (0, 1)
+STYLE_OPTIONS_TABLE_BOX: Optional[Union[str, "Box"]] = None
+STYLE_OPTIONS_TABLE_ROW_STYLES: Optional[List["StyleType"]] = None
+STYLE_OPTIONS_TABLE_BORDER_STYLE: Optional["StyleType"] = "dim"
+STYLE_COMMANDS_PANEL_BORDER: "StyleType" = "dim"
 PANEL_INLINE_HELP_IN_TITLE: bool = False
 PANEL_INLINE_HELP_DELIMITER: str = " - "
-STYLE_COMMANDS_PANEL_BOX: Optional[Union[str, "rich.box.Box"]] = "ROUNDED"
-STYLE_COMMANDS_PANEL_HELP_STYLE: "rich.style.StyleType" = "dim"
-STYLE_COMMANDS_PANEL_TITLE_STYLE: "rich.style.StyleType" = ""
-STYLE_COMMANDS_PANEL_PADDING: "rich.padding.PaddingDimensions" = (0, 1)
-STYLE_COMMANDS_PANEL_STYLE: "rich.style.StyleType" = "none"
-ALIGN_COMMANDS_PANEL: "rich.align.AlignMethod" = "left"
+STYLE_COMMANDS_PANEL_BOX: Optional[Union[str, "Box"]] = "ROUNDED"
+STYLE_COMMANDS_PANEL_HELP_STYLE: "StyleType" = "dim"
+STYLE_COMMANDS_PANEL_TITLE_STYLE: "StyleType" = ""
+STYLE_COMMANDS_PANEL_PADDING: "PaddingDimensions" = (0, 1)
+STYLE_COMMANDS_PANEL_STYLE: "StyleType" = "none"
+ALIGN_COMMANDS_PANEL: "AlignMethod" = "left"
 STYLE_COMMANDS_TABLE_SHOW_LINES: bool = False
 STYLE_COMMANDS_TABLE_LEADING: int = 0
 STYLE_COMMANDS_TABLE_PAD_EDGE: bool = False
-STYLE_COMMANDS_TABLE_PADDING: "rich.padding.PaddingDimensions" = (0, 1)
-STYLE_COMMANDS_TABLE_BOX: Optional[Union[str, "rich.box.Box"]] = None
-STYLE_COMMANDS_TABLE_ROW_STYLES: Optional[List["rich.style.StyleType"]] = None
-STYLE_COMMANDS_TABLE_BORDER_STYLE: Optional["rich.style.StyleType"] = "dim"
+STYLE_COMMANDS_TABLE_PADDING: "PaddingDimensions" = (0, 1)
+STYLE_COMMANDS_TABLE_BOX: Optional[Union[str, "Box"]] = None
+STYLE_COMMANDS_TABLE_ROW_STYLES: Optional[List["StyleType"]] = None
+STYLE_COMMANDS_TABLE_BORDER_STYLE: Optional["StyleType"] = "dim"
 STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO: Optional[Union[Tuple[None, None], Tuple[int, int]]] = (None, None)
-STYLE_ERRORS_PANEL_BORDER: "rich.style.StyleType" = "red"
-STYLE_ERRORS_PANEL_BOX: Optional[Union[str, "rich.box.Box"]] = "ROUNDED"
-ALIGN_ERRORS_PANEL: "rich.align.AlignMethod" = "left"
-STYLE_ERRORS_SUGGESTION: "rich.style.StyleType" = "dim"
-STYLE_ERRORS_SUGGESTION_COMMAND: "rich.style.StyleType" = "blue"
-STYLE_ABORTED: "rich.style.StyleType" = "red"
-STYLE_PADDING_USAGE: "rich.style.StyleType" = "none"
-STYLE_PADDING_HELPTEXT: "rich.style.StyleType" = "none"
-STYLE_PADDING_EPILOG: "rich.style.StyleType" = "none"
+STYLE_ERRORS_PANEL_BORDER: "StyleType" = "red"
+STYLE_ERRORS_PANEL_BOX: Optional[Union[str, "Box"]] = "ROUNDED"
+ALIGN_ERRORS_PANEL: "AlignMethod" = "left"
+STYLE_ERRORS_SUGGESTION: "StyleType" = "dim"
+STYLE_ERRORS_SUGGESTION_COMMAND: "StyleType" = "blue"
+STYLE_ABORTED: "StyleType" = "red"
+STYLE_PADDING_USAGE: "StyleType" = "none"
+STYLE_PADDING_HELPTEXT: "StyleType" = "none"
+STYLE_PADDING_EPILOG: "StyleType" = "none"
 
 PANEL_TITLE_PADDING: int = 1
 WIDTH: Optional[int] = terminal_width_default()
@@ -103,8 +102,8 @@ OPTIONS_TABLE_COLUMN_TYPES: List[OptionColumnType] = ["required", "opt_long", "o
 COMMANDS_TABLE_COLUMN_TYPES: List[CommandColumnType] = ["name", "aliases", "help"]
 
 # Fixed strings
-HEADER_TEXT: Optional[Union[str, "rich.text.Text"]] = None
-FOOTER_TEXT: Optional[Union[str, "rich.text.Text"]] = None
+HEADER_TEXT: Optional[Union[str, "Text"]] = None
+FOOTER_TEXT: Optional[Union[str, "Text"]] = None
 PANEL_TITLE_STRING: str = "{}"
 DEPRECATED_STRING: str = "\\[deprecated]"
 DEPRECATED_WITH_REASON_STRING: str = "\\[deprecated: {}]"
@@ -120,10 +119,8 @@ COMMANDS_PANEL_TITLE: str = "Commands"
 ERRORS_PANEL_TITLE: str = "Error"
 delimiter_comma: str = ","
 delimiter_slash: str = "/"
-ERRORS_SUGGESTION: Optional[Union[str, "rich.text.Text"]] = (
-    None  # Default: Try 'cmd -h' for help. Set to False to disable.
-)
-ERRORS_EPILOGUE: Optional[Union[str, "rich.text.Text"]] = None
+ERRORS_SUGGESTION: Optional[Union[str, "Text"]] = None  # Default: Try 'cmd -h' for help. Set to False to disable.
+ERRORS_EPILOGUE: Optional[Union[str, "Text"]] = None
 ABORTED_TEXT: str = "Aborted."
 
 PADDING_HEADER_TEXT: "PaddingDimensions" = (1, 1, 0, 1)
@@ -157,6 +154,8 @@ COMMAND_GROUPS: Dict[str, List[CommandGroupDict]] = {}
 # Define sorted groups of panels to display options and arguments
 OPTION_GROUPS: Dict[str, List[OptionGroupDict]] = {}
 USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
+
+#!ENDCONFIG
 
 
 def __getattr__(name: str) -> Any:
