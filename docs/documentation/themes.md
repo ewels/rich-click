@@ -176,46 +176,7 @@ You can set a theme for your CLI by setting it in the config:
         """My CLI help text"""
     ```
 
-By default, a theme can still be overridden by a user.
-For CLIs which are already highly customized, this may cause unintended stylistic consequences.
-You can disable overrides with the `enable_theme_env_var` option:
-
-=== "`{}`"
-
-    ```python
-    import rich_click as click
-    
-    @click.group("cli")
-    @click.rich_config({"theme": "nord-slim", "enable_theme_env_var": False})
-    def cli():
-        """My CLI help text"""
-    ```
-
-=== "`RichHelpConfiguration()`"
-    ```python
-    import rich_click as click
-    
-    @click.group("cli")
-    @click.rich_config(click.RichHelpConfiguration(theme="nord-slim", enable_theme_env_var=False))
-    def cli():
-        """My CLI help text"""
-    ```
-
-=== "Global config"
-    ```python
-    import rich_click as click
-
-    click.rich_click.THEME = "nord-slim"
-    click.rich_click.ENABLE_THEME_ENV_VAR = False
-
-    @click.group("cli")
-    def cli():
-        """My CLI help text"""
-    ```
-
-Note that themes never override existing config options; they are essentially the defaults for a config,
-so explicitly set options always take precedence over a theme.
-For more information on config resolution order, read [the **Configuration** docs](configuration.md).
+For more advanced CLIs, with lots of other customization options, there are additional considerations with themes and how they interact with your config that you may want to consider, especially in relation to end users being able to override the theme. For more information on this, read [the **Configuration** docs](configuration.md).
 
 ## All themes
 

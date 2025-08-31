@@ -359,7 +359,7 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
 @_rich_argument(
     "script_and_args",
     nargs=-1,
-    metavar="SCRIPT | MODULE[:CLICK_COMMAND] [ARG...]",
+    metavar="SCRIPT | MODULE[:CLICK_COMMAND] ...",
     help="The script you want to run. If it's a Click CLI and you are rendering help text;"
     " then the help text will render"
     " [#FF6B6B bold]r[/][#FF8E53 bold]i[/][#FFB347 bold]c[/][#4ECDC4 bold]h[/]"
@@ -467,22 +467,31 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
 
     >>> [command]rich-click[/] [argument]my_package[/] [argument]cmd[/] [option]--foo[/] 3
     """  # noqa: D401
+
+    if rich_config:
+        if theme:
+            rich_config.setdefault("theme", theme)
+        cfg = RichHelpConfiguration.load_from_globals(**rich_config)
+    elif theme:
+        cfg = RichHelpConfiguration.load_from_globals(theme=theme)
+    else:
+        cfg = RichHelpConfiguration.load_from_globals()
+
     if (show_help or not script_and_args) and not ctx.resilient_parsing:
-        if rich_config is None:
-            cfg = RichHelpConfiguration(theme=theme, text_markup="rich", show_arguments=False)
-        else:
-            cfg = RichHelpConfiguration.load_from_globals(**rich_config)
-            cfg.use_markdown = False
-            cfg.use_rich_markup = True
-            cfg.text_markup = "rich"
-            if cfg.show_arguments is None:
-                cfg.show_arguments = False
+        cfg.use_markdown = False
+        cfg.use_rich_markup = True
+        cfg.text_markup = "rich"
+        if cfg.show_arguments is None:
+            cfg.show_arguments = False
         ctx.help_config = cfg
         print(ctx.get_help())
         if not show_help and not script_and_args:
             ctx.exit(2)
         ctx.exit(0)
 
+    if theme:
+        import rich_click.rich_click as rc
+        rc._THEME_FROM_CLI = theme
     if rich_config:
         if theme:
             rich_config.setdefault("theme", theme)

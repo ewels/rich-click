@@ -98,7 +98,7 @@ def test_rich_click_cli_help_with_rich_config_from_file(tmp_path: Path) -> None:
     assert res.stdout.decode() == snapshot(
         """\
                                                                                                     \n\
- Usage: python -m src.rich_click [OPTIONS] SCRIPT | MODULE[:CLICK_COMMAND] [ARG...]                 \n\
+ Usage: python -m src.rich_click [OPTIONS] SCRIPT | MODULE[:CLICK_COMMAND] ...                      \n\
                                                                                                     \n\
  The rich-click CLI provides richly formatted help output from any tool using click, formatted with \n\
  rich.                                                                                              \n\
