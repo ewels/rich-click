@@ -655,6 +655,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#tables-column-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tables &amp; Column Types
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tips" class="md-nav__link">
     <span class="md-ellipsis">
       Tips
@@ -691,17 +700,26 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#richpanelto_info_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      RichPanel().to_info_dict()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#advanced-custom-richpanel-classes" class="md-nav__link">
     <span class="md-ellipsis">
       (Advanced) Custom RichPanel Classes
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -945,6 +963,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#tables-column-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tables &amp; Column Types
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tips" class="md-nav__link">
     <span class="md-ellipsis">
       Tips
@@ -981,17 +1008,26 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#richpanelto_info_dict" class="md-nav__link">
+    <span class="md-ellipsis">
+      RichPanel().to_info_dict()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#advanced-custom-richpanel-classes" class="md-nav__link">
     <span class="md-ellipsis">
       (Advanced) Custom RichPanel Classes
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1386,6 +1422,63 @@ working_dir: docs/code_snippets/panels
 -->
 <a class="glightbox" href="../../images/code_snippets/panels/panels_defaults_override_config.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python panels_defaults_override_config.py --help" class="screenshot" src="../../images/code_snippets/panels/panels_defaults_override_config.svg" /></a></p>
 </details>
+<h2 id="tables-column-types">Tables &amp; Column Types<a class="headerlink" href="#tables-column-types" title="Permanent link">&para;</a></h2>
+<p>RichPanels consist of a <code>rich.panel.Panel</code> which contains inside of it a <code>rich.table.Table</code>.</p>
+<p>For the inner table, the <code>column_types</code> are configurable.
+The selected column types determine what gets rendered, and the order of the <code>column_types=[...]</code> list determines the order in which they show in the table.</p>
+<p>Supported <strong>RichOptionPanel</strong> column types:</p>
+<ul>
+<li><code>"required"</code></li>
+<li><code>"opt_primary"</code></li>
+<li><code>"opt_secondary"</code></li>
+<li><code>"opt_long"</code></li>
+<li><code>"opt_short"</code></li>
+<li><code>"opt_all"</code></li>
+<li><code>"opt_all_metavar"</code></li>
+<li><code>"opt_long_metavar"</code></li>
+<li><code>"metavar"</code></li>
+<li><code>"help"</code></li>
+</ul>
+<p>Supported <strong>RichCommandPanel</strong> column types:</p>
+<ul>
+<li><code>"name"</code></li>
+<li><code>"aliases"</code></li>
+<li><code>"name_with_aliases"</code></li>
+<li><code>"help"</code></li>
+</ul>
+<p>Below is an example showing how column types can be used:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
+<span class="c1"># ///</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--src&quot;</span><span class="p">,</span> <span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Source&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span> <span class="n">panel</span><span class="o">=</span><span class="s2">&quot;Main&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--dest&quot;</span><span class="p">,</span> <span class="s2">&quot;-d&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Destination&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span> <span class="n">panel</span><span class="o">=</span><span class="s2">&quot;Main&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--env&quot;</span><span class="p">,</span> <span class="s2">&quot;-e&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Environment&quot;</span><span class="p">,</span> <span class="n">panel</span><span class="o">=</span><span class="s2">&quot;Extra&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--quiet/--no-quiet&quot;</span><span class="p">,</span> <span class="s2">&quot;-q/-Q&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Quiet logging&quot;</span><span class="p">,</span> <span class="n">panel</span><span class="o">=</span><span class="s2">&quot;Extra&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">help_option</span><span class="p">(</span><span class="s2">&quot;--help&quot;</span><span class="p">,</span> <span class="s2">&quot;-h&quot;</span><span class="p">,</span> <span class="n">panel</span><span class="o">=</span><span class="s2">&quot;Extra&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option_panel</span><span class="p">(</span><span class="s2">&quot;Main&quot;</span><span class="p">,</span> <span class="n">column_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;opt_short&quot;</span><span class="p">,</span> <span class="s2">&quot;opt_long&quot;</span><span class="p">,</span> <span class="s2">&quot;metavar&quot;</span><span class="p">,</span> <span class="s2">&quot;help&quot;</span><span class="p">])</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option_panel</span><span class="p">(</span><span class="s2">&quot;Extra&quot;</span><span class="p">,</span> <span class="n">column_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;opt_primary&quot;</span><span class="p">,</span> <span class="s2">&quot;opt_secondary&quot;</span><span class="p">,</span> <span class="s2">&quot;metavar&quot;</span><span class="p">,</span> <span class="s2">&quot;help&quot;</span><span class="p">])</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span>
+    <span class="s2">&quot;delimiter_comma&quot;</span><span class="p">:</span> <span class="s2">&quot;, &quot;</span><span class="p">,</span>
+    <span class="s2">&quot;style_option_negative&quot;</span><span class="p">:</span> <span class="s2">&quot;bold magenta&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;style_switch_negative&quot;</span><span class="p">:</span> <span class="s2">&quot;bold blue&quot;</span><span class="p">,</span>
+<span class="p">})</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">move_item</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">quiet</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Move an item from a src location to a dest location&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">move_item</span><span class="p">()</span>
+</code></pre></div>
+<details class="example output" open="open">
+<summary>Example</summary>
+<p><!-- RICH-CODEX
+working_dir: docs/code_snippets/panels
+-->
+<a class="glightbox" href="../../images/code_snippets/panels/panels_column_types.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python panels_column_types.py --help" class="screenshot" src="../../images/code_snippets/panels/panels_column_types.svg" /></a></p>
+</details>
 <h2 id="tips">Tips<a class="headerlink" href="#tips" title="Permanent link">&para;</a></h2>
 <p>There are a few things to keep in mind when using RichPanels.</p>
 <h3 id="handling-help-option">Handling <code>--help</code> option<a class="headerlink" href="#handling-help-option" title="Permanent link">&para;</a></h3>
@@ -1583,7 +1676,17 @@ working_dir: docs/code_snippets/panels
 <li>Arguments + options are presented in the order they occur in the decorators, from top to bottom.</li>
 <li>Subcommands are alphanumerically sorted.</li>
 </ul>
-<h3 id="advanced-custom-richpanel-classes">(Advanced) Custom RichPanel Classes<a class="headerlink" href="#advanced-custom-richpanel-classes" title="Permanent link">&para;</a></h3>
+<h2 id="richpanelto_info_dict"><code>RichPanel().to_info_dict()</code><a class="headerlink" href="#richpanelto_info_dict" title="Permanent link">&para;</a></h2>
+<p>RichPanel objects support the <code>.to_info_dict()</code> method added in Click 8.0.
+Additionally, RichGroups will show any panels explicitly assigned when rendering its own info dict.</p>
+<p>Note that both default panels and objects assigned by default do not render:</p>
+<ul>
+<li>For a panel to show up in a RichGroup info dict's <code>panels</code>, it must be explicitly assigned to the group.</li>
+<li>For an object to show up in a RichPanel info dict, it must be explicitly assigned to the panel.
+  In practice what this means is: a panel which is explicitly defined but which acts as a default panel (e.g. <code>@click.option_panel("Options")</code>),
+  and whose assigned objects are inferred, will not show any assigned objects in its info dict.</li>
+</ul>
+<h2 id="advanced-custom-richpanel-classes">(Advanced) Custom RichPanel Classes<a class="headerlink" href="#advanced-custom-richpanel-classes" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The <code>RichPanel</code> API may be unstable across minor versions, since it is a new concept that we are still trying to find the best API for.
