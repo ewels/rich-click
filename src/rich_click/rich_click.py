@@ -29,6 +29,7 @@ STYLE_OPTION: "rich.style.StyleType" = "bold cyan"
 STYLE_OPTION_NEGATIVE: Optional["rich.style.StyleType"] = None
 STYLE_ARGUMENT: "rich.style.StyleType" = "bold cyan"
 STYLE_COMMAND: "rich.style.StyleType" = "bold cyan"
+STYLE_COMMAND_ALIASES: "rich.style.StyleType" = "bold green"
 STYLE_SWITCH: "rich.style.StyleType" = "bold green"
 STYLE_SWITCH_NEGATVE: Optional["rich.style.StyleType"] = None
 STYLE_METAVAR: "rich.style.StyleType" = "bold yellow"
@@ -117,8 +118,8 @@ ARGUMENTS_PANEL_TITLE: str = "Arguments"
 OPTIONS_PANEL_TITLE: str = "Options"
 COMMANDS_PANEL_TITLE: str = "Commands"
 ERRORS_PANEL_TITLE: str = "Error"
-OPTION_DELIMITER_COMMA: str = ","
-OPTION_DELIMITER_SLASH: str = "/"
+delimiter_comma: str = ","
+delimiter_slash: str = "/"
 ERRORS_SUGGESTION: Optional[Union[str, "rich.text.Text"]] = (
     None  # Default: Try 'cmd -h' for help. Set to False to disable.
 )

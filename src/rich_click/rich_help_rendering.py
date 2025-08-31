@@ -21,7 +21,6 @@ from rich.panel import Panel
 from rich.text import Text
 
 from rich_click._compat_click import (
-    CLICK_IS_BEFORE_VERSION_9X,
     CLICK_IS_BEFORE_VERSION_82,
     CLICK_IS_VERSION_80,
 )
@@ -41,13 +40,6 @@ if TYPE_CHECKING:
 
 
 RichPanelRow = List[Optional[RenderableType]]
-
-
-if CLICK_IS_BEFORE_VERSION_9X:
-    # We need to load from here to help with patching.
-    from rich_click.rich_command import MultiCommand  # type: ignore[attr-defined]
-else:
-    MultiCommand = click.core.Group  # type: ignore[misc,assignment,unused-ignore]
 
 
 class RichClickRichPanel(Panel):
@@ -386,8 +378,8 @@ def _get_parameter_help_opt(
     long_cols = []
     short_cols = []
 
-    comma = Text(formatter.config.option_delimiter_comma, style=formatter.config.style_option_help)
-    slash = Text(formatter.config.option_delimiter_slash, style=formatter.config.style_option_help)
+    comma = Text(formatter.config.delimiter_comma, style=formatter.config.style_option_help)
+    slash = Text(formatter.config.delimiter_slash, style=formatter.config.style_option_help)
 
     for o in opt_short_primary:
         oh = Text(o.strip(), style=formatter.config.style_switch)
@@ -448,7 +440,7 @@ def _get_parameter_help_opt(
             return cols[0]
         # Todo - make the text fold at the slashes without adding whitespace.
         #   this is very tricky.
-        t = Text("", overflow="fold").join(cols)
+        t = Text("", overflow="ellipsis").join(cols)
         return t
 
     primary_final = _renderable(primary_cols[:-1])
@@ -711,31 +703,11 @@ def get_parameter_rich_table_row(
     return cols
 
 
-def get_command_rich_table_row(
+def _get_command_name_help(
     command: click.Command,
     ctx: RichContext,
     formatter: RichHelpFormatter,
-    panel: Optional["RichCommandPanel"],
-) -> RichPanelRow:
-    """Create a row for the rich table corresponding with this command."""
-    # todo
-    columns: List["CommandColumnType"]
-    if panel is None:
-        columns = formatter.config.commands_table_columns
-    else:
-        columns = panel.columns or formatter.config.commands_table_columns  # type: ignore[assignment]
-
-    if (lambda: False)():
-        # todo: remove later (this tricks ruff into passing check F841
-        print(columns)
-
-    # Use the truncated short text as with vanilla text if requested
-    if formatter.config.use_click_short_help:
-        helptext = command.get_short_help_str()
-    else:
-        # Use short_help function argument if used, or the full help
-        helptext = command.short_help or command.help or ""
-
+) -> Text:
     # We want to use the command name as it is registered in the group.
     # This resolves the situation where they do not match.
     # e.g. group.add_command(subcmd, name="foo")
@@ -751,13 +723,68 @@ def get_command_rich_table_row(
                     command_name = k
                     break
     if command_name is None:
-        command_name = command.name
+        command_name = command.name or ""
+    return Text(command_name, style=formatter.config.style_command)
 
-    return [command_name, _make_command_help(helptext, formatter, deprecated=command.deprecated)]
+
+def _get_command_aliases_help(
+    command: click.Command,
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+    include_name: bool = False,
+) -> Optional[Text]:
+    aliases = getattr(command, "aliases", None)
+    if aliases:
+        txt_list = []
+        comma = Text(formatter.config.delimiter_comma, style=formatter.config.style_command_help)
+        _last = len(aliases) - 1
+        for idx, alias in enumerate(aliases):
+            txt_list.append(Text(alias, style=formatter.config.style_command_aliases))
+            if idx != _last:
+                txt_list.append(comma)
+        if include_name:
+            cmd_name_txt = _get_command_name_help(command, ctx, formatter)
+            return Text("", overflow="ellipsis").join([cmd_name_txt, comma, *txt_list])
+        else:
+            return Text("").join(txt_list)
+    elif include_name:
+        return _get_command_name_help(command, ctx, formatter)
+    return None
 
 
-def _make_command_help(
-    help_text: str, formatter: RichHelpFormatter, deprecated: Union[bool, str]
+def get_command_rich_table_row(
+    command: click.Command,
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+    panel: Optional["RichCommandPanel"],
+) -> RichPanelRow:
+    """Create a row for the rich table corresponding with this command."""
+    # todo
+    columns: List["CommandColumnType"]
+    if panel is None:
+        columns = formatter.config.commands_table_columns
+    else:
+        columns = panel.columns or formatter.config.commands_table_columns  # type: ignore[assignment]
+
+    column_callbacks: Dict["CommandColumnType", Callable[..., Any]] = {
+        "name": _get_command_name_help,
+        "aliases": _get_command_aliases_help,
+        "name_with_aliases": lambda *args, **kwargs: _get_command_aliases_help(*args, **kwargs, include_name=True),  # type: ignore[misc]
+        "help": _get_command_help,
+        # "short_help": ...,
+    }
+
+    cols: RichPanelRow = []
+    for col in columns:
+        cols.append(column_callbacks[col](command, ctx, formatter))
+
+    return cols
+
+
+def _get_command_help(
+    command: click.Command,
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
 ) -> Union[Text, "Markdown", Columns]:
     """
     Build cli help text for a click group command.
@@ -767,17 +794,18 @@ def _make_command_help(
     Rich Text object or as Markdown.
     Ignores single newlines as paragraph markers, looks for double only.
 
-    Args:
-    ----
-        help_text (str): Help text
-        formatter: formatter object
-        deprecated (bool or string): Object marked by user as deprecated.
-
-    Returns:
+    Returns
     -------
         Text or Markdown: Styled object
 
     """
+    if formatter.config.use_click_short_help:
+        help_text = command.get_short_help_str()
+    else:
+        help_text = command.short_help or command.help or ""
+
+    deprecated = command.deprecated
+
     paragraphs = inspect.cleandoc(help_text).split("\n\n")
     # Remove single linebreaks
     if not formatter.config.use_markdown and not paragraphs[0].startswith("\b"):

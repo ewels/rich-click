@@ -71,7 +71,7 @@ def db():
 def deploy():
     """Deploy app"""
 
-@cli.command("admin", aliases=["a"])
+@cli.command("admin")
 def admin():
     """Administrative commands"""
 

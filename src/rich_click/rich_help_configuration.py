@@ -38,7 +38,7 @@ OptionColumnType = Literal[
     # "envvar",
 ]
 
-CommandColumnType = Literal["name", "aliases", "name_with_aliases", "help", "short_help"]
+CommandColumnType = Literal["name", "aliases", "name_with_aliases", "help"]
 
 OptionHelpTextElement = Literal["help", "required", "envvar", "default", "range", "metavar", "deprecated"]
 
@@ -91,6 +91,7 @@ class RichHelpConfiguration:
     style_option_negative: Optional["StyleType"] = field(default=None)
     style_argument: "StyleType" = field(default="bold cyan")
     style_command: "StyleType" = field(default="bold cyan")
+    style_command_aliases: "StyleType" = "bold green"
     style_switch: "StyleType" = field(default="bold green")
     style_switch_negative: Optional["StyleType"] = field(default=None)
     style_metavar: "StyleType" = field(default="bold yellow")
@@ -181,8 +182,8 @@ class RichHelpConfiguration:
     options_panel_title: str = field(default="Options")
     commands_panel_title: str = field(default="Commands")
     errors_panel_title: str = field(default="Error")
-    option_delimiter_comma: str = field(default=",")
-    option_delimiter_slash: str = field(default="/")
+    delimiter_comma: str = field(default=",")
+    delimiter_slash: str = field(default="/")
     errors_suggestion: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     """Defaults to Try 'cmd -h' for help. Set to False to disable."""
     errors_epilogue: Optional[Union[str, "rich.text.Text"]] = field(default=None)
@@ -294,7 +295,7 @@ class RichHelpConfiguration:
             warnings.warn(
                 "`show_metavars_column=` will be deprecated in a future version of rich-click."
                 " Please use `options_table_columns=` instead."
-                " The `option_table_columns` config option lets you specify an ordered list"
+                " The `options_table_columns` config option lets you specify an ordered list"
                 " of which columns are rendered.",
                 PendingDeprecationWarning,
                 stacklevel=2,

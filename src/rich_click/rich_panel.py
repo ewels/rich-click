@@ -283,12 +283,12 @@ class RichOptionPanel(RichPanel[click.Parameter]):
                     ]
                 )
             else:
-                p_styles["title"] = Text("").join([Text(title, style=title_style)])
+                p_styles["title"] = Text(title, style=title_style)
                 from rich.containers import Renderables
 
                 inner = Renderables([formatter.rich_text(self.help, style=help_style), inner])
         else:
-            p_styles["title"] = Text("").join([Text(title, style=title_style)])
+            p_styles["title"] = Text(title, style=title_style)
         panel = self._get_base_panel(inner, **p_styles)
         return panel
 
@@ -451,12 +451,12 @@ class RichCommandPanel(RichPanel[click.Command]):
                     ]
                 )
             else:
-                p_styles["title"] = Text("").join([Text(title, style=title_style)])
+                p_styles["title"] = Text(title, style=title_style)
                 from rich.containers import Renderables
 
                 inner = Renderables([formatter.rich_text(self.help, style=help_style), inner])
         else:
-            p_styles["title"] = Text("").join([Text(title, style=title_style)])
+            p_styles["title"] = Text(title, style=title_style)
 
         panel = self._get_base_panel(inner, **p_styles)
         return panel
