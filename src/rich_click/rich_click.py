@@ -99,7 +99,7 @@ COLOR_SYSTEM: Optional[Literal["auto", "standard", "256", "truecolor", "windows"
 FORCE_TERMINAL: Optional[bool] = force_terminal_default()
 
 OPTIONS_TABLE_COLUMNS: List[OptionColumnType] = ["required", "opt_long", "opt_short", "metavar", "help"]
-COMMANDS_TABLE_COLUMNS: List[CommandColumnType] = ["name", "help"]
+COMMANDS_TABLE_COLUMNS: List[CommandColumnType] = ["name", "aliases", "help"]
 
 # Fixed strings
 HEADER_TEXT: Optional[Union[str, "rich.text.Text"]] = None

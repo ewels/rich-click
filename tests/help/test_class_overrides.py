@@ -28,8 +28,8 @@ def test_class_overrides_command_panel(cli_runner: CliRunner, cli: rich_click.Ri
 │ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Rich Click Panel ───────────────────────────────────────────────────────────────────────────────╮
-│ click_command  Test that RichParameters can be used with base click Commands.                    │
-│ click_options  Test that options+arguments are assigned to the panel even if they're not         │
+│ click-command  Test that RichParameters can be used with base click Commands.                    │
+│ click-options  Test that options+arguments are assigned to the panel even if they're not         │
 │                RichParameters.                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """

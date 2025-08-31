@@ -29,7 +29,7 @@ import click
 from click import CommandCollection, Group
 from click.utils import PacifyFlushWrapper
 
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_BEFORE_VERSION_82
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_82
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
@@ -38,7 +38,8 @@ from rich_click.rich_help_formatter import RichHelpFormatter
 if TYPE_CHECKING:  # pragma: no cover
     from rich.console import Console
 
-    from rich_click.rich_panel import RichPanel
+    from rich_click.rich_help_rendering import RichPanelRow
+    from rich_click.rich_panel import RichCommandPanel, RichPanel
 
 
 # TLDR: if a subcommand overrides one of the methods called by `RichCommand.format_help`,
@@ -60,10 +61,17 @@ class RichCommand(click.Command):
     context_class: Type[RichContext] = RichContext
     _formatter: Optional[RichHelpFormatter] = None
 
-    def __init__(self, *args: Any, panels: Optional[List["RichPanel[Any]"]] = None, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        *args: Any,
+        panels: Optional[List["RichPanel[Any]"]] = None,
+        aliases: Optional[List[str]] = None,
+        **kwargs: Any,
+    ) -> None:
         """Create Rich Command instance."""
         super().__init__(*args, **kwargs)
         self.panels = panels or []
+        self.aliases = aliases
         if not hasattr(self, "_help_option"):
             self._help_option = None
 
@@ -77,8 +85,6 @@ class RichCommand(click.Command):
 
         See `rich_config` decorator for how to apply the settings.
         """
-        import warnings
-
         warnings.warn(
             "RichCommand.console is deprecated. Please use the click.Context's console instead.",
             DeprecationWarning,
@@ -94,8 +100,6 @@ class RichCommand(click.Command):
     @property
     def help_config(self) -> Optional[RichHelpConfiguration]:
         """Rich Help Configuration."""
-        import warnings
-
         warnings.warn(
             "RichCommand.help_config is deprecated. Please use the click.Context's help config instead.",
             DeprecationWarning,
@@ -317,40 +321,19 @@ class RichCommand(click.Command):
 
         return self._help_option
 
+    def get_rich_table_row(
+        self,
+        ctx: "RichContext",
+        formatter: "RichHelpFormatter",
+        panel: Optional["RichCommandPanel"] = None,
+    ) -> "RichPanelRow":
+        """Create a row for the rich table corresponding with this parameter."""
+        from rich_click.rich_help_rendering import get_command_rich_table_row
 
-if CLICK_IS_BEFORE_VERSION_9X:
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=DeprecationWarning)
-        from click import MultiCommand
-
-else:
-
-    MultiCommand = Group  # type: ignore[misc,assignment,unused-ignore]
-
-
-class RichMultiCommand(RichCommand, MultiCommand):  # type: ignore[valid-type,misc,unused-ignore]
-    """
-    Richly formatted click MultiCommand.
-
-    Inherits click.MultiCommand and overrides help and error methods
-    to print richly formatted output.
-    """
-
-    def format_commands(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
-        # Not used
-        pass
-
-    def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        if OVERRIDES_GUARD:
-            prevent_incompatible_overrides(self, "RichMultiCommand", ctx, formatter)
-        else:
-            self.format_usage(ctx, formatter)
-            self.format_help_text(ctx, formatter)
-            self.format_options(ctx, formatter)
-            self.format_epilog(ctx, formatter)
+        return get_command_rich_table_row(self, ctx, formatter, panel)
 
 
-class RichGroup(RichMultiCommand, Group):
+class RichGroup(RichCommand, Group):
     """
     Richly formatted click Group.
 
@@ -360,6 +343,22 @@ class RichGroup(RichMultiCommand, Group):
 
     command_class: Optional[Type[RichCommand]] = RichCommand
     group_class: Optional[Union[Type[Group], Type[type]]] = type
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Create RichGroup instance."""
+        super().__init__(*args, **kwargs)
+
+        self._alias_mapping: Dict[str, str] = {}
+        for name in self.commands:
+            cmd = self.commands[name]
+            aliases: Optional[List[str]] = getattr(cmd, "aliases", None)
+            if aliases:
+                for alias in aliases:
+                    self._alias_mapping[alias] = name
+
+    def format_commands(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
+        # Not used
+        pass
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         if OVERRIDES_GUARD:
@@ -467,6 +466,28 @@ class RichGroup(RichMultiCommand, Group):
             return decorator(func)
 
         return decorator
+
+    def get_command(self, ctx: click.Context, cmd_name: str) -> Optional[click.Command]:
+        _cmd_name = self._alias_mapping.get(cmd_name, cmd_name)
+        return super().get_command(ctx, _cmd_name)
+
+    def add_command(self, cmd: click.Command, name: str | None = None, aliases: Optional[List[str]] = None) -> None:
+        """
+        Register another :class:`Command` with this group. If the name
+        is not provided, the name of the command is used.
+        """
+        super().add_command(cmd, name)
+        _name: str = name or cmd.name  # type: ignore[assignment]
+        aliases = aliases or []
+        aliases += getattr(cmd, "aliases", None) or []
+        if aliases:
+            for alias in aliases:
+                self._alias_mapping[alias] = _name
+        # Aliases cannot share names of commands
+        self._alias_mapping.pop(_name, None)
+
+
+RichMultiCommand = RichGroup
 
 
 class RichCommandCollection(CommandCollection, RichGroup):

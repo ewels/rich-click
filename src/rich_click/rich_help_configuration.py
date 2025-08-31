@@ -38,7 +38,11 @@ OptionColumnType = Literal[
     # "envvar",
 ]
 
-CommandColumnType = Literal["name", "help"]
+CommandColumnType = Literal["name", "aliases", "name_with_aliases", "help", "short_help"]
+
+OptionHelpTextElement = Literal["help", "required", "envvar", "default", "range", "metavar", "deprecated"]
+
+CommandHelpTextElement = Literal["help", "deprecated"]
 
 ColumnType = Union[OptionColumnType, CommandColumnType]
 
@@ -159,7 +163,7 @@ class RichHelpConfiguration:
     options_table_columns: List[OptionColumnType] = field(
         default_factory=lambda: ["required", "opt_long", "opt_short", "metavar", "help"]
     )
-    commands_table_columns: List[CommandColumnType] = field(default_factory=lambda: ["name", "help"])
+    commands_table_columns: List[CommandColumnType] = field(default_factory=lambda: ["name", "aliases", "help"])
 
     # Fixed strings
     header_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)

@@ -21,6 +21,12 @@ import rich_click as click
               default=4,
               show_default=True,
               help="Num vCPUs")
+@click.option("--memory", "-m",
+              type=click.IntRange(min=1, max=32),
+              default=4,
+              show_default=True,
+              hidden=True,
+              help="Memory (this is hidden)")
 @click.option("--log-level", "-l",
               type=click.Choice(["debug", "info", "warning", "error"]),
               default="info",
@@ -65,7 +71,7 @@ def db():
 def deploy():
     """Deploy app"""
 
-@cli.command("admin")
+@cli.command("admin", aliases=["a"])
 def admin():
     """Administrative commands"""
 
@@ -73,6 +79,9 @@ def admin():
 def self():
     """Manage app"""
 
+@cli.command("user", hidden=True)
+def user():
+    """User commands (This is hidden)"""
 
 if __name__ == "__main__":
     cli()

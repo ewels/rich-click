@@ -33,10 +33,14 @@ from rich_click.rich_parameter import RichParameter
 if TYPE_CHECKING:
     from rich.markdown import Markdown
 
-    from rich_click.rich_help_configuration import OptionColumnType
+    from rich_click.rich_help_configuration import (
+        CommandColumnType,
+        OptionColumnType,
+    )
+    from rich_click.rich_panel import RichCommandPanel, RichOptionPanel
 
 
-RichPanelRow = List[RenderableType]
+RichPanelRow = List[Optional[RenderableType]]
 
 
 if CLICK_IS_BEFORE_VERSION_9X:
@@ -592,15 +596,19 @@ def get_help_parameter(
     return Columns(items)
 
 
-def get_rich_table_row(
+def get_parameter_rich_table_row(
     param: Union[click.Argument, click.Option, RichParameter],
     ctx: RichContext,
     formatter: RichHelpFormatter,
-    columns: Optional[List["OptionColumnType"]] = None,
+    panel: Optional["RichOptionPanel"],
 ) -> RichPanelRow:
     """Create a row for the rich table corresponding with this parameter."""
     # Short and long form
-    columns = columns or formatter.config.options_table_columns
+    columns: List["OptionColumnType"]
+    if panel is None:
+        columns = formatter.config.options_table_columns
+    else:
+        columns = panel.columns or formatter.config.options_table_columns  # type: ignore[assignment]
 
     opt_long_strs = []
     opt_short_strs = []
@@ -701,6 +709,51 @@ def get_rich_table_row(
         cols.append(column_callbacks[col](param, ctx, formatter))
 
     return cols
+
+
+def get_command_rich_table_row(
+    command: click.Command,
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+    panel: Optional["RichCommandPanel"],
+) -> RichPanelRow:
+    """Create a row for the rich table corresponding with this command."""
+    # todo
+    columns: List["CommandColumnType"]
+    if panel is None:
+        columns = formatter.config.commands_table_columns
+    else:
+        columns = panel.columns or formatter.config.commands_table_columns  # type: ignore[assignment]
+
+    if (lambda: False)():
+        # todo: remove later (this tricks ruff into passing check F841
+        print(columns)
+
+    # Use the truncated short text as with vanilla text if requested
+    if formatter.config.use_click_short_help:
+        helptext = command.get_short_help_str()
+    else:
+        # Use short_help function argument if used, or the full help
+        helptext = command.short_help or command.help or ""
+
+    # We want to use the command name as it is registered in the group.
+    # This resolves the situation where they do not match.
+    # e.g. group.add_command(subcmd, name="foo")
+    #
+    # Note there may be extremely weird edge cases not covered here,
+    # most notably, when a user registers the same command twice.
+    # We do not care to solve this edge case.
+    command_name = None
+    if isinstance(ctx.command, click.core.Group):
+        if command.name not in ctx.command.commands:
+            for k, v in ctx.command.commands.items():
+                if command is v:
+                    command_name = k
+                    break
+    if command_name is None:
+        command_name = command.name
+
+    return [command_name, _make_command_help(helptext, formatter, deprecated=command.deprecated)]
 
 
 def _make_command_help(
