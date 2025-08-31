@@ -23,42 +23,21 @@ To use, simply prefix `rich-click` to the command. Here are a few real world exa
 
     ![](../images/rich_click_cli_examples/dagster.svg "dagster --help"){.screenshot}
 
-If the CLI is not installed as a script, you can also pass the location with: `<module_name>:<click_command_name>`.
+If the CLI is not installed as a script, you can also pass the location with:
 
-For example, if you have a file located at `path/to/my/cli.py`, and the Click `Command` object is named `main`, then you can run: `rich-click path.to.my.cli:main`.
+- `<module_name>`
+- `<module_name>:<click_command_name>`
+- `<path>`
 
-!!! warning
 
-    If you are experiencing any unexpected issues with the `rich-click` CLI, first make sure you are not calling
-    your command on load of the module.
+For example, if you have a file located at `path/to/my/cli.py`, and the Click `Command` object is named `main`, then you can run:
 
-    For example, the following could cause a strange `No such option: --output` error when attempting to run `rich-click --output html my_cli:cli`:
+- `rich-click path.to.my.cli:main`
+- `rich-click path.to.my.cli`
+- `rich-click path/to/my/cli.py`
 
-    ```python
-    import rich_click as click
-    
-    @click.command("my-cli")
-    @click.argument("x")
-    def cli(x):
-        ...
-
-    cli()
-    ```
-
-    To make it so `rich-click --output html` works on the above code, add a `if __name__ == "__main__":`
-
-    ```python hl_lines="8"
-    import rich_click as click
-    
-    @click.command("my-cli")
-    @click.argument("x")
-    def cli(x):
-        ...
-    
-    if __name__ == "__main__":
-        cli()
-    ```
-
+In the first case, the object will be imported and called, i.e. `main()`.
+In the other two cases, the file will be run with `__name__` as `"__main__"`.
 
 ## Render help text as HTML or SVG
 

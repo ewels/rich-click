@@ -21,7 +21,8 @@
 
 ---
 
-**rich-click** is a shim around [Click](https://click.palletsprojects.com/) that renders help output nicely using [Rich](https://github.com/Textualize/rich).
+<!--include-start-->
+**rich-click** is a wrapper around [Click](https://click.palletsprojects.com/) that renders help output nicely using [Rich](https://github.com/Textualize/rich).
 
 - Click is a _"Python package for creating beautiful command line interfaces"_.
 - Rich is a _"Python library for rich text and beautiful formatting in the terminal"_.
@@ -33,13 +34,12 @@ Click, formatted with Rich, with minimal customization required.
 
 - 🌈 Rich command-line formatting of click help and error messages
 - 😌 Same API as Click: usage is simply `import rich_click as click`
-- 💫 Nice styles by default
+- 🎨 Over 100 themes that can be set by developers and end-users (`export RICH_CLICK_THEME=...`)
 - 💻 CLI tool to run on _other people's_ tools (prefix the command with `rich-click`)
 - 📦 Export help text as HTML or SVG
 - 🎁 Group commands and options into named panels
 - ❌ Well formatted error messages
-- 🔢 Easily give custom sort order for options and commands
-- 🎨 Extensive customization of styling and behaviour possible
+- 💫 Extensive customization
 - 🤖 IDE autocomplete of Click decorators for smooth developer experience.
 
 ## Installation
@@ -47,8 +47,6 @@ Click, formatted with Rich, with minimal customization required.
 ```shell
 pip install rich-click
 ```
-
-[Read the docs](https://ewels.github.io/rich-click#installation) for all supported installation methods.
 
 ## Examples
 
@@ -77,7 +75,11 @@ _Screenshot from [`examples/11_hello.py`](examples/11_hello.py)_
 
 ### More complex example
 
-![`python examples/03_groups_sorting.py`](docs/images/command_groups.svg)
+**rich-click** has a ton of customization options that let you compose help text however you'd like.
+
+Below is a more complex example of what **rich-click** is capable of, utilizing **themes** and **panels**:
+
+![`python examples/03_groups_sorting.py --help`](docs/images/command_groups.svg)
 
 _Screenshot from [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py)_
 

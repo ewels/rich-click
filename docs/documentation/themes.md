@@ -31,6 +31,7 @@ Themes are one of **rich-click**'s most powerful features.
         TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: nord-nu
     -->
+
     ![` python cli.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
 
 === "`cargo-slim`"
