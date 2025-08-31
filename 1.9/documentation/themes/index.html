@@ -1002,53 +1002,149 @@ Themes are one of <strong>rich-click</strong>'s most powerful features.</p>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>quartz-modern
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: quartz-modern
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_ex1.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_ex1.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_ex1.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_ex1.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>nord-nu
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: nord-nu
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_ex2.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_ex2.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_ex2.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_ex2.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>cargo-slim
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: cargo-slim
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_ex3.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_ex3.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_ex3.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_ex3.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>forest-robo
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: forest-robo
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_ex4.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_ex4.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_ex4.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_ex4.svg" /></a></p>
 </div>
 </div>
 </div>
 <p>Themes consist of <strong>Color Palettes</strong> and <strong>Formats</strong>, which can be mixed and matched.
 The name of a full theme has the following schema: <code>{color_palette}-{format}</code>.</p>
 <p>For example, the <strong>forest-slim</strong> theme uses the <strong>forest</strong> color palette and the <strong>slim</strong> format.</p>
+<details class="info">
+<summary>Code for <code>cli.py</code></summary>
+<p>The following CLI code is used throughout this module to show off themes.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9.0dev1&quot;]</span>
+<span class="c1"># ///</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;app&quot;</span><span class="p">,</span> <span class="n">epilog</span><span class="o">=</span><span class="s2">&quot;For more assistance, visit https://example.com/&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--environment&quot;</span><span class="p">,</span> <span class="s2">&quot;-e&quot;</span><span class="p">,</span>
+              <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;dev&quot;</span><span class="p">,</span> <span class="s2">&quot;staging&quot;</span><span class="p">,</span> <span class="s2">&quot;prod&quot;</span><span class="p">]),</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Environment to run in&quot;</span><span class="p">,</span>
+              <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">envvar</span><span class="o">=</span><span class="s2">&quot;APP_ENV&quot;</span><span class="p">,</span>
+              <span class="n">show_envvar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--env-file&quot;</span><span class="p">,</span>
+              <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Path</span><span class="p">(),</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;.env file&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--retries&quot;</span><span class="p">,</span> <span class="s2">&quot;-r&quot;</span><span class="p">,</span>
+              <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">IntRange</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Num retries for failed tasks&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--vcpu&quot;</span><span class="p">,</span> <span class="s2">&quot;-c&quot;</span><span class="p">,</span>
+              <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">IntRange</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">32</span><span class="p">),</span>
+              <span class="n">default</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+              <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Num vCPUs&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--memory&quot;</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span>
+              <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">IntRange</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">32</span><span class="p">),</span>
+              <span class="n">default</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+              <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Memory (this is hidden)&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--log-level&quot;</span><span class="p">,</span> <span class="s2">&quot;-l&quot;</span><span class="p">,</span>
+              <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;debug&quot;</span><span class="p">,</span> <span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="s2">&quot;warning&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">]),</span>
+              <span class="n">default</span><span class="o">=</span><span class="s2">&quot;info&quot;</span><span class="p">,</span>
+              <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Log level&quot;</span><span class="p">,</span>
+              <span class="n">envvar</span><span class="o">=</span><span class="s2">&quot;APP_LOG_LEVEL&quot;</span><span class="p">,</span>
+              <span class="n">show_envvar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--colors/--no-colors&quot;</span><span class="p">,</span> <span class="s2">&quot;-C/-n&quot;</span><span class="p">,</span>
+              <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Whether to show colors in logs&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--log-format&quot;</span><span class="p">,</span>
+              <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;json&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">]),</span>
+              <span class="n">show_choices</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+              <span class="n">deprecated</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Log format&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--quiet/--no-quiet&quot;</span><span class="p">,</span> <span class="s2">&quot;-q&quot;</span><span class="p">,</span>
+              <span class="n">deprecated</span><span class="o">=</span><span class="s2">&quot;use --log-level instead&quot;</span><span class="p">,</span>
+              <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print text&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">help_option</span><span class="p">(</span><span class="s2">&quot;--help&quot;</span><span class="p">,</span> <span class="s2">&quot;-h&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">version_option</span><span class="p">(</span><span class="s2">&quot;1.2.3&quot;</span><span class="p">,</span> <span class="s2">&quot;--version&quot;</span><span class="p">,</span> <span class="s2">&quot;-v&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option_panel</span><span class="p">(</span><span class="s2">&quot;Runtime options&quot;</span><span class="p">,</span>
+                    <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;environment&quot;</span><span class="p">,</span> <span class="s2">&quot;env_file&quot;</span><span class="p">,</span> <span class="s2">&quot;retries&quot;</span><span class="p">,</span> <span class="s2">&quot;vcpu&quot;</span><span class="p">],</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Options specifying the runtime&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option_panel</span><span class="p">(</span><span class="s2">&quot;Logging options&quot;</span><span class="p">,</span>
+                    <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;log_level&quot;</span><span class="p">,</span> <span class="s2">&quot;colors&quot;</span><span class="p">,</span> <span class="s2">&quot;log_format&quot;</span><span class="p">,</span> <span class="s2">&quot;quiet&quot;</span><span class="p">],</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Logging config options&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option_panel</span><span class="p">(</span><span class="s2">&quot;Misc. options&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;--version&quot;</span><span class="p">,</span> <span class="s2">&quot;--help&quot;</span><span class="p">])</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">command_panel</span><span class="p">(</span><span class="s2">&quot;Commands&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;All subcommands&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CLI for app</span>
+
+<span class="sd">    This is a production-ready application.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;db&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">db</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Database commands for app&quot;&quot;&quot;</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;deploy&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">deploy</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Deploy app&quot;&quot;&quot;</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;admin&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">admin</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Administrative commands&quot;&quot;&quot;</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;self&quot;</span><span class="p">,</span> <span class="n">deprecated</span><span class="o">=</span><span class="s2">&quot;Use admin commands&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">self</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Manage app&quot;&quot;&quot;</span>
+
+<span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">user</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;User commands (This is hidden)&quot;&quot;&quot;</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cli</span><span class="p">()</span>
+</code></pre></div>
+</details>
 <h2 id="themes-as-an-end-user">Themes as an end-user<a class="headerlink" href="#themes-as-an-end-user" title="Permanent link">&para;</a></h2>
 <p>Unless a developer specifies otherwise, every <strong>rich-click</strong> CLI can have a theme applied by an end-user by setting the <code>RICH_CLICK_THEME</code> env var.</p>
 <p>If you'd like to set a global theme, add the following to your shell's config file (replacing <code>star-modern</code> with whatever theme you desire):</p>
@@ -1195,157 +1291,184 @@ For more information on config resolution order, read <a href="../configuration/
 <div class="tabbed-block">
 <p><strong>(Default)</strong> Original rich-click format with boxes.</p>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: default-box
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_default_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_default_box.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_default_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_default_box.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Simple, classic, no-fuss CLI format.</p>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: default-slim
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_default_slim.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_default_slim.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_default_slim.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_default_slim.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Beautiful modern look.</p>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: default-modern
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_default_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_default_modern.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_default_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_default_modern.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Spacious with sharp corners.</p>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: default-robo
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_default_robo.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_default_robo.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_default_robo.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_default_robo.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Great balance of compactness, legibility, and style.</p>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: default-nu
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_default_nu.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_default_nu.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_default_nu.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_default_nu.svg" /></a></p>
 </div>
 </div>
 </div>
 <h3 id="color-palettes">Color palettes<a class="headerlink" href="#color-palettes" title="Permanent link">&para;</a></h3>
 <p>There are currently over a dozen different <strong>color palettes</strong>.</p>
+<p>All color palettes use ANSI colors, meaning they will render differently on each terminal.</p>
 <h4 id="multi-colored-palettes">Multi-colored palettes<a class="headerlink" href="#multi-colored-palettes" title="Permanent link">&para;</a></h4>
-<div class="tabbed-set tabbed-alternate" data-tabs="9:9"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><input id="__tabbed_9_3" name="__tabbed_9" type="radio" /><input id="__tabbed_9_4" name="__tabbed_9" type="radio" /><input id="__tabbed_9_5" name="__tabbed_9" type="radio" /><input id="__tabbed_9_6" name="__tabbed_9" type="radio" /><input id="__tabbed_9_7" name="__tabbed_9" type="radio" /><input id="__tabbed_9_8" name="__tabbed_9" type="radio" /><input id="__tabbed_9_9" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1"><code>default</code></label><label for="__tabbed_9_2"><code>solarized</code></label><label for="__tabbed_9_3"><code>nord</code></label><label for="__tabbed_9_4"><code>star</code></label><label for="__tabbed_9_5"><code>quartz</code></label><label for="__tabbed_9_6"><code>quartz2</code></label><label for="__tabbed_9_7"><code>cargo</code></label><label for="__tabbed_9_8"><code>forest</code></label><label for="__tabbed_9_9"><code>dracula</code></label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:10"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><input id="__tabbed_9_3" name="__tabbed_9" type="radio" /><input id="__tabbed_9_4" name="__tabbed_9" type="radio" /><input id="__tabbed_9_5" name="__tabbed_9" type="radio" /><input id="__tabbed_9_6" name="__tabbed_9" type="radio" /><input id="__tabbed_9_7" name="__tabbed_9" type="radio" /><input id="__tabbed_9_8" name="__tabbed_9" type="radio" /><input id="__tabbed_9_9" name="__tabbed_9" type="radio" /><input id="__tabbed_9_10" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1"><code>default</code></label><label for="__tabbed_9_2"><code>solarized</code></label><label for="__tabbed_9_3"><code>nord</code></label><label for="__tabbed_9_4"><code>star</code></label><label for="__tabbed_9_5"><code>quartz</code></label><label for="__tabbed_9_6"><code>quartz2</code></label><label for="__tabbed_9_7"><code>cargo</code></label><label for="__tabbed_9_8"><code>forest</code></label><label for="__tabbed_9_9"><code>dracula</code></label><label for="__tabbed_9_10"><code>dracula2</code></label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p><strong>Default</strong> Original rich-click colors.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>default-box
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
-<p><a class="glightbox" href="../../images/code_snippets/themes/themes_default_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_default_box.svg" /></a></p>
+<p><a class="glightbox" href="../../images/code_snippets/themes/themes_default_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_default_box.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Bright, colorful, vibrant accents.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>solarized-box
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: solarized-box
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_solarized_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_solarized_box.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_solarized_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_solarized_box.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Many shades of cool colors.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>nord-box
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: nord-box
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_nord_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_nord_box.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_nord_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_nord_box.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Litestar theme; royal feel.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>star-box
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: star-box
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_star_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_star_box.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_star_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_star_box.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Dark and radiant.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>quartz-box
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: quartz-box
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_quartz_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_quartz_box.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_quartz_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_quartz_box.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Remix of 'quartz' with accents.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>quartz2-box
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: quartz2-box
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_quartz2_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_quartz2_box.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_quartz2_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_quartz2_box.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Cargo CLI theme; legible and bold.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>cargo-box
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: cargo-box
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_cargo_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_cargo_box.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_cargo_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_cargo_box.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Earthy tones with analogous colors.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>forest-box
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: forest-box
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_forest_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_forest_box.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_forest_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_forest_box.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Vibrant high-contract dark theme.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>dracula-box
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: dracula-box
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_dracula_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_dracula_box.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_dracula_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_dracula_box.svg" /></a></p>
+</div>
+<div class="tabbed-block">
+<p>Dracula theme with forced black background.</p>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>dracula2-box
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
+</code></pre></div>
+<p><!-- RICH-CODEX
+working_dir: docs/code_snippets/themes
+extra_env:
+    TERMINAL_WIDTH: 120
+    RICH_CLICK_THEME: dracula2-box
+-->
+<a class="glightbox" href="../../images/code_snippets/themes/themes_dracula2_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_dracula2_box.svg" /></a></p>
 </div>
 </div>
 </div>
@@ -1357,146 +1480,158 @@ extra_env:
 <div class="tabbed-block">
 <p>Simple theme with red accents on section headers.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>red1-modern
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: red1-modern
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_red1_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_red1_modern.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_red1_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_red1_modern.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Simple theme with red accents on object names.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>red2-modern
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: red2-modern
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_red2_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_red2_modern.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_red2_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_red2_modern.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Simple theme with green accents on section headers.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>green1-modern
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: green1-modern
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_green1_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_green1_modern.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_green1_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_green1_modern.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Simple theme with green accents on object names.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>green2-modern
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: green2-modern
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_green2_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_green2_modern.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_green2_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_green2_modern.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Simple theme with yellow accents on section headers.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>yellow1-modern
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: yellow1-modern
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_yellow1_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_yellow1_modern.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_yellow1_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_yellow1_modern.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Simple theme with yellow accents on object names.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>yellow2-modern
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: yellow2-modern
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_yellow2_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_yellow2_modern.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_yellow2_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_yellow2_modern.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Simple theme with blue accents on section headers.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>blue1-modern
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: blue1-modern
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_blue1_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_blue1_modern.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_blue1_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_blue1_modern.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Simple theme with blue accents on object names.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>blue2-modern
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: blue2-modern
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_blue2_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_blue2_modern.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_blue2_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_blue2_modern.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Simple theme with magenta accents on section headers.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>magenta1-modern
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: magenta1-modern
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_magenta1_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_magenta1_modern.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_magenta1_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_magenta1_modern.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Simple theme with magenta accents on object names.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>magenta2-modern
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: magenta2-modern
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_magenta2_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_magenta2_modern.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_magenta2_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_magenta2_modern.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Simple theme with cyan accents on section headers.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>cyan1-modern
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: cyan1-modern
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_cyan1_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_cyan1_modern.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_cyan1_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_cyan1_modern.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>Simple theme with cyan accents on object names.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>cyan2-modern
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: cyan2-modern
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_cyan2_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_cyan2_modern.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_cyan2_modern.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_cyan2_modern.svg" /></a></p>
 </div>
 </div>
 </div>
@@ -1507,29 +1642,48 @@ extra_env:
 <div class="tabbed-block">
 <p>Monochromatic theme with no colors.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>mono-box
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: mono-box
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_mono_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_mono_box.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_mono_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_mono_box.svg" /></a></p>
 </div>
 <div class="tabbed-block">
 <p>No style at all.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>plain-box
-python<span class="w"> </span>hello_rich.py<span class="w"> </span>--help
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
 </code></pre></div>
 <p><!-- RICH-CODEX
-working_dir: docs/code_snippets/introduction_to_click
+working_dir: docs/code_snippets/themes
 extra_env:
+    TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: plain-box
 -->
-<a class="glightbox" href="../../images/code_snippets/themes/themes_plain_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python hello_rich.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_plain_box.svg" /></a></p>
+<a class="glightbox" href="../../images/code_snippets/themes/themes_plain_box.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_plain_box.svg" /></a></p>
 </div>
 </div>
 </div>
+<details class="example">
+<summary><code>plain-slim</code></summary>
+<p>Of course, the most plain style of them all is <code>plain-slim</code>, which renders CLI help text in the most conventional way that <strong>rich-click</strong> can.</p>
+<p>For fun, we've included it here!</p>
+<p>(Or, maybe you really dislike <strong>rich-click</strong>'s styles and you want to add <code>export RICH_CLICK_THEME=plain-slim</code> to your <code>.zshrc</code>.
+We won't judge!)</p>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>plain-slim
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
+</code></pre></div>
+<p><!-- RICH-CODEX
+working_dir: docs/code_snippets/themes
+extra_env:
+    TERMINAL_WIDTH: 120
+    RICH_CLICK_THEME: plain-slim
+-->
+<a class="glightbox" href="../../images/code_snippets/themes/themes_plain_slim.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_plain_slim.svg" /></a></p>
+</details>
 <h3 id="list-all-themes-in-command-line">List all themes in command line<a class="headerlink" href="#list-all-themes-in-command-line" title="Permanent link">&para;</a></h3>
 <p>Running <code>rich-click --themes</code> will provide help text that lists every theme available to you.
 The command will also tell you which theme you currently have enabled.</p>
@@ -1539,6 +1693,7 @@ The command will also tell you which theme you currently have enabled.</p>
 fake_command: rich-click --themes
 terminal_width: 140
 extra_env:
+    TERMINAL_WIDTH: 120
     TERMINAL_WIDTH: 140
 -->
 <a class="glightbox" href="../../images/code_snippets/themes/all_themes.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="rich-click --themes" class="screenshot" src="../../images/code_snippets/themes/all_themes.svg" /></a></p>

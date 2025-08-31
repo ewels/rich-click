@@ -1451,6 +1451,13 @@
 <li><strong>Rich 10 and 11 support is removed.</strong> The minimum supported Rich version is 12.</li>
 </ul>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Version 1.9.0 introduces a minor breaking change:
+The <code>DEFAULT_STRING</code>, <code>ENVVAR_STRING</code>, <code>REQUIRED_STRING</code>, and <code>DEPRECATED_STRING</code> config options are now rendered with <code>Text.from_markup</code>.
+So for example, <code>REQUIRED_STRING = "[required]"</code> would be rendered as Rich markup.
+You must now escape the rich markup: <code>REQUIRED_STRING = "\\[required]"</code></p>
+</div>
 <p><strong>Big changes:</strong></p>
 <ul>
 <li><strong>Themes!</strong> Check them out with <code>rich-click --themes</code>.</li>
