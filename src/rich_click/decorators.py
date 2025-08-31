@@ -180,7 +180,7 @@ def _context_settings_memo(f: Callable[..., Any], extra: Dict[str, Any]) -> None
         f.__rich_context_settings__.update(extra)  # type: ignore
 
 
-def _rich_panel_memo(f: Callable[..., Any], panel: RichPanel[Any]) -> None:
+def _rich_panel_memo(f: Callable[..., Any], panel: RichPanel[Any, Any]) -> None:
     if isinstance(f, RichCommand):
         f.panels.append(panel)
     else:
@@ -235,7 +235,7 @@ def rich_config(
 
 def _panel(
     name: str,
-    cls: Type[RichPanel[Any]],
+    cls: Type[RichPanel[Any, Any]],
     **attrs: Any,
 ) -> Callable[[FC], FC]:
     def decorator(obj: FC) -> FC:
@@ -250,7 +250,7 @@ def _panel(
 
 def option_panel(
     name: str,
-    cls: Type[RichPanel[Parameter]] = RichOptionPanel,
+    cls: Type[RichPanel[Parameter, Any]] = RichOptionPanel,
     **attrs: Any,
 ) -> Callable[[FC], FC]:
     """
@@ -268,7 +268,7 @@ def option_panel(
 
 def command_panel(
     name: str,
-    cls: Type[RichPanel[Command]] = RichCommandPanel,
+    cls: Type[RichPanel[Command, Any]] = RichCommandPanel,
     **attrs: Any,
 ) -> Callable[[FC], FC]:
     """

@@ -121,6 +121,7 @@ Below is a side-by-side comparison of Click and Rich implementations of echos an
         """Move an item from a src location to a dest location"""
         ...
     ```
+- **rich-click** commands can be given **aliases**, similar to other Click extensions ([click-aliases](https://github.com/click-contrib/click-aliases/tree/master), [click-extra](https://kdeldycke.github.io/click-extra/), [cloup](https://cloup.readthedocs.io/en/stable/)).
 - **rich-click** has **themes** to beautify all CLIs, whether you're an end-user or a CLI developer. More information about this is described in [the **Themes** docs](themes.md). 
 - **rich-click** help text is formatted using highly configurable **option panels** and **command panels**:
     ```python
