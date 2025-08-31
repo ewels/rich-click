@@ -991,96 +991,145 @@ You probably do not need this in most cases; this is mostly for <strong>rich-cli
 <span class="n">cli</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="configuration-options">Configuration options<a class="headerlink" href="#configuration-options" title="Permanent link">&para;</a></h2>
-<p>Here is a full list of configuration options:</p>
+<p>Below is a full list of configuration options from <code>rich_click.py</code>.</p>
+<details class="info">
+<summary>Config</summary>
 <div class="highlight"><pre><span></span><code><span class="c1"># Default styles</span>
-<span class="n">STYLE_OPTION</span> <span class="o">=</span> <span class="s2">&quot;bold cyan&quot;</span>
-<span class="n">STYLE_ARGUMENT</span> <span class="o">=</span> <span class="s2">&quot;bold cyan&quot;</span>
-<span class="n">STYLE_COMMAND</span> <span class="o">=</span> <span class="s2">&quot;bold cyan&quot;</span>
-<span class="n">STYLE_SWITCH</span> <span class="o">=</span> <span class="s2">&quot;bold green&quot;</span>
-<span class="n">STYLE_METAVAR</span> <span class="o">=</span> <span class="s2">&quot;bold yellow&quot;</span>
-<span class="n">STYLE_METAVAR_APPEND</span> <span class="o">=</span> <span class="s2">&quot;dim yellow&quot;</span>
-<span class="n">STYLE_METAVAR_SEPARATOR</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
-<span class="n">STYLE_HEADER_TEXT</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_EPILOG_TEXT</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_FOOTER_TEXT</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_USAGE</span> <span class="o">=</span> <span class="s2">&quot;yellow&quot;</span>
-<span class="n">STYLE_USAGE_COMMAND</span> <span class="o">=</span> <span class="s2">&quot;bold&quot;</span>
-<span class="n">STYLE_DEPRECATED</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
-<span class="n">STYLE_HELPTEXT_FIRST_LINE</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_HELPTEXT</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
-<span class="n">STYLE_OPTION_HELP</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_OPTION_DEFAULT</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
-<span class="n">STYLE_OPTION_ENVVAR</span> <span class="o">=</span> <span class="s2">&quot;dim yellow&quot;</span>
-<span class="n">STYLE_REQUIRED_SHORT</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
-<span class="n">STYLE_REQUIRED_LONG</span> <span class="o">=</span> <span class="s2">&quot;dim red&quot;</span>
-<span class="n">STYLE_OPTIONS_PANEL_BORDER</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
-<span class="n">STYLE_OPTIONS_PANEL_BOX</span> <span class="o">=</span> <span class="s2">&quot;ROUNDED&quot;</span>
-<span class="n">ALIGN_OPTIONS_PANEL</span> <span class="o">=</span> <span class="s2">&quot;left&quot;</span>
-<span class="n">STYLE_OPTIONS_TABLE_SHOW_LINES</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="n">STYLE_OPTIONS_TABLE_LEADING</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">STYLE_OPTIONS_TABLE_PAD_EDGE</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="n">STYLE_OPTIONS_TABLE_PADDING</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">STYLE_OPTIONS_TABLE_BOX</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_OPTIONS_TABLE_ROW_STYLES</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">STYLE_OPTIONS_TABLE_BORDER_STYLE</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">STYLE_COMMANDS_PANEL_BORDER</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
-<span class="n">STYLE_COMMANDS_PANEL_BOX</span> <span class="o">=</span> <span class="s2">&quot;ROUNDED&quot;</span>
-<span class="n">ALIGN_COMMANDS_PANEL</span> <span class="o">=</span> <span class="s2">&quot;left&quot;</span>
-<span class="n">STYLE_COMMANDS_TABLE_SHOW_LINES</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="n">STYLE_COMMANDS_TABLE_LEADING</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">STYLE_COMMANDS_TABLE_PAD_EDGE</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="n">STYLE_COMMANDS_TABLE_PADDING</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">STYLE_COMMANDS_TABLE_BOX</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_COMMANDS_TABLE_ROW_STYLES</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">STYLE_COMMANDS_TABLE_BORDER_STYLE</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-<span class="n">STYLE_ERRORS_PANEL_BORDER</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
-<span class="n">STYLE_ERRORS_PANEL_BOX</span> <span class="o">=</span> <span class="s2">&quot;ROUNDED&quot;</span>
-<span class="n">ALIGN_ERRORS_PANEL</span> <span class="o">=</span> <span class="s2">&quot;left&quot;</span>
-<span class="n">STYLE_ERRORS_SUGGESTION</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
-<span class="n">STYLE_ERRORS_SUGGESTION_COMMAND</span> <span class="o">=</span> <span class="s2">&quot;blue&quot;</span>
-<span class="n">STYLE_ABORTED</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
-<span class="n">WIDTH</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;TERMINAL_WIDTH&quot;</span><span class="p">))</span> <span class="k">if</span> <span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;TERMINAL_WIDTH&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
-<span class="n">MAX_WIDTH</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;TERMINAL_WIDTH&quot;</span><span class="p">))</span> <span class="k">if</span> <span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;TERMINAL_WIDTH&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">WIDTH</span>
-<span class="n">COLOR_SYSTEM</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span>  <span class="c1"># Set to None to disable colors</span>
-<span class="n">FORCE_TERMINAL</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;GITHUB_ACTIONS&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;FORCE_COLOR&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;PY_COLORS&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+<span class="n">THEME</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">ENABLE_THEME_ENV_VAR</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="n">STYLE_OPTION</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;bold cyan&quot;</span>
+<span class="n">STYLE_OPTION_NEGATIVE</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">STYLE_ARGUMENT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;bold cyan&quot;</span>
+<span class="n">STYLE_COMMAND</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;bold cyan&quot;</span>
+<span class="n">STYLE_COMMAND_ALIASES</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;bold green&quot;</span>
+<span class="n">STYLE_SWITCH</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;bold green&quot;</span>
+<span class="n">STYLE_SWITCH_NEGATVE</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">STYLE_METAVAR</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;bold yellow&quot;</span>
+<span class="n">STYLE_METAVAR_APPEND</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim yellow&quot;</span>
+<span class="n">STYLE_METAVAR_SEPARATOR</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
+<span class="n">STYLE_HEADER_TEXT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">STYLE_EPILOG_TEXT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">STYLE_FOOTER_TEXT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">STYLE_USAGE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;yellow&quot;</span>
+<span class="n">STYLE_USAGE_COMMAND</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;bold&quot;</span>
+<span class="n">STYLE_USAGE_SEPARATOR</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">STYLE_DEPRECATED</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
+<span class="n">STYLE_HELPTEXT_FIRST_LINE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">STYLE_HELPTEXT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
+<span class="n">STYLE_OPTION_HELP</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">STYLE_COMMAND_HELP</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">STYLE_OPTION_DEFAULT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
+<span class="n">STYLE_OPTION_ENVVAR</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim yellow&quot;</span>
+<span class="n">STYLE_REQUIRED_SHORT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
+<span class="n">STYLE_REQUIRED_LONG</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim red&quot;</span>
+<span class="n">STYLE_OPTIONS_PANEL_BORDER</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
+<span class="n">STYLE_OPTIONS_PANEL_BOX</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Box&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;ROUNDED&quot;</span>
+<span class="n">STYLE_OPTIONS_PANEL_HELP_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
+<span class="n">STYLE_OPTIONS_PANEL_TITLE_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">STYLE_OPTIONS_PANEL_PADDING</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">STYLE_OPTIONS_PANEL_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+<span class="n">ALIGN_OPTIONS_PANEL</span><span class="p">:</span> <span class="s2">&quot;AlignMethod&quot;</span> <span class="o">=</span> <span class="s2">&quot;left&quot;</span>
+<span class="n">STYLE_OPTIONS_TABLE_SHOW_LINES</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">STYLE_OPTIONS_TABLE_LEADING</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">STYLE_OPTIONS_TABLE_PAD_EDGE</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">STYLE_OPTIONS_TABLE_PADDING</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">STYLE_OPTIONS_TABLE_BOX</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Box&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">STYLE_OPTIONS_TABLE_ROW_STYLES</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">STYLE_OPTIONS_TABLE_BORDER_STYLE</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
+<span class="n">STYLE_COMMANDS_PANEL_BORDER</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
+<span class="n">PANEL_INLINE_HELP_IN_TITLE</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">PANEL_INLINE_HELP_DELIMITER</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot; - &quot;</span>
+<span class="n">STYLE_COMMANDS_PANEL_BOX</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Box&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;ROUNDED&quot;</span>
+<span class="n">STYLE_COMMANDS_PANEL_HELP_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
+<span class="n">STYLE_COMMANDS_PANEL_TITLE_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">STYLE_COMMANDS_PANEL_PADDING</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">STYLE_COMMANDS_PANEL_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+<span class="n">ALIGN_COMMANDS_PANEL</span><span class="p">:</span> <span class="s2">&quot;AlignMethod&quot;</span> <span class="o">=</span> <span class="s2">&quot;left&quot;</span>
+<span class="n">STYLE_COMMANDS_TABLE_SHOW_LINES</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">STYLE_COMMANDS_TABLE_LEADING</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">STYLE_COMMANDS_TABLE_PAD_EDGE</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">STYLE_COMMANDS_TABLE_PADDING</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">STYLE_COMMANDS_TABLE_BOX</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Box&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">STYLE_COMMANDS_TABLE_ROW_STYLES</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">STYLE_COMMANDS_TABLE_BORDER_STYLE</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
+<span class="n">STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">STYLE_ERRORS_PANEL_BORDER</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
+<span class="n">STYLE_ERRORS_PANEL_BOX</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Box&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;ROUNDED&quot;</span>
+<span class="n">ALIGN_ERRORS_PANEL</span><span class="p">:</span> <span class="s2">&quot;AlignMethod&quot;</span> <span class="o">=</span> <span class="s2">&quot;left&quot;</span>
+<span class="n">STYLE_ERRORS_SUGGESTION</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
+<span class="n">STYLE_ERRORS_SUGGESTION_COMMAND</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;blue&quot;</span>
+<span class="n">STYLE_ABORTED</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
+<span class="n">STYLE_PADDING_USAGE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+<span class="n">STYLE_PADDING_HELPTEXT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+<span class="n">STYLE_PADDING_EPILOG</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+
+<span class="n">PANEL_TITLE_PADDING</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">WIDTH</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">terminal_width_default</span><span class="p">()</span>
+<span class="n">MAX_WIDTH</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">terminal_width_default</span><span class="p">()</span>
+<span class="n">COLOR_SYSTEM</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;standard&quot;</span><span class="p">,</span> <span class="s2">&quot;256&quot;</span><span class="p">,</span> <span class="s2">&quot;truecolor&quot;</span><span class="p">,</span> <span class="s2">&quot;windows&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;auto&quot;</span>  <span class="c1"># Set to None to disable colors</span>
+<span class="p">)</span>
+<span class="n">FORCE_TERMINAL</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">force_terminal_default</span><span class="p">()</span>
+
+<span class="n">OPTIONS_TABLE_COLUMN_TYPES</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OptionColumnType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;required&quot;</span><span class="p">,</span> <span class="s2">&quot;opt_long&quot;</span><span class="p">,</span> <span class="s2">&quot;opt_short&quot;</span><span class="p">,</span> <span class="s2">&quot;metavar&quot;</span><span class="p">,</span> <span class="s2">&quot;help&quot;</span><span class="p">]</span>
+<span class="n">COMMANDS_TABLE_COLUMN_TYPES</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CommandColumnType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;aliases&quot;</span><span class="p">,</span> <span class="s2">&quot;help&quot;</span><span class="p">]</span>
 
 <span class="c1"># Fixed strings</span>
-<span class="n">HEADER_TEXT</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">FOOTER_TEXT</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">DEPRECATED_STRING</span> <span class="o">=</span> <span class="s2">&quot;(Deprecated) &quot;</span>
-<span class="o">&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span> <span class="n">HEAD</span>
-<span class="n">DEPRECATED_WITH_REASON_STRING</span> <span class="o">=</span> <span class="s2">&quot;(Deprecated: </span><span class="si">{}</span><span class="s2">)&quot;</span>
-<span class="o">=======</span>
-<span class="n">DEPRECATED_WITH_REASON_STRING</span> <span class="o">=</span> <span class="s2">&quot;(Deprecated: </span><span class="si">{}</span><span class="s2">) &quot;</span>
-<span class="o">&gt;&gt;&gt;&gt;&gt;&gt;&gt;</span> <span class="mi">0</span><span class="n">f970aaa8a0098055c374f81a374d0849c90ae24</span>
-<span class="n">DEFAULT_STRING</span> <span class="o">=</span> <span class="s2">&quot;[default: </span><span class="si">{}</span><span class="s2">]&quot;</span>
-<span class="n">ENVVAR_STRING</span> <span class="o">=</span> <span class="s2">&quot;[env var: </span><span class="si">{}</span><span class="s2">]&quot;</span>
-<span class="n">REQUIRED_SHORT_STRING</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
-<span class="n">REQUIRED_LONG_STRING</span> <span class="o">=</span> <span class="s2">&quot;[required]&quot;</span>
-<span class="n">RANGE_STRING</span> <span class="o">=</span> <span class="s2">&quot; [</span><span class="si">{}</span><span class="s2">]&quot;</span>
-<span class="n">APPEND_METAVARS_HELP_STRING</span> <span class="o">=</span> <span class="s2">&quot;[</span><span class="si">{}</span><span class="s2">]&quot;</span>
-<span class="n">ARGUMENTS_PANEL_TITLE</span> <span class="o">=</span> <span class="s2">&quot;Arguments&quot;</span>
-<span class="n">OPTIONS_PANEL_TITLE</span> <span class="o">=</span> <span class="s2">&quot;Options&quot;</span>
-<span class="n">COMMANDS_PANEL_TITLE</span> <span class="o">=</span> <span class="s2">&quot;Commands&quot;</span>
-<span class="n">ERRORS_PANEL_TITLE</span> <span class="o">=</span> <span class="s2">&quot;Error&quot;</span>
-<span class="n">ERRORS_SUGGESTION</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Default: Try &#39;cmd -h&#39; for help. Set to False to disable.</span>
-<span class="n">ERRORS_EPILOGUE</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">ABORTED_TEXT</span> <span class="o">=</span> <span class="s2">&quot;Aborted.&quot;</span>
+<span class="n">HEADER_TEXT</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Text&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">FOOTER_TEXT</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Text&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">PANEL_TITLE_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span>
+<span class="n">DEPRECATED_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">[deprecated]&quot;</span>
+<span class="n">DEPRECATED_WITH_REASON_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">[deprecated: </span><span class="si">{}</span><span class="s2">]&quot;</span>
+<span class="n">DEFAULT_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">[default: </span><span class="si">{}</span><span class="s2">]&quot;</span>
+<span class="n">ENVVAR_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">[env var: </span><span class="si">{}</span><span class="s2">]&quot;</span>
+<span class="n">REQUIRED_SHORT_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
+<span class="n">REQUIRED_LONG_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">[required]&quot;</span>
+<span class="n">RANGE_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;[</span><span class="si">{}</span><span class="s2">]&quot;</span>
+<span class="n">APPEND_METAVARS_HELP_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">[</span><span class="si">{}</span><span class="s2">]&quot;</span>
+<span class="n">ARGUMENTS_PANEL_TITLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Arguments&quot;</span>
+<span class="n">OPTIONS_PANEL_TITLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Options&quot;</span>
+<span class="n">COMMANDS_PANEL_TITLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Commands&quot;</span>
+<span class="n">ERRORS_PANEL_TITLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Error&quot;</span>
+<span class="n">delimiter_comma</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span>
+<span class="n">delimiter_slash</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span>
+<span class="n">ERRORS_SUGGESTION</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Text&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Default: Try &#39;cmd -h&#39; for help. Set to False to disable.</span>
+<span class="n">ERRORS_EPILOGUE</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Text&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">ABORTED_TEXT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Aborted.&quot;</span>
+
+<span class="n">PADDING_HEADER_TEXT</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">PADDING_USAGE</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">PADDING_HELPTEXT</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">PADDING_HELPTEXT_DEPRECATED</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">PADDING_HELPTEXT_FIRST_LINE</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">PADDING_EPILOG</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">PADDING_FOOTER_TEXT</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">PADDING_ERRORS_PANEL</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">PADDING_ERRORS_SUGGESTION</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">PADDING_ERRORS_EPILOGUE</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
 <span class="c1"># Behaviours</span>
-<span class="n">SHOW_ARGUMENTS</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Show positional arguments</span>
-<span class="n">SHOW_METAVARS_COLUMN</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Show a column with the option metavar (eg. INTEGER)</span>
-<span class="n">APPEND_METAVARS_HELP</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Append metavar (eg. [TEXT]) after the help text</span>
-<span class="n">GROUP_ARGUMENTS_OPTIONS</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Show arguments with options instead of in own panel</span>
-<span class="n">OPTION_ENVVAR_FIRST</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Show env vars before option help text instead of avert</span>
-<span class="n">TEXT_MARKUP</span> <span class="o">=</span> <span class="s2">&quot;ansi&quot;</span>  <span class="c1"># One of: &quot;rich&quot;, &quot;markdown&quot;, &quot;ansi&quot;, None.</span>
-<span class="n">USE_MARKDOWN_EMOJI</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># Parse emoji codes in markdown :smile:</span>
-<span class="n">COMMAND_GROUPS</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># Define sorted groups of panels to display subcommands</span>
-<span class="n">OPTION_GROUPS</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># Define sorted groups of panels to display options and arguments</span>
-<span class="n">USE_CLICK_SHORT_HELP</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Use click&#39;s default function to truncate help text</span>
+<span class="n">SHOW_ARGUMENTS</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Show positional arguments</span>
+<span class="n">SHOW_METAVARS_COLUMN</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Show a column with the option metavar (eg. INTEGER)</span>
+<span class="n">COMMANDS_BEFORE_OPTIONS</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># If set, the commands panel show above the options panel.</span>
+<span class="n">APPEND_METAVARS_HELP</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Append metavar (eg. [TEXT]) after the help text</span>
+<span class="n">GROUP_ARGUMENTS_OPTIONS</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Show arguments with options instead of in own panel</span>
+<span class="n">OPTION_ENVVAR_FIRST</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Show env vars before option help text instead of avert</span>
+<span class="n">TEXT_MARKUP</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ansi&quot;</span><span class="p">,</span> <span class="s2">&quot;rich&quot;</span><span class="p">,</span> <span class="s2">&quot;markdown&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">notset</span>  <span class="c1"># type: ignore[assignment]</span>
+<span class="n">TEXT_KWARGS</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">TEXT_EMOJIS</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">notset</span>  <span class="c1"># type: ignore[assignment]</span>
+<span class="n">TEXT_PARAGRAPH_LINEBREAKS</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="c1"># If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -&gt; 😺</span>
+<span class="n">USE_MARKDOWN</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Parse help strings as markdown</span>
+<span class="n">USE_MARKDOWN_EMOJI</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Parse emoji codes in markdown :smile:</span>
+<span class="n">USE_RICH_MARKUP</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Parse help strings for rich markup (eg. [red]my text[/])</span>
+<span class="c1"># Define sorted groups of panels to display subcommands</span>
+<span class="n">COMMAND_GROUPS</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">CommandGroupDict</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="c1"># Define sorted groups of panels to display options and arguments</span>
+<span class="n">OPTION_GROUPS</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">OptionGroupDict</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">USE_CLICK_SHORT_HELP</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Use click&#39;s default function to truncate help text</span>
 </code></pre></div>
-<p>Full type annotations of these config options are available in <code>src/rich_click/rich_click.py</code>.</p>
+</details>
 <p>All of these are available in the <code>RichHelpConfiguration</code> object, but as lowercase.</p>
 <h2 id="config-resolution-order-advanced">Config resolution order (advanced)<a class="headerlink" href="#config-resolution-order-advanced" title="Permanent link">&para;</a></h2>
 <p>It probably should not matter for most use cases, but just case it does matter, there is an explicitly defined order of operations for how the configuration gets resolved:</p>
@@ -1100,13 +1149,13 @@ You probably do not need this in most cases; this is mostly for <strong>rich-cli
     AyesBdict --&gt; |No| AyesBdictCno
 
     AyesBdictCyes:::StoppingPoint
-    AyesBdictCyes["Merge into the parent config,\nand use that"]
+    AyesBdictCyes["Merge into the parent config, and use that"]
 
     AyesBdictCno:::StoppingPoint
-    AyesBdictCno["Merge into the global config,\nand use that"]
+    AyesBdictCno["Merge into the global config, and use that"]
 
-    AyesBrhc:::StoppingPoint
-    AyesBrhc["Use the RichHelpConfiguration  object.\n\n(Note: RichHelpConfiguration's\ndefaults are independent of the\nglobal config.)"]
+    AyesBrhc:::Wide
+    AyesBrhc["&lt;font style="font-weight: 600;"&gt;Use the RichHelpConfiguration  object.&lt;/font&gt;&lt;br&gt;(Note: RichHelpConfiguration's defaults are independent of the global config.)"]
 
     Ano["Is there a 'parent' config?"]
 
@@ -1119,7 +1168,8 @@ You probably do not need this in most cases; this is mostly for <strong>rich-cli
     AnoBno:::StoppingPoint
     AnoBno["Use the global config"]
 
-    classDef StoppingPoint font-weight: 600;</code></pre>
+    classDef StoppingPoint font-weight: 600;
+    classDef Wide padding: 8.5em;</code></pre>
 
 
 
