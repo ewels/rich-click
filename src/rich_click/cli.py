@@ -354,7 +354,7 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
 @_rich_argument(
     "script_and_args",
     nargs=-1,
-    metavar="SCRIPT | MODULE:CLICK_COMMAND [ARG...]",
+    metavar="SCRIPT | MODULE[:CLICK_COMMAND] [ARG...]",
     help="The script you want to run. If it's a Click CLI and you are rendering help text;"
     " then the help text will render"
     " [#FF6B6B bold]r[/][#FF8E53 bold]i[/][#FFB347 bold]c[/][#4ECDC4 bold]h[/]"

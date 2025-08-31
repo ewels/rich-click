@@ -186,6 +186,16 @@ Adding a feature like this is somewhat outside of the intended scope of **rich-c
 
 That's right! We now support a `help` kwarg for arguments.
 
+### `rich-click` CLI supports `path/to/file.py`
+
+Now, all the following ways of invoking the `rich-click` CLI are supported:
+
+- `rich-click hello:cli --help`
+- `rich-click hello.py --help`
+- `rich-click hello --help`
+
+In prior versions, only the first way worked.
+
 ### `rich-click` CLI support for Typer CLIs
 
 <!-- todo --> Maybe?
