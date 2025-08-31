@@ -21,7 +21,6 @@ from rich.panel import Panel
 from rich.text import Text
 
 from rich_click._compat_click import (
-    CLICK_IS_BEFORE_VERSION_9X,
     CLICK_IS_BEFORE_VERSION_82,
     CLICK_IS_VERSION_80,
 )
@@ -33,17 +32,49 @@ from rich_click.rich_parameter import RichParameter
 if TYPE_CHECKING:
     from rich.markdown import Markdown
 
-    from rich_click.rich_help_configuration import OptionColumnType
+    from rich_click.rich_help_configuration import (
+        CommandColumnType,
+        OptionColumnType,
+    )
+    from rich_click.rich_panel import RichCommandPanel, RichOptionPanel
 
 
-RichPanelRow = List[RenderableType]
+RichPanelRow = List[Optional[RenderableType]]
 
 
-if CLICK_IS_BEFORE_VERSION_9X:
-    # We need to load from here to help with patching.
-    from rich_click.rich_command import MultiCommand  # type: ignore[attr-defined]
-else:
-    MultiCommand = click.core.Group  # type: ignore[misc,assignment,unused-ignore]
+class RichClickRichPanel(Panel):
+    """
+    A console renderable that draws a border around its contents.
+
+    This is a patched version of rich.panel.Panel that has additional features useful
+    for rendering help text with rich-click.
+    """
+
+    def __init__(self, *args: Any, title_padding: int = 1, **kwargs: Any) -> None:
+        """
+        Create RichClickRichPanel instance.
+
+        Args:
+        ----
+            *args: Args that get passed to rich.panel.Panel.
+            title_padding: Controls padding on panel title.
+            **kwargs: Kwargs that get passed to rich.panel.Panel.
+
+        """
+        super().__init__(*args, **kwargs)
+        self.title_padding = title_padding
+
+    @property
+    def _title(self) -> Optional[Text]:
+        if self.title:
+            title_text = Text.from_markup(self.title) if isinstance(self.title, str) else self.title.copy()
+            title_text.end = ""
+            title_text.plain = title_text.plain.replace("\n", " ")
+            title_text.no_wrap = True
+            title_text.expand_tabs()
+            title_text.pad(self.title_padding)
+            return title_text
+        return None
 
 
 @group()
@@ -73,15 +104,18 @@ def _get_help_text(
     if obj.deprecated:
         if isinstance(obj.deprecated, str):
             yield Padding(
-                Text(
-                    formatter.config.deprecated_with_reason_string.format(obj.deprecated), style=config.style_deprecated
+                Text.from_markup(
+                    formatter.config.deprecated_with_reason_string.format(obj.deprecated.replace("[", r"\[")),
+                    style=config.style_deprecated,
                 ),
                 formatter.config.padding_helptext_deprecated,
+                style=formatter.config.style_padding_helptext,
             )
         else:
             yield Padding(
-                Text(config.deprecated_string, style=config.style_deprecated),
+                Text.from_markup(config.deprecated_string, style=config.style_deprecated),
                 formatter.config.padding_helptext_deprecated,
+                style=formatter.config.style_padding_helptext,
             )
 
     # Fetch and dedent the help text
@@ -99,6 +133,7 @@ def _get_help_text(
     yield Padding(
         formatter.rich_text(first_line.strip(), formatter.config.style_helptext_first_line),
         formatter.config.padding_helptext_first_line,
+        style=formatter.config.style_padding_helptext,
     )
     # Get remaining lines, remove single line breaks and format as dim
     remaining_paragraphs = help_text.split("\n\n")[1:]
@@ -131,10 +166,10 @@ def _get_deprecated_text(
     formatter: RichHelpFormatter,
 ) -> Text:
     if isinstance(deprecated, str):
-        s = formatter.config.deprecated_with_reason_string.format(deprecated)
+        s = formatter.config.deprecated_with_reason_string.format(deprecated.replace("[", r"\["))
     else:
         s = formatter.config.deprecated_string
-    return Text(s, style=formatter.config.style_deprecated)
+    return Text.from_markup(s, style=formatter.config.style_deprecated)
 
 
 def _get_parameter_env_var(
@@ -159,7 +194,9 @@ def _get_parameter_env_var(
         envvar = ", ".join(envvar) if isinstance(envvar, list) else envvar
 
     if envvar is not None:
-        return Text(formatter.config.envvar_string.format(envvar), style=formatter.config.style_option_envvar)
+        return Text.from_markup(
+            formatter.config.envvar_string.format(envvar), style=formatter.config.style_option_envvar
+        )
     return None
 
 
@@ -230,7 +267,7 @@ def _get_parameter_metavar(
         metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag
     ):
         metavar_str = metavar_str.replace("[", "").replace("]", "")
-        return Text(
+        return Text.from_markup(
             formatter.config.append_metavars_help_string.format(metavar_str),
             style=formatter.config.style_metavar_append if append else formatter.config.style_metavar,
             overflow="fold",
@@ -341,8 +378,8 @@ def _get_parameter_help_opt(
     long_cols = []
     short_cols = []
 
-    comma = Text(formatter.config.option_delimiter_comma, style=formatter.config.style_option_help)
-    slash = Text(formatter.config.option_delimiter_slash, style=formatter.config.style_option_help)
+    comma = Text(formatter.config.delimiter_comma, style=formatter.config.style_option_help)
+    slash = Text(formatter.config.delimiter_slash, style=formatter.config.style_option_help)
 
     for o in opt_short_primary:
         oh = Text(o.strip(), style=formatter.config.style_switch)
@@ -403,7 +440,7 @@ def _get_parameter_help_opt(
             return cols[0]
         # Todo - make the text fold at the slashes without adding whitespace.
         #   this is very tricky.
-        t = Text("", overflow="fold").join(cols)
+        t = Text("", overflow="ellipsis").join(cols)
         return t
 
     primary_final = _renderable(primary_cols[:-1])
@@ -471,8 +508,8 @@ def _get_parameter_default(
             default_string = str(default_value)
 
     if default_string:
-        return Text(
-            formatter.config.default_string.format(default_string),
+        return Text.from_markup(
+            formatter.config.default_string.format(default_string.replace("[", r"\[")),
             style=formatter.config.style_option_default,
         )
     return None
@@ -482,7 +519,7 @@ def _get_parameter_required(
     param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
 ) -> Optional[Text]:
     if param.required:
-        return Text(formatter.config.required_long_string, style=formatter.config.style_required_long)
+        return Text.from_markup(formatter.config.required_long_string, style=formatter.config.style_required_long)
     return None
 
 
@@ -551,15 +588,19 @@ def get_help_parameter(
     return Columns(items)
 
 
-def get_rich_table_row(
+def get_parameter_rich_table_row(
     param: Union[click.Argument, click.Option, RichParameter],
     ctx: RichContext,
     formatter: RichHelpFormatter,
-    columns: Optional[List["OptionColumnType"]] = None,
+    panel: Optional["RichOptionPanel"],
 ) -> RichPanelRow:
     """Create a row for the rich table corresponding with this parameter."""
     # Short and long form
-    columns = columns or formatter.config.options_table_columns
+    columns: List["OptionColumnType"]
+    if panel is None:
+        columns = formatter.config.options_table_columns
+    else:
+        columns = panel.columns or formatter.config.options_table_columns  # type: ignore[assignment]
 
     opt_long_strs = []
     opt_short_strs = []
@@ -662,8 +703,88 @@ def get_rich_table_row(
     return cols
 
 
-def _make_command_help(
-    help_text: str, formatter: RichHelpFormatter, deprecated: Union[bool, str]
+def _get_command_name_help(
+    command: click.Command,
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+) -> Text:
+    # We want to use the command name as it is registered in the group.
+    # This resolves the situation where they do not match.
+    # e.g. group.add_command(subcmd, name="foo")
+    #
+    # Note there may be extremely weird edge cases not covered here,
+    # most notably, when a user registers the same command twice.
+    # We do not care to solve this edge case.
+    command_name = None
+    if isinstance(ctx.command, click.core.Group):
+        if command.name not in ctx.command.commands:
+            for k, v in ctx.command.commands.items():
+                if command is v:
+                    command_name = k
+                    break
+    if command_name is None:
+        command_name = command.name or ""
+    return Text(command_name, style=formatter.config.style_command)
+
+
+def _get_command_aliases_help(
+    command: click.Command,
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+    include_name: bool = False,
+) -> Optional[Text]:
+    aliases = getattr(command, "aliases", None)
+    if aliases:
+        txt_list = []
+        comma = Text(formatter.config.delimiter_comma, style=formatter.config.style_command_help)
+        _last = len(aliases) - 1
+        for idx, alias in enumerate(aliases):
+            txt_list.append(Text(alias, style=formatter.config.style_command_aliases))
+            if idx != _last:
+                txt_list.append(comma)
+        if include_name:
+            cmd_name_txt = _get_command_name_help(command, ctx, formatter)
+            return Text("", overflow="ellipsis").join([cmd_name_txt, comma, *txt_list])
+        else:
+            return Text("").join(txt_list)
+    elif include_name:
+        return _get_command_name_help(command, ctx, formatter)
+    return None
+
+
+def get_command_rich_table_row(
+    command: click.Command,
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+    panel: Optional["RichCommandPanel"],
+) -> RichPanelRow:
+    """Create a row for the rich table corresponding with this command."""
+    # todo
+    columns: List["CommandColumnType"]
+    if panel is None:
+        columns = formatter.config.commands_table_columns
+    else:
+        columns = panel.columns or formatter.config.commands_table_columns  # type: ignore[assignment]
+
+    column_callbacks: Dict["CommandColumnType", Callable[..., Any]] = {
+        "name": _get_command_name_help,
+        "aliases": _get_command_aliases_help,
+        "name_with_aliases": lambda *args, **kwargs: _get_command_aliases_help(*args, **kwargs, include_name=True),  # type: ignore[misc]
+        "help": _get_command_help,
+        # "short_help": ...,
+    }
+
+    cols: RichPanelRow = []
+    for col in columns:
+        cols.append(column_callbacks[col](command, ctx, formatter))
+
+    return cols
+
+
+def _get_command_help(
+    command: click.Command,
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
 ) -> Union[Text, "Markdown", Columns]:
     """
     Build cli help text for a click group command.
@@ -673,17 +794,18 @@ def _make_command_help(
     Rich Text object or as Markdown.
     Ignores single newlines as paragraph markers, looks for double only.
 
-    Args:
-    ----
-        help_text (str): Help text
-        formatter: formatter object
-        deprecated (bool or string): Object marked by user as deprecated.
-
-    Returns:
+    Returns
     -------
         Text or Markdown: Styled object
 
     """
+    if formatter.config.use_click_short_help:
+        help_text = command.get_short_help_str()
+    else:
+        help_text = command.short_help or command.help or ""
+
+    deprecated = command.deprecated
+
     paragraphs = inspect.cleandoc(help_text).split("\n\n")
     # Remove single linebreaks
     if not formatter.config.use_markdown and not paragraphs[0].startswith("\b"):
@@ -692,7 +814,7 @@ def _make_command_help(
         paragraphs[0] = paragraphs[0].replace("\b\n", "")
     help_text = paragraphs[0].strip()
     renderable: Union[Text, "Markdown", Columns]
-    renderable = formatter.rich_text(help_text, formatter.config.style_option_help)
+    renderable = formatter.rich_text(help_text, formatter.config.style_command_help)
     if deprecated:
         dep_txt = _get_deprecated_text(
             deprecated=deprecated,
@@ -719,6 +841,7 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", pref
             Padding(
                 formatter.rich_text(config.header_text, config.style_header_text),
                 config.padding_header_text,
+                style=formatter.config.style_padding_usage,
             ),
         )
 
@@ -737,10 +860,11 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", pref
                 (
                     Text(prefix, style=config.style_usage),
                     Text(prog, style=config.style_usage_command),
-                    usage_highlighter(args),
+                    usage_highlighter(Text(args, style=config.style_usage_separator)),
                 )
             ),
             formatter.config.padding_usage,
+            style=formatter.config.style_padding_usage,
         ),
     )
 
@@ -754,6 +878,7 @@ def get_rich_help_text(self: click.core.Command, ctx: RichContext, formatter: Ri
             Padding(
                 Align(_get_help_text(self, formatter), pad=False),
                 formatter.config.padding_helptext,
+                style=formatter.config.style_padding_helptext,
             )
         )
 
@@ -772,7 +897,11 @@ def get_rich_epilog(
         else:
             epilog = "\n".join([x.replace("\n", " ").strip() for x in lines])  # type: ignore[assignment]
             epilog = formatter.rich_text(epilog, formatter.config.style_epilog_text)  # type: ignore[assignment]
-        formatter.write(Padding(Align(epilog, pad=False), formatter.config.padding_epilog))
+        formatter.write(
+            Padding(
+                Align(epilog, pad=False), formatter.config.padding_epilog, style=formatter.config.style_padding_epilog
+            )
+        )
 
     # Footer text if we have it
     if formatter.config.footer_text:
@@ -780,6 +909,7 @@ def get_rich_epilog(
             Padding(
                 formatter.rich_text(formatter.config.footer_text, formatter.config.style_footer_text),
                 formatter.config.padding_footer_text,
+                style=formatter.config.style_padding_epilog,
             )
         )
 

@@ -38,7 +38,11 @@ OptionColumnType = Literal[
     # "envvar",
 ]
 
-CommandColumnType = Literal["name", "help"]
+CommandColumnType = Literal["name", "aliases", "name_with_aliases", "help"]
+
+OptionHelpTextElement = Literal["help", "required", "envvar", "default", "range", "metavar", "deprecated"]
+
+CommandHelpTextElement = Literal["help", "deprecated"]
 
 ColumnType = Union[OptionColumnType, CommandColumnType]
 
@@ -87,6 +91,7 @@ class RichHelpConfiguration:
     style_option_negative: Optional["StyleType"] = field(default=None)
     style_argument: "StyleType" = field(default="bold cyan")
     style_command: "StyleType" = field(default="bold cyan")
+    style_command_aliases: "StyleType" = "bold green"
     style_switch: "StyleType" = field(default="bold green")
     style_switch_negative: Optional["StyleType"] = field(default=None)
     style_metavar: "StyleType" = field(default="bold yellow")
@@ -97,20 +102,22 @@ class RichHelpConfiguration:
     style_footer_text: "StyleType" = field(default="")
     style_usage: "StyleType" = field(default="yellow")
     style_usage_command: "StyleType" = field(default="bold")
+    style_usage_separator: "StyleType" = field(default="")
     style_deprecated: "StyleType" = field(default="red")
     style_helptext_first_line: "StyleType" = field(default="")
     style_helptext: "StyleType" = field(default="dim")
     style_option_help: "StyleType" = field(default="")
+    style_command_help: "StyleType" = field(default="")
     style_option_default: "StyleType" = field(default="dim")
     style_option_envvar: "StyleType" = field(default="dim yellow")
     style_required_short: "StyleType" = field(default="red")
     style_required_long: "StyleType" = field(default="dim red")
     style_options_panel_border: "StyleType" = field(default="dim")
-    style_options_panel_inline_help_in_title: bool = field(default=False)
     style_options_panel_box: Optional[Union[str, "rich.box.Box"]] = field(default="ROUNDED")
-    style_options_panel_help_style: "StyleType" = field(default="")
+    style_options_panel_help_style: "StyleType" = field(default="dim")
     style_options_panel_title_style: "StyleType" = field(default="")
     style_options_panel_padding: "rich.padding.PaddingDimensions" = field(default=(0, 1))
+    style_options_panel_style: "StyleType" = field(default="none")
     align_options_panel: "rich.align.AlignMethod" = field(default="left")
     style_options_table_show_lines: bool = field(default=False)
     style_options_table_leading: int = field(default=0)
@@ -118,13 +125,15 @@ class RichHelpConfiguration:
     style_options_table_padding: "rich.padding.PaddingDimensions" = field(default_factory=lambda: (0, 1))
     style_options_table_box: Optional[Union[str, "rich.box.Box"]] = field(default=None)
     style_options_table_row_styles: Optional[List["StyleType"]] = field(default=None)
-    style_options_table_border_style: Optional["StyleType"] = field(default=None)
+    style_options_table_border_style: Optional["StyleType"] = field(default="dim")
     style_commands_panel_border: "StyleType" = field(default="dim")
-    style_commands_panel_inline_help_in_title: bool = field(default=False)
+    panel_inline_help_in_title: bool = field(default=False)
+    panel_inline_help_delimiter: str = field(default=" - ")
     style_commands_panel_box: Optional[Union[str, "rich.box.Box"]] = field(default="ROUNDED")
-    style_commands_panel_help_style: "StyleType" = field(default="")
+    style_commands_panel_help_style: "StyleType" = field(default="dim")
     style_commands_panel_title_style: "StyleType" = field(default="")
     style_commands_panel_padding: "rich.padding.PaddingDimensions" = field(default=(0, 1))
+    style_commands_panel_style: "StyleType" = field(default="none")
     align_commands_panel: "rich.align.AlignMethod" = field(default="left")
     style_commands_table_show_lines: bool = field(default=False)
     style_commands_table_leading: int = field(default=0)
@@ -132,7 +141,7 @@ class RichHelpConfiguration:
     style_commands_table_padding: "rich.padding.PaddingDimensions" = field(default_factory=lambda: (0, 1))
     style_commands_table_box: Optional[Union[str, "rich.box.Box"]] = field(default=None)
     style_commands_table_row_styles: Optional[List["StyleType"]] = field(default=None)
-    style_commands_table_border_style: Optional["StyleType"] = field(default=None)
+    style_commands_table_border_style: Optional["StyleType"] = field(default="dim")
     style_commands_table_column_width_ratio: Optional[Union[Tuple[None, None], Tuple[int, int]]] = field(
         default_factory=lambda: (None, None)
     )
@@ -142,6 +151,11 @@ class RichHelpConfiguration:
     style_errors_suggestion: "StyleType" = field(default="dim")
     style_errors_suggestion_command: "StyleType" = field(default="blue")
     style_aborted: "StyleType" = field(default="red")
+    style_padding_usage: "StyleType" = field(default="none")
+    style_padding_helptext: "StyleType" = field(default="none")
+    style_padding_epilog: "StyleType" = field(default="none")
+
+    panel_title_padding: int = field(default=1)
     width: Optional[int] = field(default_factory=terminal_width_default)
     max_width: Optional[int] = field(default_factory=terminal_width_default)
     color_system: Optional[Literal["auto", "standard", "256", "truecolor", "windows"]] = field(default="auto")
@@ -150,26 +164,26 @@ class RichHelpConfiguration:
     options_table_columns: List[OptionColumnType] = field(
         default_factory=lambda: ["required", "opt_long", "opt_short", "metavar", "help"]
     )
-    commands_table_columns: List[CommandColumnType] = field(default_factory=lambda: ["name", "help"])
+    commands_table_columns: List[CommandColumnType] = field(default_factory=lambda: ["name", "aliases", "help"])
 
     # Fixed strings
     header_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     footer_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     panel_title_string: str = field(default="{}")
-    deprecated_string: str = field(default="[deprecated]")
-    deprecated_with_reason_string: str = field(default="[deprecated: {}]")
-    default_string: str = field(default="[default: {}]")
-    envvar_string: str = field(default="[env var: {}]")
+    deprecated_string: str = field(default="\\[deprecated]")
+    deprecated_with_reason_string: str = field(default="\\[deprecated: {}]")
+    default_string: str = field(default="\\[default: {}]")
+    envvar_string: str = field(default="\\[env var: {}]")
     required_short_string: str = field(default="*")
-    required_long_string: str = field(default="[required]")
+    required_long_string: str = field(default="\\[required]")
     range_string: str = field(default="[{}]")
-    append_metavars_help_string: str = field(default="[{}]")
+    append_metavars_help_string: str = field(default="\\[{}]")
     arguments_panel_title: str = field(default="Arguments")
     options_panel_title: str = field(default="Options")
     commands_panel_title: str = field(default="Commands")
     errors_panel_title: str = field(default="Error")
-    option_delimiter_comma: str = field(default=",")
-    option_delimiter_slash: str = field(default="/")
+    delimiter_comma: str = field(default=",")
+    delimiter_slash: str = field(default="/")
     errors_suggestion: Optional[Union[str, "rich.text.Text"]] = field(default=None)
     """Defaults to Try 'cmd -h' for help. Set to False to disable."""
     errors_epilogue: Optional[Union[str, "rich.text.Text"]] = field(default=None)
@@ -281,7 +295,7 @@ class RichHelpConfiguration:
             warnings.warn(
                 "`show_metavars_column=` will be deprecated in a future version of rich-click."
                 " Please use `options_table_columns=` instead."
-                " The `option_table_columns` config option lets you specify an ordered list"
+                " The `options_table_columns` config option lets you specify an ordered list"
                 " of which columns are rendered.",
                 PendingDeprecationWarning,
                 stacklevel=2,

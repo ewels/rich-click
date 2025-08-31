@@ -7,62 +7,74 @@ Themes are one of **rich-click**'s most powerful features.
 
     ```shell
     export RICH_CLICK_THEME=quartz-modern
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: quartz-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
 
 === "`nord-nu`"
 
     ```shell
     export RICH_CLICK_THEME=nord-nu
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: nord-nu
     -->
-    ![` python hello_rich.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
+    ![` python cli.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
 
 === "`cargo-slim`"
 
     ```shell
     export RICH_CLICK_THEME=cargo-slim
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: cargo-slim
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ex3.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_ex3.svg){.screenshot}
 
 === "`forest-robo`"
 
     ```shell
     export RICH_CLICK_THEME=forest-robo
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: forest-robo
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
 
 Themes consist of **Color Palettes** and **Formats**, which can be mixed and matched.
 The name of a full theme has the following schema: `{color_palette}-{format}`.
 
 For example, the **forest-slim** theme uses the **forest** color palette and the **slim** format.
+
+??? info "Code for `cli.py`"
+
+    The following CLI code is used throughout this module to show off themes.
+
+    ```python
+    {% include "../code_snippets/themes/cli.py" %}
+    ```
 
 ## Themes as an end-user
 
@@ -214,55 +226,62 @@ There are currently 5 available **formats**.
     **(Default)** Original rich-click format with boxes.
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: default-box
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_default_box.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_default_box.svg){.screenshot}
 
 === "`slim`"
     Simple, classic, no-fuss CLI format.
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: default-slim
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_default_slim.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_default_slim.svg){.screenshot}
 
 === "`modern`"
     Beautiful modern look.
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: default-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_default_modern.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_default_modern.svg){.screenshot}
 
 === "`robo`"
     Spacious with sharp corners.
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: default-robo
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_default_robo.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_default_robo.svg){.screenshot}
 
 === "`nu`"
     Great balance of compactness, legibility, and style.
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: default-nu
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_default_nu.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_default_nu.svg){.screenshot}
 
 ### Color palettes
 
 There are currently over a dozen different **color palettes**.
+
+All color palettes use ANSI colors, meaning they will render differently on each terminal.
 
 #### Multi-colored palettes
 
@@ -271,130 +290,154 @@ There are currently over a dozen different **color palettes**.
 
     ```shell
     export RICH_CLICK_THEME=default-box
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
-    ![python hello_rich.py --help](../images/code_snippets/themes/themes_default_box.svg){.screenshot}
+    ![python cli.py --help](../images/code_snippets/themes/themes_default_box.svg){.screenshot}
 
 === "`solarized`"
     Bright, colorful, vibrant accents.
 
     ```shell
     export RICH_CLICK_THEME=solarized-box
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: solarized-box
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_solarized_box.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_solarized_box.svg){.screenshot}
 
 === "`nord`"
     Many shades of cool colors.
 
     ```shell
     export RICH_CLICK_THEME=nord-box
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: nord-box
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_nord_box.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_nord_box.svg){.screenshot}
 
 === "`star`"
     Litestar theme; royal feel.
 
     ```shell
     export RICH_CLICK_THEME=star-box
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: star-box
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_star_box.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_star_box.svg){.screenshot}
 
 === "`quartz`"
     Dark and radiant.
 
     ```shell
     export RICH_CLICK_THEME=quartz-box
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: quartz-box
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_quartz_box.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_quartz_box.svg){.screenshot}
 
 === "`quartz2`"
     Remix of 'quartz' with accents.
 
     ```shell
     export RICH_CLICK_THEME=quartz2-box
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: quartz2-box
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_quartz2_box.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_quartz2_box.svg){.screenshot}
 
 === "`cargo`"
     Cargo CLI theme; legible and bold.
 
     ```shell
     export RICH_CLICK_THEME=cargo-box
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: cargo-box
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_cargo_box.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_cargo_box.svg){.screenshot}
 
 === "`forest`"
     Earthy tones with analogous colors.
 
     ```shell
     export RICH_CLICK_THEME=forest-box
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: forest-box
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_forest_box.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_forest_box.svg){.screenshot}
 
 === "`dracula`"
     Vibrant high-contract dark theme.
 
     ```shell
     export RICH_CLICK_THEME=dracula-box
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: dracula-box
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_dracula_box.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_dracula_box.svg){.screenshot}
+
+=== "`dracula2`"
+    Dracula theme with forced black background.
+
+    ```shell
+    export RICH_CLICK_THEME=dracula2-box
+    python docs/code_snippets/themes/cli.py --help
+    ```
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/themes
+    extra_env:
+        TERMINAL_WIDTH: 120
+        RICH_CLICK_THEME: dracula2-box
+    -->
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_dracula2_box.svg){.screenshot}
 
 #### Simple palettes
 
@@ -407,180 +450,192 @@ The below palettes are presented with the `modern` format.
 
     ```shell
     export RICH_CLICK_THEME=red1-modern
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: red1-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_red1_modern.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_red1_modern.svg){.screenshot}
 
 === "`red2`"
     Simple theme with red accents on object names.
 
     ```shell
     export RICH_CLICK_THEME=red2-modern
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: red2-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_red2_modern.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_red2_modern.svg){.screenshot}
 
 === "`green1`"
     Simple theme with green accents on section headers.
 
     ```shell
     export RICH_CLICK_THEME=green1-modern
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: green1-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_green1_modern.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_green1_modern.svg){.screenshot}
 
 === "`green2`"
     Simple theme with green accents on object names.
 
     ```shell
     export RICH_CLICK_THEME=green2-modern
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: green2-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_green2_modern.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_green2_modern.svg){.screenshot}
 
 === "`yellow1`"
     Simple theme with yellow accents on section headers.
 
     ```shell
     export RICH_CLICK_THEME=yellow1-modern
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: yellow1-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_yellow1_modern.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_yellow1_modern.svg){.screenshot}
 
 === "`yellow2`"
     Simple theme with yellow accents on object names.
 
     ```shell
     export RICH_CLICK_THEME=yellow2-modern
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: yellow2-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_yellow2_modern.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_yellow2_modern.svg){.screenshot}
 
 === "`blue1`"
     Simple theme with blue accents on section headers.
 
     ```shell
     export RICH_CLICK_THEME=blue1-modern
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: blue1-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_blue1_modern.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_blue1_modern.svg){.screenshot}
 
 === "`blue2`"
     Simple theme with blue accents on object names.
 
     ```shell
     export RICH_CLICK_THEME=blue2-modern
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: blue2-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_blue2_modern.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_blue2_modern.svg){.screenshot}
 
 === "`magenta1`"
     Simple theme with magenta accents on section headers.
 
     ```shell
     export RICH_CLICK_THEME=magenta1-modern
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: magenta1-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_magenta1_modern.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_magenta1_modern.svg){.screenshot}
 
 === "`magenta2`"
     Simple theme with magenta accents on object names.
 
     ```shell
     export RICH_CLICK_THEME=magenta2-modern
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: magenta2-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_magenta2_modern.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_magenta2_modern.svg){.screenshot}
 
 === "`cyan1`"
     Simple theme with cyan accents on section headers.
 
     ```shell
     export RICH_CLICK_THEME=cyan1-modern
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: cyan1-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_cyan1_modern.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_cyan1_modern.svg){.screenshot}
 
 === "`cyan2`"
     Simple theme with cyan accents on object names.
 
     ```shell
     export RICH_CLICK_THEME=cyan2-modern
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: cyan2-modern
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_cyan2_modern.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_cyan2_modern.svg){.screenshot}
 
 
 #### Monochromatic palettes
@@ -592,30 +647,54 @@ The following palettes have zero color.
 
     ```shell
     export RICH_CLICK_THEME=mono-box
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: mono-box
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_mono_box.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_mono_box.svg){.screenshot}
 
 === "`plain`"
     No style at all.
 
     ```shell
     export RICH_CLICK_THEME=plain-box
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
     <!-- RICH-CODEX
-    working_dir: docs/code_snippets/introduction_to_click
+    working_dir: docs/code_snippets/themes
     extra_env:
+        TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: plain-box
     -->
-    ![`python hello_rich.py --help`](../images/code_snippets/themes/themes_plain_box.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_plain_box.svg){.screenshot}
+
+??? example "`plain-slim`"
+    Of course, the most plain style of them all is `plain-slim`, which renders CLI help text in the most conventional way that **rich-click** can.
+
+    For fun, we've included it here!
+
+    (Or, maybe you really dislike **rich-click**'s styles and you want to add `export RICH_CLICK_THEME=plain-slim` to your `.zshrc`.
+    We won't judge!)
+
+    ```shell
+    export RICH_CLICK_THEME=plain-slim
+    python docs/code_snippets/themes/cli.py --help
+    ```
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/themes
+    extra_env:
+        TERMINAL_WIDTH: 120
+        RICH_CLICK_THEME: plain-slim
+    -->
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_plain_slim.svg){.screenshot}
+
 
 
 ### List all themes in command line
@@ -629,6 +708,7 @@ The command will also tell you which theme you currently have enabled.
     fake_command: rich-click --themes
     terminal_width: 140
     extra_env:
+        TERMINAL_WIDTH: 120
         TERMINAL_WIDTH: 140
     -->
     ![`rich-click --themes`](../images/code_snippets/themes/all_themes.svg){.screenshot}
