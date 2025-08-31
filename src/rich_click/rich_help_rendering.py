@@ -72,8 +72,9 @@ class RichClickRichPanel(Panel):
             title_text.plain = title_text.plain.replace("\n", " ")
             title_text.no_wrap = True
             title_text.expand_tabs()
-            title_text.pad(self.title_padding)
-            return title_text
+            # Ensure underlines are handled beautifully;
+            # title_text.pad() expands underlines, whereas this method does not.
+            return Text("").join([Text(" " * self.title_padding), title_text, Text(" " * self.title_padding)])
         return None
 
 
@@ -596,11 +597,11 @@ def get_parameter_rich_table_row(
 ) -> RichPanelRow:
     """Create a row for the rich table corresponding with this parameter."""
     # Short and long form
-    columns: List["OptionColumnType"]
+    column_types: List["OptionColumnType"]
     if panel is None:
-        columns = formatter.config.options_table_columns
+        column_types = formatter.config.options_table_column_types
     else:
-        columns = panel.columns or formatter.config.options_table_columns  # type: ignore[assignment]
+        column_types = panel.column_types or formatter.config.options_table_column_types
 
     opt_long_strs = []
     opt_short_strs = []
@@ -660,7 +661,7 @@ def get_parameter_rich_table_row(
     _primary, _secondary, _long, _short, _all = _get_parameter_help_opt(param, ctx, formatter)
 
     _metavar_padded = None
-    if any(i in columns for i in ["opt_all_metavar", "opt_long_metavar"]):
+    if any(i in column_types for i in ["opt_all_metavar", "opt_long_metavar"]):
         _metavar_padded = _get_parameter_metavar(param, ctx, formatter, append=False)
 
     def _opt_all_metavar() -> Optional[RenderableType]:
@@ -697,7 +698,7 @@ def get_parameter_rich_table_row(
     }
 
     cols: RichPanelRow = []
-    for col in columns:
+    for col in column_types:
         cols.append(column_callbacks[col](param, ctx, formatter))
 
     return cols
@@ -760,11 +761,11 @@ def get_command_rich_table_row(
 ) -> RichPanelRow:
     """Create a row for the rich table corresponding with this command."""
     # todo
-    columns: List["CommandColumnType"]
+    column_types: List["CommandColumnType"]
     if panel is None:
-        columns = formatter.config.commands_table_columns
+        column_types = formatter.config.commands_table_column_types
     else:
-        columns = panel.columns or formatter.config.commands_table_columns  # type: ignore[assignment]
+        column_types = panel.column_types or formatter.config.commands_table_column_types
 
     column_callbacks: Dict["CommandColumnType", Callable[..., Any]] = {
         "name": _get_command_name_help,
@@ -775,7 +776,7 @@ def get_command_rich_table_row(
     }
 
     cols: RichPanelRow = []
-    for col in columns:
+    for col in column_types:
         cols.append(column_callbacks[col](command, ctx, formatter))
 
     return cols

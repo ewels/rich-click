@@ -55,7 +55,7 @@ FC = TypeVar("FC", bound=Union[click.Command, _AnyCallable])
 P = TypeVar("P", bound=click.Parameter)
 C = TypeVar("C", bound=click.Command)
 G = TypeVar("G", bound=click.Group)
-RP = TypeVar("RP", bound=RichPanel[Any])
+RP = TypeVar("RP", bound=RichPanel[Any, Any])
 
 ShellCompleteArg = Callable[
     [click.Context, P, str],
@@ -202,8 +202,8 @@ class RichHelpConfigurationDict(TypedDict):
     max_width: NotRequired[Optional[int]]
     color_system: NotRequired[Optional[Literal["auto", "standard", "256", "truecolor", "windows"]]]
     force_terminal: NotRequired[Optional[bool]]
-    options_table_columns: NotRequired[List[OptionColumnType]]
-    commands_table_columns: NotRequired[List[CommandColumnType]]
+    options_table_column_types: NotRequired[List[OptionColumnType]]
+    commands_table_column_types: NotRequired[List[CommandColumnType]]
     header_text: NotRequired[Optional[Union[str, Text]]]
     footer_text: NotRequired[Optional[Union[str, Text]]]
     panel_title_string: NotRequired[str]
@@ -274,7 +274,8 @@ def command(
     no_args_is_help: bool = ...,
     hidden: bool = ...,
     deprecated: bool | str = ...,
-    panels: Optional[List[RichPanel[Any]]] = ...,
+    aliases: Optional[Iterable[str]] = ...,
+    panels: Optional[List[RichPanel[Any, Any]]] = ...,
 ) -> Callable[[_AnyCallable], C]: ...
 @overload
 def command(
@@ -292,7 +293,8 @@ def command(
     no_args_is_help: bool = ...,
     hidden: bool = ...,
     deprecated: bool | str = ...,
-    panels: Optional[List[RichPanel[Any]]] = ...,
+    aliases: Optional[Iterable[str]] = ...,
+    panels: Optional[List[RichPanel[Any, Any]]] = ...,
 ) -> Callable[[_AnyCallable], RichCommand]: ...
 @overload
 def command(
@@ -310,7 +312,8 @@ def command(
     no_args_is_help: bool = ...,
     hidden: bool = ...,
     deprecated: bool | str = ...,
-    panels: Optional[List[RichPanel[Any]]] = ...,
+    aliases: Optional[Iterable[str]] = ...,
+    panels: Optional[List[RichPanel[Any, Any]]] = ...,
 ) -> Callable[[_AnyCallable], C]: ...
 @overload
 def command(
@@ -328,7 +331,8 @@ def command(
     no_args_is_help: bool = ...,
     hidden: bool = ...,
     deprecated: bool | str = ...,
-    panels: Optional[List[RichPanel[Any]]] = ...,
+    aliases: Optional[Iterable[str]] = ...,
+    panels: Optional[List[RichPanel[Any, Any]]] = ...,
     **attrs: Any,
 ) -> Callable[[_AnyCallable], RichCommand]: ...
 
@@ -354,7 +358,7 @@ def command(
 @overload
 def command(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichCommand]: ...
 def command(
-    name: Optional[str] = None, *, aliases: Optional[Iterable[str]] = None, cls: Optional[Type[C]] = None, **kwargs: Any
+    name: Optional[str] = None, *, cls: Optional[Type[C]] = None, **kwargs: Any
 ) -> Callable[[_AnyCallable], Union[click.Command, C]]: ...
 
 # variant: no call, directly as decorator for a function.
@@ -381,7 +385,8 @@ def group(
     add_help_option: bool = ...,
     hidden: bool = ...,
     deprecated: bool | str = ...,
-    panels: Optional[List[RichPanel[Any]]] = ...,
+    aliases: Optional[Iterable[str]] = ...,
+    panels: Optional[List[RichPanel[Any, Any]]] = ...,
 ) -> Callable[[_AnyCallable], G]: ...
 @overload
 def group(
@@ -404,7 +409,8 @@ def group(
     add_help_option: bool = ...,
     hidden: bool = ...,
     deprecated: bool | str = ...,
-    panels: Optional[List[RichPanel[Any]]] = ...,
+    aliases: Optional[Iterable[str]] = ...,
+    panels: Optional[List[RichPanel[Any, Any]]] = ...,
 ) -> Callable[[_AnyCallable], RichGroup]: ...
 @overload
 def group(
@@ -427,7 +433,8 @@ def group(
     add_help_option: bool = ...,
     hidden: bool = ...,
     deprecated: bool | str = ...,
-    panels: Optional[List[RichPanel[Any]]] = ...,
+    aliases: Optional[Iterable[str]] = ...,
+    panels: Optional[List[RichPanel[Any, Any]]] = ...,
 ) -> Callable[[_AnyCallable], G]: ...
 @overload
 def group(
@@ -450,7 +457,8 @@ def group(
     add_help_option: bool = ...,
     hidden: bool = ...,
     deprecated: bool | str = ...,
-    panels: Optional[List[RichPanel[Any]]] = ...,
+    aliases: Optional[Iterable[str]] = ...,
+    panels: Optional[List[RichPanel[Any, Any]]] = ...,
 ) -> Callable[[_AnyCallable], RichGroup]: ...
 
 # variant: with positional name and with positional or keyword cls argument:
@@ -713,7 +721,7 @@ def option_panel(
     help_style: Optional[StyleType] = ...,
     table_styles: TableKwargs,
     panel_styles: PanelKwargs,
-    columns: Optional[List[OptionColumnType]] = ...,
+    column_types: Optional[List[OptionColumnType]] = ...,
     inline_help_in_title: Optional[bool] = ...,
     title_style: Optional[StyleType] = ...,
 ) -> Callable[[FC], FC]: ...
@@ -727,7 +735,7 @@ def option_panel(
     help_style: Optional[StyleType] = ...,
     table_styles: Optional[Dict[str, Any]] = ...,
     panel_styles: Optional[Dict[str, Any]] = ...,
-    columns: Optional[List[OptionColumnType]] = ...,
+    column_types: Optional[List[OptionColumnType]] = ...,
     inline_help_in_title: Optional[bool] = ...,
     title_style: Optional[StyleType] = ...,
 ) -> Callable[[FC], FC]: ...
@@ -741,7 +749,7 @@ def option_panel(
     help_style: Optional[StyleType] = ...,
     table_styles: None,
     panel_styles: None,
-    columns: Optional[List[OptionColumnType]] = ...,
+    column_types: Optional[List[OptionColumnType]] = ...,
     inline_help_in_title: Optional[bool] = ...,
     title_style: Optional[StyleType] = ...,
 ) -> Callable[[FC], FC]: ...
@@ -754,7 +762,7 @@ def option_panel(
     help_style: Optional[StyleType] = None,
     table_styles: Optional[Union[TableKwargs, Dict[str, Any]]] = None,
     panel_styles: Optional[Union[PanelKwargs, Dict[str, Any]]] = None,
-    columns: Optional[List[OptionColumnType]] = None,
+    column_types: Optional[List[OptionColumnType]] = None,
     inline_help_in_title: Optional[bool] = None,
     title_style: Optional[StyleType] = None,
 ) -> Callable[[FC], FC]: ...
@@ -768,7 +776,7 @@ def command_panel(
     help_style: Optional[StyleType] = ...,
     table_styles: TableKwargs,
     panel_styles: PanelKwargs,
-    columns: Optional[List[CommandColumnType]] = ...,
+    column_types: Optional[List[CommandColumnType]] = ...,
     inline_help_in_title: Optional[bool] = ...,
     title_style: Optional[StyleType] = ...,
 ) -> Callable[[FC], FC]: ...
@@ -782,7 +790,7 @@ def command_panel(
     help_style: Optional[StyleType] = ...,
     table_styles: Optional[Dict[str, Any]] = ...,
     panel_styles: Optional[Dict[str, Any]] = ...,
-    columns: Optional[List[CommandColumnType]] = ...,
+    column_types: Optional[List[CommandColumnType]] = ...,
     inline_help_in_title: Optional[bool] = ...,
     title_style: Optional[StyleType] = ...,
 ) -> Callable[[FC], FC]: ...
@@ -796,7 +804,7 @@ def command_panel(
     help_style: Optional[StyleType] = ...,
     table_styles: None,
     panel_styles: None,
-    columns: Optional[List[CommandColumnType]] = ...,
+    column_types: Optional[List[CommandColumnType]] = ...,
     inline_help_in_title: Optional[bool] = ...,
     title_style: Optional[StyleType] = ...,
 ) -> Callable[[FC], FC]: ...
@@ -809,7 +817,7 @@ def command_panel(
     help_style: Optional[StyleType] = None,
     table_styles: Optional[Dict[str, Any]] = None,
     panel_styles: Optional[Dict[str, Any]] = None,
-    columns: Optional[List[CommandColumnType]] = None,
+    column_types: Optional[List[CommandColumnType]] = None,
     inline_help_in_title: Optional[bool] = None,
     title_style: Optional[StyleType] = None,
 ) -> Callable[[FC], FC]: ...

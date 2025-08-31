@@ -9,6 +9,7 @@ from typing import (
     Any,
     Callable,
     Dict,
+    Iterable,
     List,
     Literal,
     Mapping,
@@ -64,8 +65,8 @@ class RichCommand(click.Command):
     def __init__(
         self,
         *args: Any,
-        panels: Optional[List["RichPanel[Any]"]] = None,
-        aliases: Optional[List[str]] = None,
+        panels: Optional[List["RichPanel[Any, Any]"]] = None,
+        aliases: Optional[Iterable[str]] = None,
         **kwargs: Any,
     ) -> None:
         """Create Rich Command instance."""
@@ -95,6 +96,7 @@ class RichCommand(click.Command):
     def to_info_dict(self, ctx: click.Context) -> Dict[str, Any]:
         info = super().to_info_dict(ctx)
         info["panels"] = [p.to_info_dict(ctx) for p in self.panels]
+        info["aliases"] = list(self.aliases) if self.aliases is not None else None
         return info
 
     @property
@@ -351,7 +353,7 @@ class RichGroup(RichCommand, Group):
         self._alias_mapping: Dict[str, str] = {}
         for name in self.commands:
             cmd = self.commands[name]
-            aliases: Optional[List[str]] = getattr(cmd, "aliases", None)
+            aliases: Optional[Iterable[str]] = getattr(cmd, "aliases", None)
             if aliases:
                 for alias in aliases:
                     self._alias_mapping[alias] = name
@@ -471,19 +473,20 @@ class RichGroup(RichCommand, Group):
         _cmd_name = self._alias_mapping.get(cmd_name, cmd_name)
         return super().get_command(ctx, _cmd_name)
 
-    def add_command(self, cmd: click.Command, name: str | None = None, aliases: Optional[List[str]] = None) -> None:
+    def add_command(self, cmd: click.Command, name: str | None = None, aliases: Optional[Iterable[str]] = None) -> None:
         """
         Register another :class:`Command` with this group. If the name
         is not provided, the name of the command is used.
         """
         super().add_command(cmd, name)
         _name: str = name or cmd.name  # type: ignore[assignment]
-        aliases = aliases or []
-        aliases += getattr(cmd, "aliases", None) or []
         if aliases:
             for alias in aliases:
                 self._alias_mapping[alias] = _name
-        # Aliases cannot share names of commands
+        additional_aliases = getattr(cmd, "aliases", None)
+        if additional_aliases:
+            for alias in additional_aliases:
+                self._alias_mapping[alias] = _name
         self._alias_mapping.pop(_name, None)
 
 

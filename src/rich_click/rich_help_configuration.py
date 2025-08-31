@@ -44,7 +44,7 @@ OptionHelpTextElement = Literal["help", "required", "envvar", "default", "range"
 
 CommandHelpTextElement = Literal["help", "deprecated"]
 
-ColumnType = Union[OptionColumnType, CommandColumnType]
+ColumnType = Union[OptionColumnType, CommandColumnType, str]
 
 
 def force_terminal_default() -> Optional[bool]:
@@ -161,10 +161,10 @@ class RichHelpConfiguration:
     color_system: Optional[Literal["auto", "standard", "256", "truecolor", "windows"]] = field(default="auto")
     force_terminal: Optional[bool] = field(default_factory=force_terminal_default)
 
-    options_table_columns: List[OptionColumnType] = field(
+    options_table_column_types: List[OptionColumnType] = field(
         default_factory=lambda: ["required", "opt_long", "opt_short", "metavar", "help"]
     )
-    commands_table_columns: List[CommandColumnType] = field(default_factory=lambda: ["name", "aliases", "help"])
+    commands_table_column_types: List[CommandColumnType] = field(default_factory=lambda: ["name", "aliases", "help"])
 
     # Fixed strings
     header_text: Optional[Union[str, "rich.text.Text"]] = field(default=None)
@@ -294,14 +294,14 @@ class RichHelpConfiguration:
 
             warnings.warn(
                 "`show_metavars_column=` will be deprecated in a future version of rich-click."
-                " Please use `options_table_columns=` instead."
-                " The `options_table_columns` config option lets you specify an ordered list"
+                " Please use `options_table_column_types=` instead."
+                " The `options_table_column_types` config option lets you specify an ordered list"
                 " of which columns are rendered.",
                 PendingDeprecationWarning,
                 stacklevel=2,
             )
             if self.show_metavars_column is False:
-                self.options_table_columns.remove("metavar")
+                self.options_table_column_types.remove("metavar")
 
         if self.use_markdown_emoji is not None:
             import warnings

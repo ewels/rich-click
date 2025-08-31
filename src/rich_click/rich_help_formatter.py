@@ -33,7 +33,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.text import Text
 
 
-RP = TypeVar("RP", bound=RichPanel[Any])
+RP = TypeVar("RP", bound=RichPanel[Any, Any])
 
 
 def create_console(

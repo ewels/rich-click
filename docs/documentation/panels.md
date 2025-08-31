@@ -200,6 +200,47 @@ The below example also overrides the title text style using `title_style=`.
     -->
     ![`python panels_defaults_override_config.py --help`](../images/code_snippets/panels/panels_defaults_override_config.svg){.screenshot}
 
+## Tables & Column Types
+
+RichPanels consist of a `rich.panel.Panel` which contains inside of it a `rich.table.Table`.
+
+For the inner table, the `column_types` are configurable.
+The selected column types determine what gets rendered, and the order of the `column_types=[...]` list determines the order in which they show in the table.
+
+Supported **RichOptionPanel** column types:
+
+- `"required"`
+- `"opt_primary"`
+- `"opt_secondary"`
+- `"opt_long"`
+- `"opt_short"`
+- `"opt_all"`
+- `"opt_all_metavar"`
+- `"opt_long_metavar"`
+- `"metavar"`
+- `"help"`
+
+Supported **RichCommandPanel** column types:
+
+- `"name"`
+- `"aliases"`
+- `"name_with_aliases"`
+- `"help"`
+
+Below is an example showing how column types can be used:
+
+```python
+{% include "../code_snippets/panels/panels_column_types.py" %}
+```
+
+???+ example Output
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/panels
+    -->
+    ![`python panels_column_types.py --help`](../images/code_snippets/panels/panels_column_types.svg){.screenshot}
+
+
 ## Tips
 
 There are a few things to keep in mind when using RichPanels.
@@ -317,7 +358,19 @@ That said, the default behavior is also predictable and follows what base Click 
 - Arguments + options are presented in the order they occur in the decorators, from top to bottom.
 - Subcommands are alphanumerically sorted.
 
-### (Advanced) Custom RichPanel Classes
+## `RichPanel().to_info_dict()`
+
+RichPanel objects support the `.to_info_dict()` method added in Click 8.0.
+Additionally, RichGroups will show any panels explicitly assigned when rendering its own info dict.
+
+Note that both default panels and objects assigned by default do not render:
+
+- For a panel to show up in a RichGroup info dict's `panels`, it must be explicitly assigned to the group.
+- For an object to show up in a RichPanel info dict, it must be explicitly assigned to the panel.
+  In practice what this means is: a panel which is explicitly defined but which acts as a default panel (e.g. `@click.option_panel("Options")`),
+  and whose assigned objects are inferred, will not show any assigned objects in its info dict.
+
+## (Advanced) Custom RichPanel Classes
 
 !!! warning
     The `RichPanel` API may be unstable across minor versions, since it is a new concept that we are still trying to find the best API for.
