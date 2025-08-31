@@ -518,7 +518,7 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
                     sys.path.append(os.path.abspath("."))
                     module = import_module(module_path)
                 except ModuleNotFoundError:
-                    raise click.ClickException(f"Module {module_path} not found.")
+                    raise click.ClickException(f"Module '{module_path}' not found.")
             try:
                 f = getattr(module, function_name)
             except AttributeError:
@@ -533,7 +533,7 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
             try:
                 runpy.run_path(module_path, run_name="__main__")
             except ImportError:
-                raise click.ClickException(f"File {module_path} not found.")
+                raise click.ClickException(f"File '{module_path}' not found.")
 
     else:
 
@@ -549,8 +549,7 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
                 try:
                     runpy.run_module(module_path, run_name="__main__")
                 except ImportError:
-                    print("o well")
-                    raise click.ClickException(f"File {module_path} not found.")
+                    raise click.ClickException(f"Module '{module_path}' not found.")
 
     prog = module_path.split(".", 1)[0]
     sys.argv = [prog, *args]
