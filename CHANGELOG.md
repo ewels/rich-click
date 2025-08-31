@@ -9,6 +9,12 @@
 > - **Click 7 support is removed.** The minimum supported Click version is 8.0.
 > - **Rich 10 and 11 support is removed.** The minimum supported Rich version is 12.
 
+> [!WARNING]
+> Version 1.9.0 introduces a minor breaking change:
+> The `DEFAULT_STRING`, `ENVVAR_STRING`, `REQUIRED_STRING`, and `DEPRECATED_STRING` config options are now rendered with `Text.from_markup`.
+> So for example, `REQUIRED_STRING = "[required]"` would be rendered as Rich markup.
+> You must now escape the rich markup: `REQUIRED_STRING = "\\[required]"`
+
 **Big changes:**
 
 - **Themes!** Check them out with `rich-click --themes`.

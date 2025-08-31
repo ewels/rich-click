@@ -20,7 +20,6 @@ from rich_click.decorators import option as _rich_option
 from rich_click.decorators import option_panel, pass_context
 from rich_click.decorators import version_option as _rich_version_option
 from rich_click.patch import patch as _patch
-from rich_click.rich_command import RichCommand
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 
@@ -130,7 +129,7 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
         module_path, function_name = script.split(":", 1)
 
     if not module_path:
-        raise click.ClickException(f"No such script: {script}")
+        module_path = script
 
     return module_path, function_name
 
@@ -263,8 +262,14 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
         colors.add_row(
             "✓" if c == "dracula" else "",
             "dracula",
-            "[magenta]▓▓[/] [red]▓▓[/] [default]▓▓[/]",
+            "[magenta]▓▓[/] [red]▓▓[/] [yellow]▓▓[/]",
             "Vibrant high-contract dark theme",
+        )
+        colors.add_row(
+            "✓" if c == "dracula2" else "",
+            "dracula2",
+            "[magenta on black]▓▓[/] [red on black]▓▓[/] [black]▓▓[/]",
+            "Dracula theme with forced black background",
         )
         for _c in ["red", "green", "yellow", "blue", "magenta", "cyan"]:
             colors.add_row(
@@ -407,7 +412,7 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
     "--themes",
     help="List all available themes and exit.",
     panel="Extra",
-    callback=list_themes,
+    callback=list_themes,  # type: ignore[arg-type,unused-ignore]
     expose_value=False,
     is_flag=True,
 )
@@ -492,24 +497,64 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
 
     script, *args = script_and_args
 
-    # import the program function
+    # PYTHONPATH can change output of entry_points(group="console_scripts") in rare cases,
+    # so we want to run the whole search with this.
+    _sys_path = sys.path.copy()
+    sys.path.append(os.path.abspath("."))
     try:
         module_path, function_name = _get_module_path_and_function_name(script, suppress_warnings)
-        module = import_module(module_path)
-    except (ModuleNotFoundError, click.ClickException):
-        sys.path.append(os.path.abspath("."))
-        # PYTHONPATH can change output of entry_points(group="console_scripts") in rare cases,
-        # so we want to rerun the whole search
-        module_path, function_name = _get_module_path_and_function_name(script, suppress_warnings)
-        module = import_module(module_path)
+    finally:
+        sys.path = _sys_path
 
-    function = getattr(module, function_name)
+    if function_name:
+
+        def function() -> None:
+            try:
+                module = import_module(module_path)
+            except ModuleNotFoundError:
+                try:
+                    # Import can fail if module is relative to root dir
+                    # and PYTHONPATH does not include ".".
+                    sys.path.append(os.path.abspath("."))
+                    module = import_module(module_path)
+                except ModuleNotFoundError:
+                    raise click.ClickException(f"Module {module_path} not found.")
+            try:
+                f = getattr(module, function_name)
+            except AttributeError:
+                raise click.ClickException(f"Module '{module_path}' has no attribute '{function_name}'.")
+            f()
+
+    elif module_path.endswith(".py"):
+
+        def function() -> None:
+            import runpy
+
+            try:
+                runpy.run_path(module_path, run_name="__main__")
+            except ImportError:
+                raise click.ClickException(f"File {module_path} not found.")
+
+    else:
+
+        def function() -> None:
+            import runpy
+
+            try:
+                runpy.run_module(module_path, run_name="__main__")
+            except ImportError:
+                # Import can fail if module is relative to root dir
+                # and PYTHONPATH does not include ".".
+                sys.path.append(os.path.abspath("."))
+                try:
+                    runpy.run_module(module_path, run_name="__main__")
+                except ImportError:
+                    print("o well")
+                    raise click.ClickException(f"File {module_path} not found.")
 
     prog = module_path.split(".", 1)[0]
     sys.argv = [prog, *args]
-    if ctx.resilient_parsing and isinstance(function, RichCommand):
-        function.main(resilient_parsing=True)
-    else:
-        RichContext.export_console_as = ctx.export_console_as = output
-        RichContext.errors_in_output_format = errors_in_output_format
-        function()
+
+    RichContext.export_console_as = ctx.export_console_as = output
+    RichContext.errors_in_output_format = ctx.errors_in_output_format = errors_in_output_format
+    function()

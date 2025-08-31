@@ -40,7 +40,7 @@ In order to set this environment variable automatically every time you use the t
 !!!tip
     Note that other programs may also respect `NO_COLOR`, so it could have other effects!
 
-### 2. Configure your terminal's 4-bit ANSI colors
+### 2. Configure your terminal's ANSI color escape sequences
 
 The 4-bit ANSI color system is a set of 16 different colors implemented in every terminal. This is the most common way to set colors.
 These colors are **not** deterministic; different terminals use slightly different hex values for the ANSI colors. [Wikipedia has a full breakdown of all the variations in these colors](https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit)
@@ -67,7 +67,7 @@ So, for example:
 - `#!python Confirm.ask("[red]Are you sure?[/]")` is more accessible because it works with `NO_COLOR`.
 - `#!python click.confirm(click.echo("Are you sure?", fg="red"))` is less accessible because it cannot be overridden by `NO_COLOR`.
 
-### 2. Use 4-bit ANSI colors
+### 2. Use ANSI colors
 
 The 4-bit ANSI color system is a set of 16 different colors implemented in effectively every terminal, and they are the most common way to set colors.
 These colors are **not** deterministic; different terminals use slightly different hex values for the ANSI colors. [Wikipedia has a full breakdown of all the variations in these colors](https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit)

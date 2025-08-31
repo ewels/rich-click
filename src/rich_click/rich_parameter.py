@@ -11,9 +11,9 @@ if TYPE_CHECKING:
     from rich.style import StyleType
 
     from rich_click.rich_context import RichContext
-    from rich_click.rich_help_configuration import OptionColumnType
     from rich_click.rich_help_formatter import RichHelpFormatter
     from rich_click.rich_help_rendering import RichPanelRow
+    from rich_click.rich_panel import RichOptionPanel
 
 
 class RichParameter(click.Parameter):
@@ -70,12 +70,12 @@ class RichParameter(click.Parameter):
         self,
         ctx: "RichContext",
         formatter: "RichHelpFormatter",
-        columns: Optional[List["OptionColumnType"]] = None,
+        panel: Optional["RichOptionPanel"] = None,
     ) -> "RichPanelRow":
         """Create a row for the rich table corresponding with this parameter."""
-        from rich_click.rich_help_rendering import get_rich_table_row
+        from rich_click.rich_help_rendering import get_parameter_rich_table_row
 
-        return get_rich_table_row(self, ctx, formatter, columns)
+        return get_parameter_rich_table_row(self, ctx, formatter, panel)
 
 
 class RichArgument(RichParameter, click.Argument):
