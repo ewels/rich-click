@@ -130,11 +130,11 @@ You can explicitly enable and disable emojis with the config option `text_emoji`
     -->
     ![`python emojis.py --help`](../images/code_snippets/text_markup_and_formatting/emojis.svg){.screenshot}
 
+You can view all available emojis with the following command:
+
 ```shell
 uvx --from rich -- python3 -m rich.emoji
 ```
-
-The default behavior 
 
 ## Newlines
 

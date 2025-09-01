@@ -12,7 +12,7 @@ def cli():
 
     Note that this text is not rich markup: [b]See?[/b] :joy:
 
-    Emojis can be controlled independent of markup. :point_up: :nerd_face:
+    Emojis can be set independently of markup. :point_up: :nerd_face:
     """
 
 if __name__ == "__main__":
