@@ -500,7 +500,7 @@ def _get_parameter_help_opt(
             return cols[0]
         # Todo - make the text fold at the slashes without adding whitespace.
         #   this is very tricky.
-        t = Text("", overflow="ellipsis").join(cols)
+        t = Text("", overflow="fold").join(cols)
         return t
 
     primary_final = _renderable(primary_cols[:-1])

@@ -228,23 +228,12 @@ class RichOptionPanel(RichPanel[click.Parameter, OptionColumnType]):
             rows = list(
                 map(
                     list,
-                    zip(
-                        *[
-                            col
-                            for col in zip(*rows)
-                            if any(cell for cell in col)
-                            # if any(cell[0] if isinstance(cell, tuple) else cell for cell in col)
-                        ]
-                    ),
+                    zip(*[col for col in zip(*rows) if any(cell for cell in col)]),
                 )
             )
 
         for row in rows:
             table.add_row(*row)
-
-        # todo: realign columns; the "zip" thing above obfuscates which columns get deleted
-        #  the test "test_rich_click_cli_help_with_rich_config_from_file" has ellipses;
-        #  this should go away if done properly.
 
         return table
 
@@ -400,23 +389,12 @@ class RichCommandPanel(RichPanel[click.Command, CommandColumnType]):
             rows = list(
                 map(
                     list,
-                    zip(
-                        *[
-                            col
-                            for col in zip(*rows)
-                            if any(cell for cell in col)
-                            # if any(cell[0] if isinstance(cell, tuple) else cell for cell in col)
-                        ]
-                    ),
+                    zip(*[col for col in zip(*rows) if any(cell for cell in col)]),
                 )
             )
 
         for row in rows:
             table.add_row(*row)
-
-        # todo: realign columns; the "zip" thing above obfuscates which columns get deleted
-        #  the test "test_rich_click_cli_help_with_rich_config_from_file" has ellipses;
-        #  this should go away if done properly.
 
         return table
 
