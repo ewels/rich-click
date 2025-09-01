@@ -709,11 +709,35 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#emojis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Emojis
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#newlines" class="md-nav__link">
     <span class="md-ellipsis">
       Newlines
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Newlines">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#newline-rendering" class="md-nav__link">
+    <span class="md-ellipsis">
+      Newline rendering
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -927,11 +951,35 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#emojis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Emojis
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#newlines" class="md-nav__link">
     <span class="md-ellipsis">
       Newlines
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Newlines">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#newline-rendering" class="md-nav__link">
+    <span class="md-ellipsis">
+      Newline rendering
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1058,8 +1106,8 @@ working_dir: .
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">cli</span><span class="p">()</span>
 </code></pre></div>
-<details class="example output" open="open">
-<summary>Example</summary>
+<details class="example" open="open">
+<summary>Output</summary>
 <p><!-- RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
 -->
@@ -1090,13 +1138,47 @@ The below code renders the same as the above code:</p>
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">cli</span><span class="p">()</span>
 </code></pre></div>
-<details class="example output">
-<summary>Example</summary>
+<details class="example">
+<summary>Output</summary>
 <p><!-- RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
 -->
 <a class="glightbox" href="../../images/code_snippets/text_markup_and_formatting/markup_with_help_style.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python markup_with_help_style.py --help" class="screenshot" src="../../images/code_snippets/text_markup_and_formatting/markup_with_help_style.svg" /></a></p>
 </details>
+<h2 id="emojis">Emojis<a class="headerlink" href="#emojis" title="Permanent link">&para;</a></h2>
+<p>Emoji codes are rendered by default in <code>'rich'</code> and <code>'markdown'</code> text markup modes.
+For other modes, including the default mode, emojis are not rendered.</p>
+<p>You can explicitly enable and disable emojis with the config option <code>text_emoji</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9&quot;]</span>
+<span class="c1"># ///</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--foo&quot;</span><span class="p">,</span> <span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Boo! :ghost: Oops, I mean... foo! :sweat_smile:&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--bar&quot;</span><span class="p">,</span> <span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Bar - :bar_chart:&quot;</span><span class="p">)</span>
+<span class="hll"><span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">&quot;text_emojis&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+</span><span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Demo of :heart_eyes_cat: emojis!</span>
+
+<span class="sd">    Note that this text is not rich markup: [b]See?[/b] :joy:</span>
+
+<span class="sd">    Emojis can be controlled independent of markup. :point_up: :nerd_face:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cli</span><span class="p">()</span>
+</code></pre></div>
+<details class="example" open="open">
+<summary>Output</summary>
+<p><!-- RICH-CODEX
+working_dir: docs/code_snippets/text_markup_and_formatting
+-->
+<a class="glightbox" href="../../images/code_snippets/text_markup_and_formatting/emojis.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python emojis.py --help" class="screenshot" src="../../images/code_snippets/text_markup_and_formatting/emojis.svg" /></a></p>
+</details>
+<div class="highlight"><pre><span></span><code>uvx<span class="w"> </span>--from<span class="w"> </span>rich<span class="w"> </span>--<span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>rich.emoji
+</code></pre></div>
+<p>The default behavior </p>
 <h2 id="newlines">Newlines<a class="headerlink" href="#newlines" title="Permanent link">&para;</a></h2>
 <p>Handling newlines on <strong>rich-click</strong>'s end involves discretion because in a docstring, newlines can represent a softwrap; they are not necessarily genuine new lines.</p>
 <p>For <code>'markdown'</code> mode, we send all newline handling directly to <code>rich.markdown.Markdown()</code></p>
@@ -1148,8 +1230,8 @@ working_dir: docs/code_snippets/text_markup_and_formatting
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">cli</span><span class="p">()</span>
 </code></pre></div>
-<details class="example output" open="open">
-<summary>Example</summary>
+<details class="example" open="open">
+<summary>Output</summary>
 <p><!-- RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
 -->
@@ -1157,12 +1239,70 @@ working_dir: docs/code_snippets/text_markup_and_formatting
 </details>
 <p>Note that this differs from how base Click handles newlines.
 The following is the same CLI help text but using <code>import click</code> instead of <code>import rich_click as click</code>:</p>
-<details class="example output" open="open">
-<summary>Example</summary>
+<details class="example">
+<summary>Output - <code>import click</code> instead of <code>import rich_click as click</code></summary>
 <p><!-- RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
 -->
 <a class="glightbox" href="../../images/code_snippets/text_markup_and_formatting/newline_control_base_click.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python newline_control_base_click.py --help" class="screenshot" src="../../images/code_snippets/text_markup_and_formatting/newline_control_base_click.svg" /></a></p>
+</details>
+<h3 id="newline-rendering">Newline rendering<a class="headerlink" href="#newline-rendering" title="Permanent link">&para;</a></h3>
+<p>By default, <strong>rich-click</strong> renders double newlines as single newlines.
+This is a deliberate decision to make help text take up less vertical space.</p>
+<p>However, you can override this behavior by setting the config option <code>text_paragraph_linebreaks</code> to <code>"\n\n"</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9&quot;]</span>
+<span class="c1"># ///</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;newline-control&quot;</span><span class="p">)</span>
+<span class="hll"><span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">&quot;text_paragraph_linebreaks&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">})</span>
+</span><span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Newline control</span>
+
+<span class="sd">    Double newlines are always preserved.</span>
+<span class="sd">    But single newlines are usually not.</span>
+
+<span class="sd">    There are however a few situations where we preserve single newlines.</span>
+
+<span class="sd">    Indented lines with 4+ spaces are preserved:</span>
+<span class="sd">        ```python</span>
+<span class="sd">        from foo import bar</span>
+
+<span class="sd">        bar.action()</span>
+<span class="sd">        ```</span>
+
+<span class="sd">    Unordered lists are preserved:</span>
+
+<span class="sd">    - like</span>
+<span class="sd">    - this</span>
+
+<span class="sd">    or:</span>
+
+<span class="sd">    * like</span>
+<span class="sd">    * this</span>
+
+<span class="sd">    Last but not least, we preserve:</span>
+
+<span class="sd">    &gt; block</span>
+<span class="sd">    &gt; quotes</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">cli</span><span class="p">()</span>
+</code></pre></div>
+<details class="example" open="open">
+<summary>Output</summary>
+<p><!-- RICH-CODEX
+working_dir: docs/code_snippets/text_markup_and_formatting
+-->
+<a class="glightbox" href="../../images/code_snippets/text_markup_and_formatting/newline_control_double.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python newline_control_double.py --help" class="screenshot" src="../../images/code_snippets/text_markup_and_formatting/newline_control_double.svg" /></a></p>
+</details>
+<details class="info" open="open">
+<summary>Info</summary>
+<p>This default behavior of collapsing newlines is not true when <code>text_markup='markdown'</code>.
+For markdown, we do not do any newline manipulation.</p>
 </details>
 
 
