@@ -475,7 +475,7 @@
           <li class="md-nav__item">
   <a href="#simple-example" class="md-nav__link">
     <span class="md-ellipsis">
-      Simple example
+      Simple Example
     </span>
   </a>
   
@@ -684,27 +684,6 @@
   
   
     <li class="md-nav__item">
-      <a href="documentation/panels/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Panels
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="documentation/configuration/" class="md-nav__link">
         
   
@@ -726,11 +705,74 @@
   
   
     <li class="md-nav__item">
-      <a href="documentation/formatting_and_styles/" class="md-nav__link">
+      <a href="documentation/structure/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Formatting & Styles
+    Structure
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="documentation/panels/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Panels
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="documentation/text_markup_and_formatting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Text Markup & Formatting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="documentation/custom_styles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Custom Styles
   </span>
   
 
@@ -908,7 +950,7 @@
           <li class="md-nav__item">
   <a href="#simple-example" class="md-nav__link">
     <span class="md-ellipsis">
-      Simple example
+      Simple Example
     </span>
   </a>
   
@@ -1007,8 +1049,8 @@
 </style>
 
 <p align="center">
-<img src="images/rich-click-logo.png#only-light" align="center">
-<img src="images/rich-click-logo-darkmode.png#only-dark" align="center">
+<img src="images/rich-click-logo.png#only-light" align="center" class="glightbox-disable">
+<img src="images/rich-click-logo-darkmode.png#only-dark" align="center" class="glightbox-disable">
 </p>
 <p align="center">
     <em>Richly rendered command line interfaces in click.</em>
@@ -1025,7 +1067,7 @@
 </p>
 
 <hr />
-<p><strong>rich-click</strong> is a shim around <a href="https://click.palletsprojects.com/">Click</a> that renders help output nicely using <a href="https://github.com/Textualize/rich">Rich</a>.</p>
+<p><strong>rich-click</strong> is a wrapper around <a href="https://click.palletsprojects.com/">Click</a> that renders help output nicely using <a href="https://github.com/Textualize/rich">Rich</a>.</p>
 <ul>
 <li>Click is a <em>"Python package for creating beautiful command line interfaces"</em>.</li>
 <li>Rich is a <em>"Python library for rich text and beautiful formatting in the terminal"</em>.</li>
@@ -1036,59 +1078,19 @@ Click, formatted with Rich, with minimal customization required.</p>
 <ul>
 <li>🌈 Rich command-line formatting of click help and error messages</li>
 <li>😌 Same API as Click: usage is simply <code>import rich_click as click</code></li>
-<li>💫 Nice styles by default</li>
+<li>🎨 Over 100 themes that can be set by developers and end-users (<code>export RICH_CLICK_THEME=...</code>)</li>
 <li>💻 CLI tool to run on <em>other people's</em> tools (prefix the command with <code>rich-click</code>)</li>
 <li>📦 Export help text as HTML or SVG</li>
 <li>🎁 Group commands and options into named panels</li>
 <li>❌ Well formatted error messages</li>
-<li>🔢 Easily give custom sort order for options and commands</li>
-<li>🎨 Extensive customization of styling and behaviour possible</li>
+<li>💫 Extensive customization</li>
 <li>🤖 IDE autocomplete of Click decorators for smooth developer experience.</li>
 </ul>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:7"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><input id="__tabbed_1_5" name="__tabbed_1" type="radio" /><input id="__tabbed_1_6" name="__tabbed_1" type="radio" /><input id="__tabbed_1_7" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">pip</label><label for="__tabbed_1_2">uv</label><label for="__tabbed_1_3">Rye</label><label for="__tabbed_1_4">Poetry</label><label for="__tabbed_1_5">Pipenv</label><label for="__tabbed_1_6">conda</label><label for="__tabbed_1_7">MacPorts</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>rich-click
 </code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>rich-click
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>rye<span class="w"> </span>add<span class="w"> </span>rich-click
-rye<span class="w"> </span>sync
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>poetry<span class="w"> </span>add<span class="w"> </span>rich-click
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>pipenv<span class="w"> </span>install<span class="w"> </span>rich-click
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>conda<span class="w"> </span>install<span class="w"> </span>rich-click
-</code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><a href="https://anaconda.org/conda-forge/rich-click"><strong>rich-click</strong> is available</a> via the conda-forge channel (see <a href="https://conda-forge.org/docs/user/introduction.html#how-can-i-install-packages-from-conda-forge">docs</a>).</p>
-</div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>port<span class="w"> </span>install<span class="w"> </span>py-rich-click
-</code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Depreciated</p>
-<p>This installation method is not officially supported, and is not guaranteed to be up to date.</p>
-</div>
-</div>
-</div>
-</div>
 <h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h2>
-<h3 id="simple-example">Simple example<a class="headerlink" href="#simple-example" title="Permanent link">&para;</a></h3>
+<h3 id="simple-example">Simple Example<a class="headerlink" href="#simple-example" title="Permanent link">&para;</a></h3>
 <p>To use rich-click in your code, replace <code>import click</code> with <code>import rich_click as click</code> in your existing click CLI:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
@@ -1103,13 +1105,16 @@ rye<span class="w"> </span>sync
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">hello</span><span class="p">()</span>
 </code></pre></div>
-<p><img alt="" class="screenshot" src="images/hello.svg" /></p>
+<p><img alt="python examples/11_hello.py --help" src="images/hello.svg" /></p>
+<p><em>Screenshot from <a href="../examples/11_hello.py"><code>examples/11_hello.py</code></a></em></p>
 <h3 id="more-complex-example">More complex example<a class="headerlink" href="#more-complex-example" title="Permanent link">&para;</a></h3>
-<p><strong>rich-click</strong> has a ton of customization options that let you compose help text however you'd like.
-Below is a more complex example of what <strong>rich-click</strong> is capable of:</p>
-<p><img alt="" class="screenshot" src="images/command_groups.svg" /></p>
+<p><strong>rich-click</strong> has a ton of customization options that let you compose help text however you'd like.</p>
+<p>Below is a more complex example of what <strong>rich-click</strong> is capable of, utilizing <strong>themes</strong> and <strong>panels</strong>:</p>
+<p><img alt="python examples/03_groups_sorting.py --help" src="images/command_groups.svg" /></p>
+<p><em>Screenshot from <a href="../examples/03_groups_sorting.py"><code>examples/03_groups_sorting.py</code></a></em></p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p>There are a couple of ways to begin using <strong>rich-click</strong>:</p>
+<p>This is a quick overview of how to use <strong>rich-click</strong>. <a href="https://ewels.github.io/rich-click">Read the docs</a> for more information.</p>
+<p>There are a couple of ways to begin using <code>rich-click</code>:</p>
 <h3 id="import-rich_click-as-click">Import <code>rich_click</code> as <code>click</code><a class="headerlink" href="#import-rich_click-as-click" title="Permanent link">&para;</a></h3>
 <p>Switch out your normal <code>click</code> import with <code>rich_click</code>, using the same namespace:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
@@ -1119,7 +1124,7 @@ Below is a more complex example of what <strong>rich-click</strong> is capable o
 <p>See <a href="https://github.com/ewels/rich-click/blob/main/examples/01_simple.py"><code>examples/01_simple.py</code></a> for an example.</p>
 </blockquote>
 <h3 id="declarative">Declarative<a class="headerlink" href="#declarative" title="Permanent link">&para;</a></h3>
-<p>If you prefer, you can use <code>RichGroup</code> or <code>RichCommand</code> with the <code>cls</code> argument instead.
+<p>If you prefer, you can use <code>RichGroup</code> or <code>RichCommand</code> with the <code>cls</code> argument in your click usage instead.
 This means that you can continue to use the unmodified <code>click</code> package in parallel.</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">click</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="kn">import</span> <span class="n">RichCommand</span>
@@ -1142,6 +1147,14 @@ For example, to get richified Click help text from a package called <code>awesom
 </code></pre></div>
 <h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">&para;</a></h2>
 <p>This project is licensed under the MIT license.</p>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const images = document.querySelectorAll('img[src^="images/"]:not(.glightbox-disable)');
+    images.forEach(function(img) {
+        img.classList.add('screenshot');
+    });
+});
+</script>
 
 
 

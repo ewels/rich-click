@@ -12,7 +12,7 @@
         <link rel="canonical" href="https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/">
       
       
-        <link rel="prev" href="../formatting_and_styles/">
+        <link rel="prev" href="../custom_styles/">
       
       
         <link rel="next" href="../accessibility/">
@@ -558,27 +558,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../panels/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Panels
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../configuration/" class="md-nav__link">
         
   
@@ -600,11 +579,74 @@
   
   
     <li class="md-nav__item">
-      <a href="../formatting_and_styles/" class="md-nav__link">
+      <a href="../structure/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Formatting & Styles
+    Structure
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../panels/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Panels
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../text_markup_and_formatting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Text Markup & Formatting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom_styles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Custom Styles
   </span>
   
 
@@ -914,34 +956,20 @@ head: 12
 </div>
 </div>
 </div>
-<p>If the CLI is not installed as a script, you can also pass the location with: <code>&lt;module_name&gt;:&lt;click_command_name&gt;</code>.</p>
-<p>For example, if you have a file located at <code>path/to/my/cli.py</code>, and the Click <code>Command</code> object is named <code>main</code>, then you can run: <code>rich-click path.to.my.cli:main</code>.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>If you are experiencing any unexpected issues with the <code>rich-click</code> CLI, first make sure you are not calling
-your command on load of the module.</p>
-<p>For example, the following could cause a strange <code>No such option: --output</code> error when attempting to run <code>rich-click --output html my_cli:cli</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
-
-<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;my-cli&quot;</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="o">...</span>
-
-<span class="n">cli</span><span class="p">()</span>
-</code></pre></div>
-<p>To make it so <code>rich-click --output html</code> works on the above code, add a <code>if __name__ == "__main__":</code></p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
-
-<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;my-cli&quot;</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="o">...</span>
-
-<span class="hll"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-</span>    <span class="n">cli</span><span class="p">()</span>
-</code></pre></div>
-</div>
+<p>If the CLI is not installed as a script, you can also pass the location with:</p>
+<ul>
+<li><code>&lt;module_name&gt;:&lt;click_command_name&gt;</code></li>
+<li><code>&lt;module_name&gt;</code></li>
+<li><code>&lt;path&gt;</code></li>
+</ul>
+<p>For example, if you have a file located at <code>path/to/my/cli.py</code>, and the Click <code>Command</code> object is named <code>main</code>, then you can run:</p>
+<ul>
+<li><code>rich-click path.to.my.cli:main</code></li>
+<li><code>rich-click path.to.my.cli</code></li>
+<li><code>rich-click path/to/my/cli.py</code></li>
+</ul>
+<p>In the first case, the object will be imported and called, i.e. <code>from path.to.my.cli import main</code> then <code>main()</code>.
+In the other two cases, the file will be run with <code>__name__</code> as <code>"__main__"</code>.</p>
 <h2 id="render-help-text-as-html-or-svg">Render help text as HTML or SVG<a class="headerlink" href="#render-help-text-as-html-or-svg" title="Permanent link">&para;</a></h2>
 <p>You can also use <code>rich-click --output=html [command]</code> to render rich HTML for help text, or <code>rich-click --output=svg [command]</code> to generate an SVG.</p>
 <p>This works for RichCommands as well as normal click Commands.</p>

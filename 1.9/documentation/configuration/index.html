@@ -12,10 +12,10 @@
         <link rel="canonical" href="https://ewels.github.io/rich-click/latest/documentation/configuration/">
       
       
-        <link rel="prev" href="../panels/">
+        <link rel="prev" href="../themes/">
       
       
-        <link rel="next" href="../formatting_and_styles/">
+        <link rel="next" href="../structure/">
       
       
         <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../feed_rss_created.xml">
@@ -555,27 +555,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../panels/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Panels
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -652,6 +631,30 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#themes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Themes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Themes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handling-overrides-and-custom-themes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Handling overrides and custom themes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#configuration-options" class="md-nav__link">
     <span class="md-ellipsis">
       Configuration options
@@ -685,11 +688,74 @@
   
   
     <li class="md-nav__item">
-      <a href="../formatting_and_styles/" class="md-nav__link">
+      <a href="../structure/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Formatting & Styles
+    Structure
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../panels/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Panels
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../text_markup_and_formatting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Text Markup & Formatting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom_styles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Custom Styles
   </span>
   
 
@@ -864,6 +930,30 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#themes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Themes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Themes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#handling-overrides-and-custom-themes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Handling overrides and custom themes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#configuration-options" class="md-nav__link">
     <span class="md-ellipsis">
       Configuration options
@@ -913,8 +1003,6 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span><span class="n">style_option</span><span class="o">=</span><span class="s2">&quot;bold red&quot;</span><span class="p">))</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Help text here.&quot;&quot;&quot;</span>
-
-<span class="n">cli</span><span class="p">()</span>
 </code></pre></div>
 <p><code>RichHelpConfiguration()</code> initializes the default configuration, and the user is able to specify any changes to that default configuration that they'd like. Note that <code>RichHelpConfiguration()</code> is unaware of the global configuration.</p>
 <p>You may also specify custom config as a dict:</p>
@@ -925,10 +1013,9 @@
 <span class="nd">@rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;style_option&quot;</span><span class="p">:</span> <span class="s2">&quot;bold red&quot;</span><span class="p">})</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Help text here.&quot;&quot;&quot;</span>
-
-<span class="n">cli</span><span class="p">()</span>
 </code></pre></div>
-<p>There is a subtle difference between using a <code>dict</code> and using a <code>RichHelpConfiguration</code>. Initializing a <code>RichHelpConfiguration</code> creates a fresh config from the defaults, whereas a <code>dict</code> merges to either the parent or (if the parent config does not exist) the global config.</p>
+<p>There is a subtle difference between using a <code>dict</code> and using a <code>RichHelpConfiguration</code>.
+Initializing a <code>RichHelpConfiguration</code> creates a fresh config from the defaults, whereas a <code>dict</code> merges to either the parent or (if the parent config does not exist) the global config.</p>
 <p>In the below example <code>subcommand</code>'s configuration would get "merged" into <code>my_group</code>'s configuration, meaning that <code>subcommand</code> would inherit the <code>style_option="bold red"</code> style from <code>my_group</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="kn">import</span> <span class="n">rich_config</span>
@@ -942,8 +1029,6 @@
 <span class="nd">@rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;style_argument&quot;</span><span class="p">:</span> <span class="s2">&quot;bold yellow&quot;</span><span class="p">})</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">subcommand</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Help text here.&quot;&quot;&quot;</span>
-
-<span class="n">cli</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="configuration-using-the-global-config">Configuration using the global config<a class="headerlink" href="#configuration-using-the-global-config" title="Permanent link">&para;</a></h2>
 <p>The other way to configure rich-click is to use the global configuration inside the <code>rich_click.rich_click</code> module:</p>
@@ -955,8 +1040,6 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Help text here.&quot;&quot;&quot;</span>
-
-<span class="n">cli</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="compatibility-between-richhelpconfiguration-and-global-config">Compatibility between <code>RichHelpConfiguration</code> and global config<a class="headerlink" href="#compatibility-between-richhelpconfiguration-and-global-config" title="Permanent link">&para;</a></h2>
 <p>You can load the global config into a <code>RichHelpConfiguration</code> using the <code>RichHelpConfiguration.load_from_globals()</code> classmethod:</p>
@@ -972,8 +1055,6 @@
 <span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="n">help_config</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Help text here.&quot;&quot;&quot;</span>
-
-<span class="n">cli</span><span class="p">()</span>
 </code></pre></div>
 <p>You can also dump a help config into the global config using <code>RichHelpConfiguration().dump_to_globals()</code>.
 You probably do not need this in most cases; this is mostly for <strong>rich-click</strong>'s internal use.</p>
@@ -987,8 +1068,161 @@ You probably do not need this in most cases; this is mostly for <strong>rich-cli
 <span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Help text here.&quot;&quot;&quot;</span>
+</code></pre></div>
+<h2 id="themes">Themes<a class="headerlink" href="#themes" title="Permanent link">&para;</a></h2>
+<div class="admonition success">
+<p class="admonition-title">Success</p>
+<p>This section is specifically concerned with how themes interact with configurations.</p>
+<p>More general information about themes is described in <a href="../themes/">the <strong>themes</strong> docs</a>.</p>
+</div>
+<p>Config options controlled by themes are assigned a sentinel value.
+When a <code>RichHelpConfiguration()</code> object is created, if the <code>theme</code> is defined, then the theme is applied to any <strong>unset</strong> config values.
+If the theme is not defined, then those values are kept as unset.
+When the <code>RichHelpFormatter()</code> object is created, if there is still no theme, then the default theme (<code>default-box</code>) is applied.</p>
+<p>In the event that there are multiple themes being assigned from different sources, one theme must be selected. The priority order of which theme gets selected is defined below (highest priority is #1):</p>
+<ol>
+<li>The theme defined in the <code>rich-click</code> CLI: <code>rich-click --theme [theme]</code></li>
+<li>Environment variable: <code>RICH_CLICK_THEME=[theme]</code></li>
+<li>The <code>theme</code> of the command's config</li>
+</ol>
+<p>Do note that other than end-user overrides and being applied last to unset values, other rules still apply with config resolution.
+So for example, the below will not apply the <code>"green2-nu"</code> theme to the CLI:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:5"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><input id="__tabbed_1_5" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Bad example</label><label for="__tabbed_1_2">Fix 1a</label><label for="__tabbed_1_3">Fix 1b</label><label for="__tabbed_1_4">Fix 1c</label><label for="__tabbed_1_5">Fix 2</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click.rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rc</span>
 
-<span class="n">cli</span><span class="p">()</span>
+<span class="c1"># This will NOT work because the RichHelpConfiguration() below</span>
+<span class="c1"># completely ignores the the global config.</span>
+
+<span class="n">rc</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">&quot;green2-nu&quot;</span>
+
+<span class="n">help_config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span><span class="n">style_option</span><span class="o">=</span><span class="s2">&quot;magenta&quot;</span><span class="p">)</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="n">help_config</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Help text here.&quot;&quot;&quot;</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">&quot;theme&quot;</span><span class="p">:</span> <span class="s2">&quot;green2-nu&quot;</span><span class="p">,</span> <span class="s2">&quot;style_option&quot;</span><span class="p">:</span> <span class="s2">&quot;magenta&quot;</span><span class="p">})</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Help text here.&quot;&quot;&quot;</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span><span class="n">theme</span><span class="o">=</span><span class="s2">&quot;green2-nu&quot;</span><span class="p">,</span> <span class="n">style_option</span><span class="o">=</span><span class="s2">&quot;magenta&quot;</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Help text here.&quot;&quot;&quot;</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click.rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rc</span>
+
+<span class="n">rc</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">&quot;green2-nu&quot;</span>
+<span class="n">rc</span><span class="o">.</span><span class="n">STYLE_OPTION</span> <span class="o">=</span> <span class="s2">&quot;magenta&quot;</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Help text here.&quot;&quot;&quot;</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click.rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rc</span>
+
+<span class="c1"># This works because of the config rule that dicts get merged</span>
+<span class="c1"># into the global config</span>
+
+<span class="n">rc</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">&quot;green2-nu&quot;</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">&quot;style_option&quot;</span><span class="p">:</span> <span class="s2">&quot;magenta&quot;</span><span class="p">})</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Help text here.&quot;&quot;&quot;</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="handling-overrides-and-custom-themes">Handling overrides and custom themes<a class="headerlink" href="#handling-overrides-and-custom-themes" title="Permanent link">&para;</a></h3>
+<p>The user can override the theme that a developer sets because all end-user settings (CLI and env var) are prioritized above things set by the developer (command config).</p>
+<p>Note that themes never override existing config options, so explicitly set options always take precedence over a theme. This can cause potentially unintended side effects where your style settings clash with the user's theme. There are three ways around this.</p>
+<p>The first is to <strong>do nothing</strong>. For many config options, like <code>commands_before_options</code> or <code>options_panel_title</code>, the theme should not make any real difference or the config option may not even be stylistic in nature. Theme overrides only become a real issue when a user's <code>RICH_CLICK_THEME</code> clashes stylistically with your custom settings.</p>
+<p>The second way is to <strong>explicitly prevent theme overrides</strong> by setting the config option <code>enable_theme_env_var = False</code>. This option prevents <strong>all</strong> overrides when enabled.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1"><code>{}</code></label><label for="__tabbed_2_2"><code>RichHelpConfiguration()</code></label><label for="__tabbed_2_3">Global config</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;cli&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">&quot;theme&quot;</span><span class="p">:</span> <span class="s2">&quot;nord-slim&quot;</span><span class="p">,</span> <span class="s2">&quot;enable_theme_env_var&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;My CLI help text&quot;&quot;&quot;</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;cli&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span><span class="n">theme</span><span class="o">=</span><span class="s2">&quot;nord-slim&quot;</span><span class="p">,</span> <span class="n">enable_theme_env_var</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;My CLI help text&quot;&quot;&quot;</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">&quot;nord-slim&quot;</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">ENABLE_THEME_ENV_VAR</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;cli&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;My CLI help text&quot;&quot;&quot;</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The final way is to <strong>apply your config as a theme</strong>.
+Basically, since themes are applied last and can be overridden, then if you have your config applied as a theme, then it can be overridden. RichHelpConfigurations have a method called to_theme which generates a theme from your config:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">()</span>
+<span class="n">theme</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">to_theme</span><span class="p">()</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;cli&quot;</span><span class="p">)</span>
+<span class="c1"># This can be overridden.</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">&quot;theme&quot;</span><span class="p">:</span> <span class="n">theme</span><span class="p">})</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;My CLI help text&quot;&quot;&quot;</span>
+</code></pre></div>
+<p>A more advanced pattern, which lets you make some options overridable by a theme, while keeping others immutable:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="c1"># All of these config options can be overridden</span>
+<span class="n">theme</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span>
+    <span class="n">style_option</span><span class="o">=</span><span class="s2">&quot;bold red&quot;</span><span class="p">,</span>
+    <span class="n">style_command</span><span class="o">=</span><span class="s2">&quot;bold green&quot;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">to_theme</span><span class="p">()</span>
+
+<span class="c1"># Here, `style_metavar` will not be overridden by the RICH_CLICK_THEME env var.</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span>
+    <span class="n">theme</span><span class="o">=</span><span class="n">theme</span><span class="p">,</span>
+    <span class="n">style_metavar</span><span class="o">=</span><span class="s2">&quot;magenta&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;cli&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;My CLI help text&quot;&quot;&quot;</span>
 </code></pre></div>
 <h2 id="configuration-options">Configuration options<a class="headerlink" href="#configuration-options" title="Permanent link">&para;</a></h2>
 <p>Below is a full list of configuration options from <code>rich_click.py</code>.</p>
@@ -998,61 +1232,59 @@ You probably do not need this in most cases; this is mostly for <strong>rich-cli
 <span class="n">THEME</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">ENABLE_THEME_ENV_VAR</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 
-<span class="n">STYLE_OPTION</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;bold cyan&quot;</span>
-<span class="n">STYLE_OPTION_NEGATIVE</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">STYLE_ARGUMENT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;bold cyan&quot;</span>
-<span class="n">STYLE_COMMAND</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;bold cyan&quot;</span>
-<span class="n">STYLE_COMMAND_ALIASES</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;bold green&quot;</span>
-<span class="n">STYLE_SWITCH</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;bold green&quot;</span>
-<span class="n">STYLE_SWITCH_NEGATVE</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">STYLE_METAVAR</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;bold yellow&quot;</span>
-<span class="n">STYLE_METAVAR_APPEND</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim yellow&quot;</span>
-<span class="n">STYLE_METAVAR_SEPARATOR</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
-<span class="n">STYLE_HEADER_TEXT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_EPILOG_TEXT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_FOOTER_TEXT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_USAGE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;yellow&quot;</span>
-<span class="n">STYLE_USAGE_COMMAND</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;bold&quot;</span>
-<span class="n">STYLE_USAGE_SEPARATOR</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_DEPRECATED</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
-<span class="n">STYLE_HELPTEXT_FIRST_LINE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_HELPTEXT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
-<span class="n">STYLE_OPTION_HELP</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_COMMAND_HELP</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_OPTION_DEFAULT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
-<span class="n">STYLE_OPTION_ENVVAR</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim yellow&quot;</span>
-<span class="n">STYLE_REQUIRED_SHORT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
-<span class="n">STYLE_REQUIRED_LONG</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim red&quot;</span>
-<span class="n">STYLE_OPTIONS_PANEL_BORDER</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
-<span class="n">STYLE_OPTIONS_PANEL_BOX</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Box&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;ROUNDED&quot;</span>
-<span class="n">STYLE_OPTIONS_PANEL_HELP_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
-<span class="n">STYLE_OPTIONS_PANEL_TITLE_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_OPTIONS_PANEL_PADDING</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">STYLE_OPTIONS_PANEL_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+<span class="n">STYLE_OPTION</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_OPTION_NEGATIVE</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_ARGUMENT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_COMMAND</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_COMMAND_ALIASES</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_SWITCH</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_SWITCH_NEGATVE</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_METAVAR</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_METAVAR_APPEND</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_METAVAR_SEPARATOR</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_RANGE_APPEND</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_USAGE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_USAGE_COMMAND</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_USAGE_SEPARATOR</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_DEPRECATED</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_HELPTEXT_FIRST_LINE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_HELPTEXT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_OPTION_HELP</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_COMMAND_HELP</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_OPTION_DEFAULT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_OPTION_ENVVAR</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_REQUIRED_SHORT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_REQUIRED_LONG</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_OPTIONS_PANEL_BORDER</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_OPTIONS_PANEL_BOX</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Box&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_OPTIONS_PANEL_HELP_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_OPTIONS_PANEL_TITLE_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_OPTIONS_PANEL_PADDING</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_OPTIONS_PANEL_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 <span class="n">ALIGN_OPTIONS_PANEL</span><span class="p">:</span> <span class="s2">&quot;AlignMethod&quot;</span> <span class="o">=</span> <span class="s2">&quot;left&quot;</span>
 <span class="n">STYLE_OPTIONS_TABLE_SHOW_LINES</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">STYLE_OPTIONS_TABLE_LEADING</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">STYLE_OPTIONS_TABLE_PAD_EDGE</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">STYLE_OPTIONS_TABLE_PADDING</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">STYLE_OPTIONS_TABLE_BOX</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Box&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">STYLE_OPTIONS_TABLE_BOX</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Box&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 <span class="n">STYLE_OPTIONS_TABLE_ROW_STYLES</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">STYLE_OPTIONS_TABLE_BORDER_STYLE</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
-<span class="n">STYLE_COMMANDS_PANEL_BORDER</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
-<span class="n">PANEL_INLINE_HELP_IN_TITLE</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="n">PANEL_INLINE_HELP_DELIMITER</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot; - &quot;</span>
-<span class="n">STYLE_COMMANDS_PANEL_BOX</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Box&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;ROUNDED&quot;</span>
-<span class="n">STYLE_COMMANDS_PANEL_HELP_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
-<span class="n">STYLE_COMMANDS_PANEL_TITLE_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">STYLE_COMMANDS_PANEL_PADDING</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">STYLE_COMMANDS_PANEL_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+<span class="n">STYLE_OPTIONS_TABLE_BORDER_STYLE</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_COMMANDS_PANEL_BORDER</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">PANEL_INLINE_HELP_IN_TITLE</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">PANEL_INLINE_HELP_DELIMITER</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_COMMANDS_PANEL_BOX</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Box&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_COMMANDS_PANEL_HELP_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_COMMANDS_PANEL_TITLE_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_COMMANDS_PANEL_PADDING</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_COMMANDS_PANEL_STYLE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 <span class="n">ALIGN_COMMANDS_PANEL</span><span class="p">:</span> <span class="s2">&quot;AlignMethod&quot;</span> <span class="o">=</span> <span class="s2">&quot;left&quot;</span>
 <span class="n">STYLE_COMMANDS_TABLE_SHOW_LINES</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">STYLE_COMMANDS_TABLE_LEADING</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">STYLE_COMMANDS_TABLE_PAD_EDGE</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">STYLE_COMMANDS_TABLE_PADDING</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">STYLE_COMMANDS_TABLE_BOX</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Box&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">STYLE_COMMANDS_TABLE_BOX</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Box&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 <span class="n">STYLE_COMMANDS_TABLE_ROW_STYLES</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">STYLE_COMMANDS_TABLE_BORDER_STYLE</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
+<span class="n">STYLE_COMMANDS_TABLE_BORDER_STYLE</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;StyleType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 <span class="n">STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 <span class="n">STYLE_ERRORS_PANEL_BORDER</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
 <span class="n">STYLE_ERRORS_PANEL_BOX</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Box&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;ROUNDED&quot;</span>
@@ -1060,9 +1292,12 @@ You probably do not need this in most cases; this is mostly for <strong>rich-cli
 <span class="n">STYLE_ERRORS_SUGGESTION</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;dim&quot;</span>
 <span class="n">STYLE_ERRORS_SUGGESTION_COMMAND</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;blue&quot;</span>
 <span class="n">STYLE_ABORTED</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;red&quot;</span>
-<span class="n">STYLE_PADDING_USAGE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
-<span class="n">STYLE_PADDING_HELPTEXT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
-<span class="n">STYLE_PADDING_EPILOG</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span>
+<span class="n">STYLE_PADDING_USAGE</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_PADDING_HELPTEXT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_PADDING_EPILOG</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_HEADER_TEXT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_EPILOG_TEXT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_FOOTER_TEXT</span><span class="p">:</span> <span class="s2">&quot;StyleType&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 
 <span class="n">PANEL_TITLE_PADDING</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">WIDTH</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">terminal_width_default</span><span class="p">()</span>
@@ -1072,37 +1307,41 @@ You probably do not need this in most cases; this is mostly for <strong>rich-cli
 <span class="p">)</span>
 <span class="n">FORCE_TERMINAL</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">force_terminal_default</span><span class="p">()</span>
 
-<span class="n">OPTIONS_TABLE_COLUMN_TYPES</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OptionColumnType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;required&quot;</span><span class="p">,</span> <span class="s2">&quot;opt_long&quot;</span><span class="p">,</span> <span class="s2">&quot;opt_short&quot;</span><span class="p">,</span> <span class="s2">&quot;metavar&quot;</span><span class="p">,</span> <span class="s2">&quot;help&quot;</span><span class="p">]</span>
-<span class="n">COMMANDS_TABLE_COLUMN_TYPES</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CommandColumnType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;aliases&quot;</span><span class="p">,</span> <span class="s2">&quot;help&quot;</span><span class="p">]</span>
+<span class="n">OPTIONS_TABLE_COLUMN_TYPES</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OptionColumnType</span><span class="p">]</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">COMMANDS_TABLE_COLUMN_TYPES</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CommandColumnType</span><span class="p">]</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+
+<span class="n">OPTIONS_TABLE_HELP_SECTIONS</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OptionHelpSectionType</span><span class="p">]</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">COMMANDS_TABLE_HELP_SECTIONS</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CommandHelpSectionType</span><span class="p">]</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 
 <span class="c1"># Fixed strings</span>
 <span class="n">HEADER_TEXT</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Text&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">FOOTER_TEXT</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Text&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">PANEL_TITLE_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span>
-<span class="n">DEPRECATED_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">[deprecated]&quot;</span>
-<span class="n">DEPRECATED_WITH_REASON_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">[deprecated: </span><span class="si">{}</span><span class="s2">]&quot;</span>
-<span class="n">DEFAULT_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">[default: </span><span class="si">{}</span><span class="s2">]&quot;</span>
-<span class="n">ENVVAR_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">[env var: </span><span class="si">{}</span><span class="s2">]&quot;</span>
-<span class="n">REQUIRED_SHORT_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
-<span class="n">REQUIRED_LONG_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">[required]&quot;</span>
-<span class="n">RANGE_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;[</span><span class="si">{}</span><span class="s2">]&quot;</span>
-<span class="n">APPEND_METAVARS_HELP_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">[</span><span class="si">{}</span><span class="s2">]&quot;</span>
+<span class="n">PANEL_TITLE_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">DEPRECATED_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">DEPRECATED_WITH_REASON_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">DEFAULT_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">ENVVAR_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">REQUIRED_SHORT_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">REQUIRED_LONG_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">RANGE_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">APPEND_METAVARS_HELP_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">APPEND_RANGE_HELP_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 <span class="n">ARGUMENTS_PANEL_TITLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Arguments&quot;</span>
 <span class="n">OPTIONS_PANEL_TITLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Options&quot;</span>
 <span class="n">COMMANDS_PANEL_TITLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Commands&quot;</span>
 <span class="n">ERRORS_PANEL_TITLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Error&quot;</span>
-<span class="n">delimiter_comma</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span>
-<span class="n">delimiter_slash</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span>
+<span class="n">DELIMITER_COMMA</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">DELIMITER_SLASH</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 <span class="n">ERRORS_SUGGESTION</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Text&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Default: Try &#39;cmd -h&#39; for help. Set to False to disable.</span>
 <span class="n">ERRORS_EPILOGUE</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="s2">&quot;Text&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">ABORTED_TEXT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Aborted.&quot;</span>
 
-<span class="n">PADDING_HEADER_TEXT</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">PADDING_USAGE</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="n">PADDING_HELPTEXT</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">PADDING_HEADER_TEXT</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">PADDING_USAGE</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">PADDING_HELPTEXT</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 <span class="n">PADDING_HELPTEXT_DEPRECATED</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">PADDING_HELPTEXT_FIRST_LINE</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">PADDING_EPILOG</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">PADDING_EPILOG</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 <span class="n">PADDING_FOOTER_TEXT</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">PADDING_ERRORS_PANEL</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">PADDING_ERRORS_SUGGESTION</span><span class="p">:</span> <span class="s2">&quot;PaddingDimensions&quot;</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -1112,12 +1351,12 @@ You probably do not need this in most cases; this is mostly for <strong>rich-cli
 <span class="n">SHOW_ARGUMENTS</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Show positional arguments</span>
 <span class="n">SHOW_METAVARS_COLUMN</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Show a column with the option metavar (eg. INTEGER)</span>
 <span class="n">COMMANDS_BEFORE_OPTIONS</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># If set, the commands panel show above the options panel.</span>
-<span class="n">APPEND_METAVARS_HELP</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Append metavar (eg. [TEXT]) after the help text</span>
+<span class="n">APPEND_METAVARS_HELP</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Append metavar (eg. [TEXT]) after the help text</span>
 <span class="n">GROUP_ARGUMENTS_OPTIONS</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Show arguments with options instead of in own panel</span>
-<span class="n">OPTION_ENVVAR_FIRST</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Show env vars before option help text instead of avert</span>
-<span class="n">TEXT_MARKUP</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ansi&quot;</span><span class="p">,</span> <span class="s2">&quot;rich&quot;</span><span class="p">,</span> <span class="s2">&quot;markdown&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">notset</span>  <span class="c1"># type: ignore[assignment]</span>
+<span class="n">OPTION_ENVVAR_FIRST</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Show env vars before option help text instead of avert</span>
+<span class="n">TEXT_MARKUP</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ansi&quot;</span><span class="p">,</span> <span class="s2">&quot;rich&quot;</span><span class="p">,</span> <span class="s2">&quot;markdown&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">notset</span>
 <span class="n">TEXT_KWARGS</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">TEXT_EMOJIS</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">notset</span>  <span class="c1"># type: ignore[assignment]</span>
+<span class="n">TEXT_EMOJIS</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">notset</span>
 <span class="n">TEXT_PARAGRAPH_LINEBREAKS</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="c1"># If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -&gt; 😺</span>
 <span class="n">USE_MARKDOWN</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Parse help strings as markdown</span>

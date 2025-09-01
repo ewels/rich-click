@@ -557,27 +557,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../documentation/panels/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Panels
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../documentation/configuration/" class="md-nav__link">
         
   
@@ -599,11 +578,74 @@
   
   
     <li class="md-nav__item">
-      <a href="../documentation/formatting_and_styles/" class="md-nav__link">
+      <a href="../documentation/structure/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Formatting & Styles
+    Structure
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation/panels/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Panels
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation/text_markup_and_formatting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Text Markup & Formatting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../documentation/custom_styles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Custom Styles
   </span>
   
 
@@ -737,9 +779,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#version-190dev1-wip" class="md-nav__link">
+  <a href="#version-190dev2-wip" class="md-nav__link">
     <span class="md-ellipsis">
-      Version 1.9.0dev1 (WIP)
+      Version 1.9.0.dev2 (WIP)
     </span>
   </a>
   
@@ -1108,9 +1150,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#version-190dev1-wip" class="md-nav__link">
+  <a href="#version-190dev2-wip" class="md-nav__link">
     <span class="md-ellipsis">
-      Version 1.9.0dev1 (WIP)
+      Version 1.9.0.dev2 (WIP)
     </span>
   </a>
   
@@ -1441,7 +1483,7 @@
 
 
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
-<h2 id="version-190dev1-wip">Version 1.9.0dev1 (WIP)<a class="headerlink" href="#version-190dev1-wip" title="Permanent link">&para;</a></h2>
+<h2 id="version-190dev2-wip">Version 1.9.0.dev2 (WIP)<a class="headerlink" href="#version-190dev2-wip" title="Permanent link">&para;</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Version 1.9.0 deprecates support for a lot of old versions of things:</p>
@@ -1472,10 +1514,15 @@ You must now escape the rich markup: <code>REQUIRED_STRING = "\\[required]"</cod
 <p><strong>Small changes:</strong></p>
 <ul>
 <li>"Deprecated" text properly handled and stylized in all places.</li>
-<li>Improved <code>rich-click</code> CLI patching.</li>
+<li>Command aliases: <code>@cli.command(aliases=["foo"])</code></li>
+<li>Improved <code>rich-click</code> CLI usability: improved patching and improved script detection+execution.</li>
 <li><code>context_settings={"help_to_stderr": True}</code> support.</li>
 <li>Added suite of <code>padding_*</code> config options to control padding.</li>
-<li>Added newline control in help text with <code>text_paragraph_linebreaks</code> config option.</li>
+<li>Better newline handling:<ul>
+<li>Unordered lists create newlines in help text, e.g. <code>"\n- foo\n- bar"</code> or <code>"\n* foo\n* bar"</code></li>
+<li>Newline control in help text with <code>text_paragraph_linebreaks</code> config option.</li>
+</ul>
+</li>
 <li>Added a few <code>text_*</code> config options, including notably <code>text_kwargs</code> which can control code styles in Markdown.</li>
 </ul>
 <p><strong>Backend (mostly invisible) changes:</strong></p>

@@ -558,27 +558,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../panels/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Panels
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../configuration/" class="md-nav__link">
         
   
@@ -600,11 +579,74 @@
   
   
     <li class="md-nav__item">
-      <a href="../formatting_and_styles/" class="md-nav__link">
+      <a href="../structure/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Formatting & Styles
+    Structure
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../panels/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Panels
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../text_markup_and_formatting/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Text Markup & Formatting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custom_styles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Custom Styles
   </span>
   
 
@@ -710,6 +752,15 @@
   <a href="#2-configure-your-terminals-ansi-color-escape-sequences" class="md-nav__link">
     <span class="md-ellipsis">
       2. Configure your terminal's ANSI color escape sequences
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-set-a-default-rich-click-theme" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Set a default rich-click theme
     </span>
   </a>
   
@@ -885,6 +936,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#3-set-a-default-rich-click-theme" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Set a default rich-click theme
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -983,6 +1043,22 @@ If you are having difficulty distinguishing colors, it is recommended that you a
 <p class="admonition-title">Note</p>
 <p>This will only work for CLIs that utilize the 4-bit ANSI color system.
 CLIs that utilize hex values or other color systems will not be impacted by your terminal's ANSI color settings.</p>
+</div>
+<h3 id="3-set-a-default-rich-click-theme">3. Set a default <strong>rich-click</strong> theme<a class="headerlink" href="#3-set-a-default-rich-click-theme" title="Permanent link">&para;</a></h3>
+<p>You can set a <strong>rich-click</strong> theme using the <code>RICH_CLICK_THEME=</code> environment variable.</p>
+<p>The theme you choose can change not only the colors, it can also change the structure of the help text, which can assist with screen readers.</p>
+<p>In order to set this environment variable automatically every time you use the terminal, you can add it to your <code>~/.bashrc</code> (if using bash) or <code>~/.zshrc</code> (if using zsh):</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">bash</label><label for="__tabbed_2_2">zsh</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;export RICH_CLICK_THEME=nord-modern&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;export RICH_CLICK_THEME=nord-modern&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
+</code></pre></div>
+</div>
+</div>
 </div>
 <h2 id="for-developers">For developers<a class="headerlink" href="#for-developers" title="Permanent link">&para;</a></h2>
 <p>If you would like to make your CLI more accessible for others, there are a few rules of thumb you can follow:</p>
