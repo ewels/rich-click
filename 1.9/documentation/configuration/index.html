@@ -1085,8 +1085,9 @@ When the <code>RichHelpFormatter()</code> object is created, if there is still n
 <li>Environment variable: <code>RICH_CLICK_THEME=[theme]</code></li>
 <li>The <code>theme</code> of the command's config</li>
 </ol>
-<p>Do note that other than end-user overrides and being applied last to unset values, other rules still apply with config resolution.
-So for example, the below will not apply the <code>"green2-nu"</code> theme to the CLI:</p>
+<p>Do note that other rules still apply with config resolution.
+So for example, the below will <strong>not</strong> apply the <code>"green2-nu"</code> theme to the CLI
+because of the other config resolution rules:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:5"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><input id="__tabbed_1_5" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Bad example</label><label for="__tabbed_1_2">Fix 1a</label><label for="__tabbed_1_3">Fix 1b</label><label for="__tabbed_1_4">Fix 1c</label><label for="__tabbed_1_5">Fix 2</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
