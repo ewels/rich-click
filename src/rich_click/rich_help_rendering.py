@@ -152,21 +152,17 @@ def _get_help_text(
                 if para.startswith("\b"):
                     _remaining_paragraphs.append("{}\n".format(para.strip("\b\n")))
                 else:
-                    _remaining_paragraphs.extend(
-                        [
-                            (
-                                "* " + " ".join([i.lstrip() for i in b.split("\n")]).strip()
-                                if _bi > 0
-                                else (
-                                    "- " + " ".join([i.lstrip() for i in b.split("\n")]).strip()
-                                    if _ai > 0
-                                    else " ".join([i.lstrip() for i in b.split("\n")]).strip()
-                                )
-                            )
-                            for _ai, a in enumerate(para.split("\n- "))
-                            for _bi, b in enumerate(a.split("\n* "))
-                        ]
-                    )
+                    buf = ""
+                    for p in para.split("\n"):
+                        if any(p.startswith(_) for _ in ["* ", "- ", "    ", "> "]):
+                            if buf:
+                                _remaining_paragraphs.append(buf.strip())
+                                buf = ""
+                            _remaining_paragraphs.append(p.rstrip())
+                        else:
+                            buf += " " + p
+                    if buf:
+                        _remaining_paragraphs.append(buf.strip())
             # Join back together
             remaining_lines = lb.join(_remaining_paragraphs)
         else:
