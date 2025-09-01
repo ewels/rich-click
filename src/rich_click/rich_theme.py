@@ -500,8 +500,8 @@ COLORS: Dict[str, Dict[str, Any]] = {
             "style_required_short": f"bold {c}",
             "style_option_help": "default not bold",
             "style_command_help": "default not bold",
-            "style_option_default": f"dim",
-            "style_option_envvar": f"dim",
+            "style_option_default": "dim",
+            "style_option_envvar": "dim",
             "style_helptext_first_line": "",
             "style_helptext": "dim",
             "style_header_text": "",
@@ -651,8 +651,6 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "style_commands_panel_padding": (0, 1),
         "panel_inline_help_in_title": False,
         "panel_inline_help_delimiter": " - ",
-
-
         "options_table_column_types": ["required", "opt_long", "opt_short", "metavar", "help"],
         "commands_table_column_types": ["name", "aliases", "help"],
         "panel_title_string": "{}",
@@ -671,7 +669,6 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "panel_title_padding": 1,
         "padding_epilog": 1,
         "append_metavars_help_string": "\\[{}]",
-
         # "padding_footer_text": (1, 1, 0, 1),
         # "padding_errors_panel": (0, 0, 1, 0),
         # "padding_errors_suggestion": (0, 1, 0, 1),
@@ -729,7 +726,6 @@ FORMATS: Dict[str, Dict[str, Any]] = {
         "panel_title_padding": 0,
         "panel_inline_help_in_title": True,
         "panel_inline_help_delimiter": " ",
-
         "style_errors_panel_box": None,
         "deprecated_string": "\\[deprecated]",
         "deprecated_with_reason_string": "\\[deprecated: {}]",

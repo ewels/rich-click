@@ -124,6 +124,7 @@ def test_config_from_globals_behavior() -> None:
 
 def test_config_is_serializable_and_invertible() -> None:
     config = RichHelpConfiguration()
+    config.apply_theme(force_default=True)
 
     try:
         serialized_data = json.dumps(asdict(config))

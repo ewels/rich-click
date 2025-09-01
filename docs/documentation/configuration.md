@@ -249,7 +249,7 @@ def cli():
     """My CLI help text"""
 ```
 
-A more advanced pattern, which lets you make some options overrideable by a theme, while keeping others immutable:
+A more advanced pattern, which lets you make some options overridable by a theme, while keeping others immutable:
 
 ```python
 import rich_click as click

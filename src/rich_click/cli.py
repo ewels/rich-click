@@ -467,7 +467,6 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
 
     >>> [command]rich-click[/] [argument]my_package[/] [argument]cmd[/] [option]--foo[/] 3
     """  # noqa: D401
-
     if rich_config:
         if theme:
             rich_config.setdefault("theme", theme)
@@ -491,6 +490,7 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
 
     if theme:
         import rich_click.rich_click as rc
+
         rc._THEME_FROM_CLI = theme
     if rich_config:
         if theme:

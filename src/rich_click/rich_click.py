@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, Uni
 from rich_click.rich_help_configuration import (
     FROM_THEME,
     CommandColumnType,
-    FromTheme,
     OptionColumnType,
     force_terminal_default,
     terminal_width_default,
@@ -26,7 +25,7 @@ if TYPE_CHECKING:  # pragma: no cover
 THEME: Optional[str] = None
 ENABLE_THEME_ENV_VAR: bool = True
 
-STYLE_OPTION: Union["StyleType", FromTheme] = FROM_THEME
+STYLE_OPTION: "StyleType" = FROM_THEME
 STYLE_OPTION_NEGATIVE: Optional["StyleType"] = FROM_THEME
 STYLE_ARGUMENT: "StyleType" = FROM_THEME
 STYLE_COMMAND: "StyleType" = FROM_THEME
@@ -85,12 +84,12 @@ ALIGN_ERRORS_PANEL: "AlignMethod" = "left"
 STYLE_ERRORS_SUGGESTION: "StyleType" = "dim"
 STYLE_ERRORS_SUGGESTION_COMMAND: "StyleType" = "blue"
 STYLE_ABORTED: "StyleType" = "red"
-STYLE_PADDING_USAGE: "StyleType" = "none"
-STYLE_PADDING_HELPTEXT: "StyleType" = "none"
-STYLE_PADDING_EPILOG: "StyleType" = "none"
-STYLE_HEADER_TEXT: "StyleType" = ""
-STYLE_EPILOG_TEXT: "StyleType" = ""
-STYLE_FOOTER_TEXT: "StyleType" = ""
+STYLE_PADDING_USAGE: "StyleType" = FROM_THEME
+STYLE_PADDING_HELPTEXT: "StyleType" = FROM_THEME
+STYLE_PADDING_EPILOG: "StyleType" = FROM_THEME
+STYLE_HEADER_TEXT: "StyleType" = FROM_THEME
+STYLE_EPILOG_TEXT: "StyleType" = FROM_THEME
+STYLE_FOOTER_TEXT: "StyleType" = FROM_THEME
 
 PANEL_TITLE_PADDING: int = 1
 WIDTH: Optional[int] = terminal_width_default()
@@ -112,7 +111,7 @@ DEPRECATED_WITH_REASON_STRING: str = FROM_THEME
 DEFAULT_STRING: str = FROM_THEME
 ENVVAR_STRING: str = FROM_THEME
 REQUIRED_SHORT_STRING: str = FROM_THEME
-REQUIRED_LONG_STRING: str =FROM_THEME
+REQUIRED_LONG_STRING: str = FROM_THEME
 RANGE_STRING: str = FROM_THEME
 APPEND_METAVARS_HELP_STRING: str = FROM_THEME
 ARGUMENTS_PANEL_TITLE: str = "Arguments"
@@ -143,9 +142,9 @@ COMMANDS_BEFORE_OPTIONS: bool = False  # If set, the commands panel show above t
 APPEND_METAVARS_HELP: bool = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS: bool = False  # Show arguments with options instead of in own panel
 OPTION_ENVVAR_FIRST: bool = False  # Show env vars before option help text instead of avert
-TEXT_MARKUP: Literal["ansi", "rich", "markdown", None] = notset  # type: ignore[assignment]
+TEXT_MARKUP: Literal["ansi", "rich", "markdown", None] = notset
 TEXT_KWARGS: Optional[Dict[str, Any]] = None
-TEXT_EMOJIS: bool = notset  # type: ignore[assignment]
+TEXT_EMOJIS: bool = notset
 TEXT_PARAGRAPH_LINEBREAKS: Optional[str] = None
 # If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -> 😺
 USE_MARKDOWN: Optional[bool] = None  # Parse help strings as markdown
@@ -160,6 +159,7 @@ USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate h
 #!ENDCONFIG
 
 _THEME_FROM_CLI: Optional[str] = None
+
 
 def __getattr__(name: str) -> Any:
     if name == "get_module_help_configuration":

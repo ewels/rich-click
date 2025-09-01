@@ -14,9 +14,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.align import AlignMethod
     from rich.box import Box
     from rich.highlighter import Highlighter
-    from rich.text import Text
     from rich.padding import PaddingDimensions
     from rich.style import StyleType
+    from rich.text import Text
 
 
 T = TypeVar("T", bound="RichHelpConfiguration")
@@ -47,11 +47,13 @@ ColumnType = Union[OptionColumnType, CommandColumnType, str]
 
 
 class FromTheme(object):
+    """Sentinel value for unset config options."""
+
     def __repr__(self) -> str:
         return "FromTheme"
 
 
-FROM_THEME = FromTheme()
+FROM_THEME: Any = FromTheme()
 
 
 def force_terminal_default() -> Optional[bool]:
@@ -94,61 +96,61 @@ class RichHelpConfiguration:
     enable_theme_env_var: bool = field(default=True)
 
     # Default styles
-    style_option: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_option_negative: Optional["StyleType"] = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_argument: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_command: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_command_aliases: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_switch: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_switch_negative: Optional["StyleType"] = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_metavar: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_metavar_append: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_metavar_separator: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_header_text: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_epilog_text: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_footer_text: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_usage: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_usage_command: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_usage_separator: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_deprecated: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_helptext_first_line: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_helptext: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_option_help: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_command_help: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_option_default: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_option_envvar: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_required_short: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_required_long: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_options_panel_border: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_options_panel_box: Optional[Union[str, "Box"]] = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_options_panel_help_style: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_options_panel_title_style: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_options_panel_padding: "PaddingDimensions" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_options_panel_style: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
+    style_option: "StyleType" = field(default=FROM_THEME)
+    style_option_negative: Optional["StyleType"] = field(default=FROM_THEME)
+    style_argument: "StyleType" = field(default=FROM_THEME)
+    style_command: "StyleType" = field(default=FROM_THEME)
+    style_command_aliases: "StyleType" = field(default=FROM_THEME)
+    style_switch: "StyleType" = field(default=FROM_THEME)
+    style_switch_negative: Optional["StyleType"] = field(default=FROM_THEME)
+    style_metavar: "StyleType" = field(default=FROM_THEME)
+    style_metavar_append: "StyleType" = field(default=FROM_THEME)
+    style_metavar_separator: "StyleType" = field(default=FROM_THEME)
+    style_header_text: "StyleType" = field(default=FROM_THEME)
+    style_epilog_text: "StyleType" = field(default=FROM_THEME)
+    style_footer_text: "StyleType" = field(default=FROM_THEME)
+    style_usage: "StyleType" = field(default=FROM_THEME)
+    style_usage_command: "StyleType" = field(default=FROM_THEME)
+    style_usage_separator: "StyleType" = field(default=FROM_THEME)
+    style_deprecated: "StyleType" = field(default=FROM_THEME)
+    style_helptext_first_line: "StyleType" = field(default=FROM_THEME)
+    style_helptext: "StyleType" = field(default=FROM_THEME)
+    style_option_help: "StyleType" = field(default=FROM_THEME)
+    style_command_help: "StyleType" = field(default=FROM_THEME)
+    style_option_default: "StyleType" = field(default=FROM_THEME)
+    style_option_envvar: "StyleType" = field(default=FROM_THEME)
+    style_required_short: "StyleType" = field(default=FROM_THEME)
+    style_required_long: "StyleType" = field(default=FROM_THEME)
+    style_options_panel_border: "StyleType" = field(default=FROM_THEME)
+    style_options_panel_box: Optional[Union[str, "Box"]] = field(default=FROM_THEME)
+    style_options_panel_help_style: "StyleType" = field(default=FROM_THEME)
+    style_options_panel_title_style: "StyleType" = field(default=FROM_THEME)
+    style_options_panel_padding: "PaddingDimensions" = field(default=FROM_THEME)
+    style_options_panel_style: "StyleType" = field(default=FROM_THEME)
     align_options_panel: "AlignMethod" = field(default="left")
     style_options_table_show_lines: bool = field(default=False)
     style_options_table_leading: int = field(default=0)
     style_options_table_pad_edge: bool = field(default=False)
     style_options_table_padding: "PaddingDimensions" = field(default_factory=lambda: (0, 1))
-    style_options_table_box: Optional[Union[str, "Box"]] = field(default=FROM_THEME)  # type: ignore[assignment]
+    style_options_table_box: Optional[Union[str, "Box"]] = field(default=FROM_THEME)
     style_options_table_row_styles: Optional[List["StyleType"]] = field(default=None)
-    style_options_table_border_style: Optional["StyleType"] = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_commands_panel_border: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    panel_inline_help_in_title: bool = field(default=FROM_THEME)  # type: ignore[assignment]
-    panel_inline_help_delimiter: str = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_commands_panel_box: Optional[Union[str, "Box"]] = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_commands_panel_help_style: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_commands_panel_title_style: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_commands_panel_padding: "PaddingDimensions" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_commands_panel_style: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
+    style_options_table_border_style: Optional["StyleType"] = field(default=FROM_THEME)
+    style_commands_panel_border: "StyleType" = field(default=FROM_THEME)
+    panel_inline_help_in_title: bool = field(default=FROM_THEME)
+    panel_inline_help_delimiter: str = field(default=FROM_THEME)
+    style_commands_panel_box: Optional[Union[str, "Box"]] = field(default=FROM_THEME)
+    style_commands_panel_help_style: "StyleType" = field(default=FROM_THEME)
+    style_commands_panel_title_style: "StyleType" = field(default=FROM_THEME)
+    style_commands_panel_padding: "PaddingDimensions" = field(default=FROM_THEME)
+    style_commands_panel_style: "StyleType" = field(default=FROM_THEME)
     align_commands_panel: "AlignMethod" = field(default="left")
     style_commands_table_show_lines: bool = field(default=False)
     style_commands_table_leading: int = field(default=0)
     style_commands_table_pad_edge: bool = field(default=False)
     style_commands_table_padding: "PaddingDimensions" = field(default_factory=lambda: (0, 1))
-    style_commands_table_box: Optional[Union[str, "Box"]] = field(default=FROM_THEME)  # type: ignore[assignment]
+    style_commands_table_box: Optional[Union[str, "Box"]] = field(default=FROM_THEME)
     style_commands_table_row_styles: Optional[List["StyleType"]] = field(default=None)
-    style_commands_table_border_style: Optional["StyleType"] = field(default=FROM_THEME)  # type: ignore[assignment]
+    style_commands_table_border_style: Optional["StyleType"] = field(default=FROM_THEME)
     style_commands_table_column_width_ratio: Optional[Union[Tuple[None, None], Tuple[int, int]]] = field(
         default_factory=lambda: (None, None)
     )
@@ -158,48 +160,48 @@ class RichHelpConfiguration:
     style_errors_suggestion: "StyleType" = field(default="dim")
     style_errors_suggestion_command: "StyleType" = field(default="blue")
     style_aborted: "StyleType" = field(default="red")
-    style_padding_usage: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_padding_helptext: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
-    style_padding_epilog: "StyleType" = field(default=FROM_THEME)  # type: ignore[assignment]
+    style_padding_usage: "StyleType" = field(default=FROM_THEME)
+    style_padding_helptext: "StyleType" = field(default=FROM_THEME)
+    style_padding_epilog: "StyleType" = field(default=FROM_THEME)
 
-    panel_title_padding: int = field(default=FROM_THEME)  # type: ignore[assignment]
+    panel_title_padding: int = field(default=1)
     width: Optional[int] = field(default_factory=terminal_width_default)
     max_width: Optional[int] = field(default_factory=terminal_width_default)
     color_system: Optional[Literal["auto", "standard", "256", "truecolor", "windows"]] = field(default="auto")
     force_terminal: Optional[bool] = field(default_factory=force_terminal_default)
 
-    options_table_column_types: List[OptionColumnType] = field(default=FROM_THEME)  # type: ignore[assignment]
-    commands_table_column_types: List[CommandColumnType] = field(default=FROM_THEME)  # type: ignore[assignment]
+    options_table_column_types: List[OptionColumnType] = field(default=FROM_THEME)
+    commands_table_column_types: List[CommandColumnType] = field(default=FROM_THEME)
 
     # Fixed strings
     header_text: Optional[Union[str, "Text"]] = field(default=None)
     footer_text: Optional[Union[str, "Text"]] = field(default=None)
-    panel_title_string: str = field(default=FROM_THEME)  # type: ignore[assignment]
-    deprecated_string: str = field(default=FROM_THEME)  # type: ignore[assignment]
-    deprecated_with_reason_string: str = field(default=FROM_THEME)  # type: ignore[assignment]
-    default_string: str = field(default=FROM_THEME)  # type: ignore[assignment]
-    envvar_string: str = field(default=FROM_THEME)  # type: ignore[assignment]
-    required_short_string: str = field(default=FROM_THEME)  # type: ignore[assignment]
-    required_long_string: str = field(default=FROM_THEME)  # type: ignore[assignment]
-    range_string: str = field(default=FROM_THEME)  # type: ignore[assignment]
-    append_metavars_help_string: str = field(default=FROM_THEME)  # type: ignore[assignment]
+    panel_title_string: str = field(default=FROM_THEME)
+    deprecated_string: str = field(default=FROM_THEME)
+    deprecated_with_reason_string: str = field(default=FROM_THEME)
+    default_string: str = field(default=FROM_THEME)
+    envvar_string: str = field(default=FROM_THEME)
+    required_short_string: str = field(default=FROM_THEME)
+    required_long_string: str = field(default=FROM_THEME)
+    range_string: str = field(default=FROM_THEME)
+    append_metavars_help_string: str = field(default=FROM_THEME)
     arguments_panel_title: str = field(default="Arguments")
     options_panel_title: str = field(default="Options")
     commands_panel_title: str = field(default="Commands")
     errors_panel_title: str = field(default="Error")
-    delimiter_comma: str = field(default=FROM_THEME)  # type: ignore[assignment]
-    delimiter_slash: str = field(default=FROM_THEME)  # type: ignore[assignment]
+    delimiter_comma: str = field(default=FROM_THEME)
+    delimiter_slash: str = field(default=FROM_THEME)
     errors_suggestion: Optional[Union[str, "Text"]] = field(default=None)
     """Defaults to Try 'cmd -h' for help. Set to False to disable."""
     errors_epilogue: Optional[Union[str, "Text"]] = field(default=None)
     aborted_text: str = field(default="Aborted.")
 
-    padding_header_text: "PaddingDimensions" = field(default=FROM_THEME)  # type: ignore[assignment]
-    padding_usage: "PaddingDimensions" = field(default=FROM_THEME)  # type: ignore[assignment]
-    padding_helptext: "PaddingDimensions" = field(default=FROM_THEME)  # type: ignore[assignment]
+    padding_header_text: "PaddingDimensions" = field(default=FROM_THEME)
+    padding_usage: "PaddingDimensions" = field(default=FROM_THEME)
+    padding_helptext: "PaddingDimensions" = field(default=FROM_THEME)
     padding_helptext_deprecated: "PaddingDimensions" = field(default=0)
-    padding_helptext_first_line: "PaddingDimensions" = field(default=0)  # type: ignore[assignment]
-    padding_epilog: "PaddingDimensions" = field(default=FROM_THEME)  # type: ignore[assignment]
+    padding_helptext_first_line: "PaddingDimensions" = field(default=0)
+    padding_epilog: "PaddingDimensions" = field(default=FROM_THEME)
     padding_footer_text: "PaddingDimensions" = field(default=(1, 1, 0, 1))
     padding_errors_panel: "PaddingDimensions" = field(default=(0, 0, 1, 0))
     padding_errors_suggestion: "PaddingDimensions" = field(default=(0, 1, 0, 1))
@@ -218,12 +220,12 @@ class RichHelpConfiguration:
     """Show arguments with options instead of in own panel"""
     option_envvar_first: bool = field(default=False)
     """Show env vars before option help text instead of after"""
-    text_markup: Literal["ansi", "rich", "markdown", None] = field(default=notset)  # type: ignore[arg-type]
+    text_markup: Literal["ansi", "rich", "markdown", None] = field(default=notset)
     """What engine to use to render the text. Default is 'ansi'."""
     text_kwargs: Optional[Dict[str, Any]] = field(default=None)
     """Additional kwargs to pass to Rich text rendering. Kwargs differ by text_markup chosen."""
     text_paragraph_linebreaks: Optional[str] = field(default=None)
-    text_emojis: bool = field(default=notset)  # type: ignore[assignment]
+    text_emojis: bool = field(default=notset)
     """If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -> 😺"""
     use_markdown: Optional[bool] = field(default=None)
     """Silently deprecated; use `text_markup` field instead."""
@@ -305,8 +307,6 @@ class RichHelpConfiguration:
                 PendingDeprecationWarning,
                 stacklevel=2,
             )
-            if self.show_metavars_column is False:
-                self.options_table_column_types.remove("metavar")
 
         if self.use_markdown_emoji is not None:
             import warnings
@@ -352,6 +352,7 @@ class RichHelpConfiguration:
         theme = None
 
         import rich_click.rich_click as rc
+
         if rc._THEME_FROM_CLI is not None:
             theme = rc._THEME_FROM_CLI
 
@@ -383,9 +384,10 @@ class RichHelpConfiguration:
         theme_settings = None
 
         if theme in THEMES:
-            theme_settings = THEMES[theme]  # type: ignore[arg-type]
+            theme_settings = THEMES[theme]
         elif theme == "random":
             import random
+
             theme = random.choice(list(THEMES.keys()))
             theme_settings = THEMES[theme]
         elif force_default:
@@ -396,6 +398,11 @@ class RichHelpConfiguration:
                 current = getattr(self, k)
                 if current is FROM_THEME:
                     setattr(self, k, v)
+
+            # Handle deprecated fields
+            if self.show_metavars_column is False and "metavar" in self.options_table_column_types:
+                # must create new copy; don't modify in-place
+                self.options_table_column_types = [i for i in self.options_table_column_types if i != "metavar"]
 
     def dump_to_globals(self, module: Optional[ModuleType] = None) -> None:
         if module is None:
