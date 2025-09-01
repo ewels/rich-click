@@ -168,7 +168,7 @@ class RichHelpConfiguration:
     style_padding_helptext: "StyleType" = field(default=FROM_THEME)
     style_padding_epilog: "StyleType" = field(default=FROM_THEME)
 
-    panel_title_padding: int = field(default=1)
+    panel_title_padding: int = field(default=FROM_THEME)
     width: Optional[int] = field(default_factory=terminal_width_default)
     max_width: Optional[int] = field(default_factory=terminal_width_default)
     color_system: Optional[Literal["auto", "standard", "256", "truecolor", "windows"]] = field(default="auto")

@@ -94,7 +94,7 @@ STYLE_HEADER_TEXT: "StyleType" = FROM_THEME
 STYLE_EPILOG_TEXT: "StyleType" = FROM_THEME
 STYLE_FOOTER_TEXT: "StyleType" = FROM_THEME
 
-PANEL_TITLE_PADDING: int = 1
+PANEL_TITLE_PADDING: int = FROM_THEME
 WIDTH: Optional[int] = terminal_width_default()
 MAX_WIDTH: Optional[int] = terminal_width_default()
 COLOR_SYSTEM: Optional[Literal["auto", "standard", "256", "truecolor", "windows"]] = (

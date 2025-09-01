@@ -71,6 +71,8 @@ class RichClickRichPanel(Panel):
             title_text.expand_tabs()
             # Ensure underlines are handled beautifully;
             # title_text.pad() expands underlines, whereas this method does not.
+            if self.title_padding == 0:
+                return title_text
             return Text("").join([Text(" " * self.title_padding), title_text, Text(" " * self.title_padding)])
         return None
 
