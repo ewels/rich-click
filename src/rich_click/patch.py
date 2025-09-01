@@ -8,7 +8,6 @@ from typing import Optional
 import click
 
 import rich_click
-import rich_click.rich_command
 from rich_click.decorators import command as _rich_command
 from rich_click.decorators import group as _rich_group
 from rich_click.rich_command import RichCommand, RichCommandCollection, RichGroup, RichMultiCommand

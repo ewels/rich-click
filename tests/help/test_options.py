@@ -50,7 +50,8 @@ def test_options_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> Non
 
 def test_options_help_envvar_first(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     rc.OPTION_ENVVAR_FIRST = True
-    result = cli_runner.invoke(cli, "--help")
+    with pytest.warns(PendingDeprecationWarning, match=r"`option_envvar_first=` will be deprecated.*"):
+        result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
     assert result.stdout == snapshot(
         """\

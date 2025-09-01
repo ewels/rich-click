@@ -32,10 +32,7 @@ from rich_click.rich_parameter import RichParameter
 if TYPE_CHECKING:
     from rich.markdown import Markdown
 
-    from rich_click.rich_help_configuration import (
-        CommandColumnType,
-        OptionColumnType,
-    )
+    from rich_click.rich_help_configuration import CommandColumnType, OptionColumnType, OptionHelpSectionType
     from rich_click.rich_panel import RichCommandPanel, RichOptionPanel
 
 
@@ -552,41 +549,26 @@ def get_help_parameter(
         Columns: A columns element with multiple styled objects (help, default, required)
 
     """
-    config = formatter.config
-    items: List[RenderableType] = []
-
     if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(param.name, str)
 
-    # Get the environment variable first
-    envvar_text = _get_parameter_env_var(param, ctx, formatter)
-    help_text = _get_parameter_help(param, ctx, formatter)
-    deprecated_text = _get_parameter_deprecated(param, ctx, formatter)
-    if formatter.config.append_metavars_help:
-        metavar_text = _get_parameter_metavar(param, ctx, formatter)
-    else:
-        metavar_text = None
-    default_text = _get_parameter_default(param, ctx, formatter)
-    required_text = _get_parameter_required(param, ctx, formatter)
+    section_callbacks: Dict["OptionHelpSectionType", Callable[..., Any]] = {
+        "help": _get_parameter_help,
+        "required": _get_parameter_required,
+        "envvar": _get_parameter_env_var,
+        "default": _get_parameter_default,
+        "range": lambda *args, **kwargs: None,
+        "metavar": _get_parameter_metavar,
+        "deprecated": _get_parameter_deprecated,
+    }
 
-    if envvar_text is not None and config.option_envvar_first:
-        items.append(envvar_text)
-    if help_text is not None:
-        items.append(help_text)
-    if deprecated_text is not None:
-        items.append(deprecated_text)
-    if metavar_text is not None:
-        items.append(metavar_text)
-    if envvar_text is not None and not config.option_envvar_first:
-        items.append(envvar_text)
-    if default_text is not None:
-        items.append(default_text)
-    if required_text is not None:
-        items.append(required_text)
+    sections: List[Optional[RenderableType]] = []
+    for sec in formatter.config.options_table_help_sections:
+        sections.append(section_callbacks[sec](param, ctx, formatter))
 
     # Use Columns - this allows us to group different renderable types
     # (Text, Markdown) onto a single line.
-    return Columns(items)
+    return Columns([i for i in sections if i])
 
 
 def get_parameter_rich_table_row(
