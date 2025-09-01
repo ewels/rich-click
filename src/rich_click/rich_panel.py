@@ -221,6 +221,7 @@ class RichOptionPanel(RichPanel[click.Parameter, OptionColumnType]):
                 if isinstance(param, RichParameter)
                 else get_parameter_rich_table_row(param, ctx, formatter, self)  # type: ignore[arg-type]
             )
+
             rows.append(cols)
 
         if True:

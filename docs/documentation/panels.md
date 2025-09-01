@@ -218,6 +218,7 @@ Supported **RichOptionPanel** column types:
 - `"opt_all_metavar"`
 - `"opt_long_metavar"`
 - `"metavar"`
+- `"metavar_short"`
 - `"help"`
 
 Supported **RichCommandPanel** column types:
@@ -255,6 +256,7 @@ Supported **Option** help section types (configurable via `options_table_help_se
 - `"default"`
 - `"range"`
 - `"metavar"`
+- `"metavar_short"`
 - `"deprecated"`
 
 Supported **Command** help section types (configurable via `commands_table_help_sections`):

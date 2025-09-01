@@ -3,7 +3,7 @@ from __future__ import annotations
 import inspect
 import re
 from gettext import gettext
-from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, List, Literal, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, List, Literal, Optional, Tuple, Union, overload
 
 import click
 
@@ -246,11 +246,66 @@ def _get_parameter_help(
     return formatter.rich_text(help_text, style)
 
 
+@overload
+def _get_parameter_range(
+    param: Union[click.Argument, click.Option, RichParameter],
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+    mode: Literal["metavar_append"],
+) -> Optional[str]: ...
+
+
+@overload
+def _get_parameter_range(
+    param: Union[click.Argument, click.Option, RichParameter],
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+    mode: Literal["metavar_column", "help"],
+) -> Optional[Text]: ...
+
+
+def _get_parameter_range(
+    param: Union[click.Argument, click.Option, RichParameter],
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+    mode: Literal["metavar_append", "metavar_column", "help"],
+) -> Optional[Union[Text, str]]:
+    # Range - from
+    # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706  # noqa: E501
+    # skip count with default range type
+    if (
+        hasattr(param, "count")
+        and isinstance(param.type, click.types._NumberRangeBase)
+        and not (param.count and param.type.min == 0 and param.type.max is None)
+    ):
+        range_str = param.type._describe_range()
+        if range_str:
+            if mode == "metavar_append":
+                return range_str
+            elif mode == "metavar_column":
+                metavar_str = formatter.config.range_string.format(range_str)
+                return Text.from_markup(metavar_str, style=formatter.config.style_metavar)
+            elif mode == "help":
+                metavar_str = formatter.config.append_range_help_string.format(range_str)
+                return Text.from_markup(
+                    metavar_str,
+                    style=(
+                        formatter.config.style_range_append
+                        if formatter.config.style_range_append is not None
+                        else formatter.config.style_metavar_append
+                    ),
+                )
+            else:
+                raise ValueError("Bad mode selected")
+    return None
+
+
 def _get_parameter_metavar(
     param: Union[click.Argument, click.Option, RichParameter],
     ctx: RichContext,
     formatter: RichHelpFormatter,
     append: bool = True,
+    show_range: bool = False,
 ) -> Optional[Text]:
     metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
     # Do it ourselves if this is a positional argument
@@ -265,6 +320,12 @@ def _get_parameter_metavar(
         metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag
     ):
         metavar_str = metavar_str.replace("[", "").replace("]", "")
+
+        if show_range:
+            range_txt = _get_parameter_range(param, ctx, formatter, mode="metavar_append")
+            if range_txt:
+                metavar_str += " " + range_txt
+
         return Text.from_markup(
             formatter.config.append_metavars_help_string.format(metavar_str),
             style=formatter.config.style_metavar_append if append else formatter.config.style_metavar,
@@ -277,6 +338,7 @@ def _get_parameter_help_metavar_col(
     param: Union[click.Argument, click.Option, RichParameter],
     ctx: RichContext,
     formatter: RichHelpFormatter,
+    show_range: bool = True,
 ) -> Optional[Text]:
     # Column for a metavar, if we have one
     metavar = Text(style=formatter.config.style_metavar, overflow="fold")
@@ -302,7 +364,7 @@ def _get_parameter_help_metavar_col(
             param.count and param.type.min == 0 and param.type.max is None
         ):
             range_str = param.type._describe_range()
-            if range_str:
+            if show_range and range_str:
                 metavar.append(" " + formatter.config.range_string.format(range_str))
     except AttributeError:
         # click.types._NumberRangeBase is only in Click 8x onwards
@@ -311,7 +373,7 @@ def _get_parameter_help_metavar_col(
     # Highlighter to make [ | ] and <> dim
     class MetavarHighlighter(RegexHighlighter):
         highlights = [
-            r"^(?P<metavar_sep>(\[|<))",
+            r"(^|\s)(?P<metavar_sep>(\[|<))",
             r"(?P<metavar_sep>\|)",
             r"(?P<metavar_sep>(\]|>)$)",
         ]
@@ -557,8 +619,9 @@ def get_help_parameter(
         "required": _get_parameter_required,
         "envvar": _get_parameter_env_var,
         "default": _get_parameter_default,
-        "range": lambda *args, **kwargs: None,
-        "metavar": _get_parameter_metavar,
+        "metavar": lambda param, ctx, formatter: _get_parameter_metavar(param, ctx, formatter, show_range=True),
+        "metavar_short": lambda param, ctx, formatter: _get_parameter_metavar(param, ctx, formatter, show_range=False),
+        "range": lambda param, ctx, formatter: _get_parameter_range(param, ctx, formatter, mode="help"),
         "deprecated": _get_parameter_deprecated,
     }
 
@@ -568,7 +631,21 @@ def get_help_parameter(
 
     # Use Columns - this allows us to group different renderable types
     # (Text, Markdown) onto a single line.
-    return Columns([i for i in sections if i])
+    if formatter.config.text_markup == "markdown" or not all([isinstance(i, Text) or i is None for i in sections]):
+        return Columns([i for i in sections if i])
+    else:
+        # Weird but necessary--
+        # in order to keep things flush, the last column of the table must be of type Columns().
+        # (We are assuming here 'help' is always last, which is not necessarily the case of course.)
+        # In a 2.0 of rich-click we will try to do something nicer than this.
+        # But in 1.x all other solutions would be too breaking.
+        return Columns(
+            [
+                Text(" ", overflow="fold", style=formatter.config.style_option_help).join(
+                    [i for i in sections if i]  # type: ignore[misc]
+                )
+            ]
+        )
 
 
 def get_parameter_rich_table_row(
@@ -644,7 +721,7 @@ def get_parameter_rich_table_row(
 
     _metavar_padded = None
     if any(i in column_types for i in ["opt_all_metavar", "opt_long_metavar"]):
-        _metavar_padded = _get_parameter_metavar(param, ctx, formatter, append=False)
+        _metavar_padded = _get_parameter_metavar(param, ctx, formatter, append=False, show_range=False)
 
     def _opt_all_metavar() -> Optional[RenderableType]:
         if _metavar_padded is None:
@@ -668,6 +745,7 @@ def get_parameter_rich_table_row(
         "opt_secondary": lambda *args, **kwargs: _secondary,
         "opt_all": lambda *args, **kwargs: _all,
         "metavar": _get_parameter_help_metavar_col,
+        "metavar_short": lambda *args, **kwargs: _get_parameter_help_metavar_col(*args, **kwargs, show_range=False),  # type: ignore[misc]
         "opt_all_metavar": lambda *args, **kwargs: _opt_all_metavar(),
         "opt_long_metavar": lambda *args, **kwargs: _opt_long_metavar(),
         "help": lambda *args, **kwargs: (

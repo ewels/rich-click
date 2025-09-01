@@ -32,6 +32,7 @@ OptionColumnType = Literal[
     "opt_all_metavar",
     "opt_long_metavar",
     "metavar",
+    "metavar_short",
     "help",
     # "default",
     # "envvar",
@@ -39,7 +40,9 @@ OptionColumnType = Literal[
 
 CommandColumnType = Literal["name", "aliases", "name_with_aliases", "help"]
 
-OptionHelpSectionType = Literal["help", "required", "envvar", "default", "range", "metavar", "deprecated"]
+OptionHelpSectionType = Literal[
+    "help", "required", "envvar", "default", "range", "metavar", "metavar_short", "deprecated"
+]
 
 CommandHelpSectionType = Literal["aliases", "help", "deprecated"]
 
@@ -106,6 +109,7 @@ class RichHelpConfiguration:
     style_metavar: "StyleType" = field(default=FROM_THEME)
     style_metavar_append: "StyleType" = field(default=FROM_THEME)
     style_metavar_separator: "StyleType" = field(default=FROM_THEME)
+    style_range_append: "StyleType" = field(default=FROM_THEME)
     style_header_text: "StyleType" = field(default=FROM_THEME)
     style_epilog_text: "StyleType" = field(default=FROM_THEME)
     style_footer_text: "StyleType" = field(default=FROM_THEME)
@@ -187,6 +191,7 @@ class RichHelpConfiguration:
     required_long_string: str = field(default=FROM_THEME)
     range_string: str = field(default=FROM_THEME)
     append_metavars_help_string: str = field(default=FROM_THEME)
+    append_range_help_string: str = field(default=FROM_THEME)
     arguments_panel_title: str = field(default="Arguments")
     options_panel_title: str = field(default="Options")
     commands_panel_title: str = field(default="Commands")

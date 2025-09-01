@@ -91,8 +91,7 @@ def test_metavars_help_flipped_help_string(cli_runner: CliRunner, cli: rich_clic
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --debug   Enable debug mode.                                                                     │
-│ --number  This click choice has loads of options.                                                │
-│           [choices:                                                                              │
+│ --number  This click choice has loads of options. [choices:                                      │
 │           one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifte │
 │           en|sixteen|seventeen|eighteen|nineteen|twenty|twenty-one|twenty-two|twenty-three|twent │
 │           y-four|twenty-five|twenty-six|twenty-seven|twenty-eight|twenty-nine|thirty]            │

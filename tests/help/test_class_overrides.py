@@ -81,7 +81,7 @@ def test_class_overrides_click_parameters(cli_runner: CliRunner, cli: rich_click
 ╭─ Rich Click Panel ───────────────────────────────────────────────────────────────────────────────╮
 │ *  CLICK-ARG       TEXT  [required]                                                              │
 │ *  --click-option  TEXT  This is help text for a click.Option(). [env var: CLICK_OPTION]         │
-│                          [default: foo]                          [required]                      │
+│                          [default: foo] [required]                                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  Show this message and exit.                                                              │

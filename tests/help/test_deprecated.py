@@ -28,12 +28,11 @@ def test_deprecated_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> 
  You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --type             TEXT                Type of file to sync                                      │
-│                                        [deprecated: All files will be synced]                    │
-│                                        [default: files]                                          │
+│ --type             TEXT                Type of file to sync [deprecated: All files will be       │
+│                                        synced] [default: files]                                  │
 │ --debug        -d                      Enable debug mode [deprecated]                            │
-│ --environment  -e  [dev|staging|prod]  Sync to what environment [env var: MY_ENV]                │
-│                                        [default: (current)]                                      │
+│ --environment  -e  [dev|staging|prod]  Sync to what environment [env var: MY_ENV] [default:      │
+│                                        (current)]                                                │
 │ --help                                 Show this message and exit.                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
