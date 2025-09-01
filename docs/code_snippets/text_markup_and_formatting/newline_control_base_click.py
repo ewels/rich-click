@@ -15,7 +15,7 @@ def cli(*args, **kwargs):
     Indented lines with 4+ spaces are preserved:
         ```python
         from foo import bar
-
+        \n\
         bar.action()
         ```
 
