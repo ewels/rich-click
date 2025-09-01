@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 1.9.0dev1 (WIP)
+## Version 1.9.0.dev2 (WIP)
 
 > [!WARNING]
 > Version 1.9.0 deprecates support for a lot of old versions of things:
@@ -27,7 +27,8 @@
 **Small changes:**
 
 - "Deprecated" text properly handled and stylized in all places.
-- Improved `rich-click` CLI patching.
+- Command aliases: `@cli.command(aliases=["foo"])`
+- Improved `rich-click` CLI usability: improved patching and improved script detection+execution.
 - `context_settings={"help_to_stderr": True}` support.
 - Added suite of `padding_*` config options to control padding.
 - Added newline control in help text with `text_paragraph_linebreaks` config option.
