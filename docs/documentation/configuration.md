@@ -120,8 +120,9 @@ In the event that there are multiple themes being assigned from different source
 2. Environment variable: `RICH_CLICK_THEME=[theme]`
 3. The `theme` of the command's config
 
-Do note that other than end-user overrides and being applied last to unset values, other rules still apply with config resolution.
-So for example, the below will not apply the `"green2-nu"` theme to the CLI:
+Do note that other rules still apply with config resolution.
+So for example, the below will **not** apply the `"green2-nu"` theme to the CLI
+because of the other config resolution rules:
 
 === "Bad example"
     ```python
