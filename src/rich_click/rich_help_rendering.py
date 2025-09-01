@@ -125,7 +125,7 @@ def _get_help_text(
     # Get the first paragraph
     first_line = help_text.split("\n\n")[0]
     # Remove single linebreaks
-    if not config.use_markdown and not config.text_markup == "markdown":
+    if not config.text_markup == "markdown":
         if not first_line.startswith("\b"):
             first_line = first_line.replace("\n", " ")
     yield Padding(
@@ -136,7 +136,7 @@ def _get_help_text(
     # Get remaining lines, remove single line breaks and format as dim
     remaining_paragraphs = help_text.split("\n\n")[1:]
 
-    use_markdown = formatter.config.use_markdown or formatter.config.text_markup == "markdown"
+    use_markdown = formatter.config.text_markup == "markdown"
     if formatter.config.text_paragraph_linebreaks is None:
         if use_markdown:
             lb = "\n\n"
@@ -869,7 +869,7 @@ def _get_command_help(
 
     paragraphs = inspect.cleandoc(help_text).split("\n\n")
     # Remove single linebreaks
-    if not formatter.config.use_markdown and not paragraphs[0].startswith("\b"):
+    if not formatter.config.text_markup == "markdown" and not paragraphs[0].startswith("\b"):
         paragraphs[0] = paragraphs[0].replace("\n", " ")
     elif paragraphs[0].startswith("\b"):
         paragraphs[0] = paragraphs[0].replace("\b\n", "")
