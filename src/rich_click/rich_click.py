@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, Union
 
 from rich_click.rich_help_configuration import (
+    FROM_THEME,
     CommandColumnType,
     OptionColumnType,
     force_terminal_default,
@@ -24,61 +25,58 @@ if TYPE_CHECKING:  # pragma: no cover
 THEME: Optional[str] = None
 ENABLE_THEME_ENV_VAR: bool = True
 
-STYLE_OPTION: "StyleType" = "bold cyan"
-STYLE_OPTION_NEGATIVE: Optional["StyleType"] = None
-STYLE_ARGUMENT: "StyleType" = "bold cyan"
-STYLE_COMMAND: "StyleType" = "bold cyan"
-STYLE_COMMAND_ALIASES: "StyleType" = "bold green"
-STYLE_SWITCH: "StyleType" = "bold green"
-STYLE_SWITCH_NEGATVE: Optional["StyleType"] = None
-STYLE_METAVAR: "StyleType" = "bold yellow"
-STYLE_METAVAR_APPEND: "StyleType" = "dim yellow"
-STYLE_METAVAR_SEPARATOR: "StyleType" = "dim"
-STYLE_HEADER_TEXT: "StyleType" = ""
-STYLE_EPILOG_TEXT: "StyleType" = ""
-STYLE_FOOTER_TEXT: "StyleType" = ""
-STYLE_USAGE: "StyleType" = "yellow"
-STYLE_USAGE_COMMAND: "StyleType" = "bold"
-STYLE_USAGE_SEPARATOR: "StyleType" = ""
-STYLE_DEPRECATED: "StyleType" = "red"
-STYLE_HELPTEXT_FIRST_LINE: "StyleType" = ""
-STYLE_HELPTEXT: "StyleType" = "dim"
-STYLE_OPTION_HELP: "StyleType" = ""
-STYLE_COMMAND_HELP: "StyleType" = ""
-STYLE_OPTION_DEFAULT: "StyleType" = "dim"
-STYLE_OPTION_ENVVAR: "StyleType" = "dim yellow"
-STYLE_REQUIRED_SHORT: "StyleType" = "red"
-STYLE_REQUIRED_LONG: "StyleType" = "dim red"
-STYLE_OPTIONS_PANEL_BORDER: "StyleType" = "dim"
-STYLE_OPTIONS_PANEL_BOX: Optional[Union[str, "Box"]] = "ROUNDED"
-STYLE_OPTIONS_PANEL_HELP_STYLE: "StyleType" = "dim"
-STYLE_OPTIONS_PANEL_TITLE_STYLE: "StyleType" = ""
-STYLE_OPTIONS_PANEL_PADDING: "PaddingDimensions" = (0, 1)
-STYLE_OPTIONS_PANEL_STYLE: "StyleType" = "none"
+STYLE_OPTION: "StyleType" = FROM_THEME
+STYLE_OPTION_NEGATIVE: Optional["StyleType"] = FROM_THEME
+STYLE_ARGUMENT: "StyleType" = FROM_THEME
+STYLE_COMMAND: "StyleType" = FROM_THEME
+STYLE_COMMAND_ALIASES: "StyleType" = FROM_THEME
+STYLE_SWITCH: "StyleType" = FROM_THEME
+STYLE_SWITCH_NEGATVE: Optional["StyleType"] = FROM_THEME
+STYLE_METAVAR: "StyleType" = FROM_THEME
+STYLE_METAVAR_APPEND: "StyleType" = FROM_THEME
+STYLE_METAVAR_SEPARATOR: "StyleType" = FROM_THEME
+STYLE_USAGE: "StyleType" = FROM_THEME
+STYLE_USAGE_COMMAND: "StyleType" = FROM_THEME
+STYLE_USAGE_SEPARATOR: "StyleType" = FROM_THEME
+STYLE_DEPRECATED: "StyleType" = FROM_THEME
+STYLE_HELPTEXT_FIRST_LINE: "StyleType" = FROM_THEME
+STYLE_HELPTEXT: "StyleType" = FROM_THEME
+STYLE_OPTION_HELP: "StyleType" = FROM_THEME
+STYLE_COMMAND_HELP: "StyleType" = FROM_THEME
+STYLE_OPTION_DEFAULT: "StyleType" = FROM_THEME
+STYLE_OPTION_ENVVAR: "StyleType" = FROM_THEME
+STYLE_REQUIRED_SHORT: "StyleType" = FROM_THEME
+STYLE_REQUIRED_LONG: "StyleType" = FROM_THEME
+STYLE_OPTIONS_PANEL_BORDER: "StyleType" = FROM_THEME
+STYLE_OPTIONS_PANEL_BOX: Optional[Union[str, "Box"]] = FROM_THEME
+STYLE_OPTIONS_PANEL_HELP_STYLE: "StyleType" = FROM_THEME
+STYLE_OPTIONS_PANEL_TITLE_STYLE: "StyleType" = FROM_THEME
+STYLE_OPTIONS_PANEL_PADDING: "PaddingDimensions" = FROM_THEME
+STYLE_OPTIONS_PANEL_STYLE: "StyleType" = FROM_THEME
 ALIGN_OPTIONS_PANEL: "AlignMethod" = "left"
 STYLE_OPTIONS_TABLE_SHOW_LINES: bool = False
 STYLE_OPTIONS_TABLE_LEADING: int = 0
 STYLE_OPTIONS_TABLE_PAD_EDGE: bool = False
 STYLE_OPTIONS_TABLE_PADDING: "PaddingDimensions" = (0, 1)
-STYLE_OPTIONS_TABLE_BOX: Optional[Union[str, "Box"]] = None
+STYLE_OPTIONS_TABLE_BOX: Optional[Union[str, "Box"]] = FROM_THEME
 STYLE_OPTIONS_TABLE_ROW_STYLES: Optional[List["StyleType"]] = None
-STYLE_OPTIONS_TABLE_BORDER_STYLE: Optional["StyleType"] = "dim"
-STYLE_COMMANDS_PANEL_BORDER: "StyleType" = "dim"
-PANEL_INLINE_HELP_IN_TITLE: bool = False
-PANEL_INLINE_HELP_DELIMITER: str = " - "
-STYLE_COMMANDS_PANEL_BOX: Optional[Union[str, "Box"]] = "ROUNDED"
-STYLE_COMMANDS_PANEL_HELP_STYLE: "StyleType" = "dim"
-STYLE_COMMANDS_PANEL_TITLE_STYLE: "StyleType" = ""
-STYLE_COMMANDS_PANEL_PADDING: "PaddingDimensions" = (0, 1)
-STYLE_COMMANDS_PANEL_STYLE: "StyleType" = "none"
+STYLE_OPTIONS_TABLE_BORDER_STYLE: Optional["StyleType"] = FROM_THEME
+STYLE_COMMANDS_PANEL_BORDER: "StyleType" = FROM_THEME
+PANEL_INLINE_HELP_IN_TITLE: bool = FROM_THEME
+PANEL_INLINE_HELP_DELIMITER: str = FROM_THEME
+STYLE_COMMANDS_PANEL_BOX: Optional[Union[str, "Box"]] = FROM_THEME
+STYLE_COMMANDS_PANEL_HELP_STYLE: "StyleType" = FROM_THEME
+STYLE_COMMANDS_PANEL_TITLE_STYLE: "StyleType" = FROM_THEME
+STYLE_COMMANDS_PANEL_PADDING: "PaddingDimensions" = FROM_THEME
+STYLE_COMMANDS_PANEL_STYLE: "StyleType" = FROM_THEME
 ALIGN_COMMANDS_PANEL: "AlignMethod" = "left"
 STYLE_COMMANDS_TABLE_SHOW_LINES: bool = False
 STYLE_COMMANDS_TABLE_LEADING: int = 0
 STYLE_COMMANDS_TABLE_PAD_EDGE: bool = False
 STYLE_COMMANDS_TABLE_PADDING: "PaddingDimensions" = (0, 1)
-STYLE_COMMANDS_TABLE_BOX: Optional[Union[str, "Box"]] = None
+STYLE_COMMANDS_TABLE_BOX: Optional[Union[str, "Box"]] = FROM_THEME
 STYLE_COMMANDS_TABLE_ROW_STYLES: Optional[List["StyleType"]] = None
-STYLE_COMMANDS_TABLE_BORDER_STYLE: Optional["StyleType"] = "dim"
+STYLE_COMMANDS_TABLE_BORDER_STYLE: Optional["StyleType"] = FROM_THEME
 STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO: Optional[Union[Tuple[None, None], Tuple[int, int]]] = (None, None)
 STYLE_ERRORS_PANEL_BORDER: "StyleType" = "red"
 STYLE_ERRORS_PANEL_BOX: Optional[Union[str, "Box"]] = "ROUNDED"
@@ -86,9 +84,12 @@ ALIGN_ERRORS_PANEL: "AlignMethod" = "left"
 STYLE_ERRORS_SUGGESTION: "StyleType" = "dim"
 STYLE_ERRORS_SUGGESTION_COMMAND: "StyleType" = "blue"
 STYLE_ABORTED: "StyleType" = "red"
-STYLE_PADDING_USAGE: "StyleType" = "none"
-STYLE_PADDING_HELPTEXT: "StyleType" = "none"
-STYLE_PADDING_EPILOG: "StyleType" = "none"
+STYLE_PADDING_USAGE: "StyleType" = FROM_THEME
+STYLE_PADDING_HELPTEXT: "StyleType" = FROM_THEME
+STYLE_PADDING_EPILOG: "StyleType" = FROM_THEME
+STYLE_HEADER_TEXT: "StyleType" = FROM_THEME
+STYLE_EPILOG_TEXT: "StyleType" = FROM_THEME
+STYLE_FOOTER_TEXT: "StyleType" = FROM_THEME
 
 PANEL_TITLE_PADDING: int = 1
 WIDTH: Optional[int] = terminal_width_default()
@@ -98,37 +99,37 @@ COLOR_SYSTEM: Optional[Literal["auto", "standard", "256", "truecolor", "windows"
 )
 FORCE_TERMINAL: Optional[bool] = force_terminal_default()
 
-OPTIONS_TABLE_COLUMN_TYPES: List[OptionColumnType] = ["required", "opt_long", "opt_short", "metavar", "help"]
-COMMANDS_TABLE_COLUMN_TYPES: List[CommandColumnType] = ["name", "aliases", "help"]
+OPTIONS_TABLE_COLUMN_TYPES: List[OptionColumnType] = FROM_THEME
+COMMANDS_TABLE_COLUMN_TYPES: List[CommandColumnType] = FROM_THEME
 
 # Fixed strings
 HEADER_TEXT: Optional[Union[str, "Text"]] = None
 FOOTER_TEXT: Optional[Union[str, "Text"]] = None
-PANEL_TITLE_STRING: str = "{}"
-DEPRECATED_STRING: str = "\\[deprecated]"
-DEPRECATED_WITH_REASON_STRING: str = "\\[deprecated: {}]"
-DEFAULT_STRING: str = "\\[default: {}]"
-ENVVAR_STRING: str = "\\[env var: {}]"
-REQUIRED_SHORT_STRING: str = "*"
-REQUIRED_LONG_STRING: str = "\\[required]"
-RANGE_STRING: str = "[{}]"
-APPEND_METAVARS_HELP_STRING: str = "\\[{}]"
+PANEL_TITLE_STRING: str = FROM_THEME
+DEPRECATED_STRING: str = FROM_THEME
+DEPRECATED_WITH_REASON_STRING: str = FROM_THEME
+DEFAULT_STRING: str = FROM_THEME
+ENVVAR_STRING: str = FROM_THEME
+REQUIRED_SHORT_STRING: str = FROM_THEME
+REQUIRED_LONG_STRING: str = FROM_THEME
+RANGE_STRING: str = FROM_THEME
+APPEND_METAVARS_HELP_STRING: str = FROM_THEME
 ARGUMENTS_PANEL_TITLE: str = "Arguments"
 OPTIONS_PANEL_TITLE: str = "Options"
 COMMANDS_PANEL_TITLE: str = "Commands"
 ERRORS_PANEL_TITLE: str = "Error"
-delimiter_comma: str = ","
-delimiter_slash: str = "/"
+DELIMITER_COMMA: str = FROM_THEME
+DELIMITER_SLASH: str = FROM_THEME
 ERRORS_SUGGESTION: Optional[Union[str, "Text"]] = None  # Default: Try 'cmd -h' for help. Set to False to disable.
 ERRORS_EPILOGUE: Optional[Union[str, "Text"]] = None
 ABORTED_TEXT: str = "Aborted."
 
-PADDING_HEADER_TEXT: "PaddingDimensions" = (1, 1, 0, 1)
-PADDING_USAGE: "PaddingDimensions" = 1
-PADDING_HELPTEXT: "PaddingDimensions" = (0, 1, 1, 1)
+PADDING_HEADER_TEXT: "PaddingDimensions" = FROM_THEME
+PADDING_USAGE: "PaddingDimensions" = FROM_THEME
+PADDING_HELPTEXT: "PaddingDimensions" = FROM_THEME
 PADDING_HELPTEXT_DEPRECATED: "PaddingDimensions" = 0
 PADDING_HELPTEXT_FIRST_LINE: "PaddingDimensions" = 0
-PADDING_EPILOG: "PaddingDimensions" = 1
+PADDING_EPILOG: "PaddingDimensions" = FROM_THEME
 PADDING_FOOTER_TEXT: "PaddingDimensions" = (1, 1, 0, 1)
 PADDING_ERRORS_PANEL: "PaddingDimensions" = (0, 0, 1, 0)
 PADDING_ERRORS_SUGGESTION: "PaddingDimensions" = (0, 1, 0, 1)
@@ -141,9 +142,9 @@ COMMANDS_BEFORE_OPTIONS: bool = False  # If set, the commands panel show above t
 APPEND_METAVARS_HELP: bool = False  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS: bool = False  # Show arguments with options instead of in own panel
 OPTION_ENVVAR_FIRST: bool = False  # Show env vars before option help text instead of avert
-TEXT_MARKUP: Literal["ansi", "rich", "markdown", None] = notset  # type: ignore[assignment]
+TEXT_MARKUP: Literal["ansi", "rich", "markdown", None] = notset
 TEXT_KWARGS: Optional[Dict[str, Any]] = None
-TEXT_EMOJIS: bool = notset  # type: ignore[assignment]
+TEXT_EMOJIS: bool = notset
 TEXT_PARAGRAPH_LINEBREAKS: Optional[str] = None
 # If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -> 😺
 USE_MARKDOWN: Optional[bool] = None  # Parse help strings as markdown
@@ -156,6 +157,8 @@ OPTION_GROUPS: Dict[str, List[OptionGroupDict]] = {}
 USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
 
 #!ENDCONFIG
+
+_THEME_FROM_CLI: Optional[str] = None
 
 
 def __getattr__(name: str) -> Any:

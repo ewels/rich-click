@@ -10,7 +10,7 @@ else:
     from typing import NotRequired
 
 
-notset = object()
+notset: Any = object()
 
 
 def truthy(o: Any) -> Optional[bool]:

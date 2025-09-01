@@ -139,6 +139,8 @@ class RichHelpFormatter(click.HelpFormatter):
         else:
             self.config = RichHelpConfiguration.load_from_globals()
 
+        self.config.apply_theme(force_default=True)
+
         file = kwargs.pop("file", None)
         if file is not None:
             import warnings

@@ -25,10 +25,9 @@ To use, simply prefix `rich-click` to the command. Here are a few real world exa
 
 If the CLI is not installed as a script, you can also pass the location with:
 
-- `<module_name>`
 - `<module_name>:<click_command_name>`
+- `<module_name>`
 - `<path>`
-
 
 For example, if you have a file located at `path/to/my/cli.py`, and the Click `Command` object is named `main`, then you can run:
 
@@ -36,7 +35,7 @@ For example, if you have a file located at `path/to/my/cli.py`, and the Click `C
 - `rich-click path.to.my.cli`
 - `rich-click path/to/my/cli.py`
 
-In the first case, the object will be imported and called, i.e. `main()`.
+In the first case, the object will be imported and called, i.e. `from path.to.my.cli import main` then `main()`.
 In the other two cases, the file will be run with `__name__` as `"__main__"`.
 
 ## Render help text as HTML or SVG

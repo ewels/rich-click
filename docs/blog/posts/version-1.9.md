@@ -233,6 +233,13 @@ So, I won't make the same mistake again: we have no promises or hints for when a
 We do have [a roadmap](https://github.com/ewels/rich-click/issues/275) in place for **1.10**, so we have a good sense of what we want out of future releases.
 Will that be next year, or the year after? Will the roadmap change substantially when that time comes? It's tough to say!
 
+The ultimate goal of **rich-click** is to become the most beautiful CLI help text generator out there.
+Nearing the end of development for 1.9, I couldn't help but think of all the ways we can continue to improve on that.
+For example, a big limitation of themes are that they all use ANSI colors.
+There are a lot of reasons for this decision, and it's not made lightly.
+But sometime in the future, I'd really like to move away from this; maybe we can get proper solarized, dracula, nord, material, onedark, and gruvbox themes in?
+However, achieving this may ultimately require a **2.0** release, and we're quite far from that.
+
 But, why spend so much time dwelling on the future, when the present state of things is so great and we've barely had time to enjoy it?
 We're **_extremely_** happy with where 1.9 leaves **rich-click**! And we hope you agree!
 
