@@ -178,7 +178,9 @@ We even typed the more opaque dicts, such as `context_settings`:
 
 ![](../../images/blog/version-1.9/ide2.png){.screenshot}
 
-Adding a feature like this is somewhat outside of the intended scope of **rich-click**, but we feel it is such a huge quality of life upgrade for the developer experience that we'd be silly to not add it. You're welcome!
+Everything should be type-hinted, and we've tested this against both pyright and mypy to good results.
+
+Adding a feature like this is a little outside the intended scope of **rich-click**. We are also aware of the maintenance nightmare that `.pyi` files create. But we feel it is such a huge quality of life upgrade for the developer experience that we'd be silly to not add it. You're welcome!
 
 ## Other cool features
 

@@ -25,6 +25,11 @@ def test_simple_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None
  My amazing tool does all the things.                                                               \n\
  This is a minimal example based on documentation from the 'click' package.                         \n\
  You can try using --help at the top level and also for specific subcommands.                       \n\
+ Here are things you can do:                                                                        \n\
+ - sync files                                                                                       \n\
+ - download files                                                                                   \n\
+ - print help text!                                                                                 \n\
+ ... and more!                                                                                      \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --debug/--no-debug  -d/-n  Enable debug mode. Newlines are removed by default.                   │
@@ -59,6 +64,11 @@ def test_simple_help_no_args_is_help(cli_runner: CliRunner, cli: rich_click.Rich
  My amazing tool does all the things.                                                               \n\
  This is a minimal example based on documentation from the 'click' package.                         \n\
  You can try using --help at the top level and also for specific subcommands.                       \n\
+ Here are things you can do:                                                                        \n\
+ - sync files                                                                                       \n\
+ - download files                                                                                   \n\
+ - print help text!                                                                                 \n\
+ ... and more!                                                                                      \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --debug/--no-debug  -d/-n  Enable debug mode. Newlines are removed by default.                   │
@@ -91,6 +101,11 @@ def test_simple_help_commands_before_options(cli_runner: CliRunner, cli: rich_cl
  My amazing tool does all the things.                                                               \n\
  This is a minimal example based on documentation from the 'click' package.                         \n\
  You can try using --help at the top level and also for specific subcommands.                       \n\
+ Here are things you can do:                                                                        \n\
+ - sync files                                                                                       \n\
+ - download files                                                                                   \n\
+ - print help text!                                                                                 \n\
+ ... and more!                                                                                      \n\
                                                                                                     \n\
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ download  Optionally use short-help for the group help text                                      │

@@ -36,10 +36,8 @@ def test_options_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> Non
 │    --flag/--no-flag                               Set the flag (or not!).                        │
 │    --password            TEXT                     Password to login with                         │
 │ *  --loaded          -l  INTEGER RANGE [x>=0]     This option is loaded with everything (assert  │
-│                                                   preservation of order)                         │
-│                                                   [env var: IS_LOADED]                           │
-│                                                   [default: (Random number)]                     │
-│                                                   [required]                                     │
+│                                                   preservation of order) [env var: IS_LOADED]    │
+│                                                   [default: (Random number)] [required]          │
 │    --help            -h                           Show help.                                     │
 │    --version         -v                           Show version.                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -50,7 +48,8 @@ def test_options_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> Non
 
 def test_options_help_envvar_first(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     rc.OPTION_ENVVAR_FIRST = True
-    result = cli_runner.invoke(cli, "--help")
+    with pytest.warns(PendingDeprecationWarning, match=r"`option_envvar_first=` will be deprecated.*"):
+        result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
     assert result.stdout == snapshot(
         """\
@@ -65,11 +64,9 @@ def test_options_help_envvar_first(cli_runner: CliRunner, cli: rich_click.RichCo
 │    --location            LOCATION                 Provide a name [deprecated]                    │
 │    --flag/--no-flag                               Set the flag (or not!).                        │
 │    --password            TEXT                     Password to login with                         │
-│ *  --loaded          -l  INTEGER RANGE [x>=0]     [env var: IS_LOADED]                           │
-│                                                   This option is loaded with everything (assert  │
-│                                                   preservation of order)                         │
-│                                                   [default: (Random number)]                     │
-│                                                   [required]                                     │
+│ *  --loaded          -l  INTEGER RANGE [x>=0]     [env var: IS_LOADED] This option is loaded     │
+│                                                   with everything (assert preservation of order) │
+│                                                   [default: (Random number)] [required]          │
 │    --help            -h                           Show help.                                     │
 │    --version         -v                           Show version.                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
@@ -97,9 +94,7 @@ def test_options_help_dont_show_metavars(cli_runner: CliRunner, cli: rich_click.
 │    --flag/--no-flag      Set the flag (or not!).                                                 │
 │    --password            Password to login with                                                  │
 │ *  --loaded          -l  This option is loaded with everything (assert preservation of order)    │
-│                          [env var: IS_LOADED]                                                    │
-│                          [default: (Random number)]                                              │
-│                          [required]                                                              │
+│                          [env var: IS_LOADED] [default: (Random number)] [required]              │
 │    --help            -h  Show help.                                                              │
 │    --version         -v  Show version.                                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯

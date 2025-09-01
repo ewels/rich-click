@@ -45,7 +45,7 @@ class CommandGroupDict(TypedDict):
     """Specification for command groups."""
 
     name: NotRequired[str]
-    commands: List[str]
+    commands: NotRequired[List[str]]
     table_styles: NotRequired[Dict[str, Any]]
     panel_styles: NotRequired[Dict[str, Any]]
     deduplicate: NotRequired[bool]

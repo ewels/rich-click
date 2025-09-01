@@ -218,6 +218,7 @@ Supported **RichOptionPanel** column types:
 - `"opt_all_metavar"`
 - `"opt_long_metavar"`
 - `"metavar"`
+- `"metavar_short"`
 - `"help"`
 
 Supported **RichCommandPanel** column types:
@@ -240,6 +241,43 @@ Below is an example showing how column types can be used:
     -->
     ![`python panels_column_types.py --help`](../images/code_snippets/panels/panels_column_types.svg){.screenshot}
 
+### Help Text Sections
+
+The `"help"` column type shows information such as deprecations, env var, default value, and the help text itself.
+
+These sections-- whether they render at all, or in which order they render-- are all configurable via the config.
+<!-- Note: in a future version of rich-click this will be tied to objects, not just the config. -->
+
+Supported **Option** help section types (configurable via `options_table_help_sections`):
+
+- `"help"`
+- `"required"`
+- `"envvar"`
+- `"default"`
+- `"range"`
+- `"metavar"`
+- `"metavar_short"`
+- `"deprecated"`
+
+Supported **Command** help section types (configurable via `commands_table_help_sections`):
+
+- `"help"`
+- `"aliases"`
+- `"deprecated"`
+
+A popular choice for extremely large CLIs is to remove the metavar column and append it to the help text.
+Below is an example that does this, as well as doing some additional reordering of the help text elements.
+
+```python
+{% include "../code_snippets/panels/panels_help_section_types.py" %}
+```
+
+???+ example Output
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/panels
+    -->
+    ![`python panels_help_section_types.py --help`](../images/code_snippets/panels/panels_help_section_types.svg){.screenshot}
 
 ## Tips
 

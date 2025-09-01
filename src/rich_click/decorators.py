@@ -454,3 +454,19 @@ def version_option(
     return click_version_option(
         version, *param_decls, package_name=package_name, prog_name=prog_name, message=message, **kwargs
     )
+
+
+__all__ = [
+    "command",
+    "group",
+    "argument",
+    "option",
+    "password_option",
+    "confirmation_option",
+    "version_option",
+    "help_option",
+    "rich_config",
+    "option_panel",
+    "command_panel",
+    "pass_context",
+]

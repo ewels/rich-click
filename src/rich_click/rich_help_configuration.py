@@ -32,6 +32,7 @@ OptionColumnType = Literal[
     "opt_all_metavar",
     "opt_long_metavar",
     "metavar",
+    "metavar_short",
     "help",
     # "default",
     # "envvar",
@@ -39,9 +40,11 @@ OptionColumnType = Literal[
 
 CommandColumnType = Literal["name", "aliases", "name_with_aliases", "help"]
 
-OptionHelpTextElement = Literal["help", "required", "envvar", "default", "range", "metavar", "deprecated"]
+OptionHelpSectionType = Literal[
+    "help", "required", "envvar", "default", "range", "metavar", "metavar_short", "deprecated"
+]
 
-CommandHelpTextElement = Literal["help", "deprecated"]
+CommandHelpSectionType = Literal["aliases", "help", "deprecated"]
 
 ColumnType = Union[OptionColumnType, CommandColumnType, str]
 
@@ -106,6 +109,7 @@ class RichHelpConfiguration:
     style_metavar: "StyleType" = field(default=FROM_THEME)
     style_metavar_append: "StyleType" = field(default=FROM_THEME)
     style_metavar_separator: "StyleType" = field(default=FROM_THEME)
+    style_range_append: "StyleType" = field(default=FROM_THEME)
     style_header_text: "StyleType" = field(default=FROM_THEME)
     style_epilog_text: "StyleType" = field(default=FROM_THEME)
     style_footer_text: "StyleType" = field(default=FROM_THEME)
@@ -172,6 +176,8 @@ class RichHelpConfiguration:
 
     options_table_column_types: List[OptionColumnType] = field(default=FROM_THEME)
     commands_table_column_types: List[CommandColumnType] = field(default=FROM_THEME)
+    options_table_help_sections: List[OptionHelpSectionType] = field(default=FROM_THEME)
+    commands_table_help_sections: List[CommandHelpSectionType] = field(default=FROM_THEME)
 
     # Fixed strings
     header_text: Optional[Union[str, "Text"]] = field(default=None)
@@ -185,6 +191,7 @@ class RichHelpConfiguration:
     required_long_string: str = field(default=FROM_THEME)
     range_string: str = field(default=FROM_THEME)
     append_metavars_help_string: str = field(default=FROM_THEME)
+    append_range_help_string: str = field(default=FROM_THEME)
     arguments_panel_title: str = field(default="Arguments")
     options_panel_title: str = field(default="Options")
     commands_panel_title: str = field(default="Commands")
@@ -214,11 +221,11 @@ class RichHelpConfiguration:
     """Show a column with the option metavar (eg. INTEGER)"""
     commands_before_options: bool = field(default=False)
     """If set, the commands panel show above the options panel."""
-    append_metavars_help: bool = field(default=False)
+    append_metavars_help: Optional[bool] = field(default=None)
     """Append metavar (eg. [TEXT]) after the help text"""
     group_arguments_options: bool = field(default=False)
     """Show arguments with options instead of in own panel"""
-    option_envvar_first: bool = field(default=False)
+    option_envvar_first: Optional[bool] = field(default=None)
     """Show env vars before option help text instead of after"""
     text_markup: Literal["ansi", "rich", "markdown", None] = field(default=notset)
     """What engine to use to render the text. Default is 'ansi'."""
@@ -301,9 +308,39 @@ class RichHelpConfiguration:
 
             warnings.warn(
                 "`show_metavars_column=` will be deprecated in a future version of rich-click."
-                " Please use `options_table_column_types=` instead."
+                " Please use `options_table_column_types=` instead for rich-click>=1.9.0."
                 " The `options_table_column_types` config option lets you specify an ordered list"
-                " of which columns are rendered.",
+                " of which columns are rendered and in what order. The default is:"
+                " ['required', 'opt_short', 'opt_long', 'metavar', 'help']."
+                " You can remove the metavar column by passing in a new list without 'metavar'.",
+                PendingDeprecationWarning,
+                stacklevel=2,
+            )
+
+        if self.append_metavars_help is not None:
+            import warnings
+
+            warnings.warn(
+                "`append_metavars_help=` will be deprecated in a future version of rich-click."
+                " Please use `options_table_help_sections=` instead for rich-click>=1.9.0."
+                " The `options_table_help_sections=` config option lets you specify an ordered list"
+                " of which sections are rendered and in what order. The default is:"
+                " ['help', 'deprecated', 'envvar', 'default', 'required']."
+                " You can append the metavar by passing in a new list with 'metavar'.",
+                PendingDeprecationWarning,
+                stacklevel=2,
+            )
+
+        if self.option_envvar_first is not None:
+            import warnings
+
+            warnings.warn(
+                "`option_envvar_first=` will be deprecated in a future version of rich-click."
+                " Please use `options_table_help_sections=` instead for rich-click>=1.9.0."
+                " The `options_table_help_sections=` config option lets you specify an ordered list"
+                " of which sections are rendered and in what order. The default is:"
+                " ['help', 'deprecated', 'envvar', 'default', 'required']."
+                " You can set the envvar first by passing in a new list with 'envvar' first.",
                 PendingDeprecationWarning,
                 stacklevel=2,
             )
@@ -399,10 +436,19 @@ class RichHelpConfiguration:
                 if current is FROM_THEME:
                     setattr(self, k, v)
 
-            # Handle deprecated fields
+            # Handle deprecated fields here
+
+            # must create new copy of these lists; don't modify in-place
             if self.show_metavars_column is False and "metavar" in self.options_table_column_types:
-                # must create new copy; don't modify in-place
                 self.options_table_column_types = [i for i in self.options_table_column_types if i != "metavar"]
+
+            if self.append_metavars_help is True and "metavar" not in self.options_table_help_sections:
+                self.options_table_help_sections = self.options_table_help_sections.copy() + ["metavar"]
+
+            if self.option_envvar_first is True and "envvar" in self.options_table_help_sections:
+                self.options_table_help_sections = ["envvar"] + [  # type: ignore[assignment]
+                    i for i in self.options_table_help_sections if i != "envvar"
+                ]
 
     def dump_to_globals(self, module: Optional[ModuleType] = None) -> None:
         if module is None:

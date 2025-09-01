@@ -68,8 +68,9 @@ def test_markdown_help_turn_off_markdown(cli_runner: CliRunner, cli: rich_click.
  My amazing tool does _**all the things**_.                                                         \n\
  This is a `minimal example` based on documentation from the [_click_                               \n\
  package](https://click.palletsprojects.com/).                                                      \n\
- > Remember: >  - You can try using --help at the top level >  - Also for specific group            \n\
- subcommands.                                                                                       \n\
+ > Remember:                                                                                        \n\
+ >  - You can try using --help at the top level                                                     \n\
+ >  - Also for specific group subcommands.                                                          \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --input  PATH  Input **file**. _[default: a custom default]_                                     │

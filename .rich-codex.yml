@@ -1,2 +1,3 @@
 terminal_width: 80
 working_dir: "."
+outputs: []

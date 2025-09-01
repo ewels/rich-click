@@ -5,7 +5,9 @@ from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, Uni
 from rich_click.rich_help_configuration import (
     FROM_THEME,
     CommandColumnType,
+    CommandHelpSectionType,
     OptionColumnType,
+    OptionHelpSectionType,
     force_terminal_default,
     terminal_width_default,
 )
@@ -35,6 +37,7 @@ STYLE_SWITCH_NEGATVE: Optional["StyleType"] = FROM_THEME
 STYLE_METAVAR: "StyleType" = FROM_THEME
 STYLE_METAVAR_APPEND: "StyleType" = FROM_THEME
 STYLE_METAVAR_SEPARATOR: "StyleType" = FROM_THEME
+STYLE_RANGE_APPEND: "StyleType" = FROM_THEME
 STYLE_USAGE: "StyleType" = FROM_THEME
 STYLE_USAGE_COMMAND: "StyleType" = FROM_THEME
 STYLE_USAGE_SEPARATOR: "StyleType" = FROM_THEME
@@ -102,6 +105,9 @@ FORCE_TERMINAL: Optional[bool] = force_terminal_default()
 OPTIONS_TABLE_COLUMN_TYPES: List[OptionColumnType] = FROM_THEME
 COMMANDS_TABLE_COLUMN_TYPES: List[CommandColumnType] = FROM_THEME
 
+OPTIONS_TABLE_HELP_SECTIONS: List[OptionHelpSectionType] = FROM_THEME
+COMMANDS_TABLE_HELP_SECTIONS: List[CommandHelpSectionType] = FROM_THEME
+
 # Fixed strings
 HEADER_TEXT: Optional[Union[str, "Text"]] = None
 FOOTER_TEXT: Optional[Union[str, "Text"]] = None
@@ -114,6 +120,7 @@ REQUIRED_SHORT_STRING: str = FROM_THEME
 REQUIRED_LONG_STRING: str = FROM_THEME
 RANGE_STRING: str = FROM_THEME
 APPEND_METAVARS_HELP_STRING: str = FROM_THEME
+APPEND_RANGE_HELP_STRING: str = FROM_THEME
 ARGUMENTS_PANEL_TITLE: str = "Arguments"
 OPTIONS_PANEL_TITLE: str = "Options"
 COMMANDS_PANEL_TITLE: str = "Commands"
@@ -139,9 +146,9 @@ PADDING_ERRORS_EPILOGUE: "PaddingDimensions" = (0, 1, 1, 1)
 SHOW_ARGUMENTS: Optional[bool] = None  # Show positional arguments
 SHOW_METAVARS_COLUMN: Optional[bool] = None  # Show a column with the option metavar (eg. INTEGER)
 COMMANDS_BEFORE_OPTIONS: bool = False  # If set, the commands panel show above the options panel.
-APPEND_METAVARS_HELP: bool = False  # Append metavar (eg. [TEXT]) after the help text
+APPEND_METAVARS_HELP: Optional[bool] = None  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS: bool = False  # Show arguments with options instead of in own panel
-OPTION_ENVVAR_FIRST: bool = False  # Show env vars before option help text instead of avert
+OPTION_ENVVAR_FIRST: Optional[Optional[bool]] = None  # Show env vars before option help text instead of avert
 TEXT_MARKUP: Literal["ansi", "rich", "markdown", None] = notset
 TEXT_KWARGS: Optional[Dict[str, Any]] = None
 TEXT_EMOJIS: bool = notset
