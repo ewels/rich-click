@@ -147,12 +147,28 @@ def _get_help_text(
     if len(remaining_paragraphs) > 0:
         if not use_markdown:
             # Remove single linebreaks
-            remaining_paragraphs = [
-                x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
-                for x in remaining_paragraphs
-            ]
+            _remaining_paragraphs = []
+            for para in remaining_paragraphs:
+                if para.startswith("\b"):
+                    _remaining_paragraphs.append("{}\n".format(para.strip("\b\n")))
+                else:
+                    _remaining_paragraphs.extend(
+                        [
+                            (
+                                "* " + " ".join([i.lstrip() for i in b.split("\n")]).strip()
+                                if _bi > 0
+                                else (
+                                    "- " + " ".join([i.lstrip() for i in b.split("\n")]).strip()
+                                    if _ai > 0
+                                    else " ".join([i.lstrip() for i in b.split("\n")]).strip()
+                                )
+                            )
+                            for _ai, a in enumerate(para.split("\n- "))
+                            for _bi, b in enumerate(a.split("\n* "))
+                        ]
+                    )
             # Join back together
-            remaining_lines = lb.join(remaining_paragraphs)
+            remaining_lines = lb.join(_remaining_paragraphs)
         else:
             # Join with double linebreaks if markdown
             remaining_lines = lb.join(remaining_paragraphs)

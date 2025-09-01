@@ -20,6 +20,14 @@ def cli(debug: bool) -> None:
 
     You can try using --help at the top level and also for
     specific subcommands.
+
+    Here are things you can do:
+
+    - sync files
+    - download files
+    - print help text!
+
+    ... and more!
     """
     print(f"Debug mode is {'on' if debug else 'off'}")
 
