@@ -231,7 +231,7 @@ class RichHelpConfiguration:
     """What engine to use to render the text. Default is 'ansi'."""
     text_kwargs: Optional[Dict[str, Any]] = field(default=None)
     """Additional kwargs to pass to Rich text rendering. Kwargs differ by text_markup chosen."""
-    text_paragraph_linebreaks: Optional[str] = field(default=None)
+    text_paragraph_linebreaks: Optional[Literal["\n", "\n\n"]] = field(default=None)
     text_emojis: bool = field(default=notset)
     """If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -> 😺"""
     use_markdown: Optional[bool] = field(default=None)

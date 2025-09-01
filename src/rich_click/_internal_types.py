@@ -237,7 +237,7 @@ class RichHelpConfigurationDict(TypedDict):
     text_markup: NotRequired[Literal["ansi", "rich", "markdown", None]]
     text_kwargs: NotRequired[Optional[Dict[str, Any]]]
     text_emojis: NotRequired[bool]
-    text_paragraph_linebreaks: NotRequired[Optional[str]]
+    text_paragraph_linebreaks: NotRequired[Optional[Literal["\n", "\n\n"]]]
     use_markdown: NotRequired[Optional[bool]]
     use_markdown_emoji: NotRequired[Optional[bool]]
     use_rich_markup: NotRequired[Optional[bool]]

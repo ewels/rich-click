@@ -91,7 +91,7 @@ The selected `text_markup` is used to render all text in your CLI help that can 
 {% include "../code_snippets/text_markup_and_formatting/rich_markup.py" %}
 ```
 
-???+ example Output
+???+ example "Output"
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/text_markup_and_formatting
@@ -105,12 +105,36 @@ The below code renders the same as the above code:
 {% include "../code_snippets/text_markup_and_formatting/markup_with_help_style.py" %}
 ```
 
-??? example Output
+??? example "Output"
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/text_markup_and_formatting
     -->
     ![`python markup_with_help_style.py --help`](../images/code_snippets/text_markup_and_formatting/markup_with_help_style.svg){.screenshot}
+
+## Emojis
+
+Emoji codes are rendered by default in `'rich'` and `'markdown'` text markup modes.
+For other modes, including the default mode, emojis are not rendered.
+
+You can explicitly enable and disable emojis with the config option `text_emoji`:
+
+```python hl_lines="9"
+{% include "../code_snippets/text_markup_and_formatting/emojis.py" %}
+```
+
+???+ example "Output"
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/text_markup_and_formatting
+    -->
+    ![`python emojis.py --help`](../images/code_snippets/text_markup_and_formatting/emojis.svg){.screenshot}
+
+```shell
+uvx --from rich -- python3 -m rich.emoji
+```
+
+The default behavior 
 
 ## Newlines
 
@@ -130,7 +154,7 @@ The following code snippet demonstrates this:
 {% include "../code_snippets/text_markup_and_formatting/newline_control.py" %}
 ```
 
-???+ example Output
+???+ example "Output"
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/text_markup_and_formatting
@@ -140,9 +164,32 @@ The following code snippet demonstrates this:
 Note that this differs from how base Click handles newlines.
 The following is the same CLI help text but using `import click` instead of `import rich_click as click`:
 
-???+ example Output
+??? example "Output - `import click` instead of `import rich_click as click`"
 
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/text_markup_and_formatting
     -->
     ![`python newline_control_base_click.py --help`](../images/code_snippets/text_markup_and_formatting/newline_control_base_click.svg){.screenshot}
+
+### Newline rendering
+
+By default, **rich-click** renders double newlines as single newlines.
+This is a deliberate decision to make help text take up less vertical space.
+
+However, you can override this behavior by setting the config option `text_paragraph_linebreaks` to `"\n\n"`.
+
+```python hl_lines="7"
+{% include "../code_snippets/text_markup_and_formatting/newline_control_double.py" %}
+```
+
+???+ example "Output"
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/text_markup_and_formatting
+    -->
+    ![`python newline_control_double.py --help`](../images/code_snippets/text_markup_and_formatting/newline_control_double.svg){.screenshot}
+
+
+???+ info
+    This default behavior of collapsing newlines is not true when `text_markup='markdown'`.
+    For markdown, we do not do any newline manipulation.

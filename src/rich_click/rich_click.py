@@ -152,7 +152,7 @@ OPTION_ENVVAR_FIRST: Optional[Optional[bool]] = None  # Show env vars before opt
 TEXT_MARKUP: Literal["ansi", "rich", "markdown", None] = notset
 TEXT_KWARGS: Optional[Dict[str, Any]] = None
 TEXT_EMOJIS: bool = notset
-TEXT_PARAGRAPH_LINEBREAKS: Optional[str] = None
+TEXT_PARAGRAPH_LINEBREAKS: Optional[Literal["\n", "\n\n"]] = None
 # If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -> 😺
 USE_MARKDOWN: Optional[bool] = None  # Parse help strings as markdown
 USE_MARKDOWN_EMOJI: Optional[bool] = None  # Parse emoji codes in markdown :smile:

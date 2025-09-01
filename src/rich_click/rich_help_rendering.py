@@ -144,27 +144,34 @@ def _get_help_text(
             lb = "\n"
     else:
         lb = formatter.config.text_paragraph_linebreaks
+
     if len(remaining_paragraphs) > 0:
         if not use_markdown:
             # Remove single linebreaks
-            _remaining_paragraphs = []
+            help_text_buf = []
             for para in remaining_paragraphs:
                 if para.startswith("\b"):
-                    _remaining_paragraphs.append("{}\n".format(para.strip("\b\n")))
+                    help_text_buf.append("{}\n".format(para.strip("\b\n")))
+                    help_text_buf.append(lb)
                 else:
-                    buf = ""
+                    _continuation = False
+                    _first = True
                     for p in para.split("\n"):
                         if any(p.startswith(_) for _ in ["* ", "- ", "    ", "> "]):
-                            if buf:
-                                _remaining_paragraphs.append(buf.strip())
-                                buf = ""
-                            _remaining_paragraphs.append(p.rstrip())
+                            _continuation = False
+                            if not _first:
+                                help_text_buf.append("\n")
+                            help_text_buf.append(p)
+                        elif _continuation:
+                            help_text_buf.append(" ")
+                            help_text_buf.append(p)
                         else:
-                            buf += " " + p
-                    if buf:
-                        _remaining_paragraphs.append(buf.strip())
+                            help_text_buf.append(p)
+                            _continuation = True
+                        _first = False
+                help_text_buf.append(lb)
             # Join back together
-            remaining_lines = lb.join(_remaining_paragraphs)
+            remaining_lines = "".join(help_text_buf)
         else:
             # Join with double linebreaks if markdown
             remaining_lines = lb.join(remaining_paragraphs)
