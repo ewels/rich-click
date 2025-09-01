@@ -1163,7 +1163,7 @@ For other modes, including the default mode, emojis are not rendered.</p>
 
 <span class="sd">    Note that this text is not rich markup: [b]See?[/b] :joy:</span>
 
-<span class="sd">    Emojis can be controlled independent of markup. :point_up: :nerd_face:</span>
+<span class="sd">    Emojis can be set independently of markup. :point_up: :nerd_face:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -1176,9 +1176,9 @@ working_dir: docs/code_snippets/text_markup_and_formatting
 -->
 <a class="glightbox" href="../../images/code_snippets/text_markup_and_formatting/emojis.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="python emojis.py --help" class="screenshot" src="../../images/code_snippets/text_markup_and_formatting/emojis.svg" /></a></p>
 </details>
+<p>You can view all available emojis with the following command:</p>
 <div class="highlight"><pre><span></span><code>uvx<span class="w"> </span>--from<span class="w"> </span>rich<span class="w"> </span>--<span class="w"> </span>python3<span class="w"> </span>-m<span class="w"> </span>rich.emoji
 </code></pre></div>
-<p>The default behavior </p>
 <h2 id="newlines">Newlines<a class="headerlink" href="#newlines" title="Permanent link">&para;</a></h2>
 <p>Handling newlines on <strong>rich-click</strong>'s end involves discretion because in a docstring, newlines can represent a softwrap; they are not necessarily genuine new lines.</p>
 <p>For <code>'markdown'</code> mode, we send all newline handling directly to <code>rich.markdown.Markdown()</code></p>
