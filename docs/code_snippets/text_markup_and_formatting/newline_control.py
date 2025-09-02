@@ -5,7 +5,8 @@ import rich_click as click
 
 @click.command("newline-control")
 def cli():
-    """Newline control
+    """Newline
+    control
 
     Double newlines are always preserved.
     But single newlines are usually not.
@@ -24,16 +25,17 @@ def cli():
     - like
     - this
 
-    or:
+    also:
 
-    * like
-    * this
+    * newlines within unordered lists
+      are collapsed
+      down.
+    * pretty neat!
 
     Last but not least, we preserve:
 
     > block
     > quotes
-
     """
 
 if __name__ == "__main__":

@@ -157,10 +157,21 @@ def _get_help_text(
                     help_text_buf.append(lb)
                 else:
                     _continuation = False
+                    _list = False
                     _first = True
                     for p in para.split("\n"):
-                        if any(p.startswith(_) for _ in ["* ", "- ", "    ", "> "]):
+                        if any(p.startswith(_) for _ in ["* ", "- "]):
                             _continuation = False
+                            if not _first:
+                                help_text_buf.append("\n")
+                            _list = True
+                            help_text_buf.append(p)
+                        elif _list and p.startswith("  "):
+                            help_text_buf.append(" ")
+                            help_text_buf.append(p.lstrip())
+                        elif any(p.startswith(_) for _ in ["    ", "> "]):
+                            _continuation = False
+                            _list = False
                             if not _first:
                                 help_text_buf.append("\n")
                             help_text_buf.append(p)
@@ -168,6 +179,7 @@ def _get_help_text(
                             help_text_buf.append(" ")
                             help_text_buf.append(p)
                         else:
+                            _list = False
                             help_text_buf.append(p)
                             _continuation = True
                         _first = False
