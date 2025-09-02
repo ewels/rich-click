@@ -1196,7 +1196,8 @@ working_dir: docs/code_snippets/text_markup_and_formatting
 
 <span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;newline-control&quot;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Newline control</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Newline</span>
+<span class="sd">    control</span>
 
 <span class="sd">    Double newlines are always preserved.</span>
 <span class="sd">    But single newlines are usually not.</span>
@@ -1215,16 +1216,17 @@ working_dir: docs/code_snippets/text_markup_and_formatting
 <span class="sd">    - like</span>
 <span class="sd">    - this</span>
 
-<span class="sd">    or:</span>
+<span class="sd">    also:</span>
 
-<span class="sd">    * like</span>
-<span class="sd">    * this</span>
+<span class="sd">    * newlines within unordered lists</span>
+<span class="sd">      are collapsed</span>
+<span class="sd">      down.</span>
+<span class="sd">    * pretty neat!</span>
 
 <span class="sd">    Last but not least, we preserve:</span>
 
 <span class="sd">    &gt; block</span>
 <span class="sd">    &gt; quotes</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -1258,7 +1260,8 @@ This is a deliberate decision to make help text take up less vertical space.</p>
 <span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;newline-control&quot;</span><span class="p">)</span>
 <span class="hll"><span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">&quot;text_paragraph_linebreaks&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">})</span>
 </span><span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Newline control</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Newline</span>
+<span class="sd">    control</span>
 
 <span class="sd">    Double newlines are always preserved.</span>
 <span class="sd">    But single newlines are usually not.</span>
@@ -1277,16 +1280,17 @@ This is a deliberate decision to make help text take up less vertical space.</p>
 <span class="sd">    - like</span>
 <span class="sd">    - this</span>
 
-<span class="sd">    or:</span>
+<span class="sd">    also:</span>
 
-<span class="sd">    * like</span>
-<span class="sd">    * this</span>
+<span class="sd">    * newlines within unordered lists</span>
+<span class="sd">      are collapsed</span>
+<span class="sd">      down.</span>
+<span class="sd">    * pretty neat!</span>
 
 <span class="sd">    Last but not least, we preserve:</span>
 
 <span class="sd">    &gt; block</span>
 <span class="sd">    &gt; quotes</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
