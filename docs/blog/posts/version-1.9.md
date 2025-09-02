@@ -28,7 +28,7 @@ Here are some simple examples of themes:
     python hello_rich.py --help
     ```
 
-    ![](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
+    ![](../../images/code_snippets/themes/themes_ex1.svg){.screenshot}
 
 === "`nord-nu`"
 
@@ -37,7 +37,7 @@ Here are some simple examples of themes:
     python hello_rich.py --help
     ```
 
-    ![](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
+    ![](../../images/code_snippets/themes/themes_ex2.svg){.screenshot}
 
 === "`cargo-slim`"
 
@@ -46,7 +46,7 @@ Here are some simple examples of themes:
     python hello_rich.py --help
     ```
 
-    ![](../images/code_snippets/themes/themes_ex3.svg){.screenshot}
+    ![](../../images/code_snippets/themes/themes_ex3.svg){.screenshot}
 
 === "`forest-robo`"
 
@@ -55,7 +55,7 @@ Here are some simple examples of themes:
     python hello_rich.py --help
     ```
 
-    ![](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
+    ![](../../images/code_snippets/themes/themes_ex4.svg){.screenshot}
 
 As you can see, themes are not _just_ colors, they can also completely change the formatting, too!
 
@@ -65,10 +65,38 @@ If you want to see all the options available to you, you can run the CLI command
 
 ??? info "Output of `rich-click --themes`"
 
-    ![](../images/code_snippets/themes/all_themes.svg){.screenshot}
-
+    ![](../../images/code_snippets/themes/all_themes.svg){.screenshot}
 
 If you are interested in learning more about themes, read about them in [the **Themes** docs](https://ewels.github.io/rich-click/1.9/documentation/panels/).
+
+## `rich-click` CLI support for Typer CLIs
+
+If you thought themes are cool in **rich-click**, wait until you see them in Typer!
+
+The `rich-click` CLI now supports Typer, which also means that `rich-click` themes are available to Typer.
+This feature is still experimental, so please let us know if you encounter any bugs.
+
+??? info "Code - Example Typer CLI"
+    ```python
+    {% include "../../code_snippets/rich_click_cli/typer_example.py" %}
+    ```
+
+???+ example "Output - Example Typer CLI with rich-click"
+
+    ![](../../images/code_snippets/rich_click_cli/typer_example.svg){.screenshot}
+
+Even cooler, you can patch Typer **directly in your code** to use **rich-click**'s themes.
+
+In the below example, we patch typer to use the `star-modern` theme (one of my personal favorite themes).
+
+???+ info "Code - Typer CLI with patch"
+    ```python hl_lines="20-24"
+    {% include "../../code_snippets/typer_support/typer_example.py" %}
+    ```
+
+???+ example "Output - Typer CLI with patch"
+
+    ![](../../images/code_snippets/typer_support/typer_example.svg){.screenshot}
 
 
 ## Panels
@@ -197,10 +225,6 @@ Now, all the following ways of invoking the `rich-click` CLI are supported:
 - `rich-click hello --help`
 
 In prior versions, only the first way worked.
-
-### `rich-click` CLI support for Typer CLIs
-
-<!-- todo --> Maybe?
 
 ### Stderr help: `context_settings={"help_to_stderr": True}`
 

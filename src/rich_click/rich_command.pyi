@@ -107,7 +107,7 @@ class RichCommand(click.Command):
         panel: Optional[RichCommandPanel] = None,
     ) -> RichPanelRow: ...
 
-class RichGroup(RichCommand, Group):
+class RichGroup(RichCommand, click.Group):
     """
     Richly formatted click Group.
 
@@ -395,3 +395,9 @@ class RichGroup(RichCommand, Group):
     def add_command(
         self, cmd: click.Command, name: str | None = None, aliases: Optional[Iterable[str]] = None
     ) -> None: ...
+
+class RichMultiCommand(RichGroup, click.CommandCollection):
+    pass
+
+class RichCommandCollection(RichGroup, click.CommandCollection):
+    pass

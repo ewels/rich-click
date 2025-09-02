@@ -117,7 +117,6 @@ class RichPanel(Generic[CT, ColT]):
         kw: Dict[str, Any] = {
             "highlight": self._highlight,
             "show_header": False,
-            "expand": True,
         }
 
         kw.update(defaults)
@@ -209,6 +208,7 @@ class RichOptionPanel(RichPanel[click.Parameter, OptionColumnType]):
             "row_styles": formatter.config.style_options_table_row_styles,
             "pad_edge": formatter.config.style_options_table_pad_edge,
             "padding": formatter.config.style_options_table_padding,
+            "expand": formatter.config.style_options_table_expand,
         }
         table = self._get_base_table(**t_styles)
         rows = []
@@ -348,6 +348,7 @@ class RichCommandPanel(RichPanel[click.Command, CommandColumnType]):
             "row_styles": formatter.config.style_commands_table_row_styles,
             "pad_edge": formatter.config.style_commands_table_pad_edge,
             "padding": formatter.config.style_commands_table_padding,
+            "expand": formatter.config.style_commands_table_expand,
         }
         table = self._get_base_table(**t_styles)
 
