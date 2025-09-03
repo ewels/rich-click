@@ -1086,6 +1086,9 @@ If <code>RichCommand</code> is "properly" subclassed, the override is allowed.
 If the subclass is only a result of the patching operation, we ignore the aforementioned methods and use the <strong>rich-click</strong> implementation.</p>
 <p>Long story short, the <code>rich-click</code> CLI is safe to subclassing when it is the user's intent to subclass a <strong>rich-click</strong> object. (This is so that you can use other nifty features of the CLI such as the <code>--output</code> option on your own <strong>rich-click</strong> CLIs)
 That said, custom, non-<strong>rich-click</strong> implementations are ignored.</p>
+<p>Additional hacks are implemented to provide first-class support for Typer.
+When a Click object subclass is defined, we detect whether it is a Typer subclass during the call to the metaclass <code>__init__</code>.
+When Typer is detected, we do additional overrides to resolve differences between Typer's and <strong>rich-click</strong>'s APIs.</p>
 <h3 id="using-patch-as-an-end-user">Using <code>patch()</code> as an end user<a class="headerlink" href="#using-patch-as-an-end-user" title="Permanent link">¶</a></h3>
 <p>The functionality that <code>rich-click</code> uses to patch Click internals is available for use by <strong>rich-click</strong> end users,
 and it occasionally comes in handy outside of the <code>rich-click</code> CLI.</p>
