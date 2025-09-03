@@ -159,10 +159,10 @@ def rich_group(*args, **kwargs):  # type: ignore[no-untyped-def]
 
 
 def patch(
-        rich_config: Optional[RichHelpConfiguration] = None,
-        *,
-        patch_rich_click: bool = False,
-        patch_typer: bool = False,
+    rich_config: Optional[RichHelpConfiguration] = None,
+    *,
+    patch_rich_click: bool = False,
+    patch_typer: bool = False,
 ) -> None:
     """Patch Click internals to use rich-click types."""
     import warnings
