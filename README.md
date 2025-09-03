@@ -35,12 +35,12 @@ Click, formatted with Rich, with minimal customization required.
 - 🌈 Rich command-line formatting of click help and error messages
 - 😌 Same API as Click: usage is simply `import rich_click as click`
 - 🎨 Over 100 themes that can be set by developers and end-users (`export RICH_CLICK_THEME=...`)
-- 💻 CLI tool to run on _other people's_ tools (prefix the command with `rich-click`)
+- 💻 CLI tool to run on _other people's_ Click and Typer CLIs (prefix the command with `rich-click`)
 - 📦 Export help text as HTML or SVG
 - 🎁 Group commands and options into named panels
 - ❌ Well formatted error messages
 - 💫 Extensive customization
-- 🤖 IDE autocomplete of Click decorators for smooth developer experience.
+- 🤖 IDE autocomplete of Click decorators for smooth developer experience
 
 ## Installation
 
