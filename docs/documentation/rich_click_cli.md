@@ -84,7 +84,7 @@ Another reason is to print HTML and SVG.
 Here is an example of overriding a Typer CLI with a **rich-click** theme:
 
 ```python
-{% include "../code_snippets/panels/panels_simple_arguments.py" %}
+{% include "../code_snippets/rich_click_cli/typer_example.py" %}
 ```
 
 ???+ example "Output"
