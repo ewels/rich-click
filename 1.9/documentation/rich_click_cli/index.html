@@ -15,7 +15,7 @@
         <link rel="prev" href="../custom_styles/">
       
       
-        <link rel="next" href="../accessibility/">
+        <link rel="next" href="../typer_support/">
       
       
         <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../feed_rss_created.xml">
@@ -727,6 +727,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#typer-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Typer support
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#notes-on-how-the-rich-click-cli-works" class="md-nav__link">
     <span class="md-ellipsis">
       Notes on how the rich-click CLI works
@@ -754,6 +763,27 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../typer_support/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Typer Support
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -894,6 +924,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#typer-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      Typer support
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#notes-on-how-the-rich-click-cli-works" class="md-nav__link">
     <span class="md-ellipsis">
       Notes on how the rich-click CLI works
@@ -992,6 +1031,43 @@ head: 12
 -->
 <p><a class="glightbox" href="../../images/code_snippets/rich_click_cli/output_to_html.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="rich-click --output html app:main --help | grep -Eo '.{1,120}'" class="screenshot" src="../../images/code_snippets/rich_click_cli/output_to_html.svg" /></a></p>
 <p><em>SVG and HTML generated from <a href="https://github.com/ewels/rich-click/blob/main/docs/code_snippets/rich_click_cli/app.py"><code>docs/code_snippets/rich_click_cli/app.py</code></a></em></p>
+<h2 id="typer-support">Typer support<a class="headerlink" href="#typer-support" title="Permanent link">&para;</a></h2>
+<div class="admonition success">
+<p class="admonition-title">Success</p>
+<p>This feature is still experimental.
+Please report any bugs or issues you run into!</p>
+</div>
+<p>As of 1.9.0, the <code>rich-click</code> CLI supports patching Typer.</p>
+<p>You don't need to do anything special; it works out of the box.
+It also works out of the box without needing to pre-load Typer.</p>
+<p>You can also set up your shell config file to always patch Typer.</p>
+<p>The main reason to patch Typer CLIs is to get access to <strong>rich-click</strong>'s themes.
+Here is an example of overriding a Typer CLI with a <strong>rich-click</strong> theme:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
+<span class="c1"># dependencies = [&quot;rich-click&gt;=1.9&quot;]</span>
+<span class="c1"># ///</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;src&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;dest&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--env&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Environment&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--log-level&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Log level&quot;</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">&quot;show_arguments&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">move_item</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">log_level</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Move an item from a src location to a dest location&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">move_item</span><span class="p">()</span>
+</code></pre></div>
+<details class="example" open="open">
+<summary>Output</summary>
+<p><!-- RICH-CODEX
+working_dir: docs/code_snippets/rich_click_cli
+-->
+<a class="glightbox" href="../../images/code_snippets/rich_click_cli/typer_example.svg" data-type="image" data-width="100em" data-height="auto" data-desc-position="bottom"><img alt="rich-click --typer --theme magenta1-nu typer_example.py --help" class="screenshot" src="../../images/code_snippets/rich_click_cli/typer_example.svg" /></a></p>
+</details>
 <h2 id="notes-on-how-the-rich-click-cli-works">Notes on how the <code>rich-click</code> CLI works<a class="headerlink" href="#notes-on-how-the-rich-click-cli-works" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
