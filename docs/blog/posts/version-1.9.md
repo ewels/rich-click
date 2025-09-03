@@ -87,7 +87,7 @@ This feature is still experimental, so please let us know if you encounter any b
 
 Even cooler, you can patch Typer **directly in your code** to use **rich-click**'s themes.
 
-In the below example, we patch typer to use the `star-modern` theme (one of my personal favorite themes).
+In the below example, we patch typer to use the `star-slim` theme.
 
 ???+ info "Code - Typer CLI with patch"
     ```python hl_lines="24-28"
