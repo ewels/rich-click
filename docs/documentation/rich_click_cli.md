@@ -144,7 +144,7 @@ cli.add_command(another_cli)
 ```
 
 In this situation, `another_cli` retains its original help text behavior.
-In order to make `another_cli` work with **rich-click**, you need to patch `click` before you import `another_cli`.
+In order to make `another_cli` work with **rich-click**, you need to patch `click` **before** you import `another_cli`.
 You can patch Click with `rich_click.patch.patch` like this:
 
 ```python
@@ -162,3 +162,15 @@ def cli():
 # `another_cli` will have rich-click markup. :)
 cli.add_command(another_cli)
 ```
+
+!!! warning "Patching Typer"
+    You can patch Typer using the same `patch()` function as above, but only if it occurs before **_any_** Typer imports.
+
+    It is recommended instead that you use `patch_typer()`, which has no timing restrictions for when the patch can be applied:
+
+    ```python
+    import typer
+    from rich_click.patch import patch_typer
+
+    patch_typer()
+    ```

@@ -158,7 +158,12 @@ def rich_group(*args, **kwargs):  # type: ignore[no-untyped-def]
     return _rich_group(*args, **kwargs)
 
 
-def patch(rich_config: Optional[RichHelpConfiguration] = None, *, patch_rich_click: bool = False) -> None:
+def patch(
+        rich_config: Optional[RichHelpConfiguration] = None,
+        *,
+        patch_rich_click: bool = False,
+        patch_typer: bool = False,
+) -> None:
     """Patch Click internals to use rich-click types."""
     import warnings
 
@@ -196,6 +201,9 @@ def patch(rich_config: Optional[RichHelpConfiguration] = None, *, patch_rich_cli
             rich_click.CommandCollection = _PatchedRichCommandCollection  # type: ignore[misc]
             if hasattr(click, "MultiCommand"):
                 rich_click.MultiCommand = _PatchedRichMultiCommand  # type: ignore[assignment,misc,unused-ignore]
+
+    if patch_typer:
+        globals()["patch_typer"]()
 
     if rich_config is not None:
         rich_config.dump_to_globals()
