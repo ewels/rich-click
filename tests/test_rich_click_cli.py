@@ -120,6 +120,7 @@ def test_rich_click_cli_help_with_rich_config_from_file(tmp_path: Path) -> None:
 │                                                 svg.                                             │
 │ --suppress-warnings/--do-not-suppress-warnings  Suppress warnings when there are conflicting     │
 │                                                 entry_points. This situation is extremely rare.  │
+│                                                 [env var: RICH_CLICK_CLI_SUPPRESS_WARNINGS]      │
 │ --patch-rich-click/--no-patch-rich-click        If set, patch rich_click.Command, not just       │
 │                                                 click.Command.                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯

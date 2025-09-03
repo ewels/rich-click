@@ -68,6 +68,33 @@ head: 12
 
 _SVG and HTML generated from [`docs/code_snippets/rich_click_cli/app.py`](https://github.com/ewels/rich-click/blob/main/docs/code_snippets/rich_click_cli/app.py)_
 
+## Typer support
+
+!!! success
+    This feature is still experimental.
+    Please report any bugs or issues you run into!
+
+As of 1.9.0, the `rich-click` CLI supports patching Typer.
+
+You don't need to do anything special; it works out of the box.
+It also works out of the box without needing to pre-load Typer.
+
+You can also set up your shell config file to always patch Typer.
+
+The main reason to patch Typer CLIs is to get access to **rich-click**'s themes.
+Here is an example of overriding a Typer CLI with a **rich-click** theme:
+
+```python
+{% include "../code_snippets/panels/panels_simple_arguments.py" %}
+```
+
+???+ example "Output"
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/rich_click_cli
+    -->
+    ![`rich-click --typer --theme magenta1-nu typer_example.py --help`](../images/code_snippets/rich_click_cli/typer_example.svg){.screenshot}
+
 ## Notes on how the `rich-click` CLI works
 
 !!! note

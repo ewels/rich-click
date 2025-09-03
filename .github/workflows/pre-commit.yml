@@ -8,10 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: 3
+          activate-environment: true
       - name: Install dependencies
-        run: |
-          pip install ".[dev]"
-      - uses: pre-commit-ci/lite-action@v1.1.0
+        run:  uv pip install ".[dev]"
+      - name: Run pre-commit
+        run: pre-commit run -a

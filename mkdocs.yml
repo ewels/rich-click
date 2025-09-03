@@ -50,6 +50,7 @@ nav:
       - "Text Markup & Formatting": documentation/text_markup_and_formatting.md
       - "Custom Styles": documentation/custom_styles.md
       - "<code>rich-click</code> CLI tool": documentation/rich_click_cli.md
+      - "Typer Support": documentation/typer_support.md
       - Accessibility: documentation/accessibility.md
       # - API Reference: documentation/api_reference.md
   - Blog: blog/index.md

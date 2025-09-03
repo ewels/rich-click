@@ -27,7 +27,7 @@ import click
 
 # Group, Command, and CommandCollection need to be imported directly,
 # or else rich_click.cli.patch() causes a recursion error.
-from click import CommandCollection, Group
+from click import Command, CommandCollection, Group
 from click.utils import PacifyFlushWrapper
 
 from rich_click.rich_context import RichContext
@@ -48,7 +48,7 @@ if TYPE_CHECKING:  # pragma: no cover
 OVERRIDES_GUARD: bool = False
 
 
-class RichCommand(click.Command):
+class RichCommand(Command):
     """
     Richly formatted click Command.
 

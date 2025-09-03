@@ -46,6 +46,7 @@ optional-dependencies.dev = [
     "pytest-cov>=5",
     "rich-codex>=1.2.11",
     "ruff>=0.12.4",
+    "typer>=0.15",
     "types-setuptools>=75.8.0.20250110",
 ]
 optional-dependencies.docs = [
@@ -60,6 +61,7 @@ optional-dependencies.docs = [
     "mkdocs-rss-plugin>=1.15",
     "mkdocstrings[python]>=0.26.1",
     "rich-codex>=1.2.11",
+    "typer>=0.15",
 ]
 urls.Documentation = "https://github.com/ewels/rich-click"
 urls.Homepage = "https://github.com/ewels/rich-click"

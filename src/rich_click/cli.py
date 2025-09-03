@@ -4,15 +4,18 @@ from __future__ import annotations
 
 import os
 import sys
+import warnings
+from contextlib import contextmanager
 from functools import wraps
 from gettext import gettext
 from importlib import (
     import_module,
     metadata,  # type: ignore[import,unused-ignore]
 )
-from typing import Any, Dict, List, Literal, Optional, Tuple
+from typing import Any, Dict, Generator, List, Literal, Optional, Tuple
 
 import click
+from click.core import ParameterSource
 
 from rich_click.decorators import argument as _rich_argument
 from rich_click.decorators import command as _rich_command
@@ -22,6 +25,13 @@ from rich_click.decorators import version_option as _rich_version_option
 from rich_click.patch import patch as _patch
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
+
+
+DISABLE_WARNINGS_NOTE = (
+    "[red]You can pass [b]--suppress-warnings[/b] to the rich-click CLI"
+    " or set the [b]RICH_CLICK_CLI_SUPPRESS_WARNINGS[/b] environment variable"
+    " to disable this message.[/red]"
+)
 
 
 def entry_points(*, group: str) -> "metadata.EntryPoints":  # type: ignore[name-defined]
@@ -118,10 +128,9 @@ def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> 
             " and you have set a custom PYTHONPATH."
             f"\n\nThe selected script is '{module_path}:{function_name}', which is being executed now."
             "\n\nIt is safer and recommended that you specify the MODULE:CLICK_COMMAND"
-            f" ('{module_path}:{function_name}') instead of the script ('{script}'), like this:"
+            f" ('{module_path}:{function_name}') instead of the script ('{script}'), like this:[/]"
             f"\n\n>>> {' '.join(_args)}"
-            "\n\nAlternatively, you can pass --suppress-warnings to the rich-click CLI,"
-            " which will disable this message.[/]",
+            f"\n\n{DISABLE_WARNINGS_NOTE}",
         )
 
     if ":" in script and not module_path:
@@ -398,6 +407,8 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
     "--suppress-warnings/--do-not-suppress-warnings",
     is_flag=True,
     default=False,
+    envvar="RICH_CLICK_CLI_SUPPRESS_WARNINGS",
+    show_envvar=True,
     panel="Advanced Options",
     help="Suppress warnings when there are conflicting entry_points." " This situation is extremely rare.",
 )
@@ -501,8 +512,27 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
     else:
         cfg = RichHelpConfiguration.load_from_globals()
 
+    @contextmanager
+    def patch_ctx() -> Generator[None, None, None]:
+        if ctx.get_parameter_source("typer") != ParameterSource.ENVIRONMENT:
+            try:
+                with warnings.catch_warnings():
+                    warnings.filterwarnings("error", category=ImportWarning)
+                    yield
+            except ImportWarning as e:
+                if not suppress_warnings and any("Typer" in a for a in e.args):
+                    import rich
+
+                    rich.print(
+                        f"[red]WARNING: Attempted to patch Typer, but Typer is not installed.[/red]"
+                        f"\n\n{DISABLE_WARNINGS_NOTE}"
+                    )
+        else:
+            yield
+
     # patch click before importing the program function
-    _patch(rich_config=cfg, patch_rich_click=patch_rich_click)
+    with patch_ctx():
+        _patch(rich_config=cfg, patch_rich_click=patch_rich_click)
 
     script, *args = script_and_args
 
@@ -526,8 +556,8 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
                     # and PYTHONPATH does not include ".".
                     sys.path.append(os.path.abspath("."))
                     module = import_module(module_path)
-                except ModuleNotFoundError:
-                    raise click.ClickException(f"Module '{module_path}' not found.")
+                except ModuleNotFoundError as e:
+                    raise click.ClickException(e.args[0] if e.args else "Unknown error")
             try:
                 f = getattr(module, function_name)
             except AttributeError:
@@ -541,8 +571,8 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
 
             try:
                 runpy.run_path(module_path, run_name="__main__")
-            except ImportError:
-                raise click.ClickException(f"File '{module_path}' not found.")
+            except ImportError as e:
+                raise click.ClickException(e.args[0] if e.args else "Unknown error")
 
     else:
 
@@ -557,8 +587,8 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
                 sys.path.append(os.path.abspath("."))
                 try:
                     runpy.run_module(module_path, run_name="__main__")
-                except ImportError:
-                    raise click.ClickException(f"Module '{module_path}' not found.")
+                except ImportError as e:
+                    raise click.ClickException(e.args[0] if e.args else "Unknown error")
 
     prog = module_path.split(".", 1)[0]
     sys.argv = [prog, *args]
