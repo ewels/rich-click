@@ -98,7 +98,7 @@ In the below example, we patch typer to use the `star-slim` theme.
 
     ![](../../images/code_snippets/typer_support/typer_example.svg){.screenshot}
 
-Under the hood, we are doing metaclass [dark magic](https://github.com/ewels/rich-click/blob/main/src/rich_click/cli.py) to prevent needing to preemptively load Typer,
+Under the hood, we are doing metaclass [dark magic](https://github.com/ewels/rich-click/blob/main/src/rich_click/patch.py) to prevent needing to preemptively load Typer,
 and to prevent requiring users to specify that a CLI is a Typer CLI. As of Typer version 0.17.0 released August 30, 2025, lazy loading Typer for improved performance is [less necessary](https://github.com/fastapi/typer/pull/1128), but it's still nice to have.
 
 ## Panels
