@@ -70,18 +70,17 @@ _SVG and HTML generated from [`docs/code_snippets/rich_click_cli/app.py`](https:
 
 ## Typer support
 
-!!! success
+!!! example "Experimental"
     This feature is still experimental.
     Please report any bugs or issues you run into!
 
 As of 1.9.0, the `rich-click` CLI supports patching Typer.
 
-You don't need to do anything special; it works out of the box.
-It also works out of the box without needing to pre-load Typer.
-
-You can also set up your shell config file to always patch Typer.
+You don't need to do anything special to patch Typer CLIs; it works out of the box.
 
 The main reason to patch Typer CLIs is to get access to **rich-click**'s themes.
+Another reason is to print HTML and SVG.
+
 Here is an example of overriding a Typer CLI with a **rich-click** theme:
 
 ```python
@@ -93,7 +92,7 @@ Here is an example of overriding a Typer CLI with a **rich-click** theme:
     <!-- RICH-CODEX
     working_dir: docs/code_snippets/rich_click_cli
     -->
-    ![`rich-click --typer --theme magenta1-nu typer_example.py --help`](../images/code_snippets/rich_click_cli/typer_example.svg){.screenshot}
+    ![`rich-click --theme magenta1-nu typer_example.py --help`](../images/code_snippets/rich_click_cli/typer_example.svg){.screenshot}
 
 ## Notes on how the `rich-click` CLI works
 

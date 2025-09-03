@@ -74,7 +74,6 @@ If you are interested in learning more about themes, read about them in [the **T
 If you thought themes are cool in **rich-click**, wait until you see them in Typer!
 
 The `rich-click` CLI now supports Typer, which also means that `rich-click` themes are available to Typer.
-This feature is still experimental, so please let us know if you encounter any bugs.
 
 ??? info "Code - Example Typer CLI"
     ```python
@@ -86,8 +85,9 @@ This feature is still experimental, so please let us know if you encounter any b
     ![](../../images/code_snippets/rich_click_cli/typer_example.svg){.screenshot}
 
 Even cooler, you can patch Typer **directly in your code** to use **rich-click**'s themes.
+This means you don't need to rely on users to run `rich-click your-cli-tool` to get access to these themes.
 
-In the below example, we patch typer to use the `star-slim` theme.
+In the below example, we patch typer to use the `star-slim` theme directly in the CLI code:
 
 ???+ info "Code - Typer CLI with patch"
     ```python hl_lines="24-28"
@@ -98,8 +98,12 @@ In the below example, we patch typer to use the `star-slim` theme.
 
     ![](../../images/code_snippets/typer_support/typer_example.svg){.screenshot}
 
-Under the hood, we are doing metaclass [dark magic](https://github.com/ewels/rich-click/blob/main/src/rich_click/patch.py) to prevent needing to preemptively load Typer,
-and to prevent requiring users to specify that a CLI is a Typer CLI. As of Typer version 0.17.0 released August 30, 2025, lazy loading Typer for improved performance is [less necessary](https://github.com/fastapi/typer/pull/1128), but it's still nice to have.
+Under the hood, we are doing metaclass [dark magic](https://github.com/ewels/rich-click/blob/main/src/rich_click/patch.py) to prevent needing to preemptively import Typer,
+and to prevent requiring users to specify that a CLI is a Typer CLI.
+This keeps the runtime as slim and as fast as possible for non-Typer CLIs.
+(As of Typer version 0.17.0 released August 30, 2025, lazy loading Typer for improved performance is [less necessary](https://github.com/fastapi/typer/pull/1128), but it's still nice to have.)
+
+This feature is still experimental, so please let us know if you encounter any bugs.
 
 ## Panels
 
