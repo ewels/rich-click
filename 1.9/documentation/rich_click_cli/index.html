@@ -1040,22 +1040,47 @@ Please report any bugs or issues you run into!</p>
 Another reason is to print HTML and SVG.</p>
 <p>Here is an example of overriding a Typer CLI with a <strong>rich-click</strong> theme:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
-<span class="c1"># dependencies = ["rich-click&gt;=1.9"]</span>
+<span class="c1"># dependencies = ["rich-click&gt;=1.9", "typer&gt;=0.15"]</span>
 <span class="c1"># ///</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 
-<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">"src"</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">"dest"</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">"--env"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Environment"</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">"--log-level"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Log level"</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">"show_arguments"</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">move_item</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">log_level</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Move an item from a src location to a dest location"""</span>
-    <span class="k">pass</span>
+<span class="c1"># This example comes from the Typer docs:</span>
+<span class="c1"># https://typer.tiangolo.com/tutorial/commands/help/#help-panels-for-commands</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">typer</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Typer</span><span class="p">(</span><span class="n">rich_markup_mode</span><span class="o">=</span><span class="s2">"rich"</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""[green]Create[/green] a new user. :sparkles:"""</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Creating user: </span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""[red]Delete[/red] a user. :fire:"""</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Deleting user: </span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">rich_help_panel</span><span class="o">=</span><span class="s2">"Utils and Configs"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">config</span><span class="p">(</span><span class="n">configuration</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""[blue]Configure[/blue] the system. :wrench:"""</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Configuring the system with: </span><span class="si">{</span><span class="n">configuration</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">rich_help_panel</span><span class="o">=</span><span class="s2">"Utils and Configs"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""[blue]Synchronize[/blue] the system or something fancy like that. :recycle:"""</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Syncing the system"</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">rich_help_panel</span><span class="o">=</span><span class="s2">"Help and Others"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">help</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Get [yellow]help[/yellow] with the system. :question:"""</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Opening help portal..."</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">rich_help_panel</span><span class="o">=</span><span class="s2">"Help and Others"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">report</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""[yellow]Report[/yellow] an issue. :bug:"""</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Please open a new issue online, not a direct message"</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-    <span class="n">move_item</span><span class="p">()</span>
+    <span class="n">app</span><span class="p">()</span>
 </code></pre></div>
 <details class="example" open="open">
 <summary>Output</summary>
