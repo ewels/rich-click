@@ -1104,7 +1104,7 @@ and it occasionally comes in handy outside of the <code>rich-click</code> CLI.</
 <span class="n">cli</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">another_cli</span><span class="p">)</span>
 </code></pre></div>
 <p>In this situation, <code>another_cli</code> retains its original help text behavior.
-In order to make <code>another_cli</code> work with <strong>rich-click</strong>, you need to patch <code>click</code> before you import <code>another_cli</code>.
+In order to make <code>another_cli</code> work with <strong>rich-click</strong>, you need to patch <code>click</code> <strong>before</strong> you import <code>another_cli</code>.
 You can patch Click with <code>rich_click.patch.patch</code> like this:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">rich_click.patch</span><span class="w"> </span><span class="kn">import</span> <span class="n">patch</span>
@@ -1120,6 +1120,16 @@ You can patch Click with <code>rich_click.patch.patch</code> like this:</p>
 <span class="c1"># `another_cli` will have rich-click markup. :)</span>
 <span class="n">cli</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">another_cli</span><span class="p">)</span>
 </code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Patching Typer</p>
+<p>You can patch Typer using the same <code>patch()</code> function as above, but only if it occurs before <strong><em>any</em></strong> Typer imports.</p>
+<p>It is recommended instead that you use <code>patch_typer()</code>, which has no timing restrictions for when the patch can be applied:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">typer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich_click.patch</span><span class="w"> </span><span class="kn">import</span> <span class="n">patch_typer</span>
+
+<span class="n">patch_typer</span><span class="p">()</span>
+</code></pre></div>
+</div>
 
 
 
