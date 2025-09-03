@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 # ruff: noqa: D103
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-import click
+from click import Argument, Option
 
 import rich_click
 from rich_click.decorators import command as _rich_command
@@ -15,10 +15,110 @@ from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
 from rich_click.rich_panel import RichCommandPanel
-from rich_click.rich_parameter import RichArgument, RichOption
 
 
-class _PatchedRichCommand(RichCommand):
+class _PatchedTyperContext(RichContext):
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        RichContext.__init__(self, *args, **kwargs)
+
+    def make_formatter(self, error_mode: bool = False) -> RichHelpFormatter:
+        """Create the Rich Help Formatter."""
+        formatter = super().make_formatter(error_mode=error_mode)
+        if hasattr(self.command, "rich_markup_mode") and self.command.rich_markup_mode == "rich":
+            formatter.config.text_markup = "rich"
+            formatter.config.text_emojis = True
+        return formatter
+
+    def get_help(self) -> str:
+        """
+        Format the help into a string and returns it.
+
+        Calls :meth:`format_help` internally.
+        """
+        import typer.core
+        from typer.models import DefaultPlaceholder
+
+        if isinstance(self.command, RichGroup):
+            command_panels: Dict[str, List[str]] = {}
+            for cmd_name in self.command.commands:
+                cmd = self.command.commands[cmd_name]
+                if (
+                    isinstance(cmd, (typer.core.TyperCommand, typer.core.TyperGroup))
+                    and cmd.rich_help_panel is not None
+                    and not isinstance(cmd.rich_help_panel, DefaultPlaceholder)
+                ):
+                    command_panels.setdefault(cmd.rich_help_panel, [])
+                    command_panels[cmd.rich_help_panel].append(cmd_name)
+            for name, commands in command_panels.items():
+                self.command.panels.append(RichCommandPanel(name, commands=commands))
+
+        return super().get_help()
+
+
+def _typer_command_init(
+    self: Any, *args: Any, rich_help_panel: Union[str, None] = None, rich_markup_mode: Any = None, **kwargs: Any
+) -> None:
+    import typer.core
+
+    super(typer.core.TyperCommand, self).__init__(*args, **kwargs)
+    self.rich_markup_mode = rich_markup_mode
+    self.rich_help_panel = rich_help_panel
+
+
+def _typer_group_init(
+    self: Any, *args: Any, rich_help_panel: Union[str, None] = None, rich_markup_mode: Any = None, **kwargs: Any
+) -> None:
+    import typer.core
+
+    super(typer.core.TyperGroup, self).__init__(*args, **kwargs)
+    self.rich_markup_mode = rich_markup_mode
+    self.rich_help_panel = rich_help_panel
+
+
+def _patch_typer_group(cls: type) -> type:
+    cls.format_help = RichGroup.format_help  # type: ignore[attr-defined]
+    cls.__init__ = _typer_group_init  # type: ignore[misc]
+    cls.context_class = _PatchedTyperContext  # type: ignore[attr-defined]
+    return cls
+
+
+def _patch_typer_command(cls: type) -> type:
+    cls.format_help = RichCommand.format_help  # type: ignore[attr-defined]
+    cls.__init__ = _typer_command_init  # type: ignore[misc]
+    cls.context_class = _PatchedTyperContext  # type: ignore[attr-defined]
+    return cls
+
+
+def _patch_typer_argument(cls: type) -> type:
+    cls.panel = property(  # type: ignore[attr-defined]
+        lambda self: self.rich_help_panel, lambda self, value: setattr(self, "rich_help_panel", value)
+    )
+    return cls
+
+
+def _patch_typer_option(cls: type) -> type:
+    cls.panel = property(  # type: ignore[attr-defined]
+        lambda self: self.rich_help_panel, lambda self, value: setattr(self, "rich_help_panel", value)
+    )
+    return cls
+
+
+class PatchMeta(type):
+    def __init__(cls, name: str, bases: Tuple[type, ...], namespace: Dict[str, Any]) -> None:
+        super().__init__(name, bases, namespace)
+        if cls.__module__ in ["typer.core", "typer.main", "rich_click.patch"]:
+            if name == "TyperGroup":
+                _patch_typer_group(cls)
+            elif name == "TyperCommand":
+                _patch_typer_command(cls)
+            elif name == "TyperOption":
+                _patch_typer_option(cls)
+            elif name == "TyperArgument":
+                _patch_typer_argument(cls)
+
+
+class _PatchedRichCommand(RichCommand, metaclass=PatchMeta):
     pass
 
 
@@ -34,6 +134,18 @@ class _PatchedRichGroup(RichGroup, _PatchedRichCommand):
     pass
 
 
+# Options and Arguments don't need to be patched for base click CLIs.
+# However, we need to intercept type.__init__ calls for Typer CLIs.
+
+
+class _PatchedOption(Option, metaclass=PatchMeta):
+    pass
+
+
+class _PatchedArgument(Argument, metaclass=PatchMeta):
+    pass
+
+
 def rich_command(*args, **kwargs):  # type: ignore[no-untyped-def]
     kwargs.setdefault("cls", _PatchedRichCommand)
     kwargs["__rich_click_cli_patch"] = True
@@ -46,107 +158,14 @@ def rich_group(*args, **kwargs):  # type: ignore[no-untyped-def]
     return _rich_group(*args, **kwargs)
 
 
-def patch_typer(
-    rich_config: Optional[RichHelpConfiguration] = None,
-) -> None:
-    return patch(rich_config=rich_config, patch_typer=True)
-
-
-def _patch_typer():
-    try:
-        import typer.core
-        import typer.main
-        from typer.models import DefaultPlaceholder
-    except ImportError:
-        import warnings
-
-        warnings.warn("Attempted to patch Typer, but Typer is not installed.", ImportWarning, stacklevel=2)
-        return
-
-    class _PatchedRichContext(RichContext, typer.Context):
-
-        def __init__(self, *args, **kwargs):
-            RichContext.__init__(self, *args, **kwargs)
-
-        def make_formatter(self, error_mode: bool = False) -> RichHelpFormatter:
-            """Create the Rich Help Formatter."""
-            formatter = super().make_formatter(error_mode=error_mode)
-            if hasattr(self.command, "rich_markup_mode") and self.command.rich_markup_mode == "rich":
-                formatter.config.text_markup = "rich"
-                formatter.config.text_emojis = True
-            return formatter
-
-        def get_help(self) -> str:
-            """
-            Format the help into a string and returns it.
-
-            Calls :meth:`format_help` internally.
-            """
-            if isinstance(self.command, click.Group):
-                command_panels: Dict[str, List[str]] = {}
-                for cmd_name in self.command.commands:
-                    cmd = self.command.commands[cmd_name]
-                    if (
-                        isinstance(cmd, (typer.core.TyperCommand, typer.core.TyperGroup))
-                        and cmd.rich_help_panel is not None
-                        and not isinstance(cmd.rich_help_panel, DefaultPlaceholder)
-                    ):
-                        command_panels.setdefault(cmd.rich_help_panel, [])
-                        command_panels[cmd.rich_help_panel].append(cmd_name)
-                for name, commands in command_panels.items():
-                    self.command.panels.append(RichCommandPanel(name, commands=commands))
-
-            return super().get_help()
-
-    class _PatchedTyperCommand(_PatchedRichCommand, typer.core.TyperCommand):
-
-        context_class = _PatchedRichContext
-
-        def __init__(self, *args, rich_help_panel: Union[str, None] = None, **kwargs):
-            _PatchedRichCommand.__init__(self, *args, **kwargs)
-            self.rich_help_panel = rich_help_panel
-
-    class _PatchedTyperGroup(_PatchedRichGroup, typer.core.TyperGroup):
-
-        context_class = _PatchedRichContext
-
-        def __init__(self, *args, rich_help_panel: Union[str, None] = None, **kwargs):
-            _PatchedRichGroup.__init__(self, *args, **kwargs)
-            self.rich_help_panel = rich_help_panel
-
-    class _PatchedTyperOption(RichOption, typer.core.TyperOption):
-
-        def __init__(self, *args, rich_help_panel: Union[str, None] = None, **kwargs):
-            RichOption.__init__(self, *args, **kwargs)
-            if rich_help_panel:
-                self.panel = rich_help_panel
-
-    class _PatchedTyperArgument(RichArgument, typer.core.TyperArgument):
-
-        def __init__(self, *args, rich_help_panel: Union[str, None] = None, **kwargs):
-            RichArgument.__init__(self, *args, **kwargs)
-            if rich_help_panel:
-                self.panel = rich_help_panel
-
-    typer.core.TyperCommand = _PatchedTyperCommand
-    typer.core.TyperGroup = _PatchedTyperGroup
-    typer.core.TyperArgument = _PatchedTyperArgument
-    typer.core.TyperOption = _PatchedTyperOption
-
-    typer.main.TyperCommand = _PatchedTyperCommand
-    typer.main.TyperGroup = _PatchedTyperGroup
-    typer.main.TyperArgument = _PatchedTyperArgument
-    typer.main.TyperOption = _PatchedTyperOption
-
-
-def patch(
-    rich_config: Optional[RichHelpConfiguration] = None, *, patch_rich_click: bool = False, patch_typer: bool = False
-) -> None:
+def patch(rich_config: Optional[RichHelpConfiguration] = None, *, patch_rich_click: bool = False) -> None:
     """Patch Click internals to use rich-click types."""
     import warnings
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=DeprecationWarning)
+
+        import click
 
         rich_click.rich_command.OVERRIDES_GUARD = True
         click.group = rich_group
@@ -154,6 +173,18 @@ def patch(
         click.Group = _PatchedRichGroup  # type: ignore[misc]
         click.Command = _PatchedRichCommand  # type: ignore[misc]
         click.CommandCollection = _PatchedRichCommandCollection  # type: ignore[misc]
+
+        import click.core
+
+        click.core.Command = _PatchedRichCommand  # type: ignore[misc]
+        click.core.Group = _PatchedRichGroup  # type: ignore[misc]
+        click.core.CommandCollection = _PatchedRichCommandCollection  # type: ignore[misc]
+
+        click.Argument = _PatchedArgument  # type: ignore[misc]
+        click.Option = _PatchedOption  # type: ignore[misc]
+
+        click.core.Argument = _PatchedArgument  # type: ignore[misc]
+        click.core.Option = _PatchedOption  # type: ignore[misc]
 
         if hasattr(click, "MultiCommand"):
             click.MultiCommand = _PatchedRichMultiCommand  # type: ignore[assignment,misc,unused-ignore]
@@ -166,8 +197,30 @@ def patch(
             if hasattr(click, "MultiCommand"):
                 rich_click.MultiCommand = _PatchedRichMultiCommand  # type: ignore[assignment,misc,unused-ignore]
 
-    if patch_typer:
-        _patch_typer()
+    if rich_config is not None:
+        rich_config.dump_to_globals()
+
+
+def patch_typer(rich_config: Optional[RichHelpConfiguration] = None) -> None:
+    import typer.core
+    import typer.main
+
+    class _PatchedTyperCommand(_PatchedRichCommand, typer.core.TyperCommand):  # type: ignore[misc]
+        pass
+
+    class _PatchedTyperGroup(_PatchedRichGroup, typer.core.TyperGroup):  # type: ignore[misc]
+        pass
+
+    class _PatchedTyperOption(_PatchedOption, typer.core.TyperOption):
+        pass
+
+    class _PatchedTyperArgument(_PatchedArgument, typer.core.TyperArgument):
+        pass
+
+    typer.core.TyperCommand = typer.main.TyperCommand = _patch_typer_command(_PatchedTyperCommand)  # type: ignore[assignment,attr-defined,misc]
+    typer.core.TyperGroup = typer.main.TyperGroup = _patch_typer_group(_PatchedTyperGroup)  # type: ignore[assignment,attr-defined,misc]
+    typer.core.TyperOption = typer.main.TyperOption = _patch_typer_option(_PatchedTyperOption)  # type: ignore[assignment,attr-defined,misc]
+    typer.core.TyperArgument = typer.main.TyperArgument = _patch_typer_argument(_PatchedTyperArgument)  # type: ignore[assignment,attr-defined,misc]
 
     if rich_config is not None:
         rich_config.dump_to_globals()

@@ -7,9 +7,12 @@
 You don't need to use **rich-click** directly to get access to a lot of **rich-click**'s great features.
 
 If you are a fan of Typer and you'd like to use **rich-click**'s themes, you can patch Typer to use **rich-click**
-and set the global config's `THEME` to whatever you want:
+and set the global config's `THEME` (and other config options) to whatever you want.
 
-```python hl_lines="20-24"
+All you need to do is import `patch_typer()` from `rich_click.patch`.
+This does not need to be done at the top of the file, in fact you can do it right before calling `app.run()` or `typer.run(...)`:
+
+```python hl_lines="24-28"
 {% include "../code_snippets/typer_support/typer_example.py" %}
 ```
 
@@ -28,13 +31,6 @@ and set the global config's `THEME` to whatever you want:
 You can also patch Typer as an end-user of any Typer CLI via the `rich-click` CLI.
 
 ```shell
-rich-click --typer my-typer-cli --help
-```
-
-Or:
-
-```shell
-export RICH_CLICK_CLI_TYPER=1
 rich-click my-typer-cli --help
 ```
 

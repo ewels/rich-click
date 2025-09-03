@@ -74,21 +74,12 @@ _SVG and HTML generated from [`docs/code_snippets/rich_click_cli/app.py`](https:
     This feature is still experimental.
     Please report any bugs or issues you run into!
 
-As of 1.9.0, the `rich-click` CLI supports patching Typer with the `--typer` flag.
-**You may run into some subtle issues without this flag** (most notably, commands panels will be missing).
-So be sure to turn this on.
+As of 1.9.0, the `rich-click` CLI supports patching Typer.
+
+You don't need to do anything special; it works out of the box.
+It also works out of the box without needing to pre-load Typer.
 
 You can also set up your shell config file to always patch Typer.
-
-=== "bash"
-    ```shell
-    echo "export RICH_CLICK_CLI_TYPER=1" >> ~/.bashrc
-    ```
-
-=== "zsh"
-    ```shell
-    echo "export RICH_CLICK_CLI_TYPER=1" >> ~/.zshrc
-    ```
 
 The main reason to patch Typer CLIs is to get access to **rich-click**'s themes.
 Here is an example of overriding a Typer CLI with a **rich-click** theme:

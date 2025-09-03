@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import inspect
 import re
+from enum import Enum
 from gettext import gettext
 from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, List, Literal, Optional, Tuple, Union, overload
 
@@ -10,6 +11,7 @@ import click
 # Due to how rich_click.cli.patch() works, it is safer to import types
 # from click.core rather than use the click module e.g. click.Command
 import click.core
+from click import Group
 from rich import box
 from rich.align import Align
 from rich.columns import Columns
@@ -577,6 +579,8 @@ def _get_parameter_default(
             default_string = f"({param.show_default})"
         elif isinstance(default_value, (list, tuple)):
             default_string = ", ".join(str(d) for d in default_value)
+        elif isinstance(default_value, Enum):
+            default_string = str(default_value.value)
         elif inspect.isfunction(default_value):
             default_string = gettext("(dynamic)")
         elif hasattr(param, "is_bool_flag") and param.is_bool_flag and param.secondary_opts:
@@ -810,7 +814,7 @@ def _get_command_name_help(
     # most notably, when a user registers the same command twice.
     # We do not care to solve this edge case.
     command_name = None
-    if isinstance(ctx.command, click.core.Group):
+    if isinstance(ctx.command, Group):
         if command.name not in ctx.command.commands:
             for k, v in ctx.command.commands.items():
                 if command is v:

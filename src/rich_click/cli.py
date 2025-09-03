@@ -12,7 +12,7 @@ from importlib import (
     import_module,
     metadata,  # type: ignore[import,unused-ignore]
 )
-from typing import Any, Dict, List, Literal, Optional, Tuple
+from typing import Any, Dict, Generator, List, Literal, Optional, Tuple
 
 import click
 from click.core import ParameterSource
@@ -396,13 +396,6 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
     help="Optionally render help text as HTML or SVG or plain text. By default, help text is rendered normally.",
 )
 @_rich_option(
-    "--typer",
-    is_flag=True,
-    envvar="RICH_CLICK_CLI_TYPER",
-    show_envvar=True,
-    help="If set, patch Typer CLIs.",
-)
-@_rich_option(
     "--errors-in-output-format",
     is_flag=True,
     panel="Advanced Options",
@@ -456,7 +449,6 @@ def main(
     script_and_args: Tuple[str, ...],
     theme: str,
     output: Literal[None, "html", "svg"],
-    typer: bool,
     errors_in_output_format: bool,
     suppress_warnings: bool,
     patch_rich_click: bool,
@@ -521,7 +513,7 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
         cfg = RichHelpConfiguration.load_from_globals()
 
     @contextmanager
-    def patch_ctx():
+    def patch_ctx() -> Generator[None, None, None]:
         if ctx.get_parameter_source("typer") != ParameterSource.ENVIRONMENT:
             try:
                 with warnings.catch_warnings():
@@ -540,7 +532,7 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
 
     # patch click before importing the program function
     with patch_ctx():
-        _patch(rich_config=cfg, patch_rich_click=patch_rich_click, patch_typer=typer)
+        _patch(rich_config=cfg, patch_rich_click=patch_rich_click)
 
     script, *args = script_and_args
 

@@ -140,7 +140,6 @@ def test_rich_click_cli_help_with_rich_config_from_file(tmp_path: Path) -> None:
 │                                     right now!                                                   │
 │ --output       -o  [html|svg|text]  Optionally render help text as HTML or SVG or plain text. By │
 │                                     default, help text is rendered normally.                     │
-│ --typer                             If set, patch Typer CLIs. [env var: RICH_CLICK_CLI_TYPER]    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
