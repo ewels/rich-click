@@ -120,6 +120,10 @@ If the subclass is only a result of the patching operation, we ignore the aforem
 Long story short, the `rich-click` CLI is safe to subclassing when it is the user's intent to subclass a **rich-click** object. (This is so that you can use other nifty features of the CLI such as the `--output` option on your own **rich-click** CLIs)
 That said, custom, non-**rich-click** implementations are ignored.
 
+Additional hacks are implemented to provide first-class support for Typer.
+When a Click object subclass is defined, we detect whether it is a Typer subclass during the call to the metaclass `__init__`.
+When Typer is detected, we do additional overrides to resolve differences between Typer's and **rich-click**'s APIs.
+
 ### Using `patch()` as an end user
 
 The functionality that `rich-click` uses to patch Click internals is available for use by **rich-click** end users,
