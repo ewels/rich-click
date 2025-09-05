@@ -218,6 +218,10 @@ Adding a feature like this is a little outside the intended scope of **rich-clic
 
 That's right! We now support a `help` kwarg for arguments.
 
+### Aliases: `@Group().command(..., aliases=[...])`
+
+**rich-click** commands can now be given **aliases**, similar to other Click extensions ([click-aliases](https://github.com/click-contrib/click-aliases/tree/master), [click-extra](https://kdeldycke.github.io/click-extra/), [cloup](https://cloup.readthedocs.io/en/stable/)).
+
 ### `rich-click` CLI supports `path/to/file.py`
 
 Now, all the following ways of invoking the `rich-click` CLI are supported:
@@ -227,6 +231,20 @@ Now, all the following ways of invoking the `rich-click` CLI are supported:
 - `rich-click hello --help`
 
 In prior versions, only the first way worked.
+
+### Smarter newline handling in command help text
+
+We are now a little more careful and practical with how we handle newlines in help text.
+You can see a demo of rich-click 1.9's newline handling below:
+
+??? info "Code"
+    ```python
+    {% include "../code_snippets/text_markup_and_formatting/newline_control.py" %}
+    ```
+
+??? example "Output"
+
+    ![](../images/code_snippets/text_markup_and_formatting/newline_control.svg){.screenshot}
 
 ### Stderr help: `context_settings={"help_to_stderr": True}`
 
@@ -248,6 +266,26 @@ In **rich-click** 1.9, we finally pulled the plug on Python 3.7, Click 7, and Ri
 
 We are being a little more conservative than we perhaps need to: Click 8 came out in 2021, Rich 12 came out in 2022, and Python 3.8 came out in 2019 and hit end-of-life in 2024.
 That said, we don't believe there is a major cost to supporting these other than some slightly ugly backend code here and there, so we'll continue to be conservative with dropping support.
+
+Additionally, there are a handful of additional pending deprecations introduced to config options:
+
+- `show_metavars_column`
+- `append_metavars_help`
+- `option_envvar_first`
+- `use_markdown_emoji`
+
+Of these config options being deprecated, the most popular is the combination of `append_metavars_help=True` and `show_metavars_column=False`.
+**We deprecated support for these because in 1.9, this is handled via declaring order of elements explicitly with the config options `options_table_column_types` and `options_table_help_sections`.
+An example of this approach can be seen below:**
+
+??? info "Code"
+    ```python hl_lines="22-23"
+    {% include "../code_snippets/panels/panels_help_section_types.py" %}
+    ```
+
+??? example "Output"
+
+    ![](../images/code_snippets/panels/panels_help_section_types.svg){.screenshot}
 
 ## Plans for the future
 
