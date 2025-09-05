@@ -52,11 +52,22 @@ ColumnType = Union[OptionColumnType, CommandColumnType, str]
 class FromTheme(object):
     """Sentinel value for unset config options."""
 
+    def __init__(self, default: str) -> None:
+        """Initialize a default."""
+        self.default = default
+
     def __repr__(self) -> str:
         return "FromTheme"
 
+    def get_default(self, key: str) -> Any:
+        """Get the default value from the default theme."""
+        from rich_click.rich_theme import THEMES
 
-FROM_THEME: Any = FromTheme()
+        theme = THEMES[self.default]
+        return theme.styles[key]
+
+
+FROM_THEME: Any = FromTheme(default="default-box")
 
 
 def force_terminal_default() -> Optional[bool]:
@@ -429,17 +440,21 @@ class RichHelpConfiguration:
 
             theme = random.choice(list(THEMES.keys()))
             theme_settings = THEMES[theme]
-        elif force_default:
-            theme_settings = THEMES["default-box"]
 
         if theme_settings is not None:
-            for k, v in theme_settings.items():
+            for k, v in theme_settings.styles.items():
                 current = getattr(self, k)
-                if current is FROM_THEME:
+                if isinstance(current, FromTheme):
                     setattr(self, k, v)
 
-            # Handle deprecated fields here
+        if force_default:
+            for k in self.__dataclass_fields__:
+                v = getattr(self, k)
+                if isinstance(v, FromTheme):
+                    setattr(self, k, v.get_default(k))
 
+        if theme_settings is not None or force_default:
+            # Handle deprecated fields here
             # must create new copy of these lists; don't modify in-place
             if self.show_metavars_column is False and "metavar" in self.options_table_column_types:
                 self.options_table_column_types = [i for i in self.options_table_column_types if i != "metavar"]

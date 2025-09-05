@@ -182,7 +182,7 @@ def _context_settings_memo(f: Callable[..., Any], extra: Dict[str, Any]) -> None
 
 def _rich_panel_memo(f: Callable[..., Any], panel: RichPanel[Any, Any]) -> None:
     if isinstance(f, RichCommand):
-        f.panels.append(panel)
+        f.add_panel(panel)
     else:
         if not hasattr(f, "__rich_panels__"):
             f.__rich_panels__ = []  # type: ignore

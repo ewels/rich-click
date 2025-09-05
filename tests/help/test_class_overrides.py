@@ -32,6 +32,10 @@ def test_class_overrides_command_panel(cli_runner: CliRunner, cli: rich_click.Ri
 │ click-options  Test that options+arguments are assigned to the panel even if they're not         │
 │                RichParameters.                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Rich Click Panel 2 ─────────────────────────────────────────────────────────────────────────────╮
+│ cmd1   Test that command is assigned to Rich Click Panel 2 via the decorator argument.           │
+│ grp1   Test that group is assigned to Rich Click Panel 2 via the decorator argument.             │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
     assert result.stderr == snapshot("")

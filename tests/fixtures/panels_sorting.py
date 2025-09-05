@@ -21,7 +21,7 @@ import rich_click as click
 @click.command_panel(
     "Custom Command Panel 3",
     # Order should be preserved
-    commands=["cmd5", "cmd6", "cmd7", "cmd8", "cmd9", "cmd10"],
+    commands=["cmd5", "cmd6", "cmd7", "cmd8", "cmd9", "cmd10", "cmd11", "cmd12", "cmd13"],
 )
 def cli() -> None:
     """CLI help text"""
@@ -142,8 +142,37 @@ def cmd10(*args: Any, **kwargs: Any) -> None:
     """
 
 
+@cli.group()
+@click.command_panel("Some Panel", commands=["dummy"])
+def cmd11(*args: Any, **kwargs: Any) -> None:
+    """
+    Test add_command(..., panel=...)
+    """
+
+
+@cli.group()
+@click.command_panel("Some Panel", commands=["dummy2"])
+def cmd12(*args: Any, **kwargs: Any) -> None:
+    """
+    Test all three methods of assigning a panel don't cause duplication.
+    """
+
+
+@cli.group()
+@click.command_panel("Prioritize me", commands=["dummy2"])
+def cmd13(*args: Any, **kwargs: Any) -> None:
+    """
+    Test that command_panel.commands takes priority.
+    """
+
+
 @click.command()
 def dummy() -> None:
+    pass
+
+
+@click.command(panel="Some Panel")
+def dummy2() -> None:
     pass
 
 
@@ -153,6 +182,9 @@ cmd7.add_command(dummy)
 cmd8.add_command(dummy)
 cmd9.add_command(dummy, name="samename")
 cmd10.add_command(dummy)
+cmd11.add_command(dummy2)
+cmd12.add_command(dummy2, panel="Some Panel")
+cmd13.add_command(dummy2, panel="Don't prioritize me")
 
 
 if __name__ == "__main__":

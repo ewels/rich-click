@@ -316,6 +316,7 @@ class RichCommandPanel(RichPanel[click.Command, CommandColumnType]):
     def list_all_objects(cls, ctx: click.Context) -> List[Tuple[str, click.Command]]:
         if not isinstance(ctx.command, Group):
             return []
+
         return list(sorted(list(ctx.command.commands.items())))
 
     def get_objects(self, command: click.Command, ctx: click.Context) -> Generator[click.Command, None, None]:
@@ -627,6 +628,8 @@ def construct_panels(
     if isinstance(command, Group):
         objs.extend([("commands", name, o) for name, o in formatter.command_panel_class.list_all_objects(ctx)])
 
+    from rich_click.rich_command import RichGroup
+
     # Here we are interested in:
     # 1. assigning objs based on panel=...
     # 2. getting unassigned objs
@@ -647,7 +650,7 @@ def construct_panels(
                 assigned_to.add((typ, ap))
         assigned = bool(assigned_to)
         inferred = False
-        panel_list = None
+        panel_list: List[str] = []
         if hasattr(obj, "panel"):
             if isinstance(obj.panel, str):
                 panel_list = [obj.panel]
@@ -656,7 +659,11 @@ def construct_panels(
                     continue
             else:
                 panel_list = obj.panel
-        if panel_list is None:
+        elif typ == "commands" and isinstance(command, RichGroup):
+            _p = command._panel_command_mapping.get(name)
+            if _p:
+                panel_list.extend(_p)
+        if not panel_list:
             inferred = True
             if typ == "options":
                 if not formatter.config.group_arguments_options and isinstance(obj, click.Argument):

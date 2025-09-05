@@ -154,7 +154,7 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
         from rich.table import Table
         from rich.text import Text
 
-        from rich_click.rich_theme import THEMES
+        from rich_click.rich_theme import COLORS, FORMATS, THEMES
 
         formatter = ctx.make_formatter()
 
@@ -220,83 +220,13 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
         )
         colors.columns[0].max_width = 1
         colors.columns[1].style = "bold"
-        colors.add_row(
-            "✓" if c == "default" or c is None else "",
-            "default",
-            "[cyan]▓▓[/] [yellow]▓▓[/] [green]▓▓[/]",
-            "[b](Default)[/b] Original rich-click colors",
-        )
-        colors.add_row(
-            "✓" if c == "solarized" else "",
-            "solarized",
-            "[bright_green]▓▓[/] [bright_red]▓▓[/] [bright_cyan]▓▓[/]",
-            "Bright, colorful, vibrant accents",
-        )
-        colors.add_row(
-            "✓" if c == "nord" else "",
-            "nord",
-            "[blue]▓▓[/] [bright_blue]▓▓[/] [cyan]▓▓[/]",
-            "Many shades of cool colors",
-        )
-        colors.add_row(
-            "✓" if c == "star" else "",
-            "star",
-            "[yellow]▓▓[/] [blue]▓▓[/] [default]▓▓[/]",
-            "Litestar theme; royal feel",
-        )
-        colors.add_row(
-            "✓" if c == "quartz" else "",
-            "quartz",
-            "[magenta]▓▓[/] [dim magenta]▓▓[/] [blue]▓▓[/]",
-            "Dark and radiant",
-        )
-        colors.add_row(
-            "✓" if c == "quartz2" else "",
-            "quartz2",
-            "[magenta]▓▓[/] [blue]▓▓[/] [yellow]▓▓[/]",
-            "Remix of 'quartz' with accents",
-        )
-        colors.add_row(
-            "✓" if c == "cargo" else "",
-            "cargo",
-            "[green]▓▓[/] [cyan]▓▓[/] [default]▓▓[/]",
-            "Cargo CLI theme; legible and bold",
-        )
-        colors.add_row(
-            "✓" if c == "forest" else "",
-            "forest",
-            "[green]▓▓[/] [yellow]▓▓[/] [cyan]▓▓[/]",
-            "Earthy tones with analogous colors",
-        )
-        colors.add_row(
-            "✓" if c == "dracula" else "",
-            "dracula",
-            "[magenta]▓▓[/] [red]▓▓[/] [yellow]▓▓[/]",
-            "Vibrant high-contract dark theme",
-        )
-        colors.add_row(
-            "✓" if c == "dracula2" else "",
-            "dracula2",
-            "[magenta on black]▓▓[/] [red on black]▓▓[/] [black]▓▓[/]",
-            "Dracula theme with forced black background",
-        )
-        for _c in ["red", "green", "yellow", "blue", "magenta", "cyan"]:
+        for r in COLORS.values():
             colors.add_row(
-                "✓" if c == f"{_c}1" else "",
-                f"{_c}1",
-                f"[default]▓▓[/] [{_c}]▓▓[/] [dim {_c}]▓▓[/]",
-                f"Simple theme with {_c} accents on section headers",
+                "✓" if c == r.name or r is None else "",
+                r.name,
+                " ".join([f"[{_}]▓▓[/]" for _ in r.primary_colors[:3]]),
+                r.description,
             )
-            colors.add_row(
-                "✓" if c == f"{_c}2" else "",
-                f"{_c}2",
-                f"[{_c}]▓▓[/] [default]▓▓[/] [dim]▓▓[/]",
-                f"Simple theme with {_c} accents on object names",
-            )
-        colors.add_row(
-            "✓" if c == "mono" else "", "mono", "[default]▓▓[/] [dim]▓▓[/]", "Monochromatic theme with no colors"
-        )
-        colors.add_row("✓" if c == "plain" else "", "plain", "[default]▓▓[/]", "No style at all")
 
         formats = Table(
             "",
@@ -309,13 +239,8 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
             expand=True,
         )
         formats.columns[1].style = "bold"
-        formats.add_row(
-            "✓" if f == "box" or f is None else "", "box", "[b](Default)[/b] Original rich-click format with boxes"
-        )
-        formats.add_row("✓" if f == "slim" else "", "slim", "Simple, classic, no-fuss CLI format")
-        formats.add_row("✓" if f == "modern" else "", "modern", "Beautiful modern look")
-        formats.add_row("✓" if f == "robo" else "", "robo", "Spacious with sharp corners")
-        formats.add_row("✓" if f == "nu" else "", "nu", "Great balance of compactness, legibility, and style")
+        for r in FORMATS.values():
+            formats.add_row("✓" if f == r.name or r is None else "", r.name, r.description)
 
         how_to_use = Padding(
             Text("\n\n", overflow="fold").join(
@@ -417,7 +342,8 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
     is_flag=True,
     default=True,
     panel="Advanced Options",
-    help="If set, patch [code]rich_click.Command[/code], not just [code]click.Command[/code].",
+    help="If set, patch [reverse][option][b]rich_click.Command[/][/][/],"
+    " not just [reverse][option][b]click.Command[/][/][/].",
 )
 @_rich_option(
     "--themes",

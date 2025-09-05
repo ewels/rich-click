@@ -64,14 +64,16 @@ class RichCommand(Command):
     def __init__(
         self,
         *args: Any,
-        panels: Optional[List["RichPanel[Any, Any]"]] = None,
         aliases: Optional[Iterable[str]] = None,
+        panels: Optional[List["RichPanel[Any, Any]"]] = None,
+        panel: Optional[Union[str, List[str]]] = None,
         **kwargs: Any,
     ) -> None:
         """Create Rich Command instance."""
         super().__init__(*args, **kwargs)
-        self.panels = panels or []
-        self.aliases = aliases
+        self.panel = panel
+        self.panels: List["RichPanel[Any, Any]"] = panels or []
+        self.aliases: Iterable[str] = aliases or []
         if not hasattr(self, "_help_option"):
             self._help_option = None
 
@@ -335,6 +337,10 @@ class RichCommand(Command):
 
         return get_command_rich_table_row(self, ctx, formatter, panel)
 
+    def add_panel(self, panel: "RichPanel[Any, Any]") -> None:
+        """Add a RichPanel to the RichCommand."""
+        self.panels.append(panel)
+
 
 class RichGroup(RichCommand, Group):
     """
@@ -352,12 +358,21 @@ class RichGroup(RichCommand, Group):
         super().__init__(*args, **kwargs)
 
         self._alias_mapping: Dict[str, str] = {}
+        # This allows non-RichCommands to be assigned to panels
+        # + assigns without requiring mutation of panels.
+        self._panel_command_mapping: Dict[str, List[str]] = {}
+
         for name in self.commands:
             cmd = self.commands[name]
+
             aliases: Optional[Iterable[str]] = getattr(cmd, "aliases", None)
             if aliases:
                 for alias in aliases:
                     self._alias_mapping[alias] = name
+
+            panel: Optional[str] = getattr(cmd, "panel", None)
+            if cmd.name and panel:
+                self.add_command_to_panel(cmd, panel)
 
     def format_commands(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         # Not used
@@ -410,12 +425,19 @@ class RichGroup(RichCommand, Group):
             (func,) = args
             args = ()
 
-        if self.command_class and kwargs.get("cls") is None:
-            kwargs["cls"] = self.command_class
+        cls: Optional[Type[Command]] = kwargs.get("cls")
+        if self.command_class and cls is None:
+            kwargs["cls"] = cls = self.command_class
 
         def decorator(f: Callable[..., Any]) -> RichCommand:
+            if cls and not issubclass(cls, RichCommand):
+                panel = kwargs.pop("panel", None)
+                aliases = kwargs.pop("aliases", None)
+            else:
+                panel = kwargs.get("panel")
+                aliases = kwargs.get("aliases")
             cmd: RichCommand = command(*args, **kwargs)(f)
-            self.add_command(cmd)
+            self.add_command(cmd, aliases=aliases, panel=panel)
             return cmd
 
         if func is not None:
@@ -454,15 +476,22 @@ class RichGroup(RichCommand, Group):
             (func,) = args
             args = ()
 
-        if self.group_class is not None and kwargs.get("cls") is None:
+        cls: Optional[Union[Type[Group], Type[type]]] = kwargs.get("cls")
+        if self.group_class is not None and cls is None:
             if self.group_class is type:
-                kwargs["cls"] = type(self)
+                kwargs["cls"] = cls = type(self)
             else:
-                kwargs["cls"] = self.group_class
+                kwargs["cls"] = cls = self.group_class
 
         def decorator(f: Callable[..., Any]) -> RichGroup:
+            if cls and not issubclass(cls, RichCommand):
+                panel = kwargs.pop("panel", None)
+                aliases = kwargs.pop("aliases", None)
+            else:
+                panel = kwargs.get("panel")
+                aliases = kwargs.get("aliases")
             cmd: RichGroup = group(*args, **kwargs)(f)
-            self.add_command(cmd)
+            self.add_command(cmd, aliases=aliases, panel=panel)
             return cmd
 
         if func is not None:
@@ -474,7 +503,13 @@ class RichGroup(RichCommand, Group):
         _cmd_name = self._alias_mapping.get(cmd_name, cmd_name)
         return super().get_command(ctx, _cmd_name)
 
-    def add_command(self, cmd: click.Command, name: str | None = None, aliases: Optional[Iterable[str]] = None) -> None:
+    def add_command(
+        self,
+        cmd: click.Command,
+        name: Optional[str] = None,
+        aliases: Optional[Iterable[str]] = None,
+        panel: Optional[Union[str, List[str]]] = None,
+    ) -> None:
         """
         Register another :class:`Command` with this group. If the name
         is not provided, the name of the command is used.
@@ -489,6 +524,22 @@ class RichGroup(RichCommand, Group):
             for alias in additional_aliases:
                 self._alias_mapping[alias] = _name
         self._alias_mapping.pop(_name, None)
+        panel = panel or getattr(cmd, "panel", None)
+        if panel:
+            self.add_command_to_panel(cmd, panel)
+
+    def add_command_to_panel(
+        self,
+        command: click.Command,
+        panel_name: Union[str, Iterable[str]],
+    ) -> None:
+        if not command.name:
+            return
+        self._panel_command_mapping.setdefault(command.name, [])
+        if isinstance(panel_name, str):
+            self._panel_command_mapping[command.name].append(panel_name)
+        else:
+            self._panel_command_mapping[command.name].extend(panel_name)
 
 
 RichMultiCommand = RichGroup
