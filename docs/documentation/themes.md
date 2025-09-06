@@ -385,31 +385,32 @@ All color palettes use ANSI colors, meaning they will render differently on each
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_dracula_box.svg){.screenshot}
 
-=== "`dracula2`"
-    Dracula theme with forced black background.
-
-    ```shell
-    export RICH_CLICK_THEME=dracula2-box
-    python docs/code_snippets/themes/cli.py --help
-    ```
-
-    <!-- RICH-CODEX
-    working_dir: docs/code_snippets/themes
-    extra_env:
-        TERMINAL_WIDTH: 120
-        RICH_CLICK_THEME: '{"theme": "dracula2-box", "color_system": "truecolor"}'
-    -->
-    ![`python cli.py --help`](../images/code_snippets/themes/themes_dracula2_box.svg){.screenshot}
-
 !!! warning
-    The `dracula`, `dracula2`, `nord`, and `solarized` themes use hex values,
+    The `dracula`, `nord`, and `solarized` themes use hex values,
     and **rich-click** currently does not detect background colors for users' terminals.
 
     So although these themes are beautiful and work well as an end-user with `export RICH_CLICK_THEME=`, this also makes these themes risky to use as a developer.
 
     All of the other themes use ANSI colors exclusively, and therefore users' environments are more likely to match these themes well.
 
-    In a later version of **rich-click**, we intend on adding background color detection, which will make these themes safer to use as a developer.
+    The `dracula`, `nord`, and `solarized` all have variants that force dark-backgrounds: `dracula_darkbg`, `nord_darkbg`, and `solarized_darkbg`.
+    We recommend applying this with something like [`term-background`](https://pypi.org/project/term-background/):
+
+    ```python
+    import rich_click as click
+    from term_background import is_dark_background
+
+    if is_dark_background():
+        click.rich_click.THEME = "nord"
+    else:
+        click.rich_click.THEME = "nord_darkbg"
+    ```
+
+    Additionally, the `solarized` theme in particular is quite legible on both dark and light backgrounds,
+    so it is a relatively safe theme to use as a developer.
+
+    In a later version of **rich-click**, we intend on adding background color detection and styling conditional on background color,
+    which will make these themes safe to use as a developer.
 
 #### Simple palettes
 

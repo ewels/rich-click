@@ -21,6 +21,7 @@ class RichClickTheme:
         name: str,
         *,
         description: Optional[str] = None,
+        hidden: bool = False,
         styles: Optional[Dict[str, Any]] = None,
         primary_colors: Optional[List["StyleType"]] = None,
         post_combine_callback: Optional[Callable[[Dict[str, Any]], Dict[str, Any]]] = None,
@@ -41,6 +42,7 @@ class RichClickTheme:
         """
         self.name = name
         self.description = description
+        self.hidden = hidden
         self.styles = styles or {}
         self.primary_colors = primary_colors or []
         self.post_combine_callback = post_combine_callback
@@ -120,14 +122,6 @@ COLORS: Dict[str, RichClickTheme] = {
         name="solarized",
         description="Bright, colorful, vibrant accents",
         primary_colors=["#2aa198", "#268bd2", "#d33682"],
-        # $yellow:    #b58900;
-        # $orange:    #cb4b16;
-        # $red:       #dc322f;
-        # $magenta:   #d33682;
-        # $violet:    #6c71c4;
-        # $blue:      #268bd2;
-        # $cyan:      #2aa198;
-        # $green:     #859900;
         styles={
             "style_option": "#2aa198",
             "style_option_negative": None,
@@ -170,10 +164,57 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_epilog": "none",
         },
     ),
+    "solarized_darkbg": RichClickTheme(
+        name="solarized_darkbg",
+        hidden=True,
+        description="Solarized theme with forced background color",
+        primary_colors=["#2aa198", "#268bd2", "#d33682"],
+        styles={
+            "style_option": "#2aa198",
+            "style_option_negative": None,
+            "style_argument": "#d33682",
+            "style_command": "#2aa198",
+            "style_command_aliases": "#859900",
+            "style_switch": "#859900",
+            "style_switch_negative": None,
+            "style_metavar": "#b58900",
+            "style_metavar_append": "#b58900",
+            "style_metavar_separator": "",
+            "style_range_append": None,
+            "style_usage": "#b58900",
+            "style_usage_command": "",
+            "style_usage_separator": "",
+            "style_options_panel_help_style": "dim",
+            "style_commands_panel_help_style": "dim",
+            "style_deprecated": "#6c71c4",
+            "style_options_table_border_style": "dim #268bd2",
+            "style_commands_table_border_style": "dim #268bd2",
+            "style_options_panel_border": "dim #268bd2",
+            "style_commands_panel_border": "dim #268bd2",
+            "style_options_panel_title_style": "#268bd2 not dim",
+            "style_commands_panel_title_style": "#268bd2 not dim",
+            "style_required_long": "#dc322f",
+            "style_required_short": "#dc322f",
+            "style_option_help": "",
+            "style_command_help": "",
+            "style_option_default": "#d33682",
+            "style_option_envvar": "#d33682",
+            "style_helptext_first_line": "",
+            "style_helptext": "dim",
+            "style_header_text": "",
+            "style_epilog_text": "",
+            "style_footer_text": "",
+            "style_options_panel_style": "#839496 on #002b36",
+            "style_commands_panel_style": "#839496 on #002b36",
+            "style_padding_usage": "#839496 on #002b36",
+            "style_padding_helptext": "#839496 on #002b36",
+            "style_padding_epilog": "#839496 on #002b36",
+        },
+    ),
     "nord": RichClickTheme(
         name="nord",
         description="Many shades of cool colors",
-        primary_colors=["blue", "bright_blue", "cyan"],
+        primary_colors=["#5e81ac", "#81a1c1", "#b48ead"],
         styles={
             "style_option": "#5e81ac",
             "style_option_negative": None,
@@ -214,6 +255,53 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_usage": "none",
             "style_padding_helptext": "none",
             "style_padding_epilog": "none",
+        },
+    ),
+    "nord_darkbg": RichClickTheme(
+        name="nord_darkbg",
+        hidden=True,
+        description="Nord theme with forced background color",
+        primary_colors=["#5e81ac", "#81a1c1", "#b48ead"],
+        styles={
+            "style_option": "#5e81ac",
+            "style_option_negative": None,
+            "style_argument": "#81a1c1",
+            "style_command": "#8fbcbb",
+            "style_command_aliases": "#b48ead",
+            "style_usage_command": "#8fbcbb",
+            "style_usage_separator": "",
+            "style_switch": "#88c0d0",  #
+            "style_switch_negative": None,
+            "style_usage": "",
+            "style_metavar_append": "#b48ead",
+            "style_metavar": "#b48ead",
+            "style_metavar_separator": "",
+            "style_range_append": None,
+            "style_options_panel_help_style": "default",
+            "style_commands_panel_help_style": "default",
+            "style_deprecated": "#d08770",
+            "style_options_table_border_style": "#5e81ac",  #
+            "style_commands_table_border_style": "#8fbcbb",
+            "style_options_panel_border": "#5e81ac",  # 5e81ac
+            "style_commands_panel_border": "#8fbcbb",
+            "style_options_panel_title_style": "bold #5e81ac",
+            "style_commands_panel_title_style": "bold #8fbcbb",
+            "style_required_long": "#bf616a",
+            "style_required_short": "#bf616a",
+            "style_option_help": "default",
+            "style_command_help": "default",
+            "style_option_default": "#a3be8c",
+            "style_option_envvar": "#ebcb8b",
+            "style_helptext_first_line": "#8fbcbb",
+            "style_helptext": "default",
+            "style_header_text": "default",
+            "style_epilog_text": "default",
+            "style_footer_text": "default",
+            "style_options_panel_style": "#eceff4 on #2e3440",
+            "style_commands_panel_style": "#eceff4 on #2e3440",
+            "style_padding_usage": "#eceff4 on #2e3440",
+            "style_padding_helptext": "#eceff4 on #2e3440",
+            "style_padding_epilog": "#eceff4 on #2e3440",
         },
     ),
     "dracula": RichClickTheme(
@@ -262,9 +350,10 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_epilog": "",
         },
     ),
-    "dracula2": RichClickTheme(
-        name="dracula2",
-        description="Dracula theme with forced black background",
+    "dracula_darkbg": RichClickTheme(
+        name="dracula_darkbg",
+        hidden=True,
+        description="Dracula theme with forced dark background color",
         primary_colors=["magenta", "red", "yellow"],
         styles={
             "style_option": "#FF79C6",  # topink

@@ -404,7 +404,6 @@ class RichHelpConfiguration:
 
         if rc._THEME_FROM_CLI is not None:
             theme = rc._THEME_FROM_CLI
-
         if self.enable_theme_env_var and "RICH_CLICK_THEME" in os.environ:
             _theme = os.environ["RICH_CLICK_THEME"]
             _theme_cfg = _theme.strip()

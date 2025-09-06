@@ -220,6 +220,8 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
         colors.columns[0].max_width = 1
         colors.columns[1].style = "bold"
         for r in COLORS.values():
+            if r.hidden:
+                continue
             selected_row = c == r.name or (c is None and r.name == "default")
             colors.add_row(
                 "*" if selected_row else "",
@@ -409,8 +411,14 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
         if rich_config:
             if theme:
                 rich_config.setdefault("theme", theme)
+                import rich_click.rich_click as rc
+
+                rc._THEME_FROM_CLI = theme
             cfg = RichHelpConfiguration.load_from_globals(**rich_config)
         elif theme:
+            import rich_click.rich_click as rc
+
+            rc._THEME_FROM_CLI = theme
             cfg = RichHelpConfiguration.load_from_globals(theme=theme)
         else:
             cfg = RichHelpConfiguration.load_from_globals()
@@ -428,19 +436,6 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
         if not show_help and not script_and_args:
             ctx.exit(2)
         ctx.exit(0)
-
-    if theme:
-        import rich_click.rich_click as rc
-
-        rc._THEME_FROM_CLI = theme
-    if rich_config:
-        if theme:
-            rich_config.setdefault("theme", theme)
-        cfg = RichHelpConfiguration.load_from_globals(**rich_config)
-    elif theme:
-        cfg = RichHelpConfiguration.load_from_globals(theme=theme)
-    else:
-        cfg = RichHelpConfiguration.load_from_globals()
 
     @contextmanager
     def patch_ctx() -> Generator[None, None, None]:
