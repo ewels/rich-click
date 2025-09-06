@@ -112,7 +112,6 @@ def test_rich_click_cli_help_with_rich_config_from_file(tmp_path: Path) -> None:
  >>> rich-click my_package cmd --foo 3                                                              \n\
                                                                                                     \n\
 ╭─ Advanced Options ───────────────────────────────────────────────────────────────────────────────╮
-│ Options that most users won't need.                                                              │
 │ --errors-in-output-format                       If set, forces the CLI to render CLI error       │
 │                                                 messages in the format specified by the --output │
 │                                                 option. By default, error messages render        │
@@ -125,7 +124,6 @@ def test_rich_click_cli_help_with_rich_config_from_file(tmp_path: Path) -> None:
 │                                                 click.Command.                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Extra ──────────────────────────────────────────────────────────────────────────────────────────╮
-│ Additional utilities.                                                                            │
 │ --themes       List all available themes and exit.                                               │
 │ --version      Show the version and exit.                                                        │
 │ --help     -h  Show this message and exit.                                                       │

@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Type, Union
 
 from click import Argument, Command, Group, Option
 
-import rich_click
 from rich_click.decorators import command as _rich_command
 from rich_click.decorators import group as _rich_group
 from rich_click.rich_command import RichCommand, RichCommandCollection, RichGroup, RichMultiCommand
@@ -189,6 +188,8 @@ def patch(
 ) -> None:
     """Patch Click internals to use rich-click types."""
     import warnings
+
+    import rich_click._click_types_cache  # noqa: F401
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=DeprecationWarning)

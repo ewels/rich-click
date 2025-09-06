@@ -370,8 +370,8 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
     # callback=help_callback
 )
 @option_panel("Options")
-@option_panel("Advanced Options", help="Options that most users won't need.")
-@option_panel("Extra", help="Additional utilities.")
+@option_panel("Advanced Options")
+@option_panel("Extra")
 @pass_context
 def main(
     ctx: RichContext,
