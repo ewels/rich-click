@@ -12,6 +12,7 @@ import click
 import pytest
 from click.testing import CliRunner, Result
 from pytest import MonkeyPatch
+from typer.testing import CliRunner as TyperCliRunner
 
 import rich_click.rich_click as rc
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_82
@@ -83,6 +84,14 @@ def default_config(monkeypatch) -> None:  # type: ignore[no-untyped-def]
     rc.FORCE_TERMINAL = True
 
 
+@pytest.fixture(scope="session")
+def patch_typer() -> None:
+    # Typer is patched throughout the entire duration of the testing.
+    from rich_click.patch import patch_typer
+
+    patch_typer()
+
+
 def load_command_from_module(namespace: str, command_attr: str = "cli") -> RichCommand:
     module = importlib.import_module(namespace)
     reload(module)
@@ -106,3 +115,11 @@ def cli_runner() -> CliRunner:
         return CliRunner(mix_stderr=False)  # type: ignore[call-arg,unused-ignore]
     else:
         return CliRunner()
+
+
+@pytest.fixture
+def typer_cli_runner() -> TyperCliRunner:
+    if CLICK_IS_BEFORE_VERSION_82:
+        return TyperCliRunner(mix_stderr=False)  # type: ignore[call-arg,unused-ignore]
+    else:
+        return TyperCliRunner()

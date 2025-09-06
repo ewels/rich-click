@@ -15,7 +15,7 @@ pytestmark = pytest.mark.skipif(
 
 @pytest.fixture
 def cli() -> rich_click.RichCommand:
-    cmd = load_command_from_module("tests.fixtures.options")
+    cmd = load_command_from_module("tests.help.fixtures.options")
     return cmd
 
 
