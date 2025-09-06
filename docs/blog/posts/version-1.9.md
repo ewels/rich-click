@@ -120,7 +120,7 @@ This feature is still experimental, so please let us know if you encounter any b
 
 ## Panels
 
-Panels are the second new feature of **rich-click**, and bring along with it an intuitive and powerful API for customization.
+Panels are a big new feature of **rich-click**, and bring along with it an intuitive and powerful API for customization.
 
 Panels replace the old "groups" feature of previous **rich-click** versions. (Don't worry, your old code will still work just fine.)
 This is something I've wanted in **rich-click** for a long time, as I've always found the old groups API powerful but a little hard to use.
