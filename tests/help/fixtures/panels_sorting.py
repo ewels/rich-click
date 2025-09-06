@@ -2,6 +2,7 @@ from typing import Any
 
 import rich_click as click
 
+
 # We assert the correct sort order via manually sorting
 # in a way that would break if we did something like
 # e.g. sort alphanumerically by name.

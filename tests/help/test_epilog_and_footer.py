@@ -8,7 +8,7 @@ from tests.conftest import load_command_from_module
 
 @pytest.fixture
 def cli() -> rich_click.RichCommand:
-    cmd = load_command_from_module("tests.fixtures.epilog_and_footer")
+    cmd = load_command_from_module("tests.help.fixtures.epilog_and_footer")
     return cmd
 
 
@@ -37,6 +37,7 @@ def test_epilog_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None
                                                                                                     \n\
                                                                                                     \n\
  And here is some footer text!                                                                      \n\
+                                                                                                    \n\
 """
     )
     assert result.stderr == snapshot("")
@@ -80,6 +81,7 @@ Debug mode is off
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     \n\
  This is footer text                                                                                \n\
+                                                                                                    \n\
 """
     )
     assert result.stderr == snapshot("")
@@ -104,6 +106,7 @@ Debug mode is off
                                                                                                     \n\
                                                                                                     \n\
  Rich text footer                                                                                   \n\
+                                                                                                    \n\
 """
     )
     assert result.stderr == snapshot("")
@@ -157,6 +160,7 @@ def test_epilog_help_turn_off_rich_markup(cli_runner: CliRunner, cli: rich_click
                                                                                                     \n\
                                                                                                     \n\
  And here is some footer text!                                                                      \n\
+                                                                                                    \n\
 """
     )
     assert result.stderr == snapshot("")

@@ -15,7 +15,7 @@ rich_version = packaging.version.parse(version("rich"))
 
 @pytest.fixture
 def cli() -> rich_click.RichCommand:
-    cmd = load_command_from_module("tests.fixtures.markdown")
+    cmd = load_command_from_module("tests.help.fixtures.markdown")
     return cmd
 
 

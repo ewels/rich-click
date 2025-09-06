@@ -220,7 +220,7 @@ class RichHelpConfiguration:
     padding_helptext_deprecated: "PaddingDimensions" = field(default=0)
     padding_helptext_first_line: "PaddingDimensions" = field(default=0)
     padding_epilog: "PaddingDimensions" = field(default=FROM_THEME)
-    padding_footer_text: "PaddingDimensions" = field(default=(1, 1, 0, 1))
+    padding_footer_text: "PaddingDimensions" = field(default=FROM_THEME)
     padding_errors_panel: "PaddingDimensions" = field(default=(0, 0, 1, 0))
     padding_errors_suggestion: "PaddingDimensions" = field(default=(0, 1, 0, 1))
     padding_errors_epilogue: "PaddingDimensions" = field(default=(0, 1, 1, 1))
@@ -306,14 +306,6 @@ class RichHelpConfiguration:
                 stacklevel=2,
             )
 
-        if self.text_markup is notset:
-            if self.use_markdown:
-                self.text_markup = "markdown"
-            elif self.use_rich_markup:
-                self.text_markup = "rich"
-            else:
-                self.text_markup = "ansi"
-
         if self.show_metavars_column is not None:
             import warnings
 
@@ -365,10 +357,6 @@ class RichHelpConfiguration:
                 PendingDeprecationWarning,
                 stacklevel=2,
             )
-            if self.text_emojis is notset:
-                self.text_emojis = self.use_markdown_emoji
-        elif self.text_emojis is notset:
-            self.text_emojis = self.text_markup in {"markdown", "rich"}
 
         self.__dataclass_fields__.pop("highlighter", None)
 
@@ -455,9 +443,23 @@ class RichHelpConfiguration:
                 if isinstance(v, FromTheme):
                     setattr(self, k, v.get_default(k))
 
-        if theme_styles is not None or force_default:
+        if force_default:
             # Handle deprecated fields here
             # must create new copy of these lists; don't modify in-place
+            if self.text_markup is notset:
+                if self.use_markdown:
+                    self.text_markup = "markdown"
+                elif self.use_rich_markup:
+                    self.text_markup = "rich"
+                else:
+                    self.text_markup = "ansi"
+
+            if self.text_emojis is notset:
+                if self.use_markdown_emoji is not None:
+                    self.text_emojis = self.use_markdown_emoji
+                elif self.text_emojis is notset:
+                    self.text_emojis = self.text_markup in {"markdown", "rich"}
+
             if self.show_metavars_column is False and "metavar" in self.options_table_column_types:
                 self.options_table_column_types = [i for i in self.options_table_column_types if i != "metavar"]
 

@@ -1,5 +1,6 @@
-import rich_click as click
 from rich.text import Text
+
+import rich_click as click
 
 
 # Note: This won't render unless rc.TEXT_MARKUP = "rich"

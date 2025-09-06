@@ -7,11 +7,6 @@ from gettext import gettext
 from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, List, Literal, Optional, Tuple, Union, overload
 
 import click
-
-# Due to how rich_click.cli.patch() works, it is safer to import types
-# from click.core rather than use the click module e.g. click.Command
-import click.core
-from click import Group
 from rich import box
 from rich.align import Align
 from rich.columns import Columns
@@ -22,6 +17,7 @@ from rich.padding import Padding
 from rich.panel import Panel
 from rich.text import Text
 
+from rich_click._click_types_cache import Argument, Command, Group, Option
 from rich_click._compat_click import (
     CLICK_IS_BEFORE_VERSION_82,
     CLICK_IS_VERSION_80,
@@ -81,7 +77,7 @@ class RichClickRichPanel(Panel):
 
 @group()
 def _get_help_text(
-    obj: Union[click.core.Command, click.core.Group], formatter: RichHelpFormatter
+    obj: Union[Command, Group], formatter: RichHelpFormatter
 ) -> Iterable[Union[Padding, "Markdown", Text]]:
     """
     Build primary help text for a click command or group.
@@ -344,16 +340,10 @@ def _get_parameter_metavar(
 ) -> Optional[Text]:
     metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
     # Do it ourselves if this is a positional argument
-    if (
-        isinstance(param, click.core.Argument)
-        and param.name is not None
-        and re.match(rf"\[?{param.name.upper()}]?", metavar_str)
-    ):
+    if isinstance(param, Argument) and param.name is not None and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
         metavar_str = param.type.name.upper()
     # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option
-    if isinstance(param, click.core.Argument) or (
-        metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag
-    ):
+    if isinstance(param, Argument) or (metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag):
         metavar_str = metavar_str.replace("[", "").replace("]", "")
 
         if show_range:
@@ -381,14 +371,14 @@ def _get_parameter_help_metavar_col(
 
     if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(param.name, str)
-        assert isinstance(param, click.core.Option)
+        assert isinstance(param, Option)
 
     # Do it ourselves if this is a positional argument
-    if isinstance(param, click.core.Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
+    if isinstance(param, Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
         metavar_str = param.type.name.upper()
 
     # Attach metavar if param is a positional argument, or if it is a non-boolean and non flag option
-    if isinstance(param, click.core.Argument) or (metavar_str != "BOOLEAN" and not getattr(param, "is_flag", None)):
+    if isinstance(param, Argument) or (metavar_str != "BOOLEAN" and not getattr(param, "is_flag", None)):
         metavar.append(metavar_str)
 
     # Range - from
@@ -447,14 +437,14 @@ def _get_parameter_help_opt(
     opt_short_secondary = []
 
     for opt in param.opts:
-        if isinstance(param, click.core.Argument):
+        if isinstance(param, Argument):
             opt_long_primary.append(opt.upper())
         elif "--" in opt:
             opt_long_primary.append(opt)
         else:
             opt_short_primary.append(opt)
     for opt in param.secondary_opts:
-        if isinstance(param, click.core.Argument):
+        if isinstance(param, Argument):
             opt_long_secondary.append(opt.upper())
         elif "--" in opt:
             opt_long_secondary.append(opt)
@@ -709,7 +699,7 @@ def get_parameter_rich_table_row(
         except IndexError:
             pass
 
-        if isinstance(param, click.core.Argument):
+        if isinstance(param, Argument):
             opt_long_strs.append(Text.from_markup(opt_str.upper(), style=formatter.config.style_option))
         elif "--" in opt:
             if secondary:
@@ -752,7 +742,7 @@ def get_parameter_rich_table_row(
 
     if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(param.name, str)
-        assert isinstance(param, click.core.Option)
+        assert isinstance(param, Option)
 
     _primary, _secondary, _long, _short, _all = _get_parameter_help_opt(param, ctx, formatter)
 
@@ -967,7 +957,7 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", pref
     )
 
 
-def get_rich_help_text(self: click.core.Command, ctx: RichContext, formatter: RichHelpFormatter) -> None:
+def get_rich_help_text(self: Command, ctx: RichContext, formatter: RichHelpFormatter) -> None:
     """Write rich help text to the formatter if it exists."""
     # Print command / group help if we have some
     if self.help:
@@ -982,7 +972,7 @@ def get_rich_help_text(self: click.core.Command, ctx: RichContext, formatter: Ri
 
 
 def get_rich_epilog(
-    self: click.core.Command,
+    self: Command,
     ctx: RichContext,
     formatter: RichHelpFormatter,
 ) -> None:

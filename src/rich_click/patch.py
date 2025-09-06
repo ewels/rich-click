@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Type, Union
 
 from click import Argument, Command, Group, Option
 
-import rich_click
 from rich_click.decorators import command as _rich_command
 from rich_click.decorators import group as _rich_group
 from rich_click.rich_command import RichCommand, RichCommandCollection, RichGroup, RichMultiCommand
@@ -22,6 +21,8 @@ if TYPE_CHECKING:
 
 __TyperGroup: Type["typer.core.TyperGroup"]
 __TyperCommand: Type["typer.core.TyperCommand"]
+__TyperArgument: Type["typer.core.TyperArgument"]
+__TyperOption: Type["typer.core.TyperOption"]
 
 
 class _PatchedTyperContext(RichContext):
@@ -78,6 +79,8 @@ def _typer_command_init(
     super(typer.core.TyperCommand, self).__init__(*args, **kwargs)
     self.rich_markup_mode = rich_markup_mode
     self.rich_help_panel = rich_help_panel
+    if not hasattr(self, "_help_option"):
+        self._help_option = None
 
 
 def _typer_group_init(
@@ -91,6 +94,10 @@ def _typer_group_init(
     super(__TyperGroup, self).__init__(*args, **kwargs)
     self.rich_markup_mode = rich_markup_mode
     self.rich_help_panel = rich_help_panel
+    self.panels = []
+    self._alias_mapping = {}
+    if not hasattr(self, "_help_option"):
+        self._help_option = None
 
 
 def _patch_typer_group(cls: Type[Group]) -> Type[Group]:
@@ -190,6 +197,8 @@ def patch(
     """Patch Click internals to use rich-click types."""
     import warnings
 
+    import rich_click._click_types_cache  # noqa: F401
+
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=DeprecationWarning)
 
@@ -250,6 +259,7 @@ def patch_typer(rich_config: Optional[RichHelpConfiguration] = None) -> None:
         typer.core.TyperGroup = typer.main.TyperGroup = _patch_typer_group(_PatchedTyperGroup)  # type: ignore[assignment,attr-defined,misc]
 
     if not issubclass(typer.core.TyperOption, _PatchedOption):
+        globals().setdefault("__TyperOption", typer.core.TyperOption)
 
         class _PatchedTyperOption(_PatchedOption, typer.core.TyperOption):
             pass
@@ -257,6 +267,7 @@ def patch_typer(rich_config: Optional[RichHelpConfiguration] = None) -> None:
         typer.core.TyperOption = typer.main.TyperOption = _patch_typer_option(_PatchedTyperOption)  # type: ignore[assignment,attr-defined,misc]
 
     if not issubclass(typer.core.TyperArgument, _PatchedArgument):
+        globals().setdefault("__TyperArgument", typer.core.TyperArgument)
 
         class _PatchedTyperArgument(_PatchedArgument, typer.core.TyperArgument):
             pass

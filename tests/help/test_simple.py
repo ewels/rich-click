@@ -10,7 +10,7 @@ from tests.conftest import load_command_from_module
 
 @pytest.fixture
 def cli() -> rich_click.RichCommand:
-    cmd = load_command_from_module("tests.fixtures.simple")
+    cmd = load_command_from_module("tests.help.fixtures.simple")
     return cmd
 
 
@@ -139,3 +139,140 @@ def test_simple_help_no_such_command(cli_runner: CliRunner, cli: rich_click.Rich
                                                                                                     \n\
 """
     )
+
+
+def test_simple_help_nu_theme(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    rc.THEME = "nu"
+    result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot(
+        """\
+ Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
+                                                                                                    \n\
+ My amazing tool does all the things.                                                               \n\
+ This is a minimal example based on documentation from the 'click' package.                         \n\
+ You can try using --help at the top level and also for specific subcommands.                       \n\
+ Here are things you can do:                                                                        \n\
+ - sync files                                                                                       \n\
+ - download files                                                                                   \n\
+ - print help text!                                                                                 \n\
+ ... and more!                                                                                      \n\
+                                                                                                    \n\
+ ═ Options ════════════════════════════════════════════════════════════════════════════════════════ \n\
+ --debug/--no-debug  -d/-n  Enable debug mode. Newlines are removed by default.                     \n\
+                            Double newlines are preserved.                                          \n\
+ --help                     Show this message and exit.                                             \n\
+                                                                                                    \n\
+ ═ Commands ═══════════════════════════════════════════════════════════════════════════════════════ \n\
+ download  Optionally use short-help for the group help text                                        \n\
+ sync      Synchronise all your files between two places. Example command that doesn't do much      \n\
+           except print to the terminal.                                                            \n\
+                                                                                                    \n\
+"""
+    )
+    assert result.stderr == snapshot("")
+
+
+def test_simple_help_slim_theme(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    rc.THEME = "slim"
+    result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot(
+        """\
+Usage: cli [OPTIONS] COMMAND [ARGS]...                                                              \n\
+                                                                                                    \n\
+My amazing tool does all the things.                                                                \n\
+This is a minimal example based on documentation from the 'click' package.                          \n\
+You can try using --help at the top level and also for specific subcommands.                        \n\
+Here are things you can do:                                                                         \n\
+- sync files                                                                                        \n\
+- download files                                                                                    \n\
+- print help text!                                                                                  \n\
+... and more!                                                                                       \n\
+                                                                                                    \n\
+Options:                                                                                            \n\
+  -d/-n  --debug/--no-debug  Enable debug mode. Newlines are removed by default.                    \n\
+                             Double newlines are preserved.                                         \n\
+         --help              Show this message and exit.                                            \n\
+                                                                                                    \n\
+Commands:                                                                                           \n\
+  download  Optionally use short-help for the group help text                                       \n\
+  sync      Synchronise all your files between two places. Example command that doesn't do much     \n\
+            except print to the terminal.                                                           \n\
+                                                                                                    \n\
+"""
+    )
+    assert result.stderr == snapshot("")
+
+
+def test_simple_help_modern_theme(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    rc.THEME = "modern"
+    result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot(
+        """\
+                                                                                                    \n\
+   Usage: cli [OPTIONS] COMMAND [ARGS]...                                                           \n\
+                                                                                                    \n\
+   My amazing tool does all the things.                                                             \n\
+   This is a minimal example based on documentation from the 'click' package.                       \n\
+   You can try using --help at the top level and also for specific subcommands.                     \n\
+   Here are things you can do:                                                                      \n\
+   - sync files                                                                                     \n\
+   - download files                                                                                 \n\
+   - print help text!                                                                               \n\
+   ... and more!                                                                                    \n\
+                                                                                                    \n\
+   Options                                                                                          \n\
+   ──────────────────────────────────────────────────────────────────────────────────────────────   \n\
+   -d / -n   --debug / --no-debug   Enable debug mode. Newlines are removed by default.             \n\
+                                    Double newlines are preserved.                                  \n\
+             --help                 Show this message and exit.                                     \n\
+                                                                                                    \n\
+                                                                                                    \n\
+   Commands                                                                                         \n\
+   ──────────────────────────────────────────────────────────────────────────────────────────────   \n\
+   download   Optionally use short-help for the group help text                                     \n\
+   sync       Synchronise all your files between two places. Example command that doesn't do much   \n\
+              except print to the terminal.                                                         \n\
+                                                                                                    \n\
+                                                                                                    \n\
+"""
+    )
+    assert result.stderr == snapshot("")
+
+
+def test_simple_help_robo_theme(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    rc.THEME = "robo"
+    result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot(
+        """\
+Usage: cli [OPTIONS] COMMAND [ARGS]...                                                              \n\
+                                                                                                    \n\
+My amazing tool does all the things.                                                                \n\
+This is a minimal example based on documentation from the 'click' package.                          \n\
+You can try using --help at the top level and also for specific subcommands.                        \n\
+Here are things you can do:                                                                         \n\
+- sync files                                                                                        \n\
+- download files                                                                                    \n\
+- print help text!                                                                                  \n\
+... and more!                                                                                       \n\
+                                                                                                    \n\
+┌─  Options  ──────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                                  │
+│  -d, --debug  -n, --no-debug  Enable debug mode. Newlines are removed by default.                │
+│                               Double newlines are preserved.                                     │
+│  --help                       Show this message and exit.                                        │
+│                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌─  Commands  ─────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                                  │
+│  download  Optionally use short-help for the group help text                                     │
+│  sync      Synchronise all your files between two places. Example command that doesn't do much   │
+│            except print to the terminal.                                                         │
+│                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────┘
+"""
+    )
+    assert result.stderr == snapshot("")

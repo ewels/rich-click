@@ -9,7 +9,7 @@ from tests.conftest import load_command_from_module
 
 @pytest.fixture
 def cli() -> rich_click.RichCommand:
-    cmd = load_command_from_module("tests.fixtures.custom_errors")
+    cmd = load_command_from_module("tests.help.fixtures.custom_errors")
     return cmd
 
 
