@@ -1058,20 +1058,8 @@
 <h1 id="themes">Themes<a class="headerlink" href="#themes" title="Permanent link">¶</a></h1>
 <p><strong>Themes</strong> are a simple way to customize the style of CLI help text as both an end-user and as a developer.
 Themes are one of <strong>rich-click</strong>'s most powerful features.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><input id="__tabbed_1_3" name="__tabbed_1" type="radio"><input id="__tabbed_1_4" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1"><code>quartz-modern</code></label><label for="__tabbed_1_2"><code>nord-nu</code></label><label for="__tabbed_1_3"><code>cargo-slim</code></label><label for="__tabbed_1_4"><code>forest-robo</code></label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><input id="__tabbed_1_3" name="__tabbed_1" type="radio"><input id="__tabbed_1_4" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1"><code>nord-nu</code></label><label for="__tabbed_1_2"><code>dracula-modern</code></label><label for="__tabbed_1_3"><code>cargo-slim</code></label><label for="__tabbed_1_4"><code>forest-robo</code></label></div>
 <div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>quartz-modern
-python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
-</code></pre></div>
-<p><!-- RICH-CODEX
-working_dir: docs/code_snippets/themes
-extra_env:
-    TERMINAL_WIDTH: 120
-    RICH_CLICK_THEME: quartz-modern
--->
-<a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/themes/themes_ex1.svg" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_ex1.svg"></a></p>
-</div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>nord-nu
 python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
@@ -1082,7 +1070,19 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: nord-nu
 -->
-<p><a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/themes/themes_ex2.svg" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_ex2.svg"></a></p>
+<p><a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/themes/themes_ex1.svg" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_ex1.svg"></a></p>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>dracula-modern
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
+</code></pre></div>
+<p><!-- RICH-CODEX
+working_dir: docs/code_snippets/themes
+extra_env:
+    TERMINAL_WIDTH: 120
+    RICH_CLICK_THEME: dracula-modern
+-->
+<a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/themes/themes_ex2.svg" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_ex2.svg"></a></p>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>cargo-slim
@@ -1493,6 +1493,14 @@ extra_env:
 <a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/themes/themes_dracula2_box.svg" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_dracula2_box.svg"></a></p>
 </div>
 </div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <code>dracula</code>, <code>dracula2</code>, <code>nord</code>, and <code>solarized</code> themes use hex values,
+and <strong>rich-click</strong> currently does not detect background colors for users' terminals.</p>
+<p>So although these themes are beautiful and work well as an end-user with <code>export RICH_CLICK_THEME=</code>, this also makes these themes risky to use as a developer.</p>
+<p>All of the other themes use ANSI colors exclusively, and therefore users' environments are more likely to match these themes well.</p>
+<p>In a later version of <strong>rich-click</strong>, we intend on adding background color detection, which will make these themes safer to use as a developer.</p>
 </div>
 <h4 id="simple-palettes">Simple palettes<a class="headerlink" href="#simple-palettes" title="Permanent link">¶</a></h4>
 <p>The following palettes all focus on just a single color.</p>

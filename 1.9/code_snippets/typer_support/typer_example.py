@@ -18,7 +18,7 @@ def main(
         log_level: Annotated[LogLevel, typer.Option(rich_help_panel="Logging")] = LogLevel.info,
         color: Annotated[bool, typer.Option(rich_help_panel="Logging")] = True,
 ) -> None:
-    pass
+    print(f"id={id} age={age} score={score} log_level={log_level} color={color}")
 
 if __name__ == "__main__":
     from rich_click.patch import patch_typer
