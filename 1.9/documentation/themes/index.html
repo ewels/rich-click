@@ -1366,7 +1366,7 @@ extra_env:
 <p>There are currently over a dozen different <strong>color palettes</strong>.</p>
 <p>All color palettes use ANSI colors, meaning they will render differently on each terminal.</p>
 <h4 id="multi-colored-palettes">Multi-colored palettes<a class="headerlink" href="#multi-colored-palettes" title="Permanent link">¶</a></h4>
-<div class="tabbed-set tabbed-alternate" data-tabs="8:10"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio"><input id="__tabbed_8_2" name="__tabbed_8" type="radio"><input id="__tabbed_8_3" name="__tabbed_8" type="radio"><input id="__tabbed_8_4" name="__tabbed_8" type="radio"><input id="__tabbed_8_5" name="__tabbed_8" type="radio"><input id="__tabbed_8_6" name="__tabbed_8" type="radio"><input id="__tabbed_8_7" name="__tabbed_8" type="radio"><input id="__tabbed_8_8" name="__tabbed_8" type="radio"><input id="__tabbed_8_9" name="__tabbed_8" type="radio"><input id="__tabbed_8_10" name="__tabbed_8" type="radio"><div class="tabbed-labels"><label for="__tabbed_8_1"><code>default</code></label><label for="__tabbed_8_2"><code>solarized</code></label><label for="__tabbed_8_3"><code>nord</code></label><label for="__tabbed_8_4"><code>star</code></label><label for="__tabbed_8_5"><code>quartz</code></label><label for="__tabbed_8_6"><code>quartz2</code></label><label for="__tabbed_8_7"><code>cargo</code></label><label for="__tabbed_8_8"><code>forest</code></label><label for="__tabbed_8_9"><code>dracula</code></label><label for="__tabbed_8_10"><code>dracula2</code></label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:9"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio"><input id="__tabbed_8_2" name="__tabbed_8" type="radio"><input id="__tabbed_8_3" name="__tabbed_8" type="radio"><input id="__tabbed_8_4" name="__tabbed_8" type="radio"><input id="__tabbed_8_5" name="__tabbed_8" type="radio"><input id="__tabbed_8_6" name="__tabbed_8" type="radio"><input id="__tabbed_8_7" name="__tabbed_8" type="radio"><input id="__tabbed_8_8" name="__tabbed_8" type="radio"><input id="__tabbed_8_9" name="__tabbed_8" type="radio"><div class="tabbed-labels"><label for="__tabbed_8_1"><code>default</code></label><label for="__tabbed_8_2"><code>solarized</code></label><label for="__tabbed_8_3"><code>nord</code></label><label for="__tabbed_8_4"><code>star</code></label><label for="__tabbed_8_5"><code>quartz</code></label><label for="__tabbed_8_6"><code>quartz2</code></label><label for="__tabbed_8_7"><code>cargo</code></label><label for="__tabbed_8_8"><code>forest</code></label><label for="__tabbed_8_9"><code>dracula</code></label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p><strong>Default</strong> Original rich-click colors.</p>
@@ -1479,28 +1479,28 @@ extra_env:
 -->
 <a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/themes/themes_dracula_box.svg" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_dracula_box.svg"></a></p>
 </div>
-<div class="tabbed-block">
-<p>Dracula theme with forced black background.</p>
-<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>dracula2-box
-python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
-</code></pre></div>
-<p><!-- RICH-CODEX
-working_dir: docs/code_snippets/themes
-extra_env:
-    TERMINAL_WIDTH: 120
-    RICH_CLICK_THEME: '{"theme": "dracula2-box", "color_system": "truecolor"}'
--->
-<a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/themes/themes_dracula2_box.svg" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_dracula2_box.svg"></a></p>
-</div>
 </div>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The <code>dracula</code>, <code>dracula2</code>, <code>nord</code>, and <code>solarized</code> themes use hex values,
+<p>The <code>dracula</code>, <code>nord</code>, and <code>solarized</code> themes use hex values,
 and <strong>rich-click</strong> currently does not detect background colors for users' terminals.</p>
 <p>So although these themes are beautiful and work well as an end-user with <code>export RICH_CLICK_THEME=</code>, this also makes these themes risky to use as a developer.</p>
 <p>All of the other themes use ANSI colors exclusively, and therefore users' environments are more likely to match these themes well.</p>
-<p>In a later version of <strong>rich-click</strong>, we intend on adding background color detection, which will make these themes safer to use as a developer.</p>
+<p>The <code>dracula</code>, <code>nord</code>, and <code>solarized</code> all have variants that force dark-backgrounds: <code>dracula_darkbg</code>, <code>nord_darkbg</code>, and <code>solarized_darkbg</code>.
+We recommend applying this with something like <a href="https://pypi.org/project/term-background/"><code>term-background</code></a>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">term_background</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_dark_background</span>
+
+<span class="k">if</span> <span class="n">is_dark_background</span><span class="p">():</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">"nord"</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">"nord_darkbg"</span>
+</code></pre></div>
+<p>Additionally, the <code>solarized</code> theme in particular is quite legible on both dark and light backgrounds,
+so it is a relatively safe theme to use as a developer.</p>
+<p>In a later version of <strong>rich-click</strong>, we intend on adding background color detection and styling conditional on background color,
+which will make these themes safe to use as a developer.</p>
 </div>
 <h4 id="simple-palettes">Simple palettes<a class="headerlink" href="#simple-palettes" title="Permanent link">¶</a></h4>
 <p>The following palettes all focus on just a single color.</p>
