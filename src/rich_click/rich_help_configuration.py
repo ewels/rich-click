@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
 
-from rich_click.rich_theme import THEMES
+from rich_click.rich_click_theme import THEMES
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
 
 
@@ -18,9 +18,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.style import StyleType
     from rich.text import Text
 
-
 T = TypeVar("T", bound="RichHelpConfiguration")
-
 
 OptionColumnType = Literal[
     "required",
@@ -61,9 +59,9 @@ class FromTheme(object):
 
     def get_default(self, key: str) -> Any:
         """Get the default value from the default theme."""
-        from rich_click.rich_theme import THEMES
+        from rich_click.rich_click_theme import get_theme
 
-        theme = THEMES[self.default]
+        theme = get_theme(self.default)
         return theme.styles[key]
 
 
@@ -424,7 +422,9 @@ class RichHelpConfiguration:
                 except Exception as e:
                     import warnings
 
-                    warnings.warn(f"RICH_CLICK_THEME= failed to parse: {e.__class__.__name__}{e.args}", UserWarning)
+                    warnings.warn(
+                        f"RICH_CLICK_THEME= failed to parse: {e.__class__.__name__}{e.args}", UserWarning, stacklevel=2
+                    )
             else:
                 theme = theme or _theme
 
@@ -466,6 +466,9 @@ class RichHelpConfiguration:
                 self.options_table_help_sections = ["envvar"] + [  # type: ignore[assignment]
                     i for i in self.options_table_help_sections if i != "envvar"
                 ]
+
+    def to_theme(self):
+        pass
 
     def dump_to_globals(self, module: Optional[ModuleType] = None) -> None:
         if module is None:
