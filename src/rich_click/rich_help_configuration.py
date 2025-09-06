@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
 
-from rich_click.rich_click_theme import get_theme
+from rich_click.rich_click_theme import get_theme, RichClickTheme
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
 
 
@@ -439,7 +439,9 @@ class RichHelpConfiguration:
 
         theme_styles: Optional[Dict[str, Any]] = None
 
-        if theme is not None:
+        if isinstance(theme, RichClickTheme):
+            theme_styles = theme.styles
+        elif theme is not None:
             theme_styles = get_theme(theme, raise_key_error=raise_key_error).styles
 
         if theme_styles is not None:
@@ -468,8 +470,15 @@ class RichHelpConfiguration:
                     i for i in self.options_table_help_sections if i != "envvar"
                 ]
 
-    def to_theme(self) -> None:
-        pass
+    def to_theme(self, **kwargs: Any) -> RichClickTheme:
+        styles = kwargs.get("styles", {})
+        for k, v in self.__dataclass_fields__.items():
+            if k == "theme":
+                continue
+            styles.setdefault(k, getattr(self, k))
+        kwargs.setdefault("name", "_from_config")
+        kwargs["styles"] = styles
+        return RichClickTheme(**kwargs)
 
     def dump_to_globals(self, module: Optional[ModuleType] = None) -> None:
         if module is None:
