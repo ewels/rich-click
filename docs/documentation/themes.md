@@ -243,8 +243,6 @@ There are currently 5 available **formats**.
 
 There are currently over a dozen different **color palettes**.
 
-All color palettes use ANSI colors, meaning they will render differently on each terminal.
-
 #### Multi-colored palettes
 
 === "`default`"
