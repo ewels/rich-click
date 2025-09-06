@@ -33,6 +33,7 @@ class RichClickTheme:
         ----
             name: Name of the theme.
             description: Description for the theme.
+            hidden: If true, hide from rich-click --themes.
             styles: Dict of styles that are applied.
             primary_colors: Description of which colors are applied. Does not do anything,
                 just serves as documentation.
@@ -54,9 +55,9 @@ class RichClickTheme:
         styles = deepcopy(self.styles)
         styles.update(other.styles)
         if self.post_combine_callback:
-            styles = self.post_combine_callback(styles)
+            styles.update(self.post_combine_callback(styles))
         if other.post_combine_callback:
-            styles = other.post_combine_callback(styles)
+            styles.update(other.post_combine_callback(styles))
         return self.__class__(
             name=f"{self.name}-{other.name}",
             styles=styles,
@@ -69,6 +70,19 @@ class RichClickTheme:
         if other == 0:  # type: ignore[comparison-overlap]
             return self
         return other.combine(self)
+
+
+def _spaced_delimiters_callback(d: Dict[str, Any]) -> Dict[str, Any]:
+    return {"delimiter_comma": ", ", "delimiter_slash": " / "}
+
+
+def _not_dim_title_callback(d: Dict[str, Any]) -> Dict[str, Any]:
+    updates = {}
+    for k in ["style_options_panel_title_style", "style_commands_panel_title_style"]:
+        v: Optional[str] = d.get(k)
+        if k in d and v is not None and "dim" not in v.split(" "):
+            updates[k] = f"{v} not dim".strip()
+    return updates
 
 
 COLORS: Dict[str, RichClickTheme] = {
@@ -732,6 +746,7 @@ COLORS: Dict[str, RichClickTheme] = {
         name="mono",
         description="Monochromatic theme with no colors",
         primary_colors=["default", "dim"],
+        post_combine_callback=_spaced_delimiters_callback,
         styles={
             "style_option": "",
             "style_option_negative": None,
@@ -778,6 +793,7 @@ COLORS: Dict[str, RichClickTheme] = {
         name="plain",
         description="No style at all",
         primary_colors=["default"],
+        post_combine_callback=_spaced_delimiters_callback,
         styles={
             "style_option": "default",
             "style_option_negative": None,
@@ -869,6 +885,7 @@ FORMATS: Dict[str, RichClickTheme] = {
     "nu": RichClickTheme(
         name="nu",
         description="Great balance of compactness, legibility, and style",
+        post_combine_callback=_not_dim_title_callback,
         styles={
             "style_options_panel_box": "HORIZONTALS_DOUBLE_TOP",
             "style_commands_panel_box": "HORIZONTALS_DOUBLE_TOP",
@@ -907,6 +924,7 @@ FORMATS: Dict[str, RichClickTheme] = {
     "slim": RichClickTheme(
         name="slim",
         description="Simple, classic, no-fuss CLI format",
+        post_combine_callback=_not_dim_title_callback,
         styles={
             "style_options_panel_box": "BLANK",
             "style_commands_panel_box": "BLANK",
@@ -946,6 +964,7 @@ FORMATS: Dict[str, RichClickTheme] = {
     "modern": RichClickTheme(
         name="modern",
         description="Beautiful modern look",
+        post_combine_callback=_not_dim_title_callback,
         styles={
             "style_options_panel_box": None,
             "style_commands_panel_box": None,
@@ -985,7 +1004,7 @@ FORMATS: Dict[str, RichClickTheme] = {
     "robo": RichClickTheme(
         name="robo",
         description="Spacious with sharp corners",
-        primary_colors=[],
+        post_combine_callback=_not_dim_title_callback,
         styles={
             "style_options_panel_box": "SQUARE",
             "style_commands_panel_box": "SQUARE",
