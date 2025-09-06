@@ -19,66 +19,66 @@
         font-weight: 700;
     }
 
-    .terminal-50666878-matrix {
+    .terminal-1520242215-matrix {
         font-family: Fira Code, monospace;
         font-size: 20px;
         line-height: 24.4px;
         font-variant-east-asian: full-width;
     }
 
-    .terminal-50666878-title {
+    .terminal-1520242215-title {
         font-size: 18px;
         font-weight: bold;
         font-family: arial;
     }
 
-    .terminal-50666878-r1 { fill: #c5c8c6 }
-.terminal-50666878-r2 { fill: #d0b344 }
-.terminal-50666878-r3 { fill: #c5c8c6;font-weight: bold }
-.terminal-50666878-r4 { fill: #68a0b3;font-weight: bold }
-.terminal-50666878-r5 { fill: #868887 }
-.terminal-50666878-r6 { fill: #98a84b;font-weight: bold }
-.terminal-50666878-r7 { fill: #d0b344;font-weight: bold }
+    .terminal-1520242215-r1 { fill: #c5c8c6 }
+.terminal-1520242215-r2 { fill: #d0b344 }
+.terminal-1520242215-r3 { fill: #c5c8c6;font-weight: bold }
+.terminal-1520242215-r4 { fill: #68a0b3;font-weight: bold }
+.terminal-1520242215-r5 { fill: #868887 }
+.terminal-1520242215-r6 { fill: #98a84b;font-weight: bold }
+.terminal-1520242215-r7 { fill: #d0b344;font-weight: bold }
     </style>
 
     <defs>
-    <clipPath id="terminal-50666878-clip-terminal">
+    <clipPath id="terminal-1520242215-clip-terminal">
       <rect x="0" y="0" width="975.0" height="316.2" />
     </clipPath>
-    <clipPath id="terminal-50666878-line-0">
+    <clipPath id="terminal-1520242215-line-0">
     <rect x="0" y="1.5" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-50666878-line-1">
+<clipPath id="terminal-1520242215-line-1">
     <rect x="0" y="25.9" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-50666878-line-2">
+<clipPath id="terminal-1520242215-line-2">
     <rect x="0" y="50.3" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-50666878-line-3">
+<clipPath id="terminal-1520242215-line-3">
     <rect x="0" y="74.7" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-50666878-line-4">
+<clipPath id="terminal-1520242215-line-4">
     <rect x="0" y="99.1" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-50666878-line-5">
+<clipPath id="terminal-1520242215-line-5">
     <rect x="0" y="123.5" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-50666878-line-6">
+<clipPath id="terminal-1520242215-line-6">
     <rect x="0" y="147.9" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-50666878-line-7">
+<clipPath id="terminal-1520242215-line-7">
     <rect x="0" y="172.3" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-50666878-line-8">
+<clipPath id="terminal-1520242215-line-8">
     <rect x="0" y="196.7" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-50666878-line-9">
+<clipPath id="terminal-1520242215-line-9">
     <rect x="0" y="221.1" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-50666878-line-10">
+<clipPath id="terminal-1520242215-line-10">
     <rect x="0" y="245.5" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-50666878-line-11">
+<clipPath id="terminal-1520242215-line-11">
     <rect x="0" y="269.9" width="976" height="24.65"/>
             </clipPath>
     </defs>
@@ -90,22 +90,22 @@
             <circle cx="44" cy="0" r="7" fill="#28c840"/>
             </g>
         
-    <g transform="translate(9, 41)" clip-path="url(#terminal-50666878-clip-terminal)">
+    <g transform="translate(9, 41)" clip-path="url(#terminal-1520242215-clip-terminal)">
     
-    <g class="terminal-50666878-matrix">
-    <text class="terminal-50666878-r1" x="0" y="20" textLength="305" clip-path="url(#terminal-50666878-line-0)">$&#160;python&#160;emojis.py&#160;--help</text><text class="terminal-50666878-r1" x="976" y="20" textLength="12.2" clip-path="url(#terminal-50666878-line-0)">
-</text><text class="terminal-50666878-r1" x="976" y="44.4" textLength="12.2" clip-path="url(#terminal-50666878-line-1)">
-</text><text class="terminal-50666878-r2" x="12.2" y="68.8" textLength="73.2" clip-path="url(#terminal-50666878-line-2)">Usage:</text><text class="terminal-50666878-r3" x="97.6" y="68.8" textLength="109.8" clip-path="url(#terminal-50666878-line-2)">emojis.py</text><text class="terminal-50666878-r1" x="207.4" y="68.8" textLength="24.4" clip-path="url(#terminal-50666878-line-2)">&#160;[</text><text class="terminal-50666878-r4" x="231.8" y="68.8" textLength="85.4" clip-path="url(#terminal-50666878-line-2)">OPTIONS</text><text class="terminal-50666878-r1" x="317.2" y="68.8" textLength="658.8" clip-path="url(#terminal-50666878-line-2)">]&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-50666878-r1" x="976" y="68.8" textLength="12.2" clip-path="url(#terminal-50666878-line-2)">
-</text><text class="terminal-50666878-r1" x="976" y="93.2" textLength="12.2" clip-path="url(#terminal-50666878-line-3)">
-</text><text class="terminal-50666878-r1" x="0" y="117.6" textLength="963.8" clip-path="url(#terminal-50666878-line-4)">&#160;Demo&#160;of&#160;😻&#160;emojis!&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-50666878-r1" x="976" y="117.6" textLength="12.2" clip-path="url(#terminal-50666878-line-4)">
-</text><text class="terminal-50666878-r5" x="12.2" y="142" textLength="646.6" clip-path="url(#terminal-50666878-line-5)">Note&#160;that&#160;this&#160;text&#160;is&#160;not&#160;rich&#160;markup:&#160;[b]See?[/b]&#160;😂</text><text class="terminal-50666878-r1" x="976" y="142" textLength="12.2" clip-path="url(#terminal-50666878-line-5)">
-</text><text class="terminal-50666878-r5" x="12.2" y="166.4" textLength="561.2" clip-path="url(#terminal-50666878-line-6)">Emojis&#160;can&#160;be&#160;set&#160;independently&#160;of&#160;markup.&#160;☝&#160;🤓</text><text class="terminal-50666878-r1" x="976" y="166.4" textLength="12.2" clip-path="url(#terminal-50666878-line-6)">
-</text><text class="terminal-50666878-r1" x="976" y="190.8" textLength="12.2" clip-path="url(#terminal-50666878-line-7)">
-</text><text class="terminal-50666878-r5" x="0" y="215.2" textLength="24.4" clip-path="url(#terminal-50666878-line-8)">╭─</text><text class="terminal-50666878-r1" x="36.6" y="215.2" textLength="85.4" clip-path="url(#terminal-50666878-line-8)">Options</text><text class="terminal-50666878-r5" x="134.2" y="215.2" textLength="817.4" clip-path="url(#terminal-50666878-line-8)">───────────────────────────────────────────────────────────────────</text><text class="terminal-50666878-r5" x="951.6" y="215.2" textLength="24.4" clip-path="url(#terminal-50666878-line-8)">─╮</text><text class="terminal-50666878-r1" x="976" y="215.2" textLength="12.2" clip-path="url(#terminal-50666878-line-8)">
-</text><text class="terminal-50666878-r5" x="0" y="239.6" textLength="12.2" clip-path="url(#terminal-50666878-line-9)">│</text><text class="terminal-50666878-r4" x="24.4" y="239.6" textLength="73.2" clip-path="url(#terminal-50666878-line-9)">--foo&#160;</text><text class="terminal-50666878-r6" x="122" y="239.6" textLength="24.4" clip-path="url(#terminal-50666878-line-9)">-f</text><text class="terminal-50666878-r7" x="170.8" y="239.6" textLength="48.8" clip-path="url(#terminal-50666878-line-9)">TEXT</text><text class="terminal-50666878-r1" x="219.6" y="239.6" textLength="719.8" clip-path="url(#terminal-50666878-line-9)">&#160;&#160;Boo!&#160;👻&#160;Oops,&#160;I&#160;mean...&#160;foo!&#160;😅&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-50666878-r5" x="963.8" y="239.6" textLength="12.2" clip-path="url(#terminal-50666878-line-9)">│</text><text class="terminal-50666878-r1" x="976" y="239.6" textLength="12.2" clip-path="url(#terminal-50666878-line-9)">
-</text><text class="terminal-50666878-r5" x="0" y="264" textLength="12.2" clip-path="url(#terminal-50666878-line-10)">│</text><text class="terminal-50666878-r4" x="24.4" y="264" textLength="73.2" clip-path="url(#terminal-50666878-line-10)">--bar&#160;</text><text class="terminal-50666878-r6" x="122" y="264" textLength="24.4" clip-path="url(#terminal-50666878-line-10)">-b</text><text class="terminal-50666878-r7" x="170.8" y="264" textLength="48.8" clip-path="url(#terminal-50666878-line-10)">TEXT</text><text class="terminal-50666878-r1" x="219.6" y="264" textLength="732" clip-path="url(#terminal-50666878-line-10)">&#160;&#160;Bar&#160;-&#160;📊&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-50666878-r5" x="963.8" y="264" textLength="12.2" clip-path="url(#terminal-50666878-line-10)">│</text><text class="terminal-50666878-r1" x="976" y="264" textLength="12.2" clip-path="url(#terminal-50666878-line-10)">
-</text><text class="terminal-50666878-r5" x="0" y="288.4" textLength="12.2" clip-path="url(#terminal-50666878-line-11)">│</text><text class="terminal-50666878-r4" x="24.4" y="288.4" textLength="73.2" clip-path="url(#terminal-50666878-line-11)">--help</text><text class="terminal-50666878-r1" x="97.6" y="288.4" textLength="866.2" clip-path="url(#terminal-50666878-line-11)">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Show&#160;this&#160;message&#160;and&#160;exit.&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-50666878-r5" x="963.8" y="288.4" textLength="12.2" clip-path="url(#terminal-50666878-line-11)">│</text><text class="terminal-50666878-r1" x="976" y="288.4" textLength="12.2" clip-path="url(#terminal-50666878-line-11)">
-</text><text class="terminal-50666878-r5" x="0" y="312.8" textLength="976" clip-path="url(#terminal-50666878-line-12)">╰──────────────────────────────────────────────────────────────────────────────╯</text><text class="terminal-50666878-r1" x="976" y="312.8" textLength="12.2" clip-path="url(#terminal-50666878-line-12)">
+    <g class="terminal-1520242215-matrix">
+    <text class="terminal-1520242215-r1" x="0" y="20" textLength="305" clip-path="url(#terminal-1520242215-line-0)">$&#160;python&#160;emojis.py&#160;--help</text><text class="terminal-1520242215-r1" x="976" y="20" textLength="12.2" clip-path="url(#terminal-1520242215-line-0)">
+</text><text class="terminal-1520242215-r1" x="976" y="44.4" textLength="12.2" clip-path="url(#terminal-1520242215-line-1)">
+</text><text class="terminal-1520242215-r2" x="12.2" y="68.8" textLength="73.2" clip-path="url(#terminal-1520242215-line-2)">Usage:</text><text class="terminal-1520242215-r3" x="97.6" y="68.8" textLength="109.8" clip-path="url(#terminal-1520242215-line-2)">emojis.py</text><text class="terminal-1520242215-r1" x="207.4" y="68.8" textLength="24.4" clip-path="url(#terminal-1520242215-line-2)">&#160;[</text><text class="terminal-1520242215-r4" x="231.8" y="68.8" textLength="85.4" clip-path="url(#terminal-1520242215-line-2)">OPTIONS</text><text class="terminal-1520242215-r1" x="317.2" y="68.8" textLength="658.8" clip-path="url(#terminal-1520242215-line-2)">]&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-1520242215-r1" x="976" y="68.8" textLength="12.2" clip-path="url(#terminal-1520242215-line-2)">
+</text><text class="terminal-1520242215-r1" x="976" y="93.2" textLength="12.2" clip-path="url(#terminal-1520242215-line-3)">
+</text><text class="terminal-1520242215-r1" x="0" y="117.6" textLength="963.8" clip-path="url(#terminal-1520242215-line-4)">&#160;Demo&#160;of&#160;😻&#160;emojis!&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-1520242215-r1" x="976" y="117.6" textLength="12.2" clip-path="url(#terminal-1520242215-line-4)">
+</text><text class="terminal-1520242215-r5" x="12.2" y="142" textLength="646.6" clip-path="url(#terminal-1520242215-line-5)">Note&#160;that&#160;this&#160;text&#160;is&#160;not&#160;rich&#160;markup:&#160;[b]See?[/b]&#160;😂</text><text class="terminal-1520242215-r1" x="976" y="142" textLength="12.2" clip-path="url(#terminal-1520242215-line-5)">
+</text><text class="terminal-1520242215-r5" x="12.2" y="166.4" textLength="561.2" clip-path="url(#terminal-1520242215-line-6)">Emojis&#160;can&#160;be&#160;set&#160;independently&#160;of&#160;markup.&#160;☝&#160;🤓</text><text class="terminal-1520242215-r1" x="976" y="166.4" textLength="12.2" clip-path="url(#terminal-1520242215-line-6)">
+</text><text class="terminal-1520242215-r1" x="976" y="190.8" textLength="12.2" clip-path="url(#terminal-1520242215-line-7)">
+</text><text class="terminal-1520242215-r5" x="0" y="215.2" textLength="24.4" clip-path="url(#terminal-1520242215-line-8)">╭─</text><text class="terminal-1520242215-r5" x="24.4" y="215.2" textLength="109.8" clip-path="url(#terminal-1520242215-line-8)">&#160;Options&#160;</text><text class="terminal-1520242215-r5" x="134.2" y="215.2" textLength="817.4" clip-path="url(#terminal-1520242215-line-8)">───────────────────────────────────────────────────────────────────</text><text class="terminal-1520242215-r5" x="951.6" y="215.2" textLength="24.4" clip-path="url(#terminal-1520242215-line-8)">─╮</text><text class="terminal-1520242215-r1" x="976" y="215.2" textLength="12.2" clip-path="url(#terminal-1520242215-line-8)">
+</text><text class="terminal-1520242215-r5" x="0" y="239.6" textLength="12.2" clip-path="url(#terminal-1520242215-line-9)">│</text><text class="terminal-1520242215-r4" x="24.4" y="239.6" textLength="73.2" clip-path="url(#terminal-1520242215-line-9)">--foo&#160;</text><text class="terminal-1520242215-r6" x="122" y="239.6" textLength="24.4" clip-path="url(#terminal-1520242215-line-9)">-f</text><text class="terminal-1520242215-r7" x="170.8" y="239.6" textLength="48.8" clip-path="url(#terminal-1520242215-line-9)">TEXT</text><text class="terminal-1520242215-r1" x="219.6" y="239.6" textLength="719.8" clip-path="url(#terminal-1520242215-line-9)">&#160;&#160;Boo!&#160;👻&#160;Oops,&#160;I&#160;mean...&#160;foo!&#160;😅&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-1520242215-r5" x="963.8" y="239.6" textLength="12.2" clip-path="url(#terminal-1520242215-line-9)">│</text><text class="terminal-1520242215-r1" x="976" y="239.6" textLength="12.2" clip-path="url(#terminal-1520242215-line-9)">
+</text><text class="terminal-1520242215-r5" x="0" y="264" textLength="12.2" clip-path="url(#terminal-1520242215-line-10)">│</text><text class="terminal-1520242215-r4" x="24.4" y="264" textLength="73.2" clip-path="url(#terminal-1520242215-line-10)">--bar&#160;</text><text class="terminal-1520242215-r6" x="122" y="264" textLength="24.4" clip-path="url(#terminal-1520242215-line-10)">-b</text><text class="terminal-1520242215-r7" x="170.8" y="264" textLength="48.8" clip-path="url(#terminal-1520242215-line-10)">TEXT</text><text class="terminal-1520242215-r1" x="219.6" y="264" textLength="732" clip-path="url(#terminal-1520242215-line-10)">&#160;&#160;Bar&#160;-&#160;📊&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-1520242215-r5" x="963.8" y="264" textLength="12.2" clip-path="url(#terminal-1520242215-line-10)">│</text><text class="terminal-1520242215-r1" x="976" y="264" textLength="12.2" clip-path="url(#terminal-1520242215-line-10)">
+</text><text class="terminal-1520242215-r5" x="0" y="288.4" textLength="12.2" clip-path="url(#terminal-1520242215-line-11)">│</text><text class="terminal-1520242215-r4" x="24.4" y="288.4" textLength="73.2" clip-path="url(#terminal-1520242215-line-11)">--help</text><text class="terminal-1520242215-r1" x="97.6" y="288.4" textLength="866.2" clip-path="url(#terminal-1520242215-line-11)">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Show&#160;this&#160;message&#160;and&#160;exit.&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;</text><text class="terminal-1520242215-r5" x="963.8" y="288.4" textLength="12.2" clip-path="url(#terminal-1520242215-line-11)">│</text><text class="terminal-1520242215-r1" x="976" y="288.4" textLength="12.2" clip-path="url(#terminal-1520242215-line-11)">
+</text><text class="terminal-1520242215-r5" x="0" y="312.8" textLength="976" clip-path="url(#terminal-1520242215-line-12)">╰──────────────────────────────────────────────────────────────────────────────╯</text><text class="terminal-1520242215-r1" x="976" y="312.8" textLength="12.2" clip-path="url(#terminal-1520242215-line-12)">
 </text>
     </g>
     </g>
