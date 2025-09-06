@@ -41,5 +41,17 @@ def click_options(*args: Any, **kwargs: Any) -> None:
     """Test that options+arguments are assigned to the panel even if they're not RichParameters."""
 
 
+@cli.command(cls=click.Command, panel="Rich Click Panel 2")
+def cmd1() -> None:
+    """Test that command is assigned to Rich Click Panel 2
+    via the decorator argument."""
+
+
+@cli.group(cls=click.Group, panel="Rich Click Panel 2")
+def grp1() -> None:
+    """Test that group is assigned to Rich Click Panel 2
+    via the decorator argument."""
+
+
 if __name__ == "__main__":
     cli()

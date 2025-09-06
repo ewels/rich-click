@@ -268,7 +268,7 @@ Supported **Command** help section types (configurable via `commands_table_help_
 A popular choice for extremely large CLIs is to remove the metavar column and append it to the help text.
 Below is an example that does this, as well as doing some additional reordering of the help text elements.
 
-```python
+```python hl_lines="22-23"
 {% include "../code_snippets/panels/panels_help_section_types.py" %}
 ```
 

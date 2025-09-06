@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 # ruff: noqa: D103
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Type, Union
 
-from click import Argument, Option
+from click import Argument, Command, Group, Option
 
 import rich_click
 from rich_click.decorators import command as _rich_command
@@ -14,7 +14,14 @@ from rich_click.rich_command import RichCommand, RichCommandCollection, RichGrou
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
-from rich_click.rich_panel import RichCommandPanel
+
+
+if TYPE_CHECKING:
+    import typer.core
+
+
+__TyperGroup: Type["typer.core.TyperGroup"]
+__TyperCommand: Type["typer.core.TyperCommand"]
 
 
 class _PatchedTyperContext(RichContext):
@@ -39,6 +46,8 @@ class _PatchedTyperContext(RichContext):
         import typer.core
         from typer.models import DefaultPlaceholder
 
+        from rich_click.rich_panel import RichCommandPanel
+
         if isinstance(self.command, RichGroup):
             command_panels: Dict[str, List[str]] = {}
             for cmd_name in self.command.commands:
@@ -51,7 +60,7 @@ class _PatchedTyperContext(RichContext):
                     command_panels.setdefault(cmd.rich_help_panel, [])
                     command_panels[cmd.rich_help_panel].append(cmd_name)
             for name, commands in command_panels.items():
-                self.command.panels.append(RichCommandPanel(name, commands=commands))
+                self.command.add_panel(RichCommandPanel(name, commands=commands))
 
         return super().get_help()
 
@@ -60,6 +69,11 @@ def _typer_command_init(
     self: Any, *args: Any, rich_help_panel: Union[str, None] = None, rich_markup_mode: Any = None, **kwargs: Any
 ) -> None:
     import typer.core
+
+    globals().setdefault("__TyperCommand", typer.core.TyperCommand)
+    global __TyperCommand
+
+    super(__TyperCommand, self).__init__(*args, **kwargs)
 
     super(typer.core.TyperCommand, self).__init__(*args, **kwargs)
     self.rich_markup_mode = rich_markup_mode
@@ -71,33 +85,42 @@ def _typer_group_init(
 ) -> None:
     import typer.core
 
-    super(typer.core.TyperGroup, self).__init__(*args, **kwargs)
+    globals().setdefault("__TyperGroup", typer.core.TyperGroup)
+    global __TyperGroup
+
+    super(__TyperGroup, self).__init__(*args, **kwargs)
     self.rich_markup_mode = rich_markup_mode
     self.rich_help_panel = rich_help_panel
 
 
-def _patch_typer_group(cls: type) -> type:
-    cls.format_help = RichGroup.format_help  # type: ignore[attr-defined]
-    cls.__init__ = _typer_group_init  # type: ignore[misc]
-    cls.context_class = _PatchedTyperContext  # type: ignore[attr-defined]
-    return cls
-
-
-def _patch_typer_command(cls: type) -> type:
-    cls.format_help = RichCommand.format_help  # type: ignore[attr-defined]
-    cls.__init__ = _typer_command_init  # type: ignore[misc]
-    cls.context_class = _PatchedTyperContext  # type: ignore[attr-defined]
-    return cls
-
-
-def _patch_typer_argument(cls: type) -> type:
+def _patch_typer_group(cls: Type[Group]) -> Type[Group]:
+    cls.format_help = RichGroup.format_help  # type: ignore[assignment]
+    cls.__init__ = _typer_group_init  # type: ignore[method-assign]
+    cls.context_class = _PatchedTyperContext
     cls.panel = property(  # type: ignore[attr-defined]
         lambda self: self.rich_help_panel, lambda self, value: setattr(self, "rich_help_panel", value)
     )
     return cls
 
 
-def _patch_typer_option(cls: type) -> type:
+def _patch_typer_command(cls: Type[Command]) -> Type[Command]:
+    cls.format_help = RichCommand.format_help  # type: ignore[assignment]
+    cls.__init__ = _typer_command_init  # type: ignore[method-assign]
+    cls.context_class = _PatchedTyperContext
+    cls.panel = property(  # type: ignore[attr-defined]
+        lambda self: self.rich_help_panel, lambda self, value: setattr(self, "rich_help_panel", value)
+    )
+    return cls
+
+
+def _patch_typer_argument(cls: Type[Argument]) -> Type[Argument]:
+    cls.panel = property(  # type: ignore[attr-defined]
+        lambda self: self.rich_help_panel, lambda self, value: setattr(self, "rich_help_panel", value)
+    )
+    return cls
+
+
+def _patch_typer_option(cls: Type[Option]) -> Type[Option]:
     cls.panel = property(  # type: ignore[attr-defined]
         lambda self: self.rich_help_panel, lambda self, value: setattr(self, "rich_help_panel", value)
     )
@@ -109,13 +132,13 @@ class PatchMeta(type):
         super().__init__(name, bases, namespace)
         if cls.__module__ in ["typer.core", "typer.main", "rich_click.patch"]:
             if name == "TyperGroup":
-                _patch_typer_group(cls)
+                _patch_typer_group(cls)  # type: ignore[arg-type]
             elif name == "TyperCommand":
-                _patch_typer_command(cls)
+                _patch_typer_command(cls)  # type: ignore[arg-type]
             elif name == "TyperOption":
-                _patch_typer_option(cls)
+                _patch_typer_option(cls)  # type: ignore[arg-type]
             elif name == "TyperArgument":
-                _patch_typer_argument(cls)
+                _patch_typer_argument(cls)  # type: ignore[arg-type]
 
 
 class _PatchedRichCommand(RichCommand, metaclass=PatchMeta):
@@ -171,6 +194,7 @@ def patch(
         warnings.simplefilter("ignore", category=DeprecationWarning)
 
         import click
+        import click.core
 
         rich_click.rich_command.OVERRIDES_GUARD = True
         click.group = rich_group
@@ -178,16 +202,12 @@ def patch(
         click.Group = _PatchedRichGroup  # type: ignore[misc]
         click.Command = _PatchedRichCommand  # type: ignore[misc]
         click.CommandCollection = _PatchedRichCommandCollection  # type: ignore[misc]
-
-        import click.core
-
-        click.core.Command = _PatchedRichCommand  # type: ignore[misc]
-        click.core.Group = _PatchedRichGroup  # type: ignore[misc]
-        click.core.CommandCollection = _PatchedRichCommandCollection  # type: ignore[misc]
-
         click.Argument = _PatchedArgument  # type: ignore[misc]
         click.Option = _PatchedOption  # type: ignore[misc]
 
+        click.core.Group = _PatchedRichGroup  # type: ignore[misc]
+        click.core.Command = _PatchedRichCommand  # type: ignore[misc]
+        click.core.CommandCollection = _PatchedRichCommandCollection  # type: ignore[misc]
         click.core.Argument = _PatchedArgument  # type: ignore[misc]
         click.core.Option = _PatchedOption  # type: ignore[misc]
 
@@ -213,22 +233,35 @@ def patch_typer(rich_config: Optional[RichHelpConfiguration] = None) -> None:
     import typer.core
     import typer.main
 
-    class _PatchedTyperCommand(_PatchedRichCommand, typer.core.TyperCommand):  # type: ignore[misc]
-        pass
+    if not issubclass(typer.core.TyperCommand, _PatchedRichCommand):
+        globals().setdefault("__TyperCommand", typer.core.TyperCommand)
 
-    class _PatchedTyperGroup(_PatchedRichGroup, typer.core.TyperGroup):  # type: ignore[misc]
-        pass
+        class _PatchedTyperCommand(_PatchedRichCommand, typer.core.TyperCommand):  # type: ignore[misc]
+            pass
 
-    class _PatchedTyperOption(_PatchedOption, typer.core.TyperOption):
-        pass
+        typer.core.TyperCommand = typer.main.TyperCommand = _patch_typer_command(_PatchedTyperCommand)  # type: ignore[assignment,attr-defined,misc]
 
-    class _PatchedTyperArgument(_PatchedArgument, typer.core.TyperArgument):
-        pass
+    if not issubclass(typer.core.TyperGroup, _PatchedRichGroup):
+        globals().setdefault("__TyperGroup", typer.core.TyperGroup)
 
-    typer.core.TyperCommand = typer.main.TyperCommand = _patch_typer_command(_PatchedTyperCommand)  # type: ignore[assignment,attr-defined,misc]
-    typer.core.TyperGroup = typer.main.TyperGroup = _patch_typer_group(_PatchedTyperGroup)  # type: ignore[assignment,attr-defined,misc]
-    typer.core.TyperOption = typer.main.TyperOption = _patch_typer_option(_PatchedTyperOption)  # type: ignore[assignment,attr-defined,misc]
-    typer.core.TyperArgument = typer.main.TyperArgument = _patch_typer_argument(_PatchedTyperArgument)  # type: ignore[assignment,attr-defined,misc]
+        class _PatchedTyperGroup(_PatchedRichGroup, typer.core.TyperGroup):  # type: ignore[misc]
+            pass
+
+        typer.core.TyperGroup = typer.main.TyperGroup = _patch_typer_group(_PatchedTyperGroup)  # type: ignore[assignment,attr-defined,misc]
+
+    if not issubclass(typer.core.TyperOption, _PatchedOption):
+
+        class _PatchedTyperOption(_PatchedOption, typer.core.TyperOption):
+            pass
+
+        typer.core.TyperOption = typer.main.TyperOption = _patch_typer_option(_PatchedTyperOption)  # type: ignore[assignment,attr-defined,misc]
+
+    if not issubclass(typer.core.TyperArgument, _PatchedArgument):
+
+        class _PatchedTyperArgument(_PatchedArgument, typer.core.TyperArgument):
+            pass
+
+        typer.core.TyperArgument = typer.main.TyperArgument = _patch_typer_argument(_PatchedTyperArgument)  # type: ignore[assignment,attr-defined,misc]
 
     if rich_config is not None:
         rich_config.dump_to_globals()

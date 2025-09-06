@@ -44,6 +44,9 @@ def test_command_panel_order(cli_runner: CliRunner, cli: rich_click.RichCommand)
 │        test that commands render by assigned name in dict, not by the cmd.name.                  │
 │ cmd10  Test that command panel and option panel both having the same name doesn't cause any      │
 │        issues.                                                                                   │
+│ cmd11  Test add_command(..., panel=...)                                                          │
+│ cmd12  Test all three methods of assigning a panel don't cause duplication.                      │
+│ cmd13  Test that command_panel.commands takes priority.                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -310,6 +313,69 @@ def test_panel_different_type_panels_same_name(cli_runner: CliRunner, cli: rich_
 ╭─ Generic Panel ──────────────────────────────────────────────────────────────────────────────────╮
 │ --foo  TEXT                                                                                      │
 │ --bar  TEXT                                                                                      │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+"""
+    )
+    assert result.stderr == snapshot("")
+
+
+def test_add_command_panel_kwarg(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    result = cli_runner.invoke(cli, "cmd11 --help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: cli cmd11 [OPTIONS] COMMAND [ARGS]...                                                       \n\
+                                                                                                    \n\
+ Test add_command(..., panel=...)                                                                   \n\
+                                                                                                    \n\
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --help  Show this message and exit.                                                              │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Some Panel ─────────────────────────────────────────────────────────────────────────────────────╮
+│ dummy2                                                                                           │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+"""
+    )
+    assert result.stderr == snapshot("")
+
+
+def test_no_duplicatio_of_commands(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    result = cli_runner.invoke(cli, "cmd12 --help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: cli cmd12 [OPTIONS] COMMAND [ARGS]...                                                       \n\
+                                                                                                    \n\
+ Test all three methods of assigning a panel don't cause duplication.                               \n\
+                                                                                                    \n\
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --help  Show this message and exit.                                                              │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Some Panel ─────────────────────────────────────────────────────────────────────────────────────╮
+│ dummy2                                                                                           │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+"""
+    )
+    assert result.stderr == snapshot("")
+
+
+def test_ignore_behavior_duplicate_assignments(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    result = cli_runner.invoke(cli, "cmd13 --help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: cli cmd13 [OPTIONS] COMMAND [ARGS]...                                                       \n\
+                                                                                                    \n\
+ Test that command_panel.commands takes priority.                                                   \n\
+                                                                                                    \n\
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --help  Show this message and exit.                                                              │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Prioritize me ──────────────────────────────────────────────────────────────────────────────────╮
+│ dummy2                                                                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )

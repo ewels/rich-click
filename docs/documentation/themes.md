@@ -3,21 +3,6 @@
 **Themes** are a simple way to customize the style of CLI help text as both an end-user and as a developer.
 Themes are one of **rich-click**'s most powerful features.
 
-=== "`quartz-modern`"
-
-    ```shell
-    export RICH_CLICK_THEME=quartz-modern
-    python docs/code_snippets/themes/cli.py --help
-    ```
-
-    <!-- RICH-CODEX
-    working_dir: docs/code_snippets/themes
-    extra_env:
-        TERMINAL_WIDTH: 120
-        RICH_CLICK_THEME: quartz-modern
-    -->
-    ![`python cli.py --help`](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
-
 === "`nord-nu`"
 
     ```shell
@@ -32,7 +17,22 @@ Themes are one of **rich-click**'s most powerful features.
         RICH_CLICK_THEME: nord-nu
     -->
 
-    ![` python cli.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
+
+=== "`dracula-modern`"
+
+    ```shell
+    export RICH_CLICK_THEME=dracula-modern
+    python docs/code_snippets/themes/cli.py --help
+    ```
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/themes
+    extra_env:
+        TERMINAL_WIDTH: 120
+        RICH_CLICK_THEME: dracula-modern
+    -->
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
 
 === "`cargo-slim`"
 
@@ -400,6 +400,16 @@ All color palettes use ANSI colors, meaning they will render differently on each
         RICH_CLICK_THEME: dracula2-box
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_dracula2_box.svg){.screenshot}
+
+!!! warning
+    The `dracula`, `dracula2`, `nord`, and `solarized` themes use hex values,
+    and **rich-click** currently does not detect background colors for users' terminals.
+
+    So although these themes are beautiful and work well as an end-user with `export RICH_CLICK_THEME=`, this also makes these themes risky to use as a developer.
+
+    All of the other themes use ANSI colors exclusively, and therefore users' environments are more likely to match these themes well.
+
+    In a later version of **rich-click**, we intend on adding background color detection, which will make these themes safer to use as a developer.
 
 #### Simple palettes
 

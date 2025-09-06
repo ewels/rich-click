@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
 
-from rich_click.rich_theme import THEMES
+from rich_click.rich_click_theme import RichClickTheme, get_theme
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
 
 
@@ -18,9 +18,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.style import StyleType
     from rich.text import Text
 
-
 T = TypeVar("T", bound="RichHelpConfiguration")
-
 
 OptionColumnType = Literal[
     "required",
@@ -52,11 +50,22 @@ ColumnType = Union[OptionColumnType, CommandColumnType, str]
 class FromTheme(object):
     """Sentinel value for unset config options."""
 
+    def __init__(self, default: str) -> None:
+        """Initialize a default."""
+        self.default = default
+
     def __repr__(self) -> str:
         return "FromTheme"
 
+    def get_default(self, key: str) -> Any:
+        """Get the default value from the default theme."""
+        from rich_click.rich_click_theme import get_theme
 
-FROM_THEME: Any = FromTheme()
+        theme = get_theme(self.default)
+        return theme.styles[key]
+
+
+FROM_THEME: Any = FromTheme(default="default-box")
 
 
 def force_terminal_default() -> Optional[bool]:
@@ -389,6 +398,7 @@ class RichHelpConfiguration:
 
     def apply_theme(self, force_default: bool = False) -> None:
         theme = None
+        raise_key_error = True
 
         import rich_click.rich_click as rc
 
@@ -402,8 +412,9 @@ class RichHelpConfiguration:
                 try:
                     data = json.loads(_theme_cfg)
                     # Extract theme before parsing everything else.
-                    if isinstance(data, dict) and "theme" in data:
-                        theme = theme or data["theme"]
+                    if isinstance(data, dict) and "theme" in data and theme is None:
+                        theme = data["theme"]
+                        raise_key_error = False
                         data.pop("theme")
                     for k, v in data.items():
                         if hasattr(self, k):
@@ -411,35 +422,42 @@ class RichHelpConfiguration:
                         else:
                             raise TypeError(f"'{type(self)}' has no attribute '{k}'")
                 except Exception as e:
-                    import warnings
+                    if force_default:  # only warn once
+                        import warnings
 
-                    warnings.warn(f"RICH_CLICK_THEME= failed to parse: {e.__class__.__name__}{e.args}", UserWarning)
-            else:
-                theme = theme or _theme
+                        warnings.warn(
+                            f"RICH_CLICK_THEME= failed to parse: {e.__class__.__name__}{e.args}",
+                            UserWarning,
+                            stacklevel=2,
+                        )
+            elif theme is None:
+                theme = _theme
+                raise_key_error = False
 
         if theme is None:
             theme = self.theme
 
-        theme_settings = None
+        theme_styles: Optional[Dict[str, Any]] = None
 
-        if theme in THEMES:
-            theme_settings = THEMES[theme]
-        elif theme == "random":
-            import random
+        if isinstance(theme, RichClickTheme):
+            theme_styles = theme.styles
+        elif theme is not None:
+            theme_styles = get_theme(theme, raise_key_error=raise_key_error).styles
 
-            theme = random.choice(list(THEMES.keys()))
-            theme_settings = THEMES[theme]
-        elif force_default:
-            theme_settings = THEMES["default-box"]
-
-        if theme_settings is not None:
-            for k, v in theme_settings.items():
+        if theme_styles is not None:
+            for k, v in theme_styles.items():
                 current = getattr(self, k)
-                if current is FROM_THEME:
+                if isinstance(current, FromTheme):
                     setattr(self, k, v)
 
-            # Handle deprecated fields here
+        if force_default:
+            for k in self.__dataclass_fields__:
+                v = getattr(self, k)
+                if isinstance(v, FromTheme):
+                    setattr(self, k, v.get_default(k))
 
+        if theme_styles is not None or force_default:
+            # Handle deprecated fields here
             # must create new copy of these lists; don't modify in-place
             if self.show_metavars_column is False and "metavar" in self.options_table_column_types:
                 self.options_table_column_types = [i for i in self.options_table_column_types if i != "metavar"]
@@ -451,6 +469,16 @@ class RichHelpConfiguration:
                 self.options_table_help_sections = ["envvar"] + [  # type: ignore[assignment]
                     i for i in self.options_table_help_sections if i != "envvar"
                 ]
+
+    def to_theme(self, **kwargs: Any) -> RichClickTheme:
+        styles = kwargs.get("styles", {})
+        for k, v in self.__dataclass_fields__.items():
+            if k == "theme":
+                continue
+            styles.setdefault(k, getattr(self, k))
+        kwargs.setdefault("name", "_from_config")
+        kwargs["styles"] = styles
+        return RichClickTheme(**kwargs)
 
     def dump_to_globals(self, module: Optional[ModuleType] = None) -> None:
         if module is None:
