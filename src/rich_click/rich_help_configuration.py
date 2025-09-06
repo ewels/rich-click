@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
 
-from rich_click.rich_click_theme import get_theme, RichClickTheme
+from rich_click.rich_click_theme import RichClickTheme, get_theme
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
 
 

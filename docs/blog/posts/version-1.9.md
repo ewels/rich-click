@@ -21,41 +21,66 @@ The biggest theme (pun intended) of **rich-click** 1.9 is **themes**. These can 
 
 Here are some simple examples of themes:
 
-=== "`quartz-modern`"
-
-    ```shell
-    export RICH_CLICK_THEME=quartz-modern
-    python hello_rich.py --help
-    ```
-
-    ![](../../images/code_snippets/themes/themes_ex1.svg){.screenshot}
-
 === "`nord-nu`"
 
     ```shell
     export RICH_CLICK_THEME=nord-nu
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
-    ![](../../images/code_snippets/themes/themes_ex2.svg){.screenshot}
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/themes
+    extra_env:
+        TERMINAL_WIDTH: 120
+        RICH_CLICK_THEME: nord-nu
+    -->
+
+    ![](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
+
+=== "`dracula-modern`"
+
+    ```shell
+    export RICH_CLICK_THEME=dracula-modern
+    python docs/code_snippets/themes/cli.py --help
+    ```
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/themes
+    extra_env:
+        TERMINAL_WIDTH: 120
+        RICH_CLICK_THEME: dracula-modern
+    -->
+    ![](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
 
 === "`cargo-slim`"
 
     ```shell
     export RICH_CLICK_THEME=cargo-slim
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
-    ![](../../images/code_snippets/themes/themes_ex3.svg){.screenshot}
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/themes
+    extra_env:
+        TERMINAL_WIDTH: 120
+        RICH_CLICK_THEME: cargo-slim
+    -->
+    ![](../images/code_snippets/themes/themes_ex3.svg){.screenshot}
 
 === "`forest-robo`"
 
     ```shell
     export RICH_CLICK_THEME=forest-robo
-    python hello_rich.py --help
+    python docs/code_snippets/themes/cli.py --help
     ```
 
-    ![](../../images/code_snippets/themes/themes_ex4.svg){.screenshot}
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/themes
+    extra_env:
+        TERMINAL_WIDTH: 120
+        RICH_CLICK_THEME: forest-robo
+    -->
+    ![](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
 
 As you can see, themes are not _just_ colors, they can also completely change the formatting, too!
 
