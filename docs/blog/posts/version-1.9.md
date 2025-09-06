@@ -72,7 +72,7 @@ Here are some simple examples of themes:
 
 As you can see, themes are not _just_ colors, they can also completely change the formatting, too!
 
-Themes are defined as `{color_pallete}-{format}`. Overall, there are over **100 themes** to choose from.
+Themes are defined as `{color_palette}-{format}`. Overall, there are over **100 themes** to choose from.
 
 If you want to see all the options available to you, you can run the CLI command `rich-click --themes`:
 
