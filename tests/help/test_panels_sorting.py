@@ -46,8 +46,7 @@ def test_command_panel_order(cli_runner: CliRunner, cli: rich_click.RichCommand)
 │        issues.                                                                                   │
 │ cmd11  Test add_command(..., panel=...)                                                          │
 │ cmd12  Test all three methods of assigning a panel don't cause duplication.                      │
-│ cmd13  Test that cmd.panel is ignored but that grp.add_command(panel=...) and                    │
-│        command_panel.commands are not ignored.                                                   │
+│ cmd13  Test that command_panel.commands takes priority.                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -370,8 +369,7 @@ def test_ignore_behavior_duplicate_assignments(cli_runner: CliRunner, cli: rich_
                                                                                                     \n\
  Usage: cli cmd13 [OPTIONS] COMMAND [ARGS]...                                                       \n\
                                                                                                     \n\
- Test that cmd.panel is ignored but that grp.add_command(panel=...) and command_panel.commands are  \n\
- not ignored.                                                                                       \n\
+ Test that command_panel.commands takes priority.                                                   \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  Show this message and exit.                                                              │

@@ -928,10 +928,25 @@ FORMATS: Dict[str, RichClickTheme] = {
 _THEME_CACHE: Dict[str, RichClickTheme] = {}
 
 
+class RichClickThemeNotFound(KeyError):
+    """Raise when a theme is not found."""
+
+
 def get_theme(theme: str, raise_key_error: bool = True) -> RichClickTheme:
+    """Get the theme based on the string name."""
+    clr: Optional[str] = None
+    fmt: Optional[str] = None
+
+    if theme == "random":
+        import random
+
+        clr = random.choice(list(COLORS.keys()))
+        fmt = random.choice(list(FORMATS.keys()))
+
+        rich_click_theme = _THEME_CACHE[f"{clr}-{fmt}"] = COLORS[clr] + FORMATS[fmt]
+        return rich_click_theme
     if theme in _THEME_CACHE:
         return _THEME_CACHE[theme]
-    clr, fmt = None, None
     try:
         if "-" not in theme:
             if theme in COLORS:
@@ -941,15 +956,15 @@ def get_theme(theme: str, raise_key_error: bool = True) -> RichClickTheme:
                 rich_click_theme = _THEME_CACHE[theme] = COLORS["default"] + FORMATS[theme]
                 return rich_click_theme
             else:
-                raise KeyError(f"RichClickTheme '{theme}' not found")
+                raise RichClickThemeNotFound(f"RichClickTheme '{theme}' not found")
         clr, fmt, *_ = theme.split("-")
         if _:
-            raise KeyError(f"RichClickTheme '{theme}' not found")
+            raise RichClickThemeNotFound(f"RichClickTheme '{theme}' not found")
         if clr in COLORS and fmt in FORMATS:
             rich_click_theme = _THEME_CACHE[theme] = COLORS[clr] + FORMATS[fmt]
             return rich_click_theme
         else:
-            raise KeyError(f"RichClickTheme '{theme}' not found")
+            raise RichClickThemeNotFound(f"RichClickTheme '{theme}' not found")
     except KeyError:
         if raise_key_error:
             raise
@@ -965,25 +980,3 @@ def get_theme(theme: str, raise_key_error: bool = True) -> RichClickTheme:
         elif fmt and fmt in FORMATS:
             return COLORS["default"] + FORMATS[fmt]
         return COLORS["default"] + FORMATS["box"]
-
-
-THEMES: Dict[str, RichClickTheme] = {}
-
-for fk, fv in FORMATS.items():
-    for ck, cv in COLORS.items():
-        THEMES[f"{ck}-{fk}"] = cv + fv
-        if ck in {"plain", "mono"}:
-            THEMES[f"{ck}-{fk}"].styles["delimiter_comma"] = ", "
-            THEMES[f"{ck}-{fk}"].styles["delimiter_slash"] = " / "
-        if fk in ["modern", "slim", "robo", "nu"]:
-            for k in ["style_options_panel_title_style", "style_commands_panel_title_style"]:
-                v = THEMES[f"{ck}-{fk}"].styles.get(k, "")
-                if "dim" not in v.split(" "):
-                    v = f"{v} not dim".strip()
-                THEMES[f"{ck}-{fk}"].styles[k] = v
-
-for k, v in FORMATS.items():
-    THEMES[k] = THEMES[f"default-{k}"]
-
-for k, v in COLORS.items():
-    THEMES[k] = THEMES[f"{k}-box"]

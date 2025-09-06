@@ -23,6 +23,7 @@ from rich_click.decorators import option as _rich_option
 from rich_click.decorators import option_panel, pass_context
 from rich_click.decorators import version_option as _rich_version_option
 from rich_click.patch import patch as _patch
+from rich_click.rich_click_theme import COLORS, FORMATS, RichClickThemeNotFound, get_theme
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 
@@ -154,8 +155,6 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
         from rich.table import Table
         from rich.text import Text
 
-        from rich_click.rich_theme import COLORS, FORMATS, THEMES
-
         formatter = ctx.make_formatter()
 
         console = Console(
@@ -180,21 +179,21 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
                     _theme = None
             else:
                 _theme = selected
-            if "-" in _theme:
-                c, f, *_ = _theme.split("-")
-                from rich_click.rich_theme import THEMES
-
-                if _theme in THEMES:
+            if _theme:
+                try:
+                    get_theme(_theme)
+                except RichClickThemeNotFound:
+                    found = False
+                else:
                     found = True
-            elif _theme is not None:
-                from rich_click.rich_theme import COLORS, FORMATS
-
-                if _theme in FORMATS:
-                    f = _theme
-                    found = True
-                elif _theme in COLORS:
-                    c = _theme
-                    found = True
+                    if "-" in _theme:
+                        c, f, *_ = _theme.split("-")
+                    elif _theme in FORMATS:
+                        f = _theme
+                        found = True
+                    elif _theme in COLORS:
+                        c = _theme
+                        found = True
 
         if selected is None:
             selected_text = "[red bold]RICH_CLICK_THEME[/] is not set"
@@ -203,8 +202,8 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
         else:
             selected_text = (
                 f"[blue bold]RICH_CLICK_THEME[/blue bold]=[blue]{selected!r}[/blue]"
-                f"\n\n[b]Colors:[/b] {c}"
-                f"\n[b]Format:[/b] {f}"
+                f"\n\n[b]Colors:[/b] {c or '[dim](null)[/]'}"
+                f"\n[b]Format:[/b] {f or '[dim](null)[/]'}"
             )
 
         colors = Table(
@@ -221,8 +220,9 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
         colors.columns[0].max_width = 1
         colors.columns[1].style = "bold"
         for r in COLORS.values():
+            selected_row = c == r.name or (c is None and r.name == "default")
             colors.add_row(
-                "✓" if c == r.name or r is None else "",
+                "*" if selected_row else "",
                 r.name,
                 " ".join([f"[{_}]▓▓[/]" for _ in r.primary_colors[:3]]),
                 r.description,
@@ -240,7 +240,8 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
         )
         formats.columns[1].style = "bold"
         for r in FORMATS.values():
-            formats.add_row("✓" if f == r.name or r is None else "", r.name, r.description)
+            selected_row = f == r.name or (f is None and r.name == "box")
+            formats.add_row("*" if selected_row else "", r.name, r.description)
 
         how_to_use = Padding(
             Text("\n\n", overflow="fold").join(
@@ -404,14 +405,17 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
 
     >>> [command]rich-click[/] [argument]my_package[/] [argument]cmd[/] [option]--foo[/] 3
     """  # noqa: D401
-    if rich_config:
-        if theme:
-            rich_config.setdefault("theme", theme)
-        cfg = RichHelpConfiguration.load_from_globals(**rich_config)
-    elif theme:
-        cfg = RichHelpConfiguration.load_from_globals(theme=theme)
-    else:
-        cfg = RichHelpConfiguration.load_from_globals()
+    try:
+        if rich_config:
+            if theme:
+                rich_config.setdefault("theme", theme)
+            cfg = RichHelpConfiguration.load_from_globals(**rich_config)
+        elif theme:
+            cfg = RichHelpConfiguration.load_from_globals(theme=theme)
+        else:
+            cfg = RichHelpConfiguration.load_from_globals()
+    except RichClickThemeNotFound as e:
+        raise click.ClickException(e.args[0] if e.args else "Theme not found")
 
     if (show_help or not script_and_args) and not ctx.resilient_parsing:
         cfg.use_markdown = False
