@@ -35,7 +35,7 @@ Here are some simple examples of themes:
         RICH_CLICK_THEME: nord-nu
     -->
 
-    ![](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
+    ![](../../images/code_snippets/themes/themes_ex1.svg){.screenshot}
 
 === "`dracula-modern`"
 
@@ -44,13 +44,7 @@ Here are some simple examples of themes:
     python docs/code_snippets/themes/cli.py --help
     ```
 
-    <!-- RICH-CODEX
-    working_dir: docs/code_snippets/themes
-    extra_env:
-        TERMINAL_WIDTH: 120
-        RICH_CLICK_THEME: dracula-modern
-    -->
-    ![](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
+    ![](../../images/code_snippets/themes/themes_ex2.svg){.screenshot}
 
 === "`cargo-slim`"
 
@@ -59,13 +53,7 @@ Here are some simple examples of themes:
     python docs/code_snippets/themes/cli.py --help
     ```
 
-    <!-- RICH-CODEX
-    working_dir: docs/code_snippets/themes
-    extra_env:
-        TERMINAL_WIDTH: 120
-        RICH_CLICK_THEME: cargo-slim
-    -->
-    ![](../images/code_snippets/themes/themes_ex3.svg){.screenshot}
+    ![](../../images/code_snippets/themes/themes_ex3.svg){.screenshot}
 
 === "`forest-robo`"
 
@@ -80,7 +68,7 @@ Here are some simple examples of themes:
         TERMINAL_WIDTH: 120
         RICH_CLICK_THEME: forest-robo
     -->
-    ![](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
+    ![](../../images/code_snippets/themes/themes_ex4.svg){.screenshot}
 
 As you can see, themes are not _just_ colors, they can also completely change the formatting, too!
 
@@ -268,12 +256,12 @@ You can see a demo of rich-click 1.9's newline handling below:
 
 ??? info "Code"
     ```python
-    {% include "../code_snippets/text_markup_and_formatting/newline_control.py" %}
+    {% include "../../code_snippets/text_markup_and_formatting/newline_control.py" %}
     ```
 
 ??? example "Output"
 
-    ![](../images/code_snippets/text_markup_and_formatting/newline_control.svg){.screenshot}
+    ![](../../images/code_snippets/text_markup_and_formatting/newline_control.svg){.screenshot}
 
 ### Stderr help: `context_settings={"help_to_stderr": True}`
 
@@ -309,12 +297,12 @@ An example of this approach can be seen below:**
 
 ??? info "Code"
     ```python hl_lines="22-23"
-    {% include "../code_snippets/panels/panels_help_section_types.py" %}
+    {% include "../../code_snippets/panels/panels_help_section_types.py" %}
     ```
 
 ??? example "Output"
 
-    ![](../images/code_snippets/panels/panels_help_section_types.svg){.screenshot}
+    ![](../../images/code_snippets/panels/panels_help_section_types.svg){.screenshot}
 
 ## Plans for the future
 

@@ -14,7 +14,7 @@ Themes are one of **rich-click**'s most powerful features.
     working_dir: docs/code_snippets/themes
     extra_env:
         TERMINAL_WIDTH: 120
-        RICH_CLICK_THEME: nord-nu
+        RICH_CLICK_THEME: '{"theme": "nord-nu", "color_system": "truecolor"}'
     -->
 
     ![`python cli.py --help`](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
@@ -30,7 +30,7 @@ Themes are one of **rich-click**'s most powerful features.
     working_dir: docs/code_snippets/themes
     extra_env:
         TERMINAL_WIDTH: 120
-        RICH_CLICK_THEME: dracula-modern
+        RICH_CLICK_THEME: '{"theme": "dracula-modern", "color_system": "truecolor"}'
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
 
@@ -269,7 +269,7 @@ All color palettes use ANSI colors, meaning they will render differently on each
     working_dir: docs/code_snippets/themes
     extra_env:
         TERMINAL_WIDTH: 120
-        RICH_CLICK_THEME: solarized-box
+        RICH_CLICK_THEME: '{"theme": "solarized-box", "color_system": "truecolor"}'
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_solarized_box.svg){.screenshot}
 
@@ -285,7 +285,7 @@ All color palettes use ANSI colors, meaning they will render differently on each
     working_dir: docs/code_snippets/themes
     extra_env:
         TERMINAL_WIDTH: 120
-        RICH_CLICK_THEME: nord-box
+        RICH_CLICK_THEME: '{"theme": "nord-box", "color_system": "truecolor"}'
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_nord_box.svg){.screenshot}
 
@@ -381,7 +381,7 @@ All color palettes use ANSI colors, meaning they will render differently on each
     working_dir: docs/code_snippets/themes
     extra_env:
         TERMINAL_WIDTH: 120
-        RICH_CLICK_THEME: dracula-box
+        RICH_CLICK_THEME: '{"theme": "dracula-box", "color_system": "truecolor"}'
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_dracula_box.svg){.screenshot}
 
@@ -397,7 +397,7 @@ All color palettes use ANSI colors, meaning they will render differently on each
     working_dir: docs/code_snippets/themes
     extra_env:
         TERMINAL_WIDTH: 120
-        RICH_CLICK_THEME: dracula2-box
+        RICH_CLICK_THEME: '{"theme": "dracula2-box", "color_system": "truecolor"}'
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_dracula2_box.svg){.screenshot}
 

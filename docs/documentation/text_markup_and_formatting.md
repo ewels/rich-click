@@ -1,8 +1,5 @@
 # Text Markup & Formatting
 
-!!! info
-    This page focuses on formatting help text of help text, not styles more generally.
-
 ## Markup
 
 **rich-click** supports 4 different values for `text_markup`, which determines how text is rendered:
@@ -171,7 +168,7 @@ The following is the same CLI help text but using `import click` instead of `imp
     -->
     ![`python newline_control_base_click.py --help`](../images/code_snippets/text_markup_and_formatting/newline_control_base_click.svg){.screenshot}
 
-### Newline rendering
+### Spacing
 
 By default, **rich-click** renders double newlines as single newlines.
 This is a deliberate decision to make help text take up less vertical space.
