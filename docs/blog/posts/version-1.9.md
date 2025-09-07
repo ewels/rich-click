@@ -15,6 +15,13 @@ Today we are excited to release version 1.9 of **rich-click**, our biggest relea
 
 <!-- more -->
 
+The big features of the 1.9 release are:
+
+- Themes
+- `rich-click` CLI support for Typer CLIs
+- Panels
+- IDE autocomplete support
+
 ## Themes
 
 The biggest theme (pun intended) of **rich-click** 1.9 is **themes**. These can be set with an env var (as an end user) or in the `@click.rich_config()` (as a developer).
@@ -292,8 +299,8 @@ Additionally, there are a handful of additional pending deprecations introduced 
 - `use_markdown_emoji`
 
 Of these config options being deprecated, the most popular is the combination of `append_metavars_help=True` and `show_metavars_column=False`.
-**We deprecated support for these because in 1.9, this is handled via declaring order of elements explicitly with the config options `options_table_column_types` and `options_table_help_sections`.
-An example of this approach can be seen below:**
+We deprecated support for these because in 1.9, this is handled via declaring order of elements explicitly with the config options `options_table_column_types` and `options_table_help_sections`.
+An example of this approach can be seen below:
 
 ??? info "Code"
     ```python hl_lines="22-23"
@@ -318,10 +325,7 @@ Will that be next year, or the year after? Will the roadmap change substantially
 
 The ultimate goal of **rich-click** is to become the most beautiful CLI help text generator out there.
 Nearing the end of development for 1.9, I couldn't help but think of all the ways we can continue to improve on that.
-For example, a big limitation of themes are that they all use ANSI colors.
-There are a lot of reasons for this decision, and it's not made lightly.
-But sometime in the future, I'd really like to move away from this; maybe we can get proper solarized, dracula, nord, material, onedark, and gruvbox themes in?
-However, achieving this may ultimately require a **2.0** release, and we're quite far from that.
+For example, a big limitation of themes are that they mostly use ANSI colors; and the ones which use hex values do not detect the terminal background color. We'd love to have background color detection and intelligently apply colors so that beautiful themes like `nord` and `dracula` look good regardless of the terminal environment.
 
 But, why spend so much time dwelling on the future, when the present state of things is so great and we've barely had time to enjoy it?
 We're **_extremely_** happy with where 1.9 leaves **rich-click**! And we hope you agree!
