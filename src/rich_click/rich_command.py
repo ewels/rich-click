@@ -502,14 +502,14 @@ class RichGroup(RichCommand, Group):
         return decorator
 
     def _handle_extras_add_command(
-            self,
-            cmd: click.Command,
-            name: Optional[str] = None,
-            aliases: Optional[Iterable[str]] = None,
-            panel: Optional[Union[str, List[str]]] = None,
-    ):
+        self,
+        cmd: click.Command,
+        name: Optional[str] = None,
+        aliases: Optional[Iterable[str]] = None,
+        panel: Optional[Union[str, List[str]]] = None,
+    ) -> None:
         """
-        This exists to create backwards compatibility with add_command() subclass interfaces
+        Create backwards compatibility with add_command() subclass interfaces
         that have not migrated to rich-click's 1.9.0 add_command(...).
 
         This should stay in place until a 2.0 release.

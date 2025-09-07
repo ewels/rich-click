@@ -7,7 +7,6 @@ from gettext import gettext
 from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, List, Literal, Optional, Tuple, Union, overload
 
 import click
-from rich import box
 from rich.align import Align
 from rich.columns import Columns
 from rich.console import RenderableType, group
@@ -1050,15 +1049,17 @@ def rich_format_error(
                                 config.style_errors_suggestion_command
                                 if config.style_errors_suggestion_command is not None
                                 else config.style_option
-                            )
+                            ),
                         ),
                         Text("for help"),
                     ),
                 ),
                 config.padding_errors_suggestion,
-                style=config.style_padding_errors
+                style=config.style_padding_errors,
             ),
-            style=(config.style_errors_suggestion if config.style_errors_suggestion is not None else config.style_helptext),
+            style=(
+                config.style_errors_suggestion if config.style_errors_suggestion is not None else config.style_helptext
+            ),
         )
 
     # A major Python library using click (dbt-core) has its own exception
@@ -1066,8 +1067,6 @@ def rich_format_error(
     # attribute. Checking for the 'message' attribute works to make the
     # rich-click CLI compatible.
     if hasattr(self, "message"):
-
-        kw: Dict[str, Any] = {}
 
         from rich_click.rich_box import get_box
 
@@ -1078,10 +1077,10 @@ def rich_format_error(
                     border_style=config.style_errors_panel_border,
                     title=config.errors_panel_title,
                     title_align=config.align_errors_panel,
-                    box=get_box(formatter.config.style_errors_panel_box)
+                    box=get_box(formatter.config.style_errors_panel_box or "ROUNDED"),
                 ),
                 config.padding_errors_panel,
-                style=config.style_padding_errors
+                style=config.style_padding_errors,
             )
         )
     if config.errors_epilogue:

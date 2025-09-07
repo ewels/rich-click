@@ -421,11 +421,11 @@ class RichGroup(RichCommand, click.Group):
         panel: Optional[str] = None,
     ) -> None: ...
     def _handle_extras_add_command(
-            self,
-            cmd: click.Command,
-            name: Optional[str] = None,
-            aliases: Optional[Iterable[str]] = None,
-            panel: Optional[Union[str, List[str]]] = None,
+        self,
+        cmd: click.Command,
+        name: Optional[str] = None,
+        aliases: Optional[Iterable[str]] = None,
+        panel: Optional[Union[str, List[str]]] = None,
     ) -> None: ...
 
 class RichMultiCommand(RichGroup, click.CommandCollection):
