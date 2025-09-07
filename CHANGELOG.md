@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 1.9.0.dev4 (WIP)
+## Version 1.9.0.dev5 (WIP)
 
 > [!WARNING]
 > Version 1.9.0 deprecates support for a lot of old versions of things:
@@ -18,6 +18,7 @@
 **Big changes:**
 
 - **Themes!** Check them out with `rich-click --themes`.
+- **Typer support:** `rich-click typer_app --help`.
 - **RichPanels** API introduced. This replaces the "groups" feature going forward (although groups will continue to be supported).
     - `@click.option_panel()`
     - `@click.command_panel()`

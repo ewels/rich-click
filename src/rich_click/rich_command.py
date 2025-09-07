@@ -437,7 +437,8 @@ class RichGroup(RichCommand, Group):
                 panel = kwargs.get("panel")
                 aliases = kwargs.get("aliases")
             cmd: RichCommand = command(*args, **kwargs)(f)
-            self.add_command(cmd, aliases=aliases, panel=panel)
+            self.add_command(cmd)
+            self._handle_extras_add_command(cmd, aliases=aliases, panel=panel)
             return cmd
 
         if func is not None:
@@ -491,13 +492,43 @@ class RichGroup(RichCommand, Group):
                 panel = kwargs.get("panel")
                 aliases = kwargs.get("aliases")
             cmd: RichGroup = group(*args, **kwargs)(f)
-            self.add_command(cmd, aliases=aliases, panel=panel)
+            self.add_command(cmd)
+            self._handle_extras_add_command(cmd, aliases=aliases, panel=panel)
             return cmd
 
         if func is not None:
             return decorator(func)
 
         return decorator
+
+    def _handle_extras_add_command(
+            self,
+            cmd: click.Command,
+            name: Optional[str] = None,
+            aliases: Optional[Iterable[str]] = None,
+            panel: Optional[Union[str, List[str]]] = None,
+    ):
+        """
+        This exists to create backwards compatibility with add_command() subclass interfaces
+        that have not migrated to rich-click's 1.9.0 add_command(...).
+
+        This should stay in place until a 2.0 release.
+
+        In the meanwhile, devs should get mypy errors indicating that add_command()
+        does not implement all the proper kwargs.
+        """
+        _name: str = name or cmd.name  # type: ignore[assignment]
+        if aliases:
+            for alias in aliases:
+                self._alias_mapping[alias] = _name
+        additional_aliases = getattr(cmd, "aliases", None)
+        if additional_aliases:
+            for alias in additional_aliases:
+                self._alias_mapping[alias] = _name
+        self._alias_mapping.pop(_name, None)
+        panel = panel or getattr(cmd, "panel", None)
+        if panel:
+            self.add_command_to_panel(cmd, panel)
 
     def get_command(self, ctx: click.Context, cmd_name: str) -> Optional[click.Command]:
         _cmd_name = self._alias_mapping.get(cmd_name, cmd_name)
@@ -516,17 +547,8 @@ class RichGroup(RichCommand, Group):
         """
         super().add_command(cmd, name)
         _name: str = name or cmd.name  # type: ignore[assignment]
-        if aliases:
-            for alias in aliases:
-                self._alias_mapping[alias] = _name
-        additional_aliases = getattr(cmd, "aliases", None)
-        if additional_aliases:
-            for alias in additional_aliases:
-                self._alias_mapping[alias] = _name
-        self._alias_mapping.pop(_name, None)
-        panel = panel or getattr(cmd, "panel", None)
-        if panel:
-            self.add_command_to_panel(cmd, panel)
+        if aliases or panel:
+            self._handle_extras_add_command(cmd, name=name, aliases=aliases, panel=panel)
 
     def add_command_to_panel(
         self,
