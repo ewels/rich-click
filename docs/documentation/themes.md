@@ -392,17 +392,19 @@ There are currently over a dozen different **color palettes**.
     All of the other themes use ANSI colors exclusively, and therefore users' environments are more likely to match these themes well.
 
     The `dracula`, `nord`, and `solarized` all have variants that force dark-backgrounds: `dracula_darkbg`, `nord_darkbg`, and `solarized_darkbg`.
-    We recommend applying this with something like [`term-background`](https://pypi.org/project/term-background/):
+    You can apply this with something like [`term-background`](https://pypi.org/project/term-background/):
 
     ```python
     import rich_click as click
     from term_background import is_dark_background
 
     if is_dark_background():
-        click.rich_click.THEME = "nord"
+        click.rich_click.THEME = "dracula"
     else:
-        click.rich_click.THEME = "nord_darkbg"
+        click.rich_click.THEME = "dracula_darkbg"
     ```
+
+    Some of these themes are riskier than others to apply as a developer. For example, the `solarized` theme is designed for both light and dark backgrounds. The `nord` theme has been tested on light terminals and, in practice, is legible. The `dracula` theme, however, is not user-friendly on a light background terminal.
 
     Additionally, the `solarized` theme in particular is quite legible on both dark and light backgrounds,
     so it is a relatively safe theme to use as a developer.

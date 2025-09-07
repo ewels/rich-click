@@ -130,6 +130,8 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_usage": "none",
             "style_padding_helptext": "none",
             "style_padding_epilog": "none",
+            "style_padding_errors": "none",
+            "style_errors_panel_border": "red",
         },
     ),
     "solarized": RichClickTheme(
@@ -176,6 +178,8 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_usage": "none",
             "style_padding_helptext": "none",
             "style_padding_epilog": "none",
+            "style_padding_errors": "none",
+            "style_errors_panel_border": "#dc322f",
         },
     ),
     "solarized_darkbg": RichClickTheme(
@@ -223,6 +227,8 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_usage": "#839496 on #002b36",
             "style_padding_helptext": "#839496 on #002b36",
             "style_padding_epilog": "#839496 on #002b36",
+            "style_padding_errors": "#839496 on #002b36",
+            "style_errors_panel_border": "#dc322f",
         },
     ),
     "nord": RichClickTheme(
@@ -247,12 +253,12 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_options_panel_help_style": "default",
             "style_commands_panel_help_style": "default",
             "style_deprecated": "#d08770",
-            "style_options_table_border_style": "#5e81ac",  #
-            "style_commands_table_border_style": "#8fbcbb",
-            "style_options_panel_border": "#5e81ac",  # 5e81ac
-            "style_commands_panel_border": "#8fbcbb",
-            "style_options_panel_title_style": "bold #5e81ac",
-            "style_commands_panel_title_style": "bold #8fbcbb",
+            "style_options_table_border_style": "#434c5e",
+            "style_commands_table_border_style": "#434c5e",
+            "style_options_panel_border": "#434c5e",
+            "style_commands_panel_border": "#434c5e",
+            "style_options_panel_title_style": "bold default not dim",
+            "style_commands_panel_title_style": "bold default not dim",
             "style_required_long": "#bf616a",
             "style_required_short": "#bf616a",
             "style_option_help": "default",
@@ -269,6 +275,8 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_usage": "none",
             "style_padding_helptext": "none",
             "style_padding_epilog": "none",
+            "style_padding_errors": "none",
+            "style_errors_panel_border": "#bf616a",
         },
     ),
     "nord_darkbg": RichClickTheme(
@@ -294,12 +302,12 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_options_panel_help_style": "#eceff4",
             "style_commands_panel_help_style": "#eceff4",
             "style_deprecated": "#d08770",
-            "style_options_table_border_style": "#5e81ac",  #
-            "style_commands_table_border_style": "#8fbcbb",
-            "style_options_panel_border": "#5e81ac",  # 5e81ac
-            "style_commands_panel_border": "#8fbcbb",
-            "style_options_panel_title_style": "bold #5e81ac",
-            "style_commands_panel_title_style": "bold #8fbcbb",
+            "style_options_table_border_style": "#434c5e",
+            "style_commands_table_border_style": "#434c5e",
+            "style_options_panel_border": "#434c5e",
+            "style_commands_panel_border": "#434c5e",
+            "style_options_panel_title_style": "bold #eceff4 not dim",
+            "style_commands_panel_title_style": "bold #eceff4 not dim",
             "style_required_long": "#bf616a",
             "style_required_short": "#bf616a",
             "style_option_help": "#eceff4",
@@ -316,6 +324,8 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_usage": "#eceff4 on #2e3440",
             "style_padding_helptext": "#eceff4 on #2e3440",
             "style_padding_epilog": "#eceff4 on #2e3440",
+            "style_padding_errors": "#eceff4 on #2e3440",
+            "style_errors_panel_border": "#bf616a",
         },
     ),
     "dracula": RichClickTheme(
@@ -362,6 +372,8 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_usage": "",
             "style_padding_helptext": "",
             "style_padding_epilog": "",
+            "style_padding_errors": "none",
+            "style_errors_panel_border": "#FF5555",
         },
     ),
     "dracula_darkbg": RichClickTheme(
@@ -409,6 +421,8 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_usage": "#F8F8F2 on #282A36",
             "style_padding_helptext": "#F8F8F2 on #282A36",
             "style_padding_epilog": "#F8F8F2 on #282A36",
+            "style_padding_errors": "#F8F8F2 on #282A36",
+            "style_errors_panel_border": "#FF5555",
         },
     ),
     "star": RichClickTheme(
@@ -455,6 +469,8 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_usage": "none",
             "style_padding_helptext": "none",
             "style_padding_epilog": "none",
+            "style_padding_errors": "none",
+            "style_errors_panel_border": "yellow",
         },
     ),
     # Dark and unified color scheme, looks great with complex CLIs.
@@ -502,6 +518,8 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_usage": "none",
             "style_padding_helptext": "none",
             "style_padding_epilog": "none",
+            "style_padding_errors": "none",
+            "style_errors_panel_border": "red",
         },
     ),
     # Remix of quartz with accents
@@ -549,6 +567,8 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_usage": "none",
             "style_padding_helptext": "none",
             "style_padding_epilog": "none",
+            "style_padding_errors": "none",
+            "style_errors_panel_border": "red",
         },
     ),
     "forest": RichClickTheme(
@@ -595,6 +615,8 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_usage": "none",
             "style_padding_helptext": "none",
             "style_padding_epilog": "none",
+            "style_padding_errors": "none",
+            "style_errors_panel_border": "dim red",
         },
     ),
     # Theme based on cargo CLI. Legible and bold style.
@@ -642,6 +664,8 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_usage": "none",
             "style_padding_helptext": "none",
             "style_padding_epilog": "none",
+            "style_padding_errors": "none",
+            "style_errors_panel_border": "red",
         },
     ),
     **{
@@ -689,6 +713,8 @@ COLORS: Dict[str, RichClickTheme] = {
                 "style_padding_usage": "none",
                 "style_padding_helptext": "none",
                 "style_padding_epilog": "none",
+                "style_padding_errors": "none",
+                "style_errors_panel_border": "red",
             },
         )
         for c in ["red", "green", "yellow", "blue", "magenta", "cyan"]
@@ -738,6 +764,8 @@ COLORS: Dict[str, RichClickTheme] = {
                 "style_padding_usage": "none",
                 "style_padding_helptext": "none",
                 "style_padding_epilog": "none",
+                "style_padding_errors": "none",
+                "style_errors_panel_border": "red",
             },
         )
         for c in ["red", "green", "yellow", "blue", "magenta", "cyan"]
@@ -787,6 +815,8 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_usage": "none",
             "style_padding_helptext": "none",
             "style_padding_epilog": "none",
+            "style_padding_errors": "none",
+            "style_errors_panel_border": "dim",
         },
     ),
     "plain": RichClickTheme(
@@ -834,6 +864,8 @@ COLORS: Dict[str, RichClickTheme] = {
             "style_padding_usage": "none",
             "style_padding_helptext": "none",
             "style_padding_epilog": "none",
+            "style_padding_errors": "none",
+            "style_errors_panel_border": "default",
         },
     ),
 }
@@ -846,6 +878,7 @@ FORMATS: Dict[str, RichClickTheme] = {
         styles={
             "style_options_panel_box": "ROUNDED",
             "style_commands_panel_box": "ROUNDED",
+            "style_errors_panel_box": "ROUNDED",
             "style_options_table_box": None,
             "style_commands_table_box": None,
             "style_options_table_expand": True,
@@ -889,6 +922,7 @@ FORMATS: Dict[str, RichClickTheme] = {
         styles={
             "style_options_panel_box": "HORIZONTALS_DOUBLE_TOP",
             "style_commands_panel_box": "HORIZONTALS_DOUBLE_TOP",
+            "style_errors_panel_box": "ROUNDED",
             "style_options_table_box": None,
             "style_commands_table_box": None,
             "style_options_table_expand": False,
@@ -929,6 +963,7 @@ FORMATS: Dict[str, RichClickTheme] = {
         styles={
             "style_options_panel_box": "BLANK",
             "style_commands_panel_box": "BLANK",
+            "style_errors_panel_box": "ROUNDED",
             "style_options_table_box": None,
             "style_commands_table_box": None,
             "style_options_table_expand": False,
@@ -952,7 +987,6 @@ FORMATS: Dict[str, RichClickTheme] = {
             "panel_title_padding": 0,
             "panel_inline_help_in_title": True,
             "panel_inline_help_delimiter": " ",
-            "style_errors_panel_box": None,
             "deprecated_string": "\\[deprecated]",
             "deprecated_with_reason_string": "\\[deprecated: {}]",
             "default_string": "\\[default={}]",
@@ -970,7 +1004,7 @@ FORMATS: Dict[str, RichClickTheme] = {
         styles={
             "style_options_panel_box": None,
             "style_commands_panel_box": None,
-            "style_errors_panel_box": None,
+            "style_errors_panel_box": "ROUNDED",
             "style_options_table_box": "HORIZONTALS_TOP",
             "style_commands_table_box": "HORIZONTALS_TOP",
             "style_options_table_expand": True,
@@ -1011,6 +1045,7 @@ FORMATS: Dict[str, RichClickTheme] = {
         styles={
             "style_options_panel_box": "SQUARE",
             "style_commands_panel_box": "SQUARE",
+            "style_errors_panel_box": "SQUARE",
             "style_options_table_box": None,
             "style_commands_table_box": None,
             "style_options_panel_padding": (1, 2),

@@ -1041,16 +1041,24 @@ def rich_format_error(
         help_option = self.ctx.help_option_names[0]  # type: ignore[attr-defined]
         formatter.write(
             Padding(
-                Columns(
+                Text(" ").join(
                     (
                         Text("Try"),
-                        Text(f"'{cmd_path} {help_option}'", style=config.style_errors_suggestion_command),
+                        Text(
+                            f"'{cmd_path} {help_option}'",
+                            style=(
+                                config.style_errors_suggestion_command
+                                if config.style_errors_suggestion_command is not None
+                                else config.style_option
+                            )
+                        ),
                         Text("for help"),
-                    )
+                    ),
                 ),
                 config.padding_errors_suggestion,
+                style=config.style_padding_errors
             ),
-            style=config.style_errors_suggestion,
+            style=(config.style_errors_suggestion if config.style_errors_suggestion is not None else config.style_helptext),
         )
 
     # A major Python library using click (dbt-core) has its own exception
@@ -1061,13 +1069,7 @@ def rich_format_error(
 
         kw: Dict[str, Any] = {}
 
-        if isinstance(formatter.config.style_errors_panel_box, str):
-            box_style = getattr(box, formatter.config.style_errors_panel_box, None)
-        else:
-            box_style = formatter.config.style_errors_panel_box
-
-        if box_style:
-            kw["box"] = box_style
+        from rich_click.rich_box import get_box
 
         formatter.write(
             Padding(
@@ -1076,9 +1078,10 @@ def rich_format_error(
                     border_style=config.style_errors_panel_border,
                     title=config.errors_panel_title,
                     title_align=config.align_errors_panel,
-                    **kw,
+                    box=get_box(formatter.config.style_errors_panel_box)
                 ),
                 config.padding_errors_panel,
+                style=config.style_padding_errors
             )
         )
     if config.errors_epilogue:
