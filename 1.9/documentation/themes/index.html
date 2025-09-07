@@ -1487,15 +1487,16 @@ and <strong>rich-click</strong> currently does not detect background colors for 
 <p>So although these themes are beautiful and work well as an end-user with <code>export RICH_CLICK_THEME=</code>, this also makes these themes risky to use as a developer.</p>
 <p>All of the other themes use ANSI colors exclusively, and therefore users' environments are more likely to match these themes well.</p>
 <p>The <code>dracula</code>, <code>nord</code>, and <code>solarized</code> all have variants that force dark-backgrounds: <code>dracula_darkbg</code>, <code>nord_darkbg</code>, and <code>solarized_darkbg</code>.
-We recommend applying this with something like <a href="https://pypi.org/project/term-background/"><code>term-background</code></a>:</p>
+You can apply this with something like <a href="https://pypi.org/project/term-background/"><code>term-background</code></a>:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">term_background</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_dark_background</span>
 
 <span class="k">if</span> <span class="n">is_dark_background</span><span class="p">():</span>
-    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">"nord"</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">"dracula"</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">"nord_darkbg"</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">"dracula_darkbg"</span>
 </code></pre></div>
+<p>Some of these themes are riskier than others to apply as a developer. For example, the <code>solarized</code> theme is designed for both light and dark backgrounds. The <code>nord</code> theme has been tested on light terminals and, in practice, is legible. The <code>dracula</code> theme, however, is not user-friendly on a light background terminal.</p>
 <p>Additionally, the <code>solarized</code> theme in particular is quite legible on both dark and light backgrounds,
 so it is a relatively safe theme to use as a developer.</p>
 <p>In a later version of <strong>rich-click</strong>, we intend on adding background color detection and styling conditional on background color,
