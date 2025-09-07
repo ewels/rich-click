@@ -1057,7 +1057,7 @@ FORMATS: Dict[str, RichClickTheme] = {
             "padding_usage": (0, 0, 1, 0),
             "deprecated_string": "❮[b]DEPRECATED[/b]❯",
             "deprecated_with_reason_string": "❮[b]DEPRECATED:[/b] {}❯",
-            "envvar_string": "❮[b]ENV:[/b] {}❯",
+            "envvar_string": "❮[b]ENV:[/b] {}=❯",
             "default_string": "❮[b]DEFAULT:[/b] {}❯",
             "append_metavars_help_string": "❮{}❯",
             "required_short_string": "*",
