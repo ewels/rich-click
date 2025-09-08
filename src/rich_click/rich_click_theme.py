@@ -427,7 +427,7 @@ COLORS: Dict[str, RichClickTheme] = {
     ),
     "star": RichClickTheme(
         name="star",
-        description="Litestar theme; royal feel",
+        description="Litestar official theme",
         primary_colors=["yellow", "blue", "default"],
         styles={
             "style_option": "yellow",

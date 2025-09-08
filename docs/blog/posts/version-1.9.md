@@ -81,6 +81,12 @@ As you can see, themes are not _just_ colors, they can also completely change th
 
 Themes are defined as `{color_palette}-{format}`. Overall, there are over **100 themes** to choose from.
 
+Our first adopter of **rich-click** themes is [Litestar](https://litestar.dev/), the ASGI API framework.
+They have their own official color palette called `star`. (Of course, you can use this theme for your own CLI, too!)
+Here's what it looks like!
+
+![](../../images/blog/version-1.9/litestar.svg){.screenshot}
+
 If you want to see all the options available to you, you can run the CLI command `rich-click --themes`:
 
 ??? info "Output of `rich-click --themes`"

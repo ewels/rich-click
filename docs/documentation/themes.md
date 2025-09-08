@@ -288,7 +288,7 @@ There are currently over a dozen different **color palettes**.
     ![`python cli.py --help`](../images/code_snippets/themes/themes_nord_box.svg){.screenshot}
 
 === "`star`"
-    Litestar theme; royal feel.
+    [Litestar](https://litestar.dev/) official theme.
 
     ```shell
     export RICH_CLICK_THEME=star-box
