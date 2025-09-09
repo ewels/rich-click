@@ -90,7 +90,7 @@ If you'd like to set a global theme, add the following to your shell's config fi
 
 === "zsh"
     ```shell
-    echo "export NO_COLOR=1" >> ~/.zshrc
+    echo "export RICH_CLICK_THEME=star-modern" >> ~/.zshrc
     ```
 
 Themes will also be used when you wrap a base Click CLI in the `rich-click` CLI, e.g.:
