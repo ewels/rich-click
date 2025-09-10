@@ -1,1 +1,6 @@
+---
+hide:
+  - toc
+  - navigation
+---
 # Blog
