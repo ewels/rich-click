@@ -11,7 +11,30 @@ Fortunately, there are ways as both developers and users to address these access
 
 If you are a user of a **rich-click** CLI, there are a few options you have to improve accessibility for yourself.
 
-### 1. Use the `NO_COLOR` environment variable
+### 1. Set a default **rich-click** theme
+
+You can set a **rich-click** theme using the `RICH_CLICK_THEME=` environment variable.
+This will affect _all_ CLI tools that use **rich-click**, even thought their authors may have coded up something differently!
+
+The theme you choose is able to change not only the colors, but also change the structure of the help text, which can assist with screen readers.
+
+!!!tip
+    See the [Themes](themes.md) documentation for more information.
+    Run `rich-click --themes` in your terminal to see all available themes and your current user's setting.
+
+In order to set this environment variable automatically every time you use the terminal, you can add it to your `~/.bashrc` (if using bash) or `~/.zshrc` (if using zsh):
+
+=== "bash"
+    ```shell
+    echo "export RICH_CLICK_THEME=nord-modern" >> ~/.bashrc
+    ```
+
+=== "zsh"
+    ```shell
+    echo "export RICH_CLICK_THEME=nord-modern" >> ~/.zshrc
+    ```
+
+### 2. Use the `NO_COLOR` environment variable
 
 Rich uses the `NO_COLOR` standard ([more information here](https://no-color.org/)), giving rich-click built-in capability to allow the user to suppress color.
 
@@ -40,7 +63,7 @@ In order to set this environment variable automatically every time you use the t
 !!!tip
     Note that other programs may also respect `NO_COLOR`, so it could have other effects!
 
-### 2. Configure your terminal's ANSI color escape sequences
+### 3. Configure your terminal's ANSI color escape sequences
 
 The 4-bit ANSI color system is a set of 16 different colors implemented in every terminal. This is the most common way to set colors.
 These colors are **not** deterministic; different terminals use slightly different hex values for the ANSI colors. [Wikipedia has a full breakdown of all the variations in these colors](https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit)
@@ -51,24 +74,6 @@ If you are having difficulty distinguishing colors, it is recommended that you a
 !!! note
     This will only work for CLIs that utilize the 4-bit ANSI color system.
     CLIs that utilize hex values or other color systems will not be impacted by your terminal's ANSI color settings.
-
-### 3. Set a default **rich-click** theme
-
-You can set a **rich-click** theme using the `RICH_CLICK_THEME=` environment variable.
-
-The theme you choose can change not only the colors, it can also change the structure of the help text, which can assist with screen readers.
-
-In order to set this environment variable automatically every time you use the terminal, you can add it to your `~/.bashrc` (if using bash) or `~/.zshrc` (if using zsh):
-
-=== "bash"
-    ```shell
-    echo "export RICH_CLICK_THEME=nord-modern" >> ~/.bashrc
-    ```
-
-=== "zsh"
-    ```shell
-    echo "export RICH_CLICK_THEME=nord-modern" >> ~/.zshrc
-    ```
 
 ## For developers
 

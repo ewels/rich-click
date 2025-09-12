@@ -107,6 +107,10 @@ plugins:
         - tags
   - mike:
       canonical_version: latest
+  - redirects:
+      redirect_maps:
+        'documentation/groups_and_sorting.md': 'documentation/panels.md'
+        'documentation/formatting_and_styles.md': 'documentation/text_markup_and_formatting.md'
 
 extra_css:
   - css/termynal.css

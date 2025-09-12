@@ -24,7 +24,8 @@ The big features of the 1.9 release are:
 
 ## Themes
 
-The biggest theme (pun intended) of **rich-click** 1.9 is **themes**. These can be set with an env var (as an end user) or in the `@click.rich_config()` (as a developer).
+The biggest theme (pun intended) of **rich-click** 1.9 is **themes**.
+These can be set with an environment variable (as an end user) or in the `@click.rich_config()` (as a developer).
 
 Here are some simple examples of themes:
 
@@ -79,6 +80,10 @@ Here are some simple examples of themes:
 
 As you can see, themes are not _just_ colors, they can also completely change the formatting, too!
 
+!!!tip
+    The ability to customise **rich-click** output _as an end user_ like this is a big win for accessibility!
+    See our [Accessibility documentation](https://ewels.github.io/rich-click/1.9/documentation/accessibility) for more information.
+
 Themes are defined as `{color_palette}-{format}`. Overall, there are over **100 themes** to choose from.
 
 Our first adopter of **rich-click** themes is [Litestar](https://litestar.dev/), the ASGI API framework.
@@ -93,7 +98,7 @@ If you want to see all the options available to you, you can run the CLI command
 
     ![](../../images/code_snippets/themes/all_themes.svg){.screenshot}
 
-If you are interested in learning more about themes, read about them in [the **Themes** docs](https://ewels.github.io/rich-click/1.9/documentation/panels/).
+If you are interested in learning more about themes, read about them in [the **Themes** docs](https://ewels.github.io/rich-click/1.9/documentation/themes/).
 
 ## `rich-click` CLI support for Typer CLIs
 
@@ -124,7 +129,7 @@ In the below example, we patch typer to use the `star-slim` theme directly in th
 
     ![](../../images/code_snippets/typer_support/typer_example.svg){.screenshot}
 
-Under the hood, we are doing metaclass [dark magic](https://github.com/ewels/rich-click/blob/main/src/rich_click/patch.py) to prevent needing to preemptively import Typer,
+Under the hood, we are doing metaclass [dark magic](https://github.com/ewels/rich-click/blob/e57aa800555bb8f3e3c46582f61fb22080802f4b/src/rich_click/patch.py) to prevent needing to preemptively import Typer,
 and to prevent requiring users to specify that a CLI is a Typer CLI.
 This keeps the runtime as slim and as fast as possible for non-Typer CLIs.
 (As of Typer version 0.17.0 released August 30, 2025, lazy loading Typer for improved performance is [less necessary](https://github.com/fastapi/typer/pull/1128), but it's still nice to have.)
@@ -240,7 +245,8 @@ We even typed the more opaque dicts, such as `context_settings`:
 
 Everything should be type-hinted, and we've tested this against both pyright and mypy to good results.
 
-Adding a feature like this is a little outside the intended scope of **rich-click**. We are also aware of the maintenance nightmare that `.pyi` files create. But we feel it is such a huge quality of life upgrade for the developer experience that we'd be silly to not add it. You're welcome!
+!!!note
+    Adding a feature like this is a little outside the intended scope of **rich-click**. We are also aware of the maintenance nightmare that `.pyi` files create. But we feel it is such a huge quality of life upgrade for the developer experience that we'd be silly to not add it. You're welcome!
 
 ## Other cool features
 

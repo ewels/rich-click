@@ -15,7 +15,10 @@ import rich_click as click
                     help="Extra options available to the user:",
                     help_style="blue",
                     panel_styles={"box": "DOUBLE"},
-                    table_styles={"row_styles": ["dim on rgb(16,16,32)", "on rgb(32,32,72)"], "caption": "Optional"})
+                    table_styles={
+                        "row_styles": ["dim on rgb(16,16,32)", "on rgb(32,32,72)"],
+                        "caption": "The arguments are optional"
+                    })
 @click.rich_config({"style_options_panel_border": "dim blue", "color_system": "truecolor"})
 def move_item(src, dest, env, log_level):
     """Move an item from a src location to a dest location"""
