@@ -6,9 +6,9 @@ import rich_click as click
 @click.group()
 @click.option("--env", help="Environment")
 @click.option("--log-level", help="Log level")
-@click.option_panel("Additional Options",
+@click.option_panel("Some Additional Options",
                     panel_styles={"border_style": "dim blue"})
-@click.command_panel("Subcommands",
+@click.command_panel("My Tool's Subcommands",
                      panel_styles={"border_style": "dim magenta"})
 @click.rich_config({
     "arguments_panel_title": "Very Important Required Args",
