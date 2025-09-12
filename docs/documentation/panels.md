@@ -1,6 +1,7 @@
 # Panels
 
-The containers which contain options and subcommands are called panels:
+**rich-click** lets you configure grouping and sorting of command options and subcommands.
+The containers which contain grouped options and subcommands are called panels:
 
 ![](../images/panels.svg)
 
@@ -10,20 +11,21 @@ By default, `RichCommand`s have a single panel for options named "Options", and 
 
 - The default panels can be renamed and stylized.
 - Options and commands can be split up across multiple panels.
-- Arguments can be given a separate panel, or included in options panels.
+- Positional arguments can be given a separate panel, or included in options panels.
 - The styles of these panels can be modified.
 
-!!! note
-    Panels are a replacement of "groups," which have been silently deprecated as of version 1.9.0.
-    We will support the old groups API indefinitely, although its use is discouraged. Furthermore, although groups can be combined with panels, we cannot guarantee any behavior such as ordering when these two things are combined.
+!!! info
+    Panels are a replacement of rich-click "groups," which are deprecated as of version 1.9.0.
+    We will support the old groups API for the foreseeable future, but its use is discouraged.
+    Although groups _can_ be combined with panels, doing so can lead to unpredictable behavior.
 
-    You can read the 1.8 docs to learn more about groups API [here](https://ewels.github.io/rich-click/1.8/documentation/groups_and_sorting/).
+    You can read the [rich-click v1.8 docs](https://ewels.github.io/rich-click/1.8/documentation/groups_and_sorting/) to learn more about groups API.
 
 ## Introduction to API
 
 The high-level API for defining panels is with the `@click.command_panel()` and `@click.option_panel()` decorators.
 
-Under the hood, these decorators create **`RichPanel`** objects (`RichCommandPanel` and `RichOptionPanel`) that get attached to the command.
+Under the hood, these decorators create **`RichPanel`** objects (`RichCommandPanel` and `RichOptionPanel`) that are attached to the command.
 
 ### Options
 
@@ -40,15 +42,16 @@ Options panels handle parameters for your command:
     -->
     ![`python panels_simple_decorators.py --help`](../images/code_snippets/panels/panels_simple_decorators.svg){.screenshot}
 
-You can also specify what options that panels are associated with in the option itself. If the panel is not created in a decorator, then one is created on the fly.
+Alternatively, you can configure panels within the option itself.
+If the panel is not created in a decorator, then one is created on the fly.
 
-The below code generates the same output as the above code:
+The following code generates the same output as the example above:
 
 ```python hl_lines="7-12"
 {% include "../code_snippets/panels/panels_simple_kwargs.py" %}
 ```
 
-???+ example "Output"
+??? example "Output"
 
     Note that this output is the same as the previous example, even though it was defined differently.
     <!-- RICH-CODEX
@@ -57,11 +60,9 @@ The below code generates the same output as the above code:
     ![`python panels_simple_kwargs.py --help`](../images/code_snippets/panels/panels_simple_kwargs.svg){.screenshot}
 
 
-RichPanels inherit their base style behaviors from the rich config, although these can be overridden, as we will see in a moment.
+`RichPanel` objects inherit their base style behaviors from the rich config, although these can be overridden, as we will see in a moment.
 
-RichPanels accept additional args other than just the name and objects associated with them.
-
-The below code shows how you can use this:
+You can also pass configuration arguments to style output to `RichPanel` objects:
 
 ```python
 {% include "../code_snippets/panels/panels_extra_kwargs.py" %}
@@ -76,14 +77,15 @@ The below code shows how you can use this:
 
 The `panel_styles` is passed into the outer `rich.panel.Panel()`, and the `table_styles` dict is pass as kwargs into the inner `rich.table.Table()`.
 
-You can view the respective docstrings of the `Table` and `Panel` objects for more information:
+See the available arguments for the **rich** library `Table` and `Panel` objects for more information:
 
-- [`rich/table.py`](https://github.com/Textualize/rich/blob/master/rich/table.py)
-- [`rich/panel.py`](https://github.com/Textualize/rich/blob/master/rich/panel.py)
+- [Table options :octicons-link-external-24:](https://rich.readthedocs.io/en/latest/tables.html#table-options)
+- [Panel options :octicons-link-external-24:](https://rich.readthedocs.io/en/latest/reference/panel.html#rich.panel.Panel)
+  and [Box styles :octicons-link-external-24:](https://rich.readthedocs.io/en/latest/appendix/box.html#appendix-box)
 
 ### Arguments
 
-Despite the name, options panels handle more than just options; they can also handle arguments.
+Despite the name, options panels handle more than just options; they can also handle positional arguments.
 
 Arguments can be given their own panel with the `show_arguments` config option:
 
@@ -112,7 +114,7 @@ Arguments can also be included in the options panel with the `group_arguments_op
     ![`python panels_simple_arguments_combined.py --help`](../images/code_snippets/panels/panels_simple_arguments_combined.svg){.screenshot}
 
 In **rich-click**, unlike base Click, arguments can have `help` text.
-If `help=` if set for arguments, then the argument panel is shown:
+If `help=` if set for arguments, then the argument panel is automatically shown:
 
 ```python hl_lines="7-8"
 {% include "../code_snippets/panels/panels_simple_arguments_help.py" %}
@@ -127,7 +129,7 @@ If `help=` if set for arguments, then the argument panel is shown:
 
 Arguments can also be given their own panels, or combined with other panels.
 
-```python hl_lines="7-8 11-12" 
+```python hl_lines="7-8 11-12"
 {% include "../code_snippets/panels/panels_simple_arguments_explicit.py" %}
 ```
 
@@ -174,7 +176,7 @@ Renamed panels can still have their panel-level configurations modified.
     ![`python panels_defaults_renamed.py --help`](../images/code_snippets/panels/panels_defaults_renamed.svg){.screenshot}
 
 Note that the rich config passes to subcommands, but panels are defined at the command level.
-So running `move-item --help` from the above example will rename the children's panels (because that's set in the parent's config), but it does not pass the `panel_styles=` to the subcommand:
+So running `move-item --help` from the above example _will_ rename the children's panels (because that's set in the parent's config), but it does _not_ pass the `panel_styles=` to the subcommand:
 
 ???+ example "Output"
 
@@ -189,7 +191,7 @@ In the below example, `Main` does not have any styles set, but `Extra` has the b
 However, defaults are overridden on an arg-by-arg basis, so the config level `box` is not overridden.
 The below example also overrides the title text style using `title_style=`.
 
-```python
+```python hl_lines="15-16"
 {% include "../code_snippets/panels/panels_defaults_override_config.py" %}
 ```
 
