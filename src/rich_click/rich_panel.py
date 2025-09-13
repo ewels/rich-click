@@ -510,9 +510,10 @@ def _resolve_panels_from_config(
                         opts.remove(opt)
                     traversed.append(opt)
                 grp[panel_cls._object_attr] = opts  # type: ignore[literal-required]
+                grp.pop("deduplicate", None)
                 final_groups_list.append(grp)
 
-    return [panel_cls(**grp) for grp in final_groups_list]  # type: ignore[misc]
+    return [panel_cls(**grp) for grp in final_groups_list]  # type: ignore[misc,arg-type]
 
 
 def construct_panels(

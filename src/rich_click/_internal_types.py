@@ -34,6 +34,7 @@ if TYPE_CHECKING:
     from rich.style import StyleType
     from rich.text import Text, TextType
 
+    from rich_click.rich_click_theme import RichClickTheme
     from rich_click.rich_help_configuration import (
         CommandColumnType,
         CommandHelpSectionType,
@@ -116,7 +117,7 @@ class PanelKwargs(TypedDict):
 class RichHelpConfigurationDict(TypedDict):
     """Typed dict for rich_config() kwargs."""
 
-    theme: NotRequired[Optional[str]]
+    theme: NotRequired[Optional[Union[str, "RichClickTheme"]]]
     enable_theme_env_var: NotRequired[bool]
     style_option: NotRequired["StyleType"]
     style_option_negative: NotRequired[Optional["StyleType"]]

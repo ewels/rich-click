@@ -1,13 +1,18 @@
 from __future__ import annotations
 
 import sys
-from typing import Any, Dict, List, Optional, Type, TypedDict
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypedDict
 
 
 if sys.version_info < (3, 11):
     from typing_extensions import NotRequired
 else:
     from typing import NotRequired
+
+if TYPE_CHECKING:
+    from rich.style import StyleType
+
+    from rich_click.rich_help_configuration import CommandColumnType, OptionColumnType
 
 
 notset: Any = object()
@@ -46,8 +51,14 @@ class CommandGroupDict(TypedDict):
 
     name: NotRequired[str]
     commands: NotRequired[List[str]]
-    table_styles: NotRequired[Dict[str, Any]]
-    panel_styles: NotRequired[Dict[str, Any]]
+    help: NotRequired[Optional[str]]
+    help_style: NotRequired[Optional["StyleType"]]
+    table_styles: NotRequired[Optional[Dict[str, Any]]]
+    panel_styles: NotRequired[Optional[Dict[str, Any]]]
+    column_types: NotRequired[Optional[List["CommandColumnType"]]]
+    inline_help_in_title: NotRequired[Optional[bool]]
+    title_style: NotRequired[Optional["StyleType"]]
+
     deduplicate: NotRequired[bool]
 
 
@@ -56,6 +67,12 @@ class OptionGroupDict(TypedDict):
 
     name: NotRequired[str]
     options: NotRequired[List[str]]
-    table_styles: NotRequired[Dict[str, Any]]
-    panel_styles: NotRequired[Dict[str, Any]]
+    help: NotRequired[Optional[str]]
+    help_style: NotRequired[Optional["StyleType"]]
+    table_styles: NotRequired[Optional[Dict[str, Any]]]
+    panel_styles: NotRequired[Optional[Dict[str, Any]]]
+    column_types: NotRequired[Optional[List["OptionColumnType"]]]
+    inline_help_in_title: NotRequired[Optional[bool]]
+    title_style: NotRequired[Optional["StyleType"]]
+
     deduplicate: NotRequired[bool]

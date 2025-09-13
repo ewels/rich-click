@@ -104,7 +104,7 @@ class RichHelpConfiguration:
     for a given field, the right-most field is used.
     """
 
-    theme: Optional[str] = field(default=None)
+    theme: Optional[Union[str, RichClickTheme]] = field(default=None)
     enable_theme_env_var: bool = field(default=True)
 
     # Default styles
@@ -386,7 +386,7 @@ class RichHelpConfiguration:
         return inst
 
     def apply_theme(self, force_default: bool = False) -> None:
-        theme = None
+        theme: Optional[Union[str, RichClickTheme]] = None
         raise_key_error = True
 
         import rich_click.rich_click as rc
