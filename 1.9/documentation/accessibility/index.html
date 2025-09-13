@@ -758,27 +758,27 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-use-the-no_color-environment-variable" class="md-nav__link">
+  <a href="#1-set-a-default-rich-click-theme" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Use the NO_COLOR environment variable
+      1. Set a default rich-click theme
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-configure-your-terminals-ansi-color-escape-sequences" class="md-nav__link">
+  <a href="#2-use-the-no_color-environment-variable" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Configure your terminal's ANSI color escape sequences
+      2. Use the NO_COLOR environment variable
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-set-a-default-rich-click-theme" class="md-nav__link">
+  <a href="#3-configure-your-terminals-ansi-color-escape-sequences" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Set a default rich-click theme
+      3. Configure your terminal's ANSI color escape sequences
     </span>
   </a>
   
@@ -937,27 +937,27 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-use-the-no_color-environment-variable" class="md-nav__link">
+  <a href="#1-set-a-default-rich-click-theme" class="md-nav__link">
     <span class="md-ellipsis">
-      1. Use the NO_COLOR environment variable
+      1. Set a default rich-click theme
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-configure-your-terminals-ansi-color-escape-sequences" class="md-nav__link">
+  <a href="#2-use-the-no_color-environment-variable" class="md-nav__link">
     <span class="md-ellipsis">
-      2. Configure your terminal's ANSI color escape sequences
+      2. Use the NO_COLOR environment variable
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#3-set-a-default-rich-click-theme" class="md-nav__link">
+  <a href="#3-configure-your-terminals-ansi-color-escape-sequences" class="md-nav__link">
     <span class="md-ellipsis">
-      3. Set a default rich-click theme
+      3. Configure your terminal's ANSI color escape sequences
     </span>
   </a>
   
@@ -1026,7 +1026,29 @@ Colorblindness impacts roughly 4% of the general population, meaning that if you
 <p>Fortunately, there are ways as both developers and users to address these accessibility concerns, as detailed on this page.</p>
 <h2 id="for-users">For users<a class="headerlink" href="#for-users" title="Permanent link">¶</a></h2>
 <p>If you are a user of a <strong>rich-click</strong> CLI, there are a few options you have to improve accessibility for yourself.</p>
-<h3 id="1-use-the-no_color-environment-variable">1. Use the <code>NO_COLOR</code> environment variable<a class="headerlink" href="#1-use-the-no_color-environment-variable" title="Permanent link">¶</a></h3>
+<h3 id="1-set-a-default-rich-click-theme">1. Set a default <strong>rich-click</strong> theme<a class="headerlink" href="#1-set-a-default-rich-click-theme" title="Permanent link">¶</a></h3>
+<p>You can set a <strong>rich-click</strong> theme using the <code>RICH_CLICK_THEME=</code> environment variable.
+This will affect <em>all</em> CLI tools that use <strong>rich-click</strong>, even thought their authors may have coded up something differently!</p>
+<p>The theme you choose is able to change not only the colors, but also change the structure of the help text, which can assist with screen readers.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>See the <a href="../themes/">Themes</a> documentation for more information.
+Run <code>rich-click --themes</code> in your terminal to see all available themes and your current user's setting.</p>
+</div>
+<p>In order to set this environment variable automatically every time you use the terminal, you can add it to your <code>~/.bashrc</code> (if using bash) or <code>~/.zshrc</code> (if using zsh):</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">bash</label><label for="__tabbed_1_2">zsh</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">"export RICH_CLICK_THEME=nord-modern"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">"export RICH_CLICK_THEME=nord-modern"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
+</code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="2-use-the-no_color-environment-variable">2. Use the <code>NO_COLOR</code> environment variable<a class="headerlink" href="#2-use-the-no_color-environment-variable" title="Permanent link">¶</a></h3>
 <p>Rich uses the <code>NO_COLOR</code> standard (<a href="https://no-color.org/">more information here</a>), giving rich-click built-in capability to allow the user to suppress color.</p>
 <p>So, to run any rich-click CLI program without colour, you can do:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">NO_COLOR</span><span class="o">=</span><span class="m">1</span><span class="w">  </span><span class="c1"># Set environment variable in shell</span>
@@ -1036,7 +1058,7 @@ python<span class="w"> </span>cli.py<span class="w">      </span><span class="c1
 <span class="nv">NO_COLOR</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>python<span class="w"> </span>cli.py
 </code></pre></div>
 <p>In order to set this environment variable automatically every time you use the terminal, you can add it to your <code>~/.bashrc</code> (if using bash) or <code>~/.zshrc</code> (if using zsh):</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">bash</label><label for="__tabbed_1_2">zsh</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio"><input id="__tabbed_2_2" name="__tabbed_2" type="radio"><div class="tabbed-labels"><label for="__tabbed_2_1">bash</label><label for="__tabbed_2_2">zsh</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">"export NO_COLOR=1"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
@@ -1052,7 +1074,7 @@ python<span class="w"> </span>cli.py<span class="w">      </span><span class="c1
 <p class="admonition-title">Tip</p>
 <p>Note that other programs may also respect <code>NO_COLOR</code>, so it could have other effects!</p>
 </div>
-<h3 id="2-configure-your-terminals-ansi-color-escape-sequences">2. Configure your terminal's ANSI color escape sequences<a class="headerlink" href="#2-configure-your-terminals-ansi-color-escape-sequences" title="Permanent link">¶</a></h3>
+<h3 id="3-configure-your-terminals-ansi-color-escape-sequences">3. Configure your terminal's ANSI color escape sequences<a class="headerlink" href="#3-configure-your-terminals-ansi-color-escape-sequences" title="Permanent link">¶</a></h3>
 <p>The 4-bit ANSI color system is a set of 16 different colors implemented in every terminal. This is the most common way to set colors.
 These colors are <strong>not</strong> deterministic; different terminals use slightly different hex values for the ANSI colors. <a href="https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit">Wikipedia has a full breakdown of all the variations in these colors</a></p>
 <p>Nearly all modern terminals have the ability to customize these colors in the terminals' settings.
@@ -1061,22 +1083,6 @@ If you are having difficulty distinguishing colors, it is recommended that you a
 <p class="admonition-title">Note</p>
 <p>This will only work for CLIs that utilize the 4-bit ANSI color system.
 CLIs that utilize hex values or other color systems will not be impacted by your terminal's ANSI color settings.</p>
-</div>
-<h3 id="3-set-a-default-rich-click-theme">3. Set a default <strong>rich-click</strong> theme<a class="headerlink" href="#3-set-a-default-rich-click-theme" title="Permanent link">¶</a></h3>
-<p>You can set a <strong>rich-click</strong> theme using the <code>RICH_CLICK_THEME=</code> environment variable.</p>
-<p>The theme you choose can change not only the colors, it can also change the structure of the help text, which can assist with screen readers.</p>
-<p>In order to set this environment variable automatically every time you use the terminal, you can add it to your <code>~/.bashrc</code> (if using bash) or <code>~/.zshrc</code> (if using zsh):</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio"><input id="__tabbed_2_2" name="__tabbed_2" type="radio"><div class="tabbed-labels"><label for="__tabbed_2_1">bash</label><label for="__tabbed_2_2">zsh</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">"export RICH_CLICK_THEME=nord-modern"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">"export RICH_CLICK_THEME=nord-modern"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
-</code></pre></div>
-</div>
-</div>
 </div>
 <h2 id="for-developers">For developers<a class="headerlink" href="#for-developers" title="Permanent link">¶</a></h2>
 <p>If you would like to make your CLI more accessible for others, there are a few rules of thumb you can follow:</p>

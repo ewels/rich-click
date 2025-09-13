@@ -10,7 +10,7 @@ import rich_click as click
 @click.option("--quiet/--no-quiet", "-q/-Q", help="Quiet logging", panel="Extra")
 @click.help_option("--help", "-h", panel="Extra")
 @click.option_panel("Main", column_types=["opt_short", "opt_long", "metavar", "help"])
-@click.option_panel("Extra", column_types=["opt_primary", "opt_secondary", "metavar", "help"])
+@click.option_panel("Extra", column_types=["help", "metavar", "opt_primary", "opt_secondary"])
 @click.rich_config({
     "delimiter_comma": ", ",
     "style_option_negative": "bold magenta",

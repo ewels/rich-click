@@ -1140,25 +1140,27 @@
 
 
 <h1 id="panels">Panels<a class="headerlink" href="#panels" title="Permanent link">¶</a></h1>
-<p>The containers which contain options and subcommands are called panels:</p>
+<p><strong>rich-click</strong> lets you configure grouping and sorting of command options and subcommands.
+The containers which contain grouped options and subcommands are called panels:</p>
 <p><a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/panels.svg" data-desc-position="bottom"><img alt="" src="../../images/panels.svg"></a></p>
 <p>By default, <code>RichCommand</code>s have a single panel for options named "Options", and <code>RichGroup</code>s have an additional panel for commands named "Commands".</p>
 <p><strong>rich-click</strong> allows you to control and customize everything about these panels:</p>
 <ul>
 <li>The default panels can be renamed and stylized.</li>
 <li>Options and commands can be split up across multiple panels.</li>
-<li>Arguments can be given a separate panel, or included in options panels.</li>
+<li>Positional arguments can be given a separate panel, or included in options panels.</li>
 <li>The styles of these panels can be modified.</li>
 </ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Panels are a replacement of "groups," which have been silently deprecated as of version 1.9.0.
-We will support the old groups API indefinitely, although its use is discouraged. Furthermore, although groups can be combined with panels, we cannot guarantee any behavior such as ordering when these two things are combined.</p>
-<p>You can read the 1.8 docs to learn more about groups API <a href="https://ewels.github.io/rich-click/1.8/documentation/groups_and_sorting/">here</a>.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Panels are a replacement of rich-click "groups," which are deprecated as of version 1.9.0.
+We will support the old groups API for the foreseeable future, but its use is discouraged.
+Although groups <em>can</em> be combined with panels, doing so can lead to unpredictable behavior.</p>
+<p>You can read the <a href="https://ewels.github.io/rich-click/1.8/documentation/groups_and_sorting/">rich-click v1.8 docs</a> to learn more about groups API.</p>
 </div>
 <h2 id="introduction-to-api">Introduction to API<a class="headerlink" href="#introduction-to-api" title="Permanent link">¶</a></h2>
 <p>The high-level API for defining panels is with the <code>@click.command_panel()</code> and <code>@click.option_panel()</code> decorators.</p>
-<p>Under the hood, these decorators create <strong><code>RichPanel</code></strong> objects (<code>RichCommandPanel</code> and <code>RichOptionPanel</code>) that get attached to the command.</p>
+<p>Under the hood, these decorators create <strong><code>RichPanel</code></strong> objects (<code>RichCommandPanel</code> and <code>RichOptionPanel</code>) that are attached to the command.</p>
 <h3 id="options">Options<a class="headerlink" href="#options" title="Permanent link">¶</a></h3>
 <p>Options panels handle parameters for your command:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
@@ -1191,8 +1193,9 @@ working_dir: docs/code_snippets/panels
 -->
 <a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/panels/panels_simple_decorators.svg" data-desc-position="bottom"><img alt="python panels_simple_decorators.py --help" class="screenshot" src="../../images/code_snippets/panels/panels_simple_decorators.svg"></a></p>
 </details>
-<p>You can also specify what options that panels are associated with in the option itself. If the panel is not created in a decorator, then one is created on the fly.</p>
-<p>The below code generates the same output as the above code:</p>
+<p>Alternatively, you can configure panels within the option itself.
+If the panel is not created in a decorator, then one is created on the fly.</p>
+<p>The following code generates the same output as the example above:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
 <span class="c1"># dependencies = ["rich-click&gt;=1.9"]</span>
 <span class="c1"># ///</span>
@@ -1213,7 +1216,7 @@ working_dir: docs/code_snippets/panels
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
     <span class="n">move_item</span><span class="p">()</span>
 </code></pre></div>
-<details class="example" open="open">
+<details class="example">
 <summary>Output</summary>
 <p>Note that this output is the same as the previous example, even though it was defined differently.
 <!-- RICH-CODEX
@@ -1221,9 +1224,8 @@ working_dir: docs/code_snippets/panels
 -->
 <a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/panels/panels_simple_kwargs.svg" data-desc-position="bottom"><img alt="python panels_simple_kwargs.py --help" class="screenshot" src="../../images/code_snippets/panels/panels_simple_kwargs.svg"></a></p>
 </details>
-<p>RichPanels inherit their base style behaviors from the rich config, although these can be overridden, as we will see in a moment.</p>
-<p>RichPanels accept additional args other than just the name and objects associated with them.</p>
-<p>The below code shows how you can use this:</p>
+<p><code>RichPanel</code> objects inherit their base style behaviors from the rich config, although these can be overridden, as we will see in a moment.</p>
+<p>You can also pass configuration arguments to style output to <code>RichPanel</code> objects:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
 <span class="c1"># dependencies = ["rich-click&gt;=1.9"]</span>
 <span class="c1"># ///</span>
@@ -1241,7 +1243,10 @@ working_dir: docs/code_snippets/panels
                     <span class="n">help</span><span class="o">=</span><span class="s2">"Extra options available to the user:"</span><span class="p">,</span>
                     <span class="n">help_style</span><span class="o">=</span><span class="s2">"blue"</span><span class="p">,</span>
                     <span class="n">panel_styles</span><span class="o">=</span><span class="p">{</span><span class="s2">"box"</span><span class="p">:</span> <span class="s2">"DOUBLE"</span><span class="p">},</span>
-                    <span class="n">table_styles</span><span class="o">=</span><span class="p">{</span><span class="s2">"row_styles"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"dim on rgb(16,16,32)"</span><span class="p">,</span> <span class="s2">"on rgb(32,32,72)"</span><span class="p">],</span> <span class="s2">"caption"</span><span class="p">:</span> <span class="s2">"Optional"</span><span class="p">})</span>
+                    <span class="n">table_styles</span><span class="o">=</span><span class="p">{</span>
+                        <span class="s2">"row_styles"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"dim on rgb(16,16,32)"</span><span class="p">,</span> <span class="s2">"on rgb(32,32,72)"</span><span class="p">],</span>
+                        <span class="s2">"caption"</span><span class="p">:</span> <span class="s2">"The arguments are optional"</span>
+                    <span class="p">})</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">"style_options_panel_border"</span><span class="p">:</span> <span class="s2">"dim blue"</span><span class="p">,</span> <span class="s2">"color_system"</span><span class="p">:</span> <span class="s2">"truecolor"</span><span class="p">})</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">move_item</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">log_level</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Move an item from a src location to a dest location"""</span>
@@ -1258,13 +1263,14 @@ working_dir: docs/code_snippets/panels
 <a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/panels/panels_extra_kwargs.svg" data-desc-position="bottom"><img alt="python panels_extra_kwargs.py --help" class="screenshot" src="../../images/code_snippets/panels/panels_extra_kwargs.svg"></a></p>
 </details>
 <p>The <code>panel_styles</code> is passed into the outer <code>rich.panel.Panel()</code>, and the <code>table_styles</code> dict is pass as kwargs into the inner <code>rich.table.Table()</code>.</p>
-<p>You can view the respective docstrings of the <code>Table</code> and <code>Panel</code> objects for more information:</p>
+<p>See the available arguments for the <strong>rich</strong> library <code>Table</code> and <code>Panel</code> objects for more information:</p>
 <ul>
-<li><a href="https://github.com/Textualize/rich/blob/master/rich/table.py"><code>rich/table.py</code></a></li>
-<li><a href="https://github.com/Textualize/rich/blob/master/rich/panel.py"><code>rich/panel.py</code></a></li>
+<li><a href="https://rich.readthedocs.io/en/latest/tables.html#table-options">Table options <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.5 2.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0V4.06l-6.22 6.22a.75.75 0 1 1-1.06-1.06L19.94 3h-3.69a.75.75 0 0 1-.75-.75"></path><path d="M2.5 4.25c0-.966.784-1.75 1.75-1.75h8.5a.75.75 0 0 1 0 1.5h-8.5a.25.25 0 0 0-.25.25v15.5c0 .138.112.25.25.25h15.5a.25.25 0 0 0 .25-.25v-8.5a.75.75 0 0 1 1.5 0v8.5a1.75 1.75 0 0 1-1.75 1.75H4.25a1.75 1.75 0 0 1-1.75-1.75z"></path></svg></span></a></li>
+<li><a href="https://rich.readthedocs.io/en/latest/reference/panel.html#rich.panel.Panel">Panel options <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.5 2.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0V4.06l-6.22 6.22a.75.75 0 1 1-1.06-1.06L19.94 3h-3.69a.75.75 0 0 1-.75-.75"></path><path d="M2.5 4.25c0-.966.784-1.75 1.75-1.75h8.5a.75.75 0 0 1 0 1.5h-8.5a.25.25 0 0 0-.25.25v15.5c0 .138.112.25.25.25h15.5a.25.25 0 0 0 .25-.25v-8.5a.75.75 0 0 1 1.5 0v8.5a1.75 1.75 0 0 1-1.75 1.75H4.25a1.75 1.75 0 0 1-1.75-1.75z"></path></svg></span></a>
+  and <a href="https://rich.readthedocs.io/en/latest/appendix/box.html#appendix-box">Box styles <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.5 2.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 .75.75v5.5a.75.75 0 0 1-1.5 0V4.06l-6.22 6.22a.75.75 0 1 1-1.06-1.06L19.94 3h-3.69a.75.75 0 0 1-.75-.75"></path><path d="M2.5 4.25c0-.966.784-1.75 1.75-1.75h8.5a.75.75 0 0 1 0 1.5h-8.5a.25.25 0 0 0-.25.25v15.5c0 .138.112.25.25.25h15.5a.25.25 0 0 0 .25-.25v-8.5a.75.75 0 0 1 1.5 0v8.5a1.75 1.75 0 0 1-1.75 1.75H4.25a1.75 1.75 0 0 1-1.75-1.75z"></path></svg></span></a></li>
 </ul>
 <h3 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">¶</a></h3>
-<p>Despite the name, options panels handle more than just options; they can also handle arguments.</p>
+<p>Despite the name, options panels handle more than just options; they can also handle positional arguments.</p>
 <p>Arguments can be given their own panel with the <code>show_arguments</code> config option:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
 <span class="c1"># dependencies = ["rich-click&gt;=1.9"]</span>
@@ -1318,7 +1324,7 @@ working_dir: docs/code_snippets/panels
 <a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/panels/panels_simple_arguments_combined.svg" data-desc-position="bottom"><img alt="python panels_simple_arguments_combined.py --help" class="screenshot" src="../../images/code_snippets/panels/panels_simple_arguments_combined.svg"></a></p>
 </details>
 <p>In <strong>rich-click</strong>, unlike base Click, arguments can have <code>help</code> text.
-If <code>help=</code> if set for arguments, then the argument panel is shown:</p>
+If <code>help=</code> if set for arguments, then the argument panel is automatically shown:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># /// script</span>
 <span class="c1"># dependencies = ["rich-click&gt;=1.9"]</span>
 <span class="c1"># ///</span>
@@ -1431,14 +1437,14 @@ Renamed panels can still have their panel-level configurations modified.</p>
 <span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">"--env"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Environment"</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">"--log-level"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Log level"</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">option_panel</span><span class="p">(</span><span class="s2">"Additional Options"</span><span class="p">,</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option_panel</span><span class="p">(</span><span class="s2">"Some Additional Options"</span><span class="p">,</span>
                     <span class="n">panel_styles</span><span class="o">=</span><span class="p">{</span><span class="s2">"border_style"</span><span class="p">:</span> <span class="s2">"dim blue"</span><span class="p">})</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">command_panel</span><span class="p">(</span><span class="s2">"Subcommands"</span><span class="p">,</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">command_panel</span><span class="p">(</span><span class="s2">"My Tool's Subcommands"</span><span class="p">,</span>
                      <span class="n">panel_styles</span><span class="o">=</span><span class="p">{</span><span class="s2">"border_style"</span><span class="p">:</span> <span class="s2">"dim magenta"</span><span class="p">})</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span>
-<span class="hll">    <span class="s2">"arguments_panel_title"</span><span class="p">:</span> <span class="s2">"Required Args"</span><span class="p">,</span>
-</span><span class="hll">    <span class="s2">"options_panel_title"</span><span class="p">:</span> <span class="s2">"Additional Options"</span><span class="p">,</span>
-</span><span class="hll">    <span class="s2">"commands_panel_title"</span><span class="p">:</span> <span class="s2">"Subcommands"</span><span class="p">,</span>
+<span class="hll">    <span class="s2">"arguments_panel_title"</span><span class="p">:</span> <span class="s2">"Very Important Required Args"</span><span class="p">,</span>
+</span><span class="hll">    <span class="s2">"options_panel_title"</span><span class="p">:</span> <span class="s2">"Some Additional Options"</span><span class="p">,</span>
+</span><span class="hll">    <span class="s2">"commands_panel_title"</span><span class="p">:</span> <span class="s2">"My Tool's Subcommands"</span><span class="p">,</span>
 </span>    <span class="s2">"show_arguments"</span><span class="p">:</span> <span class="kc">True</span>
 <span class="p">})</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">log_level</span><span class="p">):</span>
@@ -1462,7 +1468,7 @@ working_dir: docs/code_snippets/panels
 <a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/panels/panels_defaults_renamed.svg" data-desc-position="bottom"><img alt="python panels_defaults_renamed.py --help" class="screenshot" src="../../images/code_snippets/panels/panels_defaults_renamed.svg"></a></p>
 </details>
 <p>Note that the rich config passes to subcommands, but panels are defined at the command level.
-So running <code>move-item --help</code> from the above example will rename the children's panels (because that's set in the parent's config), but it does not pass the <code>panel_styles=</code> to the subcommand:</p>
+So running <code>move-item --help</code> from the above example <em>will</em> rename the children's panels (because that's set in the parent's config), but it does <em>not</em> pass the <code>panel_styles=</code> to the subcommand:</p>
 <details class="example" open="open">
 <summary>Output</summary>
 <p><!-- RICH-CODEX
@@ -1488,8 +1494,9 @@ The below example also overrides the title text style using <code>title_style=</
 <span class="nd">@click</span><span class="o">.</span><span class="n">version_option</span><span class="p">(</span><span class="s2">"1.2.3"</span><span class="p">,</span> <span class="n">panel</span><span class="o">=</span><span class="s2">"Extra"</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option_panel</span><span class="p">(</span><span class="s2">"Main"</span><span class="p">,</span> <span class="n">title_style</span><span class="o">=</span><span class="s2">"u b"</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option_panel</span><span class="p">(</span><span class="s2">"Extra"</span><span class="p">,</span>
-                    <span class="n">panel_styles</span><span class="o">=</span><span class="p">{</span><span class="s2">"border_style"</span><span class="p">:</span> <span class="s2">"blue"</span><span class="p">},</span>
-                    <span class="n">title_style</span><span class="o">=</span><span class="s2">"u b"</span><span class="p">)</span>
+<span class="hll">                    <span class="c1"># Box style has no effect here</span>
+</span><span class="hll">                    <span class="n">panel_styles</span><span class="o">=</span><span class="p">{</span><span class="s2">"border_style"</span><span class="p">:</span> <span class="s2">"blue"</span><span class="p">},</span>
+</span>                    <span class="n">title_style</span><span class="o">=</span><span class="s2">"u b"</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span>
     <span class="s2">"style_options_panel_border"</span><span class="p">:</span> <span class="s2">"bright_red"</span><span class="p">,</span>
     <span class="s2">"style_options_panel_box"</span><span class="p">:</span> <span class="s2">"SIMPLE"</span><span class="p">,</span>
@@ -1550,7 +1557,7 @@ The selected column types determine what gets rendered, and the order of the <co
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">"--quiet/--no-quiet"</span><span class="p">,</span> <span class="s2">"-q/-Q"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">"Quiet logging"</span><span class="p">,</span> <span class="n">panel</span><span class="o">=</span><span class="s2">"Extra"</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">help_option</span><span class="p">(</span><span class="s2">"--help"</span><span class="p">,</span> <span class="s2">"-h"</span><span class="p">,</span> <span class="n">panel</span><span class="o">=</span><span class="s2">"Extra"</span><span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option_panel</span><span class="p">(</span><span class="s2">"Main"</span><span class="p">,</span> <span class="n">column_types</span><span class="o">=</span><span class="p">[</span><span class="s2">"opt_short"</span><span class="p">,</span> <span class="s2">"opt_long"</span><span class="p">,</span> <span class="s2">"metavar"</span><span class="p">,</span> <span class="s2">"help"</span><span class="p">])</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">option_panel</span><span class="p">(</span><span class="s2">"Extra"</span><span class="p">,</span> <span class="n">column_types</span><span class="o">=</span><span class="p">[</span><span class="s2">"opt_primary"</span><span class="p">,</span> <span class="s2">"opt_secondary"</span><span class="p">,</span> <span class="s2">"metavar"</span><span class="p">,</span> <span class="s2">"help"</span><span class="p">])</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option_panel</span><span class="p">(</span><span class="s2">"Extra"</span><span class="p">,</span> <span class="n">column_types</span><span class="o">=</span><span class="p">[</span><span class="s2">"help"</span><span class="p">,</span> <span class="s2">"metavar"</span><span class="p">,</span> <span class="s2">"opt_primary"</span><span class="p">,</span> <span class="s2">"opt_secondary"</span><span class="p">])</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span>
     <span class="s2">"delimiter_comma"</span><span class="p">:</span> <span class="s2">", "</span><span class="p">,</span>
     <span class="s2">"style_option_negative"</span><span class="p">:</span> <span class="s2">"bold magenta"</span><span class="p">,</span>
