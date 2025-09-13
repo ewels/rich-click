@@ -60,7 +60,6 @@ def patch(*args: Any, **kwargs: Any) -> None:  # noqa: D103
 
 
 class _RichHelpConfigurationParamType(click.ParamType):
-
     name = "JSON"
 
     def __repr__(self) -> str:
@@ -72,7 +71,6 @@ class _RichHelpConfigurationParamType(click.ParamType):
         param: Optional[click.Parameter],
         ctx: Optional[click.Context],
     ) -> Optional[Dict[str, Any]]:
-
         if value is None:
             return value
         else:
@@ -276,7 +274,7 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
                 Renderables(
                     [
                         Panel(how_to_use, title="How to use", width=100),
-                        Panel(Padding(selected_text, pad=1), title="RICH_CLICK_THEME=", width=100),
+                        Panel(Padding(selected_text, pad=1), title="Local user setting", width=100),
                         Panel(colors, title="Color Palettes"),
                         Panel(formats, title="Formats"),
                     ]
@@ -338,7 +336,7 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
     envvar="RICH_CLICK_CLI_SUPPRESS_WARNINGS",
     show_envvar=True,
     panel="Advanced Options",
-    help="Suppress warnings when there are conflicting entry_points." " This situation is extremely rare.",
+    help="Suppress warnings when there are conflicting entry_points. This situation is extremely rare.",
 )
 @_rich_option(
     "--patch-rich-click/--no-patch-rich-click",

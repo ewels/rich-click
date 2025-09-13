@@ -12,6 +12,7 @@ import rich_click as click
 @click.version_option("1.2.3", panel="Extra")
 @click.option_panel("Main", title_style="u b")
 @click.option_panel("Extra",
+                    # Box style has no effect here
                     panel_styles={"border_style": "blue"},
                     title_style="u b")
 @click.rich_config({
