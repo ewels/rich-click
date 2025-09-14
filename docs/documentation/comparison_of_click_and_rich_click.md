@@ -140,6 +140,6 @@ Below is a side-by-side comparison of Click and Rich implementations of echos an
         """My application"""
         ...
     ```
-    More information about this is described in [the **Panels** docs](panels.md).
+    More information about this is described in [the **Panels** docs](panels/panels.md).
 - **rich-click** has a configuration object, **`RichHelpConfiguration()`**, that allows for control over how **rich-click** help text renders, so you are not locked into the defaults. More information about this is described in [the **Configuration** docs](configuration.md).
 - **rich-click** comes with a CLI tool that allows you to convert regular Click CLIs into **rich-click** CLIs, and also lets you render your **rich-click** CLI help text as HTML, SVG, JSON, and trees. More information about this is described in [the **rich-click CLI** docs](rich_click_cli.md), or you can run **`rich-click --help`** to view the CLI.

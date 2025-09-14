@@ -117,7 +117,12 @@ Below is a full list of configuration options from `rich_click.py`.
 
 All of these are available in the `RichHelpConfiguration` object, but as lowercase.
 
-## Config resolution order (advanced)
+---
+
+!!! danger "Advanced"
+    The rest of this document contains information that the majority of users will not need.
+
+## (Advanced) Config resolution order
 
 It probably should not matter for most use cases, but just case it does matter, there is an explicitly defined order of operations for how the configuration gets resolved:
 
@@ -161,7 +166,7 @@ flowchart TD
     classDef Wide padding: 8.5em;
 ```
 
-## Themes (advanced)
+## (Advanced) Themes
 
 !!! success
     This section is specifically concerned with how themes interact with configurations.
