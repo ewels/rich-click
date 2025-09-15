@@ -1,5 +1,5 @@
 ---
-draft: true
+draft: false
 slug: version-1.9
 date: 2025-09-15
 authors:
