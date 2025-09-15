@@ -494,25 +494,26 @@ def _resolve_panels_from_config(
 
     # Step 2: Match currently executing command to keys
     # Assign wildcards, but make sure we do not overwrite anything already defined.
-    for _path in paths:
-        for mtch in reversed(sorted([_ for _ in groups if fnmatch(_path, _)])):
-            wildcard_option_groups = groups[mtch]
-            for grp in wildcard_option_groups:
-                grp = grp.copy()
-                opts: List[str] = grp.get(panel_cls._object_attr, [])  # type: ignore[assignment]
-                traversed = []
-                for opt in grp.get(panel_cls._object_attr, []):  # type: ignore[attr-defined]
-                    if grp.get("deduplicate", True) and opt in [
-                        _opt
-                        for _grp in final_groups_list
-                        for _opt in [*traversed, *_grp.get(panel_cls._object_attr, [])]  # type: ignore[has-type]
-                    ]:
-                        opts.remove(opt)
-                    traversed.append(opt)
-                grp[panel_cls._object_attr] = opts  # type: ignore[literal-required]
-                final_groups_list.append(grp)
+    for mtch in reversed(sorted([_ for _ in groups if any(fnmatch(_path, _) for _path in paths)])):
+        wildcard_option_groups = groups[mtch]
+        for grp in wildcard_option_groups:
+            grp = grp.copy()
+            opts: List[str] = grp.get(panel_cls._object_attr, [])  # type: ignore[assignment]
+            traversed = []
+            for opt in grp.get(panel_cls._object_attr, []):  # type: ignore[attr-defined]
 
-    return [panel_cls(**grp) for grp in final_groups_list]  # type: ignore[misc]
+                if grp.get("deduplicate", True) and opt in [
+                    _opt
+                    for _grp in final_groups_list
+                    for _opt in _grp.get(panel_cls._object_attr, [])  # type: ignore[attr-defined]
+                ]:
+                    opts.remove(opt)
+                traversed.append(opt)
+            grp[panel_cls._object_attr] = opts  # type: ignore[literal-required]
+            grp.pop("deduplicate", None)
+            final_groups_list.append(grp)
+
+    return [panel_cls(**grp) for grp in final_groups_list]  # type: ignore[misc,arg-type]
 
 
 def construct_panels(
@@ -527,6 +528,9 @@ def construct_panels(
     # then we respect intra-type sort order but not inter-type sort order.
     defined_commands = False
     defined_options = False
+    # Handling ordering is tricky with the "groups" feature.
+    # it's safest to flag and treat specially.
+    using_groups_feat = False
 
     # Start with list of panels already defined.
     defined_panels: Dict[Tuple[str, str], RichPanel[Any, Any]] = {}
@@ -544,7 +548,7 @@ def construct_panels(
         )
         if option_groups_from_config:
             defined_panels.update({(p._object_attr, p.name): p for p in option_groups_from_config})
-            defined_options = True
+            using_groups_feat = True
 
     if isinstance(command, Group):
         if formatter.config.command_groups:
@@ -553,7 +557,7 @@ def construct_panels(
             )
             if command_groups_from_config:
                 defined_panels.update({(p._object_attr, p.name): p for p in command_groups_from_config})
-                defined_commands = True
+                using_groups_feat = True
 
     # Separate out default panels because we need to sort them properly later.
     # We will reversed() through this so order is flipped.
@@ -564,7 +568,7 @@ def construct_panels(
     post_default_panels: Dict[Tuple[str, str], List[str]]
     if isinstance(command, Group):
         if formatter.config.commands_before_options:
-            if defined_commands != defined_options:
+            if defined_commands != defined_options or using_groups_feat:
                 pre_default_panels = {
                     ("commands", formatter.config.commands_panel_title): [],
                 }
@@ -579,7 +583,7 @@ def construct_panels(
                     ("options", formatter.config.options_panel_title): [],
                 }
         else:
-            if defined_commands != defined_options:
+            if defined_commands != defined_options or using_groups_feat:
                 pre_default_panels = {
                     ("options", formatter.config.arguments_panel_title): [],
                     ("options", formatter.config.options_panel_title): [],

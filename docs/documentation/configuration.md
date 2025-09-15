@@ -102,7 +102,71 @@ def my_command():
     """Help text here."""
 ```
 
-## Themes
+## Configuration options
+
+Below is a full list of configuration options from `rich_click.py`.
+
+??? info "Config"
+    ```python
+    {%
+        include '../../src/rich_click/rich_click.py'
+        start="#!STARTCONFIG"
+        end="#!ENDCONFIG"
+    %}
+    ```
+
+All of these are available in the `RichHelpConfiguration` object, but as lowercase.
+
+---
+
+!!! danger "Advanced"
+    The rest of this document contains information that the majority of users will not need.
+
+## (Advanced) Config resolution order
+
+It probably should not matter for most use cases, but just case it does matter, there is an explicitly defined order of operations for how the configuration gets resolved:
+
+```mermaid
+flowchart TD
+    A["Did you pass in a @rich_config(help_config=...)?"]
+    A --> |Yes| Ayes
+    A --> |No| Ano
+
+    Ayes["Was it a dict or a RichHelpConfiguration?"]
+
+    Ayes --> |dict| AyesBdict
+    Ayes --> |RichHelpConfiguration| AyesBrhc
+
+    AyesBdict["Is there a 'parent' config?"]
+    
+    AyesBdict --> |Yes| AyesBdictCyes
+    AyesBdict --> |No| AyesBdictCno
+
+    AyesBdictCyes:::StoppingPoint
+    AyesBdictCyes["Merge into the parent config, and use that"]
+
+    AyesBdictCno:::StoppingPoint
+    AyesBdictCno["Merge into the global config, and use that"]
+
+    AyesBrhc:::Wide
+    AyesBrhc["<font style="font-weight: 600;">Use the RichHelpConfiguration  object.</font><br>(Note: RichHelpConfiguration's defaults are independent of the global config.)"]
+
+    Ano["Is there a 'parent' config?"]
+
+    Ano --> |Yes| AnoByes
+    Ano --> |No| AnoBno
+
+    AnoByes:::StoppingPoint
+    AnoByes["Use the parent config"]
+
+    AnoBno:::StoppingPoint
+    AnoBno["Use the global config"]
+
+    classDef StoppingPoint font-weight: 600;
+    classDef Wide padding: 8.5em;
+```
+
+## (Advanced) Themes
 
 !!! success
     This section is specifically concerned with how themes interact with configurations.
@@ -111,29 +175,21 @@ def my_command():
 
 Config options controlled by themes are assigned a sentinel value.
 When a `RichHelpConfiguration()` object is created, if the `theme` is defined, then the theme is applied to any **unset** config values.
-If the theme is not defined, then those values are kept as unset.
-When the `RichHelpFormatter()` object is created, if there is still no theme, then the default theme (`default-box`) is applied.
 
-In the event that there are multiple themes being assigned from different sources, one theme must be selected. The priority order of which theme gets selected is defined below (highest priority is #1):
-
-1. The theme defined in the `rich-click` CLI: `rich-click --theme [theme]`
-2. Environment variable: `RICH_CLICK_THEME=[theme]`
-3. The `theme` of the command's config
-
-Do note that other rules still apply with config resolution.
+Other config resolution rules still apply.
 So for example, the below will **not** apply the `"green2-nu"` theme to the CLI
-because of the other config resolution rules:
+because of the config resolution rule which states that `config = RichHelpConfiguration()` will not pull from globals:
 
 === "Bad example"
     ```python
     import rich_click as click
     import rich_click.rich_click as rc
     
-    # This will NOT work because the RichHelpConfiguration() below
+    # The following line will NOT do anything because the RichHelpConfiguration() below
     # completely ignores the the global config.
-
     rc.THEME = "green2-nu"
-    
+
+    # This will NOT have the green2-nu theme.
     help_config = click.RichHelpConfiguration(style_option="magenta")
     
     @click.command()
@@ -191,13 +247,22 @@ because of the other config resolution rules:
         """Help text here."""
     ```
 
+When we go to render help text, if there is _still_ no theme, then the default theme (`default-box`) is applied.
+
+In the event that there are multiple themes being assigned from different sources, one theme must be selected.
+The priority order of which theme gets selected is defined below (highest priority is #1):
+
+1. The theme defined in the `rich-click` CLI: `rich-click --theme [theme]`
+2. Environment variable: `RICH_CLICK_THEME=[theme]`
+3. The `theme` of the command's config
+
 ### Handling overrides and custom themes
 
 The user can override the theme that a developer sets because all end-user settings (CLI and env var) are prioritized above things set by the developer (command config).
 
 Note that themes never override existing config options, so explicitly set options always take precedence over a theme. This can cause potentially unintended side effects where your style settings clash with the user's theme. There are three ways around this.
 
-The first is to **do nothing**. For many config options, like `commands_before_options` or `options_panel_title`, the theme should not make any real difference or the config option may not even be stylistic in nature. Theme overrides only become a real issue when a user's `RICH_CLICK_THEME` clashes stylistically with your custom settings.
+The first is to **do nothing**. For many config options, like `commands_before_options` or `options_panel_title`, the theme should not make any real difference, or the config option may not even be stylistic in nature. Theme overrides only become a real issue when a user's `RICH_CLICK_THEME` clashes stylistically with your custom settings.
 
 The second way is to **explicitly prevent theme overrides** by setting the config option `enable_theme_env_var = False`. This option prevents **all** overrides when enabled.
 
@@ -271,63 +336,4 @@ config = click.RichHelpConfiguration(
 @click.rich_config(config)
 def cli():
     """My CLI help text"""
-```
-
-## Configuration options
-
-Below is a full list of configuration options from `rich_click.py`.
-
-??? info "Config"
-    ```python
-    {%
-        include '../../src/rich_click/rich_click.py'
-        start="#!STARTCONFIG"
-        end="#!ENDCONFIG"
-    %}
-    ```
-
-All of these are available in the `RichHelpConfiguration` object, but as lowercase.
-
-## Config resolution order (advanced)
-
-It probably should not matter for most use cases, but just case it does matter, there is an explicitly defined order of operations for how the configuration gets resolved:
-
-```mermaid
-flowchart TD
-    A["Did you pass in a @rich_config(help_config=...)?"]
-    A --> |Yes| Ayes
-    A --> |No| Ano
-
-    Ayes["Was it a dict or a RichHelpConfiguration?"]
-
-    Ayes --> |dict| AyesBdict
-    Ayes --> |RichHelpConfiguration| AyesBrhc
-
-    AyesBdict["Is there a 'parent' config?"]
-    
-    AyesBdict --> |Yes| AyesBdictCyes
-    AyesBdict --> |No| AyesBdictCno
-
-    AyesBdictCyes:::StoppingPoint
-    AyesBdictCyes["Merge into the parent config, and use that"]
-
-    AyesBdictCno:::StoppingPoint
-    AyesBdictCno["Merge into the global config, and use that"]
-
-    AyesBrhc:::Wide
-    AyesBrhc["<font style="font-weight: 600;">Use the RichHelpConfiguration  object.</font><br>(Note: RichHelpConfiguration's defaults are independent of the global config.)"]
-
-    Ano["Is there a 'parent' config?"]
-
-    Ano --> |Yes| AnoByes
-    Ano --> |No| AnoBno
-
-    AnoByes:::StoppingPoint
-    AnoByes["Use the parent config"]
-
-    AnoBno:::StoppingPoint
-    AnoBno["Use the global config"]
-
-    classDef StoppingPoint font-weight: 600;
-    classDef Wide padding: 8.5em;
 ```

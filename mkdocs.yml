@@ -45,8 +45,11 @@ nav:
       - "Comparison of Click & rich-click": documentation/comparison_of_click_and_rich_click.md
       - "Themes": documentation/themes.md
       - "Configuration": documentation/configuration.md
-      - "Structure": documentation/structure.md
-      - "Panels": documentation/panels.md
+#      - "Structure": documentation/structure.md
+      - "Panels":
+        - "Overview": documentation/panels/overview.md
+        - "Tips": documentation/panels/tips.md
+        - "Advanced": documentation/panels/advanced.md
       - "Text Markup & Formatting": documentation/text_markup_and_formatting.md
       - "Custom Styles": documentation/custom_styles.md
       - "<code>rich-click</code> CLI tool": documentation/rich_click_cli.md

@@ -3,25 +3,20 @@
 # ///
 import rich_click as click
 
+# 'Main' panel: uses default title style "bright_red"
+# 'Extra' panel: title style is overridden to use "blue"
+
 @click.command()
 @click.argument("src", help="Source", panel="Main")
 @click.argument("dest", help="Destination", panel="Main")
 @click.option("--env", help="Environment", panel="Extra")
 @click.option("--log-level", help="Log level", panel="Extra")
 @click.help_option(panel="Extra")
-@click.version_option("1.2.3", panel="Extra")
-@click.option_panel("Main", title_style="u b")
-@click.option_panel("Extra",
-                    # Box style has no effect here
-                    panel_styles={"border_style": "blue"},
-                    title_style="u b")
+@click.option_panel("Main")
+@click.option_panel("Extra", title_style="blue")
 @click.rich_config({
-    "style_options_panel_border": "bright_red",
-    "style_options_panel_box": "SIMPLE",
-    "style_option": "",
-    "style_argument": "bright_red",
-    "style_usage": "",
-    "style_metavar": "dim"
+    "theme": "plain",
+    "style_options_panel_title_style": "bright_red"  # <- default title style
 })
 def move_item(src, dest, env, log_level):
     """Move an item from a src location to a dest location"""

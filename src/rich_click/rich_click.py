@@ -21,10 +21,12 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.style import StyleType
     from rich.text import Text
 
+    from rich_click.rich_click_theme import RichClickTheme
+
 #!STARTCONFIG
 
 # Default styles
-THEME: Optional[str] = None
+THEME: Optional[Union[str, RichClickTheme]] = None
 ENABLE_THEME_ENV_VAR: bool = True
 
 STYLE_OPTION: "StyleType" = FROM_THEME
