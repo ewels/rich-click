@@ -3,14 +3,13 @@
     "version": "1.9",
     "title": "1.9",
     "aliases": [
+      "latest",
       "prerelease"
     ]
   },
   {
     "version": "1.8",
     "title": "1.8",
-    "aliases": [
-      "latest"
-    ]
+    "aliases": []
   }
 ]
