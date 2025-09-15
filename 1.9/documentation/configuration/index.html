@@ -11,7 +11,7 @@
         <link rel="prev" href="../themes/">
       
       
-        <link rel="next" href="../structure/">
+        <link rel="next" href="../panels/overview/">
       
       
         <link rel="alternate" type="application/rss+xml" title="RSS feed" href="../../feed_rss_created.xml">
@@ -628,13 +628,31 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#themes" class="md-nav__link">
+  <a href="#configuration-options" class="md-nav__link">
     <span class="md-ellipsis">
-      Themes
+      Configuration options
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Themes">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-config-resolution-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      (Advanced) Config resolution order
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-themes" class="md-nav__link">
+    <span class="md-ellipsis">
+      (Advanced) Themes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="(Advanced) Themes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -648,24 +666,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      Configuration options
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#config-resolution-order-advanced" class="md-nav__link">
-    <span class="md-ellipsis">
-      Config resolution order (advanced)
-    </span>
-  </a>
   
 </li>
       
@@ -684,12 +684,52 @@
   
   
   
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5">
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Panels
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            Panels
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../structure/" class="md-nav__link">
+      <a href="../panels/overview/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Structure
+    Overview
   </span>
   
 
@@ -706,15 +746,44 @@
   
   
     <li class="md-nav__item">
-      <a href="../panels/" class="md-nav__link">
+      <a href="../panels/tips/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Panels
+    Tips
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../panels/advanced/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Advanced
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -948,13 +1017,31 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#themes" class="md-nav__link">
+  <a href="#configuration-options" class="md-nav__link">
     <span class="md-ellipsis">
-      Themes
+      Configuration options
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Themes">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-config-resolution-order" class="md-nav__link">
+    <span class="md-ellipsis">
+      (Advanced) Config resolution order
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-themes" class="md-nav__link">
+    <span class="md-ellipsis">
+      (Advanced) Themes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="(Advanced) Themes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -968,24 +1055,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#configuration-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      Configuration options
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#config-resolution-order-advanced" class="md-nav__link">
-    <span class="md-ellipsis">
-      Config resolution order (advanced)
-    </span>
-  </a>
   
 </li>
       
@@ -1087,168 +1156,12 @@ You probably do not need this in most cases; this is mostly for <strong>rich-cli
 <span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""Help text here."""</span>
 </code></pre></div>
-<h2 id="themes">Themes<a class="headerlink" href="#themes" title="Permanent link">¶</a></h2>
-<div class="admonition success">
-<p class="admonition-title">Success</p>
-<p>This section is specifically concerned with how themes interact with configurations.</p>
-<p>More general information about themes is described in <a href="../themes/">the <strong>themes</strong> docs</a>.</p>
-</div>
-<p>Config options controlled by themes are assigned a sentinel value.
-When a <code>RichHelpConfiguration()</code> object is created, if the <code>theme</code> is defined, then the theme is applied to any <strong>unset</strong> config values.
-If the theme is not defined, then those values are kept as unset.
-When the <code>RichHelpFormatter()</code> object is created, if there is still no theme, then the default theme (<code>default-box</code>) is applied.</p>
-<p>In the event that there are multiple themes being assigned from different sources, one theme must be selected. The priority order of which theme gets selected is defined below (highest priority is #1):</p>
-<ol>
-<li>The theme defined in the <code>rich-click</code> CLI: <code>rich-click --theme [theme]</code></li>
-<li>Environment variable: <code>RICH_CLICK_THEME=[theme]</code></li>
-<li>The <code>theme</code> of the command's config</li>
-</ol>
-<p>Do note that other rules still apply with config resolution.
-So for example, the below will <strong>not</strong> apply the <code>"green2-nu"</code> theme to the CLI
-because of the other config resolution rules:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:5"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><input id="__tabbed_1_3" name="__tabbed_1" type="radio"><input id="__tabbed_1_4" name="__tabbed_1" type="radio"><input id="__tabbed_1_5" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">Bad example</label><label for="__tabbed_1_2">Fix 1a</label><label for="__tabbed_1_3">Fix 1b</label><label for="__tabbed_1_4">Fix 1c</label><label for="__tabbed_1_5">Fix 2</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click.rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rc</span>
-
-<span class="c1"># This will NOT work because the RichHelpConfiguration() below</span>
-<span class="c1"># completely ignores the the global config.</span>
-
-<span class="n">rc</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">"green2-nu"</span>
-
-<span class="n">help_config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span><span class="n">style_option</span><span class="o">=</span><span class="s2">"magenta"</span><span class="p">)</span>
-
-<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="n">help_config</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">"""Help text here."""</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
-
-<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">"theme"</span><span class="p">:</span> <span class="s2">"green2-nu"</span><span class="p">,</span> <span class="s2">"style_option"</span><span class="p">:</span> <span class="s2">"magenta"</span><span class="p">})</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">"""Help text here."""</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
-
-<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span><span class="n">theme</span><span class="o">=</span><span class="s2">"green2-nu"</span><span class="p">,</span> <span class="n">style_option</span><span class="o">=</span><span class="s2">"magenta"</span><span class="p">))</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">"""Help text here."""</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click.rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rc</span>
-
-<span class="n">rc</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">"green2-nu"</span>
-<span class="n">rc</span><span class="o">.</span><span class="n">STYLE_OPTION</span> <span class="o">=</span> <span class="s2">"magenta"</span>
-
-<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">"""Help text here."""</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click.rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rc</span>
-
-<span class="c1"># This works because of the config rule that dicts get merged</span>
-<span class="c1"># into the global config</span>
-
-<span class="n">rc</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">"green2-nu"</span>
-
-<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">"style_option"</span><span class="p">:</span> <span class="s2">"magenta"</span><span class="p">})</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">"""Help text here."""</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-<h3 id="handling-overrides-and-custom-themes">Handling overrides and custom themes<a class="headerlink" href="#handling-overrides-and-custom-themes" title="Permanent link">¶</a></h3>
-<p>The user can override the theme that a developer sets because all end-user settings (CLI and env var) are prioritized above things set by the developer (command config).</p>
-<p>Note that themes never override existing config options, so explicitly set options always take precedence over a theme. This can cause potentially unintended side effects where your style settings clash with the user's theme. There are three ways around this.</p>
-<p>The first is to <strong>do nothing</strong>. For many config options, like <code>commands_before_options</code> or <code>options_panel_title</code>, the theme should not make any real difference or the config option may not even be stylistic in nature. Theme overrides only become a real issue when a user's <code>RICH_CLICK_THEME</code> clashes stylistically with your custom settings.</p>
-<p>The second way is to <strong>explicitly prevent theme overrides</strong> by setting the config option <code>enable_theme_env_var = False</code>. This option prevents <strong>all</strong> overrides when enabled.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio"><input id="__tabbed_2_2" name="__tabbed_2" type="radio"><input id="__tabbed_2_3" name="__tabbed_2" type="radio"><div class="tabbed-labels"><label for="__tabbed_2_1"><code>{}</code></label><label for="__tabbed_2_2"><code>RichHelpConfiguration()</code></label><label for="__tabbed_2_3">Global config</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
-
-<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">"cli"</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">"theme"</span><span class="p">:</span> <span class="s2">"nord-slim"</span><span class="p">,</span> <span class="s2">"enable_theme_env_var"</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">"""My CLI help text"""</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
-
-<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">"cli"</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span><span class="n">theme</span><span class="o">=</span><span class="s2">"nord-slim"</span><span class="p">,</span> <span class="n">enable_theme_env_var</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">"""My CLI help text"""</span>
-</code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
-
-<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">"nord-slim"</span>
-<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">ENABLE_THEME_ENV_VAR</span> <span class="o">=</span> <span class="kc">False</span>
-
-<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">"cli"</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">"""My CLI help text"""</span>
-</code></pre></div>
-</div>
-</div>
-</div>
-<p>The final way is to <strong>apply your config as a theme</strong>.
-Basically, since themes are applied last and can be overridden, then if you have your config applied as a theme, then it can be overridden. RichHelpConfigurations have a method called to_theme which generates a theme from your config:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
-
-<span class="n">config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">()</span>
-<span class="n">theme</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">to_theme</span><span class="p">()</span>
-
-<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">"cli"</span><span class="p">)</span>
-<span class="c1"># This can be overridden.</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">"theme"</span><span class="p">:</span> <span class="n">theme</span><span class="p">})</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">"""My CLI help text"""</span>
-</code></pre></div>
-<p>A more advanced pattern, which lets you make some options overridable by a theme, while keeping others immutable:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
-
-<span class="c1"># All of these config options can be overridden</span>
-<span class="n">theme</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span>
-    <span class="n">style_option</span><span class="o">=</span><span class="s2">"bold red"</span><span class="p">,</span>
-    <span class="n">style_command</span><span class="o">=</span><span class="s2">"bold green"</span>
-<span class="p">)</span><span class="o">.</span><span class="n">to_theme</span><span class="p">()</span>
-
-<span class="c1"># Here, `style_metavar` will not be overridden by the RICH_CLICK_THEME env var.</span>
-<span class="n">config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span>
-    <span class="n">theme</span><span class="o">=</span><span class="n">theme</span><span class="p">,</span>
-    <span class="n">style_metavar</span><span class="o">=</span><span class="s2">"magenta"</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">"cli"</span><span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">"""My CLI help text"""</span>
-</code></pre></div>
 <h2 id="configuration-options">Configuration options<a class="headerlink" href="#configuration-options" title="Permanent link">¶</a></h2>
 <p>Below is a full list of configuration options from <code>rich_click.py</code>.</p>
 <details class="info">
 <summary>Config</summary>
 <div class="highlight"><pre><span></span><code><span class="c1"># Default styles</span>
-<span class="n">THEME</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">THEME</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RichClickTheme</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">ENABLE_THEME_ENV_VAR</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 
 <span class="n">STYLE_OPTION</span><span class="p">:</span> <span class="s2">"StyleType"</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
@@ -1392,7 +1305,12 @@ Basically, since themes are applied last and can be overridden, then if you have
 </code></pre></div>
 </details>
 <p>All of these are available in the <code>RichHelpConfiguration</code> object, but as lowercase.</p>
-<h2 id="config-resolution-order-advanced">Config resolution order (advanced)<a class="headerlink" href="#config-resolution-order-advanced" title="Permanent link">¶</a></h2>
+<hr>
+<div class="admonition danger">
+<p class="admonition-title">Advanced</p>
+<p>The rest of this document contains information that the majority of users will not need.</p>
+</div>
+<h2 id="advanced-config-resolution-order">(Advanced) Config resolution order<a class="headerlink" href="#advanced-config-resolution-order" title="Permanent link">¶</a></h2>
 <p>It probably should not matter for most use cases, but just case it does matter, there is an explicitly defined order of operations for how the configuration gets resolved:</p>
 <pre class="mermaid"><code>flowchart TD
     A["Did you pass in a @rich_config(help_config=...)?"]
@@ -1431,6 +1349,162 @@ Basically, since themes are applied last and can be overridden, then if you have
 
     classDef StoppingPoint font-weight: 600;
     classDef Wide padding: 8.5em;</code></pre>
+<h2 id="advanced-themes">(Advanced) Themes<a class="headerlink" href="#advanced-themes" title="Permanent link">¶</a></h2>
+<div class="admonition success">
+<p class="admonition-title">Success</p>
+<p>This section is specifically concerned with how themes interact with configurations.</p>
+<p>More general information about themes is described in <a href="../themes/">the <strong>themes</strong> docs</a>.</p>
+</div>
+<p>Config options controlled by themes are assigned a sentinel value.
+When a <code>RichHelpConfiguration()</code> object is created, if the <code>theme</code> is defined, then the theme is applied to any <strong>unset</strong> config values.</p>
+<p>Other config resolution rules still apply.
+So for example, the below will <strong>not</strong> apply the <code>"green2-nu"</code> theme to the CLI
+because of the config resolution rule which states that <code>config = RichHelpConfiguration()</code> will not pull from globals:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:5"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><input id="__tabbed_1_3" name="__tabbed_1" type="radio"><input id="__tabbed_1_4" name="__tabbed_1" type="radio"><input id="__tabbed_1_5" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1">Bad example</label><label for="__tabbed_1_2">Fix 1a</label><label for="__tabbed_1_3">Fix 1b</label><label for="__tabbed_1_4">Fix 1c</label><label for="__tabbed_1_5">Fix 2</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click.rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rc</span>
+
+<span class="c1"># The following line will NOT do anything because the RichHelpConfiguration() below</span>
+<span class="c1"># completely ignores the the global config.</span>
+<span class="n">rc</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">"green2-nu"</span>
+
+<span class="c1"># This will NOT have the green2-nu theme.</span>
+<span class="n">help_config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span><span class="n">style_option</span><span class="o">=</span><span class="s2">"magenta"</span><span class="p">)</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">help_config</span><span class="o">=</span><span class="n">help_config</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Help text here."""</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">"theme"</span><span class="p">:</span> <span class="s2">"green2-nu"</span><span class="p">,</span> <span class="s2">"style_option"</span><span class="p">:</span> <span class="s2">"magenta"</span><span class="p">})</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Help text here."""</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span><span class="n">theme</span><span class="o">=</span><span class="s2">"green2-nu"</span><span class="p">,</span> <span class="n">style_option</span><span class="o">=</span><span class="s2">"magenta"</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Help text here."""</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click.rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rc</span>
+
+<span class="n">rc</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">"green2-nu"</span>
+<span class="n">rc</span><span class="o">.</span><span class="n">STYLE_OPTION</span> <span class="o">=</span> <span class="s2">"magenta"</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Help text here."""</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rich_click.rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rc</span>
+
+<span class="c1"># This works because of the config rule that dicts get merged</span>
+<span class="c1"># into the global config</span>
+
+<span class="n">rc</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">"green2-nu"</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">"style_option"</span><span class="p">:</span> <span class="s2">"magenta"</span><span class="p">})</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">my_command</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""Help text here."""</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>When we go to render help text, if there is <em>still</em> no theme, then the default theme (<code>default-box</code>) is applied.</p>
+<p>In the event that there are multiple themes being assigned from different sources, one theme must be selected.
+The priority order of which theme gets selected is defined below (highest priority is #1):</p>
+<ol>
+<li>The theme defined in the <code>rich-click</code> CLI: <code>rich-click --theme [theme]</code></li>
+<li>Environment variable: <code>RICH_CLICK_THEME=[theme]</code></li>
+<li>The <code>theme</code> of the command's config</li>
+</ol>
+<h3 id="handling-overrides-and-custom-themes">Handling overrides and custom themes<a class="headerlink" href="#handling-overrides-and-custom-themes" title="Permanent link">¶</a></h3>
+<p>The user can override the theme that a developer sets because all end-user settings (CLI and env var) are prioritized above things set by the developer (command config).</p>
+<p>Note that themes never override existing config options, so explicitly set options always take precedence over a theme. This can cause potentially unintended side effects where your style settings clash with the user's theme. There are three ways around this.</p>
+<p>The first is to <strong>do nothing</strong>. For many config options, like <code>commands_before_options</code> or <code>options_panel_title</code>, the theme should not make any real difference, or the config option may not even be stylistic in nature. Theme overrides only become a real issue when a user's <code>RICH_CLICK_THEME</code> clashes stylistically with your custom settings.</p>
+<p>The second way is to <strong>explicitly prevent theme overrides</strong> by setting the config option <code>enable_theme_env_var = False</code>. This option prevents <strong>all</strong> overrides when enabled.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio"><input id="__tabbed_2_2" name="__tabbed_2" type="radio"><input id="__tabbed_2_3" name="__tabbed_2" type="radio"><div class="tabbed-labels"><label for="__tabbed_2_1"><code>{}</code></label><label for="__tabbed_2_2"><code>RichHelpConfiguration()</code></label><label for="__tabbed_2_3">Global config</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">"cli"</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">"theme"</span><span class="p">:</span> <span class="s2">"nord-slim"</span><span class="p">,</span> <span class="s2">"enable_theme_env_var"</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""My CLI help text"""</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">"cli"</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span><span class="n">theme</span><span class="o">=</span><span class="s2">"nord-slim"</span><span class="p">,</span> <span class="n">enable_theme_env_var</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""My CLI help text"""</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">THEME</span> <span class="o">=</span> <span class="s2">"nord-slim"</span>
+<span class="n">click</span><span class="o">.</span><span class="n">rich_click</span><span class="o">.</span><span class="n">ENABLE_THEME_ENV_VAR</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">"cli"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""My CLI help text"""</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The final way is to <strong>apply your config as a theme</strong>.
+Basically, since themes are applied last and can be overridden, then if you have your config applied as a theme, then it can be overridden. RichHelpConfigurations have a method called to_theme which generates a theme from your config:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">()</span>
+<span class="n">theme</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">to_theme</span><span class="p">()</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">"cli"</span><span class="p">)</span>
+<span class="c1"># This can be overridden.</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">({</span><span class="s2">"theme"</span><span class="p">:</span> <span class="n">theme</span><span class="p">})</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""My CLI help text"""</span>
+</code></pre></div>
+<p>A more advanced pattern, which lets you make some options overridable by a theme, while keeping others immutable:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">rich_click</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">click</span>
+
+<span class="c1"># All of these config options can be overridden</span>
+<span class="n">theme</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span>
+    <span class="n">style_option</span><span class="o">=</span><span class="s2">"bold red"</span><span class="p">,</span>
+    <span class="n">style_command</span><span class="o">=</span><span class="s2">"bold green"</span>
+<span class="p">)</span><span class="o">.</span><span class="n">to_theme</span><span class="p">()</span>
+
+<span class="c1"># Here, `style_metavar` will not be overridden by the RICH_CLICK_THEME env var.</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">click</span><span class="o">.</span><span class="n">RichHelpConfiguration</span><span class="p">(</span>
+    <span class="n">theme</span><span class="o">=</span><span class="n">theme</span><span class="p">,</span>
+    <span class="n">style_metavar</span><span class="o">=</span><span class="s2">"magenta"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">"cli"</span><span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">rich_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cli</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""My CLI help text"""</span>
+</code></pre></div>
 
 
 
