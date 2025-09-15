@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 1.9.0.dev6 (WIP)
+## Version 1.9.0 (2025-09-15)
 
 > [!WARNING]
 > Version 1.9.0 deprecates support for a lot of old versions of things:
