@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import os
+import io
 import sys
 from contextlib import contextmanager
 from functools import cached_property
@@ -78,7 +78,7 @@ def create_console(
     )
     # Defaults for console.color_system change when file is in __init__.
     # Workaround: set file after __init__.
-    console.file = file or open(os.devnull, "w")
+    console.file = file or io.StringIO()
     max_width = max_width if max_width is not None else config.max_width
     if isinstance(max_width, int):
         console.width = min(max_width, console.size.width)
