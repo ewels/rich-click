@@ -229,7 +229,7 @@ if __name__ == "__main__":
 
 ![](../../images/blog/version-1.9/panels_complex.svg){.screenshot}
 
-Neat, huh? If you are interested in learning more, read about panels in [the **Panels** docs](https://ewels.github.io/rich-click/1.9/documentation/panels/).
+Neat, huh? If you are interested in learning more, read about panels in [the **Panels** docs](https://ewels.github.io/rich-click/1.9/documentation/panels/overview).
 
 ## IDE autocomplete support
 
