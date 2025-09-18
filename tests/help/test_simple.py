@@ -212,29 +212,29 @@ def test_simple_help_modern_theme(cli_runner: CliRunner, cli: rich_click.RichCom
     assert result.stdout == snapshot(
         """\
                                                                                                     \n\
-   Usage: cli [OPTIONS] COMMAND [ARGS]...                                                           \n\
+  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                            \n\
                                                                                                     \n\
-   My amazing tool does all the things.                                                             \n\
-   This is a minimal example based on documentation from the 'click' package.                       \n\
-   You can try using --help at the top level and also for specific subcommands.                     \n\
-   Here are things you can do:                                                                      \n\
-   - sync files                                                                                     \n\
-   - download files                                                                                 \n\
-   - print help text!                                                                               \n\
-   ... and more!                                                                                    \n\
+  My amazing tool does all the things.                                                              \n\
+  This is a minimal example based on documentation from the 'click' package.                        \n\
+  You can try using --help at the top level and also for specific subcommands.                      \n\
+  Here are things you can do:                                                                       \n\
+  - sync files                                                                                      \n\
+  - download files                                                                                  \n\
+  - print help text!                                                                                \n\
+  ... and more!                                                                                     \n\
                                                                                                     \n\
-   Options                                                                                          \n\
-   ──────────────────────────────────────────────────────────────────────────────────────────────   \n\
-   -d / -n   --debug / --no-debug   Enable debug mode. Newlines are removed by default.             \n\
-                                    Double newlines are preserved.                                  \n\
-             --help                 Show this message and exit.                                     \n\
+  Options                                                                                           \n\
+  ────────────────────────────────────────────────────────────────────────────────────────────────  \n\
+  -d / -n   --debug / --no-debug   Enable debug mode. Newlines are removed by default.              \n\
+                                   Double newlines are preserved.                                   \n\
+            --help                 Show this message and exit.                                      \n\
                                                                                                     \n\
                                                                                                     \n\
-   Commands                                                                                         \n\
-   ──────────────────────────────────────────────────────────────────────────────────────────────   \n\
-   download   Optionally use short-help for the group help text                                     \n\
-   sync       Synchronise all your files between two places. Example command that doesn't do much   \n\
-              except print to the terminal.                                                         \n\
+  Commands                                                                                          \n\
+  ────────────────────────────────────────────────────────────────────────────────────────────────  \n\
+  download   Optionally use short-help for the group help text                                      \n\
+  sync       Synchronise all your files between two places. Example command that doesn't do much    \n\
+             except print to the terminal.                                                          \n\
                                                                                                     \n\
                                                                                                     \n\
 """
