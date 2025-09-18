@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.9.1 (??)
+
+- Fixed bug where running the `rich-click` CLI on a `@rich_click.argument()` sometimes caused arguments show up in the option panel when it shouldn't.
+
 ## Version 1.9.0 (2025-09-16)
 
 > [!WARNING]

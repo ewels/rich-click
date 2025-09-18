@@ -17,10 +17,9 @@ from typing import (
     Union,
 )
 
-import click
-import click.core
-from click import Group
+from click import Parameter
 
+from rich_click._click_types_cache import Argument, Command, Group
 from rich_click.rich_help_configuration import ColumnType, CommandColumnType, OptionColumnType
 from rich_click.rich_parameter import RichArgument, RichParameter
 from rich_click.utils import CommandGroupDict, OptionGroupDict
@@ -626,7 +625,7 @@ def construct_panels(
     if ("options", formatter.config.arguments_panel_title) in defined_panels:
         _show_arguments = True
 
-    objs: List[Tuple[str, str, Union[click.core.Parameter, click.core.Command]]] = [
+    objs: List[Tuple[str, str, Union[Parameter, Command]]] = [
         ("options", name, o) for name, o in formatter.option_panel_class.list_all_objects(ctx)
     ]
     if isinstance(command, Group):
@@ -643,9 +642,9 @@ def construct_panels(
         if getattr(obj, "hidden", False):
             continue
         names = {name, obj.name}
-        if isinstance(obj, click.core.Parameter):
+        if isinstance(obj, Parameter):
             names.update(obj.opts)
-        elif isinstance(obj, click.core.Command) and obj.callback is not None:
+        elif isinstance(obj, Command) and obj.callback is not None:
             names.add(obj.callback.__name__)
         assigned_to = set()
         for n in names:
@@ -670,7 +669,7 @@ def construct_panels(
         if not panel_list:
             inferred = True
             if typ == "options":
-                if not formatter.config.group_arguments_options and isinstance(obj, click.Argument):
+                if not formatter.config.group_arguments_options and isinstance(obj, Argument):
                     if _show_arguments is not False:
                         panel_list = [formatter.config.arguments_panel_title]
                     else:
