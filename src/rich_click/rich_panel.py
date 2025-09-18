@@ -17,7 +17,7 @@ from typing import (
     Union,
 )
 
-from click import Parameter
+from click import Context, Parameter
 
 from rich_click._click_types_cache import Argument, Command, Group
 from rich_click.rich_help_configuration import ColumnType, CommandColumnType, OptionColumnType
@@ -37,7 +37,7 @@ if TYPE_CHECKING:
 
 
 ColT = TypeVar("ColT", bound=ColumnType)
-CT = TypeVar("CT", click.Command, click.Parameter)
+CT = TypeVar("CT", Command, Parameter)
 GroupType = TypeVar("GroupType", OptionGroupDict, CommandGroupDict)
 
 
@@ -89,7 +89,7 @@ class RichPanel(Generic[CT, ColT]):
 
         return get_box(box)
 
-    def to_info_dict(self, ctx: click.Context) -> Dict[str, Any]:
+    def to_info_dict(self, ctx: Context) -> Dict[str, Any]:
         if self._object_attr is NotImplemented:
             raise NotImplementedError()
         return {
@@ -100,11 +100,11 @@ class RichPanel(Generic[CT, ColT]):
         }
 
     @classmethod
-    def list_all_objects(cls, ctx: click.Context) -> List[Tuple[str, CT]]:
+    def list_all_objects(cls, ctx: Context) -> List[Tuple[str, CT]]:
         """List all objects of the command that this panel type works with."""
         raise NotImplementedError()
 
-    def get_objects(self, command: click.Command, ctx: click.Context) -> Generator[CT, None, None]:
+    def get_objects(self, command: Command, ctx: Context) -> Generator[CT, None, None]:
         """List the proper names assigned to the panel."""
         raise NotImplementedError()
 
@@ -162,7 +162,7 @@ class RichPanel(Generic[CT, ColT]):
         return f"<{self.__class__.__name__} {self.name}>"
 
 
-class RichOptionPanel(RichPanel[click.Parameter, OptionColumnType]):
+class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
     """Panel for parameters."""
 
     _highlight: ClassVar[bool] = True
@@ -179,10 +179,10 @@ class RichOptionPanel(RichPanel[click.Parameter, OptionColumnType]):
         self.options = options or []
 
     @classmethod
-    def list_all_objects(cls, ctx: click.Context) -> List[Tuple[str, click.Parameter]]:
+    def list_all_objects(cls, ctx: Context) -> List[Tuple[str, Parameter]]:
         return [(i.name, i) for i in ctx.command.get_params(ctx)]  # type: ignore[misc]
 
-    def get_objects(self, command: click.Command, ctx: click.Context) -> Generator[click.Parameter, None, None]:
+    def get_objects(self, command: Command, ctx: Context) -> Generator[Parameter, None, None]:
         """List the objects assigned to the panel."""
         for opt in self.options:
             # Get the param
@@ -296,7 +296,7 @@ class RichOptionPanel(RichPanel[click.Parameter, OptionColumnType]):
         return panel
 
 
-class RichCommandPanel(RichPanel[click.Command, CommandColumnType]):
+class RichCommandPanel(RichPanel[Command, CommandColumnType]):
     """Panel for parameters."""
 
     _object_attr: ClassVar[str] = "commands"
@@ -312,13 +312,13 @@ class RichCommandPanel(RichPanel[click.Command, CommandColumnType]):
         self.commands = commands or []
 
     @classmethod
-    def list_all_objects(cls, ctx: click.Context) -> List[Tuple[str, click.Command]]:
+    def list_all_objects(cls, ctx: Context) -> List[Tuple[str, Command]]:
         if not isinstance(ctx.command, Group):
             return []
 
         return list(sorted(list(ctx.command.commands.items())))
 
-    def get_objects(self, command: click.Command, ctx: click.Context) -> Generator[click.Command, None, None]:
+    def get_objects(self, command: Command, ctx: Context) -> Generator[Command, None, None]:
         """List the objects assigned to the panel."""
         if not isinstance(command, Group):
             return
