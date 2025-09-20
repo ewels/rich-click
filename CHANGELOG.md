@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 1.9.1 (??)
+## Version 1.9.1 (2025-09-20)
 
 - Fixed bug where running the `rich-click` CLI on a `@rich_click.argument()` sometimes caused arguments show up in the option panel when it shouldn't.
 - Slightly reduced horizontal padding of the `modern` theme format.
