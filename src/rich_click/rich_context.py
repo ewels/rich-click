@@ -111,7 +111,7 @@ class RichContext(click.Context):
             exc_value: Optional[BaseException],
             tb: Optional[TracebackType],
         ) -> None:
-            return super().__exit__(exc_type, exc_value, tb)
+            super().__exit__(exc_type, exc_value, tb)
 
 
 def get_current_context(silent: bool = False) -> Optional[RichContext]:
