@@ -10,13 +10,17 @@ jobs:
     strategy:
       matrix:
         python: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
-        click: [8.0.*, 8.1.*, 8.2.*]
+        click: [8.0.*, 8.1.*, 8.2.*, 8.3.*]
         rich: [12.*, 13.*, 14.*]
         exclude:
           - python: "3.8"
             click: 8.2.*
           - python: "3.9"
             click: 8.2.*
+          - python: "3.8"
+            click: 8.3.*
+          - python: "3.9"
+            click: 8.3.*
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
