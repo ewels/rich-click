@@ -213,7 +213,6 @@ class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
         table = self._get_base_table(**t_styles)
         rows = []
         for param in self.get_objects(command, ctx):
-
             from rich_click.rich_help_rendering import get_parameter_rich_table_row
 
             cols = (

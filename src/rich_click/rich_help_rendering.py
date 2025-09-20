@@ -553,6 +553,18 @@ def _get_parameter_default(
     finally:
         ctx.resilient_parsing = resilient
 
+    notset: Tuple[Any, ...]
+    try:
+        # try/except because it's unclear whether later versions of click will change this.
+        if not CLICK_IS_BEFORE_VERSION_82:
+            from click.core import UNSET  # type: ignore[attr-defined]
+
+            notset = (UNSET, None)
+        else:
+            notset = (None,)
+    except ImportError:
+        notset = (None,)
+
     if (not CLICK_IS_VERSION_80 and param.show_default is not None) or param.show_default:
         if isinstance(param.show_default, str):
             show_default_is_str = show_default = True
@@ -563,7 +575,7 @@ def _get_parameter_default(
 
     default_string: Optional[str] = None
 
-    if show_default_is_str or (show_default and (default_value is not None)):
+    if show_default_is_str or (show_default and (default_value not in notset)):
         if show_default_is_str:
             default_string = f"({param.show_default})"
         elif isinstance(default_value, (list, tuple)):
