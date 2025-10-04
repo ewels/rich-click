@@ -116,7 +116,7 @@ def _get_help_text(
             )
 
     # Fetch and dedent the help text
-    help_text = inspect.cleandoc(obj.help)
+    help_text = inspect.cleandoc(obj.help or "")
 
     # Trim off anything that comes after \f on its own line
     help_text = help_text.partition("\f")[0]
@@ -187,6 +187,15 @@ def _get_help_text(
             # Join with double linebreaks if markdown
             remaining_lines = lb.join(remaining_paragraphs)
         yield formatter.rich_text(remaining_lines, formatter.config.style_helptext)
+    if getattr(obj, "aliases", None) and formatter.config.helptext_show_aliases:
+        yield Text.from_markup(
+            formatter.config.helptext_aliases_string.format(", ".join(obj.aliases)),  # type: ignore[attr-defined]
+            style=(
+                formatter.config.style_helptext_aliases
+                if formatter.config.style_helptext_aliases is not None
+                else formatter.config.style_helptext
+            ),
+        )
 
 
 def _get_deprecated_text(
@@ -557,7 +566,7 @@ def _get_parameter_default(
     try:
         # try/except because it's unclear whether later versions of click will change this.
         if not CLICK_IS_BEFORE_VERSION_82:
-            from click.core import UNSET  # type: ignore[attr-defined]
+            from click.core import UNSET  # type: ignore[attr-defined,unused-ignore]
 
             notset = (UNSET, None)
         else:
@@ -971,7 +980,7 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", pref
 def get_rich_help_text(self: Command, ctx: RichContext, formatter: RichHelpFormatter) -> None:
     """Write rich help text to the formatter if it exists."""
     # Print command / group help if we have some
-    if self.help:
+    if self.help or self.deprecated or getattr(self, "aliases", None):
         # Print with some padding
         formatter.write(
             Padding(

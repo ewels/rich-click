@@ -134,9 +134,7 @@ class RichCommand(Command):
     def _error_formatter(self) -> RichHelpFormatter:
         from click import get_current_context
 
-        try:
-            ctx: RichContext = get_current_context()  # type: ignore[assignment]
-        except RuntimeError:
+        def _get_formatter() -> RichHelpFormatter:
             config = self._generate_rich_help_config()
             formatter = self.context_class.formatter_class(
                 config=config,
@@ -144,8 +142,17 @@ class RichCommand(Command):
                     self.context_class.export_console_as if self.context_class.errors_in_output_format else None
                 ),
             )
+            return formatter
+
+        try:
+            ctx: RichContext = get_current_context()  # type: ignore[assignment]
+        except RuntimeError:
+            formatter = _get_formatter()
         else:
-            formatter = ctx.make_formatter(error_mode=True)
+            if not isinstance(ctx, RichContext):
+                formatter = _get_formatter()
+            else:
+                formatter = ctx.make_formatter(error_mode=True)
         return formatter
 
     @overload

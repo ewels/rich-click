@@ -46,6 +46,7 @@ STYLE_USAGE_SEPARATOR: "StyleType" = FROM_THEME
 STYLE_DEPRECATED: "StyleType" = FROM_THEME
 STYLE_HELPTEXT_FIRST_LINE: "StyleType" = FROM_THEME
 STYLE_HELPTEXT: "StyleType" = FROM_THEME
+STYLE_HELPTEXT_ALIASES: Optional["StyleType"] = None
 STYLE_OPTION_HELP: "StyleType" = FROM_THEME
 STYLE_COMMAND_HELP: "StyleType" = FROM_THEME
 STYLE_OPTION_DEFAULT: "StyleType" = FROM_THEME
@@ -126,6 +127,7 @@ REQUIRED_LONG_STRING: str = FROM_THEME
 RANGE_STRING: str = FROM_THEME
 APPEND_METAVARS_HELP_STRING: str = FROM_THEME
 APPEND_RANGE_HELP_STRING: str = FROM_THEME
+HELPTEXT_ALIASES_STRING: str = "Aliases: {}"
 ARGUMENTS_PANEL_TITLE: str = "Arguments"
 OPTIONS_PANEL_TITLE: str = "Options"
 COMMANDS_PANEL_TITLE: str = "Commands"
@@ -167,6 +169,7 @@ COMMAND_GROUPS: Dict[str, List[CommandGroupDict]] = {}
 # Define sorted groups of panels to display options and arguments
 OPTION_GROUPS: Dict[str, List[OptionGroupDict]] = {}
 USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
+HELPTEXT_SHOW_ALIASES: bool = True
 
 #!ENDCONFIG
 
