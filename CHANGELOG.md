@@ -4,6 +4,7 @@
 
 - Fixed legacy windows rendering
 - Fix issue with parent `click.Group` and child `rich_click.RichCommand` error formatter not resolving.
+- Add headers to tables (by default these are not shown).
 
 ## Version 1.9.1 (2025-09-20)
 
