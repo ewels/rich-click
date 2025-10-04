@@ -557,7 +557,7 @@ def _get_parameter_default(
     try:
         # try/except because it's unclear whether later versions of click will change this.
         if not CLICK_IS_BEFORE_VERSION_82:
-            from click.core import UNSET  # type: ignore[attr-defined]
+            from click.core import UNSET  # type: ignore[attr-defined,unused-ignore]
 
             notset = (UNSET, None)
         else:

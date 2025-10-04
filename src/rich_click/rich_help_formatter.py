@@ -264,7 +264,8 @@ class RichHelpFormatter(click.HelpFormatter):
 
             if self.console.legacy_windows:
                 # Handle legacy windows
-                import colorama
+                import colorama  # type: ignore[import-untyped]
+
                 colorama.init()
 
             if self.console.no_color:
