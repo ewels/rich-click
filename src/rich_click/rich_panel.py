@@ -223,16 +223,17 @@ class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
 
             rows.append(cols)
 
-        if True:
-            rows = list(
-                map(
-                    list,
-                    zip(*[col for col in zip(*rows) if any(cell for cell in col)]),
-                )
-            )
+        headers = [i.replace("_", " ").title() for i in formatter.config.options_table_column_types]
+
+        filtered = [(h, c) for h, c in zip(headers, zip(*rows)) if any(cell for cell in c)]
+        headers, rows = zip(*filtered) if filtered else ([], [])
+        rows = list(map(list, zip(*rows))) if rows else []
 
         for row in rows:
             table.add_row(*row)
+
+        for col, header in zip(table.columns, headers):
+            col.header = header
 
         return table
 
@@ -386,16 +387,17 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
 
             rows.append(cols)
 
-        if True:
-            rows = list(
-                map(
-                    list,
-                    zip(*[col for col in zip(*rows) if any(cell for cell in col)]),
-                )
-            )
+        headers = [i.replace("_", " ").title() for i in formatter.config.commands_table_column_types]
+
+        filtered = [(h, c) for h, c in zip(headers, zip(*rows)) if any(cell for cell in c)]
+        headers, rows = zip(*filtered) if filtered else ([], [])
+        rows = list(map(list, zip(*rows))) if rows else []
 
         for row in rows:
             table.add_row(*row)
+
+        for col, header in zip(table.columns, headers):
+            col.header = header
 
         return table
 
