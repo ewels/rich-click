@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.9.2.dev0 (2025-10-04)
+
+- Fixed legacy windows rendering
+
 ## Version 1.9.1 (2025-09-20)
 
 - Fixed bug where running the `rich-click` CLI on a `@rich_click.argument()` sometimes caused arguments show up in the option panel when it shouldn't.

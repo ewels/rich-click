@@ -262,6 +262,11 @@ class RichHelpFormatter(click.HelpFormatter):
             from rich.console import COLOR_SYSTEMS
             from rich.segment import Segment
 
+            if self.console.legacy_windows:
+                # Handle legacy windows
+                import colorama
+                colorama.init()
+
             if self.console.no_color:
                 res = "".join(
                     (

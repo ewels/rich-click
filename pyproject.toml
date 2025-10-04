@@ -34,6 +34,7 @@ dependencies = [
     "click>=8",
     "rich>=12",
     "typing-extensions>=4; python_version<'3.11'",
+    "colorama; platform_system == 'Windows'"
 ]
 optional-dependencies.dev = [
     "inline-snapshot>=0.24",
