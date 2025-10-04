@@ -3,6 +3,7 @@
 ## Version 1.9.2.dev0 (2025-10-04)
 
 - Fixed legacy windows rendering
+- Fix issue with parent `click.Group` and child `rich_click.RichCommand` error formatter not resolving.
 
 ## Version 1.9.1 (2025-09-20)
 
