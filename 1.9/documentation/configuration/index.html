@@ -1181,6 +1181,7 @@ You probably do not need this in most cases; this is mostly for <strong>rich-cli
 <span class="n">STYLE_DEPRECATED</span><span class="p">:</span> <span class="s2">"StyleType"</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 <span class="n">STYLE_HELPTEXT_FIRST_LINE</span><span class="p">:</span> <span class="s2">"StyleType"</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 <span class="n">STYLE_HELPTEXT</span><span class="p">:</span> <span class="s2">"StyleType"</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">STYLE_HELPTEXT_ALIASES</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">"StyleType"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="n">STYLE_OPTION_HELP</span><span class="p">:</span> <span class="s2">"StyleType"</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 <span class="n">STYLE_COMMAND_HELP</span><span class="p">:</span> <span class="s2">"StyleType"</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 <span class="n">STYLE_OPTION_DEFAULT</span><span class="p">:</span> <span class="s2">"StyleType"</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
@@ -1261,6 +1262,7 @@ You probably do not need this in most cases; this is mostly for <strong>rich-cli
 <span class="n">RANGE_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 <span class="n">APPEND_METAVARS_HELP_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
 <span class="n">APPEND_RANGE_HELP_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">FROM_THEME</span>
+<span class="n">HELPTEXT_ALIASES_STRING</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Aliases: </span><span class="si">{}</span><span class="s2">"</span>
 <span class="n">ARGUMENTS_PANEL_TITLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Arguments"</span>
 <span class="n">OPTIONS_PANEL_TITLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Options"</span>
 <span class="n">COMMANDS_PANEL_TITLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Commands"</span>
@@ -1302,6 +1304,7 @@ You probably do not need this in most cases; this is mostly for <strong>rich-cli
 <span class="c1"># Define sorted groups of panels to display options and arguments</span>
 <span class="n">OPTION_GROUPS</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">OptionGroupDict</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">USE_CLICK_SHORT_HELP</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Use click's default function to truncate help text</span>
+<span class="n">HELPTEXT_SHOW_ALIASES</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 </code></pre></div>
 </details>
 <p>All of these are available in the <code>RichHelpConfiguration</code> object, but as lowercase.</p>
