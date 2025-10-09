@@ -315,8 +315,12 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
     def list_all_objects(cls, ctx: Context) -> List[Tuple[str, Command]]:
         if not isinstance(ctx.command, Group):
             return []
-
-        return list(sorted(list(ctx.command.commands.items())))
+        commands = []
+        for cmd_name in ctx.command.list_commands(ctx):
+            cmd = ctx.command.get_command(ctx, cmd_name)
+            if cmd is not None:
+                commands.append((cmd_name, cmd))
+        return commands
 
     def get_objects(self, command: Command, ctx: Context) -> Generator[Command, None, None]:
         """List the objects assigned to the panel."""
