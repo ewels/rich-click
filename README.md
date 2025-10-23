@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
 ![`python examples/11_hello.py --help`](docs/images/hello.svg)
 
-_Screenshot from [`examples/11_hello.py`](examples/11_hello.py)_
+_Screenshot from [`examples/11_hello.py`](https://github.com/ewels/rich-click/blob/main/examples/11_hello.py)_
 
 ### More complex example
 
@@ -81,7 +81,7 @@ Below is a more complex example of what **rich-click** is capable of, utilizing 
 
 ![`python examples/03_groups_sorting.py --help`](docs/images/command_groups.svg)
 
-_Screenshot from [`examples/03_groups_sorting.py`](examples/03_groups_sorting.py)_
+_Screenshot from [`examples/03_groups_sorting.py`](https://github.com/ewels/rich-click/blob/main/examples/03_groups_sorting.py)_
 
 ## Usage
 
