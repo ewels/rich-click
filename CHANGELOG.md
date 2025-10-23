@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.9.4 (?)
+
+- Added Typer 0.20 support
+
 ## Version 1.9.3 (2025-10-09)
 
 - Fixed subcommand discovery in help text. Behavior should now be the same as `1.8`. [[#304](https://github.com/ewels/rich-click/pull/304)]
