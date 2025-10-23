@@ -84,7 +84,12 @@ def _typer_command_init(
 
 
 def _typer_group_init(
-    self: Any, *args: Any, rich_help_panel: Union[str, None] = None, rich_markup_mode: Any = None, **kwargs: Any
+    self: Any,
+    *args: Any,
+    rich_help_panel: Union[str, None] = None,
+    rich_markup_mode: Any = None,
+    suggest_commands: bool = True,
+    **kwargs: Any,
 ) -> None:
     import typer.core
 
@@ -94,6 +99,7 @@ def _typer_group_init(
     super(__TyperGroup, self).__init__(*args, **kwargs)
     self.rich_markup_mode = rich_markup_mode
     self.rich_help_panel = rich_help_panel
+    self.suggest_commands = suggest_commands
     self.panels = []
     self._alias_mapping = {}
     if not hasattr(self, "_help_option"):
