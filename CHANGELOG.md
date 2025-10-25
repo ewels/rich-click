@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 1.9.4 (?)
+## Version 1.9.4 (2025-10-24)
 
 - Added Typer 0.20 support
 - Fix lack of support for `flag_value=...`.
