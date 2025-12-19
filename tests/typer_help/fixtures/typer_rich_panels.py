@@ -7,7 +7,7 @@
 import typer
 
 
-cli = typer.Typer(rich_markup_mode="rich")
+cli = typer.Typer(rich_markup_mode="rich", no_args_is_help=True)
 
 
 @cli.command()
