@@ -14,6 +14,8 @@ jobs:
           python-version: 3
           activate-environment: true
       - name: Install dependencies
-        run:  uv pip install ".[dev]"
+        run:  |
+          uv pip install ".[dev]"
+          uv pip install "mypy<1.16"  # later versions don't work with python 3.8
       - name: Run pre-commit
         run: pre-commit run -a
