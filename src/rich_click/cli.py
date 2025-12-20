@@ -35,7 +35,7 @@ DISABLE_WARNINGS_NOTE = (
 )
 
 
-def entry_points(*, group: str) -> "metadata.EntryPoints":  # type: ignore[name-defined]
+def entry_points(*, group: str) -> "metadata.EntryPoints":
     """entry_points function that is compatible with Python 3.7+."""
     if sys.version_info >= (3, 10):
         return metadata.entry_points(group=group)
