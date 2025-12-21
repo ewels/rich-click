@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 1.9.5.dev0 (2025-10-24)
+
+- Fix `no_args_is_help` for Typer CLIs. [[#313](https://github.com/ewels/rich-click/issues/313)]
+- Fix strange encoding issue on Windows in GH Actions [[#314](https://github.com/ewels/rich-click/issues/314)]
+
 ## Version 1.9.4 (2025-10-24)
 
 - Added Typer 0.20 support

@@ -36,6 +36,23 @@ if TYPE_CHECKING:  # pragma: no cover
 RP = TypeVar("RP", bound=RichPanel[Any, Any])
 
 
+class _EncodedStringIO(io.StringIO):
+    """StringIO with encoding attributes for Rich Console detection."""
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self._encoding = getattr(sys.stdout, "encoding", None) or "utf-8"
+        self._errors = getattr(sys.stdout, "errors", None) or "replace"
+
+    @property
+    def encoding(self) -> str:  # type: ignore[override]
+        return self._encoding
+
+    @property
+    def errors(self) -> str:  # type: ignore[override]
+        return self._errors
+
+
 def create_console(
     config: RichHelpConfiguration,
     file: Optional[IO[str]] = None,

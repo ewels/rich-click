@@ -5,7 +5,7 @@ from __future__ import annotations
 # ruff: noqa: D103
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Type, Union
 
-from click import Argument, Command, Group, Option
+from click import Argument, Command, Context, Group, Option
 
 from rich_click.decorators import command as _rich_command
 from rich_click.decorators import group as _rich_group
@@ -106,9 +106,19 @@ def _typer_group_init(
         self._help_option = None
 
 
+def _parse_args(self, ctx: Context, args: List[str]) -> List[str]:  # type: ignore[no-untyped-def]
+    # This is to handle a weird incompatibility with Type and later versions of Click
+    # tldr: raise NoArgsIsHelp() doesn't work to render help text.
+    if not args and self.no_args_is_help and not ctx.resilient_parsing:
+        print(ctx.get_help())
+        ctx.exit()
+    return super(__TyperGroup, self).parse_args(ctx, args)  # type: ignore[no-any-return]
+
+
 def _patch_typer_group(cls: Type[Group]) -> Type[Group]:
     cls.format_help = RichGroup.format_help  # type: ignore[assignment]
     cls.__init__ = _typer_group_init  # type: ignore[method-assign]
+    cls.parse_args = _parse_args  # type: ignore[method-assign]
     cls.context_class = _PatchedTyperContext
     cls.panel = property(  # type: ignore[attr-defined]
         lambda self: self.rich_help_panel, lambda self, value: setattr(self, "rich_help_panel", value)
