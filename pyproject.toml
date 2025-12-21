@@ -124,10 +124,10 @@ pythonpath = [ "tests", "src" ]
 testpaths = [ "tests" ]
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.10"
 scripts_are_modules = true
 strict = true
-follow_imports = true
+follow_imports = "normal"
 exclude = [
     '.*?live_style_editor\.py$',
 ]
