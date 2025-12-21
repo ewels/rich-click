@@ -95,7 +95,7 @@ def create_console(
     )
     # Defaults for console.color_system change when file is in __init__.
     # Workaround: set file after __init__.
-    console.file = file or io.StringIO()
+    console.file = file or _EncodedStringIO()
     max_width = max_width if max_width is not None else config.max_width
     if isinstance(max_width, int):
         console.width = min(max_width, console.size.width)
