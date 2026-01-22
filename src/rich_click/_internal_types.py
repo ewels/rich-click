@@ -237,6 +237,7 @@ class RichHelpConfigurationDict(TypedDict):
     show_arguments: NotRequired[Optional[bool]]
     show_metavars_column: NotRequired[Optional[bool]]
     commands_before_options: NotRequired[bool]
+    default_panels_first: NotRequired[bool]
     append_metavars_help: NotRequired[Optional[bool]]
     group_arguments_options: NotRequired[bool]
     option_envvar_first: NotRequired[Optional[bool]]

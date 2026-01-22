@@ -23,9 +23,8 @@ def test_typer_types_help(typer_cli_runner: CliRunner, cli: typer.Typer) -> None
         """\
  Usage: cli [OPTIONS] ID                                                                            \n\
                                                                                                     \n\
- ═ Logging ════════════════════════════════════════════════════════════════════════════════════════ \n\
- --log-level         [debug|info|warn|error] (Default: info)                                        \n\
- --color/--no-color  (Default: color)                                                               \n\
+ ═ Arguments ══════════════════════════════════════════════════════════════════════════════════════ \n\
+ #  ID  [INTEGER RANGE] (Required)                                                                  \n\
                                                                                                     \n\
  ═ Options ════════════════════════════════════════════════════════════════════════════════════════ \n\
  --age                 [INTEGER RANGE x>=18] (Default: 20)                                          \n\
@@ -34,6 +33,10 @@ def test_typer_types_help(typer_cli_runner: CliRunner, cli: typer.Typer) -> None
  --show-completion     Show completion for the current shell, to copy it or customize the           \n\
                        installation.                                                                \n\
  --help                Show this message and exit.                                                  \n\
+                                                                                                    \n\
+ ═ Logging ════════════════════════════════════════════════════════════════════════════════════════ \n\
+ --log-level         [debug|info|warn|error] (Default: info)                                        \n\
+ --color/--no-color  (Default: color)                                                               \n\
                                                                                                     \n\
 """
     )
@@ -49,9 +52,8 @@ def test_typer_types_help_renamed_default_panel(typer_cli_runner: CliRunner, cli
         """\
  Usage: cli [OPTIONS] ID                                                                            \n\
                                                                                                     \n\
- ═ Logging ════════════════════════════════════════════════════════════════════════════════════════ \n\
- --log-level         [debug|info|warn|error] (Default: info)                                        \n\
- --color/--no-color  (Default: color)                                                               \n\
+ ═ Arguments ══════════════════════════════════════════════════════════════════════════════════════ \n\
+ #  ID  [INTEGER RANGE] (Required)                                                                  \n\
                                                                                                     \n\
  ═ Custom Panel ═══════════════════════════════════════════════════════════════════════════════════ \n\
  --age                 [INTEGER RANGE x>=18] (Default: 20)                                          \n\
@@ -60,6 +62,10 @@ def test_typer_types_help_renamed_default_panel(typer_cli_runner: CliRunner, cli
  --show-completion     Show completion for the current shell, to copy it or customize the           \n\
                        installation.                                                                \n\
  --help                Show this message and exit.                                                  \n\
+                                                                                                    \n\
+ ═ Logging ════════════════════════════════════════════════════════════════════════════════════════ \n\
+ --log-level         [debug|info|warn|error] (Default: info)                                        \n\
+ --color/--no-color  (Default: color)                                                               \n\
                                                                                                     \n\
 """
     )

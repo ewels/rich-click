@@ -27,6 +27,10 @@ def test_typer_rich_panels(typer_cli_runner: CliRunner, cli: typer.Typer) -> Non
                        installation.                                                                \n\
  --help                Show this message and exit.                                                  \n\
                                                                                                     \n\
+ ═ Commands ═══════════════════════════════════════════════════════════════════════════════════════ \n\
+ create  Create a new user. ✨                                                                      \n\
+ delete  Delete a user. 🔥                                                                          \n\
+                                                                                                    \n\
  ═ Utils and Configs ══════════════════════════════════════════════════════════════════════════════ \n\
  config  Configure the system. 🔧                                                                   \n\
  sync    Synchronize the system or something fancy like that. ♻                                     \n\
@@ -35,9 +39,31 @@ def test_typer_rich_panels(typer_cli_runner: CliRunner, cli: typer.Typer) -> Non
  help    Get help with the system. ❓                                                               \n\
  report  Report an issue. 🐛                                                                        \n\
                                                                                                     \n\
- ═ Commands ═══════════════════════════════════════════════════════════════════════════════════════ \n\
- create  Create a new user. ✨                                                                      \n\
- delete  Delete a user. 🔥                                                                          \n\
+"""
+    )
+    assert result.stderr == snapshot("")
+
+
+def test_typer_rich_panels_subcommand(typer_cli_runner: CliRunner, cli: typer.Typer) -> None:
+    rc.THEME = "nu"
+    result = typer_cli_runner.invoke(cli, ["create", "--help"])
+    assert result.exit_code == 0
+    assert result.stdout == snapshot(
+        """\
+ Usage: root create [OPTIONS] USERNAME                                                              \n\
+                                                                                                    \n\
+ Create a new user. ✨                                                                              \n\
+                                                                                                    \n\
+ ═ Arguments ══════════════════════════════════════════════════════════════════════════════════════ \n\
+ #  USERNAME  [TEXT] (Required)                                                                     \n\
+                                                                                                    \n\
+ ═ Options ════════════════════════════════════════════════════════════════════════════════════════ \n\
+ --force/--no-force  (Default: no-force)                                                            \n\
+ --help              Show this message and exit.                                                    \n\
+                                                                                                    \n\
+ ═ Logging ════════════════════════════════════════════════════════════════════════════════════════ \n\
+ --verbose/--no-verbose  (Default: no-verbose)                                                      \n\
+ --debug/--no-debug      (Default: no-debug)                                                        \n\
                                                                                                     \n\
 """
     )

@@ -153,6 +153,7 @@ PADDING_ERRORS_EPILOGUE: "PaddingDimensions" = (0, 1, 1, 1)
 SHOW_ARGUMENTS: Optional[bool] = None  # Show positional arguments
 SHOW_METAVARS_COLUMN: Optional[bool] = None  # Show a column with the option metavar (eg. INTEGER)
 COMMANDS_BEFORE_OPTIONS: bool = False  # If set, the commands panel show above the options panel.
+DEFAULT_PANELS_FIRST: bool = False  # If set, default panels appear before custom panels of the same type.
 APPEND_METAVARS_HELP: Optional[bool] = None  # Append metavar (eg. [TEXT]) after the help text
 GROUP_ARGUMENTS_OPTIONS: bool = False  # Show arguments with options instead of in own panel
 OPTION_ENVVAR_FIRST: Optional[Optional[bool]] = None  # Show env vars before option help text instead of avert
