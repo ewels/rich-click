@@ -11,7 +11,7 @@ from rich_click.decorators import command as _rich_command
 from rich_click.decorators import group as _rich_group
 from rich_click.rich_command import RichCommand, RichCommandCollection, RichGroup, RichMultiCommand
 from rich_click.rich_context import RichContext
-from rich_click.rich_help_configuration import RichHelpConfiguration
+from rich_click.rich_help_configuration import FROM_THEME, RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
 
 
@@ -32,10 +32,37 @@ class _PatchedTyperContext(RichContext):
 
     def make_formatter(self, error_mode: bool = False) -> RichHelpFormatter:
         """Create the Rich Help Formatter."""
+        import rich_click.rich_click as rc
+
+        # Alignment between rich-click style and Typer style.
+        if not rc.DEFAULT_PANELS_FIRST:
+            self.help_config.default_panels_first = True
+        if rc.THEME is None:
+            # Infer user intent-- in rich-click CLI, config gets set via globals
+            if rc.STYLE_OPTIONS_TABLE_EXPAND is FROM_THEME:
+                self.help_config.style_options_table_expand = False
+            if rc.STYLE_COMMANDS_TABLE_EXPAND is FROM_THEME:
+                self.help_config.style_commands_table_expand = False
+
         formatter = super().make_formatter(error_mode=error_mode)
-        if hasattr(self.command, "rich_markup_mode") and self.command.rich_markup_mode == "rich":
-            formatter.config.text_markup = "rich"
-            formatter.config.text_emojis = True
+
+        if hasattr(self.command, "rich_markup_mode"):
+            if self.command.rich_markup_mode == "rich":
+                formatter.config.text_markup = "rich"
+                formatter.config.text_emojis = True
+            elif self.command.rich_markup_mode == "markdown":
+                formatter.config.text_markup = "markdown"
+                formatter.config.text_emojis = True
+
+        if isinstance(formatter.config.theme, str) and formatter.config.theme.endswith("box"):
+            # If user explicitly sets box theme, checking rc namespace does not work,
+            # as theme will be set already. Most users don't touch "expand"
+            # so just prefer to override.
+            if rc.STYLE_OPTIONS_TABLE_EXPAND is FROM_THEME:
+                formatter.config.style_options_table_expand = False
+            if rc.STYLE_COMMANDS_TABLE_EXPAND is FROM_THEME:
+                formatter.config.style_commands_table_expand = False
+
         return formatter
 
     def get_help(self) -> str:
@@ -47,7 +74,9 @@ class _PatchedTyperContext(RichContext):
         import typer.core
         from typer.models import DefaultPlaceholder
 
-        from rich_click.rich_panel import RichCommandPanel
+        from rich_click.rich_panel import RichCommandPanel, RichOptionPanel
+
+        formatter = self.make_formatter()
 
         if isinstance(self.command, RichGroup):
             command_panels: Dict[str, List[str]] = {}
@@ -60,8 +89,57 @@ class _PatchedTyperContext(RichContext):
                 ):
                     command_panels.setdefault(cmd.rich_help_panel, [])
                     command_panels[cmd.rich_help_panel].append(cmd_name)
+
+            default_commands = [
+                cmd_name
+                for cmd_name in self.command.commands
+                if cmd_name not in {cmd for command_list in command_panels.values() for cmd in command_list}
+            ]
+
+            if default_commands:
+                self.command.add_panel(
+                    RichCommandPanel(formatter.config.commands_panel_title, commands=default_commands)
+                )
+
             for name, commands in command_panels.items():
                 self.command.add_panel(RichCommandPanel(name, commands=commands))
+
+        option_panels: Dict[str, List[str]] = {}
+
+        for param in self.command.params:
+            if (
+                isinstance(param, (typer.core.TyperOption, typer.core.TyperArgument))
+                and param.rich_help_panel is not None
+                and param.name
+                and not isinstance(param.rich_help_panel, DefaultPlaceholder)
+            ):
+                option_panels.setdefault(param.rich_help_panel, [])
+                option_panels[param.rich_help_panel].append(param.name)
+
+        default_opts = [
+            param.name
+            for param in self.command.params
+            if param.name
+            and isinstance(param, typer.core.TyperOption)
+            and param.name not in {param for param_list in option_panels.values() for param in param_list}
+        ]
+        default_args = [
+            param.name
+            for param in self.command.params
+            if param.name
+            and isinstance(param, typer.core.TyperArgument)
+            and param.name not in {param for param_list in option_panels.values() for param in param_list}
+        ]
+
+        if default_args:
+            if TYPE_CHECKING:
+                assert isinstance(self.command, RichCommand)
+            self.command.add_panel(RichOptionPanel(formatter.config.arguments_panel_title, options=default_args))
+
+        if default_opts:
+            if TYPE_CHECKING:
+                assert isinstance(self.command, RichCommand)
+            self.command.add_panel(RichOptionPanel(formatter.config.options_panel_title, options=default_opts))
 
         return super().get_help()
 

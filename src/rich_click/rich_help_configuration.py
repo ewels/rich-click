@@ -235,6 +235,8 @@ class RichHelpConfiguration:
     """Show a column with the option metavar (eg. INTEGER)"""
     commands_before_options: bool = field(default=False)
     """If set, the commands panel show above the options panel."""
+    default_panels_first: bool = field(default=False)
+    """If set, default panels appear before custom panels of the same type."""
     append_metavars_help: Optional[bool] = field(default=None)
     """Append metavar (eg. [TEXT]) after the help text"""
     group_arguments_options: bool = field(default=False)

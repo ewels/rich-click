@@ -715,31 +715,39 @@ def construct_panels(
 
     final_panels: List[RichPanel[Any, Any]] = []
 
-    all_panel_mappings: List[Union[Dict[Tuple[str, str], List[str]], Dict[Tuple[str, str], RichPanel[Any, Any]]]] = [
-        pre_default_panels,
-        defined_panels,
-        new_panels,
-        post_default_panels,
-    ]
-    for d in all_panel_mappings:
-        for (typ, panel_name), obj_list in d.items():
-            cls: Type[RichPanel[Any, Any]]
-            if typ == "options":
-                cls = formatter.option_panel_class
-            elif typ == "commands":
-                cls = formatter.command_panel_class
-            else:
-                continue
-            panel: RichPanel[Any, Any]
-            if isinstance(obj_list, RichPanel):
-                panel = obj_list
-            elif (typ, panel_name) not in defined_panels:
-                panel = cls(panel_name)
-                setattr(panel, panel._object_attr, [i for i in obj_list])
-            else:
-                panel = defined_panels[(typ, panel_name)]
-                for _obj in obj_list:
-                    panel.add_object(_obj)
-            final_panels.append(panel)
+    def add_panels_from(
+        mappings: List[Union[Dict[Tuple[str, str], List[str]], Dict[Tuple[str, str], RichPanel[Any, Any]]]],
+        type_filter: Optional[str] = None,
+    ) -> None:
+        for d in mappings:
+            for (typ, panel_name), obj_list in d.items():
+                if type_filter is not None and typ != type_filter:
+                    continue
+                cls: Type[RichPanel[Any, Any]]
+                if typ == "options":
+                    cls = formatter.option_panel_class
+                elif typ == "commands":
+                    cls = formatter.command_panel_class
+                else:
+                    continue
+                panel: RichPanel[Any, Any]
+                if isinstance(obj_list, RichPanel):
+                    panel = obj_list
+                elif (typ, panel_name) not in defined_panels:
+                    panel = cls(panel_name)
+                    setattr(panel, panel._object_attr, [i for i in obj_list])
+                else:
+                    panel = defined_panels[(typ, panel_name)]
+                    for _obj in obj_list:
+                        panel.add_object(_obj)
+                final_panels.append(panel)
+
+    if formatter.config.default_panels_first:
+        add_panels_from([pre_default_panels], "options")
+        add_panels_from([defined_panels, new_panels], "options")
+        add_panels_from([pre_default_panels, post_default_panels], "commands")
+        add_panels_from([defined_panels, new_panels], "commands")
+    else:
+        add_panels_from([pre_default_panels, defined_panels, new_panels, post_default_panels])
 
     return final_panels

@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 1.9.6 (2026-01-21)
+
+- Fix minor Typer incompatibilities, most notably default panel placements.
+- Added `default_panels_first` config option which places default panels above user-defined panels.
+- Fix to `.pyi` file [[#319](https://github.com/ewels/rich-click/pull/319)] ([@nemowang2003](https://github.com/nemowang2003))
+
 ## Version 1.9.5 (2025-12-21)
 
 - Fix `no_args_is_help` for Typer CLIs. [[#313](https://github.com/ewels/rich-click/issues/313)]
