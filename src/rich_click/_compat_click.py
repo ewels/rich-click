@@ -16,6 +16,7 @@ except Exception:
     CLICK_IS_BEFORE_VERSION_9X = False
     CLICK_IS_VERSION_80 = False
 else:
+    click_version, _, _ = click_version.partition("+")  # Partition on local version, drop anything after `+`
     _major = int(click_version.split(".")[0])  # type: ignore[attr-defined,unused-ignore]
     _minor = int(click_version.split(".")[1])  # type: ignore[attr-defined,unused-ignore]
     _patch = int(click_version.split(".")[2])  # type: ignore[attr-defined,unused-ignore]
