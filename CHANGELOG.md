@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 1.9.7 (2026-01-30)
+
+- Fix `click_version` check when build metadata is included. [[#324](https://github.com/ewels/rich-click/pull/324)] ([@ccoulombe](https://github.com/ccoulombe))
+
 ## Version 1.9.6 (2026-01-21)
 
 - Fix minor Typer incompatibilities, most notably default panel placements.
