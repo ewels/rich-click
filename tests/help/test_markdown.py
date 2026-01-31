@@ -130,7 +130,8 @@ def test_markdown_help_text_markup_field(cli_runner: CliRunner, cli: rich_click.
 
 
 @pytest.mark.skipif(rich_version < packaging.version.parse("13.0.0"), reason="Rich <13 has different table styles")
-def test_markdown_help_rich_12(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+@pytest.mark.skipif(rich_version >= packaging.version.parse("14.3.0"), reason="Rich <14.3 has different table styles")
+def test_markdown_help_rich_13(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     with pytest.warns(PendingDeprecationWarning, match=r"`use_markdown=` will be deprecated.*"):
         result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
@@ -166,7 +167,8 @@ def test_markdown_help_rich_12(cli_runner: CliRunner, cli: rich_click.RichComman
 
 
 @pytest.mark.skipif(rich_version < packaging.version.parse("13.0.0"), reason="Rich <13 has different table styles")
-def test_markdown_help_text_markup_field_rich_12(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+@pytest.mark.skipif(rich_version >= packaging.version.parse("14.3.0"), reason="Rich <14.3 has different table styles")
+def test_markdown_help_text_markup_field_rich_13(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     # USE_MARKDOWN is silently deprecated, and we prefer `text_markup` mode.
     #
     # The previous test ensures that the global works properly when disabled.
