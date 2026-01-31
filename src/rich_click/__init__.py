@@ -8,7 +8,7 @@ customization required.
 from __future__ import annotations
 
 
-__version__ = "1.9.6"
+__version__ = "1.9.7"
 
 # Import the entire click API here.
 # We need to manually import these instead of `from click import *` to force
