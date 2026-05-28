@@ -1,4 +1,4 @@
-<svg class="rich-terminal" viewBox="0 0 994 98.8" xmlns="http://www.w3.org/2000/svg">
+<svg class="rich-terminal" viewBox="0 0 994 123.19999999999999" xmlns="http://www.w3.org/2000/svg">
     <!-- Generated with Rich https://www.textualize.io -->
     <style>
 
@@ -19,43 +19,47 @@
         font-weight: 700;
     }
 
-    .terminal-803545850-matrix {
+    .terminal-3702270632-matrix {
         font-family: Fira Code, monospace;
         font-size: 20px;
         line-height: 24.4px;
         font-variant-east-asian: full-width;
     }
 
-    .terminal-803545850-title {
+    .terminal-3702270632-title {
         font-size: 18px;
         font-weight: bold;
         font-family: arial;
     }
 
-    .terminal-803545850-r1 { fill: #c5c8c6 }
+    .terminal-3702270632-r1 { fill: #c5c8c6 }
     </style>
 
     <defs>
-    <clipPath id="terminal-803545850-clip-terminal">
-      <rect x="0" y="0" width="975.0" height="47.8" />
+    <clipPath id="terminal-3702270632-clip-terminal">
+      <rect x="0" y="0" width="975.0" height="72.19999999999999" />
     </clipPath>
-    <clipPath id="terminal-803545850-line-0">
+    <clipPath id="terminal-3702270632-line-0">
     <rect x="0" y="1.5" width="976" height="24.65"/>
+            </clipPath>
+<clipPath id="terminal-3702270632-line-1">
+    <rect x="0" y="25.9" width="976" height="24.65"/>
             </clipPath>
     </defs>
 
-    <rect fill="#292929" stroke="rgba(255,255,255,0.35)" stroke-width="1" x="1" y="1" width="992" height="96.8" rx="8"/>
+    <rect fill="#292929" stroke="rgba(255,255,255,0.35)" stroke-width="1" x="1" y="1" width="992" height="121.2" rx="8"/>
             <g transform="translate(26,22)">
             <circle cx="0" cy="0" r="7" fill="#ff5f57"/>
             <circle cx="22" cy="0" r="7" fill="#febc2e"/>
             <circle cx="44" cy="0" r="7" fill="#28c840"/>
             </g>
         
-    <g transform="translate(9, 41)" clip-path="url(#terminal-803545850-clip-terminal)">
+    <g transform="translate(9, 41)" clip-path="url(#terminal-3702270632-clip-terminal)">
     
-    <g class="terminal-803545850-matrix">
-    <text class="terminal-803545850-r1" x="0" y="20" textLength="439.2" clip-path="url(#terminal-803545850-line-0)">$&#160;python&#160;hello_v3.py&#160;french&#160;Jennifer</text><text class="terminal-803545850-r1" x="976" y="20" textLength="12.2" clip-path="url(#terminal-803545850-line-0)">
-</text><text class="terminal-803545850-r1" x="0" y="44.4" textLength="219.6" clip-path="url(#terminal-803545850-line-1)">Bonjour,&#160;Jennifer!</text><text class="terminal-803545850-r1" x="976" y="44.4" textLength="12.2" clip-path="url(#terminal-803545850-line-1)">
+    <g class="terminal-3702270632-matrix">
+    <text class="terminal-3702270632-r1" x="0" y="20" textLength="439.2" clip-path="url(#terminal-3702270632-line-0)">$&#160;python&#160;hello_v3.py&#160;french&#160;Jennifer</text><text class="terminal-3702270632-r1" x="976" y="20" textLength="12.2" clip-path="url(#terminal-3702270632-line-0)">
+</text><text class="terminal-3702270632-r1" x="0" y="44.4" textLength="219.6" clip-path="url(#terminal-3702270632-line-1)">Bonjour,&#160;Jennifer!</text><text class="terminal-3702270632-r1" x="976" y="44.4" textLength="12.2" clip-path="url(#terminal-3702270632-line-1)">
+</text><text class="terminal-3702270632-r1" x="976" y="68.8" textLength="12.2" clip-path="url(#terminal-3702270632-line-2)">
 </text>
     </g>
     </g>
