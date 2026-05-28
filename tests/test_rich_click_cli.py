@@ -660,7 +660,7 @@ def test_error_to_stderr_click_8_4(mock_script_writer: Callable[[str], Path]) ->
                                                                                                     \n\
  Try 'python -m src.rich_click.mymodule --help' for help                                            \n\
 ╭─ Error ──────────────────────────────────────────────────────────────────────────────────────────╮
-│ No such option: '--bad-input'                                                                    │
+│ No such option '--bad-input'.                                                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     \n\
 """
@@ -679,7 +679,7 @@ def test_error_to_stderr_click_8_4(mock_script_writer: Callable[[str], Path]) ->
                                                                                                     \n\
  Try 'python -m src.rich_click.mymodule --help' for help                                            \n\
 ╭─ Error ──────────────────────────────────────────────────────────────────────────────────────────╮
-│ No such option: '--bad-input'                                                                    │
+│ No such option '--bad-input'.                                                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     \n\
 """
