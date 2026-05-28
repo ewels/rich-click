@@ -16,6 +16,8 @@ jobs:
         exclude:
           - python: "3.8"
             rich: 15.*
+          - typer: 0.25.*
+            rich: 12.*
           - python: "3.8"
             click: 8.2.*
           - python: "3.9"
