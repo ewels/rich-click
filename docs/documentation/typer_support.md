@@ -1,5 +1,9 @@
 # Typer Support
 
+!!! error "Experimental"
+    For now, Typer patching support does not work with `typer>=0.26.0`.
+    Please use an older version of Typer if you'd like to use `patch_typer()`.
+
 !!! example "Experimental"
     This feature is still experimental.
     Please report any bugs or issues you run into!
