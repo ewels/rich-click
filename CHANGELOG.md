@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 1.9.8 (2026-05-28)
+
+- Fixed regression in patching with Click 8.4.0.
+- Warn about regression in Typer ≥0.26.0 patching. (No fix currently.)
+
 ## Version 1.9.7 (2026-01-30)
 
 - Fix `click_version` check when build metadata is included. [[#324](https://github.com/ewels/rich-click/pull/324)] ([@ccoulombe](https://github.com/ccoulombe))

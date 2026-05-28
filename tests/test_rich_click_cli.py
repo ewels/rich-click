@@ -572,6 +572,10 @@ def test_override_guard_enabled_click_from_rich_click(mock_script_writer: Callab
     )
 
 
+@pytest.mark.skipif(
+    packaging.version.parse(version("click")) >= packaging.version.parse("8.4.0"),
+    reason="Click >=8.4.0 renders --bad-input wrapped in single quotes",
+)
 def test_error_to_stderr(mock_script_writer: Callable[[str], Path]) -> None:
     mock_script_writer(
         '''
@@ -619,6 +623,63 @@ def test_error_to_stderr(mock_script_writer: Callable[[str], Path]) -> None:
  Try 'python -m src.rich_click.mymodule --help' for help                                            \n\
 ╭─ Error ──────────────────────────────────────────────────────────────────────────────────────────╮
 │ No such option: --bad-input                                                                      │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+                                                                                                    \n\
+"""
+    )
+
+
+@pytest.mark.skipif(
+    packaging.version.parse(version("click")) < packaging.version.parse("8.4.0"),
+    reason="Click <8.4.0 renders --bad-input without single quotes",
+)
+def test_error_to_stderr_click_8_4(mock_script_writer: Callable[[str], Path]) -> None:
+    mock_script_writer(
+        '''
+        import click
+
+        @click.group("foo")
+        def foo():
+            """foo group"""
+
+        @foo.command("bar")
+        def bar():
+            """bar command"""
+        '''
+    )
+
+    res_grp = run_as_subprocess(
+        [sys.executable, "-m", "src.rich_click", "mymodule:foo", "--bad-input"],
+    )
+    assert res_grp.returncode == 2
+    assert res_grp.stdout.decode() == ""
+    assert res_grp.stderr.decode() == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: python -m src.rich_click.mymodule [OPTIONS] COMMAND [ARGS]...                               \n\
+                                                                                                    \n\
+ Try 'python -m src.rich_click.mymodule --help' for help                                            \n\
+╭─ Error ──────────────────────────────────────────────────────────────────────────────────────────╮
+│ No such option '--bad-input'.                                                                    │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+                                                                                                    \n\
+"""
+    )
+
+    res_cmd = run_as_subprocess(
+        [sys.executable, "-m", "src.rich_click", "mymodule:foo", "bar", "--bad-input"],
+    )
+    assert res_cmd.returncode == 2
+
+    assert res_grp.stdout.decode() == ""
+    assert res_grp.stderr.decode() == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: python -m src.rich_click.mymodule [OPTIONS] COMMAND [ARGS]...                               \n\
+                                                                                                    \n\
+ Try 'python -m src.rich_click.mymodule --help' for help                                            \n\
+╭─ Error ──────────────────────────────────────────────────────────────────────────────────────────╮
+│ No such option '--bad-input'.                                                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     \n\
 """

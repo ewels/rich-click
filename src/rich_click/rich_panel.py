@@ -181,8 +181,7 @@ class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
     @classmethod
     def list_all_objects(cls, ctx: Context) -> List[Tuple[str, Parameter]]:
         return [
-            (i.opts[0] if getattr(i, "flag_value", None) and i.opts else i.name, i)  # type: ignore[misc]
-            for i in ctx.command.get_params(ctx)
+            (i.opts[0] if getattr(i, "flag_value", None) and i.opts else i.name, i) for i in ctx.command.get_params(ctx)
         ]
 
     def get_objects(self, command: Command, ctx: Context) -> Generator[Parameter, None, None]:

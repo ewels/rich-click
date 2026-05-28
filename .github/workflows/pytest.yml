@@ -9,11 +9,16 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        python: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
-        click: [8.0.*, 8.1.*, 8.2.*, 8.3.*]
-        rich: [12.*, 13.*, 14.*]
+        python: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+        click: [8.0.*, 8.1.*, 8.2.*, 8.3.*, 8.4.*]
+        rich: [12.*, 13.*, 14.*, 15.*]
+        typer: [0.17.*, 0.25.*]
         exclude:
           - python: "3.8"
+            rich: 15.*
+          - typer: 0.25.*
+            rich: 12.*
+          - python: "3.8"
             click: 8.2.*
           - python: "3.9"
             click: 8.2.*
@@ -21,6 +26,16 @@ jobs:
             click: 8.3.*
           - python: "3.9"
             click: 8.3.*
+          - python: "3.8"
+            click: 8.4.*
+          - python: "3.9"
+            click: 8.4.*
+          - click: 8.0.*
+            typer: 0.25.*
+          - click: 8.1.*
+            typer: 0.25.*
+          - click: 8.2.*
+            typer: 0.25.*
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
@@ -34,11 +49,11 @@ jobs:
       - name: Install dependencies
         run: |
           uv pip install ".[dev]"
-          uv pip install --upgrade "click==$CLICK_VERSION" --prerelease=allow
-          uv pip install --upgrade "rich==$RICH_VERSION" --prerelease=allow
+          uv pip install --upgrade "click==$CLICK_VERSION" "rich==$RICH_VERSION" "typer==$TYPER_VERSION" --prerelease=allow
         env:
           CLICK_VERSION: ${{ matrix.click }}
           RICH_VERSION: ${{ matrix.rich }}
+          TYPER_VERSION: ${{ matrix.typer }}
 
       - name: Run tests
         run: pytest --cov --cov-report term
