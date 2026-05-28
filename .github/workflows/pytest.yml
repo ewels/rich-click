@@ -12,6 +12,7 @@ jobs:
         python: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
         click: [8.0.*, 8.1.*, 8.2.*, 8.3.*, 8.4.*]
         rich: [12.*, 13.*, 14.*, 15.*]
+        typer: [0.25.*, 0.26.*]  # typer 0.26+ vendors Click; so compatibility may be impacted.
         exclude:
           - python: "3.8"
             rich: 15.*

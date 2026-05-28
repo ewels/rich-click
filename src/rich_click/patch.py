@@ -341,19 +341,35 @@ def patch_typer(rich_config: Optional[RichHelpConfiguration] = None) -> None:
     import typer.core
     import typer.main
 
+    from rich_click._compat_typer import TYPER_IS_BEFORE_VERSION_026
+
     if not issubclass(typer.core.TyperCommand, _PatchedRichCommand):
         globals().setdefault("__TyperCommand", typer.core.TyperCommand)
 
-        class _PatchedTyperCommand(_PatchedRichCommand, typer.core.TyperCommand):  # type: ignore[misc]
-            pass
+        if TYPER_IS_BEFORE_VERSION_026:
+
+            class _PatchedTyperCommand(_PatchedRichCommand, typer.core.TyperCommand):  # type: ignore[misc]
+                pass
+
+        else:
+
+            class _PatchedTyperCommand(RichCommand, typer.core.TyperCommand, metaclass=ABCMeta):  # type: ignore[misc,no-redef]
+                pass
 
         typer.core.TyperCommand = typer.main.TyperCommand = _patch_typer_command(_PatchedTyperCommand)  # type: ignore[assignment,attr-defined,misc]
 
     if not issubclass(typer.core.TyperGroup, _PatchedRichGroup):
         globals().setdefault("__TyperGroup", typer.core.TyperGroup)
 
-        class _PatchedTyperGroup(_PatchedRichGroup, typer.core.TyperGroup):  # type: ignore[misc]
-            pass
+        if TYPER_IS_BEFORE_VERSION_026:
+
+            class _PatchedTyperGroup(_PatchedRichGroup, typer.core.TyperGroup):  # type: ignore[misc]
+                pass
+
+        else:
+
+            class _PatchedTyperGroup(RichGroup, typer.core.TyperGroup, metaclass=ABCMeta):  # type: ignore[misc,no-redef]
+                pass
 
         typer.core.TyperGroup = typer.main.TyperGroup = _patch_typer_group(_PatchedTyperGroup)  # type: ignore[assignment,attr-defined,misc]
 
