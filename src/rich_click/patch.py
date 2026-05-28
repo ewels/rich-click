@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 # ruff: noqa: D103
+from abc import ABCMeta
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Type, Union
 
 from click import Argument, Command, Context, Group, Option
@@ -242,6 +243,10 @@ class PatchMeta(type):
                 _patch_typer_argument(cls)  # type: ignore[arg-type]
 
 
+# Click >=8.4.0 Parameters subclass ABC.
+class PatchMetaAbc(PatchMeta, ABCMeta): ...
+
+
 class _PatchedRichCommand(RichCommand, metaclass=PatchMeta):
     pass
 
@@ -262,11 +267,11 @@ class _PatchedRichGroup(RichGroup, _PatchedRichCommand):
 # However, we need to intercept type.__init__ calls for Typer CLIs.
 
 
-class _PatchedOption(Option, metaclass=PatchMeta):
+class _PatchedOption(Option, metaclass=PatchMetaAbc):
     pass
 
 
-class _PatchedArgument(Argument, metaclass=PatchMeta):
+class _PatchedArgument(Argument, metaclass=PatchMetaAbc):
     pass
 
 
