@@ -360,7 +360,7 @@ def patch_typer(rich_config: Optional[RichHelpConfiguration] = None) -> None:
     if not issubclass(typer.core.TyperOption, _PatchedOption):
         globals().setdefault("__TyperOption", typer.core.TyperOption)
 
-        class _PatchedTyperOption(_PatchedOption, typer.core.TyperOption):
+        class _PatchedTyperOption(_PatchedOption, typer.core.TyperOption):  # type: ignore[misc]
             pass
 
         typer.core.TyperOption = typer.main.TyperOption = _patch_typer_option(_PatchedTyperOption)  # type: ignore[assignment,attr-defined,misc]
@@ -368,7 +368,7 @@ def patch_typer(rich_config: Optional[RichHelpConfiguration] = None) -> None:
     if not issubclass(typer.core.TyperArgument, _PatchedArgument):
         globals().setdefault("__TyperArgument", typer.core.TyperArgument)
 
-        class _PatchedTyperArgument(_PatchedArgument, typer.core.TyperArgument):
+        class _PatchedTyperArgument(_PatchedArgument, typer.core.TyperArgument):  # type: ignore[misc]
             pass
 
         typer.core.TyperArgument = typer.main.TyperArgument = _patch_typer_argument(_PatchedTyperArgument)  # type: ignore[assignment,attr-defined,misc]
