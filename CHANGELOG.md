@@ -3,7 +3,7 @@
 ## Version 1.9.8 (2026-05-28)
 
 - Fixed regression in patching with Click 8.4.0.
-- Fixed regression in patching with Typer 0.26.0.
+- Warn about regression in Typer ≥0.26.0 patching. (No fix currently.)
 
 ## Version 1.9.7 (2026-01-30)
 

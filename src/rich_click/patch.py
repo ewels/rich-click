@@ -343,40 +343,37 @@ def patch_typer(rich_config: Optional[RichHelpConfiguration] = None) -> None:
 
     from rich_click._compat_typer import TYPER_IS_BEFORE_VERSION_026
 
+    if TYPER_IS_BEFORE_VERSION_026:
+        import warnings
+
+        warnings.warn(
+            "rich-click's patching is incompatible with Typer >= 0.26."
+            " Please downgrade Typer to <0.26, or remove patching (sorry)."
+            " We are working on a fix in the meantime.",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+
     if not issubclass(typer.core.TyperCommand, _PatchedRichCommand):
         globals().setdefault("__TyperCommand", typer.core.TyperCommand)
 
-        if TYPER_IS_BEFORE_VERSION_026:
-
-            class _PatchedTyperCommand(_PatchedRichCommand, typer.core.TyperCommand):  # type: ignore[misc]
-                pass
-
-        else:
-
-            class _PatchedTyperCommand(RichCommand, typer.core.TyperCommand, metaclass=ABCMeta):  # type: ignore[misc,no-redef]
-                pass
+        class _PatchedTyperCommand(_PatchedRichCommand, typer.core.TyperCommand):  # type: ignore[misc,unused-ignore]
+            pass
 
         typer.core.TyperCommand = typer.main.TyperCommand = _patch_typer_command(_PatchedTyperCommand)  # type: ignore[assignment,attr-defined,misc]
 
     if not issubclass(typer.core.TyperGroup, _PatchedRichGroup):
         globals().setdefault("__TyperGroup", typer.core.TyperGroup)
 
-        if TYPER_IS_BEFORE_VERSION_026:
-
-            class _PatchedTyperGroup(_PatchedRichGroup, typer.core.TyperGroup):  # type: ignore[misc]
-                pass
-
-        else:
-
-            class _PatchedTyperGroup(RichGroup, typer.core.TyperGroup, metaclass=ABCMeta):  # type: ignore[misc,no-redef]
-                pass
+        class _PatchedTyperGroup(_PatchedRichGroup, typer.core.TyperGroup):  # type: ignore[misc,unused-ignore]
+            pass
 
         typer.core.TyperGroup = typer.main.TyperGroup = _patch_typer_group(_PatchedTyperGroup)  # type: ignore[assignment,attr-defined,misc]
 
     if not issubclass(typer.core.TyperOption, _PatchedOption):
         globals().setdefault("__TyperOption", typer.core.TyperOption)
 
-        class _PatchedTyperOption(_PatchedOption, typer.core.TyperOption):  # type: ignore[misc]
+        class _PatchedTyperOption(_PatchedOption, typer.core.TyperOption):  # type: ignore[misc,unused-ignore]
             pass
 
         typer.core.TyperOption = typer.main.TyperOption = _patch_typer_option(_PatchedTyperOption)  # type: ignore[assignment,attr-defined,misc]
@@ -384,7 +381,7 @@ def patch_typer(rich_config: Optional[RichHelpConfiguration] = None) -> None:
     if not issubclass(typer.core.TyperArgument, _PatchedArgument):
         globals().setdefault("__TyperArgument", typer.core.TyperArgument)
 
-        class _PatchedTyperArgument(_PatchedArgument, typer.core.TyperArgument):  # type: ignore[misc]
+        class _PatchedTyperArgument(_PatchedArgument, typer.core.TyperArgument):  # type: ignore[misc,unused-ignore]
             pass
 
         typer.core.TyperArgument = typer.main.TyperArgument = _patch_typer_argument(_PatchedTyperArgument)  # type: ignore[assignment,attr-defined,misc]
