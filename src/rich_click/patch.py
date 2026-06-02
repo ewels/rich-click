@@ -4,7 +4,7 @@ from __future__ import annotations
 
 # ruff: noqa: D103
 from abc import ABCMeta
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any
 
 from click import Argument, Command, Context, Group, Option
 
@@ -20,10 +20,10 @@ if TYPE_CHECKING:
     import typer.core
 
 
-__TyperGroup: Type["typer.core.TyperGroup"]
-__TyperCommand: Type["typer.core.TyperCommand"]
-__TyperArgument: Type["typer.core.TyperArgument"]
-__TyperOption: Type["typer.core.TyperOption"]
+__TyperGroup: type[typer.core.TyperGroup]
+__TyperCommand: type[typer.core.TyperCommand]
+__TyperArgument: type[typer.core.TyperArgument]
+__TyperOption: type[typer.core.TyperOption]
 
 
 class _PatchedTyperContext(RichContext):
@@ -80,7 +80,7 @@ class _PatchedTyperContext(RichContext):
         formatter = self.make_formatter()
 
         if isinstance(self.command, RichGroup):
-            command_panels: Dict[str, List[str]] = {}
+            command_panels: dict[str, list[str]] = {}
             for cmd_name in self.command.commands:
                 cmd = self.command.commands[cmd_name]
                 if (
@@ -105,7 +105,7 @@ class _PatchedTyperContext(RichContext):
             for name, commands in command_panels.items():
                 self.command.add_panel(RichCommandPanel(name, commands=commands))
 
-        option_panels: Dict[str, List[str]] = {}
+        option_panels: dict[str, list[str]] = {}
 
         for param in self.command.params:
             if (
@@ -146,7 +146,7 @@ class _PatchedTyperContext(RichContext):
 
 
 def _typer_command_init(
-    self: Any, *args: Any, rich_help_panel: Union[str, None] = None, rich_markup_mode: Any = None, **kwargs: Any
+    self: Any, *args: Any, rich_help_panel: str | None = None, rich_markup_mode: Any = None, **kwargs: Any
 ) -> None:
     import typer.core
 
@@ -165,7 +165,7 @@ def _typer_command_init(
 def _typer_group_init(
     self: Any,
     *args: Any,
-    rich_help_panel: Union[str, None] = None,
+    rich_help_panel: str | None = None,
     rich_markup_mode: Any = None,
     suggest_commands: bool = True,
     **kwargs: Any,
@@ -185,7 +185,7 @@ def _typer_group_init(
         self._help_option = None
 
 
-def _parse_args(self, ctx: Context, args: List[str]) -> List[str]:  # type: ignore[no-untyped-def]
+def _parse_args(self, ctx: Context, args: list[str]) -> list[str]:  # type: ignore[no-untyped-def]
     # This is to handle a weird incompatibility with Type and later versions of Click
     # tldr: raise NoArgsIsHelp() doesn't work to render help text.
     if not args and self.no_args_is_help and not ctx.resilient_parsing:
@@ -194,7 +194,7 @@ def _parse_args(self, ctx: Context, args: List[str]) -> List[str]:  # type: igno
     return super(__TyperGroup, self).parse_args(ctx, args)  # type: ignore[no-any-return]
 
 
-def _patch_typer_group(cls: Type[Group]) -> Type[Group]:
+def _patch_typer_group(cls: type[Group]) -> type[Group]:
     cls.format_help = RichGroup.format_help  # type: ignore[assignment]
     cls.__init__ = _typer_group_init  # type: ignore[method-assign]
     cls.parse_args = _parse_args  # type: ignore[method-assign]
@@ -205,7 +205,7 @@ def _patch_typer_group(cls: Type[Group]) -> Type[Group]:
     return cls
 
 
-def _patch_typer_command(cls: Type[Command]) -> Type[Command]:
+def _patch_typer_command(cls: type[Command]) -> type[Command]:
     cls.format_help = RichCommand.format_help  # type: ignore[assignment]
     cls.__init__ = _typer_command_init  # type: ignore[method-assign]
     cls.context_class = _PatchedTyperContext
@@ -215,14 +215,14 @@ def _patch_typer_command(cls: Type[Command]) -> Type[Command]:
     return cls
 
 
-def _patch_typer_argument(cls: Type[Argument]) -> Type[Argument]:
+def _patch_typer_argument(cls: type[Argument]) -> type[Argument]:
     cls.panel = property(  # type: ignore[attr-defined]
         lambda self: self.rich_help_panel, lambda self, value: setattr(self, "rich_help_panel", value)
     )
     return cls
 
 
-def _patch_typer_option(cls: Type[Option]) -> Type[Option]:
+def _patch_typer_option(cls: type[Option]) -> type[Option]:
     cls.panel = property(  # type: ignore[attr-defined]
         lambda self: self.rich_help_panel, lambda self, value: setattr(self, "rich_help_panel", value)
     )
@@ -230,7 +230,7 @@ def _patch_typer_option(cls: Type[Option]) -> Type[Option]:
 
 
 class PatchMeta(type):
-    def __init__(cls, name: str, bases: Tuple[type, ...], namespace: Dict[str, Any]) -> None:
+    def __init__(cls, name: str, bases: tuple[type, ...], namespace: dict[str, Any]) -> None:
         super().__init__(name, bases, namespace)
         if cls.__module__ in ["typer.core", "typer.main", "rich_click.patch"]:
             if name == "TyperGroup":
@@ -288,7 +288,7 @@ def rich_group(*args, **kwargs):  # type: ignore[no-untyped-def]
 
 
 def patch(
-    rich_config: Optional[RichHelpConfiguration] = None,
+    rich_config: RichHelpConfiguration | None = None,
     *,
     patch_rich_click: bool = False,
     patch_typer: bool = False,
@@ -337,7 +337,7 @@ def patch(
         rich_config.dump_to_globals()
 
 
-def patch_typer(rich_config: Optional[RichHelpConfiguration] = None) -> None:
+def patch_typer(rich_config: RichHelpConfiguration | None = None) -> None:
     import typer.core
     import typer.main
 

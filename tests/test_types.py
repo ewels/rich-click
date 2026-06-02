@@ -1,9 +1,8 @@
 import importlib
 import sys
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable, Dict
-
-import pytest
+from typing import Any
 
 from rich_click.rich_command import RichCommand
 
@@ -14,11 +13,7 @@ else:
     from typing import NotRequired
 
 
-if sys.version_info < (3, 9):
-    pytest.skip(reason="typing._eval_type doesn't work how we need it to before 3.9", allow_module_level=True)
-
-
-def eval_type(t: Any, globalns: Dict[str, Any], localns: Dict[str, Any]) -> Any:
+def eval_type(t: Any, globalns: dict[str, Any], localns: dict[str, Any]) -> Any:
     import typing
 
     if sys.version_info >= (3, 12):

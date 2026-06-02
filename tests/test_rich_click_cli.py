@@ -1,9 +1,9 @@
 # ruff: noqa: D101,D103,D401,E501
 import json
 import sys
+from collections.abc import Callable
 from importlib.metadata import version
 from pathlib import Path
-from typing import Callable, List
 
 import packaging.version
 import pytest
@@ -39,7 +39,7 @@ def simple_script(mock_script_writer: WriteScript) -> Path:
         ["--", "mymodule:cli", "--help"],
     ],
 )
-def test_simple_rich_click_cli(simple_script: Path, command: List[str]) -> None:
+def test_simple_rich_click_cli(simple_script: Path, command: list[str]) -> None:
     res = run_as_subprocess([sys.executable, "-m", "src.rich_click", "mymodule:cli", "--help"])
     assert res.returncode == 0
     assert res.stdout.decode() == snapshot(
@@ -64,7 +64,7 @@ def test_simple_rich_click_cli(simple_script: Path, command: List[str]) -> None:
         ["mymodule:cli", "--"],
     ],
 )
-def test_simple_rich_click_cli_execute_command(simple_script: Path, cli_runner: CliRunner, command: List[str]) -> None:
+def test_simple_rich_click_cli_execute_command(simple_script: Path, cli_runner: CliRunner, command: list[str]) -> None:
     res = cli_runner.invoke(main, command)
 
     assert res.exit_code == 0

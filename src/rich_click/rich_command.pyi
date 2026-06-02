@@ -1,19 +1,11 @@
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable, MutableMapping, Sequence
 from typing import (
     Any,
-    Callable,
-    Dict,
-    Iterable,
-    List,
     Literal,
-    MutableMapping,
     NoReturn,
-    Optional,
-    Sequence,
-    Type,
     TypeVar,
-    Union,
     overload,
 )
 
@@ -42,18 +34,18 @@ OVERRIDES_GUARD: bool = False
 
 class RichCommand(click.Command):
 
-    context_class: Type[RichContext] = RichContext
-    _formatter: Optional[RichHelpFormatter] = None
-    panels: List[RichPanel[Any, Any]]
-    panel: Optional[str]
+    context_class: type[RichContext] = RichContext
+    _formatter: RichHelpFormatter | None = None
+    panels: list[RichPanel[Any, Any]]
+    panel: str | None
     aliases: Iterable[str]
 
     def __init__(
         self,
         *args: Any,
-        aliases: Optional[Iterable[str]] = None,
-        panels: Optional[List[RichPanel[Any, Any]]] = None,
-        panel: Optional[str] = None,
+        aliases: Iterable[str] | None = None,
+        panels: list[RichPanel[Any, Any]] | None = None,
+        panel: str | None = None,
         name: str | None,
         context_settings: MutableMapping[str, Any] | None = None,
         callback: Callable[..., Any] | None = None,
@@ -68,9 +60,9 @@ class RichCommand(click.Command):
         deprecated: bool | str = False,
     ) -> None: ...
     @property
-    def console(self) -> Optional["Console"]: ...
+    def console(self) -> Console | None: ...
     @property
-    def help_config(self) -> Optional[RichHelpConfiguration]: ...
+    def help_config(self) -> RichHelpConfiguration | None: ...
     def _generate_rich_help_config(self) -> RichHelpConfiguration: ...
     def _error_formatter(self) -> RichHelpFormatter: ...
     @overload
@@ -93,9 +85,9 @@ class RichCommand(click.Command):
     ) -> Any: ...
     def main(
         self,
-        args: Optional[Sequence[str]] = None,
-        prog_name: Optional[str] = None,
-        complete_var: Optional[str] = None,
+        args: Sequence[str] | None = None,
+        prog_name: str | None = None,
+        complete_var: str | None = None,
         standalone_mode: bool = True,
         windows_expand_args: bool = True,
         **extra: Any,
@@ -104,18 +96,18 @@ class RichCommand(click.Command):
     def format_help_text(self, ctx: RichContext, formatter: RichHelpFormatter) -> None: ...
     def format_options(self, ctx: RichContext, formatter: RichHelpFormatter) -> None: ...
     def format_epilog(self, ctx: RichContext, formatter: RichHelpFormatter) -> None: ...
-    def get_help_option(self, ctx: RichContext) -> Union[click.Option, None]: ...
+    def get_help_option(self, ctx: RichContext) -> click.Option | None: ...
     def get_rich_table_row(
         self,
         ctx: RichContext,
         formatter: RichHelpFormatter,
-        panel: Optional[RichCommandPanel] = None,
+        panel: RichCommandPanel | None = None,
     ) -> RichPanelRow: ...
-    def add_panel(self, panel: "RichPanel[Any, Any]") -> None: ...
+    def add_panel(self, panel: RichPanel[Any, Any]) -> None: ...
     def add_command_to_panel(
         self,
         command_name: str,
-        panel_name: Union[str, Iterable[str]],
+        panel_name: str | Iterable[str],
     ) -> None: ...
 
 class RichGroup(RichCommand, click.Group):
@@ -126,15 +118,15 @@ class RichGroup(RichCommand, click.Group):
     to print richly formatted output.
     """
 
-    command_class: Optional[Type[RichCommand]] = RichCommand
-    group_class: Optional[Union[Type[Group], Type[type]]] = type
-    _alias_mapping: Dict[str, str]
-    _panel_command_mapping: Dict[str, List[str]]
+    command_class: type[RichCommand] | None = RichCommand
+    group_class: type[Group] | type[type] | None = type
+    _alias_mapping: dict[str, str]
+    _panel_command_mapping: dict[str, list[str]]
 
     def __init__(
         self,
-        panels: Optional[List["RichPanel[Any, Any]"]] = None,
-        aliases: Optional[Iterable[str]] = None,
+        panels: list[RichPanel[Any, Any]] | None = None,
+        aliases: Iterable[str] | None = None,
         name: str | None = None,
         commands: MutableMapping[str, click.Command] | Sequence[click.Command] | None = None,
         invoke_without_command: bool = False,
@@ -163,9 +155,9 @@ class RichGroup(RichCommand, click.Group):
     @overload
     def command(
         self,
-        name: Optional[str] = ...,
+        name: str | None = ...,
         *,
-        cls: Type[C],
+        cls: type[C],
         context_settings: RichContextSettingsDict,
         callback: Callable[..., Any] | None = ...,
         params: list[click.Parameter] | None = ...,
@@ -177,14 +169,14 @@ class RichGroup(RichCommand, click.Group):
         no_args_is_help: bool = ...,
         hidden: bool = ...,
         deprecated: bool | str = ...,
-        aliases: Optional[Iterable[str]] = ...,
-        panels: Optional[List[RichPanel[Any, Any]]] = ...,
-        panel: Optional[str] = ...,
+        aliases: Iterable[str] | None = ...,
+        panels: list[RichPanel[Any, Any]] | None = ...,
+        panel: str | None = ...,
     ) -> Callable[[_AnyCallable], C]: ...
     @overload
     def command(
         self,
-        name: Optional[str] = ...,
+        name: str | None = ...,
         *,
         cls: None,
         context_settings: RichContextSettingsDict,
@@ -198,16 +190,16 @@ class RichGroup(RichCommand, click.Group):
         no_args_is_help: bool = ...,
         hidden: bool = ...,
         deprecated: bool | str = ...,
-        aliases: Optional[Iterable[str]] = ...,
-        panels: Optional[List[RichPanel[Any, Any]]] = ...,
-        panel: Optional[str] = ...,
+        aliases: Iterable[str] | None = ...,
+        panels: list[RichPanel[Any, Any]] | None = ...,
+        panel: str | None = ...,
     ) -> Callable[[_AnyCallable], RichCommand]: ...
     @overload
     def command(
         self,
-        name: Optional[str] = ...,
+        name: str | None = ...,
         *,
-        cls: Type[C],
+        cls: type[C],
         context_settings: MutableMapping[str, Any] | None = ...,
         callback: Callable[..., Any] | None = ...,
         params: list[click.Parameter] | None = ...,
@@ -219,14 +211,14 @@ class RichGroup(RichCommand, click.Group):
         no_args_is_help: bool = ...,
         hidden: bool = ...,
         deprecated: bool | str = ...,
-        aliases: Optional[Iterable[str]] = ...,
-        panels: Optional[List[RichPanel[Any, Any]]] = ...,
-        panel: Optional[str] = ...,
+        aliases: Iterable[str] | None = ...,
+        panels: list[RichPanel[Any, Any]] | None = ...,
+        panel: str | None = ...,
     ) -> Callable[[_AnyCallable], C]: ...
     @overload
     def command(
         self,
-        name: Optional[str] = None,
+        name: str | None = None,
         *,
         cls: None,
         context_settings: MutableMapping[str, Any] | None = ...,
@@ -240,9 +232,9 @@ class RichGroup(RichCommand, click.Group):
         no_args_is_help: bool = ...,
         hidden: bool = ...,
         deprecated: bool | str = ...,
-        aliases: Optional[Iterable[str]] = ...,
-        panels: Optional[List[RichPanel[Any, Any]]] = ...,
-        panel: Optional[str] = ...,
+        aliases: Iterable[str] | None = ...,
+        panels: list[RichPanel[Any, Any]] | None = ...,
+        panel: str | None = ...,
         **attrs: Any,
     ) -> Callable[[_AnyCallable], RichCommand]: ...
 
@@ -251,8 +243,8 @@ class RichGroup(RichCommand, click.Group):
     @overload
     def command(
         self,
-        name: Optional[str],
-        cls: Type[C],
+        name: str | None,
+        cls: type[C],
         **attrs: Any,
     ) -> Callable[[_AnyCallable], C]: ...
 
@@ -262,26 +254,26 @@ class RichGroup(RichCommand, click.Group):
         self,
         name: None = None,
         *,
-        cls: Type[C],
+        cls: type[C],
         **attrs: Any,
     ) -> Callable[[_AnyCallable], C]: ...
 
     # variant: with optional string name, no cls argument provided.
     @overload
     def command(
-        self, name: Optional[str] = ..., cls: None = None, **attrs: Any
+        self, name: str | None = ..., cls: None = None, **attrs: Any
     ) -> Callable[[_AnyCallable], RichCommand]: ...
     def command(
-        self, name: Optional[str] = None, *, cls: Optional[Type[C]] = None, **kwargs: Any
-    ) -> Callable[[_AnyCallable], Union[click.Command, C]]: ...
+        self, name: str | None = None, *, cls: type[C] | None = None, **kwargs: Any
+    ) -> Callable[[_AnyCallable], click.Command | C]: ...
     @overload
     def group(self, name: _AnyCallable) -> RichGroup: ...
     @overload
     def group(
         self,
-        name: Optional[str] = None,
+        name: str | None = None,
         *,
-        cls: Type[G],
+        cls: type[G],
         commands: MutableMapping[str, click.Command] | Sequence[click.Command] | None = ...,
         invoke_without_command: bool = ...,
         no_args_is_help: bool | None = ...,
@@ -298,14 +290,14 @@ class RichGroup(RichCommand, click.Group):
         add_help_option: bool = ...,
         hidden: bool = ...,
         deprecated: bool | str = ...,
-        aliases: Optional[Iterable[str]] = ...,
-        panels: Optional[List[RichPanel[Any, Any]]] = ...,
-        panel: Optional[str] = ...,
+        aliases: Iterable[str] | None = ...,
+        panels: list[RichPanel[Any, Any]] | None = ...,
+        panel: str | None = ...,
     ) -> Callable[[_AnyCallable], G]: ...
     @overload
     def group(
         self,
-        name: Optional[str] = ...,
+        name: str | None = ...,
         *,
         cls: None,
         commands: MutableMapping[str, click.Command] | Sequence[click.Command] | None = ...,
@@ -324,16 +316,16 @@ class RichGroup(RichCommand, click.Group):
         add_help_option: bool = ...,
         hidden: bool = ...,
         deprecated: bool | str = ...,
-        aliases: Optional[Iterable[str]] = ...,
-        panels: Optional[List[RichPanel[Any, Any]]] = ...,
-        panel: Optional[str] = ...,
+        aliases: Iterable[str] | None = ...,
+        panels: list[RichPanel[Any, Any]] | None = ...,
+        panel: str | None = ...,
     ) -> Callable[[_AnyCallable], RichGroup]: ...
     @overload
     def group(
         self,
-        name: Optional[str] = None,
+        name: str | None = None,
         *,
-        cls: Type[G],
+        cls: type[G],
         commands: MutableMapping[str, click.Command] | Sequence[click.Command] | None = ...,
         invoke_without_command: bool = ...,
         no_args_is_help: bool | None = ...,
@@ -350,14 +342,14 @@ class RichGroup(RichCommand, click.Group):
         add_help_option: bool = ...,
         hidden: bool = ...,
         deprecated: bool | str = ...,
-        aliases: Optional[Iterable[str]] = ...,
-        panels: Optional[List[RichPanel[Any, Any]]] = ...,
-        panel: Optional[str] = ...,
+        aliases: Iterable[str] | None = ...,
+        panels: list[RichPanel[Any, Any]] | None = ...,
+        panel: str | None = ...,
     ) -> Callable[[_AnyCallable], G]: ...
     @overload
     def group(
         self,
-        name: Optional[str] = ...,
+        name: str | None = ...,
         *,
         cls: None,
         commands: MutableMapping[str, click.Command] | Sequence[click.Command] | None = ...,
@@ -376,9 +368,9 @@ class RichGroup(RichCommand, click.Group):
         add_help_option: bool = ...,
         hidden: bool = ...,
         deprecated: bool | str = ...,
-        aliases: Optional[Iterable[str]] = ...,
-        panels: Optional[List[RichPanel[Any, Any]]] = ...,
-        panel: Optional[str] = ...,
+        aliases: Iterable[str] | None = ...,
+        panels: list[RichPanel[Any, Any]] | None = ...,
+        panel: str | None = ...,
     ) -> Callable[[_AnyCallable], RichGroup]: ...
 
     # variant: with positional name and with positional or keyword cls argument:
@@ -386,8 +378,8 @@ class RichGroup(RichCommand, click.Group):
     @overload
     def group(
         self,
-        name: Optional[str],
-        cls: Type[G],
+        name: str | None,
+        cls: type[G],
         **attrs: Any,
     ) -> Callable[[_AnyCallable], G]: ...
 
@@ -397,35 +389,33 @@ class RichGroup(RichCommand, click.Group):
         self,
         name: None = None,
         *,
-        cls: Type[G],
+        cls: type[G],
         **attrs: Any,
     ) -> Callable[[_AnyCallable], G]: ...
 
     # variant: with optional string name, no cls argument provided.
     @overload
-    def group(
-        self, name: Optional[str] = ..., cls: None = None, **attrs: Any
-    ) -> Callable[[_AnyCallable], RichGroup]: ...
+    def group(self, name: str | None = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichGroup]: ...
     def group(
         self,
-        name: Union[str, _AnyCallable, None] = None,
-        cls: Optional[Type[G]] = None,
+        name: str | _AnyCallable | None = None,
+        cls: type[G] | None = None,
         **attrs: Any,
-    ) -> Union[click.Group, Callable[[_AnyCallable], Union[RichGroup, G]]]: ...
-    def get_command(self, ctx: click.Context, cmd_name: str) -> Optional[click.Command]: ...
+    ) -> click.Group | Callable[[_AnyCallable], RichGroup | G]: ...
+    def get_command(self, ctx: click.Context, cmd_name: str) -> click.Command | None: ...
     def add_command(
         self,
         cmd: click.Command,
         name: str | None = None,
-        aliases: Optional[Iterable[str]] = None,
-        panel: Optional[str] = None,
+        aliases: Iterable[str] | None = None,
+        panel: str | None = None,
     ) -> None: ...
     def _handle_extras_add_command(
         self,
         cmd: click.Command,
-        name: Optional[str] = None,
-        aliases: Optional[Iterable[str]] = None,
-        panel: Optional[Union[str, List[str]]] = None,
+        name: str | None = None,
+        aliases: Iterable[str] | None = None,
+        panel: str | list[str] | None = None,
     ) -> None: ...
 
 class RichMultiCommand(RichGroup, click.CommandCollection):
