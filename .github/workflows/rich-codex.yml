@@ -2,15 +2,20 @@ name: Rich-codex
 on:
   workflow_dispatch:
 
+permissions: {}
+
 jobs:
   rich_codex:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # rich-codex commits & pushes generated screenshots
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4
+        # persisted credentials are required for rich-codex to push commits
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3 # zizmor: ignore[artipacked]
 
       - name: Set up Python
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           python-version: 3
           activate-environment: true
@@ -19,7 +24,7 @@ jobs:
         run: uv pip install ".[docs]"
 
       - name: Generate terminal images with rich-codex
-        uses: ewels/rich-codex@v1
+        uses: ewels/rich-codex@80de9de011c994f32274bb4cffee140567621d8e # v1.2.11
         with:
           use_uv: "true"
           skip_python_setup: "true"
