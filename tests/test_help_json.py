@@ -111,6 +111,21 @@ def test_help_json_custom_option_name(cli_runner: CliRunner) -> None:
     assert "--schema" in cli_runner.invoke(cli, ["--help"]).output
 
 
+def test_help_json_excludes_customized_help_option(cli_runner: CliRunner) -> None:
+    # The help/meta options are excluded by object identity, so a non-default help
+    # option name (here `-h`) must still be kept out of the reported params.
+    rc.HELP_JSON = True
+
+    @command(context_settings={"help_option_names": ["-h", "--help"]})
+    @option("--real", help="A real option.")
+    def cli(real: str) -> None:
+        """Hi."""
+
+    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    param_opts = [opt for param in schema["params"] for opt in param["opts"]]
+    assert param_opts == ["--real"]
+
+
 def test_help_json_via_rich_config(cli_runner: CliRunner) -> None:
     @command()
     @rich_config(help_config=RichHelpConfiguration(help_json=True))

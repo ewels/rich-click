@@ -86,6 +86,7 @@ def _subcommand_name_tree(group: click.Group, ctx: click.Context) -> Dict[str, A
         if sub is None:
             continue
         if isinstance(sub, click.Group):
+            # A child context is needed only so list_commands/get_command can resolve the next level.
             sub_ctx = click.Context(sub, info_name=name, parent=ctx)
             tree[name] = _subcommand_name_tree(sub, sub_ctx)
         else:
@@ -96,7 +97,7 @@ def _subcommand_name_tree(group: click.Group, ctx: click.Context) -> Dict[str, A
 def command_schema(
     cmd: click.Command,
     ctx: click.Context,
-    exclude_params: Iterable[str] = (),
+    exclude: Iterable[click.Parameter] = (),
 ) -> Dict[str, Any]:
     """
     Build the JSON schema for a single command level.
@@ -108,17 +109,25 @@ def command_schema(
     ----
         cmd: The command or group to describe.
         ctx: The Click context for ``cmd``.
-        exclude_params: Parameter names to omit (e.g. the ``--help`` and
-            ``--help-json`` meta-options). ``"help"`` is always excluded.
+        exclude: Parameters to omit (e.g. the ``--help-json`` meta-option). The
+            ``--help`` option is always excluded. Matched by object identity so a
+            renamed help option still resolves correctly.
 
     """
-    exclude = {*exclude_params, "help"}
+    # Exclude meta-options by identity rather than by name, since the help option's
+    # name/flags can be customized via help_option_names.
+    exclude_ids = {id(p) for p in exclude}
+    get_help_option = getattr(cmd, "get_help_option", None)
+    if get_help_option is not None:
+        help_option = get_help_option(ctx)
+        if help_option is not None:
+            exclude_ids.add(id(help_option))
     schema: Dict[str, Any] = {
         "name": cmd.name,
         "path": ctx.command_path,
         "help": _strip_markup(cmd.help),
         "usage": " ".join([ctx.command_path, *cmd.collect_usage_pieces(ctx)]),
-        "params": [_param_to_dict(p, ctx) for p in cmd.get_params(ctx) if p.name not in exclude],
+        "params": [_param_to_dict(p, ctx) for p in cmd.get_params(ctx) if id(p) not in exclude_ids],
     }
     aliases = getattr(cmd, "aliases", None)
     if aliases:
@@ -146,7 +155,7 @@ def build_help_json_option(
     def show_help_json(ctx: click.Context, param: click.Parameter, value: bool) -> None:
         if not value or ctx.resilient_parsing:
             return
-        schema = command_schema(ctx.command, ctx, exclude_params={param.name})  # type: ignore[arg-type]
+        schema = command_schema(ctx.command, ctx, exclude=(param,))
         click.echo(json.dumps(schema, indent=2, default=str))
         ctx.exit()
 
