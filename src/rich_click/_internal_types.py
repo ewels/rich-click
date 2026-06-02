@@ -252,5 +252,7 @@ class RichHelpConfigurationDict(TypedDict):
     option_groups: NotRequired[Dict[str, List[OptionGroupDict]]]
     use_click_short_help: NotRequired[bool]
     helptext_show_aliases: NotRequired[bool]
+    help_json: NotRequired[bool]
+    help_json_option_name: NotRequired[str]
     highlighter_patterns: NotRequired[List[str]]
     legacy_windows: NotRequired[Optional[bool]]

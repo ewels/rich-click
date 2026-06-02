@@ -117,6 +117,49 @@ Below is a full list of configuration options from `rich_click.py`.
 
 All of these are available in the `RichHelpConfiguration` object, but as lowercase.
 
+## Machine-readable help (`--help-json`)
+
+CLIs are increasingly driven by tooling and LLM agents, which struggle to reliably parse the
+rendered `--help` screen. Setting the `help_json` config option to `True` adds a global
+`--help-json` flag to **every** command and group, with no per-command boilerplate:
+
+```python
+import rich_click as click
+
+click.rich_click.HELP_JSON = True
+
+@click.group()
+def cli():
+    """My CLI."""
+
+@cli.command()
+@click.option("--count", type=int, default=1, help="Number of greetings.")
+@click.argument("name")
+def hello(count, name):
+    """Say hello."""
+```
+
+Running `cli --help-json` prints the current command's help, usage and full parameter detail as
+JSON, together with a recursive index of subcommand names:
+
+```json
+{
+  "name": "cli",
+  "path": "cli",
+  "help": "My CLI.",
+  "usage": "cli [OPTIONS] COMMAND [ARGS]...",
+  "params": [],
+  "subcommands": { "hello": {} }
+}
+```
+
+The flag is contextual and eager: `cli hello --help-json` returns the full detail for `hello` even
+when its required arguments are missing, while a group only lists its descendants by name. This lets
+agents drill down one level at a time rather than pulling the whole command tree into context at once.
+
+Because many CLIs already define their own `--json` data-output flag, the flag is named `--help-json`
+by default. Use `help_json_option_name` to change it if it clashes with an existing option.
+
 ---
 
 !!! danger "Advanced"

@@ -76,6 +76,8 @@ class RichCommand(Command):
         self.aliases: Iterable[str] = aliases or []
         if not hasattr(self, "_help_option"):
             self._help_option = None
+        if not hasattr(self, "_help_json_option"):
+            self._help_json_option: Optional[click.Option] = None
 
     @property
     def console(self) -> Optional["Console"]:
@@ -332,6 +334,34 @@ class RichCommand(Command):
             self._help_option = self.params.pop()  # type: ignore[assignment]
 
         return self._help_option
+
+    def _get_help_json_option(self, ctx: click.Context) -> Optional[click.Option]:
+        """
+        Return the ``--help-json`` option, or ``None`` unless the ``help_json`` config is enabled.
+
+        The option is cached on the command (like the help option) so that its
+        object identity is stable across ``get_params`` calls, which
+        ``iter_params_for_processing`` relies on.
+        """
+        config = getattr(ctx, "help_config", None)
+        if config is None or not getattr(config, "help_json", False):
+            return None
+        if self._help_json_option is None:
+            from rich_click.help_json import build_help_json_option
+
+            self._help_json_option = build_help_json_option(getattr(config, "help_json_option_name", None))
+        return self._help_json_option
+
+    def get_params(self, ctx: click.Context) -> List[click.Parameter]:
+        params = super().get_params(ctx)
+        json_option = self._get_help_json_option(ctx)
+        if json_option is None:
+            return params
+        # super().get_params() already appended the cached help option last (if any);
+        # slot --help-json just before it so the two meta-options sit together.
+        if self._help_option is not None and params and params[-1] is self._help_option:
+            return [*params[:-1], json_option, params[-1]]
+        return [*params, json_option]
 
     def get_rich_table_row(
         self,

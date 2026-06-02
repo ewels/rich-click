@@ -171,6 +171,9 @@ COMMAND_GROUPS: Dict[str, List[CommandGroupDict]] = {}
 OPTION_GROUPS: Dict[str, List[OptionGroupDict]] = {}
 USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
 HELPTEXT_SHOW_ALIASES: bool = True
+# Add a global `--help-json` flag to every command, printing machine-readable help as JSON (for LLMs/tooling)
+HELP_JSON: bool = False
+HELP_JSON_OPTION_NAME: str = "--help-json"  # Flag name used when HELP_JSON is enabled
 
 #!ENDCONFIG
 

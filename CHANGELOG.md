@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Added `help_json` config option. When enabled, every command and group gains a global `--help-json` flag that prints machine-readable help, usage and parameters as JSON, plus a recursive index of subcommand names — letting tooling and LLMs discover a CLI one level at a time. The flag name can be customized with `help_json_option_name`.
+
 ## Version 1.9.8 (2026-05-28)
 
 - Fixed regression in patching with Click 8.4.0.

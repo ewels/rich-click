@@ -263,6 +263,10 @@ class RichHelpConfiguration:
     use_click_short_help: bool = field(default=False)
     """Use click's default function to truncate help text"""
     helptext_show_aliases: bool = field(default=True)
+    help_json: bool = field(default=False)
+    """If set, add a global ``--help-json`` flag to every command for machine-readable help (LLMs/tooling)."""
+    help_json_option_name: str = field(default="--help-json")
+    """Name of the flag added when `help_json` is enabled. Customize to avoid clashing with an existing `--json`."""
     highlighter: Optional["Highlighter"] = field(default=None, repr=False, compare=False)
     """(Deprecated) Rich regex highlighter for help highlighting"""
 
