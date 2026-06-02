@@ -29,7 +29,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 DEFAULT_HELP_JSON_OPTION_NAME = "--help-json"
-DEFAULT_HELP_JSON_HELP = "Print this command's help/usage as JSON, with a recursive index of subcommand names."
+DEFAULT_HELP_JSON_HELP = "Print this command's help/usage as JSON."
 
 
 def _strip_markup(text: Optional[str]) -> Optional[str]:

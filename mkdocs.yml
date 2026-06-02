@@ -52,6 +52,7 @@ nav:
         - "Advanced": documentation/panels/advanced.md
       - "Text Markup & Formatting": documentation/text_markup_and_formatting.md
       - "Custom Styles": documentation/custom_styles.md
+      - "Machine-readable Help": documentation/machine_readable_help.md
       - "<code>rich-click</code> CLI tool": documentation/rich_click_cli.md
       - "Typer Support": documentation/typer_support.md
       - Accessibility: documentation/accessibility.md
