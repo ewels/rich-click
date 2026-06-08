@@ -78,9 +78,12 @@ def test_help_json_leaf(cli_runner: CliRunner) -> None:
     by_name = {param["name"]: param for param in schema["params"]}
     assert by_name["count"]["default"] == 3
     assert by_name["count"]["help"] == "How many times."
-    # The positional argument is reported as an argument and is required.
+    # The positional argument is reported as an argument and is required. It carries no `opts`
+    # (those would just repeat the name); only options report their flags.
     assert by_name["name"]["kind"] == "argument"
     assert by_name["name"]["required"] is True
+    assert "opts" not in by_name["name"]
+    assert "opts" in by_name["count"]
 
 
 def test_help_json_choice(cli_runner: CliRunner) -> None:
@@ -205,6 +208,18 @@ def test_help_json_hidden_param_is_kept_and_flagged(cli_runner: CliRunner) -> No
     by_name = {param["name"]: param for param in schema["params"]}
     assert by_name["secret"]["hidden"] is True
     assert "hidden" not in by_name["shown"]
+
+
+def test_help_json_omits_help_when_undocumented(cli_runner: CliRunner) -> None:
+    # An undocumented command omits `help` entirely rather than emitting a null.
+    rc.HELP_JSON = True
+
+    @command()
+    def cli() -> None:
+        pass
+
+    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    assert "help" not in schema
 
 
 def test_help_json_transform_hook(cli_runner: CliRunner) -> None:

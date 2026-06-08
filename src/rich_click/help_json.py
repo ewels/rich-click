@@ -106,10 +106,12 @@ def _passthrough_extensions(info: Dict[str, Any], consumed: "frozenset[str]") ->
 def _param_to_dict(info: Dict[str, Any]) -> Dict[str, Any]:
     """Convert a parameter's ``to_info_dict()`` into a compact, JSON-friendly dict."""
     type_info = info.get("type") or {}
+    kind = info.get("param_type_name")  # "option" or "argument"
     fields = {
         "name": info.get("name"),
-        "kind": info.get("param_type_name"),  # "option" or "argument"
-        "opts": info.get("opts"),
+        "kind": kind,
+        # An argument's opts just repeat its name, so only options carry opts (the actual flags).
+        "opts": info.get("opts") if kind == "option" else None,
         "type": type_info.get("param_type"),  # e.g. "Bool", "Int", "String", "Path"
         "choices": type_info.get("choices"),
         "required": info.get("required") or None,
@@ -191,13 +193,12 @@ def command_schema(
 
     params = [_param_to_dict(param.to_info_dict()) for param in cmd.get_params(ctx) if id(param) not in exclude_ids]
 
-    schema: Dict[str, Any] = {
-        "name": info.get("name"),
-        "path": ctx.command_path,
-        "help": _strip_markup(info.get("help")),
-        "usage": " ".join([ctx.command_path, *cmd.collect_usage_pieces(ctx)]),
-        "params": params,
-    }
+    schema: Dict[str, Any] = {"name": info.get("name"), "path": ctx.command_path}
+    help_text = _strip_markup(info.get("help"))
+    if help_text:  # omit rather than emit a null help for undocumented commands
+        schema["help"] = help_text
+    schema["usage"] = " ".join([ctx.command_path, *cmd.collect_usage_pieces(ctx)])
+    schema["params"] = params
     if "commands" in info:
         schema["subcommands"] = _subcommand_index(info["commands"])
 

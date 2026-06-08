@@ -83,7 +83,6 @@ Running it on a subcommand returns that command's full detail, including positio
     {
       "name": "name",
       "kind": "argument",
-      "opts": ["name"],
       "type": "String",
       "required": true
     }
@@ -106,7 +105,7 @@ For every command level, the JSON object contains:
 | ------------- | ----------------------------------------------------------------------------------------------------- |
 | `name`        | The command's name.                                                                                   |
 | `path`        | The full invocation path (e.g. `cli db migrate`).                                                     |
-| `help`        | The command's help text, with Rich markup stripped to plain text.                                     |
+| `help`        | The command's help text, with Rich markup stripped to plain text. Omitted if the command is undocumented. |
 | `usage`       | The usage string.                                                                                     |
 | `params`      | A list of the command's options and arguments. The `--help` / `--help-json` meta-options are omitted. |
 | `subcommands` | Present only for groups: a recursive index of all descendants. Each entry carries a one-line `help` (plus `aliases` and a nested `subcommands` where present). |
@@ -117,7 +116,7 @@ Each entry in `params` has the following keys when applicable:
 | ---------- | ----------------------------------------------------------------- |
 | `name`     | The Python-side parameter name.                                   |
 | `kind`     | `"option"` or `"argument"`.                                       |
-| `opts`     | The flag(s) or argument name as seen on the command line.         |
+| `opts`     | An option's flag(s) as seen on the command line. Omitted for arguments (use `name`). |
 | `type`     | The parameter type, e.g. `"Bool"`, `"Int"`, `"String"`, `"Path"`. |
 | `choices`  | The allowed values, for a `Choice` type.                          |
 | `required` | Present and `true` only when the parameter is required.           |
