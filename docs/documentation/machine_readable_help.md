@@ -3,7 +3,7 @@
 CLIs are increasingly driven not just by humans, but by tooling and LLM agents.
 Those consumers struggle with the rendered `--help` screen: it is laid out for human reading, wraps to the terminal width, and carries Rich styling that obscures the underlying structure.
 
-**rich-click** already holds all of this information as structured data. The `help_json` config option exposes it directly, as a [JSON Schema](https://json-schema.org) document.
+**rich-click** already holds all of this information as structured data. The `help_json` config option exposes it directly.
 
 ## Enabling `--help-json`
 
@@ -20,7 +20,7 @@ See the [Configuration](configuration.md) page for how to set config options glo
 
 ## Example output
 
-Running the top-level command with `--help-json` prints the current command's help, usage and full parameter detail as a JSON Schema document, together with a recursive index of subcommand names:
+Running the top-level command with `--help-json` prints the current command's help, usage and full parameter detail as JSON, together with a recursive index of subcommand names:
 
 ```console
 $ mytool --help-json
@@ -28,19 +28,21 @@ $ mytool --help-json
 
 ```json
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "cli",
-  "description": "A demo CLI.",
-  "x-usage": "cli [OPTIONS] COMMAND [ARGS]...",
-  "type": "object",
-  "properties": {
-    "verbose": {
-      "type": "boolean",
-      "description": "Enable verbose output.",
-      "x-cli": { "opts": ["--verbose", "-v"], "kind": "option", "is_flag": true }
+  "name": "cli",
+  "path": "cli",
+  "help": "A demo CLI.",
+  "usage": "cli [OPTIONS] COMMAND [ARGS]...",
+  "params": [
+    {
+      "name": "verbose",
+      "kind": "option",
+      "opts": ["--verbose", "-v"],
+      "type": "Bool",
+      "is_flag": true,
+      "help": "Enable verbose output."
     }
-  },
-  "x-subcommands": {
+  ],
+  "subcommands": {
     "db": { "migrate": {} },
     "hello": {}
   }
@@ -56,48 +58,36 @@ The flag also appears in the regular `--help` output, so it is discoverable:
     -->
     ![`python help_json.py --help`](../images/code_snippets/help_json/help_json.svg){.screenshot}
 
-## Why JSON Schema?
-
-JSON Schema is a widely understood standard that validators, function-calling frameworks and LLMs already speak.
-The standard keywords — `type`, `enum`, `required`, `default`, `description` — are meaningful to those consumers without any rich-click-specific knowledge.
-
-A command-line invocation is not a JSON document, though, so everything JSON Schema has no vocabulary for lives under `x-` [extension keys](https://json-schema.org/blog/posts/custom-annotations-will-continue), which validators ignore by specification:
-
-| Key             | Where        | Description                                                                  |
-| --------------- | ------------ | ---------------------------------------------------------------------------- |
-| `x-usage`       | top level    | The usage string.                                                            |
-| `x-subcommands` | top level    | Present only for groups: a recursive, names-only index of all descendants.   |
-| `x-cli`         | per property | CLI-specific facts about a parameter (see below).                            |
-
-This gives a clean two-layer split: a standard layer a generic tool can read and validate, and a CLI layer for consumers that understand the command line.
-
 ## Progressive disclosure
 
-The flag is **contextual**: it reports the current command in full, but lists only the _names_ of its descendants under `x-subcommands`.
+The flag is **contextual**: it reports the current command in full, but lists only the _names_ of its descendants.
 This lets tools and agents discover a CLI one level at a time, drilling down by subcommand name, rather than pulling the whole command tree into context at once.
 
-Running it on a subcommand returns that command's full detail, including positional arguments and the top-level `required` array:
+Running it on a subcommand returns that command's full detail, including positional arguments:
 
 ```json
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "cli hello",
-  "description": "Greet someone.",
-  "x-usage": "cli hello [OPTIONS] NAME",
-  "type": "object",
-  "properties": {
-    "count": {
-      "type": "integer",
-      "description": "Number of greetings.",
-      "default": 1,
-      "x-cli": { "opts": ["--count"], "kind": "option" }
+  "name": "hello",
+  "path": "cli hello",
+  "help": "Greet someone.",
+  "usage": "cli hello [OPTIONS] NAME",
+  "params": [
+    {
+      "name": "count",
+      "kind": "option",
+      "opts": ["--count"],
+      "type": "Int",
+      "help": "Number of greetings.",
+      "default": 1
     },
-    "name": {
-      "type": "string",
-      "x-cli": { "opts": ["name"], "kind": "argument" }
+    {
+      "name": "name",
+      "kind": "argument",
+      "opts": ["name"],
+      "type": "String",
+      "required": true
     }
-  },
-  "required": ["name"]
+  ]
 }
 ```
 
@@ -110,47 +100,37 @@ python help_json.py hello --help-json
 
 ## What the schema contains
 
-For every command level, the top-level JSON object contains:
+For every command level, the JSON object contains:
 
-| Key             | Description                                                                                |
-| --------------- | ------------------------------------------------------------------------------------------ |
-| `$schema`       | The JSON Schema dialect URI.                                                               |
-| `title`         | The full invocation path (e.g. `cli db migrate`).                                          |
-| `description`   | The command's help text, with Rich markup stripped to plain text. Omitted if empty.        |
-| `type`          | Always `"object"`.                                                                          |
-| `properties`    | A map of parameter name → schema. The `--help` / `--help-json` meta-options are omitted.    |
-| `required`      | The names of required parameters. Omitted if none.                                          |
-| `x-usage`       | The usage string.                                                                           |
-| `x-subcommands` | Present only for groups: a recursive, names-only index of all descendants.                  |
+| Key           | Description                                                                                           |
+| ------------- | ----------------------------------------------------------------------------------------------------- |
+| `name`        | The command's name.                                                                                   |
+| `path`        | The full invocation path (e.g. `cli db migrate`).                                                     |
+| `help`        | The command's help text, with Rich markup stripped to plain text.                                     |
+| `usage`       | The usage string.                                                                                     |
+| `params`      | A list of the command's options and arguments. The `--help` / `--help-json` meta-options are omitted. |
+| `subcommands` | Present only for groups: a recursive, names-only index of all descendants.                            |
 
-Each entry in `properties` is a JSON Schema property. Standard validation facts use JSON Schema keywords:
+Each entry in `params` has the following keys when applicable:
 
-| Key           | Description                                                                |
-| ------------- | -------------------------------------------------------------------------- |
-| `type`        | `"integer"`, `"number"`, `"boolean"`, `"string"`, or `"array"` (repeatable). |
-| `enum`        | The allowed values, for a `Choice` type.                                   |
-| `default`     | The default value, for non-flag parameters that have one.                  |
-| `description` | The parameter's help text, as plain text.                                  |
-
-CLI-specific facts that JSON Schema cannot express live under `x-cli`:
-
-| Key              | Description                                                                       |
-| ---------------- | --------------------------------------------------------------------------------- |
-| `opts`           | The flag(s) or argument name as seen on the command line.                         |
-| `kind`           | `"option"` or `"argument"`.                                                       |
-| `is_flag`        | Present and `true` only for boolean flags.                                        |
-| `hidden`         | Present and `true` for hidden parameters (kept in the schema, but flagged).        |
-| `secondary_opts` | The off-switch flag(s), e.g. `--no-foo`, when present.                            |
-| `count`          | Present and `true` for counting options (e.g. `-vvv`).                            |
-| `nargs`          | Present when not `1` (e.g. `-1` for variadic).                                    |
-| `envvar`         | The environment variable(s) the parameter reads, when set.                       |
-| `type`           | The precise Click type (e.g. `"Path"`, `"DateTime"`) when it is not a basic type. |
+| Key        | Description                                                       |
+| ---------- | ----------------------------------------------------------------- |
+| `name`     | The Python-side parameter name.                                   |
+| `kind`     | `"option"` or `"argument"`.                                       |
+| `opts`     | The flag(s) or argument name as seen on the command line.         |
+| `type`     | The parameter type, e.g. `"Bool"`, `"Int"`, `"String"`, `"Path"`. |
+| `choices`  | The allowed values, for a `Choice` type.                          |
+| `required` | Present and `true` only when the parameter is required.           |
+| `is_flag`  | Present and `true` only for boolean flags.                        |
+| `multiple` | Present and `true` only when the parameter may be repeated.       |
+| `hidden`   | Present and `true` for hidden parameters (kept, but flagged).     |
+| `default`  | The default value, for non-flag parameters that have one.         |
+| `help`     | The parameter's help text, as plain text.                         |
 
 ## Adding your own data
 
 The schema is built from each command's `to_info_dict()` — the same Click method that powers introspection elsewhere — so anything you add there flows through automatically.
-
-Custom **command-level** fields appear as `x-<field>` at the top level; custom **parameter-level** fields appear inside that parameter's `x-cli` object:
+Custom **command-level** fields are merged onto the top-level object; custom **parameter-level** fields are merged onto the parameter (a custom key never overwrites one rich-click already set):
 
 ```python
 import rich_click as click
@@ -159,18 +139,18 @@ import rich_click as click
 class DocumentedCommand(click.RichCommand):
     def to_info_dict(self, ctx):
         info = super().to_info_dict(ctx)
-        info["examples"] = ["cli deploy --token=XXX prod"]  # -> "x-examples"
+        info["examples"] = ["cli deploy --token=XXX prod"]  # -> top-level "examples"
         return info
 
 
 class SecretOption(click.RichOption):
     def to_info_dict(self):
         info = super().to_info_dict()
-        info["sensitive"] = True  # -> appears inside the parameter's "x-cli"
+        info["sensitive"] = True  # -> appears on the parameter
         return info
 ```
 
-rich-click's own [panels](panels/index.md) and [aliases](panels/tips.md) flow through the same way, as `x-panels` and `x-aliases`.
+rich-click's own [aliases](panels/tips.md) flow through the same way, appearing as a top-level `aliases` key on commands that define them.
 
 ### The `help_json_transform` hook
 
@@ -180,7 +160,7 @@ If you would rather not subclass, set `help_json_transform` to a callable that p
 import rich_click as click
 
 click.rich_click.HELP_JSON = True
-click.rich_click.HELP_JSON_TRANSFORM = lambda schema, cmd, ctx: {**schema, "x-version": "1.2.3"}
+click.rich_click.HELP_JSON_TRANSFORM = lambda schema, cmd, ctx: {**schema, "version": "1.2.3"}
 ```
 
 ## Customizing the flag name
