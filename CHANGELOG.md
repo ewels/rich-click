@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Added `help_json` config option. When enabled, every command and group gains a global `--help-json` flag that prints machine-readable help, usage and parameters as JSON, plus a recursive index of subcommand names — letting tooling and LLMs discover a CLI one level at a time. The flag name can be customized with `help_json_option_name`.
+- Added `help_json` config option. When enabled, every command and group gains a global `--help-json` flag that prints machine-readable help, usage and parameters as a [JSON Schema](https://json-schema.org) document, plus a recursive index of subcommand names — letting tooling and LLMs discover a CLI one level at a time. CLI-specific detail lives under `x-` extension keys, and anything added to a command's `to_info_dict()` flows through automatically. The flag name can be customized with `help_json_option_name`, and the output can be post-processed with the `help_json_transform` hook.
 
 ## Version 1.9.8 (2026-05-28)
 

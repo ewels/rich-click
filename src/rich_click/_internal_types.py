@@ -34,6 +34,7 @@ if TYPE_CHECKING:
     from rich.style import StyleType
     from rich.text import Text, TextType
 
+    from rich_click.help_json import HelpJSONTransform
     from rich_click.rich_click_theme import RichClickTheme
     from rich_click.rich_help_configuration import (
         CommandColumnType,
@@ -254,5 +255,6 @@ class RichHelpConfigurationDict(TypedDict):
     helptext_show_aliases: NotRequired[bool]
     help_json: NotRequired[bool]
     help_json_option_name: NotRequired[str]
+    help_json_transform: NotRequired[Optional["HelpJSONTransform"]]
     highlighter_patterns: NotRequired[List[str]]
     legacy_windows: NotRequired[Optional[bool]]

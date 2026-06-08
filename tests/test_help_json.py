@@ -1,5 +1,7 @@
 import json
+from typing import Any, Dict
 
+import click
 from click.testing import CliRunner
 
 import rich_click.rich_click as rc
@@ -44,18 +46,22 @@ def test_help_json_root(cli_runner: CliRunner) -> None:
     assert result.exit_code == 0
 
     schema = json.loads(result.output)
-    assert schema["name"] == "cli"
-    assert schema["help"] == "Root help text."
-    assert schema["usage"].startswith("cli")
+    # Output is a JSON Schema document.
+    assert schema["$schema"] == "https://json-schema.org/draft/2020-12/schema"
+    assert schema["type"] == "object"
+    assert schema["title"] == "cli"
+    assert schema["description"] == "Root help text."
+    assert schema["x-usage"].startswith("cli")
 
-    # Regular options are reported; meta-options are hidden.
-    param_opts = [opt for param in schema["params"] for opt in param["opts"]]
-    assert "--verbose" in param_opts
-    assert "--help" not in param_opts
-    assert "--help-json" not in param_opts
+    # Regular options become JSON Schema properties; meta-options are hidden.
+    assert "verbose" in schema["properties"]
+    all_opts = [opt for prop in schema["properties"].values() for opt in prop["x-cli"]["opts"]]
+    assert "--verbose" in all_opts
+    assert "--help" not in all_opts
+    assert "--help-json" not in all_opts
 
     # Subcommands are indexed recursively by name, groups nesting their children.
-    assert schema["subcommands"] == {"hello": {}, "things": {"list": {}}}
+    assert schema["x-subcommands"] == {"hello": {}, "things": {"list": {}}}
 
 
 def test_help_json_leaf(cli_runner: CliRunner) -> None:
@@ -65,16 +71,31 @@ def test_help_json_leaf(cli_runner: CliRunner) -> None:
     assert result.exit_code == 0
 
     schema = json.loads(result.output)
-    assert schema["name"] == "hello"
-    assert schema["path"] == "cli hello"
-    assert "subcommands" not in schema
+    assert schema["title"] == "cli hello"
+    assert "x-subcommands" not in schema
 
-    by_name = {param["name"]: param for param in schema["params"]}
-    assert by_name["count"]["default"] == 3
-    assert by_name["count"]["help"] == "How many times."
-    # The positional argument is reported as an argument and is required.
-    assert by_name["name"]["kind"] == "argument"
-    assert by_name["name"]["required"] is True
+    props = schema["properties"]
+    assert props["count"]["type"] == "integer"
+    assert props["count"]["default"] == 3
+    assert props["count"]["description"] == "How many times."
+    # The positional argument is reported as an argument and is required (at the schema level).
+    assert props["name"]["x-cli"]["kind"] == "argument"
+    assert schema["required"] == ["name"]
+
+
+def test_help_json_choice_becomes_enum(cli_runner: CliRunner) -> None:
+    rc.HELP_JSON = True
+
+    from click import Choice
+
+    @command()
+    @option("--fmt", type=Choice(["json", "yaml"]), default="json", help="Output format.")
+    def cli(fmt: str) -> None:
+        """Hi."""
+
+    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    assert schema["properties"]["fmt"]["enum"] == ["json", "yaml"]
+    assert schema["properties"]["fmt"]["default"] == "json"
 
 
 def test_help_json_group_reports_aliases(cli_runner: CliRunner) -> None:
@@ -84,12 +105,15 @@ def test_help_json_group_reports_aliases(cli_runner: CliRunner) -> None:
     assert result.exit_code == 0
 
     schema = json.loads(result.output)
-    assert schema["aliases"] == ["sub"]
-    assert schema["subcommands"] == {"list": {}}
+    # rich-click's `aliases` flows through to_info_dict() as an x- extension.
+    assert schema["x-aliases"] == ["sub"]
+    assert schema["x-subcommands"] == {"list": {}}
 
-    # The same schema is reachable via the alias.
+    # The same command is reachable via the alias; the title reflects how it was invoked.
     via_alias = json.loads(cli_runner.invoke(cli, ["sub", "--help-json"]).output)
-    assert via_alias["name"] == "things"
+    assert via_alias["title"] == "cli sub"
+    assert via_alias["description"] == schema["description"]
+    assert via_alias["x-subcommands"] == schema["x-subcommands"]
 
 
 def test_help_json_appears_in_regular_help(cli_runner: CliRunner) -> None:
@@ -122,8 +146,8 @@ def test_help_json_excludes_customized_help_option(cli_runner: CliRunner) -> Non
         """Hi."""
 
     schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
-    param_opts = [opt for param in schema["params"] for opt in param["opts"]]
-    assert param_opts == ["--real"]
+    all_opts = [opt for prop in schema["properties"].values() for opt in prop["x-cli"]["opts"]]
+    assert all_opts == ["--real"]
 
 
 def test_help_json_via_rich_config(cli_runner: CliRunner) -> None:
@@ -134,4 +158,60 @@ def test_help_json_via_rich_config(cli_runner: CliRunner) -> None:
 
     result = cli_runner.invoke(cli, ["--help-json"])
     assert result.exit_code == 0
-    assert json.loads(result.output)["name"] == "cli"
+    assert json.loads(result.output)["title"] == "cli"
+
+
+def test_help_json_passthrough_of_custom_fields(cli_runner: CliRunner) -> None:
+    # Anything a developer adds to to_info_dict() flows through: custom command-level keys
+    # become x-<key>, and custom parameter-level keys land in that parameter's x-cli object.
+    rc.HELP_JSON = True
+
+    from rich_click import RichCommand, RichOption
+
+    class SecretOption(RichOption):
+        def to_info_dict(self) -> "Dict[str, Any]":
+            info = super().to_info_dict()
+            info["sensitive"] = True
+            return info
+
+    class DocumentedCommand(RichCommand):
+        def to_info_dict(self, ctx: "click.Context") -> "Dict[str, Any]":
+            info = super().to_info_dict(ctx)
+            info["examples"] = ["cli --token=XXX"]
+            return info
+
+    @command(cls=DocumentedCommand)
+    @option("--token", cls=SecretOption, help="API token.")
+    def cli(token: str) -> None:
+        """Hi."""
+
+    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    assert schema["x-examples"] == ["cli --token=XXX"]
+    assert schema["properties"]["token"]["x-cli"]["sensitive"] is True
+
+
+def test_help_json_hidden_param_is_kept_and_flagged(cli_runner: CliRunner) -> None:
+    # Hidden params are kept (parity with to_info_dict) but marked hidden so consumers can skip them.
+    rc.HELP_JSON = True
+
+    @command()
+    @option("--secret", hidden=True, help="Internal.")
+    @option("--shown", help="Public.")
+    def cli(secret: str, shown: str) -> None:
+        """Hi."""
+
+    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    assert schema["properties"]["secret"]["x-cli"]["hidden"] is True
+    assert "hidden" not in schema["properties"]["shown"]["x-cli"]
+
+
+def test_help_json_transform_hook(cli_runner: CliRunner) -> None:
+    rc.HELP_JSON = True
+    rc.HELP_JSON_TRANSFORM = lambda schema, cmd, ctx: {**schema, "x-version": "1.2.3"}
+
+    @command()
+    def cli() -> None:
+        """Hi."""
+
+    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    assert schema["x-version"] == "1.2.3"

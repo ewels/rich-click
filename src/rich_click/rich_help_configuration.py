@@ -18,6 +18,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.style import StyleType
     from rich.text import Text
 
+    from rich_click.help_json import HelpJSONTransform
+
 T = TypeVar("T", bound="RichHelpConfiguration")
 
 OptionColumnType = Literal[
@@ -267,6 +269,8 @@ class RichHelpConfiguration:
     """If set, add a global ``--help-json`` flag to every command for machine-readable help (LLMs/tooling)."""
     help_json_option_name: str = field(default="--help-json")
     """Name of the flag added when `help_json` is enabled. Customize to avoid clashing with an existing `--json`."""
+    help_json_transform: Optional["HelpJSONTransform"] = field(default=None, repr=False, compare=False)
+    """Optional hook to post-process the `--help-json` schema: ``(schema, command, ctx) -> schema``."""
     highlighter: Optional["Highlighter"] = field(default=None, repr=False, compare=False)
     """(Deprecated) Rich regex highlighter for help highlighting"""
 

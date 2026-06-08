@@ -21,6 +21,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.style import StyleType
     from rich.text import Text
 
+    from rich_click.help_json import HelpJSONTransform
     from rich_click.rich_click_theme import RichClickTheme
 
 #!STARTCONFIG
@@ -174,6 +175,8 @@ HELPTEXT_SHOW_ALIASES: bool = True
 # Add a global `--help-json` flag to every command, printing machine-readable help as JSON (for LLMs/tooling)
 HELP_JSON: bool = False
 HELP_JSON_OPTION_NAME: str = "--help-json"  # Flag name used when HELP_JSON is enabled
+# Optional hook to post-process the `--help-json` schema: (schema, command, ctx) -> schema
+HELP_JSON_TRANSFORM: Optional["HelpJSONTransform"] = None
 
 #!ENDCONFIG
 
