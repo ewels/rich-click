@@ -43,8 +43,8 @@ $ mytool --help-json
     }
   ],
   "subcommands": {
-    "db": { "migrate": {} },
-    "hello": {}
+    "db": { "help": "Manage the database.", "subcommands": { "migrate": { "help": "Run migrations." } } },
+    "hello": { "help": "Greet someone." }
   }
 }
 ```
@@ -60,8 +60,8 @@ The flag also appears in the regular `--help` output, so it is discoverable:
 
 ## Progressive disclosure
 
-The flag is **contextual**: it reports the current command in full, but lists only the _names_ of its descendants.
-This lets tools and agents discover a CLI one level at a time, drilling down by subcommand name, rather than pulling the whole command tree into context at once.
+The flag is **contextual**: it reports the current command in full, but for its descendants lists only their names and a one-line description (not their parameters or usage).
+This lets tools and agents discover a CLI one level at a time — they can see what each subcommand does and drill down by name, rather than pulling the whole command tree into context at once.
 
 Running it on a subcommand returns that command's full detail, including positional arguments:
 
@@ -109,7 +109,7 @@ For every command level, the JSON object contains:
 | `help`        | The command's help text, with Rich markup stripped to plain text.                                     |
 | `usage`       | The usage string.                                                                                     |
 | `params`      | A list of the command's options and arguments. The `--help` / `--help-json` meta-options are omitted. |
-| `subcommands` | Present only for groups: a recursive, names-only index of all descendants.                            |
+| `subcommands` | Present only for groups: a recursive index of all descendants. Each entry carries a one-line `help` (plus `aliases` and a nested `subcommands` where present). |
 
 Each entry in `params` has the following keys when applicable:
 

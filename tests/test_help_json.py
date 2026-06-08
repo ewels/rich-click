@@ -56,8 +56,12 @@ def test_help_json_root(cli_runner: CliRunner) -> None:
     assert "--help" not in param_opts
     assert "--help-json" not in param_opts
 
-    # Subcommands are indexed recursively by name, groups nesting their children.
-    assert schema["subcommands"] == {"hello": {}, "things": {"list": {}}}
+    # Subcommands are indexed recursively by name, each entry carrying a one-line help (and
+    # aliases / nested subcommands where present), so an agent can navigate without round-trips.
+    assert schema["subcommands"] == {
+        "hello": {"help": "Say hello."},
+        "things": {"help": "Manage things.", "aliases": ["sub"], "subcommands": {"list": {"help": "List things."}}},
+    }
 
 
 def test_help_json_leaf(cli_runner: CliRunner) -> None:
@@ -105,7 +109,7 @@ def test_help_json_group_reports_aliases(cli_runner: CliRunner) -> None:
     schema = json.loads(result.output)
     # rich-click's `aliases` flows through to_info_dict() as a passthrough field.
     assert schema["aliases"] == ["sub"]
-    assert schema["subcommands"] == {"list": {}}
+    assert schema["subcommands"] == {"list": {"help": "List things."}}
 
     # The same command is reachable via the alias.
     via_alias = json.loads(cli_runner.invoke(cli, ["sub", "--help-json"]).output)

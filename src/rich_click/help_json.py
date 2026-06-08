@@ -130,14 +130,29 @@ def _param_to_dict(info: Dict[str, Any]) -> Dict[str, Any]:
     return result
 
 
-def _subcommand_name_tree(commands: Dict[str, Any]) -> Dict[str, Any]:
+def _subcommand_index(commands: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Reduce ``to_info_dict()``'s recursive ``commands`` block to a names-only index.
+    Index ``to_info_dict()``'s recursive ``commands`` block by name.
 
-    Leaf commands have no ``commands`` key and map to an empty dict; groups map to a dict of their
-    children. Reusing the already-computed tree avoids a second full walk of the command hierarchy.
+    Each entry carries a one-line ``help`` (so an agent can pick where to drill without a round-trip),
+    plus ``aliases`` and a nested ``subcommands`` index where present. This mirrors the entry shape
+    used by sibling tools (e.g. Nextflow's ``-help-json``) so a single consumer can parse both.
+    Reusing the already-computed tree avoids a second full walk of the command hierarchy.
     """
-    return {name: _subcommand_name_tree(info.get("commands", {})) for name, info in commands.items()}
+    index: Dict[str, Any] = {}
+    for name, info in commands.items():
+        entry: Dict[str, Any] = {}
+        help_text = _strip_markup(info.get("help"))
+        if help_text:
+            entry["help"] = help_text.split("\n", 1)[0].strip()  # first line, like a short help
+        aliases = info.get("aliases")
+        if aliases:
+            entry["aliases"] = list(aliases)
+        children = info.get("commands")
+        if children:
+            entry["subcommands"] = _subcommand_index(children)
+        index[name] = entry
+    return index
 
 
 def command_schema(
@@ -184,7 +199,7 @@ def command_schema(
         "params": params,
     }
     if "commands" in info:
-        schema["subcommands"] = _subcommand_name_tree(info["commands"])
+        schema["subcommands"] = _subcommand_index(info["commands"])
 
     # Passthrough: rich-click extras (aliases) + any developer-supplied command metadata.
     for key, value in _passthrough_extensions(info, _CONSUMED_CMD_KEYS).items():
