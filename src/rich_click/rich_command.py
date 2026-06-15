@@ -76,8 +76,7 @@ class RichCommand(Command):
         self.aliases: Iterable[str] = aliases or []
         if not hasattr(self, "_help_option"):
             self._help_option = None
-        if not hasattr(self, "_help_json_option"):
-            self._help_json_option: Optional[click.Option] = None
+        self._help_json_option: Optional[click.Option] = None
 
     @property
     def console(self) -> Optional["Console"]:
