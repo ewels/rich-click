@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Mapping, Optional, Type, Union
+from typing import TYPE_CHECKING, Any, List, Literal, Mapping, Optional, Type, Union
 
 import click
 from click.globals import get_current_context as click_get_current_context
@@ -23,6 +23,7 @@ class RichContext(click.Context):
     export_console_as: Optional[Literal["html", "svg", "text"]] = None
     errors_in_output_format: bool = False
     help_to_stderr: bool = False
+    help_json_option_names: Optional[List[str]] = None
 
     def __init__(
         self,
@@ -32,6 +33,7 @@ class RichContext(click.Context):
         export_console_as: Optional[Literal["html", "svg", "text"]] = None,
         errors_in_output_format: Optional[bool] = None,
         help_to_stderr: Optional[bool] = None,
+        help_json_option_names: Optional[List[str]] = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -45,11 +47,19 @@ class RichContext(click.Context):
             export_console_as: Arg is passed to RichHelpFormatter().
             errors_in_output_format: Arg is passed to RichHelpFormatter().
             help_to_stderr: If set, help is printed to stderr.
+            help_json_option_names: Flag name(s) for the ``--help-json`` option, parallel to
+                click's ``help_option_names``. When set, it enables ``--help-json`` and takes
+                precedence over the ``help_json`` rich config. Defaults to None (use config).
             **kwargs: Kwargs that get passed to click.Context.
 
         """
         super().__init__(*args, **kwargs)
         parent: Optional[RichContext] = kwargs.pop("parent", None)
+
+        if help_json_option_names is None and hasattr(parent, "help_json_option_names"):
+            self.help_json_option_names = parent.help_json_option_names  # type: ignore[union-attr]
+        else:
+            self.help_json_option_names = help_json_option_names
 
         if help_to_stderr is None and hasattr(parent, "help_to_stderr"):
             self.help_to_stderr = parent.help_to_stderr  # type: ignore[union-attr]

@@ -61,6 +61,7 @@ class RichContextSettingsDict(TypedDict):
     allow_interspersed_args: NotRequired[Optional[bool]]
     ignore_unknown_options: NotRequired[Optional[bool]]
     help_option_names: NotRequired[Optional[List[str]]]
+    help_json_option_names: NotRequired[Optional[List[str]]]
     token_normalize_func: NotRequired[Callable[[str], str] | None]
     color: NotRequired[Optional[bool]]
     show_default: NotRequired[Optional[bool]]

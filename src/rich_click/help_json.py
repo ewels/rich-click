@@ -14,9 +14,13 @@ subcommands by name as needed.
 Composability: the schema is built from each command's ``to_info_dict()`` -- the
 same Click method that powers introspection elsewhere -- so anything a developer
 adds there flows through automatically. Custom command-level fields appear at the
-top level; custom parameter fields appear on the parameter. The
-``help_json_transform`` config option offers a last-mile hook for developers who
-would rather not subclass.
+top level; custom parameter fields appear on the parameter.
+
+The serialization mirrors Click's own ``get_help``/``format_help`` split:
+``RichCommand.get_help_json()`` serializes whatever ``RichCommand.format_help_json()``
+returns, and the latter delegates to :func:`command_schema` here. Subclass and
+override ``format_help_json`` for full control, or use the lighter-touch
+``help_json_transform`` config option to post-process the schema without subclassing.
 
 A distinct ``--help-json`` name is used (rather than ``--json``) because many
 CLIs already define their own ``--json`` data-output flag; the option name can
@@ -25,8 +29,7 @@ be customized via the ``help_json_option_name`` config option.
 
 from __future__ import annotations
 
-import json
-from typing import TYPE_CHECKING, Any, Callable, Dict, Optional
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Sequence
 
 import click
 
@@ -209,15 +212,19 @@ def command_schema(
 
 
 def build_help_json_option(
-    option_name: Optional[str] = None,
+    option_names: Optional[Sequence[str]] = None,
     help_text: Optional[str] = None,
 ) -> "RichOption":
     """
     Build the eager ``--help-json`` option that prints the command schema and exits.
 
+    The schema itself is produced by ``RichCommand.get_help_json()`` (which mirrors
+    click's ``get_help``), so subclasses can customize the output by overriding
+    ``format_help_json`` rather than this option.
+
     Args:
     ----
-        option_name: The flag name to use. Defaults to ``--help-json``.
+        option_names: The flag name(s) to use. Defaults to ``["--help-json"]``.
         help_text: Help text shown for the flag in the regular ``--help`` output.
 
     """
@@ -226,16 +233,12 @@ def build_help_json_option(
     def show_help_json(ctx: click.Context, param: click.Parameter, value: bool) -> None:
         if not value or ctx.resilient_parsing:
             return
-        schema = command_schema(ctx.command, ctx, exclude=(param,))
-        config = getattr(ctx, "help_config", None)
-        transform: Optional[HelpJSONTransform] = getattr(config, "help_json_transform", None)
-        if transform is not None:
-            schema = transform(schema, ctx.command, ctx)
-        click.echo(json.dumps(schema, indent=2, default=str))
+        # Delegate to the command so the get_help_json/format_help_json overrides take effect.
+        click.echo(ctx.command.get_help_json(ctx))  # type: ignore[attr-defined]
         ctx.exit()
 
     return RichOption(
-        [option_name or DEFAULT_HELP_JSON_OPTION_NAME],
+        list(option_names) if option_names else [DEFAULT_HELP_JSON_OPTION_NAME],
         is_flag=True,
         is_eager=True,
         expose_value=False,

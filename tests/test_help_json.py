@@ -1,11 +1,12 @@
 import json
-from typing import Any, Dict
+from typing import Any, Dict, cast
 
 import click
 from click.testing import CliRunner
 
 import rich_click.rich_click as rc
 from rich_click import RichHelpConfiguration, argument, command, group, option, rich_config
+from rich_click.rich_context import RichContext
 
 
 def _build_cli() -> "group":  # type: ignore[valid-type]
@@ -220,6 +221,79 @@ def test_help_json_omits_help_when_undocumented(cli_runner: CliRunner) -> None:
 
     schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
     assert "help" not in schema
+
+
+def test_help_json_option_names_via_context_settings(cli_runner: CliRunner) -> None:
+    # `help_json_option_names` in context_settings enables --help-json (parallel to click's
+    # `help_option_names`), without needing the `help_json` config, and sets custom flag name(s).
+    @command(context_settings={"help_json_option_names": ["--schema", "--meta"]})
+    @option("--real", help="A real option.")
+    def cli(real: str) -> None:
+        """Hi."""
+
+    assert cli_runner.invoke(cli, ["--schema"]).exit_code == 0
+    assert cli_runner.invoke(cli, ["--meta"]).exit_code == 0
+    # The default flag is not added when custom names are supplied.
+    assert cli_runner.invoke(cli, ["--help-json"]).exit_code == 2
+
+    schema = json.loads(cli_runner.invoke(cli, ["--schema"]).output)
+    assert schema["name"] == "cli"
+    # The custom meta-flags are kept out of the reported params.
+    param_opts = [opt for param in schema["params"] for opt in param["opts"]]
+    assert param_opts == ["--real"]
+
+
+def test_help_json_option_names_takes_precedence_over_config(cli_runner: CliRunner) -> None:
+    # When both are set, the context_settings names win over the rich config name.
+    rc.HELP_JSON = True
+    rc.HELP_JSON_OPTION_NAME = "--from-config"
+
+    @command(context_settings={"help_json_option_names": ["--from-ctx"]})
+    def cli() -> None:
+        """Hi."""
+
+    assert cli_runner.invoke(cli, ["--from-ctx"]).exit_code == 0
+    assert cli_runner.invoke(cli, ["--from-config"]).exit_code == 2
+
+
+def test_help_json_format_help_json_override(cli_runner: CliRunner) -> None:
+    # `--help-json` serializes whatever `format_help_json` returns, mirroring click's
+    # get_help/format_help split, so subclasses can customize the schema by overriding it.
+    rc.HELP_JSON = True
+
+    from rich_click import RichCommand
+
+    class MyCommand(RichCommand):
+        def format_help_json(self, ctx: Any, formatter: Any) -> Dict[str, Any]:
+            data = super().format_help_json(ctx, formatter)
+            data["custom"] = "yes"
+            return data
+
+    @command(cls=MyCommand)
+    def cli() -> None:
+        """Hi."""
+
+    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    assert schema["custom"] == "yes"
+    assert schema["name"] == "cli"
+
+
+def test_help_json_get_help_json_direct(cli_runner: CliRunner) -> None:
+    # get_help_json() can be called directly (e.g. by alternative output paths) and returns
+    # the same JSON string the --help-json flag prints.
+    rc.HELP_JSON = True
+
+    @command()
+    @option("--count", type=int, default=1, help="How many.")
+    def cli(count: int) -> None:
+        """Hi."""
+
+    with cli.make_context("cli", []) as ctx:
+        direct = json.loads(cli.get_help_json(cast(RichContext, ctx)))
+
+    via_flag = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    assert direct == via_flag
+    assert direct["name"] == "cli"
 
 
 def test_help_json_transform_hook(cli_runner: CliRunner) -> None:

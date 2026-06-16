@@ -162,6 +162,23 @@ click.rich_click.HELP_JSON = True
 click.rich_click.HELP_JSON_TRANSFORM = lambda schema, cmd, ctx: {**schema, "version": "1.2.3"}
 ```
 
+### Overriding `format_help_json`
+
+For full control, the serialization mirrors Click's own `get_help` / `format_help` split:
+`RichCommand.get_help_json(ctx)` serializes whatever `RichCommand.format_help_json(ctx, formatter)` returns.
+Override `format_help_json` on a `RichCommand` subclass to reshape the schema (it returns the dict statelessly rather than writing to the formatter):
+
+```python
+import rich_click as click
+
+
+class MyCommand(click.RichCommand):
+    def format_help_json(self, ctx, formatter):
+        data = super().format_help_json(ctx, formatter)
+        data["version"] = "1.2.3"
+        return data
+```
+
 ## Customizing the flag name
 
 The flag is named `--help-json` by default, rather than `--json`, because many CLIs already define their own `--json` data-output flag.
@@ -173,4 +190,15 @@ import rich_click as click
 
 click.rich_click.HELP_JSON = True
 click.rich_click.HELP_JSON_OPTION_NAME = "--schema"
+```
+
+Alternatively, set `help_json_option_names` in `context_settings`, parallel to Click's own `help_option_names`. This both enables the flag and names it (no separate `help_json` config needed), and takes precedence over the config option when both are present:
+
+```python
+import rich_click as click
+
+
+@click.command(context_settings={"help_json_option_names": ["--schema"]})
+def cli():
+    """My CLI."""
 ```
