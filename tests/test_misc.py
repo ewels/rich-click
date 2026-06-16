@@ -6,6 +6,7 @@ from inline_snapshot import snapshot
 import rich_click
 import rich_click.rich_click as rc
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_821
+from rich_click.rich_context import RichContext
 from rich_click.utils import truthy
 
 
@@ -25,6 +26,19 @@ def test_abort(cli_runner: CliRunner) -> None:
 \x1b[31mAborted.\x1b[0m
 """
     )
+
+
+def test_child_context_inherits_errors_in_output_format() -> None:
+    # A child context inherits errors_in_output_format from its parent. Locks in the contract:
+    # the inheritance guard used to check the wrong attribute name (harmless while both are
+    # class-level defaults, but only correct by accident).
+    @rich_click.command()
+    def cli() -> None:
+        """CLI."""
+
+    parent = RichContext(cli, errors_in_output_format=True)
+    child = RichContext(cli, parent=parent)
+    assert child.errors_in_output_format is True
 
 
 def test_truthy() -> None:

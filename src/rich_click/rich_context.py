@@ -61,7 +61,7 @@ class RichContext(click.Context):
         else:
             self.export_console_as = export_console_as or self.export_console_as
 
-        if errors_in_output_format is None and hasattr(parent, "export_console_as"):
+        if errors_in_output_format is None and hasattr(parent, "errors_in_output_format"):
             self.errors_in_output_format = parent.errors_in_output_format  # type: ignore[union-attr]
         else:
             self.errors_in_output_format = errors_in_output_format or self.errors_in_output_format
