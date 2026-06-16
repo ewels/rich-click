@@ -2,7 +2,7 @@
 import builtins
 import importlib
 from pathlib import Path
-from typing import Any, List
+from typing import Any
 
 import pytest
 from click.testing import CliRunner
@@ -43,8 +43,8 @@ def check_imports_cli(mock_script_writer: WriteScript) -> Path:
 
 
 @pytest.fixture
-def recorded_imports(monkeypatch: pytest.MonkeyPatch) -> List[str]:
-    modules: List[str] = []
+def recorded_imports(monkeypatch: pytest.MonkeyPatch) -> list[str]:
+    modules: list[str] = []
 
     _import = builtins.__import__
 
@@ -56,7 +56,7 @@ def recorded_imports(monkeypatch: pytest.MonkeyPatch) -> List[str]:
     return modules
 
 
-def test_imports_during_execution(recorded_imports: List[str], cli_runner: CliRunner) -> None:
+def test_imports_during_execution(recorded_imports: list[str], cli_runner: CliRunner) -> None:
     importlib.reload(rich_click)
 
     @rich_click.command()
@@ -73,7 +73,7 @@ def test_imports_during_execution(recorded_imports: List[str], cli_runner: CliRu
     assert not any(m.startswith("importlib.") or m == "importlib" for m in recorded_imports)
 
 
-def test_imports_during_help(recorded_imports: List[str], cli_runner: CliRunner) -> None:
+def test_imports_during_help(recorded_imports: list[str], cli_runner: CliRunner) -> None:
     importlib.reload(rich_click)
 
     @rich_click.command()
@@ -99,7 +99,7 @@ def test_imports_during_help(recorded_imports: List[str], cli_runner: CliRunner)
 
 
 def test_imports_during_execution_rich_click_cli(
-    recorded_imports: List[str],
+    recorded_imports: list[str],
     cli_runner: CliRunner,
     check_imports_cli: Path,
 ) -> None:
@@ -116,7 +116,7 @@ def test_imports_during_execution_rich_click_cli(
 
 
 def test_imports_during_help_rich_click_cli(
-    recorded_imports: List[str],
+    recorded_imports: list[str],
     cli_runner: CliRunner,
     check_imports_cli: Path,
 ) -> None:

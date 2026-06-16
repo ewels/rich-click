@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Dropped support for Python 3.8 and 3.9; the minimum supported version is now Python 3.10.
+- Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python <3.10.
+
 ## Version 1.9.8 (2026-05-28)
 
 - Fixed regression in patching with Click 8.4.0.

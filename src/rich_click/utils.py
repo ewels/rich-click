@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sys
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, TypedDict
+from typing import TYPE_CHECKING, Any, TypedDict
 
 
 if sys.version_info < (3, 11):
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 notset: Any = object()
 
 
-def truthy(o: Any) -> Optional[bool]:
+def truthy(o: Any) -> bool | None:
     """Check if string or other obj is truthy."""
     if isinstance(o, str):
         if o.lower() in {"y", "yes", "t", "true", "1"}:
@@ -33,7 +33,7 @@ def truthy(o: Any) -> Optional[bool]:
         return bool(o)
 
 
-def method_is_from_subclass_of(cls: Type[object], base_cls: Type[object], method_name: str) -> bool:
+def method_is_from_subclass_of(cls: type[object], base_cls: type[object], method_name: str) -> bool:
     """
     Check to see whether a class's method comes from a subclass of some base class.
 
@@ -50,14 +50,14 @@ class CommandGroupDict(TypedDict):
     """Specification for command groups."""
 
     name: NotRequired[str]
-    commands: NotRequired[List[str]]
-    help: NotRequired[Optional[str]]
-    help_style: NotRequired[Optional["StyleType"]]
-    table_styles: NotRequired[Optional[Dict[str, Any]]]
-    panel_styles: NotRequired[Optional[Dict[str, Any]]]
-    column_types: NotRequired[Optional[List["CommandColumnType"]]]
-    inline_help_in_title: NotRequired[Optional[bool]]
-    title_style: NotRequired[Optional["StyleType"]]
+    commands: NotRequired[list[str]]
+    help: NotRequired[str | None]
+    help_style: NotRequired[StyleType | None]
+    table_styles: NotRequired[dict[str, Any] | None]
+    panel_styles: NotRequired[dict[str, Any] | None]
+    column_types: NotRequired[list[CommandColumnType] | None]
+    inline_help_in_title: NotRequired[bool | None]
+    title_style: NotRequired[StyleType | None]
 
     deduplicate: NotRequired[bool]
 
@@ -66,13 +66,13 @@ class OptionGroupDict(TypedDict):
     """Specification for option groups."""
 
     name: NotRequired[str]
-    options: NotRequired[List[str]]
-    help: NotRequired[Optional[str]]
-    help_style: NotRequired[Optional["StyleType"]]
-    table_styles: NotRequired[Optional[Dict[str, Any]]]
-    panel_styles: NotRequired[Optional[Dict[str, Any]]]
-    column_types: NotRequired[Optional[List["OptionColumnType"]]]
-    inline_help_in_title: NotRequired[Optional[bool]]
-    title_style: NotRequired[Optional["StyleType"]]
+    options: NotRequired[list[str]]
+    help: NotRequired[str | None]
+    help_style: NotRequired[StyleType | None]
+    table_styles: NotRequired[dict[str, Any] | None]
+    panel_styles: NotRequired[dict[str, Any] | None]
+    column_types: NotRequired[list[OptionColumnType] | None]
+    inline_help_in_title: NotRequired[bool | None]
+    title_style: NotRequired[StyleType | None]
 
     deduplicate: NotRequired[bool]

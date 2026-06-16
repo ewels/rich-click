@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Mapping, Optional, Type, Union
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Any, Literal
 
 import click
 from click.globals import get_current_context as click_get_current_context
@@ -18,20 +19,20 @@ if TYPE_CHECKING:  # pragma: no cover
 class RichContext(click.Context):
     """Click Context class endowed with Rich superpowers."""
 
-    formatter_class: Type[RichHelpFormatter] = RichHelpFormatter
-    console: Optional["Console"] = None
-    export_console_as: Optional[Literal["html", "svg", "text"]] = None
+    formatter_class: type[RichHelpFormatter] = RichHelpFormatter
+    console: Console | None = None
+    export_console_as: Literal["html", "svg", "text"] | None = None
     errors_in_output_format: bool = False
     help_to_stderr: bool = False
 
     def __init__(
         self,
         *args: Any,
-        rich_console: Optional["Console"] = None,
-        rich_help_config: Optional[Union[Mapping[str, Any], RichHelpConfiguration]] = None,
-        export_console_as: Optional[Literal["html", "svg", "text"]] = None,
-        errors_in_output_format: Optional[bool] = None,
-        help_to_stderr: Optional[bool] = None,
+        rich_console: Console | None = None,
+        rich_help_config: Mapping[str, Any] | RichHelpConfiguration | None = None,
+        export_console_as: Literal["html", "svg", "text"] | None = None,
+        errors_in_output_format: bool | None = None,
+        help_to_stderr: bool | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -49,7 +50,7 @@ class RichContext(click.Context):
 
         """
         super().__init__(*args, **kwargs)
-        parent: Optional[RichContext] = kwargs.pop("parent", None)
+        parent: RichContext | None = kwargs.pop("parent", None)
 
         if help_to_stderr is None and hasattr(parent, "help_to_stderr"):
             self.help_to_stderr = parent.help_to_stderr  # type: ignore[union-attr]
@@ -102,19 +103,19 @@ class RichContext(click.Context):
 
     if TYPE_CHECKING:  # pragma: no cover
 
-        def __enter__(self) -> "RichContext":
+        def __enter__(self) -> RichContext:
             return super().__enter__()  # type: ignore[return-value]
 
         def __exit__(
             self,
-            exc_type: Optional[Type[BaseException]],
-            exc_value: Optional[BaseException],
-            tb: Optional[TracebackType],
+            exc_type: type[BaseException] | None,
+            exc_value: BaseException | None,
+            tb: TracebackType | None,
         ) -> None:
             super().__exit__(exc_type, exc_value, tb)
 
 
-def get_current_context(silent: bool = False) -> Optional[RichContext]:
+def get_current_context(silent: bool = False) -> RichContext | None:
     """
     Return the current click context.  This can be used as a way to
     access the current context object from anywhere.  This is a more implicit

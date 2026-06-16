@@ -5,8 +5,9 @@
 # This example is based on an example from the Typer docs,
 # but with some modifications to increase test coverage:
 # https://typer.tiangolo.com/tutorial/commands/help/#help-panels-for-commands
+from typing import Annotated
+
 import typer
-from typing_extensions import Annotated
 
 
 cli = typer.Typer(rich_markup_mode="rich", no_args_is_help=True)

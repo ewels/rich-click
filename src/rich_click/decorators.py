@@ -1,8 +1,17 @@
 from __future__ import annotations
 
 import sys
+from collections.abc import Callable
 from gettext import gettext
-from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Type, TypeVar, Union, cast, overload
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Concatenate,
+    ParamSpec,
+    TypeVar,
+    cast,
+    overload,
+)
 
 from click import Argument, Command, Context, Group, Option, Parameter
 from click import argument as click_argument
@@ -20,19 +29,13 @@ from rich_click.rich_panel import RichCommandPanel, RichOptionPanel, RichPanel
 from rich_click.rich_parameter import RichArgument, RichOption
 
 
-if sys.version_info < (3, 10):
-    from typing_extensions import Concatenate, ParamSpec
-else:
-    from typing import Concatenate, ParamSpec
-
-
 if TYPE_CHECKING:  # pragma: no cover
     from rich.console import Console
 
 
 _AnyCallable = Callable[..., Any]
 F = TypeVar("F", bound=Callable[..., Any])
-FC = TypeVar("FC", bound=Union[Command, _AnyCallable])
+FC = TypeVar("FC", bound=Command | _AnyCallable)
 C = TypeVar("C", bound=Command)
 
 
@@ -48,8 +51,8 @@ def group(name: _AnyCallable) -> RichGroup: ...
 # @group(namearg, GroupCls, ...) or @group(namearg, cls=GroupCls, ...)
 @overload
 def group(
-    name: Optional[str],
-    cls: Type[G],
+    name: str | None,
+    cls: type[G],
     **attrs: Any,
 ) -> Callable[[_AnyCallable], G]: ...
 
@@ -59,28 +62,28 @@ def group(
 def group(
     name: None = None,
     *,
-    cls: Type[G],
+    cls: type[G],
     **attrs: Any,
 ) -> Callable[[_AnyCallable], G]: ...
 
 
 # variant: with optional string name, no cls argument provided.
 @overload
-def group(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichGroup]: ...
+def group(name: str | None = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichGroup]: ...
 
 
 def group(
-    name: Union[str, _AnyCallable, None] = None,
-    cls: Optional[Type[G]] = None,
+    name: str | _AnyCallable | None = None,
+    cls: type[G] | None = None,
     **attrs: Any,
-) -> Union[Group, Callable[[_AnyCallable], Union[RichGroup, G]]]:
+) -> Group | Callable[[_AnyCallable], RichGroup | G]:
     """
     Group decorator function.
 
     Defines the group() function so that it uses the RichGroup class by default.
     """
     if cls is None:
-        cls = cast(Type[G], RichGroup)
+        cls = cast(type[G], RichGroup)
 
     if callable(name):
         return command(cls=cls, **attrs)(name)
@@ -100,8 +103,8 @@ def command(name: _AnyCallable) -> RichCommand: ...
 # @command(namearg, CommandCls, ...) or @command(namearg, cls=CommandCls, ...)
 @overload
 def command(
-    name: Optional[str],
-    cls: Type[CmdType],
+    name: str | None,
+    cls: type[CmdType],
     **attrs: Any,
 ) -> Callable[[_AnyCallable], CmdType]: ...
 
@@ -111,21 +114,21 @@ def command(
 def command(
     name: None = None,
     *,
-    cls: Type[CmdType],
+    cls: type[CmdType],
     **attrs: Any,
 ) -> Callable[[_AnyCallable], CmdType]: ...
 
 
 # variant: with optional string name, no cls argument provided.
 @overload
-def command(name: Optional[str] = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichCommand]: ...
+def command(name: str | None = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichCommand]: ...
 
 
 def command(
-    name: Union[Optional[str], _AnyCallable] = None,
-    cls: Optional[Type[CmdType]] = None,
+    name: str | None | _AnyCallable = None,
+    cls: type[CmdType] | None = None,
     **attrs: Any,
-) -> Union[Command, Callable[[_AnyCallable], Union[RichCommand, CmdType]]]:
+) -> Command | Callable[[_AnyCallable], RichCommand | CmdType]:
     """
     Command decorator function.
 
@@ -143,7 +146,7 @@ def command(
         attrs.pop("__rich_click_cli_patch", None)
 
     if cls is None:
-        cls = cast(Type[CmdType], RichCommand)
+        cls = cast(type[CmdType], RichCommand)
 
     def decorator(f: _AnyCallable) -> CmdType:
         cs = getattr(f, "__rich_context_settings__", None)
@@ -170,7 +173,7 @@ def command(
     return decorator
 
 
-def _context_settings_memo(f: Callable[..., Any], extra: Dict[str, Any]) -> None:
+def _context_settings_memo(f: Callable[..., Any], extra: dict[str, Any]) -> None:
     if isinstance(f, RichCommand):
         f.context_settings.update(extra)
     else:
@@ -191,9 +194,9 @@ def _rich_panel_memo(f: Callable[..., Any], panel: RichPanel[Any, Any]) -> None:
 
 
 def rich_config(
-    help_config: Optional[Union[Dict[str, Any], RichHelpConfiguration]] = None,
+    help_config: dict[str, Any] | RichHelpConfiguration | None = None,
     *,
-    console: Optional["Console"] = None,
+    console: Console | None = None,
 ) -> Callable[[FC], FC]:
     """
     Use decorator to configure Rich Click settings.
@@ -220,7 +223,7 @@ def rich_config(
         console = help_config
 
     def decorator(obj: FC) -> FC:
-        extra: Dict[str, Any] = {}
+        extra: dict[str, Any] = {}
         if console is not None:
             extra["rich_console"] = console
         if help_config is not None:
@@ -235,7 +238,7 @@ def rich_config(
 
 def _panel(
     name: str,
-    cls: Type[RichPanel[Any, Any]],
+    cls: type[RichPanel[Any, Any]],
     **attrs: Any,
 ) -> Callable[[FC], FC]:
     def decorator(obj: FC) -> FC:
@@ -250,7 +253,7 @@ def _panel(
 
 def option_panel(
     name: str,
-    cls: Type[RichPanel[Parameter, Any]] = RichOptionPanel,
+    cls: type[RichPanel[Parameter, Any]] = RichOptionPanel,
     **attrs: Any,
 ) -> Callable[[FC], FC]:
     """
@@ -268,7 +271,7 @@ def option_panel(
 
 def command_panel(
     name: str,
-    cls: Type[RichPanel[Command, Any]] = RichCommandPanel,
+    cls: type[RichPanel[Command, Any]] = RichCommandPanel,
     **attrs: Any,
 ) -> Callable[[FC], FC]:
     """
@@ -337,7 +340,7 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     return click_option(*param_decls, **kwargs)
 
 
-def argument(*param_decls: str, cls: Optional[Type[Argument]] = None, **attrs: Any) -> Callable[[FC], FC]:
+def argument(*param_decls: str, cls: type[Argument] | None = None, **attrs: Any) -> Callable[[FC], FC]:
     """
     Attaches an argument to the command.  All positional arguments are
     passed as parameter declarations to :class:`Argument`; all keyword
@@ -360,7 +363,7 @@ def argument(*param_decls: str, cls: Optional[Type[Argument]] = None, **attrs: A
     return click_argument(*param_decls, cls=cls, **attrs)
 
 
-def option(*param_decls: str, cls: Optional[Type[Option]] = None, **attrs: Any) -> Callable[[FC], FC]:
+def option(*param_decls: str, cls: type[Option] | None = None, **attrs: Any) -> Callable[[FC], FC]:
     """
     Attaches an option to the command.  All positional arguments are
     passed as parameter declarations to :class:`Option`; all keyword
@@ -416,11 +419,11 @@ def password_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
 
 
 def version_option(
-    version: Optional[str] = None,
+    version: str | None = None,
     *param_decls: str,
-    package_name: Optional[str] = None,
-    prog_name: Optional[str] = None,
-    message: Optional[str] = None,
+    package_name: str | None = None,
+    prog_name: str | None = None,
+    message: str | None = None,
     **kwargs: Any,
 ) -> Callable[[FC], FC]:
     """

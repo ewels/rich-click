@@ -4,21 +4,13 @@ import errno
 import os
 import sys
 import warnings
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
-    Dict,
-    Iterable,
-    List,
     Literal,
-    Mapping,
     NoReturn,
-    Optional,
-    Sequence,
     TextIO,
-    Type,
-    Union,
     cast,
     overload,
 )
@@ -58,27 +50,27 @@ class RichCommand(Command):
     This class can be used as a mixin for other click command objects.
     """
 
-    context_class: Type[RichContext] = RichContext
-    _formatter: Optional[RichHelpFormatter] = None
+    context_class: type[RichContext] = RichContext
+    _formatter: RichHelpFormatter | None = None
 
     def __init__(
         self,
         *args: Any,
-        aliases: Optional[Iterable[str]] = None,
-        panels: Optional[List["RichPanel[Any, Any]"]] = None,
-        panel: Optional[Union[str, List[str]]] = None,
+        aliases: Iterable[str] | None = None,
+        panels: list[RichPanel[Any, Any]] | None = None,
+        panel: str | list[str] | None = None,
         **kwargs: Any,
     ) -> None:
         """Create Rich Command instance."""
         super().__init__(*args, **kwargs)
         self.panel = panel
-        self.panels: List["RichPanel[Any, Any]"] = panels or []
+        self.panels: list[RichPanel[Any, Any]] = panels or []
         self.aliases: Iterable[str] = aliases or []
         if not hasattr(self, "_help_option"):
             self._help_option = None
 
     @property
-    def console(self) -> Optional["Console"]:
+    def console(self) -> Console | None:
         """
         Rich Console.
 
@@ -94,14 +86,14 @@ class RichCommand(Command):
         )
         return self.context_settings.get("rich_console")
 
-    def to_info_dict(self, ctx: click.Context) -> Dict[str, Any]:
+    def to_info_dict(self, ctx: click.Context) -> dict[str, Any]:
         info = super().to_info_dict(ctx)
         info["panels"] = [p.to_info_dict(ctx) for p in self.panels]
         info["aliases"] = list(self.aliases) if self.aliases is not None else None
         return info
 
     @property
-    def help_config(self) -> Optional[RichHelpConfiguration]:
+    def help_config(self) -> RichHelpConfiguration | None:
         """Rich Help Configuration."""
         warnings.warn(
             "RichCommand.help_config is deprecated. Please use the click.Context's help config instead.",
@@ -177,9 +169,9 @@ class RichCommand(Command):
 
     def main(
         self,
-        args: Optional[Sequence[str]] = None,
-        prog_name: Optional[str] = None,
-        complete_var: Optional[str] = None,
+        args: Sequence[str] | None = None,
+        prog_name: str | None = None,
+        complete_var: str | None = None,
         standalone_mode: bool = True,
         windows_expand_args: bool = True,
         **extra: Any,
@@ -305,7 +297,7 @@ class RichCommand(Command):
 
         get_rich_epilog(self, ctx, formatter)
 
-    def get_help_option(self, ctx: click.Context) -> Union[click.Option, None]:
+    def get_help_option(self, ctx: click.Context) -> click.Option | None:
         """
         Return the help option object.
 
@@ -335,16 +327,16 @@ class RichCommand(Command):
 
     def get_rich_table_row(
         self,
-        ctx: "RichContext",
-        formatter: "RichHelpFormatter",
-        panel: Optional["RichCommandPanel"] = None,
-    ) -> "RichPanelRow":
+        ctx: RichContext,
+        formatter: RichHelpFormatter,
+        panel: RichCommandPanel | None = None,
+    ) -> RichPanelRow:
         """Create a row for the rich table corresponding with this parameter."""
         from rich_click.rich_help_rendering import get_command_rich_table_row
 
         return get_command_rich_table_row(self, ctx, formatter, panel)
 
-    def add_panel(self, panel: "RichPanel[Any, Any]") -> None:
+    def add_panel(self, panel: RichPanel[Any, Any]) -> None:
         """Add a RichPanel to the RichCommand."""
         self.panels.append(panel)
 
@@ -357,27 +349,27 @@ class RichGroup(RichCommand, Group):
     to print richly formatted output.
     """
 
-    command_class: Optional[Type[RichCommand]] = RichCommand
-    group_class: Optional[Union[Type[Group], Type[type]]] = type
+    command_class: type[RichCommand] | None = RichCommand
+    group_class: type[Group] | type[type] | None = type
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Create RichGroup instance."""
         super().__init__(*args, **kwargs)
 
-        self._alias_mapping: Dict[str, str] = {}
+        self._alias_mapping: dict[str, str] = {}
         # This allows non-RichCommands to be assigned to panels
         # + assigns without requiring mutation of panels.
-        self._panel_command_mapping: Dict[str, List[str]] = {}
+        self._panel_command_mapping: dict[str, list[str]] = {}
 
         for name in self.commands:
             cmd = self.commands[name]
 
-            aliases: Optional[Iterable[str]] = getattr(cmd, "aliases", None)
+            aliases: Iterable[str] | None = getattr(cmd, "aliases", None)
             if aliases:
                 for alias in aliases:
                     self._alias_mapping[alias] = name
 
-            panel: Optional[str] = getattr(cmd, "panel", None)
+            panel: str | None = getattr(cmd, "panel", None)
             if cmd.name and panel:
                 self.add_command_to_panel(cmd, panel)
 
@@ -407,7 +399,7 @@ class RichGroup(RichCommand, Group):
     @overload
     def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichCommand]: ...
 
-    def command(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], RichCommand], RichCommand]:
+    def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichCommand] | RichCommand:
         """
         A shortcut decorator for declaring and attaching a command to
         the group. This takes the same arguments as :func:`command` and
@@ -425,14 +417,14 @@ class RichGroup(RichCommand, Group):
         """  # noqa: D401
         from rich_click.decorators import command
 
-        func: Optional[Callable[..., Any]] = None
+        func: Callable[..., Any] | None = None
 
         if args and callable(args[0]):
             assert len(args) == 1 and not kwargs, "Use 'command(**kwargs)(callable)' to provide arguments."
             (func,) = args
             args = ()
 
-        cls: Optional[Type[Command]] = kwargs.get("cls")
+        cls: type[Command] | None = kwargs.get("cls")
         if self.command_class and cls is None:
             kwargs["cls"] = cls = self.command_class
 
@@ -454,12 +446,12 @@ class RichGroup(RichCommand, Group):
         return decorator
 
     @overload
-    def group(self, __func: Callable[..., Any]) -> "RichGroup": ...
+    def group(self, __func: Callable[..., Any]) -> RichGroup: ...
 
     @overload
-    def group(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], "RichGroup"]: ...
+    def group(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichGroup]: ...
 
-    def group(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], "RichGroup"], "RichGroup"]:
+    def group(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichGroup] | RichGroup:
         """
         A shortcut decorator for declaring and attaching a group to
         the group. This takes the same arguments as :func:`group` and
@@ -477,14 +469,14 @@ class RichGroup(RichCommand, Group):
         """  # noqa: D401
         from rich_click.decorators import group
 
-        func: Optional[Callable[..., Any]] = None
+        func: Callable[..., Any] | None = None
 
         if args and callable(args[0]):
             assert len(args) == 1 and not kwargs, "Use 'group(**kwargs)(callable)' to provide arguments."
             (func,) = args
             args = ()
 
-        cls: Optional[Union[Type[Group], Type[type]]] = kwargs.get("cls")
+        cls: type[Group] | type[type] | None = kwargs.get("cls")
         if self.group_class is not None and cls is None:
             if self.group_class is type:
                 kwargs["cls"] = cls = type(self)
@@ -511,9 +503,9 @@ class RichGroup(RichCommand, Group):
     def _handle_extras_add_command(
         self,
         cmd: click.Command,
-        name: Optional[str] = None,
-        aliases: Optional[Iterable[str]] = None,
-        panel: Optional[Union[str, List[str]]] = None,
+        name: str | None = None,
+        aliases: Iterable[str] | None = None,
+        panel: str | list[str] | None = None,
     ) -> None:
         """
         Create backwards compatibility with add_command() subclass interfaces
@@ -537,16 +529,16 @@ class RichGroup(RichCommand, Group):
         if panel:
             self.add_command_to_panel(cmd, panel)
 
-    def get_command(self, ctx: click.Context, cmd_name: str) -> Optional[click.Command]:
+    def get_command(self, ctx: click.Context, cmd_name: str) -> click.Command | None:
         _cmd_name = self._alias_mapping.get(cmd_name, cmd_name)
         return super().get_command(ctx, _cmd_name)
 
     def add_command(
         self,
         cmd: click.Command,
-        name: Optional[str] = None,
-        aliases: Optional[Iterable[str]] = None,
-        panel: Optional[Union[str, List[str]]] = None,
+        name: str | None = None,
+        aliases: Iterable[str] | None = None,
+        panel: str | list[str] | None = None,
     ) -> None:
         """
         Register another :class:`Command` with this group. If the name
@@ -560,7 +552,7 @@ class RichGroup(RichCommand, Group):
     def add_command_to_panel(
         self,
         command: click.Command,
-        panel_name: Union[str, Iterable[str]],
+        panel_name: str | Iterable[str],
     ) -> None:
         if not command.name:
             return
@@ -599,7 +591,7 @@ def prevent_incompatible_overrides(
     import rich_click.patch
     from rich_click.utils import method_is_from_subclass_of
 
-    cls: Type[RichCommand] = getattr(rich_click.patch, f"_Patched{class_name}")
+    cls: type[RichCommand] = getattr(rich_click.patch, f"_Patched{class_name}")
 
     for method_name in ["format_usage", "format_help_text", "format_options", "format_epilog"]:
         if method_is_from_subclass_of(cmd.__class__, cls, method_name):

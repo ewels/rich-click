@@ -1,20 +1,13 @@
 from __future__ import annotations
 
+from collections.abc import Generator
 from fnmatch import fnmatch
 from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Dict,
-    Generator,
     Generic,
-    List,
-    Optional,
-    Set,
-    Tuple,
-    Type,
     TypeVar,
-    Union,
 )
 
 from click import Context, Parameter
@@ -44,8 +37,8 @@ GroupType = TypeVar("GroupType", OptionGroupDict, CommandGroupDict)
 class RichPanel(Generic[CT, ColT]):
     """RichPanel base class."""
 
-    panel_class: Optional[Type["Panel"]] = None
-    table_class: Optional[Type["Table"]] = None
+    panel_class: type[Panel] | None = None
+    table_class: type[Table] | None = None
     _highlight: ClassVar[bool] = False
     _object_attr: ClassVar[str] = NotImplemented
 
@@ -53,13 +46,13 @@ class RichPanel(Generic[CT, ColT]):
         self,
         name: str,
         *,
-        help: Optional[str] = None,
-        help_style: Optional["StyleType"] = None,
-        table_styles: Optional[Dict[str, Any]] = None,
-        panel_styles: Optional[Dict[str, Any]] = None,
-        column_types: Optional[List[ColT]] = None,
-        inline_help_in_title: Optional[bool] = None,
-        title_style: Optional["StyleType"] = None,
+        help: str | None = None,
+        help_style: StyleType | None = None,
+        table_styles: dict[str, Any] | None = None,
+        panel_styles: dict[str, Any] | None = None,
+        column_types: list[ColT] | None = None,
+        inline_help_in_title: bool | None = None,
+        title_style: StyleType | None = None,
     ) -> None:
         """Initialize a RichPanel."""
         self.name = name
@@ -72,7 +65,7 @@ class RichPanel(Generic[CT, ColT]):
         self.title_style = title_style
 
     @property
-    def objects(self) -> List[str]:
+    def objects(self) -> list[str]:
         if self._object_attr is NotImplemented:
             raise NotImplementedError()
         return getattr(self, self._object_attr)  # type: ignore[no-any-return]
@@ -82,14 +75,14 @@ class RichPanel(Generic[CT, ColT]):
             raise NotImplementedError()
         getattr(self, self._object_attr).append(o)
 
-    def get_box(self, box: Optional[Union[str, "Box"]]) -> Optional["Box"]:
+    def get_box(self, box: str | Box | None) -> Box | None:
         if box is None:
             return None
         from rich_click.rich_box import get_box
 
         return get_box(box)
 
-    def to_info_dict(self, ctx: Context) -> Dict[str, Any]:
+    def to_info_dict(self, ctx: Context) -> dict[str, Any]:
         if self._object_attr is NotImplemented:
             raise NotImplementedError()
         return {
@@ -100,7 +93,7 @@ class RichPanel(Generic[CT, ColT]):
         }
 
     @classmethod
-    def list_all_objects(cls, ctx: Context) -> List[Tuple[str, CT]]:
+    def list_all_objects(cls, ctx: Context) -> list[tuple[str, CT]]:
         """List all objects of the command that this panel type works with."""
         raise NotImplementedError()
 
@@ -108,13 +101,13 @@ class RichPanel(Generic[CT, ColT]):
         """List the proper names assigned to the panel."""
         raise NotImplementedError()
 
-    def _get_base_table(self, **defaults: Any) -> "Table":
+    def _get_base_table(self, **defaults: Any) -> Table:
         if self.table_class is None:
             from rich.table import Table
 
             self.table_class = Table
 
-        kw: Dict[str, Any] = {
+        kw: dict[str, Any] = {
             "highlight": self._highlight,
             "show_header": False,
         }
@@ -127,13 +120,13 @@ class RichPanel(Generic[CT, ColT]):
 
     def get_table(
         self,
-        command: "RichCommand",
-        ctx: "RichContext",
-        formatter: "RichHelpFormatter",
-    ) -> "Table":
+        command: RichCommand,
+        ctx: RichContext,
+        formatter: RichHelpFormatter,
+    ) -> Table:
         raise NotImplementedError()
 
-    def _get_base_panel(self, table: "Table", **defaults: Any) -> "Panel":
+    def _get_base_panel(self, table: Table, **defaults: Any) -> Panel:
 
         if self.panel_class is None:
             from rich_click.rich_help_rendering import RichClickRichPanel
@@ -152,10 +145,10 @@ class RichPanel(Generic[CT, ColT]):
 
     def render(
         self,
-        command: "RichCommand",
-        ctx: "RichContext",
-        formatter: "RichHelpFormatter",
-    ) -> "Panel":
+        command: RichCommand,
+        ctx: RichContext,
+        formatter: RichHelpFormatter,
+    ) -> Panel:
         raise NotImplementedError()
 
     def __repr__(self) -> str:
@@ -171,7 +164,7 @@ class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
     def __init__(
         self,
         name: str,
-        options: Optional[List[str]] = None,
+        options: list[str] | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize a RichOptionPanel."""
@@ -179,9 +172,10 @@ class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
         self.options = options or []
 
     @classmethod
-    def list_all_objects(cls, ctx: Context) -> List[Tuple[str, Parameter]]:
+    def list_all_objects(cls, ctx: Context) -> list[tuple[str, Parameter]]:
         return [
-            (i.opts[0] if getattr(i, "flag_value", None) and i.opts else i.name, i) for i in ctx.command.get_params(ctx)
+            (i.opts[0] if getattr(i, "flag_value", None) and i.opts else i.name or "", i)
+            for i in ctx.command.get_params(ctx)
         ]
 
     def get_objects(self, command: Command, ctx: Context) -> Generator[Parameter, None, None]:
@@ -198,10 +192,10 @@ class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
 
     def get_table(
         self,
-        command: "RichCommand",
-        ctx: "RichContext",
-        formatter: "RichHelpFormatter",
-    ) -> "Table":
+        command: RichCommand,
+        ctx: RichContext,
+        formatter: RichHelpFormatter,
+    ) -> Table:
         t_styles = {
             "show_lines": formatter.config.style_options_table_show_lines,
             "leading": formatter.config.style_options_table_leading,
@@ -228,8 +222,12 @@ class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
         headers = [i.replace("_", " ").title() for i in formatter.config.options_table_column_types]
 
         filtered = [(h, c) for h, c in zip(headers, zip(*rows)) if any(cell for cell in c)]
-        headers, rows = zip(*filtered) if filtered else ([], [])
-        rows = list(map(list, zip(*rows))) if rows else []
+        if filtered:
+            header_tuple, row_cols = zip(*filtered)
+            headers = list(header_tuple)
+            rows = [list(row) for row in zip(*row_cols)]
+        else:
+            headers, rows = [], []
 
         for row in rows:
             table.add_row(*row)
@@ -241,17 +239,17 @@ class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
 
     def render(
         self,
-        command: "RichCommand",
-        ctx: "RichContext",
-        formatter: "RichHelpFormatter",
-    ) -> "Panel":
+        command: RichCommand,
+        ctx: RichContext,
+        formatter: RichHelpFormatter,
+    ) -> Panel:
         from rich.text import Text
 
         from rich_click.rich_help_rendering import RichClickRichPanel
 
         inner: Any = self.get_table(command, ctx, formatter)
 
-        p_styles: Dict[str, Any] = {
+        p_styles: dict[str, Any] = {
             "border_style": formatter.config.style_options_panel_border,
             "title_align": formatter.config.align_options_panel,
             "box": formatter.config.style_options_panel_box,
@@ -306,7 +304,7 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
     def __init__(
         self,
         name: str,
-        commands: Optional[List[str]] = None,
+        commands: list[str] | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize a RichCommandPanel."""
@@ -314,7 +312,7 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
         self.commands = commands or []
 
     @classmethod
-    def list_all_objects(cls, ctx: Context) -> List[Tuple[str, Command]]:
+    def list_all_objects(cls, ctx: Context) -> list[tuple[str, Command]]:
         if not isinstance(ctx.command, Group):
             return []
         commands = []
@@ -343,10 +341,10 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
 
     def get_table(
         self,
-        command: "RichCommand",
-        ctx: "RichContext",
-        formatter: "RichHelpFormatter",
-    ) -> "Table":
+        command: RichCommand,
+        ctx: RichContext,
+        formatter: RichHelpFormatter,
+    ) -> Table:
         t_styles = {
             "show_lines": formatter.config.style_commands_table_show_lines,
             "leading": formatter.config.style_commands_table_leading,
@@ -362,7 +360,7 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
         # Define formatting in first column, as commands don't match highlighter regex
         # and set column ratio for first and second column, if a ratio has been set
         if formatter.config.style_commands_table_column_width_ratio is None:
-            table_column_width_ratio: Union[Tuple[None, None], Tuple[int, int]] = (None, None)
+            table_column_width_ratio: tuple[None, None] | tuple[int, int] = (None, None)
         else:
             table_column_width_ratio = formatter.config.style_commands_table_column_width_ratio
 
@@ -396,8 +394,12 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
         headers = [i.replace("_", " ").title() for i in formatter.config.commands_table_column_types]
 
         filtered = [(h, c) for h, c in zip(headers, zip(*rows)) if any(cell for cell in c)]
-        headers, rows = zip(*filtered) if filtered else ([], [])
-        rows = list(map(list, zip(*rows))) if rows else []
+        if filtered:
+            header_tuple, row_cols = zip(*filtered)
+            headers = list(header_tuple)
+            rows = [list(row) for row in zip(*row_cols)]
+        else:
+            headers, rows = [], []
 
         for row in rows:
             table.add_row(*row)
@@ -409,17 +411,17 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
 
     def render(
         self,
-        command: "RichCommand",
-        ctx: "RichContext",
-        formatter: "RichHelpFormatter",
-    ) -> "Panel":
+        command: RichCommand,
+        ctx: RichContext,
+        formatter: RichHelpFormatter,
+    ) -> Panel:
         from rich.text import Text
 
         from rich_click.rich_help_rendering import RichClickRichPanel
 
         inner: Any = self.get_table(command, ctx, formatter)
 
-        p_styles: Dict[str, Any] = {
+        p_styles: dict[str, Any] = {
             "border_style": formatter.config.style_commands_panel_border,
             "title_align": formatter.config.align_commands_panel,
             "box": formatter.config.style_commands_panel_box,
@@ -472,17 +474,17 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
 
 
 def _resolve_panels_from_config(
-    ctx: "RichContext",
-    formatter: "RichHelpFormatter",
-    groups: Dict[str, List[GroupType]],
-    panel_cls: Type[RichPanel[CT, ColT]],
-) -> List[RichPanel[CT, ColT]]:
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+    groups: dict[str, list[GroupType]],
+    panel_cls: type[RichPanel[CT, ColT]],
+) -> list[RichPanel[CT, ColT]]:
     """Logic for resolving the groups."""
     # Step 1: get valid name(s) for the command currently being executed
     assert panel_cls._object_attr is not NotImplemented, "RichPanel must have a defined _object_attr"
 
     cmd_name = ctx.command.name
-    _ctx: "RichContext" = ctx
+    _ctx: RichContext = ctx
     while _ctx.parent is not None:
         _ctx = _ctx.parent  # type: ignore[assignment]
         cmd_name = f"{_ctx.command.name} {cmd_name}"
@@ -496,7 +498,7 @@ def _resolve_panels_from_config(
     if ctx.command_path.startswith("python -m "):
         extra = ctx.command_path.replace("python -m ", "", 1)
         paths.append(extra)
-    final_groups_list: List[GroupType] = []
+    final_groups_list: list[GroupType] = []
 
     # Step 2: Match currently executing command to keys
     # Assign wildcards, but make sure we do not overwrite anything already defined.
@@ -504,7 +506,7 @@ def _resolve_panels_from_config(
         wildcard_option_groups = groups[mtch]
         for grp in wildcard_option_groups:
             grp = grp.copy()
-            opts: List[str] = grp.get(panel_cls._object_attr, [])  # type: ignore[assignment]
+            opts: list[str] = grp.get(panel_cls._object_attr, [])  # type: ignore[assignment]
             traversed = []
             for opt in grp.get(panel_cls._object_attr, []):  # type: ignore[attr-defined]
 
@@ -523,10 +525,10 @@ def _resolve_panels_from_config(
 
 
 def construct_panels(
-    command: "RichCommand",
-    ctx: "RichContext",
-    formatter: "RichHelpFormatter",
-) -> List[RichPanel[Any, Any]]:
+    command: RichCommand,
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+) -> list[RichPanel[Any, Any]]:
     """Construct panels from the command as well as from the old groups config."""
     _show_arguments = formatter.config.show_arguments
 
@@ -539,7 +541,7 @@ def construct_panels(
     using_groups_feat = False
 
     # Start with list of panels already defined.
-    defined_panels: Dict[Tuple[str, str], RichPanel[Any, Any]] = {}
+    defined_panels: dict[tuple[str, str], RichPanel[Any, Any]] = {}
 
     for p in command.panels:
         defined_panels[(p._object_attr, p.name)] = p
@@ -569,9 +571,9 @@ def construct_panels(
     # We will reversed() through this so order is flipped.
     # Also-- we have to decouple name from obj because commands can have different names
     # than their mappings to a Group.
-    new_panels: Dict[Tuple[str, str], List[str]] = {}
-    pre_default_panels: Dict[Tuple[str, str], List[str]] = {}
-    post_default_panels: Dict[Tuple[str, str], List[str]]
+    new_panels: dict[tuple[str, str], list[str]] = {}
+    pre_default_panels: dict[tuple[str, str], list[str]] = {}
+    post_default_panels: dict[tuple[str, str], list[str]]
     if isinstance(command, Group):
         if formatter.config.commands_before_options:
             if defined_commands != defined_options or using_groups_feat:
@@ -623,7 +625,7 @@ def construct_panels(
 
     # Go through objects to see whether they are assigned.
     # Need to do tuples because commands and options can have same name.
-    assigned_objects: Dict[Tuple[str, str], Set[str]] = {}
+    assigned_objects: dict[tuple[str, str], set[str]] = {}
     for p in defined_panels.values():
         for o in p.objects:
             assigned_objects.setdefault((p._object_attr, o), set())
@@ -632,7 +634,7 @@ def construct_panels(
     if ("options", formatter.config.arguments_panel_title) in defined_panels:
         _show_arguments = True
 
-    objs: List[Tuple[str, str, Union[Parameter, Command]]] = [
+    objs: list[tuple[str, str, Parameter | Command]] = [
         ("options", name, o) for name, o in formatter.option_panel_class.list_all_objects(ctx)
     ]
     if isinstance(command, Group):
@@ -660,7 +662,7 @@ def construct_panels(
                 assigned_to.add((typ, ap))
         assigned = bool(assigned_to)
         inferred = False
-        panel_list: List[str] = []
+        panel_list: list[str] = []
         if hasattr(obj, "panel"):
             if isinstance(obj.panel, str):
                 panel_list = [obj.panel]
@@ -712,17 +714,17 @@ def construct_panels(
         pre_default_panels.pop(("options", formatter.config.arguments_panel_title), None)
         post_default_panels.pop(("options", formatter.config.arguments_panel_title), None)
 
-    final_panels: List[RichPanel[Any, Any]] = []
+    final_panels: list[RichPanel[Any, Any]] = []
 
     def add_panels_from(
-        mappings: List[Union[Dict[Tuple[str, str], List[str]], Dict[Tuple[str, str], RichPanel[Any, Any]]]],
-        type_filter: Optional[str] = None,
+        mappings: list[dict[tuple[str, str], list[str]] | dict[tuple[str, str], RichPanel[Any, Any]]],
+        type_filter: str | None = None,
     ) -> None:
         for d in mappings:
             for (typ, panel_name), obj_list in d.items():
                 if type_filter is not None and typ != type_filter:
                     continue
-                cls: Type[RichPanel[Any, Any]]
+                cls: type[RichPanel[Any, Any]]
                 if typ == "options":
                     cls = formatter.option_panel_class
                 elif typ == "commands":

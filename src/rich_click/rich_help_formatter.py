@@ -2,21 +2,15 @@ from __future__ import annotations
 
 import io
 import sys
+from collections.abc import Iterator, Sequence
 from contextlib import contextmanager
 from functools import cached_property
 from typing import (
     IO,
     TYPE_CHECKING,
     Any,
-    Dict,
-    Iterator,
     Literal,
-    Optional,
-    Sequence,
-    Tuple,
-    Type,
     TypeVar,
-    Union,
 )
 
 import click
@@ -55,10 +49,10 @@ class _EncodedStringIO(io.StringIO):
 
 def create_console(
     config: RichHelpConfiguration,
-    file: Optional[IO[str]] = None,
-    width: Optional[int] = None,
-    max_width: Optional[int] = None,
-) -> "Console":
+    file: IO[str] | None = None,
+    width: int | None = None,
+    max_width: int | None = None,
+) -> Console:
     """
     Create a Rich Console configured from Rich Help Configuration.
 
@@ -110,7 +104,7 @@ class RichHelpFormatter(click.HelpFormatter):
     are used internally by the help and error printing methods.
     """
 
-    console: "Console"
+    console: Console
     """Rich Console created from the help configuration.
 
     This console is meant only for use with the formatter and should
@@ -118,19 +112,19 @@ class RichHelpFormatter(click.HelpFormatter):
     """
     export_console_as: Literal[None, "html", "svg", "text"] = None
 
-    option_panel_class: Type[RichOptionPanel] = RichOptionPanel
-    command_panel_class: Type[RichCommandPanel] = RichCommandPanel
+    option_panel_class: type[RichOptionPanel] = RichOptionPanel
+    command_panel_class: type[RichCommandPanel] = RichCommandPanel
 
     def __init__(
         self,
         indent_increment: int = 2,
-        width: Optional[int] = None,
-        max_width: Optional[int] = None,
+        width: int | None = None,
+        max_width: int | None = None,
         *args: Any,
-        console: Optional["Console"] = None,
-        config: Optional[RichHelpConfiguration] = None,
+        console: Console | None = None,
+        config: RichHelpConfiguration | None = None,
         export_console_as: Literal[None, "html", "svg", "text"] = None,
-        export_kwargs: Optional[Dict[str, Any]] = None,
+        export_kwargs: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -189,7 +183,7 @@ class RichHelpFormatter(click.HelpFormatter):
         self.console.width = v
 
     @cached_property
-    def highlighter(self) -> "Highlighter":
+    def highlighter(self) -> Highlighter:
         if self.config.highlighter is not None:
             return self.config.highlighter
         else:
@@ -203,7 +197,7 @@ class RichHelpFormatter(click.HelpFormatter):
     def write(self, *objects: Any, **kwargs: Any) -> None:
         self.console.print(*objects, **kwargs)
 
-    def write_usage(self, prog: str, args: str = "", prefix: Optional[str] = None) -> None:
+    def write_usage(self, prog: str, args: str = "", prefix: str | None = None) -> None:
         from rich_click.rich_help_rendering import get_rich_usage
 
         get_rich_usage(formatter=self, prog=prog, args=args, prefix=prefix)
@@ -219,9 +213,9 @@ class RichHelpFormatter(click.HelpFormatter):
 
     def rich_text(
         self,
-        text: Union[str, "Text", "Markdown"],
-        style: "StyleType" = "",
-    ) -> Union["Text", "Markdown"]:
+        text: str | Text | Markdown,
+        style: StyleType = "",
+    ) -> Text | Markdown:
         """
         Take a string, remove indentations, and return styled text.
         By default, return the text as a Rich Text with the request style.
@@ -250,7 +244,7 @@ class RichHelpFormatter(click.HelpFormatter):
         # Remove indentations from input text
         text = inspect.cleandoc(text)
 
-        kw: Dict[str, Any]
+        kw: dict[str, Any]
         if self.config.text_markup != "rich":
             kw = {"style": style}
             if self.config.text_emojis:
@@ -360,7 +354,7 @@ class RichHelpFormatter(click.HelpFormatter):
 
     def write_dl(
         self,
-        rows: Sequence[Tuple[str, str]],
+        rows: Sequence[tuple[str, str]],
         col_max: int = 30,
         col_spacing: int = 2,
     ) -> None:
