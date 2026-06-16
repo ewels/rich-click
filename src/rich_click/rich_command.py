@@ -377,6 +377,18 @@ class RichCommand(Command):
             self._help_json_option = build_help_json_option(names)
         return self._help_json_option
 
+    def get_help(self, ctx: click.Context) -> str:
+        """
+        Return the command's help as a string.
+
+        When the context requests JSON output (``export_console_as == "json"``, set by the
+        rich-click CLI's ``--output json``), the machine-readable ``--help-json`` schema is
+        returned instead of the rendered help text, so a plain ``--help`` yields JSON.
+        """
+        if getattr(ctx, "export_console_as", None) == "json":
+            return self.get_help_json(cast(RichContext, ctx))
+        return super().get_help(ctx)
+
     def get_help_json(self, ctx: "RichContext") -> str:
         """
         Return this command's help as a machine-readable JSON string.

@@ -234,7 +234,22 @@ def build_help_json_option(
         if not value or ctx.resilient_parsing:
             return
         # Delegate to the command so the get_help_json/format_help_json overrides take effect.
-        click.echo(ctx.command.get_help_json(ctx))  # type: ignore[attr-defined]
+        text = ctx.command.get_help_json(ctx)  # type: ignore[attr-defined]
+        export_as = getattr(ctx, "export_console_as", None)
+        if export_as in ("html", "svg", "text"):
+            # The rich-click CLI's --output html/svg/text: render the JSON through the
+            # recording console so it can be exported (e.g. an SVG screenshot of the schema),
+            # matching how regular --help honors --output.
+            from rich.json import JSON
+
+            from rich_click.rich_context import RichContext
+
+            assert isinstance(ctx, RichContext)  # export_console_as is only ever set on a RichContext
+            formatter = ctx.make_formatter()
+            formatter.console.print(JSON(text))
+            click.echo(formatter.getvalue())
+        else:
+            click.echo(text)
         ctx.exit()
 
     return RichOption(

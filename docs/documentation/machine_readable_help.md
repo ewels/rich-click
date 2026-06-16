@@ -18,6 +18,8 @@ This adds a global `--help-json` flag to every command and group:
 
 See the [Configuration](configuration.md) page for how to set config options globally or per-command with the `rich_config` decorator.
 
+You can also get JSON help for _any_ Click CLI — even one that hasn't opted in — with the [rich-click CLI](rich_click_cli.md#render-help-as-json): `rich-click --output=json [command] --help`.
+
 ## Example output
 
 Running the top-level command with `--help-json` prints the current command's help, usage and full parameter detail as JSON, together with a recursive index of subcommand names:

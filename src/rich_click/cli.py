@@ -318,8 +318,10 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
 @_rich_option(
     "--output",
     "-o",
-    type=click.Choice(["html", "svg", "text"], case_sensitive=False),
-    help="Optionally render help text as HTML or SVG or plain text. By default, help text is rendered normally.",
+    type=click.Choice(["html", "svg", "text", "json"], case_sensitive=False),
+    help="Optionally render help text as HTML, SVG, plain text, or machine-readable JSON."
+    " By default, help text is rendered normally. With [de]json[/], a plain [option]--help[/] emits"
+    " the [de]--help-json[/] schema; combine [de]--output svg[/] with [option]--help-json[/] to export the JSON.",
 )
 @_rich_option(
     "--errors-in-output-format",
@@ -375,7 +377,7 @@ def main(
     ctx: RichContext,
     script_and_args: Tuple[str, ...],
     theme: str,
-    output: Literal[None, "html", "svg"],
+    output: Literal[None, "html", "svg", "text", "json"],
     errors_in_output_format: bool,
     suppress_warnings: bool,
     patch_rich_click: bool,

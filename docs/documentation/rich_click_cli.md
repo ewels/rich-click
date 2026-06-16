@@ -44,6 +44,27 @@ You can also use `rich-click --output=html [command]` to render rich HTML for he
 
 This works for RichCommands as well as normal click Commands.
 
+## Render help as JSON
+
+Use `rich-click --output=json [command] --help` to emit a command's [machine-readable `--help-json` schema](machine_readable_help.md) instead of the rendered help text. This works for any Click CLI, without the target needing to opt into `help_json` itself:
+
+```console
+$ rich-click --output=json flask --help
+{
+  "name": "flask",
+  "path": "flask",
+  ...
+}
+```
+
+`--output` also applies to the `--help-json` flag itself, letting you export the schema in another format. The two parts are independent: `--help-json` decides the content (the JSON), `--output` decides the format. So to get an SVG image _of the JSON_ (rather than of the rendered help), combine them:
+
+```console
+$ rich-click -c '{"help_json": true}' --output=svg flask --help-json
+```
+
+Here `-c '{"help_json": true}'` enables the `--help-json` flag on the target, and `--output=svg` exports its JSON as an SVG.
+
 SVG example:
 
 <!-- RICH-CODEX

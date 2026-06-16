@@ -20,7 +20,7 @@ class RichContext(click.Context):
 
     formatter_class: Type[RichHelpFormatter] = RichHelpFormatter
     console: Optional["Console"] = None
-    export_console_as: Optional[Literal["html", "svg", "text"]] = None
+    export_console_as: Optional[Literal["html", "svg", "text", "json"]] = None
     errors_in_output_format: bool = False
     help_to_stderr: bool = False
     help_json_option_names: Optional[List[str]] = None
@@ -30,7 +30,7 @@ class RichContext(click.Context):
         *args: Any,
         rich_console: Optional["Console"] = None,
         rich_help_config: Optional[Union[Mapping[str, Any], RichHelpConfiguration]] = None,
-        export_console_as: Optional[Literal["html", "svg", "text"]] = None,
+        export_console_as: Optional[Literal["html", "svg", "text", "json"]] = None,
         errors_in_output_format: Optional[bool] = None,
         help_to_stderr: Optional[bool] = None,
         help_json_option_names: Optional[List[str]] = None,
