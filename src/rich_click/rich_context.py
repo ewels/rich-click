@@ -11,11 +11,27 @@ from rich_click.rich_help_formatter import RichHelpFormatter
 
 
 if TYPE_CHECKING:  # pragma: no cover
+    from types import TracebackType
+
     from rich.console import Console
 
+    # At runtime the mixin is baseless (object) so it can be composed with either
+    # click's or a fork's Context. For type-checking we give it click.Context as a
+    # base so static analysis sees the inherited attributes (terminal_width, etc.).
+    _ContextBase = click.Context
+else:
+    _ContextBase = object
 
-class RichContext(click.Context):
-    """Click Context class endowed with Rich superpowers."""
+
+class RichContextMixin(_ContextBase):
+    """
+    Mixin that endows a click (or click-compatible fork) Context with Rich superpowers.
+
+    Contains only Rich help-formatting behavior and state, with no click base of its
+    own, so it can be composed with either ``click.Context`` (see :class:`RichContext`)
+    or a fork's Context (e.g. ``asyncclick.Context``) without dragging click's
+    synchronous methods into the MRO.
+    """
 
     formatter_class: type[RichHelpFormatter] = RichHelpFormatter
     console: Console | None = None
@@ -48,7 +64,7 @@ class RichContext(click.Context):
 
         """
         super().__init__(*args, **kwargs)
-        parent: RichContext | None = kwargs.pop("parent", None)
+        parent: RichContextMixin | None = kwargs.pop("parent", None)
 
         if help_to_stderr is None and hasattr(parent, "help_to_stderr"):
             self.help_to_stderr = parent.help_to_stderr  # type: ignore[union-attr]
@@ -98,6 +114,23 @@ class RichContext(click.Context):
             export_console_as=(self.export_console_as if not error_mode or self.errors_in_output_format else None),
         )
         return formatter
+
+
+class RichContext(RichContextMixin, click.Context):
+    """Click Context class endowed with Rich superpowers."""
+
+    if TYPE_CHECKING:  # pragma: no cover
+
+        def __enter__(self) -> "RichContext":
+            return super().__enter__()  # type: ignore[return-value]
+
+        def __exit__(
+            self,
+            exc_type: type[BaseException] | None,
+            exc_value: BaseException | None,
+            tb: TracebackType | None,
+        ) -> None:
+            super().__exit__(exc_type, exc_value, tb)
 
 
 def get_current_context(silent: bool = False) -> RichContext | None:
