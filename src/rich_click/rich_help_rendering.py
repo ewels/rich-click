@@ -16,7 +16,7 @@ from rich.padding import Padding
 from rich.panel import Panel
 from rich.text import Text
 
-from rich_click._click_types_cache import Argument, Command, Group, Option
+from rich_click._click_types_cache import Command, Group, Option, is_argument, is_group
 from rich_click._compat_click import (
     CLICK_IS_BEFORE_VERSION_82,
     CLICK_IS_VERSION_80,
@@ -348,10 +348,10 @@ def _get_parameter_metavar(
 ) -> Optional[Text]:
     metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
     # Do it ourselves if this is a positional argument
-    if isinstance(param, Argument) and param.name is not None and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
+    if is_argument(param) and param.name is not None and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
         metavar_str = param.type.name.upper()
     # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option
-    if isinstance(param, Argument) or (metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag):
+    if is_argument(param) or (metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag):
         metavar_str = metavar_str.replace("[", "").replace("]", "")
 
         if show_range:
@@ -382,11 +382,11 @@ def _get_parameter_help_metavar_col(
         assert isinstance(param, Option)
 
     # Do it ourselves if this is a positional argument
-    if isinstance(param, Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
+    if is_argument(param) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
         metavar_str = param.type.name.upper()
 
     # Attach metavar if param is a positional argument, or if it is a non-boolean and non flag option
-    if isinstance(param, Argument) or (metavar_str != "BOOLEAN" and not getattr(param, "is_flag", None)):
+    if is_argument(param) or (metavar_str != "BOOLEAN" and not getattr(param, "is_flag", None)):
         metavar.append(metavar_str)
 
     # Range - from
@@ -445,14 +445,14 @@ def _get_parameter_help_opt(
     opt_short_secondary = []
 
     for opt in param.opts:
-        if isinstance(param, Argument):
+        if is_argument(param):
             opt_long_primary.append(opt.upper())
         elif "--" in opt:
             opt_long_primary.append(opt)
         else:
             opt_short_primary.append(opt)
     for opt in param.secondary_opts:
-        if isinstance(param, Argument):
+        if is_argument(param):
             opt_long_secondary.append(opt.upper())
         elif "--" in opt:
             opt_long_secondary.append(opt)
@@ -719,7 +719,7 @@ def get_parameter_rich_table_row(
         except IndexError:
             pass
 
-        if isinstance(param, Argument):
+        if is_argument(param):
             opt_long_strs.append(Text.from_markup(opt_str.upper(), style=formatter.config.style_option))
         elif "--" in opt:
             if secondary:
@@ -824,7 +824,7 @@ def _get_command_name_help(
     # most notably, when a user registers the same command twice.
     # We do not care to solve this edge case.
     command_name = None
-    if isinstance(ctx.command, Group):
+    if is_group(ctx.command):
         if command.name not in ctx.command.commands:
             for k, v in ctx.command.commands.items():
                 if command is v:

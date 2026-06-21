@@ -36,7 +36,11 @@ dependencies = [
     "rich>=12",
     "typing-extensions>=4; python_version<'3.11'",
 ]
+optional-dependencies.async = [
+    "asyncclick>=8.1",
+]
 optional-dependencies.dev = [
+    "asyncclick>=8.1; python_version >= '3.10'",  # asyncclick compat tests; 8.3.x needs py>=3.10 (tests/test_asyncclick.py)
     "inline-snapshot>=0.24",
     "jsonschema>=4",                     # for --resolution=lowest support
     "mypy>=1.14.1",
@@ -131,6 +135,21 @@ follow_imports = "normal"
 exclude = [
     '.*?live_style_editor\.py$',
 ]
+
+[[tool.mypy.overrides]]
+module = [ "asyncclick.*" ]
+ignore_missing_imports = true
+
+# rich_click.rich_async_command composes rich-click's click-typed mixins onto
+# asyncclick's separately-typed parallel class tree. The resulting diamond
+# inheritance produces structural "incompatible base class definition" (misc)
+# errors and the mixins are not declared in the rich_command stub (attr-defined).
+# These are static-typing artifacts of bridging two parallel Context/Command
+# trees, not correctness issues. Bug-catching codes (override, index,
+# return-value, arg-type) stay enabled so real async/sync mismatches are caught.
+[[tool.mypy.overrides]]
+module = [ "rich_click.rich_async_command" ]
+disable_error_code = [ "misc", "attr-defined" ]
 
 [tool.pyright]
 include = [ "src" ]
