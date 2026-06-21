@@ -154,6 +154,7 @@ ignore_missing_imports = true
 # awaiting asyncclick's async helpers (func-returns-value). These are artifacts of
 # bridging two parallel Context/Command trees, not correctness issues. Codes that
 # catch real mistakes (index, return-value, call-arg, assignment) stay enabled.
+
 [[tool.mypy.overrides]]
 module = [ "rich_click.rich_async_command" ]
 disable_error_code = [ "misc", "attr-defined", "override", "arg-type", "func-returns-value" ]
@@ -162,6 +163,7 @@ disable_error_code = [ "misc", "attr-defined", "override", "arg-type", "func-ret
 # asyncclick's command/option decorators, which are untyped from mypy's view, so
 # disallow_untyped_decorators flags them. This is inherent to testing an untyped
 # fork; the test functions themselves are still fully annotated.
+
 [[tool.mypy.overrides]]
 module = [ "tests.test_asyncclick" ]
 disallow_untyped_decorators = false
