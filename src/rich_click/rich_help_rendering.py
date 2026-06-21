@@ -339,6 +339,21 @@ def _get_parameter_range(
     return None
 
 
+def _make_param_metavar(param: Any, ctx: "RichContext") -> str:
+    # click >= 8.2 and asyncclick require a ctx argument to make_metavar; older click
+    # does not. The installed click version does not determine a fork's
+    # Parameter.make_metavar signature (an asyncclick param keeps asyncclick's signature
+    # even when click < 8.2 is installed), so inspect the actual method instead of
+    # branching on the global click version.
+    try:
+        accepts_ctx = len(inspect.signature(param.make_metavar).parameters) > 0
+    except (TypeError, ValueError):
+        accepts_ctx = not CLICK_IS_BEFORE_VERSION_82
+    if accepts_ctx:
+        return str(param.make_metavar(ctx))
+    return str(param.make_metavar())
+
+
 def _get_parameter_metavar(
     param: Union[click.Argument, click.Option, RichParameter],
     ctx: RichContext,
@@ -346,7 +361,7 @@ def _get_parameter_metavar(
     append: bool = True,
     show_range: bool = False,
 ) -> Optional[Text]:
-    metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
+    metavar_str = _make_param_metavar(param, ctx)
     # Do it ourselves if this is a positional argument
     if is_argument(param) and param.name is not None and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
         metavar_str = param.type.name.upper()
@@ -375,7 +390,7 @@ def _get_parameter_help_metavar_col(
 ) -> Optional[Text]:
     # Column for a metavar, if we have one
     metavar = Text(style=formatter.config.style_metavar, overflow="fold")
-    metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
+    metavar_str = _make_param_metavar(param, ctx)
 
     if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(param.name, str)
