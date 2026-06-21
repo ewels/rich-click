@@ -22,6 +22,7 @@ import subprocess
 import sys
 from inspect import cleandoc
 from pathlib import Path
+from typing import Any, Dict, List, Tuple
 
 import pytest
 
@@ -38,13 +39,13 @@ from rich_click.rich_async_command import RichAsyncCommand, RichAsyncContext, Ri
 BOX_BORDER = "\u2500"
 
 
-def _build_cli():
-    seen = {}
+def _build_cli() -> Tuple[Any, Any, Dict[str, Any]]:
+    seen: Dict[str, Any] = {}
 
     @asyncclick.group(cls=RichAsyncGroup)
     @asyncclick.option("--token", help="Shared token.")
     @asyncclick.pass_context
-    async def cli(ctx, token):
+    async def cli(ctx: Any, token: Any) -> None:
         # Async group callback that builds shared state under a single loop.
         await asyncio.sleep(0)
         ctx.obj = {"token": token, "loop": id(asyncio.get_running_loop())}
@@ -53,7 +54,7 @@ def _build_cli():
     @asyncclick.argument("name")
     @asyncclick.option("--count", default=1, help="How many greetings.")
     @asyncclick.pass_context
-    async def greet(ctx, name, count):
+    async def greet(ctx: Any, name: str, count: int) -> None:
         await asyncio.sleep(0)
         seen["obj"] = ctx.obj
         seen["loop"] = id(asyncio.get_running_loop())
@@ -64,12 +65,12 @@ def _build_cli():
     return cli, greet, seen
 
 
-def _invoke(cli, args):
+def _invoke(cli: Any, args: List[str]) -> Any:
     runner = asyncclick_testing.CliRunner()
     return asyncio.run(runner.invoke(cli, args))
 
 
-def test_async_classes_have_expected_mro():
+def test_async_classes_have_expected_mro() -> None:
     # The async classes are mixin-built and an asyncclick subclass, with an async main.
     assert issubclass(RichAsyncGroup, asyncclick.Group)
     assert issubclass(RichAsyncCommand, asyncclick.Command)
@@ -77,14 +78,14 @@ def test_async_classes_have_expected_mro():
     assert asyncio.iscoroutinefunction(RichAsyncCommand.main)
 
 
-def test_async_types_are_detected():
+def test_async_types_are_detected() -> None:
     cli, greet, _ = _build_cli()
     assert is_group(cli)
     assert is_option(greet.params[1])  # --count
     assert is_argument(greet.params[0])  # NAME
 
 
-def test_group_help_renders_rich_panels():
+def test_group_help_renders_rich_panels() -> None:
     cli, _, _ = _build_cli()
     result = _invoke(cli, ["--help"])
     assert result.exit_code == 0
@@ -95,7 +96,7 @@ def test_group_help_renders_rich_panels():
     assert "greet" in result.output
 
 
-def test_subcommand_help_classifies_arguments_and_options():
+def test_subcommand_help_classifies_arguments_and_options() -> None:
     cli, _, _ = _build_cli()
 
     # Argument appears as a positional in the usage metavar, never as an option.
@@ -122,7 +123,7 @@ def test_subcommand_help_classifies_arguments_and_options():
     assert "Arguments" in result2.output
 
 
-def test_async_execution_shares_ctx_obj_under_one_loop():
+def test_async_execution_shares_ctx_obj_under_one_loop() -> None:
     cli, _, seen = _build_cli()
     result = _invoke(cli, ["--token", "abc", "greet", "world", "--count", "2"])
     assert result.exit_code == 0
@@ -133,7 +134,7 @@ def test_async_execution_shares_ctx_obj_under_one_loop():
     assert seen["obj"]["loop"] == seen["loop"]
 
 
-def test_async_usage_error_renders_rich_panel():
+def test_async_usage_error_renders_rich_panel() -> None:
     cli, _, _ = _build_cli()
     # Missing required argument is a usage error; the async main must route it
     # through rich-click's formatter rather than asyncclick's plain output.
@@ -169,7 +170,7 @@ if __name__ == "__main__":
 '''
 
 
-def _run_patch_script(tmp_path: Path, args):
+def _run_patch_script(tmp_path: Path, args: List[str]) -> "subprocess.CompletedProcess[bytes]":
     script = tmp_path / "patched_cli.py"
     script.write_text(cleandoc(PATCH_SCRIPT))
     env = {**os.environ, "TERMINAL_WIDTH": "80", "FORCE_COLOR": "0", "NO_COLOR": "1"}
@@ -181,7 +182,7 @@ def _run_patch_script(tmp_path: Path, args):
     )
 
 
-def test_patch_module_renders_rich_help(tmp_path):
+def test_patch_module_renders_rich_help(tmp_path: Path) -> None:
     res = _run_patch_script(tmp_path, ["--help"])
     out = res.stdout.decode()
     assert res.returncode == 0
@@ -190,7 +191,7 @@ def test_patch_module_renders_rich_help(tmp_path):
     assert "greet" in out
 
 
-def test_patch_module_renders_rich_error_panel(tmp_path):
+def test_patch_module_renders_rich_error_panel(tmp_path: Path) -> None:
     res = _run_patch_script(tmp_path, ["greet"])
     out = res.stdout.decode()
     assert res.returncode == 2
@@ -198,7 +199,7 @@ def test_patch_module_renders_rich_error_panel(tmp_path):
     assert "Missing argument" in out
 
 
-def test_patch_module_executes_async_command(tmp_path):
+def test_patch_module_executes_async_command(tmp_path: Path) -> None:
     res = _run_patch_script(tmp_path, ["greet", "world"])
     out = res.stdout.decode()
     assert res.returncode == 0

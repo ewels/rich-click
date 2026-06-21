@@ -68,12 +68,14 @@ class RichCommandMixin(_CommandMixinBase):
     ``asyncclick.Command``) without dragging click's synchronous execution methods
     (``main``, ``make_context``, ``scope``, etc.) into the MRO.
 
-    Execution-flow methods (``main``, ``get_help_option``, ``to_info_dict`` and the
-    error formatter) deliberately live on the concrete :class:`RichCommand` instead
-    of here, so that async forks can inherit their own async equivalents.
+    Execution-flow methods (``main``, ``get_help_option`` and ``to_info_dict``)
+    deliberately live on the concrete :class:`RichCommand` instead of here, so that
+    async forks can inherit their own async equivalents. Help and error formatting,
+    including :meth:`_error_formatter`, is shared here.
     """
 
     _formatter: Optional[RichHelpFormatter] = None
+    context_class: Type[RichContextMixin]
 
     def __init__(
         self,
