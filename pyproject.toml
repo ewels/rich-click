@@ -36,11 +36,15 @@ dependencies = [
     "rich>=12",
     "typing-extensions>=4; python_version<'3.11'",
 ]
+optional-dependencies.async = [
+    "asyncclick>=8.1",
+]
 optional-dependencies.dev = [
+    "asyncclick>=8.1; python_version>='3.10'", # asyncclick compat tests; 8.3.x needs py>=3.10 (tests/test_asyncclick.py)
     "inline-snapshot>=0.24",
-    "jsonschema>=4",                     # for --resolution=lowest support
+    "jsonschema>=4",                           # for --resolution=lowest support
     "mypy>=1.14.1",
-    "nodeenv>=1.9.1",                    # for --resolution=lowest support
+    "nodeenv>=1.9.1",                          # for --resolution=lowest support
     "packaging>=25",
     "pre-commit>=3.5",
     "pytest>=8.3.5",
@@ -131,6 +135,34 @@ follow_imports = "normal"
 exclude = [
     '.*?live_style_editor\.py$',
 ]
+
+[[tool.mypy.overrides]]
+module = [ "asyncclick.*" ]
+ignore_missing_imports = true
+
+# rich_click.rich_async_command composes rich-click's click-typed mixins onto
+# asyncclick's separately-typed parallel class tree. The resulting diamond
+# inheritance and the click-vs-asyncclick type divergence (asyncclick's Context,
+# ClickException and async main/to_info_dict differ from click's) produce
+# structural errors: incompatible base definitions (misc), mixin attributes not in
+# the rich_command stub (attr-defined), async overrides of sync click signatures
+# (override), asyncclick types where click types are declared (arg-type), and
+# awaiting asyncclick's async helpers (func-returns-value). These are artifacts of
+# bridging two parallel Context/Command trees, not correctness issues. Codes that
+# catch real mistakes (index, return-value, call-arg, assignment) stay enabled.
+
+[[tool.mypy.overrides]]
+module = [ "rich_click.rich_async_command" ]
+disable_error_code = [ "misc", "attr-defined", "override", "arg-type", "func-returns-value" ]
+
+# The asyncclick compatibility tests decorate locally-typed callbacks with
+# asyncclick's command/option decorators, which are untyped from mypy's view, so
+# disallow_untyped_decorators flags them. This is inherent to testing an untyped
+# fork; the test functions themselves are still fully annotated.
+
+[[tool.mypy.overrides]]
+module = [ "tests.test_asyncclick" ]
+disallow_untyped_decorators = false
 
 [tool.pyright]
 include = [ "src" ]

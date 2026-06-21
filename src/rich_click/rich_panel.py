@@ -19,7 +19,7 @@ from typing import (
 
 from click import Context, Parameter
 
-from rich_click._click_types_cache import Argument, Command, Group
+from rich_click._click_types_cache import Command, is_argument, is_command, is_group, is_parameter
 from rich_click.rich_help_configuration import ColumnType, CommandColumnType, OptionColumnType
 from rich_click.rich_parameter import RichArgument, RichParameter
 from rich_click.utils import CommandGroupDict, OptionGroupDict
@@ -315,7 +315,7 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
 
     @classmethod
     def list_all_objects(cls, ctx: Context) -> List[Tuple[str, Command]]:
-        if not isinstance(ctx.command, Group):
+        if not is_group(ctx.command):
             return []
         commands = []
         for cmd_name in ctx.command.list_commands(ctx):
@@ -326,7 +326,7 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
 
     def get_objects(self, command: Command, ctx: Context) -> Generator[Command, None, None]:
         """List the objects assigned to the panel."""
-        if not isinstance(command, Group):
+        if not is_group(command):
             return
 
         commands_list = command.list_commands(ctx)
@@ -375,7 +375,7 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
             ratio=table_column_width_ratio[1],
         )
 
-        if not isinstance(command, Group):
+        if not is_group(command):
             return table
 
         rows = []
@@ -556,7 +556,7 @@ def construct_panels(
             defined_panels.update({(p._object_attr, p.name): p for p in option_groups_from_config})
             using_groups_feat = True
 
-    if isinstance(command, Group):
+    if is_group(command):
         if formatter.config.command_groups:
             command_groups_from_config = _resolve_panels_from_config(
                 ctx, formatter, formatter.config.command_groups, formatter.command_panel_class
@@ -572,7 +572,7 @@ def construct_panels(
     new_panels: Dict[Tuple[str, str], List[str]] = {}
     pre_default_panels: Dict[Tuple[str, str], List[str]] = {}
     post_default_panels: Dict[Tuple[str, str], List[str]]
-    if isinstance(command, Group):
+    if is_group(command):
         if formatter.config.commands_before_options:
             if defined_commands != defined_options or using_groups_feat:
                 pre_default_panels = {
@@ -635,7 +635,7 @@ def construct_panels(
     objs: List[Tuple[str, str, Union[Parameter, Command]]] = [
         ("options", name, o) for name, o in formatter.option_panel_class.list_all_objects(ctx)
     ]
-    if isinstance(command, Group):
+    if is_group(command):
         objs.extend([("commands", name, o) for name, o in formatter.command_panel_class.list_all_objects(ctx)])
 
     from rich_click.rich_command import RichGroup
@@ -649,9 +649,9 @@ def construct_panels(
         if getattr(obj, "hidden", False):
             continue
         names = {name, obj.name}
-        if isinstance(obj, Parameter):
+        if is_parameter(obj):
             names.update(obj.opts)
-        elif isinstance(obj, Command) and obj.callback is not None:
+        elif is_command(obj) and obj.callback is not None:
             names.add(obj.callback.__name__)
         assigned_to = set()
         for n in names:
@@ -676,7 +676,7 @@ def construct_panels(
         if not panel_list:
             inferred = True
             if typ == "options":
-                if not formatter.config.group_arguments_options and isinstance(obj, Argument):
+                if not formatter.config.group_arguments_options and is_argument(obj):
                     if _show_arguments is not False:
                         panel_list = [formatter.config.arguments_panel_title]
                     else:
