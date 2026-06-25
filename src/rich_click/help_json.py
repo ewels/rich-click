@@ -68,6 +68,11 @@ _STANDARD_PARAM_KEYS = frozenset(
     }
 )
 
+# Keys from a type's ``to_info_dict()`` already represented elsewhere on the parameter, so they are not
+# repeated inside ``type_info``: ``param_type`` becomes the top-level ``type`` string, ``choices`` is
+# lifted to the top level, and ``name`` is a redundant human label (e.g. "integer range").
+_REDUNDANT_TYPE_KEYS = frozenset({"param_type", "name", "choices"})
+
 # Command-level keys we consume directly. ``commands`` becomes the lean ``subcommands`` name tree;
 # ``short_help`` is dropped as redundant with ``help``. Everything else not listed here -- including
 # rich-click's ``aliases`` and any developer-supplied fields -- is merged onto the top-level object.
@@ -87,9 +92,17 @@ def _strip_markup(text: Optional[str]) -> Optional[str]:
         return text.strip()
 
 
+def _is_unset(value: Any) -> bool:
+    """
+    Report whether a value is genuinely absent (None or an empty string/list/dict). A literal
+    ``False`` or ``0`` is *kept* -- it carries meaning in type config (e.g. ``dir_okay: false``).
+    """
+    return value is None or value == "" or value == [] or value == {}
+
+
 def _is_empty(value: Any) -> bool:
     """Report whether a value is worth dropping from the output (None/False/empty), to keep it lean."""
-    return value is None or value is False or value == "" or value == [] or value == {}
+    return value is False or _is_unset(value)
 
 
 def _passthrough_extensions(info: Dict[str, Any], consumed: "frozenset[str]") -> Dict[str, Any]:
@@ -110,25 +123,51 @@ def _param_to_dict(info: Dict[str, Any]) -> Dict[str, Any]:
     """Convert a parameter's ``to_info_dict()`` into a compact, JSON-friendly dict."""
     type_info = info.get("type") or {}
     kind = info.get("param_type_name")  # "option" or "argument"
+    nargs = info.get("nargs")
+    is_flag = info.get("is_flag")
     fields = {
         "name": info.get("name"),
         "kind": kind,
         # An argument's opts just repeat its name, so only options carry opts (the actual flags).
         "opts": info.get("opts") if kind == "option" else None,
+        # Secondary opts are an option's negation flags, e.g. ``--no-debug`` for ``--debug/--no-debug``.
+        "secondary_opts": info.get("secondary_opts") if kind == "option" else None,
         "type": type_info.get("param_type"),  # e.g. "Bool", "Int", "String", "Path"
         "choices": type_info.get("choices"),
         "required": info.get("required") or None,
-        "is_flag": info.get("is_flag") or None,
+        "is_flag": is_flag or None,
+        # ``-v/-vv/-vvv`` style counters; distinct from a plain boolean flag.
+        "count": info.get("count") or None,
         "multiple": info.get("multiple") or None,
+        # nargs == 1 is the default and implied; surface variadic (-1) and fixed multi-value (N) params.
+        "nargs": nargs if nargs not in (None, 1) else None,
+        "envvar": info.get("envvar") or None,
+        # The prompt string shown when the option is requested interactively (None if it never prompts).
+        "prompt": info.get("prompt"),
         # Hidden params are kept (parity with to_info_dict) but flagged so consumers can skip them.
         "hidden": info.get("hidden") or None,
         "help": _strip_markup(info.get("help")),
     }
     result = {key: value for key, value in fields.items() if not _is_empty(value)}
+    # Remaining type constraints (range min/max, DateTime formats, Path flags, Choice case-sensitivity)
+    # nest under ``type_info``. This is a straight passthrough -- minus the redundant keys above -- so it
+    # stays correct across Click versions and forwards any keys a future ``ParamType`` adds, without this
+    # module needing to know them. ``_is_unset`` (not ``_is_empty``) is the filter: a ``False`` in type
+    # config is real signal (e.g. ``dir_okay: false`` = "must not be a directory"), so it must survive.
+    type_detail = {
+        key: value for key, value in type_info.items() if key not in _REDUNDANT_TYPE_KEYS and not _is_unset(value)
+    }
+    if type_detail:
+        result["type_info"] = type_detail
     # A flag's False default is implied; keep a real default for everything else (including 0 or "").
     default = info.get("default")
-    if default is not None and not info.get("is_flag"):
+    if default is not None and not is_flag:
         result["default"] = default
+    # ``flag_value`` is the value a flag sets; only meaningful for value-flags (``--upper``/``--lower``
+    # sharing a destination). For plain boolean flags it is just ``True``, which is noise, so skip it.
+    flag_value = info.get("flag_value")
+    if is_flag and not isinstance(flag_value, bool) and not _is_unset(flag_value):
+        result["flag_value"] = flag_value
     # Passthrough: developer-supplied custom keys (e.g. a RichOption subclass adding ``sensitive``).
     for key, value in _passthrough_extensions(info, _STANDARD_PARAM_KEYS).items():
         result.setdefault(key, value)

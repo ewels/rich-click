@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict, cast
+from typing import Any, Dict, Tuple, cast
 
 import click
 from click.testing import CliRunner
@@ -102,6 +102,87 @@ def test_help_json_choice(cli_runner: CliRunner) -> None:
     assert fmt["type"] == "Choice"
     assert fmt["choices"] == ["json", "yaml"]
     assert fmt["default"] == "json"
+
+
+def test_help_json_reports_secondary_opts_envvar_and_nargs(cli_runner: CliRunner) -> None:
+    # secondary_opts (negation flags), envvar, count and variadic/multi nargs must all be surfaced;
+    # a plain boolean flag must NOT leak a noisy flag_value=True.
+    rc.HELP_JSON = True
+
+    @command()
+    @option("--debug/--no-debug", help="Toggle debug.")
+    @option("--token", envvar="MY_TOKEN", help="Auth token.")
+    @option("-v", "--verbose", count=True, help="Verbosity.")
+    @option("--upper", "transform", flag_value="upper")
+    @option("--lower", "transform", flag_value="lower")
+    @option("--pair", nargs=2, type=str)
+    @option("--shout", is_flag=True)
+    @argument("files", nargs=-1)
+    def cli(
+        debug: bool,
+        token: str,
+        verbose: int,
+        transform: str,
+        pair: Tuple[str, ...],
+        shout: bool,
+        files: Tuple[str, ...],
+    ) -> None:
+        """Hi."""
+
+    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    by_name = {param["name"]: param for param in schema["params"]}
+
+    assert by_name["debug"]["secondary_opts"] == ["--no-debug"]
+    assert by_name["token"]["envvar"] == "MY_TOKEN"
+    assert by_name["verbose"]["count"] is True
+    assert by_name["files"]["nargs"] == -1
+    assert by_name["pair"]["nargs"] == 2
+    # Two value-flags share the "transform" destination; each carries its own flag_value.
+    flag_values = {param["flag_value"] for param in schema["params"] if param["name"] == "transform"}
+    assert flag_values == {"upper", "lower"}
+    # Plain boolean flag: no flag_value noise, and nargs==1 stays implied.
+    assert "flag_value" not in by_name["shout"]
+    assert "nargs" not in by_name["shout"]
+
+
+def test_help_json_reports_prompt(cli_runner: CliRunner) -> None:
+    rc.HELP_JSON = True
+
+    @command()
+    @option("--name", prompt="Your name", help="Who.")
+    def cli(name: str) -> None:
+        """Hi."""
+
+    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    name = next(param for param in schema["params"] if param["name"] == "name")
+    assert name["prompt"] == "Your name"
+
+
+def test_help_json_type_info_passthrough(cli_runner: CliRunner) -> None:
+    # type_info is a straight passthrough of the type's to_info_dict (minus redundant keys), so it stays
+    # correct across Click versions. Crucially, a meaningful False (dir_okay) must survive -- it is not
+    # treated as "empty" the way other dropped fields are.
+    rc.HELP_JSON = True
+
+    from click import IntRange, Path
+
+    @command()
+    @option("--level", type=IntRange(0, 10))
+    @option("--dest", type=Path(exists=True, dir_okay=False))
+    def cli(level: int, dest: str) -> None:
+        """Hi."""
+
+    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    by_name = {param["name"]: param for param in schema["params"]}
+
+    assert by_name["level"]["type"] == "IntRange"
+    assert by_name["level"]["type_info"]["min"] == 0
+    assert by_name["level"]["type_info"]["max"] == 10
+
+    assert by_name["dest"]["type"] == "Path"
+    assert by_name["dest"]["type_info"]["exists"] is True
+    # A False that carries meaning ("must not be a directory") must not be dropped.
+    assert by_name["dest"]["type_info"]["dir_okay"] is False
 
 
 def test_help_json_group_reports_aliases(cli_runner: CliRunner) -> None:
