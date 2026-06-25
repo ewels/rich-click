@@ -124,6 +124,7 @@ class RichHelpConfiguration:
     style_header_text: "StyleType" = field(default=FROM_THEME)
     style_epilog_text: "StyleType" = field(default=FROM_THEME)
     style_footer_text: "StyleType" = field(default=FROM_THEME)
+    style_help_json_tip: "StyleType" = field(default="dim")
     style_usage: "StyleType" = field(default=FROM_THEME)
     style_usage_command: "StyleType" = field(default=FROM_THEME)
     style_usage_separator: "StyleType" = field(default=FROM_THEME)
@@ -271,6 +272,10 @@ class RichHelpConfiguration:
     """Name of the flag added when `help_json` is enabled. Customize to avoid clashing with an existing `--json`."""
     help_json_transform: Optional["HelpJSONTransform"] = field(default=None, repr=False, compare=False)
     """Optional hook to post-process the `--help-json` schema: ``(schema, command, ctx) -> schema``."""
+    help_json_show_tip: bool = field(default=True)
+    """If set, append a footer tip to ``--help`` advertising ``--help-json`` (only when it is enabled)."""
+    help_json_tip_text: str = field(default="Tip: add {} to any command for machine-readable help.")
+    """Footer tip text shown when `help_json_show_tip` is set. ``{}`` is filled with the flag name."""
     highlighter: Optional["Highlighter"] = field(default=None, repr=False, compare=False)
     """(Deprecated) Rich regex highlighter for help highlighting"""
 

@@ -43,7 +43,10 @@ $ mytool --help-json
     }
   ],
   "subcommands": {
-    "db": { "help": "Manage the database.", "subcommands": { "migrate": { "help": "Run migrations." } } },
+    "db": {
+      "help": "Manage the database.",
+      "subcommands": { "migrate": { "help": "Run migrations." } }
+    },
     "hello": { "help": "Greet someone." }
   }
 }
@@ -57,6 +60,21 @@ The flag also appears in the regular `--help` output, so it is discoverable:
     working_dir: docs/code_snippets/help_json
     -->
     ![`python help_json.py --help`](../images/code_snippets/help_json/help_json.svg){.screenshot}
+
+In addition, a dimmed footer tip is appended to the bottom of every `--help` output advertising the flag:
+
+```console
+Tip: add --help-json to any command for machine-readable help.
+```
+
+The tip is shown automatically whenever `--help-json` is enabled. Turn it off with the `help_json_show_tip` config option, or change the wording with `help_json_tip_text` (`{}` is replaced with the flag name) and its style with `style_help_json_tip` (default `dim`):
+
+```python
+rich_config(help_config=RichHelpConfiguration(
+    help_json=True,
+    help_json_show_tip=False,  # or customize: help_json_tip_text="Add {} for JSON."
+))
+```
 
 ## Progressive disclosure
 
@@ -101,30 +119,30 @@ python help_json.py hello --help-json
 
 For every command level, the JSON object contains:
 
-| Key           | Description                                                                                           |
-| ------------- | ----------------------------------------------------------------------------------------------------- |
-| `name`        | The command's name.                                                                                   |
-| `path`        | The full invocation path (e.g. `cli db migrate`).                                                     |
-| `help`        | The command's help text, with Rich markup stripped to plain text. Omitted if the command is undocumented. |
-| `usage`       | The usage string.                                                                                     |
-| `params`      | A list of the command's options and arguments. The `--help` / `--help-json` meta-options are omitted. |
+| Key           | Description                                                                                                                                                    |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`        | The command's name.                                                                                                                                            |
+| `path`        | The full invocation path (e.g. `cli db migrate`).                                                                                                              |
+| `help`        | The command's help text, with Rich markup stripped to plain text. Omitted if the command is undocumented.                                                      |
+| `usage`       | The usage string.                                                                                                                                              |
+| `params`      | A list of the command's options and arguments. The `--help` / `--help-json` meta-options are omitted.                                                          |
 | `subcommands` | Present only for groups: a recursive index of all descendants. Each entry carries a one-line `help` (plus `aliases` and a nested `subcommands` where present). |
 
 Each entry in `params` has the following keys when applicable:
 
-| Key        | Description                                                       |
-| ---------- | ----------------------------------------------------------------- |
-| `name`     | The Python-side parameter name.                                   |
-| `kind`     | `"option"` or `"argument"`.                                       |
+| Key        | Description                                                                          |
+| ---------- | ------------------------------------------------------------------------------------ |
+| `name`     | The Python-side parameter name.                                                      |
+| `kind`     | `"option"` or `"argument"`.                                                          |
 | `opts`     | An option's flag(s) as seen on the command line. Omitted for arguments (use `name`). |
-| `type`     | The parameter type, e.g. `"Bool"`, `"Int"`, `"String"`, `"Path"`. |
-| `choices`  | The allowed values, for a `Choice` type.                          |
-| `required` | Present and `true` only when the parameter is required.           |
-| `is_flag`  | Present and `true` only for boolean flags.                        |
-| `multiple` | Present and `true` only when the parameter may be repeated.       |
-| `hidden`   | Present and `true` for hidden parameters (kept, but flagged).     |
-| `default`  | The default value, for non-flag parameters that have one.         |
-| `help`     | The parameter's help text, as plain text.                         |
+| `type`     | The parameter type, e.g. `"Bool"`, `"Int"`, `"String"`, `"Path"`.                    |
+| `choices`  | The allowed values, for a `Choice` type.                                             |
+| `required` | Present and `true` only when the parameter is required.                              |
+| `is_flag`  | Present and `true` only for boolean flags.                                           |
+| `multiple` | Present and `true` only when the parameter may be repeated.                          |
+| `hidden`   | Present and `true` for hidden parameters (kept, but flagged).                        |
+| `default`  | The default value, for non-flag parameters that have one.                            |
+| `help`     | The parameter's help text, as plain text.                                            |
 
 ## Adding your own data
 

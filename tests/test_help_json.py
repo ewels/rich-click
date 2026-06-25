@@ -126,6 +126,39 @@ def test_help_json_appears_in_regular_help(cli_runner: CliRunner) -> None:
     assert "--help-json" in cli_runner.invoke(cli, ["--help"]).output
 
 
+def test_help_json_tip_in_regular_help(cli_runner: CliRunner) -> None:
+    # When --help-json is enabled, --help advertises it with a footer tip by default.
+    rc.HELP_JSON = True
+    cli = _build_cli()
+    assert "Tip: add --help-json to any command for machine-readable help." in cli_runner.invoke(cli, ["--help"]).output
+
+
+def test_help_json_tip_absent_when_disabled(cli_runner: CliRunner) -> None:
+    # No tip when --help-json itself is not enabled.
+    cli = _build_cli()
+    assert "machine-readable" not in cli_runner.invoke(cli, ["--help"]).output
+
+
+def test_help_json_tip_can_be_suppressed(cli_runner: CliRunner) -> None:
+    rc.HELP_JSON = True
+    rc.HELP_JSON_SHOW_TIP = False
+    cli = _build_cli()
+    assert "machine-readable" not in cli_runner.invoke(cli, ["--help"]).output
+
+
+def test_help_json_tip_uses_custom_option_name_and_text(cli_runner: CliRunner) -> None:
+    # The tip reflects the actual flag name and a customizable message.
+    rc.HELP_JSON = True
+    rc.HELP_JSON_OPTION_NAME = "--schema"
+    rc.HELP_JSON_TIP_TEXT = "Run {} for JSON."
+
+    @command()
+    def cli() -> None:
+        """Hi."""
+
+    assert "Run --schema for JSON." in cli_runner.invoke(cli, ["--help"]).output
+
+
 def test_help_json_custom_option_name(cli_runner: CliRunner) -> None:
     rc.HELP_JSON = True
     rc.HELP_JSON_OPTION_NAME = "--schema"

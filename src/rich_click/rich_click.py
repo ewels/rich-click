@@ -100,6 +100,7 @@ STYLE_PADDING_EPILOG: "StyleType" = FROM_THEME
 STYLE_HEADER_TEXT: "StyleType" = FROM_THEME
 STYLE_EPILOG_TEXT: "StyleType" = FROM_THEME
 STYLE_FOOTER_TEXT: "StyleType" = FROM_THEME
+STYLE_HELP_JSON_TIP: "StyleType" = "dim"
 
 PANEL_TITLE_PADDING: int = FROM_THEME
 WIDTH: Optional[int] = terminal_width_default()
@@ -177,6 +178,9 @@ HELP_JSON: bool = False
 HELP_JSON_OPTION_NAME: str = "--help-json"  # Flag name used when HELP_JSON is enabled
 # Optional hook to post-process the `--help-json` schema: (schema, command, ctx) -> schema
 HELP_JSON_TRANSFORM: Optional["HelpJSONTransform"] = None
+# Append a footer tip to `--help` advertising `--help-json` (only when it is enabled)
+HELP_JSON_SHOW_TIP: bool = True
+HELP_JSON_TIP_TEXT: str = "Tip: add {} to any command for machine-readable help."
 
 #!ENDCONFIG
 
