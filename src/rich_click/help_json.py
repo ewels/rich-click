@@ -135,7 +135,7 @@ def _param_to_dict(info: Dict[str, Any]) -> Dict[str, Any]:
     return result
 
 
-def _subcommand_index(commands: Dict[str, Any]) -> Dict[str, Any]:
+def _subcommand_index(commands: Dict[str, Any], parent: Optional[click.Command]) -> Dict[str, Any]:
     """
     Index ``to_info_dict()``'s recursive ``commands`` block by name.
 
@@ -143,19 +143,30 @@ def _subcommand_index(commands: Dict[str, Any]) -> Dict[str, Any]:
     plus ``aliases`` and a nested ``subcommands`` index where present. This mirrors the entry shape
     used by sibling tools (e.g. Nextflow's ``-help-json``) so a single consumer can parse both.
     Reusing the already-computed tree avoids a second full walk of the command hierarchy.
+
+    The summary comes from each command's ``get_short_help_str(limit=120)`` -- Click collapses the
+    docstring to its first sentence and truncates on a word boundary with an ellipsis, so summaries
+    never cut off mid-word. ``parent`` is the owning group, used to resolve each child command object
+    (which carries that method); we fall back to the info dict's first help line if it can't be found.
     """
     index: Dict[str, Any] = {}
+    parent_commands = getattr(parent, "commands", {})
     for name, info in commands.items():
         entry: Dict[str, Any] = {}
-        help_text = _strip_markup(info.get("help"))
+        child = parent_commands.get(name)
+        if child is not None:
+            help_text = _strip_markup(child.get_short_help_str(limit=120))
+        else:  # custom MultiCommand without a ``commands`` mapping: best-effort first line
+            full_help = _strip_markup(info.get("help"))
+            help_text = full_help.split("\n", 1)[0].strip() if full_help else None
         if help_text:
-            entry["help"] = help_text.split("\n", 1)[0].strip()  # first line, like a short help
+            entry["help"] = help_text
         aliases = info.get("aliases")
         if aliases:
             entry["aliases"] = list(aliases)
         children = info.get("commands")
         if children:
-            entry["subcommands"] = _subcommand_index(children)
+            entry["subcommands"] = _subcommand_index(children, child)
         index[name] = entry
     return index
 
@@ -203,7 +214,7 @@ def command_schema(
     schema["usage"] = " ".join([ctx.command_path, *cmd.collect_usage_pieces(ctx)])
     schema["params"] = params
     if "commands" in info:
-        schema["subcommands"] = _subcommand_index(info["commands"])
+        schema["subcommands"] = _subcommand_index(info["commands"], cmd)
 
     # Passthrough: rich-click extras (aliases) + any developer-supplied command metadata.
     for key, value in _passthrough_extensions(info, _CONSUMED_CMD_KEYS).items():
