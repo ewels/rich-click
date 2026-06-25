@@ -76,6 +76,7 @@ class RichCommand(Command):
         self.aliases: Iterable[str] = aliases or []
         if not hasattr(self, "_help_option"):
             self._help_option = None
+        self._help_json_option: Optional[click.Option] = None
 
     @property
     def console(self) -> Optional["Console"]:
@@ -332,6 +333,95 @@ class RichCommand(Command):
             self._help_option = self.params.pop()  # type: ignore[assignment]
 
         return self._help_option
+
+    def get_help_json_option_names(self, ctx: click.Context) -> List[str]:
+        """
+        Return the flag name(s) for the ``--help-json`` option.
+
+        Mirrors :meth:`get_help_option_names`. Names are taken from the context's
+        ``help_json_option_names`` (settable via ``context_settings``, parallel to
+        click's ``help_option_names``) when set; otherwise they fall back to the
+        ``help_json`` / ``help_json_option_name`` rich config. Returns an empty list
+        when ``--help-json`` is not enabled.
+        """
+        names = getattr(ctx, "help_json_option_names", None)
+        if names is None:
+            from rich_click.help_json import DEFAULT_HELP_JSON_OPTION_NAME
+
+            config = getattr(ctx, "help_config", None)
+            if config is None or not getattr(config, "help_json", False):
+                return []
+            names = [getattr(config, "help_json_option_name", None) or DEFAULT_HELP_JSON_OPTION_NAME]
+
+        # Mirror click's get_help_option_names: drop any name already claimed by another param.
+        all_names = set(names)
+        for param in self.params:
+            all_names.difference_update(param.opts)
+            all_names.difference_update(param.secondary_opts)
+        return [name for name in names if name in all_names]
+
+    def _get_help_json_option(self, ctx: click.Context) -> Optional[click.Option]:
+        """
+        Return the cached ``--help-json`` option, or ``None`` when it is not enabled.
+
+        The option is cached on the command (like the help option) so that its
+        object identity is stable across ``get_params`` calls, which
+        ``iter_params_for_processing`` relies on.
+        """
+        names = self.get_help_json_option_names(ctx)
+        if not names:
+            return None
+        if self._help_json_option is None:
+            from rich_click.help_json import build_help_json_option
+
+            self._help_json_option = build_help_json_option(names)
+        return self._help_json_option
+
+    def get_help_json(self, ctx: "RichContext") -> str:
+        """
+        Return this command's help as a machine-readable JSON string.
+
+        Mirrors click's :meth:`get_help`: the data is built by :meth:`format_help_json`
+        and then serialized. Override :meth:`format_help_json` to change the structure
+        of the output.
+        """
+        import json
+
+        formatter = ctx.make_formatter()
+        data = self.format_help_json(ctx, formatter)
+        return json.dumps(data, indent=2, default=str)
+
+    def format_help_json(self, ctx: "RichContext", formatter: RichHelpFormatter) -> Dict[str, Any]:
+        """
+        Build the machine-readable ``--help-json`` schema for this command.
+
+        Mirrors click's :meth:`format_help`, but returns the data statelessly rather
+        than writing to the formatter's buffer (the formatter is carried for its
+        config and parity with the regular help path). Subclass ``RichCommand`` and
+        override this for full control of the JSON schema; the ``help_json_transform``
+        config hook is a lighter-touch alternative.
+        """
+        from rich_click.help_json import command_schema
+
+        json_option = self._get_help_json_option(ctx)
+        exclude = (json_option,) if json_option is not None else ()
+        schema = command_schema(self, ctx, exclude=exclude)
+
+        transform = getattr(formatter.config, "help_json_transform", None)
+        if transform is not None:
+            schema = transform(schema, self, ctx)
+        return schema
+
+    def get_params(self, ctx: click.Context) -> List[click.Parameter]:
+        params = super().get_params(ctx)
+        json_option = self._get_help_json_option(ctx)
+        if json_option is None:
+            return params
+        # super().get_params() already appended the cached help option last (if any);
+        # slot --help-json just before it so the two meta-options sit together.
+        if self._help_option is not None and params and params[-1] is self._help_option:
+            return [*params[:-1], json_option, params[-1]]
+        return [*params, json_option]
 
     def get_rich_table_row(
         self,

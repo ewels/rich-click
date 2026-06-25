@@ -34,6 +34,7 @@ if TYPE_CHECKING:
     from rich.style import StyleType
     from rich.text import Text, TextType
 
+    from rich_click.help_json import HelpJSONTransform
     from rich_click.rich_click_theme import RichClickTheme
     from rich_click.rich_help_configuration import (
         CommandColumnType,
@@ -60,6 +61,7 @@ class RichContextSettingsDict(TypedDict):
     allow_interspersed_args: NotRequired[Optional[bool]]
     ignore_unknown_options: NotRequired[Optional[bool]]
     help_option_names: NotRequired[Optional[List[str]]]
+    help_json_option_names: NotRequired[Optional[List[str]]]
     token_normalize_func: NotRequired[Callable[[str], str] | None]
     color: NotRequired[Optional[bool]]
     show_default: NotRequired[Optional[bool]]
@@ -133,6 +135,7 @@ class RichHelpConfigurationDict(TypedDict):
     style_header_text: NotRequired["StyleType"]
     style_epilog_text: NotRequired["StyleType"]
     style_footer_text: NotRequired["StyleType"]
+    style_help_json_tip: NotRequired["StyleType"]
     style_usage: NotRequired["StyleType"]
     style_usage_command: NotRequired["StyleType"]
     style_usage_separator: NotRequired["StyleType"]
@@ -252,5 +255,10 @@ class RichHelpConfigurationDict(TypedDict):
     option_groups: NotRequired[Dict[str, List[OptionGroupDict]]]
     use_click_short_help: NotRequired[bool]
     helptext_show_aliases: NotRequired[bool]
+    help_json: NotRequired[bool]
+    help_json_option_name: NotRequired[str]
+    help_json_transform: NotRequired[Optional["HelpJSONTransform"]]
+    help_json_show_tip: NotRequired[bool]
+    help_json_tip_text: NotRequired[str]
     highlighter_patterns: NotRequired[List[str]]
     legacy_windows: NotRequired[Optional[bool]]

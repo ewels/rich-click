@@ -21,6 +21,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.style import StyleType
     from rich.text import Text
 
+    from rich_click.help_json import HelpJSONTransform
     from rich_click.rich_click_theme import RichClickTheme
 
 #!STARTCONFIG
@@ -99,6 +100,7 @@ STYLE_PADDING_EPILOG: "StyleType" = FROM_THEME
 STYLE_HEADER_TEXT: "StyleType" = FROM_THEME
 STYLE_EPILOG_TEXT: "StyleType" = FROM_THEME
 STYLE_FOOTER_TEXT: "StyleType" = FROM_THEME
+STYLE_HELP_JSON_TIP: "StyleType" = "dim"
 
 PANEL_TITLE_PADDING: int = FROM_THEME
 WIDTH: Optional[int] = terminal_width_default()
@@ -171,6 +173,14 @@ COMMAND_GROUPS: Dict[str, List[CommandGroupDict]] = {}
 OPTION_GROUPS: Dict[str, List[OptionGroupDict]] = {}
 USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
 HELPTEXT_SHOW_ALIASES: bool = True
+# Add a global `--help-json` flag to every command, printing machine-readable help as JSON (for LLMs/tooling)
+HELP_JSON: bool = False
+HELP_JSON_OPTION_NAME: str = "--help-json"  # Flag name used when HELP_JSON is enabled
+# Optional hook to post-process the `--help-json` schema: (schema, command, ctx) -> schema
+HELP_JSON_TRANSFORM: Optional["HelpJSONTransform"] = None
+# Append a footer tip to `--help` advertising `--help-json` (only when it is enabled)
+HELP_JSON_SHOW_TIP: bool = True
+HELP_JSON_TIP_TEXT: str = "Tip: add {} to any command for machine-readable help."
 
 #!ENDCONFIG
 

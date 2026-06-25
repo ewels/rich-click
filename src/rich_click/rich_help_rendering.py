@@ -1021,6 +1021,20 @@ def get_rich_epilog(
             )
         )
 
+    # Tip advertising --help-json, shown only when the flag is enabled for this command.
+    if formatter.config.help_json_show_tip:
+        get_help_json_option_names = getattr(self, "get_help_json_option_names", None)
+        names = get_help_json_option_names(ctx) if get_help_json_option_names is not None else []
+        if names:
+            tip = formatter.config.help_json_tip_text.format(names[0])
+            formatter.write(
+                Padding(
+                    formatter.rich_text(tip, formatter.config.style_help_json_tip),
+                    formatter.config.padding_footer_text,
+                    style=formatter.config.style_padding_epilog,
+                )
+            )
+
 
 def rich_format_error(
     self: click.ClickException, formatter: RichHelpFormatter, export_console_as: Literal[None, "html", "svg"] = None
