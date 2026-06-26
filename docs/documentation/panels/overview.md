@@ -5,7 +5,7 @@ The containers which contain grouped options and subcommands are called panels:
 
 ![](../../../images/panels.svg)
 
-By default, `RichCommand`s have a single panel for options named "Options", and `RichGroup`s have an additional panel for commands named "Commands".
+By default, `RichCommand`s have a single panel for options named "Options", and `RichGroup`s have an additional panel for commands named "Commands". A command that defines [examples](../examples.md) also gets an "Examples" panel.
 
 **rich-click** allows you to control and customize everything about these panels:
 

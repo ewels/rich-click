@@ -18,6 +18,7 @@ from typing import (
     Optional,
     Sequence,
     TextIO,
+    Tuple,
     Type,
     Union,
     cast,
@@ -49,6 +50,26 @@ if TYPE_CHECKING:  # pragma: no cover
 OVERRIDES_GUARD: bool = False
 
 
+def _normalize_examples(examples: Optional[Iterable[Tuple[str, str]]]) -> List[Dict[str, str]]:
+    """
+    Normalize the ``examples=`` developer input to a list of ``{"description", "command"}`` dicts.
+
+    Every example is a ``(description, command)`` tuple -- the description is required, so an example is
+    never shown without an explanation of what it does. This canonical shape is what every output (the
+    rendered ``--help`` panel, ``--help=md``, ``--help=json`` and ``--help=carapace``) consumes.
+    """
+    normalized: List[Dict[str, str]] = []
+    for example in examples or []:
+        if isinstance(example, str):
+            raise TypeError(f"Each example must be a (description, command) tuple, not a string: {example!r}")
+        try:
+            description, command = example
+        except (TypeError, ValueError):
+            raise TypeError(f"Each example must be a (description, command) tuple; got {example!r}") from None
+        normalized.append({"description": str(description), "command": str(command)})
+    return normalized
+
+
 class RichCommand(Command):
     """
     Richly formatted click Command.
@@ -68,6 +89,7 @@ class RichCommand(Command):
         aliases: Optional[Iterable[str]] = None,
         panels: Optional[List["RichPanel[Any, Any]"]] = None,
         panel: Optional[Union[str, List[str]]] = None,
+        examples: Optional[Iterable[Tuple[str, str]]] = None,
         **kwargs: Any,
     ) -> None:
         """Create Rich Command instance."""
@@ -75,6 +97,7 @@ class RichCommand(Command):
         self.panel = panel
         self.panels: List["RichPanel[Any, Any]"] = panels or []
         self.aliases: Iterable[str] = aliases or []
+        self.examples: List[Dict[str, str]] = _normalize_examples(examples)
         if not hasattr(self, "_help_option"):
             self._help_option = None
 
@@ -99,6 +122,7 @@ class RichCommand(Command):
         info = super().to_info_dict(ctx)
         info["panels"] = [p.to_info_dict(ctx) for p in self.panels]
         info["aliases"] = list(self.aliases) if self.aliases is not None else None
+        info["examples"] = self.examples
         return info
 
     @property
@@ -277,6 +301,7 @@ class RichCommand(Command):
             self.format_usage(ctx, formatter)
             self.format_help_text(ctx, formatter)
             self.format_options(ctx, formatter)
+            self.format_examples(ctx, formatter)
             self.format_epilog(ctx, formatter)
 
     def format_help_text(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
@@ -300,6 +325,12 @@ class RichCommand(Command):
             p = panel.render(self, ctx, formatter)  # type: ignore[arg-type]
             if not isinstance(p.renderable, Table) or len(p.renderable.rows) > 0:
                 formatter.write(p)  # type: ignore[arg-type]
+
+    def format_examples(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:
+        """Render the command's ``examples`` (if any) as a panel, after the options/commands."""
+        from rich_click.rich_help_rendering import get_rich_examples
+
+        get_rich_examples(self, ctx, formatter)
 
     def format_epilog(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         from rich_click.rich_help_rendering import get_rich_epilog
@@ -517,6 +548,7 @@ class RichGroup(RichCommand, Group):
             self.format_usage(ctx, formatter)
             self.format_help_text(ctx, formatter)
             self.format_options(ctx, formatter)
+            self.format_examples(ctx, formatter)
             self.format_epilog(ctx, formatter)
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
@@ -565,6 +597,7 @@ class RichGroup(RichCommand, Group):
             if cls and not issubclass(cls, RichCommand):
                 panel = kwargs.pop("panel", None)
                 aliases = kwargs.pop("aliases", None)
+                kwargs.pop("examples", None)  # rich-click-only; a non-RichCommand can't accept it
             else:
                 panel = kwargs.get("panel")
                 aliases = kwargs.get("aliases")
@@ -620,6 +653,7 @@ class RichGroup(RichCommand, Group):
             if cls and not issubclass(cls, RichCommand):
                 panel = kwargs.pop("panel", None)
                 aliases = kwargs.pop("aliases", None)
+                kwargs.pop("examples", None)  # rich-click-only; a non-RichCommand can't accept it
             else:
                 panel = kwargs.get("panel")
                 aliases = kwargs.get("aliases")
@@ -714,6 +748,7 @@ class RichCommandCollection(CommandCollection, RichGroup):
             self.format_usage(ctx, formatter)
             self.format_help_text(ctx, formatter)
             self.format_options(ctx, formatter)
+            self.format_examples(ctx, formatter)
             self.format_epilog(ctx, formatter)
 
 
@@ -726,7 +761,7 @@ def prevent_incompatible_overrides(
 
     cls: Type[RichCommand] = getattr(rich_click.patch, f"_Patched{class_name}")
 
-    for method_name in ["format_usage", "format_help_text", "format_options", "format_epilog"]:
+    for method_name in ["format_usage", "format_help_text", "format_options", "format_examples", "format_epilog"]:
         if method_is_from_subclass_of(cmd.__class__, cls, method_name):
             getattr(RichCommand, method_name)(cmd, ctx, formatter)
         else:

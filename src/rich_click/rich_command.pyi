@@ -12,6 +12,7 @@ from typing import (
     NoReturn,
     Optional,
     Sequence,
+    Tuple,
     Type,
     TypeVar,
     Union,
@@ -48,6 +49,7 @@ class RichCommand(click.Command):
     panels: List[RichPanel[Any, Any]]
     panel: Optional[str]
     aliases: Iterable[str]
+    examples: List[Dict[str, str]]
 
     def __init__(
         self,
@@ -55,6 +57,7 @@ class RichCommand(click.Command):
         aliases: Optional[Iterable[str]] = None,
         panels: Optional[List[RichPanel[Any, Any]]] = None,
         panel: Optional[str] = None,
+        examples: Optional[Iterable[Tuple[str, str]]] = None,
         name: str | None,
         context_settings: MutableMapping[str, Any] | None = None,
         callback: Callable[..., Any] | None = None,
@@ -104,6 +107,7 @@ class RichCommand(click.Command):
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None: ...
     def format_help_text(self, ctx: RichContext, formatter: RichHelpFormatter) -> None: ...
     def format_options(self, ctx: RichContext, formatter: RichHelpFormatter) -> None: ...
+    def format_examples(self, ctx: RichContext, formatter: RichHelpFormatter) -> None: ...
     def format_epilog(self, ctx: RichContext, formatter: RichHelpFormatter) -> None: ...
     def get_help_option(self, ctx: RichContext) -> Union[click.Option, None]: ...
     help_formats: ClassVar[Dict[str, str]]
@@ -151,6 +155,7 @@ class RichGroup(RichCommand, click.Group):
         self,
         panels: Optional[List["RichPanel[Any, Any]"]] = None,
         aliases: Optional[Iterable[str]] = None,
+        examples: Optional[Iterable[Tuple[str, str]]] = None,
         name: str | None = None,
         commands: MutableMapping[str, click.Command] | Sequence[click.Command] | None = None,
         invoke_without_command: bool = False,
@@ -196,6 +201,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Optional[Iterable[str]] = ...,
         panels: Optional[List[RichPanel[Any, Any]]] = ...,
         panel: Optional[str] = ...,
+        examples: Optional[Iterable[Tuple[str, str]]] = ...,
     ) -> Callable[[_AnyCallable], C]: ...
     @overload
     def command(
@@ -217,6 +223,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Optional[Iterable[str]] = ...,
         panels: Optional[List[RichPanel[Any, Any]]] = ...,
         panel: Optional[str] = ...,
+        examples: Optional[Iterable[Tuple[str, str]]] = ...,
     ) -> Callable[[_AnyCallable], RichCommand]: ...
     @overload
     def command(
@@ -238,6 +245,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Optional[Iterable[str]] = ...,
         panels: Optional[List[RichPanel[Any, Any]]] = ...,
         panel: Optional[str] = ...,
+        examples: Optional[Iterable[Tuple[str, str]]] = ...,
     ) -> Callable[[_AnyCallable], C]: ...
     @overload
     def command(
@@ -259,6 +267,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Optional[Iterable[str]] = ...,
         panels: Optional[List[RichPanel[Any, Any]]] = ...,
         panel: Optional[str] = ...,
+        examples: Optional[Iterable[Tuple[str, str]]] = ...,
         **attrs: Any,
     ) -> Callable[[_AnyCallable], RichCommand]: ...
 
@@ -317,6 +326,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Optional[Iterable[str]] = ...,
         panels: Optional[List[RichPanel[Any, Any]]] = ...,
         panel: Optional[str] = ...,
+        examples: Optional[Iterable[Tuple[str, str]]] = ...,
     ) -> Callable[[_AnyCallable], G]: ...
     @overload
     def group(
@@ -343,6 +353,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Optional[Iterable[str]] = ...,
         panels: Optional[List[RichPanel[Any, Any]]] = ...,
         panel: Optional[str] = ...,
+        examples: Optional[Iterable[Tuple[str, str]]] = ...,
     ) -> Callable[[_AnyCallable], RichGroup]: ...
     @overload
     def group(
@@ -369,6 +380,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Optional[Iterable[str]] = ...,
         panels: Optional[List[RichPanel[Any, Any]]] = ...,
         panel: Optional[str] = ...,
+        examples: Optional[Iterable[Tuple[str, str]]] = ...,
     ) -> Callable[[_AnyCallable], G]: ...
     @overload
     def group(
@@ -395,6 +407,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Optional[Iterable[str]] = ...,
         panels: Optional[List[RichPanel[Any, Any]]] = ...,
         panel: Optional[str] = ...,
+        examples: Optional[Iterable[Tuple[str, str]]] = ...,
     ) -> Callable[[_AnyCallable], RichGroup]: ...
 
     # variant: with positional name and with positional or keyword cls argument:

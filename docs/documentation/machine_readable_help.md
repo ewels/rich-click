@@ -195,6 +195,16 @@ Greet someone.
 
 Like `--help=json`, it is progressive: the current command is documented in full, and subcommands appear as a nested name index. `--help=md-full` (alias `--help=markdown-full`) instead documents **every** command in the tree, each as its own top-level (`#`) section — a flat, uniform layout that is easy for a model to parse and navigate by path.
 
+## Command examples
+
+LLMs respond well to concrete examples. If you give commands examples with the [`examples=` argument](examples.md) — primarily to enrich the rendered `--help` — they flow into the machine-readable formats too:
+
+- `--help=md` / `--help=md-full` — an `## Examples` section.
+- `--help=json` / `--help=json-full` — an `examples` array of `{"command", "description"}` objects.
+- `--help=carapace` — the spec's `examples` map, keyed by the command line.
+
+See [Command Examples](examples.md) for how to define them.
+
 ## What the JSON schema contains
 
 For every command level, the `json` / `json-full` object contains:
@@ -243,7 +253,7 @@ import rich_click as click
 class DocumentedCommand(click.RichCommand):
     def to_info_dict(self, ctx):
         info = super().to_info_dict(ctx)
-        info["examples"] = ["cli deploy --token=XXX prod"]  # -> top-level "examples"
+        info["stability"] = "beta"  # -> top-level "stability"
         return info
 
 

@@ -1,7 +1,8 @@
 import json
-from typing import Any, Dict, Tuple, cast
+from typing import Any, Dict, Set, Tuple, cast
 
 import click
+import pytest
 from click.testing import CliRunner
 
 import rich_click.rich_click as rc
@@ -562,3 +563,157 @@ def test_help_markdown_override(cli_runner: CliRunner) -> None:
         """Hi."""
 
     assert cli_runner.invoke(cli, ["--help=md"]).output.strip() == "CUSTOM MD"
+
+
+# --------------------------------------------------------------------------------------------------
+# Developer-supplied examples, surfaced in every output (rendered help, md, json, carapace).
+# --------------------------------------------------------------------------------------------------
+
+
+def test_examples_require_description_tuples(cli_runner: CliRunner) -> None:
+    # Every example is a (description, command) tuple -- description first, command second -- so an
+    # example is never shown without explaining what it does.
+    @command(examples=[("Run quickly", "tool run fast"), ("Run slowly", "tool run --slow x")])
+    def cli() -> None:
+        """Hi."""
+
+    examples = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["examples"]
+    assert examples == [
+        {"description": "Run quickly", "command": "tool run fast"},
+        {"description": "Run slowly", "command": "tool run --slow x"},
+    ]
+
+
+def test_examples_reject_bare_string(cli_runner: CliRunner) -> None:
+    # A bare command string is rejected -- callers must supply a description.
+    with pytest.raises(TypeError):
+
+        @command(examples=["tool run fast"])
+        def cli() -> None:
+            """Hi."""
+
+
+def test_examples_in_rendered_help(cli_runner: CliRunner) -> None:
+    # The rendered (human) --help shows an Examples panel; commands without examples do not.
+    @command(examples=[("Do the thing", "tool do thing")])
+    def cli() -> None:
+        """Hi."""
+
+    out = cli_runner.invoke(cli, ["--help"]).output
+    assert "Examples" in out
+    assert "Do the thing" in out
+    assert "tool do thing" in out
+
+    @command()
+    def plain() -> None:
+        """Hi."""
+
+    assert "Examples" not in cli_runner.invoke(plain, ["--help"]).output
+
+
+def test_examples_in_markdown(cli_runner: CliRunner) -> None:
+    @command(examples=[("Do a thing", "tool do thing"), ("Do the other thing", "tool do other")])
+    def cli() -> None:
+        """Hi."""
+
+    out = cli_runner.invoke(cli, ["--help=md"]).output
+    assert "## Examples" in out
+    assert "- Do a thing: `tool do thing`" in out
+    assert "- Do the other thing: `tool do other`" in out
+
+
+def test_examples_in_carapace(cli_runner: CliRunner) -> None:
+    @command(examples=[("Do a thing", "tool do thing"), ("Do the other thing", "tool do other")])
+    def cli() -> None:
+        """Hi."""
+
+    doc = json.loads(cli_runner.invoke(cli, ["--help=carapace"]).output)
+    assert doc["examples"] == {"tool do thing": "Do a thing", "tool do other": "Do the other thing"}
+
+
+def test_examples_recursive_json_full(cli_runner: CliRunner) -> None:
+    # Examples on a subcommand appear at that node in the recursive dump.
+    @group()
+    def cli() -> None:
+        """Root."""
+
+    @cli.command(examples=[("Run now", "cli sub --now")])
+    def sub() -> None:
+        """Sub."""
+
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json-full"]).output)
+    assert schema["subcommands"]["sub"]["examples"] == [{"description": "Run now", "command": "cli sub --now"}]
+
+
+def test_examples_absent_when_not_provided(cli_runner: CliRunner) -> None:
+    # No examples key is emitted for a command that defines none.
+    cli = _build_cli()
+    assert "examples" not in json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
+
+
+def test_examples_placeholder_detection(cli_runner: CliRunner) -> None:
+    # The rendered help colours placeholders inferred from the command's structure: a value after a
+    # value-taking flag, an attached `=value`, and a bare positional are all metavar-styled; a boolean
+    # flag consumes nothing; the command path and flags get their own styles.
+
+    from rich_click.rich_help_rendering import _styled_example_command
+
+    @command(name="i")
+    @option("--dir", "-d", type=click.Path())
+    @option("--force", "-f", is_flag=True)
+    @argument("tool")
+    def inst(dir: str, force: bool, tool: str) -> None:
+        """Install."""
+
+    with inst.make_context("nf-core m i", [], resilient_parsing=True) as ctx:
+        rctx = cast(RichContext, ctx)
+        formatter = rctx.make_formatter()
+        styled = _styled_example_command("nf-core m i --dir foo/ -f fastqc", inst, rctx, formatter)
+
+        def style_of(token: str) -> object:
+            start = styled.plain.index(token)
+            return next((s.style for s in styled.spans if s.start == start), None)
+
+        placeholder = formatter.config.style_examples_placeholder
+        # Value after a value-taking flag, and the bare positional, are placeholders.
+        assert style_of("foo/") == placeholder
+        assert style_of("fastqc") == placeholder
+        # The boolean flag does NOT turn the following token into a placeholder (here, end of line).
+        assert style_of("--dir") == formatter.config.style_examples_flag_long
+        assert style_of("-f") == formatter.config.style_examples_flag_short
+        # Command path is not styled as a placeholder (it carries the plain command style).
+        assert style_of("nf-core") != placeholder
+
+
+def test_examples_placeholder_detection_handles_aliases(cli_runner: CliRunner) -> None:
+    # When help is invoked via an alias (`foo b`), an example written with the canonical name
+    # (`foo bar ...`) must still recognise `bar` as the command path, not a placeholder -- and vice
+    # versa. The command path is matched by name OR alias at each level.
+    from rich_click.rich_help_rendering import _styled_example_command
+
+    @group()
+    def foo() -> None:
+        """Root."""
+
+    @foo.command(name="bar", aliases=["b"])
+    @option("--now", is_flag=True)
+    @argument("target")
+    def bar(now: bool, target: str) -> None:
+        """Do bar."""
+
+    with foo.make_context("foo", ["b"], resilient_parsing=True) as gctx:
+        sub = cast(RichCommand, foo.get_command(gctx, "b"))  # invoked via alias
+        with sub.make_context("b", [], parent=gctx, resilient_parsing=True) as sctx:
+            rctx = cast(RichContext, sctx)
+            formatter = rctx.make_formatter()
+            assert sctx.command_path == "foo b"  # help was reached via the alias
+
+            def placeholder_tokens(example: str) -> Set[str]:
+                styled = _styled_example_command(example, sub, rctx, formatter)
+                ph = formatter.config.style_examples_placeholder
+                return {styled.plain[s.start : s.end] for s in styled.spans if s.style == ph}
+
+            # Either spelling of the subcommand is recognised as command path (NOT a placeholder); only
+            # the positional `x` is a placeholder.
+            assert placeholder_tokens("foo bar --now x") == {"x"}
+            assert placeholder_tokens("foo b --now x") == {"x"}

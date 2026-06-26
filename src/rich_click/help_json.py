@@ -64,9 +64,10 @@ _STANDARD_PARAM_KEYS = frozenset(
 _REDUNDANT_TYPE_KEYS = frozenset({"param_type", "name", "choices"})
 
 # Command-level keys we consume directly. ``commands`` becomes the lean ``subcommands`` name tree;
-# ``short_help`` is dropped as redundant with ``help``. Everything else not listed here -- including
-# rich-click's ``aliases`` and any developer-supplied fields -- is merged onto the top-level object.
-_CONSUMED_CMD_KEYS = frozenset({"name", "help", "params", "commands", "short_help"})
+# ``short_help`` is dropped as redundant with ``help``; ``examples`` is emitted explicitly. Everything
+# else not listed here -- including rich-click's ``aliases`` and any developer-supplied fields -- is
+# merged onto the top-level object.
+_CONSUMED_CMD_KEYS = frozenset({"name", "help", "params", "commands", "short_help", "examples"})
 
 
 def _strip_markup(text: Optional[str]) -> Optional[str]:
@@ -284,6 +285,8 @@ def command_schema(
         schema["help"] = help_text
     schema["usage"] = " ".join([ctx.command_path, *cmd.collect_usage_pieces(ctx)])
     schema["params"] = params
+    if info.get("examples"):
+        schema["examples"] = info["examples"]
     if "commands" in info:
         if recursive:
             schema["subcommands"] = _subcommand_index_full(cmd, ctx, info["commands"])
@@ -415,6 +418,11 @@ def carapace_command(cmd: click.Command, ctx: click.Context, info: Optional[Dict
     if documentation:
         result["documentation"] = documentation
 
+    # Carapace's ``examples`` is a {string: string} map; we key it by the command line.
+    examples = info.get("examples")
+    if examples:
+        result["examples"] = {ex["command"]: ex.get("description", "") for ex in examples}
+
     children = _carapace_subcommands(cmd, ctx, info.get("commands") or {})
     if children:
         result["commands"] = children
@@ -531,6 +539,12 @@ def _render_command_markdown(schema: Dict[str, Any], lines: List[str], recursive
         lines += [f"**Aliases:** {', '.join(f'`{alias}`' for alias in schema['aliases'])}", ""]
     if schema.get("usage"):
         lines += [f"**Usage:** `{schema['usage']}`", ""]
+
+    if schema.get("examples"):
+        lines += ["## Examples", ""]
+        for example in schema["examples"]:
+            lines.append(f"- {_md_escape(example['description'])}: `{example['command']}`")
+        lines.append("")
 
     params = schema.get("params", [])
     arguments = [p for p in params if p.get("kind") == "argument" and not p.get("hidden")]
