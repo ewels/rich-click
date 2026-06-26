@@ -3,27 +3,36 @@
 CLIs are increasingly driven not just by humans, but by tooling and LLM agents.
 Those consumers struggle with the rendered `--help` screen: it is laid out for human reading, wraps to the terminal width, and carries Rich styling that obscures the underlying structure.
 
-**rich-click** already holds all of this information as structured data. The `help_json` config option exposes it directly.
+**rich-click** already holds all of this information as structured data, and exposes it as **format values on the existing `--help` flag**:
 
-## Enabling `--help-json`
+| Invocation                       | Output                                                                                                               |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `--help`                         | The normal human-readable help. **Unchanged** — byte-for-byte identical to before.                                   |
+| `--help=json`                    | Machine-readable JSON for the current command, plus a name-only index of its subcommands (_progressive disclosure_). |
+| `--help=json-full`               | The whole command tree in one call, with full parameter detail at every node.                                        |
+| `--help=carapace`                | Output conforming to the [carapace](https://carapace.sh) completion spec.                                            |
+| `--help=md` (alias `markdown`)   | LLM-friendly Markdown for the current command, plus a subcommand index (_progressive disclosure_).                   |
+| `--help=md-full` (`markdown-full`) | LLM-friendly Markdown documenting every command in the tree.                                                        |
 
-The feature is off by default, so there is no behavioural change unless you opt in.
+This capability is **always available** on every rich-click CLI — there is nothing to enable, and bare `--help` is untouched. The format machinery only engages when a value is given.
 
-Set the `help_json` config option to `True`.
-This adds a global `--help-json` flag to every command and group:
+!!! note "Both `--help=json` and `--help json` work"
+    You can pass the format with `=` or a space — `mytool --help=json` and `mytool --help json` are equivalent. A bare `--help`, or an unrecognized value (a typo, or `mytool --help install` mistakenly meaning "help for the `install` command"), simply shows the normal human-readable help rather than erroring — exactly as a plain `--help` always ignored anything that followed it. To get a subcommand's help, put `--help` after it: `mytool install --help`.
 
-```python hl_lines="6"
+The example CLI used throughout this page:
+
+```python
 {% include "../code_snippets/help_json/help_json.py" %}
 ```
 
 See the [Configuration](configuration.md) page for how to set config options globally or per-command with the `rich_config` decorator.
 
-## Example output
+## `--help=json`: progressive disclosure
 
-Running the top-level command with `--help-json` prints the current command's help, usage and full parameter detail as JSON, together with a recursive index of subcommand names:
+Running a command with `--help=json` prints that command's help, usage and full parameter detail as JSON, together with a name-only index of its subcommands:
 
 ```console
-$ mytool --help-json
+$ mytool --help=json
 ```
 
 ```json
@@ -52,36 +61,14 @@ $ mytool --help-json
 }
 ```
 
-The flag also appears in the regular `--help` output, so it is discoverable:
-
-???+ example "Output"
-
-    <!-- RICH-CODEX
-    working_dir: docs/code_snippets/help_json
-    -->
-    ![`python help_json.py --help`](../images/code_snippets/help_json/help_json.svg){.screenshot}
-
-In addition, a dimmed footer tip is appended to the bottom of every `--help` output advertising the flag:
-
-```console
-Tip: add --help-json to any command for machine-readable help.
-```
-
-The tip is shown automatically whenever `--help-json` is enabled. Turn it off with the `help_json_show_tip` config option, or change the wording with `help_json_tip_text` (`{}` is replaced with the flag name) and its style with `style_help_json_tip` (default `dim`):
-
-```python
-rich_config(help_config=RichHelpConfiguration(
-    help_json=True,
-    help_json_show_tip=False,  # or customize: help_json_tip_text="Add {} for JSON."
-))
-```
-
-## Progressive disclosure
-
-The flag is **contextual**: it reports the current command in full, but for its descendants lists only their names and a one-line description (not their parameters or usage).
+The format is **contextual**: it reports the current command in full, but for its descendants lists only their names and a one-line description (not their parameters or usage).
 This lets tools and agents discover a CLI one level at a time — they can see what each subcommand does and drill down by name, rather than pulling the whole command tree into context at once.
 
 Running it on a subcommand returns that command's full detail, including positional arguments:
+
+```console
+$ mytool hello --help=json
+```
 
 ```json
 {
@@ -108,41 +95,141 @@ Running it on a subcommand returns that command's full detail, including positio
 }
 ```
 
-The flag is **eager**, exactly like `--help`, so it works even when required arguments are missing:
+The flag is **eager**, exactly like a bare `--help`, so it works even when required arguments are missing:
 
 ```shell
 # Prints the schema for `hello`, despite the required NAME argument being absent.
-python help_json.py hello --help-json
+python help_json.py hello --help=json
 ```
 
-## What the schema contains
+## `--help=json-full`: the whole tree at once
 
-For every command level, the JSON object contains:
+Where `--help=json` discloses one level at a time, `--help=json-full` expands **every** descendant to its full detail — parameters, usage and nested subcommands — in a single call.
+Each node looks exactly like a direct `--help=json` on that command would.
 
-| Key           | Description                                                                                                                                                    |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`        | The command's name.                                                                                                                                            |
-| `path`        | The full invocation path (e.g. `cli db migrate`).                                                                                                              |
-| `help`        | The command's help text, with Rich markup stripped to plain text. Omitted if the command is undocumented.                                                      |
-| `usage`       | The usage string.                                                                                                                                              |
-| `params`      | A list of the command's options and arguments. The `--help` / `--help-json` meta-options are omitted.                                                          |
-| `subcommands` | Present only for groups: a recursive index of all descendants. Each entry carries a one-line `help` (plus `aliases` and a nested `subcommands` where present). |
+This is aimed at consumers that want the entire surface up front rather than crawling it: code generators, documentation builders, and tools that turn a CLI into an [MCP](https://modelcontextprotocol.io) server.
+
+```console
+$ mytool --help=json-full
+```
+
+```json
+{
+  "name": "cli",
+  "path": "cli",
+  "usage": "cli [OPTIONS] COMMAND [ARGS]...",
+  "params": [{ "name": "verbose", "kind": "option", "opts": ["--verbose", "-v"], "type": "Bool", "is_flag": true }],
+  "subcommands": {
+    "hello": {
+      "name": "hello",
+      "path": "cli hello",
+      "usage": "cli hello [OPTIONS] NAME",
+      "params": [
+        { "name": "count", "kind": "option", "opts": ["--count"], "type": "Int", "default": 1 },
+        { "name": "name", "kind": "argument", "type": "String", "required": true }
+      ]
+    },
+    "db": {
+      "name": "db",
+      "path": "cli db",
+      "subcommands": { "migrate": { "name": "migrate", "path": "cli db migrate", "params": [] } }
+    }
+  }
+}
+```
+
+## `--help=carapace`: completion spec
+
+[carapace](https://carapace.sh) is a multi-shell completion engine. Emitting `--help=carapace` produces a document conforming to its [command spec](https://carapace.sh/schemas/command.json), so a rich-click CLI becomes a **producer** for carapace's consumer ecosystem.
+
+```console
+$ mytool --help=carapace
+```
+
+```json
+{
+  "name": "cli",
+  "description": "A demo CLI.",
+  "parsing": "non-interspersed",
+  "flags": { "-v, --verbose": "Enable verbose output." },
+  "commands": [
+    {
+      "name": "hello",
+      "description": "Greet someone.",
+      "flags": { "--count=": "Number of greetings." }
+    },
+    { "name": "db", "description": "Manage the database.", "parsing": "non-interspersed", "commands": [...] }
+  ]
+}
+```
+
+Carapace is a structure-and-completion spec rather than a type/validation one, so the mapping is intentionally lossy. Flag keys use carapace's string syntax (`-s, --long` for a boolean, a trailing `=` when the flag takes a value, `*` when it is repeatable, and the `{description, nargs}` object form for multi-value flags); negation flags such as `--no-debug` become their own entries; and `Choice` values are surfaced as completion candidates. Parameter **types** (`Int`/`Path`/…), **defaults**, **envvars** and per-flag **required** have no home in the carapace schema and are dropped — reach for `--help=json-full` if you need those.
+
+## `--help=md`: Markdown for LLMs
+
+`--help=md` (alias `--help=markdown`) renders the same data as Markdown, tuned for dropping into an LLM prompt: headings for hierarchy, each command titled by its **full invocation path** so the section is unambiguous out of context, and parameters laid out as compact tables.
+
+```console
+$ mytool hello --help=md
+```
+
+```markdown
+# `cli hello`
+
+Greet someone.
+
+**Usage:** `cli hello [OPTIONS] NAME`
+
+## Arguments
+
+| Argument | Type | Required | Description |
+| --- | --- | --- | --- |
+| `name` | String | yes |  |
+
+## Options
+
+| Option | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `--count` | Int |  | `1` | Number of greetings. |
+```
+
+Like `--help=json`, it is progressive: the current command is documented in full, and subcommands appear as a nested name index. `--help=md-full` (alias `--help=markdown-full`) instead documents **every** command in the tree, each as its own top-level (`#`) section — a flat, uniform layout that is easy for a model to parse and navigate by path.
+
+## What the JSON schema contains
+
+For every command level, the `json` / `json-full` object contains:
+
+| Key           | Description                                                                                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`        | The command's name.                                                                                                                                                 |
+| `path`        | The full invocation path (e.g. `cli db migrate`).                                                                                                                   |
+| `help`        | The command's help text, with Rich markup stripped to plain text. Omitted if the command is undocumented.                                                           |
+| `usage`       | The usage string.                                                                                                                                                   |
+| `params`      | A list of the command's options and arguments. The `--help` meta-option is omitted.                                                                                 |
+| `subcommands` | Present only for groups. In `json` it is a name-only index (one-line `help`, plus `aliases` / nested `subcommands`); in `json-full` each entry is the full schema. |
 
 Each entry in `params` has the following keys when applicable:
 
-| Key        | Description                                                                          |
-| ---------- | ------------------------------------------------------------------------------------ |
-| `name`     | The Python-side parameter name.                                                      |
-| `kind`     | `"option"` or `"argument"`.                                                          |
-| `opts`     | An option's flag(s) as seen on the command line. Omitted for arguments (use `name`). |
-| `type`     | The parameter type, e.g. `"Bool"`, `"Int"`, `"String"`, `"Path"`.                    |
-| `choices`  | The allowed values, for a `Choice` type.                                             |
-| `required` | Present and `true` only when the parameter is required.                              |
-| `is_flag`  | Present and `true` only for boolean flags.                                           |
-| `multiple` | Present and `true` only when the parameter may be repeated.                          |
-| `hidden`   | Present and `true` for hidden parameters (kept, but flagged).                        |
-| `default`  | The default value, for non-flag parameters that have one.                            |
-| `help`     | The parameter's help text, as plain text.                                            |
+| Key              | Description                                                                          |
+| ---------------- | ------------------------------------------------------------------------------------ |
+| `name`           | The Python-side parameter name.                                                      |
+| `kind`           | `"option"` or `"argument"`.                                                          |
+| `opts`           | An option's flag(s) as seen on the command line. Omitted for arguments (use `name`). |
+| `secondary_opts` | An option's negation flags, e.g. `--no-debug` for `--debug/--no-debug`.              |
+| `type`           | The parameter type, e.g. `"Bool"`, `"Int"`, `"String"`, `"Path"`.                    |
+| `type_info`      | Extra type constraints (range min/max, `Path` flags, `Choice` case-sensitivity).     |
+| `choices`        | The allowed values, for a `Choice` type.                                             |
+| `required`       | Present and `true` only when the parameter is required.                              |
+| `is_flag`        | Present and `true` only for boolean flags.                                           |
+| `flag_value`     | The value a value-flag sets (e.g. `--upper`/`--lower` sharing a destination).        |
+| `count`          | Present and `true` for counting options (`-v`/`-vv`/`-vvv`).                          |
+| `multiple`       | Present and `true` only when the parameter may be repeated.                          |
+| `nargs`          | The argument count, when not the default of `1` (e.g. `-1` for variadic).            |
+| `envvar`         | The environment variable the parameter reads from, if any.                           |
+| `prompt`         | The prompt string shown when the option is requested interactively.                  |
+| `hidden`         | Present and `true` for hidden parameters (kept, but flagged).                        |
+| `default`        | The default value, for non-flag parameters that have one.                            |
+| `help`           | The parameter's help text, as plain text.                                            |
 
 ## Adding your own data
 
@@ -171,20 +258,25 @@ rich-click's own [aliases](panels/tips.md) flow through the same way, appearing 
 
 ### The `help_json_transform` hook
 
-If you would rather not subclass, set `help_json_transform` to a callable that post-processes the schema just before it is printed. It receives `(schema, command, ctx)` and returns the schema to emit:
+If you would rather not subclass, set `help_json_transform` to a callable that post-processes the JSON schema (both `json` and `json-full`) just before it is printed. It receives `(schema, command, ctx)` and returns the schema to emit:
 
 ```python
 import rich_click as click
 
-click.rich_click.HELP_JSON = True
 click.rich_click.HELP_JSON_TRANSFORM = lambda schema, cmd, ctx: {**schema, "version": "1.2.3"}
 ```
 
-### Overriding `format_help_json`
+### Overriding the format methods
 
-For full control, the serialization mirrors Click's own `get_help` / `format_help` split:
-`RichCommand.get_help_json(ctx)` serializes whatever `RichCommand.format_help_json(ctx, formatter)` returns.
-Override `format_help_json` on a `RichCommand` subclass to reshape the schema (it returns the dict statelessly rather than writing to the formatter):
+For full control, the serialization mirrors Click's own `get_help` / `format_help` split: each `get_help_*(ctx)` method serializes whatever the matching `format_help_*(ctx, formatter)` returns. Override the `format_help_*` method on a `RichCommand` subclass to reshape the output (it returns the data statelessly rather than writing to the formatter):
+
+| Format             | `get_*` method          | Override this               |
+| ------------------ | ----------------------- | --------------------------- |
+| `--help=json`      | `get_help_json`         | `format_help_json`          |
+| `--help=json-full` | `get_help_json_full`    | `format_help_json_full`     |
+| `--help=carapace`  | `get_help_carapace`     | `format_help_carapace`      |
+| `--help=md`        | `get_help_markdown`     | `format_help_markdown`      |
+| `--help=md-full`   | `get_help_markdown_full`| `format_help_markdown_full` |
 
 ```python
 import rich_click as click
@@ -197,26 +289,19 @@ class MyCommand(click.RichCommand):
         return data
 ```
 
-## Customizing the flag name
+### Adding a new format
 
-The flag is named `--help-json` by default, rather than `--json`, because many CLIs already define their own `--json` data-output flag.
-
-If `--help-json` clashes with an existing option in your CLI, change it with the `help_json_option_name` config option:
-
-```python
-import rich_click as click
-
-click.rich_click.HELP_JSON = True
-click.rich_click.HELP_JSON_OPTION_NAME = "--schema"
-```
-
-Alternatively, set `help_json_option_names` in `context_settings`, parallel to Click's own `help_option_names`. This both enables the flag and names it (no separate `help_json` config needed), and takes precedence over the config option when both are present:
+The `--help=<format>` dispatch is a registry, `RichCommand.help_formats`, mapping each format name to the method that renders it. Add your own by extending it in a subclass — no need to touch the dispatch:
 
 ```python
 import rich_click as click
 
 
-@click.command(context_settings={"help_json_option_names": ["--schema"]})
-def cli():
-    """My CLI."""
+class MyCommand(click.RichCommand):
+    help_formats = {**click.RichCommand.help_formats, "yaml": "get_help_yaml"}
+
+    def get_help_yaml(self, ctx):
+        import yaml
+
+        return yaml.safe_dump(self.format_help_json(ctx, ctx.make_formatter()))
 ```

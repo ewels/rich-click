@@ -2,7 +2,13 @@
 
 ## Unreleased
 
-- Added `help_json` config option. When enabled, every command and group gains a global `--help-json` flag that prints machine-readable help, usage and parameters as JSON, plus a recursive index of subcommand names — letting tooling and LLMs discover a CLI one level at a time. The schema is built from each command's `to_info_dict()`, so anything a developer adds there flows through automatically. The flag name can be customized with `help_json_option_name`, and the output can be post-processed with the `help_json_transform` hook.
+- Added **machine-readable help formats** on the existing `--help` flag, so tooling and LLM agents can discover a CLI's structure as data. The capability is always available — no config needed — and a bare `--help` is unchanged:
+  - `--help=json` — progressive disclosure: the current command in full (help, usage, parameters) plus a name-only index of its subcommands, so agents can drill down one level at a time.
+  - `--help=json-full` — the whole command tree in one call, with full parameter detail at every node (aimed at codegen / MCP-generation consumers).
+  - `--help=carapace` — output conforming to the [carapace](https://carapace.sh) completion spec, making rich-click a producer for that ecosystem.
+  - `--help=md` (alias `--help=markdown`) and `--help=md-full` (`--help=markdown-full`) — LLM-friendly Markdown: headings for hierarchy, each command titled by its full invocation path, and parameters as compact tables. `md` is progressive; `md-full` documents the whole tree.
+  - Both `--help=json` and `--help json` work; an unrecognized format falls back to the normal human-readable help rather than erroring. No new CLI flag is added — only `--help` is modified.
+  - The schema is built from each command's `to_info_dict()`, so anything a developer adds there flows through automatically. Output can be post-processed with the `help_json_transform` hook, or reshaped by overriding the `format_help_*` methods. New formats can be registered via the `help_formats` class attribute.
 
 ## Version 1.9.8 (2026-05-28)
 

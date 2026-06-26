@@ -95,3 +95,19 @@ class RichOption(RichParameter, click.Option):
 
     All other parameters are passed onwards to the parameter constructor.
     """
+
+
+class RichHelpOption(RichOption):
+    """
+    The ``--help`` option.
+
+    Built as an optional-value option (``is_flag=False`` with a ``flag_value`` sentinel) so it can
+    accept an attached format -- ``--help=json``, ``--help=carapace``, ... -- while a bare ``--help``
+    still shows the normal human-readable help. The metavar is suppressed so the option renders exactly
+    like the plain boolean ``--help`` flag did: the format capability adds no visible noise to ``--help``
+    output. The ``=`` form is the documented way to pass a format.
+    """
+
+    def make_metavar(self, *args: Any, **kwargs: Any) -> str:
+        """Render like a flag (no ``TEXT`` metavar), despite technically taking an optional value."""
+        return ""

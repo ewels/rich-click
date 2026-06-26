@@ -350,8 +350,12 @@ def _get_parameter_metavar(
     # Do it ourselves if this is a positional argument
     if isinstance(param, Argument) and param.name is not None and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
         metavar_str = param.type.name.upper()
-    # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option
-    if isinstance(param, Argument) or (metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag):
+    # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option.
+    # An empty metavar (e.g. the optional-value ``--help`` option, which renders like a flag) attaches
+    # nothing -- otherwise the append string would render as stray empty brackets.
+    if metavar_str and (
+        isinstance(param, Argument) or (metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag)
+    ):
         metavar_str = metavar_str.replace("[", "").replace("]", "")
 
         if show_range:
@@ -1020,20 +1024,6 @@ def get_rich_epilog(
                 style=formatter.config.style_padding_epilog,
             )
         )
-
-    # Tip advertising --help-json, shown only when the flag is enabled for this command.
-    if formatter.config.help_json_show_tip:
-        get_help_json_option_names = getattr(self, "get_help_json_option_names", None)
-        names = get_help_json_option_names(ctx) if get_help_json_option_names is not None else []
-        if names:
-            tip = formatter.config.help_json_tip_text.format(names[0])
-            formatter.write(
-                Padding(
-                    formatter.rich_text(tip, formatter.config.style_help_json_tip),
-                    formatter.config.padding_footer_text,
-                    style=formatter.config.style_padding_epilog,
-                )
-            )
 
 
 def rich_format_error(

@@ -17,7 +17,7 @@ from rich_click.rich_command import RichCommand, RichGroup
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_panel import RichCommandPanel, RichOptionPanel, RichPanel
-from rich_click.rich_parameter import RichArgument, RichOption
+from rich_click.rich_parameter import RichArgument, RichHelpOption, RichOption
 
 
 if sys.version_info < (3, 10):
@@ -303,36 +303,64 @@ def pass_context(f: Callable[Concatenate[RichContext, P], R]) -> Callable[P, R]:
     return click_pass_context(f)  # type: ignore[arg-type,unused-ignore]
 
 
+#: Sentinel ``flag_value`` for a bare ``--help`` (no attached format). Distinct from any real format
+#: name and from ``True`` (a plain boolean flag), so the callback can tell "show normal help" apart from
+#: "render format X". The null bytes make an accidental collision with a real CLI value impossible.
+HELP_PLAIN_VALUE = "\x00__rich_click_plain_help__\x00"
+
+
 def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     """
     Pre-configured ``--help`` option which immediately prints the help page
     and exits the program.
+
+    Accepts an optional format value so the same flag can also emit machine-readable help:
+    ``--help=json`` (progressive), ``--help=json-full`` (whole tree) and ``--help=carapace``. Both the
+    attached (``--help=json``) and space (``--help json``) forms work. A bare ``--help`` is unchanged --
+    byte-for-byte identical to before -- and an unrecognized value falls back to the normal help rather
+    than erroring (just as the plain ``--help`` always ignored anything that followed it).
 
     :param param_decls: One or more option names. Defaults to the single
         value ``"--help"``.
     :param kwargs: Extra arguments are passed to :func:`option`.
     """
 
-    def show_help(ctx: Context, param: Parameter, value: bool) -> None:
-        """Callback that print the help page on ``<stdout>`` and exits."""
-        if value and not ctx.resilient_parsing:
-            # Avoid click.echo() because it ignores console settings like force_terminal.
-            # Also, do not print() if empty string; assume console was record=False.
-            if getattr(ctx, "help_to_stderr", False):
-                print(ctx.get_help(), file=sys.stderr)
-            else:
-                print(ctx.get_help())
-            ctx.exit()
+    def show_help(ctx: Context, param: Parameter, value: Any) -> None:
+        """Callback that prints the help page (human or machine-readable) on stdout and exits."""
+        # ``None`` / ``False`` mean the flag was not given; an empty string (``--help=``) is still a
+        # request for help -- it falls through to the normal help below, like a bare ``--help``.
+        if value is None or value is False or ctx.resilient_parsing:
+            return
+        # A real format was attached (``--help=<fmt>``); the sentinel / ``True`` mean a bare ``--help``.
+        if value is not True and value != HELP_PLAIN_VALUE:
+            get_help_for_format = getattr(ctx.command, "get_help_for_format", None)
+            if get_help_for_format is not None:
+                rendered = get_help_for_format(ctx, value)
+                if rendered is not None:
+                    print(rendered)
+                    ctx.exit()
+            # Unknown format (or a non-rich command): fall through to normal help.
+        # Avoid click.echo() because it ignores console settings like force_terminal.
+        # Also, do not print() if empty string; assume console was record=False.
+        if getattr(ctx, "help_to_stderr", False):
+            print(ctx.get_help(), file=sys.stderr)
+        else:
+            print(ctx.get_help())
+        ctx.exit()
 
     if not param_decls:
         param_decls = ("--help",)
 
-    kwargs.setdefault("is_flag", True)
+    # Optional-value flag: ``flag_value`` is what a bare ``--help`` yields; an attached ``=<fmt>`` is
+    # passed through verbatim. ``RichHelpOption`` suppresses the metavar so ``--help`` still renders
+    # like a plain flag.
+    kwargs.setdefault("is_flag", False)
+    kwargs.setdefault("flag_value", HELP_PLAIN_VALUE)
     kwargs.setdefault("expose_value", False)
     kwargs.setdefault("is_eager", True)
     kwargs.setdefault("help", gettext("Show this message and exit."))
     kwargs.setdefault("callback", show_help)
-    kwargs.setdefault("cls", RichOption)
+    kwargs.setdefault("cls", RichHelpOption)
 
     return click_option(*param_decls, **kwargs)
 

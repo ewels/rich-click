@@ -5,11 +5,11 @@ import click
 from click.testing import CliRunner
 
 import rich_click.rich_click as rc
-from rich_click import RichHelpConfiguration, argument, command, group, option, rich_config
+from rich_click import RichCommand, argument, command, group, option
 from rich_click.rich_context import RichContext
 
 
-def _build_cli() -> "group":  # type: ignore[valid-type]
+def _build_cli() -> RichCommand:
     @group()
     @option("-v", "--verbose", is_flag=True, help="Be loud.")
     def cli(verbose: bool) -> None:
@@ -29,21 +29,19 @@ def _build_cli() -> "group":  # type: ignore[valid-type]
     def list_things() -> None:
         """List things."""
 
-    return cli
+    return cast(RichCommand, cli)
 
 
-def test_help_json_disabled_by_default(cli_runner: CliRunner) -> None:
-    cli = _build_cli()
-    result = cli_runner.invoke(cli, ["--help-json"])
-    # No such option -> click usage error.
-    assert result.exit_code == 2
-    assert "--help-json" not in cli_runner.invoke(cli, ["--help"]).output
+# --------------------------------------------------------------------------------------------------
+# `--help=json`: progressive disclosure. Available on every rich-click CLI without any config -- the
+# capability lives on the always-present `--help` flag, so there is no new flag and bare `--help` is
+# unchanged. Only the attached (`=`) form is documented.
+# --------------------------------------------------------------------------------------------------
 
 
 def test_help_json_root(cli_runner: CliRunner) -> None:
-    rc.HELP_JSON = True
     cli = _build_cli()
-    result = cli_runner.invoke(cli, ["--help-json"])
+    result = cli_runner.invoke(cli, ["--help=json"])
     assert result.exit_code == 0
 
     schema = json.loads(result.output)
@@ -51,11 +49,10 @@ def test_help_json_root(cli_runner: CliRunner) -> None:
     assert schema["help"] == "Root help text."
     assert schema["usage"].startswith("cli")
 
-    # Regular options are reported; meta-options are hidden.
+    # Regular options are reported; the --help meta-option is hidden.
     param_opts = [opt for param in schema["params"] for opt in param["opts"]]
     assert "--verbose" in param_opts
     assert "--help" not in param_opts
-    assert "--help-json" not in param_opts
 
     # Subcommands are indexed recursively by name, each entry carrying a one-line help (and
     # aliases / nested subcommands where present), so an agent can navigate without round-trips.
@@ -65,10 +62,45 @@ def test_help_json_root(cli_runner: CliRunner) -> None:
     }
 
 
-def test_help_json_leaf(cli_runner: CliRunner) -> None:
-    rc.HELP_JSON = True
+def test_help_json_works_without_any_config(cli_runner: CliRunner) -> None:
+    # No config is set anywhere: `--help=json` still works, because the format capability hangs off the
+    # always-present `--help` flag rather than an opt-in flag.
+    @command()
+    @option("--name", help="A name.")
+    def cli(name: str) -> None:
+        """Hi."""
+
+    result = cli_runner.invoke(cli, ["--help=json"])
+    assert result.exit_code == 0
+    assert json.loads(result.output)["name"] == "cli"
+
+
+def test_no_new_flag_is_added(cli_runner: CliRunner) -> None:
+    # The feature adds no `--help-json` (or similar) flag: only `--help` is modified.
     cli = _build_cli()
-    result = cli_runner.invoke(cli, ["hello", "--help-json"])
+    assert cli_runner.invoke(cli, ["--help-json"]).exit_code == 2  # no such option
+    assert "--help-json" not in cli_runner.invoke(cli, ["--help"]).output
+
+
+def test_bare_help_is_unchanged_and_eager(cli_runner: CliRunner) -> None:
+    # The format machinery only engages with an attached value; bare `--help` is the normal help, exits
+    # 0, carries no `--help TEXT` metavar, and -- being eager -- works with a required argument missing.
+    cli = _build_cli()
+    plain = cli_runner.invoke(cli, ["--help"])
+    assert plain.exit_code == 0
+    assert plain.output.lstrip().startswith("Usage:")
+    assert "{" not in plain.output.split("Options")[0]  # no JSON leaked into the help body
+    help_row = next(line for line in plain.output.splitlines() if "--help " in line or line.strip().endswith("--help"))
+    assert "TEXT" not in help_row
+    # Eager even with a required argument absent.
+    eager = cli_runner.invoke(cli, ["hello", "--help=json"])
+    assert eager.exit_code == 0
+    assert json.loads(eager.output)["name"] == "hello"
+
+
+def test_help_json_leaf(cli_runner: CliRunner) -> None:
+    cli = _build_cli()
+    result = cli_runner.invoke(cli, ["hello", "--help=json"])
     assert result.exit_code == 0
 
     schema = json.loads(result.output)
@@ -88,8 +120,6 @@ def test_help_json_leaf(cli_runner: CliRunner) -> None:
 
 
 def test_help_json_choice(cli_runner: CliRunner) -> None:
-    rc.HELP_JSON = True
-
     from click import Choice
 
     @command()
@@ -97,7 +127,7 @@ def test_help_json_choice(cli_runner: CliRunner) -> None:
     def cli(fmt: str) -> None:
         """Hi."""
 
-    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
     fmt = next(param for param in schema["params"] if param["name"] == "fmt")
     assert fmt["type"] == "Choice"
     assert fmt["choices"] == ["json", "yaml"]
@@ -107,8 +137,6 @@ def test_help_json_choice(cli_runner: CliRunner) -> None:
 def test_help_json_reports_secondary_opts_envvar_and_nargs(cli_runner: CliRunner) -> None:
     # secondary_opts (negation flags), envvar, count and variadic/multi nargs must all be surfaced;
     # a plain boolean flag must NOT leak a noisy flag_value=True.
-    rc.HELP_JSON = True
-
     @command()
     @option("--debug/--no-debug", help="Toggle debug.")
     @option("--token", envvar="MY_TOKEN", help="Auth token.")
@@ -129,7 +157,7 @@ def test_help_json_reports_secondary_opts_envvar_and_nargs(cli_runner: CliRunner
     ) -> None:
         """Hi."""
 
-    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
     by_name = {param["name"]: param for param in schema["params"]}
 
     assert by_name["debug"]["secondary_opts"] == ["--no-debug"]
@@ -146,14 +174,12 @@ def test_help_json_reports_secondary_opts_envvar_and_nargs(cli_runner: CliRunner
 
 
 def test_help_json_reports_prompt(cli_runner: CliRunner) -> None:
-    rc.HELP_JSON = True
-
     @command()
     @option("--name", prompt="Your name", help="Who.")
     def cli(name: str) -> None:
         """Hi."""
 
-    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
     name = next(param for param in schema["params"] if param["name"] == "name")
     assert name["prompt"] == "Your name"
 
@@ -162,8 +188,6 @@ def test_help_json_type_info_passthrough(cli_runner: CliRunner) -> None:
     # type_info is a straight passthrough of the type's to_info_dict (minus redundant keys), so it stays
     # correct across Click versions. Crucially, a meaningful False (dir_okay) must survive -- it is not
     # treated as "empty" the way other dropped fields are.
-    rc.HELP_JSON = True
-
     from click import IntRange, Path
 
     @command()
@@ -172,7 +196,7 @@ def test_help_json_type_info_passthrough(cli_runner: CliRunner) -> None:
     def cli(level: int, dest: str) -> None:
         """Hi."""
 
-    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
     by_name = {param["name"]: param for param in schema["params"]}
 
     assert by_name["level"]["type"] == "IntRange"
@@ -186,9 +210,8 @@ def test_help_json_type_info_passthrough(cli_runner: CliRunner) -> None:
 
 
 def test_help_json_group_reports_aliases(cli_runner: CliRunner) -> None:
-    rc.HELP_JSON = True
     cli = _build_cli()
-    result = cli_runner.invoke(cli, ["things", "--help-json"])
+    result = cli_runner.invoke(cli, ["things", "--help=json"])
     assert result.exit_code == 0
 
     schema = json.loads(result.output)
@@ -197,94 +220,27 @@ def test_help_json_group_reports_aliases(cli_runner: CliRunner) -> None:
     assert schema["subcommands"] == {"list": {"help": "List things."}}
 
     # The same command is reachable via the alias.
-    via_alias = json.loads(cli_runner.invoke(cli, ["sub", "--help-json"]).output)
+    via_alias = json.loads(cli_runner.invoke(cli, ["sub", "--help=json"]).output)
     assert via_alias["name"] == "things"
 
 
-def test_help_json_appears_in_regular_help(cli_runner: CliRunner) -> None:
-    rc.HELP_JSON = True
-    cli = _build_cli()
-    assert "--help-json" in cli_runner.invoke(cli, ["--help"]).output
-
-
-def test_help_json_tip_in_regular_help(cli_runner: CliRunner) -> None:
-    # When --help-json is enabled, --help advertises it with a footer tip by default.
-    rc.HELP_JSON = True
-    cli = _build_cli()
-    assert "Tip: add --help-json to any command for machine-readable help." in cli_runner.invoke(cli, ["--help"]).output
-
-
-def test_help_json_tip_absent_when_disabled(cli_runner: CliRunner) -> None:
-    # No tip when --help-json itself is not enabled.
-    cli = _build_cli()
-    assert "machine-readable" not in cli_runner.invoke(cli, ["--help"]).output
-
-
-def test_help_json_tip_can_be_suppressed(cli_runner: CliRunner) -> None:
-    rc.HELP_JSON = True
-    rc.HELP_JSON_SHOW_TIP = False
-    cli = _build_cli()
-    assert "machine-readable" not in cli_runner.invoke(cli, ["--help"]).output
-
-
-def test_help_json_tip_uses_custom_option_name_and_text(cli_runner: CliRunner) -> None:
-    # The tip reflects the actual flag name and a customizable message.
-    rc.HELP_JSON = True
-    rc.HELP_JSON_OPTION_NAME = "--schema"
-    rc.HELP_JSON_TIP_TEXT = "Run {} for JSON."
-
-    @command()
-    def cli() -> None:
-        """Hi."""
-
-    assert "Run --schema for JSON." in cli_runner.invoke(cli, ["--help"]).output
-
-
-def test_help_json_custom_option_name(cli_runner: CliRunner) -> None:
-    rc.HELP_JSON = True
-    rc.HELP_JSON_OPTION_NAME = "--schema"
-
-    @command()
-    def cli() -> None:
-        """Hi."""
-
-    assert cli_runner.invoke(cli, ["--schema"]).exit_code == 0
-    assert cli_runner.invoke(cli, ["--help-json"]).exit_code == 2
-    assert "--schema" in cli_runner.invoke(cli, ["--help"]).output
-
-
 def test_help_json_excludes_customized_help_option(cli_runner: CliRunner) -> None:
-    # The help/meta options are excluded by object identity, so a non-default help
-    # option name (here `-h`) must still be kept out of the reported params.
-    rc.HELP_JSON = True
-
+    # The help meta-option is excluded by object identity, so a non-default help option name (here `-h`)
+    # must still be kept out of the reported params.
     @command(context_settings={"help_option_names": ["-h", "--help"]})
     @option("--real", help="A real option.")
     def cli(real: str) -> None:
         """Hi."""
 
-    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
     param_opts = [opt for param in schema["params"] for opt in param["opts"]]
     assert param_opts == ["--real"]
-
-
-def test_help_json_via_rich_config(cli_runner: CliRunner) -> None:
-    @command()
-    @rich_config(help_config=RichHelpConfiguration(help_json=True))
-    def cli() -> None:
-        """Hi."""
-
-    result = cli_runner.invoke(cli, ["--help-json"])
-    assert result.exit_code == 0
-    assert json.loads(result.output)["name"] == "cli"
 
 
 def test_help_json_passthrough_of_custom_fields(cli_runner: CliRunner) -> None:
     # Anything a developer adds to to_info_dict() flows through: custom command-level keys are
     # merged onto the top-level object, and custom parameter-level keys onto the parameter.
-    rc.HELP_JSON = True
-
-    from rich_click import RichCommand, RichOption
+    from rich_click import RichOption
 
     class SecretOption(RichOption):
         def to_info_dict(self) -> "Dict[str, Any]":
@@ -303,7 +259,7 @@ def test_help_json_passthrough_of_custom_fields(cli_runner: CliRunner) -> None:
     def cli(token: str) -> None:
         """Hi."""
 
-    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
     assert schema["examples"] == ["cli --token=XXX"]
     token = next(param for param in schema["params"] if param["name"] == "token")
     assert token["sensitive"] is True
@@ -311,15 +267,13 @@ def test_help_json_passthrough_of_custom_fields(cli_runner: CliRunner) -> None:
 
 def test_help_json_hidden_param_is_kept_and_flagged(cli_runner: CliRunner) -> None:
     # Hidden params are kept (parity with to_info_dict) but marked hidden so consumers can skip them.
-    rc.HELP_JSON = True
-
     @command()
     @option("--secret", hidden=True, help="Internal.")
     @option("--shown", help="Public.")
     def cli(secret: str, shown: str) -> None:
         """Hi."""
 
-    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
     by_name = {param["name"]: param for param in schema["params"]}
     assert by_name["secret"]["hidden"] is True
     assert "hidden" not in by_name["shown"]
@@ -327,56 +281,17 @@ def test_help_json_hidden_param_is_kept_and_flagged(cli_runner: CliRunner) -> No
 
 def test_help_json_omits_help_when_undocumented(cli_runner: CliRunner) -> None:
     # An undocumented command omits `help` entirely rather than emitting a null.
-    rc.HELP_JSON = True
-
     @command()
     def cli() -> None:
         pass
 
-    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
     assert "help" not in schema
 
 
-def test_help_json_option_names_via_context_settings(cli_runner: CliRunner) -> None:
-    # `help_json_option_names` in context_settings enables --help-json (parallel to click's
-    # `help_option_names`), without needing the `help_json` config, and sets custom flag name(s).
-    @command(context_settings={"help_json_option_names": ["--schema", "--meta"]})
-    @option("--real", help="A real option.")
-    def cli(real: str) -> None:
-        """Hi."""
-
-    assert cli_runner.invoke(cli, ["--schema"]).exit_code == 0
-    assert cli_runner.invoke(cli, ["--meta"]).exit_code == 0
-    # The default flag is not added when custom names are supplied.
-    assert cli_runner.invoke(cli, ["--help-json"]).exit_code == 2
-
-    schema = json.loads(cli_runner.invoke(cli, ["--schema"]).output)
-    assert schema["name"] == "cli"
-    # The custom meta-flags are kept out of the reported params.
-    param_opts = [opt for param in schema["params"] for opt in param["opts"]]
-    assert param_opts == ["--real"]
-
-
-def test_help_json_option_names_takes_precedence_over_config(cli_runner: CliRunner) -> None:
-    # When both are set, the context_settings names win over the rich config name.
-    rc.HELP_JSON = True
-    rc.HELP_JSON_OPTION_NAME = "--from-config"
-
-    @command(context_settings={"help_json_option_names": ["--from-ctx"]})
-    def cli() -> None:
-        """Hi."""
-
-    assert cli_runner.invoke(cli, ["--from-ctx"]).exit_code == 0
-    assert cli_runner.invoke(cli, ["--from-config"]).exit_code == 2
-
-
 def test_help_json_format_help_json_override(cli_runner: CliRunner) -> None:
-    # `--help-json` serializes whatever `format_help_json` returns, mirroring click's
+    # `--help=json` serializes whatever `format_help_json` returns, mirroring click's
     # get_help/format_help split, so subclasses can customize the schema by overriding it.
-    rc.HELP_JSON = True
-
-    from rich_click import RichCommand
-
     class MyCommand(RichCommand):
         def format_help_json(self, ctx: Any, formatter: Any) -> Dict[str, Any]:
             data = super().format_help_json(ctx, formatter)
@@ -387,16 +302,14 @@ def test_help_json_format_help_json_override(cli_runner: CliRunner) -> None:
     def cli() -> None:
         """Hi."""
 
-    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
     assert schema["custom"] == "yes"
     assert schema["name"] == "cli"
 
 
 def test_help_json_get_help_json_direct(cli_runner: CliRunner) -> None:
     # get_help_json() can be called directly (e.g. by alternative output paths) and returns
-    # the same JSON string the --help-json flag prints.
-    rc.HELP_JSON = True
-
+    # the same JSON string the `--help=json` flag prints.
     @command()
     @option("--count", type=int, default=1, help="How many.")
     def cli(count: int) -> None:
@@ -405,18 +318,247 @@ def test_help_json_get_help_json_direct(cli_runner: CliRunner) -> None:
     with cli.make_context("cli", []) as ctx:
         direct = json.loads(cli.get_help_json(cast(RichContext, ctx)))
 
-    via_flag = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    via_flag = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
     assert direct == via_flag
     assert direct["name"] == "cli"
 
 
 def test_help_json_transform_hook(cli_runner: CliRunner) -> None:
-    rc.HELP_JSON = True
     rc.HELP_JSON_TRANSFORM = lambda schema, cmd, ctx: {**schema, "version": "1.2.3"}
 
     @command()
     def cli() -> None:
         """Hi."""
 
-    schema = json.loads(cli_runner.invoke(cli, ["--help-json"]).output)
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
     assert schema["version"] == "1.2.3"
+
+
+# --------------------------------------------------------------------------------------------------
+# `--help=json-full` (recursive) and `--help=carapace`.
+# --------------------------------------------------------------------------------------------------
+
+
+def test_help_json_full_is_recursive(cli_runner: CliRunner) -> None:
+    # json-full expands every descendant to its full schema (params + usage + nested subcommands) in a
+    # single call, unlike the progressive json format.
+    cli = _build_cli()
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json-full"]).output)
+
+    things = schema["subcommands"]["things"]
+    assert things["path"] == "cli things"
+    assert "params" in things  # full detail at the child level, not just a name
+    # Nested grandchild is also fully expanded.
+    list_cmd = things["subcommands"]["list"]
+    assert list_cmd["path"] == "cli things list"
+    assert list_cmd["name"] == "list"
+
+    # A leaf's params carry the same detail a direct `--help=json` on it would, and the --help
+    # meta-option is excluded at every node.
+    hello = schema["subcommands"]["hello"]
+    by_name = {p["name"]: p for p in hello["params"]}
+    assert by_name["count"]["default"] == 3
+    assert by_name["name"]["kind"] == "argument"
+    assert "--help" not in [opt for p in hello["params"] for opt in p.get("opts", [])]
+
+
+def test_help_carapace_structure(cli_runner: CliRunner) -> None:
+    # Carapace mapping: flag-string keys, value/repeatable suffixes, negation pairs, choices as
+    # completion candidates, multi-value nargs, hidden commands, parsing mode and recursion.
+    @group()
+    @option("--debug/--no-debug", help="Toggle debug.")
+    @option("--tag", multiple=True, help="Tags.")
+    def cli(debug: bool, tag: Tuple[str, ...]) -> None:
+        """Root."""
+
+    @cli.command(aliases=["rm"], hidden=True)
+    @option("--coords", type=int, nargs=2, help="Two ints.")
+    @option("--fmt", type=click.Choice(["json", "yaml"]), help="Format.")
+    @argument("kind", type=click.Choice(["a", "b"]))
+    def remove(coords: Tuple[int, ...], fmt: str, kind: str) -> None:
+        """Remove."""
+
+    doc = json.loads(cli_runner.invoke(cli, ["--help=carapace"]).output)
+
+    assert doc["name"] == "cli"
+    assert doc["description"] == "Root."
+    # Groups parse flags strictly before the subcommand.
+    assert doc["parsing"] == "non-interspersed"
+    # Bool flag with a negation -> two entries; repeatable value flag -> trailing `=*`.
+    assert doc["flags"]["--debug"] == "Toggle debug."
+    assert doc["flags"]["--no-debug"] == "Toggle debug."
+    assert doc["flags"]["--tag=*"] == "Tags."
+    # The --help meta-option is not emitted as a flag.
+    assert not any("--help" in key for key in doc["flags"])
+
+    remove_cmd = next(c for c in doc["commands"] if c["name"] == "remove")
+    assert remove_cmd["hidden"] is True
+    assert remove_cmd["aliases"] == ["rm"]
+    # Multi-value flag uses the object form with nargs.
+    assert remove_cmd["flags"]["--coords="] == {"description": "Two ints.", "nargs": 2}
+    # Choice option -> completion candidates keyed by flag name; choice argument -> positional.
+    assert remove_cmd["completion"]["flag"]["fmt"] == ["json", "yaml"]
+    assert remove_cmd["completion"]["positional"] == [["a", "b"]]
+
+
+def test_help_equals_unknown_format_falls_back_to_plain_help(cli_runner: CliRunner) -> None:
+    # An unrecognized format never errors: it falls back to the normal human-readable help. This keeps
+    # e.g. `mytool --help install` (a mistaken attempt to get help for a subcommand) friendly.
+    cli = _build_cli()
+    result = cli_runner.invoke(cli, ["--help=bogus"])
+    assert result.exit_code == 0
+    assert result.output.lstrip().startswith("Usage:")
+    assert "{" not in result.output.split("Options")[0]
+
+
+def test_help_equals_empty_value_shows_plain_help(cli_runner: CliRunner) -> None:
+    # `--help=` (empty value) is still a request for help: it shows the normal help and exits 0, rather
+    # than silently doing nothing (leaf) or erroring as a missing command (group).
+    cli = _build_cli()
+    for args in (["--help="], ["hello", "--help="]):
+        result = cli_runner.invoke(cli, args)
+        assert result.exit_code == 0, args
+        assert result.output.lstrip().startswith("Usage:"), args
+
+
+def test_help_format_registry_is_extensible(cli_runner: CliRunner) -> None:
+    # A subclass can add a format by extending `help_formats` and supplying the rendering method, without
+    # overriding the dispatch. Built-in formats keep working.
+    class MyCommand(RichCommand):
+        help_formats = {**RichCommand.help_formats, "upper": "get_help_upper"}
+
+        def get_help_upper(self, ctx: Any) -> str:
+            return "UPPER-HELP"
+
+    @command(cls=MyCommand)
+    def cli() -> None:
+        """Hi."""
+
+    assert cli_runner.invoke(cli, ["--help=upper"]).output.strip() == "UPPER-HELP"
+    assert json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["name"] == "cli"
+
+
+def test_help_space_form_works_like_the_attached_form(cli_runner: CliRunner) -> None:
+    # `--help json` (space) is equivalent to `--help=json`: the optional value consumes the next token,
+    # on both groups and leaves.
+    cli = _build_cli()
+
+    assert json.loads(cli_runner.invoke(cli, ["--help", "json"]).output)["name"] == "cli"
+    assert json.loads(cli_runner.invoke(cli, ["hello", "--help", "json"]).output)["name"] == "hello"
+
+    # A token that is not a format falls back to plain help -- exactly as a plain `--help` always ignored
+    # anything that followed it. (To get a subcommand's help, put `--help` after it: `cli things --help`.)
+    non_format = cli_runner.invoke(cli, ["--help", "things"])
+    assert non_format.exit_code == 0
+    assert non_format.output.lstrip().startswith("Usage:")
+
+
+def test_help_full_and_carapace_direct_methods(cli_runner: CliRunner) -> None:
+    # The get_help_* methods can be called directly and match what the flag prints.
+    cli = _build_cli()
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        rctx = cast(RichContext, ctx)
+        full_direct = json.loads(cli.get_help_json_full(rctx))
+        carapace_direct = json.loads(cli.get_help_carapace(rctx))
+
+    assert full_direct == json.loads(cli_runner.invoke(cli, ["--help=json-full"]).output)
+    assert carapace_direct == json.loads(cli_runner.invoke(cli, ["--help=carapace"]).output)
+
+
+def test_help_carapace_override(cli_runner: CliRunner) -> None:
+    # format_help_carapace is overridable for full control of the carapace output.
+    from rich_click import RichGroup
+
+    class MyGroup(RichGroup):
+        def format_help_carapace(self, ctx: Any, formatter: Any) -> Dict[str, Any]:
+            data = super().format_help_carapace(ctx, formatter)
+            data["group"] = "custom"
+            return data
+
+    @group(cls=MyGroup)
+    def cli() -> None:
+        """Hi."""
+
+    doc = json.loads(cli_runner.invoke(cli, ["--help=carapace"]).output)
+    assert doc["group"] == "custom"
+
+
+# --------------------------------------------------------------------------------------------------
+# Markdown: `--help=md` / `--help=md-full` (aliases `markdown` / `markdown-full`).
+# --------------------------------------------------------------------------------------------------
+
+
+def test_help_markdown_progressive(cli_runner: CliRunner) -> None:
+    cli = _build_cli()
+    out = cli_runner.invoke(cli, ["--help=md"]).output
+
+    # Command titled by its full path; help, usage, and a subcommand index (not full subcommand bodies).
+    assert "# `cli`" in out
+    assert "Root help text." in out
+    assert "**Usage:** `cli [OPTIONS] COMMAND [ARGS]...`" in out
+    assert "## Options" in out
+    assert "`-v`, `--verbose`" in out  # both flag names rendered
+    assert "## Subcommands" in out
+    assert "- `hello` — Say hello." in out
+    # Nested name index, with aliases; progressive mode does NOT emit the subcommand's own option tables.
+    assert "- `things` (aliases: sub) — Manage things." in out
+    assert "  - `list` — List things." in out
+
+
+def test_help_markdown_aliases_match(cli_runner: CliRunner) -> None:
+    cli = _build_cli()
+    assert cli_runner.invoke(cli, ["--help=markdown"]).output == cli_runner.invoke(cli, ["--help=md"]).output
+    assert cli_runner.invoke(cli, ["--help=markdown-full"]).output == cli_runner.invoke(cli, ["--help=md-full"]).output
+
+
+def test_help_markdown_leaf_tables(cli_runner: CliRunner) -> None:
+    cli = _build_cli()
+    out = cli_runner.invoke(cli, ["hello", "--help=md"]).output
+
+    assert "# `cli hello`" in out
+    # Positional argument rendered in its own table, marked required.
+    assert "## Arguments" in out
+    assert "| `name` |" in out
+    # Option with a default.
+    assert "## Options" in out
+    assert "`--count`" in out
+    assert "`3`" in out  # default surfaced in the table
+
+
+def test_help_markdown_full_is_recursive_and_flat(cli_runner: CliRunner) -> None:
+    cli = _build_cli()
+    out = cli_runner.invoke(cli, ["--help=md-full"]).output
+
+    # Every command is its own top-level (`#`) section titled by full path; no deeper heading nesting.
+    assert "# `cli`" in out
+    assert "# `cli hello`" in out
+    assert "# `cli things`" in out
+    assert "# `cli things list`" in out
+    # Full mode documents each leaf's params inline (unlike the progressive index).
+    assert "| `name` |" in out
+    # Flat: command sections never go past `#`; only sub-sections use `##`.
+    assert "### " not in out
+
+
+def test_help_markdown_escapes_pipes_in_cells(cli_runner: CliRunner) -> None:
+    # A pipe in help text must be escaped so it doesn't break the Markdown table.
+    @command()
+    @option("--mode", help="Pick a | b.")
+    def cli(mode: str) -> None:
+        """Hi."""
+
+    out = cli_runner.invoke(cli, ["--help=md"]).output
+    assert "Pick a \\| b." in out
+
+
+def test_help_markdown_override(cli_runner: CliRunner) -> None:
+    # format_help_markdown is overridable for full control of the output.
+    class MyCommand(RichCommand):
+        def format_help_markdown(self, ctx: Any) -> str:
+            return "CUSTOM MD"
+
+    @command(cls=MyCommand)
+    def cli() -> None:
+        """Hi."""
+
+    assert cli_runner.invoke(cli, ["--help=md"]).output.strip() == "CUSTOM MD"

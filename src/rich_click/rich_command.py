@@ -8,6 +8,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
+    ClassVar,
     Dict,
     Iterable,
     List,
@@ -76,7 +77,6 @@ class RichCommand(Command):
         self.aliases: Iterable[str] = aliases or []
         if not hasattr(self, "_help_option"):
             self._help_option = None
-        self._help_json_option: Optional[click.Option] = None
 
     @property
     def console(self) -> Optional["Console"]:
@@ -334,94 +334,129 @@ class RichCommand(Command):
 
         return self._help_option
 
-    def get_help_json_option_names(self, ctx: click.Context) -> List[str]:
+    #: Maps a ``--help=<format>`` value to the name of the method that renders it. Extend in a subclass
+    #: to add a custom format, e.g. ``help_formats = {**RichCommand.help_formats, "yaml": "get_help_yaml"}``.
+    help_formats: ClassVar[Dict[str, str]] = {
+        "json": "get_help_json",
+        "json-full": "get_help_json_full",
+        "carapace": "get_help_carapace",
+        "md": "get_help_markdown",
+        "markdown": "get_help_markdown",
+        "md-full": "get_help_markdown_full",
+        "markdown-full": "get_help_markdown_full",
+    }
+
+    def get_help_for_format(self, ctx: "RichContext", fmt: str) -> Optional[str]:
         """
-        Return the flag name(s) for the ``--help-json`` option.
+        Return this command's help rendered in a machine-readable format, or ``None`` if unrecognized.
 
-        Mirrors :meth:`get_help_option_names`. Names are taken from the context's
-        ``help_json_option_names`` (settable via ``context_settings``, parallel to
-        click's ``help_option_names``) when set; otherwise they fall back to the
-        ``help_json`` / ``help_json_option_name`` rich config. Returns an empty list
-        when ``--help-json`` is not enabled.
+        This is the dispatch behind the optional value on ``--help`` (``--help=json``,
+        ``--help=json-full``, ``--help=carapace``), looked up in :attr:`help_formats`. An unknown format
+        returns ``None`` so the caller can fall back to the normal human-readable help rather than
+        erroring -- the format machinery only ever *adds* behaviour; it never changes what bare
+        ``--help`` does. Resolving via method name (not a bound method) means a subclass overriding e.g.
+        ``get_help_json`` is honoured.
         """
-        names = getattr(ctx, "help_json_option_names", None)
-        if names is None:
-            from rich_click.help_json import DEFAULT_HELP_JSON_OPTION_NAME
-
-            config = getattr(ctx, "help_config", None)
-            if config is None or not getattr(config, "help_json", False):
-                return []
-            names = [getattr(config, "help_json_option_name", None) or DEFAULT_HELP_JSON_OPTION_NAME]
-
-        # Mirror click's get_help_option_names: drop any name already claimed by another param.
-        all_names = set(names)
-        for param in self.params:
-            all_names.difference_update(param.opts)
-            all_names.difference_update(param.secondary_opts)
-        return [name for name in names if name in all_names]
-
-    def _get_help_json_option(self, ctx: click.Context) -> Optional[click.Option]:
-        """
-        Return the cached ``--help-json`` option, or ``None`` when it is not enabled.
-
-        The option is cached on the command (like the help option) so that its
-        object identity is stable across ``get_params`` calls, which
-        ``iter_params_for_processing`` relies on.
-        """
-        names = self.get_help_json_option_names(ctx)
-        if not names:
+        method_name = self.help_formats.get((fmt or "").strip().lower())
+        if method_name is None:
             return None
-        if self._help_json_option is None:
-            from rich_click.help_json import build_help_json_option
+        return cast(Optional[str], getattr(self, method_name)(ctx))
 
-            self._help_json_option = build_help_json_option(names)
-        return self._help_json_option
-
-    def get_help_json(self, ctx: "RichContext") -> str:
-        """
-        Return this command's help as a machine-readable JSON string.
-
-        Mirrors click's :meth:`get_help`: the data is built by :meth:`format_help_json`
-        and then serialized. Override :meth:`format_help_json` to change the structure
-        of the output.
-        """
+    def _serialize_help(self, data: Dict[str, Any]) -> str:
         import json
 
-        formatter = ctx.make_formatter()
-        data = self.format_help_json(ctx, formatter)
         return json.dumps(data, indent=2, default=str)
 
-    def format_help_json(self, ctx: "RichContext", formatter: RichHelpFormatter) -> Dict[str, Any]:
-        """
-        Build the machine-readable ``--help-json`` schema for this command.
-
-        Mirrors click's :meth:`format_help`, but returns the data statelessly rather
-        than writing to the formatter's buffer (the formatter is carried for its
-        config and parity with the regular help path). Subclass ``RichCommand`` and
-        override this for full control of the JSON schema; the ``help_json_transform``
-        config hook is a lighter-touch alternative.
-        """
+    def _build_help_json(self, ctx: "RichContext", formatter: RichHelpFormatter, recursive: bool) -> Dict[str, Any]:
+        """Build the JSON schema (progressive or recursive) and apply the ``help_json_transform`` hook."""
         from rich_click.help_json import command_schema
 
-        json_option = self._get_help_json_option(ctx)
-        exclude = (json_option,) if json_option is not None else ()
-        schema = command_schema(self, ctx, exclude=exclude)
+        schema = command_schema(self, ctx, recursive=recursive)
 
         transform = getattr(formatter.config, "help_json_transform", None)
         if transform is not None:
             schema = transform(schema, self, ctx)
         return schema
 
-    def get_params(self, ctx: click.Context) -> List[click.Parameter]:
-        params = super().get_params(ctx)
-        json_option = self._get_help_json_option(ctx)
-        if json_option is None:
-            return params
-        # super().get_params() already appended the cached help option last (if any);
-        # slot --help-json just before it so the two meta-options sit together.
-        if self._help_option is not None and params and params[-1] is self._help_option:
-            return [*params[:-1], json_option, params[-1]]
-        return [*params, json_option]
+    def get_help_json(self, ctx: "RichContext") -> str:
+        """
+        Return this command's help as a machine-readable JSON string (progressive disclosure).
+
+        Mirrors click's :meth:`get_help`: the data is built by :meth:`format_help_json`
+        and then serialized. Override :meth:`format_help_json` to change the structure
+        of the output.
+        """
+        formatter = ctx.make_formatter()
+        return self._serialize_help(self.format_help_json(ctx, formatter))
+
+    def format_help_json(self, ctx: "RichContext", formatter: RichHelpFormatter) -> Dict[str, Any]:
+        """
+        Build the machine-readable ``--help=json`` schema for this command (progressive disclosure).
+
+        Reports this command in full but lists only the *names* of its descendants, so agents can
+        discover a CLI one level at a time. Mirrors click's :meth:`format_help`, but returns the data
+        statelessly rather than writing to the formatter's buffer (the formatter is carried for its
+        config and parity with the regular help path). Subclass ``RichCommand`` and override this for
+        full control of the JSON schema; the ``help_json_transform`` config hook is a lighter-touch
+        alternative.
+        """
+        return self._build_help_json(ctx, formatter, recursive=False)
+
+    def get_help_json_full(self, ctx: "RichContext") -> str:
+        """Return the recursive ``--help=json-full`` schema as a JSON string (params at every node)."""
+        formatter = ctx.make_formatter()
+        return self._serialize_help(self.format_help_json_full(ctx, formatter))
+
+    def format_help_json_full(self, ctx: "RichContext", formatter: RichHelpFormatter) -> Dict[str, Any]:
+        """
+        Build the comprehensive recursive ``--help=json-full`` schema for this command.
+
+        Unlike :meth:`format_help_json`, every descendant is expanded to its full detail (params, usage,
+        nested subcommands) in a single call -- aimed at codegen / MCP-generation consumers that want the
+        whole tree at once. Shares the ``help_json_transform`` hook with the progressive format.
+        """
+        return self._build_help_json(ctx, formatter, recursive=True)
+
+    def get_help_carapace(self, ctx: "RichContext") -> str:
+        """Return this command's help as a carapace-spec JSON string (https://carapace.sh)."""
+        formatter = ctx.make_formatter()
+        return self._serialize_help(self.format_help_carapace(ctx, formatter))
+
+    def format_help_carapace(self, ctx: "RichContext", formatter: RichHelpFormatter) -> Dict[str, Any]:
+        """
+        Build the carapace completion-spec representation of this command tree.
+
+        Conforms to https://carapace.sh/schemas/command.json so a rich-click CLI can be consumed by
+        carapace's completion ecosystem. Override for full control of the carapace output.
+        """
+        from rich_click.help_json import carapace_command
+
+        return carapace_command(self, ctx)
+
+    def get_help_markdown(self, ctx: "RichContext") -> str:
+        """Return this command's help as LLM-friendly Markdown (current command + subcommand index)."""
+        return self.format_help_markdown(ctx)
+
+    def format_help_markdown(self, ctx: "RichContext") -> str:
+        """
+        Build the ``--help=md`` Markdown for this command. Override for full control of the output.
+
+        Unlike the JSON ``format_help_*`` methods, this returns the finished string (Markdown has no
+        dict-to-serialize step) and takes no formatter -- it needs no console config.
+        """
+        from rich_click.help_json import command_markdown
+
+        return command_markdown(self, ctx, recursive=False)
+
+    def get_help_markdown_full(self, ctx: "RichContext") -> str:
+        """Return the recursive ``--help=md-full`` Markdown: every descendant documented in full."""
+        return self.format_help_markdown_full(ctx)
+
+    def format_help_markdown_full(self, ctx: "RichContext") -> str:
+        """Build the recursive ``--help=md-full`` Markdown for this command tree."""
+        from rich_click.help_json import command_markdown
+
+        return command_markdown(self, ctx, recursive=True)
 
     def get_rich_table_row(
         self,
