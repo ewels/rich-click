@@ -129,15 +129,19 @@ def test_rich_click_cli_help_with_rich_config_from_file(tmp_path: Path) -> None:
 │ --help     -h  Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Custom Name ────────────────────────────────────────────────────────────────────────────────────╮
-│ --theme        -t  THEME            Set the theme to render the CLI with.                        │
-│ --rich-config  -c  JSON             Keyword arguments to pass into the RichHelpConfiguration()   │
-│                                     used to render the help text of the command. You can pass    │
-│                                     either a JSON directly, or a file prefixed with `@` (for     │
-│                                     example: '@rich_config.json'). Note that the --rich-config   │
-│                                     option is also used to render this help text you're reading  │
-│                                     right now!                                                   │
-│ --output       -o  [html|svg|text]  Optionally render help text as HTML or SVG or plain text. By │
-│                                     default, help text is rendered normally.                     │
+│ --theme        -t  THEME                 Set the theme to render the CLI with.                   │
+│ --rich-config  -c  JSON                  Keyword arguments to pass into the                      │
+│                                          RichHelpConfiguration() used to render the help text of │
+│                                          the command. You can pass either a JSON directly, or a  │
+│                                          file prefixed with `@` (for example:                    │
+│                                          '@rich_config.json'). Note that the --rich-config       │
+│                                          option is also used to render this help text you're     │
+│                                          reading right now!                                      │
+│ --output       -o  [html|svg|text|json]  Optionally render help text as HTML, SVG, plain text,   │
+│                                          or machine-readable JSON. By default, help text is      │
+│                                          rendered normally. With json, a plain --help emits the  │
+│                                          --help-json schema; combine --output svg with           │
+│                                          --help-json to export the JSON.                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -878,3 +882,77 @@ def test_cli_output_text(mock_script_writer: Callable[[str], Path]) -> None:
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
+
+
+@pytest.fixture
+def group_script(mock_script_writer: WriteScript) -> Path:
+    return mock_script_writer(
+        '''
+        import rich_click as click
+
+        @click.group()
+        @click.option("--verbose", "-v", is_flag=True, help="Enable verbose output.")
+        def cli(verbose):
+            """A demo CLI."""
+
+        @cli.command()
+        @click.option("--count", type=int, default=1, help="Number of greetings.")
+        @click.argument("name")
+        def hello(count, name):
+            """Greet someone."""
+        '''
+    )
+
+
+def test_cli_output_json(group_script: Path) -> None:
+    # `--output json` makes a plain `--help` emit the machine-readable --help-json schema.
+    res = run_as_subprocess(
+        [sys.executable, "-m", "src.rich_click", "--output", "json", "mymodule:cli", "--help"],
+    )
+    assert res.returncode == 0
+
+    schema = json.loads(res.stdout.decode())
+    assert schema["name"] == "cli"
+    assert schema["help"] == "A demo CLI."
+    param_opts = [opt for param in schema["params"] for opt in param["opts"]]
+    assert "--verbose" in param_opts
+    assert "--help" not in param_opts  # meta-options are excluded
+    assert schema["subcommands"] == {"hello": {"help": "Greet someone."}}
+
+
+def test_cli_output_json_subcommand(group_script: Path) -> None:
+    # `--output json` works at any command level, like `--help` itself.
+    res = run_as_subprocess(
+        [sys.executable, "-m", "src.rich_click", "-o", "json", "mymodule:cli", "hello", "--help"],
+    )
+    assert res.returncode == 0
+
+    schema = json.loads(res.stdout.decode())
+    assert schema["name"] == "hello"
+    by_name = {param["name"]: param for param in schema["params"]}
+    assert by_name["count"]["default"] == 1
+    assert by_name["name"]["kind"] == "argument"
+    assert "subcommands" not in schema
+
+
+def test_cli_output_svg_with_help_json(group_script: Path) -> None:
+    # `--help-json` honors `--output`, so the JSON schema can be exported as e.g. an SVG.
+    res = run_as_subprocess(
+        [
+            sys.executable,
+            "-m",
+            "src.rich_click",
+            "-c",
+            '{"help_json": true}',
+            "--output",
+            "svg",
+            "mymodule:cli",
+            "--help-json",
+        ],
+    )
+    assert res.returncode == 0
+
+    out = res.stdout.decode()
+    assert out.startswith('<svg class="rich-terminal"')
+    # The rendered SVG carries the schema's content (e.g. the command name from the JSON).
+    assert "cli" in out

@@ -116,7 +116,7 @@ class RichHelpFormatter(click.HelpFormatter):
     This console is meant only for use with the formatter and should
     not be created directly
     """
-    export_console_as: Literal[None, "html", "svg", "text"] = None
+    export_console_as: Literal[None, "html", "svg", "text", "json"] = None
 
     option_panel_class: Type[RichOptionPanel] = RichOptionPanel
     command_panel_class: Type[RichCommandPanel] = RichCommandPanel
@@ -129,7 +129,7 @@ class RichHelpFormatter(click.HelpFormatter):
         *args: Any,
         console: Optional["Console"] = None,
         config: Optional[RichHelpConfiguration] = None,
-        export_console_as: Literal[None, "html", "svg", "text"] = None,
+        export_console_as: Literal[None, "html", "svg", "text", "json"] = None,
         export_kwargs: Optional[Dict[str, Any]] = None,
         **kwargs: Any,
     ) -> None:
@@ -317,7 +317,9 @@ class RichHelpFormatter(click.HelpFormatter):
         elif self.console.record:
             kw = self.export_kwargs.copy()
             kw.setdefault("clear", False)
-            if self.export_console_as == "text" or self.export_console_as is None:
+            if self.export_console_as in ("text", "json") or self.export_console_as is None:
+                # "json" is a help-content mode, not a console export; treat any stray
+                # console output (e.g. errors) as plain text rather than raising below.
                 res = self.console.export_text(**kw)
             elif self.export_console_as == "html":
                 kw.setdefault("inline_styles", True)
