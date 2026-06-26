@@ -56,7 +56,7 @@ def _normalize_examples(examples: Optional[Iterable[Tuple[str, str]]]) -> List[D
 
     Every example is a ``(description, command)`` tuple -- the description is required, so an example is
     never shown without an explanation of what it does. This canonical shape is what every output (the
-    rendered ``--help`` panel, ``--help=md``, ``--help=json`` and ``--help=carapace``) consumes.
+    rendered ``--help`` panel, ``--help markdown``, ``--help json`` and ``--help carapace``) consumes.
     """
     normalized: List[Dict[str, str]] = []
     for example in examples or []:
@@ -365,24 +365,24 @@ class RichCommand(Command):
 
         return self._help_option
 
-    #: Maps a ``--help=<format>`` value to the name of the method that renders it. Extend in a subclass
+    #: Maps a ``--help <format>`` value to the name of the method that renders it. Extend in a subclass
     #: to add a custom format, e.g. ``help_formats = {**RichCommand.help_formats, "yaml": "get_help_yaml"}``.
     help_formats: ClassVar[Dict[str, str]] = {
         "json": "get_help_json",
         "json-full": "get_help_json_full",
-        "carapace": "get_help_carapace",
-        "md": "get_help_markdown",
         "markdown": "get_help_markdown",
-        "md-full": "get_help_markdown_full",
+        "md": "get_help_markdown",
         "markdown-full": "get_help_markdown_full",
+        "md-full": "get_help_markdown_full",
+        "carapace": "get_help_carapace",
     }
 
     def get_help_for_format(self, ctx: "RichContext", fmt: str) -> Optional[str]:
         """
         Return this command's help rendered in a machine-readable format, or ``None`` if unrecognized.
 
-        This is the dispatch behind the optional value on ``--help`` (``--help=json``,
-        ``--help=json-full``, ``--help=carapace``), looked up in :attr:`help_formats`. An unknown format
+        This is the dispatch behind the optional value on ``--help`` (``--help json``,
+        ``--help json-full``, ``--help carapace``), looked up in :attr:`help_formats`. An unknown format
         returns ``None`` so the caller can fall back to the normal human-readable help rather than
         erroring -- the format machinery only ever *adds* behaviour; it never changes what bare
         ``--help`` does. Resolving via method name (not a bound method) means a subclass overriding e.g.
@@ -422,7 +422,7 @@ class RichCommand(Command):
 
     def format_help_json(self, ctx: "RichContext", formatter: RichHelpFormatter) -> Dict[str, Any]:
         """
-        Build the machine-readable ``--help=json`` schema for this command (progressive disclosure).
+        Build the machine-readable ``--help json`` schema for this command (progressive disclosure).
 
         Reports this command in full but lists only the *names* of its descendants, so agents can
         discover a CLI one level at a time. Mirrors click's :meth:`format_help`, but returns the data
@@ -434,13 +434,13 @@ class RichCommand(Command):
         return self._build_help_json(ctx, formatter, recursive=False)
 
     def get_help_json_full(self, ctx: "RichContext") -> str:
-        """Return the recursive ``--help=json-full`` schema as a JSON string (params at every node)."""
+        """Return the recursive ``--help json-full`` schema as a JSON string (params at every node)."""
         formatter = ctx.make_formatter()
         return self._serialize_help(self.format_help_json_full(ctx, formatter))
 
     def format_help_json_full(self, ctx: "RichContext", formatter: RichHelpFormatter) -> Dict[str, Any]:
         """
-        Build the comprehensive recursive ``--help=json-full`` schema for this command.
+        Build the comprehensive recursive ``--help json-full`` schema for this command.
 
         Unlike :meth:`format_help_json`, every descendant is expanded to its full detail (params, usage,
         nested subcommands) in a single call -- aimed at codegen / MCP-generation consumers that want the
@@ -470,7 +470,7 @@ class RichCommand(Command):
 
     def format_help_markdown(self, ctx: "RichContext") -> str:
         """
-        Build the ``--help=md`` Markdown for this command. Override for full control of the output.
+        Build the ``--help markdown`` Markdown for this command. Override for full control of the output.
 
         Unlike the JSON ``format_help_*`` methods, this returns the finished string (Markdown has no
         dict-to-serialize step) and takes no formatter -- it needs no console config.
@@ -480,11 +480,11 @@ class RichCommand(Command):
         return command_markdown(self, ctx, recursive=False)
 
     def get_help_markdown_full(self, ctx: "RichContext") -> str:
-        """Return the recursive ``--help=md-full`` Markdown: every descendant documented in full."""
+        """Return the recursive ``--help markdown-full`` Markdown: every descendant documented in full."""
         return self.format_help_markdown_full(ctx)
 
     def format_help_markdown_full(self, ctx: "RichContext") -> str:
-        """Build the recursive ``--help=md-full`` Markdown for this command tree."""
+        """Build the recursive ``--help markdown-full`` Markdown for this command tree."""
         from rich_click.help_json import command_markdown
 
         return command_markdown(self, ctx, recursive=True)

@@ -102,12 +102,28 @@ class RichHelpOption(RichOption):
     The ``--help`` option.
 
     Built as an optional-value option (``is_flag=False`` with a ``flag_value`` sentinel) so it can
-    accept an attached format -- ``--help=json``, ``--help=carapace``, ... -- while a bare ``--help``
-    still shows the normal human-readable help. The metavar is suppressed so the option renders exactly
-    like the plain boolean ``--help`` flag did: the format capability adds no visible noise to ``--help``
-    output. The ``=`` form is the documented way to pass a format.
+    accept an optional format -- ``--help json``, ``--help carapace``, ... -- while a bare ``--help``
+    still shows the normal human-readable help. It renders like any other option whose value is a fixed
+    set: the available formats are listed as the metavar (``[json|markdown|...]``), rather than appended
+    to the help text.
     """
 
     def make_metavar(self, *args: Any, **kwargs: Any) -> str:
-        """Render like a flag (no ``TEXT`` metavar), despite technically taking an optional value."""
-        return ""
+        """
+        List the available formats as the metavar, like a ``Choice`` option.
+
+        The formats come from the command's ``help_formats`` registry, de-duplicated by target so an
+        alias (``md``) is not listed next to its canonical name (``markdown``). Falls back to ``FORMAT``
+        when the registry isn't reachable (e.g. older Click that calls ``make_metavar()`` without a ctx).
+        """
+        ctx = args[0] if args else kwargs.get("ctx")
+        formats = getattr(getattr(ctx, "command", None), "help_formats", None)
+        if not formats:
+            return "FORMAT"
+        seen = set()
+        names = []
+        for name, target in formats.items():
+            if target not in seen:
+                seen.add(target)
+                names.append(name)
+        return "[" + "|".join(names) + "]"

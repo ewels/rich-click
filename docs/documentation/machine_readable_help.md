@@ -8,16 +8,16 @@ Those consumers struggle with the rendered `--help` screen: it is laid out for h
 | Invocation                       | Output                                                                                                               |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | `--help`                         | The normal human-readable help. **Unchanged** — byte-for-byte identical to before.                                   |
-| `--help=json`                    | Machine-readable JSON for the current command, plus a name-only index of its subcommands (_progressive disclosure_). |
-| `--help=json-full`               | The whole command tree in one call, with full parameter detail at every node.                                        |
-| `--help=carapace`                | Output conforming to the [carapace](https://carapace.sh) completion spec.                                            |
-| `--help=md` (alias `markdown`)   | LLM-friendly Markdown for the current command, plus a subcommand index (_progressive disclosure_).                   |
-| `--help=md-full` (`markdown-full`) | LLM-friendly Markdown documenting every command in the tree.                                                        |
+| `--help json`                    | Machine-readable JSON for the current command, plus a name-only index of its subcommands (_progressive disclosure_). |
+| `--help json-full`               | The whole command tree in one call, with full parameter detail at every node.                                        |
+| `--help markdown` (alias `md`)   | LLM-friendly Markdown for the current command, plus a subcommand index (_progressive disclosure_).                   |
+| `--help markdown-full` (`md-full`) | LLM-friendly Markdown documenting every command in the tree.                                                        |
+| `--help carapace`                | Output conforming to the [carapace](https://carapace.sh) completion spec.                                            |
 
 This capability is **always available** on every rich-click CLI — there is nothing to enable, and bare `--help` is untouched. The format machinery only engages when a value is given.
 
-!!! note "Both `--help=json` and `--help json` work"
-    You can pass the format with `=` or a space — `mytool --help=json` and `mytool --help json` are equivalent. A bare `--help`, or an unrecognized value (a typo, or `mytool --help install` mistakenly meaning "help for the `install` command"), simply shows the normal human-readable help rather than erroring — exactly as a plain `--help` always ignored anything that followed it. To get a subcommand's help, put `--help` after it: `mytool install --help`.
+!!! note "Pass the format after a space"
+    The documented form is a space — `mytool --help json` — though the attached form `mytool --help=json` works too. A bare `--help`, or an unrecognized value (a typo, or `mytool --help install` mistakenly meaning "help for the `install` command"), simply shows the normal human-readable help rather than erroring — exactly as a plain `--help` always ignored anything that followed it. To get a subcommand's help, put `--help` after it: `mytool install --help`.
 
 The example CLI used throughout this page:
 
@@ -27,12 +27,12 @@ The example CLI used throughout this page:
 
 See the [Configuration](configuration.md) page for how to set config options globally or per-command with the `rich_config` decorator.
 
-## `--help=json`: progressive disclosure
+## `--help json`: progressive disclosure
 
-Running a command with `--help=json` prints that command's help, usage and full parameter detail as JSON, together with a name-only index of its subcommands:
+Running a command with `--help json` prints that command's help, usage and full parameter detail as JSON, together with a name-only index of its subcommands:
 
 ```console
-$ mytool --help=json
+$ mytool --help json
 ```
 
 ```json
@@ -67,7 +67,7 @@ This lets tools and agents discover a CLI one level at a time — they can see w
 Running it on a subcommand returns that command's full detail, including positional arguments:
 
 ```console
-$ mytool hello --help=json
+$ mytool hello --help json
 ```
 
 ```json
@@ -99,18 +99,18 @@ The flag is **eager**, exactly like a bare `--help`, so it works even when requi
 
 ```shell
 # Prints the schema for `hello`, despite the required NAME argument being absent.
-python help_json.py hello --help=json
+python help_json.py hello --help json
 ```
 
-## `--help=json-full`: the whole tree at once
+## `--help json-full`: the whole tree at once
 
-Where `--help=json` discloses one level at a time, `--help=json-full` expands **every** descendant to its full detail — parameters, usage and nested subcommands — in a single call.
-Each node looks exactly like a direct `--help=json` on that command would.
+Where `--help json` discloses one level at a time, `--help json-full` expands **every** descendant to its full detail — parameters, usage and nested subcommands — in a single call.
+Each node looks exactly like a direct `--help json` on that command would.
 
 This is aimed at consumers that want the entire surface up front rather than crawling it: code generators, documentation builders, and tools that turn a CLI into an [MCP](https://modelcontextprotocol.io) server.
 
 ```console
-$ mytool --help=json-full
+$ mytool --help json-full
 ```
 
 ```json
@@ -138,39 +138,12 @@ $ mytool --help=json-full
 }
 ```
 
-## `--help=carapace`: completion spec
+## `--help markdown`: Markdown for LLMs
 
-[carapace](https://carapace.sh) is a multi-shell completion engine. Emitting `--help=carapace` produces a document conforming to its [command spec](https://carapace.sh/schemas/command.json), so a rich-click CLI becomes a **producer** for carapace's consumer ecosystem.
-
-```console
-$ mytool --help=carapace
-```
-
-```json
-{
-  "name": "cli",
-  "description": "A demo CLI.",
-  "parsing": "non-interspersed",
-  "flags": { "-v, --verbose": "Enable verbose output." },
-  "commands": [
-    {
-      "name": "hello",
-      "description": "Greet someone.",
-      "flags": { "--count=": "Number of greetings." }
-    },
-    { "name": "db", "description": "Manage the database.", "parsing": "non-interspersed", "commands": [...] }
-  ]
-}
-```
-
-Carapace is a structure-and-completion spec rather than a type/validation one, so the mapping is intentionally lossy. Flag keys use carapace's string syntax (`-s, --long` for a boolean, a trailing `=` when the flag takes a value, `*` when it is repeatable, and the `{description, nargs}` object form for multi-value flags); negation flags such as `--no-debug` become their own entries; and `Choice` values are surfaced as completion candidates. Parameter **types** (`Int`/`Path`/…), **defaults**, **envvars** and per-flag **required** have no home in the carapace schema and are dropped — reach for `--help=json-full` if you need those.
-
-## `--help=md`: Markdown for LLMs
-
-`--help=md` (alias `--help=markdown`) renders the same data as Markdown, tuned for dropping into an LLM prompt: headings for hierarchy, each command titled by its **full invocation path** so the section is unambiguous out of context, and parameters laid out as compact tables.
+`--help markdown` (alias `--help md`) renders the same data as Markdown, tuned for dropping into an LLM prompt: headings for hierarchy, each command titled by its **full invocation path** so the section is unambiguous out of context, and parameters laid out as compact tables.
 
 ```console
-$ mytool hello --help=md
+$ mytool hello --help markdown
 ```
 
 ```markdown
@@ -193,15 +166,42 @@ Greet someone.
 | `--count` | Int |  | `1` | Number of greetings. |
 ```
 
-Like `--help=json`, it is progressive: the current command is documented in full, and subcommands appear as a nested name index. `--help=md-full` (alias `--help=markdown-full`) instead documents **every** command in the tree, each as its own top-level (`#`) section — a flat, uniform layout that is easy for a model to parse and navigate by path.
+Like `--help json`, it is progressive: the current command is documented in full, and subcommands appear as a nested name index. `--help markdown-full` (alias `--help md-full`) instead documents **every** command in the tree, each as its own top-level (`#`) section — a flat, uniform layout that is easy for a model to parse and navigate by path.
+
+## `--help carapace`: completion spec
+
+[carapace](https://carapace.sh) is a multi-shell completion engine. Emitting `--help carapace` produces a document conforming to its [command spec](https://carapace.sh/schemas/command.json), so a rich-click CLI becomes a **producer** for carapace's consumer ecosystem.
+
+```console
+$ mytool --help carapace
+```
+
+```json
+{
+  "name": "cli",
+  "description": "A demo CLI.",
+  "parsing": "non-interspersed",
+  "flags": { "-v, --verbose": "Enable verbose output." },
+  "commands": [
+    {
+      "name": "hello",
+      "description": "Greet someone.",
+      "flags": { "--count=": "Number of greetings." }
+    },
+    { "name": "db", "description": "Manage the database.", "parsing": "non-interspersed", "commands": [...] }
+  ]
+}
+```
+
+Carapace is a structure-and-completion spec rather than a type/validation one, so the mapping is intentionally lossy. Flag keys use carapace's string syntax (`-s, --long` for a boolean, a trailing `=` when the flag takes a value, `*` when it is repeatable, and the `{description, nargs}` object form for multi-value flags); negation flags such as `--no-debug` become their own entries; and `Choice` values are surfaced as completion candidates. Parameter **types** (`Int`/`Path`/…), **defaults**, **envvars** and per-flag **required** have no home in the carapace schema and are dropped — reach for `--help json-full` if you need those.
 
 ## Command examples
 
 LLMs respond well to concrete examples. If you give commands examples with the [`examples=` argument](examples.md) — primarily to enrich the rendered `--help` — they flow into the machine-readable formats too:
 
-- `--help=md` / `--help=md-full` — an `## Examples` section.
-- `--help=json` / `--help=json-full` — an `examples` array of `{"command", "description"}` objects.
-- `--help=carapace` — the spec's `examples` map, keyed by the command line.
+- `--help markdown` / `--help markdown-full` — an `## Examples` section.
+- `--help json` / `--help json-full` — an `examples` array of `{"command", "description"}` objects.
+- `--help carapace` — the spec's `examples` map, keyed by the command line.
 
 See [Command Examples](examples.md) for how to define them.
 
@@ -282,11 +282,11 @@ For full control, the serialization mirrors Click's own `get_help` / `format_hel
 
 | Format             | `get_*` method          | Override this               |
 | ------------------ | ----------------------- | --------------------------- |
-| `--help=json`      | `get_help_json`         | `format_help_json`          |
-| `--help=json-full` | `get_help_json_full`    | `format_help_json_full`     |
-| `--help=carapace`  | `get_help_carapace`     | `format_help_carapace`      |
-| `--help=md`        | `get_help_markdown`     | `format_help_markdown`      |
-| `--help=md-full`   | `get_help_markdown_full`| `format_help_markdown_full` |
+| `--help json`          | `get_help_json`         | `format_help_json`          |
+| `--help json-full`     | `get_help_json_full`    | `format_help_json_full`     |
+| `--help markdown`      | `get_help_markdown`     | `format_help_markdown`      |
+| `--help markdown-full` | `get_help_markdown_full`| `format_help_markdown_full` |
+| `--help carapace`      | `get_help_carapace`     | `format_help_carapace`      |
 
 ```python
 import rich_click as click
@@ -301,7 +301,7 @@ class MyCommand(click.RichCommand):
 
 ### Adding a new format
 
-The `--help=<format>` dispatch is a registry, `RichCommand.help_formats`, mapping each format name to the method that renders it. Add your own by extending it in a subclass — no need to touch the dispatch:
+The `--help <format>` dispatch is a registry, `RichCommand.help_formats`, mapping each format name to the method that renders it. Add your own by extending it in a subclass — no need to touch the dispatch:
 
 ```python
 import rich_click as click

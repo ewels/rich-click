@@ -97,7 +97,7 @@ The panel reuses your options-panel styling (border, box, padding) so its frame 
 | `style_examples_command`        | the command path / program name | `bold`        |
 | `style_examples_flag_long`      | long flags (`--dry-run`)        | `bold cyan`   |
 | `style_examples_flag_short`     | short flags (`-f`)              | `bold green`  |
-| `style_examples_placeholder`    | detected placeholders           | `magenta`     |
+| `style_examples_placeholder`    | detected placeholders           | `blue`        |
 | `style_examples_operator`       | shell operators (`\|`, `>`, `&&`) | `bold yellow` |
 
 The panel title defaults to `Examples` and is set with `examples_panel_title`:
@@ -115,8 +115,8 @@ click.rich_click.STYLE_EXAMPLES_PLACEHOLDER = "bold red"
 
 Examples are not just for humans. The same data flows into every [machine-readable format](machine_readable_help.md), so tooling and LLM agents see them too:
 
-- `--help=md` / `--help=md-full` — an `## Examples` section.
-- `--help=json` / `--help=json-full` — an `examples` array of `{"command", "description"}` objects.
-- `--help=carapace` — the spec's `examples` map, keyed by the command line.
+- `--help markdown` / `--help markdown-full` — an `## Examples` section.
+- `--help json` / `--help json-full` — an `examples` array of `{"command", "description"}` objects.
+- `--help carapace` — the spec's `examples` map, keyed by the command line.
 
 LLMs in particular tend to produce better invocations when a few worked examples are present, which makes `examples=` a cheap, high-value addition for any agent-facing CLI.

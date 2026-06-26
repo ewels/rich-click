@@ -315,10 +315,10 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     and exits the program.
 
     Accepts an optional format value so the same flag can also emit machine-readable help:
-    ``--help=json`` (progressive), ``--help=json-full`` (whole tree) and ``--help=carapace``. Both the
-    attached (``--help=json``) and space (``--help json``) forms work. A bare ``--help`` is unchanged --
-    byte-for-byte identical to before -- and an unrecognized value falls back to the normal help rather
-    than erroring (just as the plain ``--help`` always ignored anything that followed it).
+    ``--help json`` (progressive), ``--help json-full`` (whole tree) and ``--help carapace``. The space
+    form is the documented one, though the attached form (``--help=json``) works too. A bare ``--help``
+    is unchanged, and an unrecognized value falls back to the normal help rather than erroring (just as
+    the plain ``--help`` always ignored anything that followed it).
 
     :param param_decls: One or more option names. Defaults to the single
         value ``"--help"``.
@@ -331,7 +331,7 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
         # request for help -- it falls through to the normal help below, like a bare ``--help``.
         if value is None or value is False or ctx.resilient_parsing:
             return
-        # A real format was attached (``--help=<fmt>``); the sentinel / ``True`` mean a bare ``--help``.
+        # A real format was given (e.g. ``--help json``); the sentinel / ``True`` mean a bare ``--help``.
         if value is not True and value != HELP_PLAIN_VALUE:
             get_help_for_format = getattr(ctx.command, "get_help_for_format", None)
             if get_help_for_format is not None:
@@ -351,9 +351,9 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     if not param_decls:
         param_decls = ("--help",)
 
-    # Optional-value flag: ``flag_value`` is what a bare ``--help`` yields; an attached ``=<fmt>`` is
-    # passed through verbatim. ``RichHelpOption`` suppresses the metavar so ``--help`` still renders
-    # like a plain flag.
+    # Optional-value flag: ``flag_value`` is what a bare ``--help`` yields; a format given after it
+    # (``--help json``) is passed through verbatim. ``RichHelpOption`` shows a ``FORMAT`` metavar, so the
+    # optional value is conveyed the same way as any other value-taking option rather than via help text.
     kwargs.setdefault("is_flag", False)
     kwargs.setdefault("flag_value", HELP_PLAIN_VALUE)
     kwargs.setdefault("expose_value", False)

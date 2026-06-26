@@ -3,13 +3,13 @@
 ## Unreleased
 
 - Added **machine-readable help formats** on the existing `--help` flag, so tooling and LLM agents can discover a CLI's structure as data. The capability is always available — no config needed — and a bare `--help` is unchanged:
-  - `--help=json` — progressive disclosure: the current command in full (help, usage, parameters) plus a name-only index of its subcommands, so agents can drill down one level at a time.
-  - `--help=json-full` — the whole command tree in one call, with full parameter detail at every node (aimed at codegen / MCP-generation consumers).
-  - `--help=carapace` — output conforming to the [carapace](https://carapace.sh) completion spec, making rich-click a producer for that ecosystem.
-  - `--help=md` (alias `--help=markdown`) and `--help=md-full` (`--help=markdown-full`) — LLM-friendly Markdown: headings for hierarchy, each command titled by its full invocation path, and parameters as compact tables. `md` is progressive; `md-full` documents the whole tree.
-  - Both `--help=json` and `--help json` work; an unrecognized format falls back to the normal human-readable help rather than erroring. No new CLI flag is added — only `--help` is modified.
+  - `--help json` — progressive disclosure: the current command in full (help, usage, parameters) plus a name-only index of its subcommands, so agents can drill down one level at a time.
+  - `--help json-full` — the whole command tree in one call, with full parameter detail at every node (aimed at codegen / MCP-generation consumers).
+  - `--help markdown` (alias `--help md`) and `--help markdown-full` (`--help md-full`) — LLM-friendly Markdown: headings for hierarchy, each command titled by its full invocation path, and parameters as compact tables. `markdown` is progressive; `markdown-full` documents the whole tree.
+  - `--help carapace` — output conforming to the [carapace](https://carapace.sh) completion spec, making rich-click a producer for that ecosystem.
+  - The format is passed after a space (`--help json`); the attached form (`--help=json`) also works. An unrecognized format falls back to the normal human-readable help rather than erroring. No new CLI flag is added — only `--help` is modified.
   - The schema is built from each command's `to_info_dict()`, so anything a developer adds there flows through automatically. Output can be post-processed with the `help_json_transform` hook, or reshaped by overriding the `format_help_*` methods. New formats can be registered via the `help_formats` class attribute.
-- Added an `examples=` argument to commands and groups: a list of `(description, command)` tuples (description first, and required). Examples render in every output: an **Examples** panel in the human `--help`, an `## Examples` section in `--help=md`, an `examples` array in `--help=json`, and the `examples` map in `--help=carapace`. The panel title is configurable via `examples_panel_title`.
+- Added an `examples=` argument to commands and groups: a list of `(description, command)` tuples (description first, and required). Examples render in every output: an **Examples** panel in the human `--help`, an `## Examples` section in `--help markdown`, an `examples` array in `--help json`, and the `examples` map in `--help carapace`. The panel title is configurable via `examples_panel_title`.
   - In the rendered `--help`, examples use a [`tldr`](https://github.com/tldr-pages/tldr)-style layout (dim description heading, command indented beneath) and **placeholders are detected and highlighted automatically** — using the command's known path and flags (matched by name or alias), a value after a value-taking flag (or a bare positional) is recognised as a placeholder the user fills in. The command/flag/placeholder colours are independently configurable via `style_examples_*` options (commands/flags default to the main help styles; placeholders stand out in magenta).
 
 ## Version 1.9.8 (2026-05-28)

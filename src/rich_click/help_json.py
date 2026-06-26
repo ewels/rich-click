@@ -1,15 +1,15 @@
 """
 Machine-readable help formats for rich-click CLIs.
 
-These power the format values on the existing ``--help`` flag -- ``--help=json``,
-``--help=json-full`` and ``--help=carapace`` -- so tooling and LLM agents can discover
+These power the format values on the existing ``--help`` flag -- ``--help json``,
+``--help json-full`` and ``--help carapace`` -- so tooling and LLM agents can discover
 a CLI's structure as data instead of scraping the rendered ``--help`` screen. No new
 flag is added; the capability lives on ``--help`` and bare ``--help`` is unchanged.
 
-``--help=json`` uses progressive disclosure: it reports the *current* command's help,
+``--help json`` uses progressive disclosure: it reports the *current* command's help,
 usage and full parameter detail, plus a name-only index of subcommands, so agents land
 on a command, read its parameters as data, and drill into subcommands by name as needed.
-``--help=json-full`` expands every descendant to full detail in one call; ``--help=carapace``
+``--help json-full`` expands every descendant to full detail in one call; ``--help carapace``
 maps the tree onto the carapace completion spec.
 
 Composability: the schema is built from each command's ``to_info_dict()`` -- the
@@ -226,7 +226,7 @@ def _iter_child_contexts(cmd: click.Command, ctx: click.Context) -> Iterator[Tup
 
     A child that cannot be contextualized (e.g. a custom loader that needs real args) is skipped rather
     than aborting the whole dump. Yields nothing for a leaf command. Powers the recursive
-    ``--help=json-full`` and ``--help=carapace`` walks, where every node is described by the same
+    ``--help json-full`` and ``--help carapace`` walks, where every node is described by the same
     machinery a direct ``--help`` on that node would use.
     """
     list_commands = getattr(cmd, "list_commands", None)
@@ -262,7 +262,7 @@ def command_schema(
     Includes the command's own help, usage and full parameter detail (the ``--help`` meta-option is
     always excluded). For groups, a ``subcommands`` key holds either a name-only index of descendants
     (the default, progressive disclosure) or -- when ``recursive`` is set -- the full schema of every
-    descendant (powering ``--help=json-full``).
+    descendant (powering ``--help json-full``).
 
     The command's ``to_info_dict()`` is the single source of truth, so subclass overrides and
     custom fields flow through: unrecognized command-level keys are merged onto the top-level object
@@ -438,7 +438,7 @@ def _carapace_subcommands(cmd: click.Command, ctx: click.Context, child_infos: D
 
 
 # --------------------------------------------------------------------------------------------------
-# Markdown (``--help=md`` / ``--help=md-full``).
+# Markdown (``--help markdown`` / ``--help markdown-full``).
 #
 # A presentation layer over the same :func:`command_schema` data, so all the extraction (and the
 # serialize-the-tree-once optimisation) is shared with the JSON formats. The output is tuned for LLM
@@ -569,8 +569,8 @@ def command_markdown(cmd: click.Command, ctx: click.Context, recursive: bool = F
     """
     Render a command as Markdown, tuned for LLM consumption.
 
-    ``recursive=False`` (``--help=md``) documents the current command in full and lists its subcommands
-    as a name index; ``recursive=True`` (``--help=md-full``) documents every descendant in full. Built
+    ``recursive=False`` (``--help markdown``) documents the current command in full and lists its subcommands
+    as a name index; ``recursive=True`` (``--help markdown-full``) documents every descendant in full. Built
     from :func:`command_schema`, so it shares the JSON formats' extraction and single ``to_info_dict()``
     walk.
     """

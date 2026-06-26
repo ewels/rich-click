@@ -48,7 +48,7 @@ STYLE_USAGE_SEPARATOR: "StyleType" = FROM_THEME
 STYLE_EXAMPLES_COMMAND: "StyleType" = "bold"
 STYLE_EXAMPLES_FLAG_LONG: "StyleType" = "bold cyan"
 STYLE_EXAMPLES_FLAG_SHORT: "StyleType" = "bold green"
-STYLE_EXAMPLES_PLACEHOLDER: "StyleType" = "magenta"
+STYLE_EXAMPLES_PLACEHOLDER: "StyleType" = "blue"
 STYLE_EXAMPLES_OPERATOR: "StyleType" = "bold yellow"  # shell operators: | > && ; etc.
 STYLE_DEPRECATED: "StyleType" = FROM_THEME
 STYLE_HELPTEXT_FIRST_LINE: "StyleType" = FROM_THEME
@@ -179,7 +179,7 @@ COMMAND_GROUPS: Dict[str, List[CommandGroupDict]] = {}
 OPTION_GROUPS: Dict[str, List[OptionGroupDict]] = {}
 USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
 HELPTEXT_SHOW_ALIASES: bool = True
-# Machine-readable help (`--help=json`, `--help=json-full`, `--help=carapace`) is always available on
+# Machine-readable help (`--help json`, `--help json-full`, `--help carapace`) is always available on
 # the `--help` flag. Optional hook to post-process the JSON schema: (schema, command, ctx) -> schema
 HELP_JSON_TRANSFORM: Optional["HelpJSONTransform"] = None
 

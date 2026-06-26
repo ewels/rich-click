@@ -132,7 +132,7 @@ class RichHelpConfiguration:
     style_examples_command: "StyleType" = field(default="bold")
     style_examples_flag_long: "StyleType" = field(default="bold cyan")
     style_examples_flag_short: "StyleType" = field(default="bold green")
-    style_examples_placeholder: "StyleType" = field(default="magenta")
+    style_examples_placeholder: "StyleType" = field(default="blue")
     style_examples_operator: "StyleType" = field(default="bold yellow")  # shell operators: | > && ; ...
     style_deprecated: "StyleType" = field(default=FROM_THEME)
     style_helptext_first_line: "StyleType" = field(default=FROM_THEME)

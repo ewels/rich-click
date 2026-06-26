@@ -1,7 +1,7 @@
 # /// script
 # dependencies = ["rich-click>=1.9"]
 # ///
-# `--help=json`, `--help=json-full` and `--help=carapace` work out of the box on every command.
+# `--help json`, `--help json-full` and `--help carapace` work out of the box on every command.
 import rich_click as click
 
 
