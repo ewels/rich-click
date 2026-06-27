@@ -23,10 +23,10 @@ def test_flag_values_help(cli_runner: CliRunner, cli: rich_click.RichCommand) ->
  Select one of three flags                                                                          \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --a     A flag.                                                                                  │
-│ --b     B flag.                                                                                  │
-│ --c     C flag.                                                                                  │
-│ --help  Show this message and exit.                                                              │
+│ --a                          A flag.                                                             │
+│ --b                          B flag.                                                             │
+│ --c                          C flag.                                                             │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )

@@ -88,7 +88,7 @@ def test_imports_during_help(recorded_imports: List[str], cli_runner: CliRunner)
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -131,7 +131,7 @@ def test_imports_during_help_rich_click_cli(
  Usage: mymodule [OPTIONS]                                                                          \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )

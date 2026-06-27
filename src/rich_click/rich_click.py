@@ -21,6 +21,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.style import StyleType
     from rich.text import Text
 
+    from rich_click.help_json import HelpFormatRenderer, HelpJSONTransform
     from rich_click.rich_click_theme import RichClickTheme
 
 #!STARTCONFIG
@@ -43,6 +44,12 @@ STYLE_RANGE_APPEND: "StyleType" = FROM_THEME
 STYLE_USAGE: "StyleType" = FROM_THEME
 STYLE_USAGE_COMMAND: "StyleType" = FROM_THEME
 STYLE_USAGE_SEPARATOR: "StyleType" = FROM_THEME
+# Styles for the command lines rendered in the Examples panel
+STYLE_EXAMPLES_COMMAND: "StyleType" = "bold"
+STYLE_EXAMPLES_FLAG_LONG: "StyleType" = "bold cyan"
+STYLE_EXAMPLES_FLAG_SHORT: "StyleType" = "bold green"
+STYLE_EXAMPLES_PLACEHOLDER: "StyleType" = "blue"
+STYLE_EXAMPLES_OPERATOR: "StyleType" = "bold yellow"  # shell operators: | > && ; etc.
 STYLE_DEPRECATED: "StyleType" = FROM_THEME
 STYLE_HELPTEXT_FIRST_LINE: "StyleType" = FROM_THEME
 STYLE_HELPTEXT: "StyleType" = FROM_THEME
@@ -131,6 +138,7 @@ HELPTEXT_ALIASES_STRING: str = "Aliases: {}"
 ARGUMENTS_PANEL_TITLE: str = "Arguments"
 OPTIONS_PANEL_TITLE: str = "Options"
 COMMANDS_PANEL_TITLE: str = "Commands"
+EXAMPLES_PANEL_TITLE: str = "Examples"
 ERRORS_PANEL_TITLE: str = "Error"
 DELIMITER_COMMA: str = FROM_THEME
 DELIMITER_SLASH: str = FROM_THEME
@@ -171,6 +179,11 @@ COMMAND_GROUPS: Dict[str, List[CommandGroupDict]] = {}
 OPTION_GROUPS: Dict[str, List[OptionGroupDict]] = {}
 USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
 HELPTEXT_SHOW_ALIASES: bool = True
+# Machine-readable help (`--help markdown`, `--help json`, `--help carapace`) is always available on
+# the `--help` flag. Optional hook to post-process the JSON schema: (schema, command, ctx) -> schema
+HELP_JSON_TRANSFORM: Optional["HelpJSONTransform"] = None
+# Register custom `--help <name>` formats without subclassing: {name: (command, ctx) -> str}.
+HELP_FORMATS: Dict[str, "HelpFormatRenderer"] = {}
 
 #!ENDCONFIG
 

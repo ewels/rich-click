@@ -25,7 +25,7 @@ def test_class_overrides_command_panel(cli_runner: CliRunner, cli: rich_click.Ri
  (Also test that callback name identifies a command, not just the name of the command.)             \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Rich Click Panel ───────────────────────────────────────────────────────────────────────────────╮
 │ click-command  Test that RichParameters can be used with base click Commands.                    │
@@ -60,7 +60,7 @@ Usage: click-command [OPTIONS] RICH_CLICK_ARG
 
 Options:
   --rich-click-option TEXT
-  --help                    Show this message and exit.
+  --help FORMAT             Show this message and exit.
 """
     )
     assert result.stderr == snapshot("")
@@ -88,7 +88,7 @@ def test_class_overrides_click_parameters(cli_runner: CliRunner, cli: rich_click
 │                          [default: foo] [required]                                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )

@@ -8,6 +8,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Callable,
+    ClassVar,
     Dict,
     Iterable,
     List,
@@ -17,6 +18,7 @@ from typing import (
     Optional,
     Sequence,
     TextIO,
+    Tuple,
     Type,
     Union,
     cast,
@@ -48,6 +50,26 @@ if TYPE_CHECKING:  # pragma: no cover
 OVERRIDES_GUARD: bool = False
 
 
+def _normalize_examples(examples: Optional[Iterable[Tuple[str, str]]]) -> List[Dict[str, str]]:
+    """
+    Normalize the ``examples=`` developer input to a list of ``{"description", "command"}`` dicts.
+
+    Every example is a ``(description, command)`` tuple -- the description is required, so an example is
+    never shown without an explanation of what it does. This canonical shape is what every output (the
+    rendered ``--help`` panel, ``--help markdown``, ``--help json`` and ``--help carapace``) consumes.
+    """
+    normalized: List[Dict[str, str]] = []
+    for example in examples or []:
+        if isinstance(example, str):
+            raise TypeError(f"Each example must be a (description, command) tuple, not a string: {example!r}")
+        try:
+            description, command = example
+        except (TypeError, ValueError):
+            raise TypeError(f"Each example must be a (description, command) tuple; got {example!r}") from None
+        normalized.append({"description": str(description), "command": str(command)})
+    return normalized
+
+
 class RichCommand(Command):
     """
     Richly formatted click Command.
@@ -67,6 +89,7 @@ class RichCommand(Command):
         aliases: Optional[Iterable[str]] = None,
         panels: Optional[List["RichPanel[Any, Any]"]] = None,
         panel: Optional[Union[str, List[str]]] = None,
+        examples: Optional[Iterable[Tuple[str, str]]] = None,
         **kwargs: Any,
     ) -> None:
         """Create Rich Command instance."""
@@ -74,6 +97,7 @@ class RichCommand(Command):
         self.panel = panel
         self.panels: List["RichPanel[Any, Any]"] = panels or []
         self.aliases: Iterable[str] = aliases or []
+        self.examples: List[Dict[str, str]] = _normalize_examples(examples)
         if not hasattr(self, "_help_option"):
             self._help_option = None
 
@@ -98,6 +122,7 @@ class RichCommand(Command):
         info = super().to_info_dict(ctx)
         info["panels"] = [p.to_info_dict(ctx) for p in self.panels]
         info["aliases"] = list(self.aliases) if self.aliases is not None else None
+        info["examples"] = self.examples
         return info
 
     @property
@@ -276,6 +301,7 @@ class RichCommand(Command):
             self.format_usage(ctx, formatter)
             self.format_help_text(ctx, formatter)
             self.format_options(ctx, formatter)
+            self.format_examples(ctx, formatter)
             self.format_epilog(ctx, formatter)
 
     def format_help_text(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
@@ -299,6 +325,12 @@ class RichCommand(Command):
             p = panel.render(self, ctx, formatter)  # type: ignore[arg-type]
             if not isinstance(p.renderable, Table) or len(p.renderable.rows) > 0:
                 formatter.write(p)  # type: ignore[arg-type]
+
+    def format_examples(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:
+        """Render the command's ``examples`` (if any) as a panel, after the options/commands."""
+        from rich_click.rich_help_rendering import get_rich_examples
+
+        get_rich_examples(self, ctx, formatter)
 
     def format_epilog(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         from rich_click.rich_help_rendering import get_rich_epilog
@@ -332,6 +364,159 @@ class RichCommand(Command):
             self._help_option = self.params.pop()  # type: ignore[assignment]
 
         return self._help_option
+
+    #: Maps a ``--help <format>`` value to the name of the method that renders it. Extend in a subclass
+    #: to add a custom format, e.g. ``help_formats = {**RichCommand.help_formats, "yaml": "get_help_yaml"}``.
+    help_formats: ClassVar[Dict[str, str]] = {
+        "markdown": "get_help_markdown",
+        "md": "get_help_markdown",
+        "markdown-full": "get_help_markdown_full",
+        "md-full": "get_help_markdown_full",
+        "json": "get_help_json",
+        "json-full": "get_help_json_full",
+        "carapace": "get_help_carapace",
+    }
+
+    def get_help_for_format(self, ctx: "RichContext", fmt: str) -> Optional[str]:
+        """
+        Return this command's help rendered in a machine-readable format, or ``None`` if unrecognized.
+
+        This is the dispatch behind the optional value on ``--help`` (``--help markdown``,
+        ``--help json``, ``--help carapace``). It looks up the built-in :attr:`help_formats` registry
+        (name -> method), then the config's ``help_formats`` (name -> ``(command, ctx) -> str`` renderer),
+        so a custom format can be added either by subclassing or process-wide via config without
+        subclassing. An unknown format returns ``None`` so the caller can fall back to the normal
+        human-readable help rather than erroring -- the format machinery only ever *adds* behaviour; it
+        never changes what bare ``--help`` does. Resolving via method name (not a bound method) means a
+        subclass overriding e.g. ``get_help_json`` is honoured.
+        """
+        fmt = (fmt or "").strip().lower()
+        method_name = self.help_formats.get(fmt)
+        if method_name is not None:
+            return cast(Optional[str], getattr(self, method_name)(ctx))
+        renderer = getattr(ctx, "help_config", None) and ctx.help_config.help_formats.get(fmt)
+        if renderer is not None:
+            return cast(Optional[str], renderer(self, ctx))
+        return None
+
+    def _serialize_help(self, data: Dict[str, Any]) -> str:
+        import json
+
+        return json.dumps(data, indent=2, default=str)
+
+    #: Editor directive prepended to the YAML carapace output, enabling schema validation/completion.
+    _CARAPACE_SCHEMA_DIRECTIVE = "# yaml-language-server: $schema=https://carapace.sh/schemas/command.json"
+
+    def _serialize_carapace(self, data: Dict[str, Any]) -> str:
+        """
+        Serialize the carapace spec as YAML -- the format carapace's ecosystem expects.
+
+        YAML is optional: if ``pyyaml`` isn't installed we fall back to JSON, which is valid YAML and so
+        still consumable by carapace (just without the schema directive). Install ``rich-click[carapace]``
+        for the idiomatic YAML output.
+        """
+        try:
+            import yaml
+        except ImportError:
+            return self._serialize_help(data)
+        body = yaml.safe_dump(data, sort_keys=False, default_flow_style=False, allow_unicode=True)
+        return f"{self._CARAPACE_SCHEMA_DIRECTIVE}\n{body}"
+
+    def _build_help_json(self, ctx: "RichContext", formatter: RichHelpFormatter, recursive: bool) -> Dict[str, Any]:
+        """Build the JSON schema (progressive or recursive) and apply the ``help_json_transform`` hook."""
+        from rich_click.help_json import command_schema
+
+        schema = command_schema(self, ctx, recursive=recursive)
+
+        transform = getattr(formatter.config, "help_json_transform", None)
+        if transform is not None:
+            schema = transform(schema, self, ctx)
+        return schema
+
+    def get_help_json(self, ctx: "RichContext") -> str:
+        """
+        Return this command's help as a machine-readable JSON string (progressive disclosure).
+
+        Mirrors click's :meth:`get_help`: the data is built by :meth:`format_help_json`
+        and then serialized. Override :meth:`format_help_json` to change the structure
+        of the output.
+        """
+        formatter = ctx.make_formatter()
+        return self._serialize_help(self.format_help_json(ctx, formatter))
+
+    def format_help_json(self, ctx: "RichContext", formatter: RichHelpFormatter) -> Dict[str, Any]:
+        """
+        Build the machine-readable ``--help json`` schema for this command (progressive disclosure).
+
+        Reports this command in full but lists only the *names* of its descendants, so agents can
+        discover a CLI one level at a time. Mirrors click's :meth:`format_help`, but returns the data
+        statelessly rather than writing to the formatter's buffer (the formatter is carried for its
+        config and parity with the regular help path). Subclass ``RichCommand`` and override this for
+        full control of the JSON schema; the ``help_json_transform`` config hook is a lighter-touch
+        alternative.
+        """
+        return self._build_help_json(ctx, formatter, recursive=False)
+
+    def get_help_json_full(self, ctx: "RichContext") -> str:
+        """Return the recursive ``--help json-full`` schema as a JSON string (params at every node)."""
+        formatter = ctx.make_formatter()
+        return self._serialize_help(self.format_help_json_full(ctx, formatter))
+
+    def format_help_json_full(self, ctx: "RichContext", formatter: RichHelpFormatter) -> Dict[str, Any]:
+        """
+        Build the comprehensive recursive ``--help json-full`` schema for this command.
+
+        Unlike :meth:`format_help_json`, every descendant is expanded to its full detail (params, usage,
+        nested subcommands) in a single call -- aimed at codegen / MCP-generation consumers that want the
+        whole tree at once. Shares the ``help_json_transform`` hook with the progressive format.
+        """
+        return self._build_help_json(ctx, formatter, recursive=True)
+
+    def get_help_carapace(self, ctx: "RichContext") -> str:
+        """
+        Return this command's help as a carapace-spec string (https://carapace.sh).
+
+        Serialized as YAML (the format carapace expects) when ``pyyaml`` is installed, else JSON -- which
+        is valid YAML, so carapace still consumes it. Install ``rich-click[carapace]`` for YAML.
+        """
+        formatter = ctx.make_formatter()
+        return self._serialize_carapace(self.format_help_carapace(ctx, formatter))
+
+    def format_help_carapace(self, ctx: "RichContext", formatter: RichHelpFormatter) -> Dict[str, Any]:
+        """
+        Build the carapace completion-spec representation of this command tree.
+
+        Conforms to https://carapace.sh/schemas/command.json so a rich-click CLI can be consumed by
+        carapace's completion ecosystem. Override for full control of the carapace output.
+        """
+        from rich_click.help_json import carapace_command
+
+        return carapace_command(self, ctx)
+
+    def get_help_markdown(self, ctx: "RichContext") -> str:
+        """Return this command's help as LLM-friendly Markdown (current command + subcommand index)."""
+        return self.format_help_markdown(ctx)
+
+    def format_help_markdown(self, ctx: "RichContext") -> str:
+        """
+        Build the ``--help markdown`` Markdown for this command. Override for full control of the output.
+
+        Unlike the JSON ``format_help_*`` methods, this returns the finished string (Markdown has no
+        dict-to-serialize step) and takes no formatter -- it needs no console config.
+        """
+        from rich_click.help_json import command_markdown
+
+        return command_markdown(self, ctx, recursive=False)
+
+    def get_help_markdown_full(self, ctx: "RichContext") -> str:
+        """Return the recursive ``--help markdown-full`` Markdown: every descendant documented in full."""
+        return self.format_help_markdown_full(ctx)
+
+    def format_help_markdown_full(self, ctx: "RichContext") -> str:
+        """Build the recursive ``--help markdown-full`` Markdown for this command tree."""
+        from rich_click.help_json import command_markdown
+
+        return command_markdown(self, ctx, recursive=True)
 
     def get_rich_table_row(
         self,
@@ -392,6 +577,7 @@ class RichGroup(RichCommand, Group):
             self.format_usage(ctx, formatter)
             self.format_help_text(ctx, formatter)
             self.format_options(ctx, formatter)
+            self.format_examples(ctx, formatter)
             self.format_epilog(ctx, formatter)
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
@@ -440,6 +626,7 @@ class RichGroup(RichCommand, Group):
             if cls and not issubclass(cls, RichCommand):
                 panel = kwargs.pop("panel", None)
                 aliases = kwargs.pop("aliases", None)
+                kwargs.pop("examples", None)  # rich-click-only; a non-RichCommand can't accept it
             else:
                 panel = kwargs.get("panel")
                 aliases = kwargs.get("aliases")
@@ -495,6 +682,7 @@ class RichGroup(RichCommand, Group):
             if cls and not issubclass(cls, RichCommand):
                 panel = kwargs.pop("panel", None)
                 aliases = kwargs.pop("aliases", None)
+                kwargs.pop("examples", None)  # rich-click-only; a non-RichCommand can't accept it
             else:
                 panel = kwargs.get("panel")
                 aliases = kwargs.get("aliases")
@@ -589,6 +777,7 @@ class RichCommandCollection(CommandCollection, RichGroup):
             self.format_usage(ctx, formatter)
             self.format_help_text(ctx, formatter)
             self.format_options(ctx, formatter)
+            self.format_examples(ctx, formatter)
             self.format_epilog(ctx, formatter)
 
 
@@ -601,7 +790,7 @@ def prevent_incompatible_overrides(
 
     cls: Type[RichCommand] = getattr(rich_click.patch, f"_Patched{class_name}")
 
-    for method_name in ["format_usage", "format_help_text", "format_options", "format_epilog"]:
+    for method_name in ["format_usage", "format_help_text", "format_options", "format_examples", "format_epilog"]:
         if method_is_from_subclass_of(cmd.__class__, cls, method_name):
             getattr(RichCommand, method_name)(cmd, ctx, formatter)
         else:

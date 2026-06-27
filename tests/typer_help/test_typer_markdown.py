@@ -22,10 +22,10 @@ def test_typer_markdown(typer_cli_runner: CliRunner, cli: typer.Typer) -> None:
  Usage: root [OPTIONS] COMMAND [ARGS]...                                                            \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --install-completion  Install completion for the current shell.                                  │
-│ --show-completion     Show completion for the current shell, to copy it or customize the         │
-│                       installation.                                                              │
-│ --help                Show this message and exit.                                                │
+│ --install-completion                       Install completion for the current shell.             │
+│ --show-completion                          Show completion for the current shell, to copy it or  │
+│                                            customize the installation.                           │
+│ --help                [markdown|json|...]  Show this message and exit.                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Utils and Configs ──────────────────────────────────────────────────────────────────────────────╮
 │ config  Configure the system. 🔧                                                                 │
@@ -54,6 +54,7 @@ def test_typer_markdown_with_theme(typer_cli_runner: CliRunner, cli: typer.Typer
  --show-completion     Show completion for the current shell, to copy it or customize the           \n\
                        installation.                                                                \n\
  --help                Show this message and exit.                                                  \n\
+                       [markdown|json|...]                                                          \n\
                                                                                                     \n\
  ═ Utils and Configs ══════════════════════════════════════════════════════════════════════════════ \n\
  config  Configure the system. 🔧                                                                   \n\

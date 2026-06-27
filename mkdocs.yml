@@ -52,6 +52,8 @@ nav:
         - "Advanced": documentation/panels/advanced.md
       - "Text Markup & Formatting": documentation/text_markup_and_formatting.md
       - "Custom Styles": documentation/custom_styles.md
+      - "Command Examples": documentation/examples.md
+      - "Machine-readable Help": documentation/machine_readable_help.md
       - "<code>rich-click</code> CLI tool": documentation/rich_click_cli.md
       - "Typer Support": documentation/typer_support.md
       - Accessibility: documentation/accessibility.md
@@ -92,6 +94,9 @@ plugins:
   - include-markdown
   - gh-admonitions
   - social:
+      # Social cards need Cairo, so only build them in CI (GitHub Actions sets CI=true automatically).
+      # They are disabled locally to avoid the Cairo dependency; set CI=true in your env to preview them.
+      enabled: !ENV [CI, false]
       cards_layout_options:
         font_family: Kode Mono
   - glightbox:

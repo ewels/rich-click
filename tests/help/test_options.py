@@ -38,7 +38,7 @@ def test_options_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> Non
 │ *  --loaded          -l  INTEGER RANGE [x>=0]     This option is loaded with everything (assert  │
 │                                                   preservation of order) [env var: IS_LOADED]    │
 │                                                   [default: (Random number)] [required]          │
-│    --help            -h                           Show help.                                     │
+│    --help            -h  [markdown|json|...]      Show help.                                     │
 │    --version         -v                           Show version.                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
@@ -67,7 +67,7 @@ def test_options_help_envvar_first(cli_runner: CliRunner, cli: rich_click.RichCo
 │ *  --loaded          -l  INTEGER RANGE [x>=0]     [env var: IS_LOADED] This option is loaded     │
 │                                                   with everything (assert preservation of order) │
 │                                                   [default: (Random number)] [required]          │
-│    --help            -h                           Show help.                                     │
+│    --help            -h  [markdown|json|...]      Show help.                                     │
 │    --version         -v                           Show version.                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """

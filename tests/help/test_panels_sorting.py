@@ -23,7 +23,7 @@ def test_command_panel_order(cli_runner: CliRunner, cli: rich_click.RichCommand)
  CLI help text                                                                                      \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Custom Command Panel 2 ─────────────────────────────────────────────────────────────────────────╮
 │ cmd2       Test order of options is preserved via panel...                                       │
@@ -76,7 +76,7 @@ def test_panel_order_in_panel_decorator(cli_runner: CliRunner, cli: rich_click.R
 │ --d  -d  TEXT  Help text for E                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -106,7 +106,7 @@ def test_option_order_with_panel_decorator(cli_runner: CliRunner, cli: rich_clic
 │ --e  -e  TEXT  Help text for E                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -136,7 +136,7 @@ def test_panel_order_with_panel_kwarg(cli_runner: CliRunner, cli: rich_click.Ric
 │ --f  -f  TEXT  Help text for F                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -166,7 +166,7 @@ def test_option_order_with_panel_kwarg(cli_runner: CliRunner, cli: rich_click.Ri
 │ --e  -f  TEXT  Help text for F                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -188,7 +188,7 @@ def test_panel_order_commands_above_options(cli_runner: CliRunner, cli: rich_cli
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --a     TEXT                                                                                     │
-│ --help        Show this message and exit.                                                        │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -208,7 +208,7 @@ def test_panel_order_options_above_commands(cli_runner: CliRunner, cli: rich_cli
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --a     TEXT                                                                                     │
-│ --help        Show this message and exit.                                                        │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ dummy                                                                                            │
@@ -233,7 +233,7 @@ def test_panel_order_options_above_commands_with_arguments(cli_runner: CliRunner
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --b     TEXT                                                                                     │
-│ --help        Show this message and exit.                                                        │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ dummy                                                                                            │
@@ -261,7 +261,7 @@ def test_panel_order_arguments_options_commands(cli_runner: CliRunner, cli: rich
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --b     TEXT                                                                                     │
-│ --help        Show this message and exit.                                                        │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -284,7 +284,7 @@ def test_panel_option_and_command_same_name(cli_runner: CliRunner, cli: rich_cli
 │ --dummy     TEXT                                                                                 │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ samename                                                                                         │
@@ -305,7 +305,7 @@ def test_panel_different_type_panels_same_name(cli_runner: CliRunner, cli: rich_
  Test that command panel and option panel both having the same name doesn't cause any issues.       \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Generic Panel ──────────────────────────────────────────────────────────────────────────────────╮
 │ dummy                                                                                            │
@@ -330,7 +330,7 @@ def test_add_command_panel_kwarg(cli_runner: CliRunner, cli: rich_click.RichComm
  Test add_command(..., panel=...)                                                                   \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Some Panel ─────────────────────────────────────────────────────────────────────────────────────╮
 │ dummy2                                                                                           │
@@ -351,7 +351,7 @@ def test_no_duplicatio_of_commands(cli_runner: CliRunner, cli: rich_click.RichCo
  Test all three methods of assigning a panel don't cause duplication.                               \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Some Panel ─────────────────────────────────────────────────────────────────────────────────────╮
 │ dummy2                                                                                           │
@@ -372,7 +372,7 @@ def test_ignore_behavior_duplicate_assignments(cli_runner: CliRunner, cli: rich_
  Test that command_panel.commands takes priority.                                                   \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Prioritize me ──────────────────────────────────────────────────────────────────────────────────╮
 │ dummy2                                                                                           │
