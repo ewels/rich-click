@@ -35,6 +35,10 @@ import click
 #: Type of the optional ``help_json_transform`` hook: ``(schema, command, ctx) -> schema``.
 HelpJSONTransform = Callable[[Dict[str, Any], click.Command, click.Context], Dict[str, Any]]
 
+#: Type of a custom ``--help`` format renderer registered via the ``help_formats`` config option:
+#: ``(command, ctx) -> str``. Lets a new ``--help <name>`` format be added without subclassing.
+HelpFormatRenderer = Callable[[click.Command, click.Context], str]
+
 # Keys Click/rich-click put in a *parameter's* ``to_info_dict()``. We map the useful ones onto a
 # compact representation deliberately; any key NOT listed here is treated as developer-supplied
 # metadata and merged onto the parameter verbatim.
@@ -253,22 +257,24 @@ def _help_option_ids(cmd: click.Command, ctx: click.Context) -> "set[int]":
     return ids
 
 
-def _help_format_names(cmd: click.Command) -> List[str]:
+def _help_format_names(cmd: click.Command, ctx: Optional[click.Context] = None) -> List[str]:
     """
     Return the machine-readable format values ``--help`` accepts (``markdown``, ``json``, ...).
 
-    Drawn from the command's ``help_formats`` registry and de-duplicated by target, so an alias (``md``)
-    is not listed next to its canonical name (``markdown``). Surfaced as the ``--help`` option's
-    ``choices`` so an agent reading the schema can discover the formats exist.
+    Built-ins come from the command's ``help_formats`` registry, de-duplicated by target so an alias
+    (``md``) is not listed next to its canonical name (``markdown``). Any process-wide custom formats
+    registered on the config (``help_formats``) are appended. Surfaced as the ``--help`` option's
+    ``choices`` and in its metavar, so both a human and an agent can discover the formats exist.
     """
-    formats = getattr(cmd, "help_formats", None)
-    if not formats:
-        return []
-    seen: "set[str]" = set()
     names: List[str] = []
-    for name, target in formats.items():
-        if target not in seen:
-            seen.add(target)
+    seen_targets: "set[str]" = set()
+    for name, target in (getattr(cmd, "help_formats", None) or {}).items():
+        if target not in seen_targets:
+            seen_targets.add(target)
+            names.append(name)
+    config = getattr(ctx, "help_config", None)
+    for name in getattr(config, "help_formats", None) or {}:
+        if name not in names:
             names.append(name)
     return names
 
@@ -368,7 +374,7 @@ def command_schema(
         param_dict = _param_to_dict(param.to_info_dict())
         # Surface the formats ``--help`` accepts as its choices, so an agent discovers them in the data.
         if id(param) in help_ids and not param_dict.get("choices"):
-            formats = _help_format_names(cmd)
+            formats = _help_format_names(cmd, ctx)
             if formats:
                 param_dict["choices"] = formats
         params.append(param_dict)
@@ -450,7 +456,7 @@ def _carapace_params(
             elif id(param) in help_ids:
                 # ``--help`` is not a Choice type, but it accepts the machine-readable format values;
                 # offer those as completions so `--help <TAB>` suggests markdown/json/...
-                formats = _help_format_names(cmd)
+                formats = _help_format_names(cmd, ctx)
                 if formats:
                     completion_flag[_carapace_flag_name(opts)] = formats
 

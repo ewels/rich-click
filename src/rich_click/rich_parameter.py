@@ -119,17 +119,14 @@ class RichHelpOption(RichOption):
         registry isn't reachable (e.g. older Click that calls ``make_metavar()`` without a ctx).
         """
         ctx = args[0] if args else kwargs.get("ctx")
-        formats = getattr(getattr(ctx, "command", None), "help_formats", None)
-        if not formats:
+        cmd = getattr(ctx, "command", None)
+        if cmd is None:
             return "FORMAT"
-        preview = [name for name in ("markdown", "json") if name in formats]
-        if not preview:
-            seen = set()
-            for name, target in formats.items():
-                if target not in seen:
-                    seen.add(target)
-                    preview.append(name)
-                if len(preview) == 2:
-                    break
-        suffix = "|..." if len(formats) > len(preview) else ""
+        from rich_click.help_json import _help_format_names
+
+        names = _help_format_names(cmd, ctx)  # built-ins (deduped) + any config-registered formats
+        if not names:
+            return "FORMAT"
+        preview = [name for name in ("markdown", "json") if name in names] or names[:2]
+        suffix = "|..." if len(names) > len(preview) else ""
         return "[" + "|".join(preview) + suffix + "]"

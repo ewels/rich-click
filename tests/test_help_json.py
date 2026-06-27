@@ -350,6 +350,30 @@ def test_help_json_transform_hook(cli_runner: CliRunner) -> None:
     assert schema["version"] == "1.2.3"
 
 
+def test_custom_help_format_registered_via_config(cli_runner: CliRunner) -> None:
+    # A new `--help <name>` format can be added process-wide via the `help_formats` config option,
+    # without subclassing RichCommand. The renderer is `(command, ctx) -> str`.
+    rc.HELP_FORMATS = {"yaml": lambda cmd, ctx: f"yaml-for: {cmd.name}"}
+
+    @command()
+    @option("--name", help="A name.")
+    def cli(name: str) -> None:
+        """Hi."""
+
+    # 1. The custom format dispatches.
+    result = cli_runner.invoke(cli, ["--help=yaml"])
+    assert result.exit_code == 0
+    assert result.output.strip() == "yaml-for: cli"
+    # 2. It is discoverable: listed in the --help option's choices and in the metavar.
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
+    help_param = next(param for param in schema["params"] if param["name"] == "help")
+    assert "yaml" in help_param["choices"]
+    # 3. An unknown format still falls back to the normal human-readable help.
+    fallback = cli_runner.invoke(cli, ["--help=bogus"])
+    assert fallback.exit_code == 0
+    assert fallback.output.lstrip().startswith("Usage:")
+
+
 # --------------------------------------------------------------------------------------------------
 # `--help=json-full` (recursive) and `--help=carapace`.
 # --------------------------------------------------------------------------------------------------

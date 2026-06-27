@@ -18,7 +18,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.style import StyleType
     from rich.text import Text
 
-    from rich_click.help_json import HelpJSONTransform
+    from rich_click.help_json import HelpFormatRenderer, HelpJSONTransform
 
 T = TypeVar("T", bound="RichHelpConfiguration")
 
@@ -275,6 +275,12 @@ class RichHelpConfiguration:
     helptext_show_aliases: bool = field(default=True)
     help_json_transform: Optional["HelpJSONTransform"] = field(default=None, repr=False, compare=False)
     """Optional hook to post-process the machine-readable JSON schema: ``(schema, command, ctx) -> schema``."""
+    help_formats: Dict[str, "HelpFormatRenderer"] = field(default_factory=lambda: {}, repr=False, compare=False)
+    """Custom ``--help <name>`` formats, mapping a format name to a ``(command, ctx) -> str`` renderer.
+
+    A process-wide way to add a machine-readable format without subclassing ``RichCommand`` -- the
+    counterpart to the built-in :attr:`RichCommand.help_formats` registry (which maps to methods). Names
+    registered here are dispatched by ``--help`` and listed in its metavar/choices like the built-ins."""
     highlighter: Optional["Highlighter"] = field(default=None, repr=False, compare=False)
     """(Deprecated) Rich regex highlighter for help highlighting"""
 

@@ -21,7 +21,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.style import StyleType
     from rich.text import Text
 
-    from rich_click.help_json import HelpJSONTransform
+    from rich_click.help_json import HelpFormatRenderer, HelpJSONTransform
     from rich_click.rich_click_theme import RichClickTheme
 
 #!STARTCONFIG
@@ -182,6 +182,8 @@ HELPTEXT_SHOW_ALIASES: bool = True
 # Machine-readable help (`--help markdown`, `--help json`, `--help carapace`) is always available on
 # the `--help` flag. Optional hook to post-process the JSON schema: (schema, command, ctx) -> schema
 HELP_JSON_TRANSFORM: Optional["HelpJSONTransform"] = None
+# Register custom `--help <name>` formats without subclassing: {name: (command, ctx) -> str}.
+HELP_FORMATS: Dict[str, "HelpFormatRenderer"] = {}
 
 #!ENDCONFIG
 

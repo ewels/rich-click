@@ -382,16 +382,22 @@ class RichCommand(Command):
         Return this command's help rendered in a machine-readable format, or ``None`` if unrecognized.
 
         This is the dispatch behind the optional value on ``--help`` (``--help markdown``,
-        ``--help json``, ``--help carapace``), looked up in :attr:`help_formats`. An unknown format
-        returns ``None`` so the caller can fall back to the normal human-readable help rather than
-        erroring -- the format machinery only ever *adds* behaviour; it never changes what bare
-        ``--help`` does. Resolving via method name (not a bound method) means a subclass overriding e.g.
-        ``get_help_json`` is honoured.
+        ``--help json``, ``--help carapace``). It looks up the built-in :attr:`help_formats` registry
+        (name -> method), then the config's ``help_formats`` (name -> ``(command, ctx) -> str`` renderer),
+        so a custom format can be added either by subclassing or process-wide via config without
+        subclassing. An unknown format returns ``None`` so the caller can fall back to the normal
+        human-readable help rather than erroring -- the format machinery only ever *adds* behaviour; it
+        never changes what bare ``--help`` does. Resolving via method name (not a bound method) means a
+        subclass overriding e.g. ``get_help_json`` is honoured.
         """
-        method_name = self.help_formats.get((fmt or "").strip().lower())
-        if method_name is None:
-            return None
-        return cast(Optional[str], getattr(self, method_name)(ctx))
+        fmt = (fmt or "").strip().lower()
+        method_name = self.help_formats.get(fmt)
+        if method_name is not None:
+            return cast(Optional[str], getattr(self, method_name)(ctx))
+        renderer = getattr(ctx, "help_config", None) and ctx.help_config.help_formats.get(fmt)
+        if renderer is not None:
+            return cast(Optional[str], renderer(self, ctx))
+        return None
 
     def _serialize_help(self, data: Dict[str, Any]) -> str:
         import json

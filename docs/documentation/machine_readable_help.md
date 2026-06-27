@@ -326,7 +326,9 @@ class MyCommand(click.RichCommand):
 
 ### Adding a new format
 
-The `--help <format>` dispatch is a registry, `RichCommand.help_formats`, mapping each format name to the method that renders it. Add your own by extending it in a subclass — no need to touch the dispatch:
+There are two ways to register a new `--help <format>`, depending on whether you want it on a command subclass or process-wide.
+
+**On a subclass** — extend the `RichCommand.help_formats` registry (format name → method that renders it) and add the method. No need to touch the dispatch:
 
 ```python
 import rich_click as click
@@ -340,3 +342,20 @@ class MyCommand(click.RichCommand):
 
         return yaml.safe_dump(self.format_help_json(ctx, ctx.make_formatter()))
 ```
+
+**Without subclassing** — register a renderer on the `help_formats` **config** option (the counterpart to the class registry, mapping a format name to a `(command, ctx) -> str` callable). Set it like any other config option — e.g. process-wide via the globals module — and every rich-click CLI in the process gains the format:
+
+```python
+import rich_click as click
+import yaml
+
+
+def render_yaml(command, ctx):
+    return yaml.safe_dump(command.format_help_json(ctx, ctx.make_formatter()))
+
+
+click.rich_click.HELP_FORMATS = {"yaml": render_yaml}
+# `mytool --help yaml` now works, with no subclass.
+```
+
+Either way the new name is dispatched by `--help`, listed in its metavar, and surfaced in the `--help` option's `choices`.
