@@ -362,6 +362,13 @@ class RichCommand(Command):
             # Apply help_option decorator and pop resulting option
             help_option(*help_option_names)(self)
             self._help_option = self.params.pop()  # type: ignore[assignment]
+            # Stamp the formats this command serves onto the option, so its metavar renders the same
+            # ``[markdown|json|...]`` on Click 8.0 (which calls make_metavar() without a ctx) as elsewhere.
+            from rich_click.help_json import _help_format_names
+            from rich_click.rich_parameter import RichHelpOption
+
+            if isinstance(self._help_option, RichHelpOption):
+                self._help_option._available_formats = _help_format_names(self)
 
         return self._help_option
 

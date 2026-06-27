@@ -93,13 +93,13 @@ A few conventions keep examples useful — both to people skimming `--help` and 
 
 The panel reuses your options-panel styling (border, box, padding) so its frame matches the rest of the help screen. Within it, the description is **dim**, and the command line is coloured by role using dedicated, independently configurable styles:
 
-| Config option                   | Styles                          | Default       |
-| ------------------------------- | ------------------------------- | ------------- |
-| `style_examples_command`        | the command path / program name | `bold`        |
-| `style_examples_flag_long`      | long flags (`--dry-run`)        | `bold cyan`   |
-| `style_examples_flag_short`     | short flags (`-f`)              | `bold green`  |
-| `style_examples_placeholder`    | detected placeholders           | `blue`        |
-| `style_examples_operator`       | shell operators (`\|`, `>`, `&&`) | `bold yellow` |
+| Config option                | Styles                            | Default       |
+| ---------------------------- | --------------------------------- | ------------- |
+| `style_examples_command`     | the command path / program name   | `bold`        |
+| `style_examples_flag_long`   | long flags (`--dry-run`)          | `bold cyan`   |
+| `style_examples_flag_short`  | short flags (`-f`)                | `bold green`  |
+| `style_examples_placeholder` | detected placeholders             | `blue`        |
+| `style_examples_operator`    | shell operators (`\|`, `>`, `&&`) | `bold yellow` |
 
 The panel title defaults to `Examples` and is set with `examples_panel_title`:
 
