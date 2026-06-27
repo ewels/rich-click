@@ -40,7 +40,8 @@ $ mytool deploy --help
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
 
-Each example is laid out [`tldr`](https://github.com/tldr-pages/tldr)-style: the description is the heading, with the command indented beneath. The panel only appears when a command defines examples, so commands without them are unchanged. Commands and groups both accept `examples=`.
+The panel only appears when a command defines examples, so commands without them are unchanged.
+Commands and groups both accept `examples=`.
 
 ## Placeholder highlighting
 
