@@ -1,15 +1,16 @@
 """
 Machine-readable help formats for rich-click CLIs.
 
-These power the format values on the existing ``--help`` flag -- ``--help json``,
-``--help json-full`` and ``--help carapace`` -- so tooling and LLM agents can discover
-a CLI's structure as data instead of scraping the rendered ``--help`` screen. No new
+These power the format values on the existing ``--help`` flag -- ``--help markdown``,
+``--help json``, ``--help json-full`` and ``--help carapace`` -- so tooling and LLM agents can
+discover a CLI's structure as data instead of scraping the rendered ``--help`` screen. No new
 flag is added; the capability lives on ``--help`` and bare ``--help`` is unchanged.
 
-``--help json`` uses progressive disclosure: it reports the *current* command's help,
-usage and full parameter detail, plus a name-only index of subcommands, so agents land
-on a command, read its parameters as data, and drill into subcommands by name as needed.
-``--help json-full`` expands every descendant to full detail in one call; ``--help carapace``
+``--help markdown`` renders the structure as LLM-friendly Markdown; like ``--help json`` it uses
+progressive disclosure, reporting the *current* command's help, usage and full parameter detail,
+plus a name-only index of subcommands, so agents land on a command, read its parameters as data,
+and drill into subcommands by name as needed. The ``-full`` variants (``--help markdown-full`` /
+``--help json-full``) expand every descendant to full detail in one call; ``--help carapace``
 maps the tree onto the carapace completion spec.
 
 Composability: the schema is built from each command's ``to_info_dict()`` -- the
@@ -108,6 +109,36 @@ def _passthrough_extensions(info: Dict[str, Any], consumed: "frozenset[str]") ->
         for key, value in info.items()
         if key not in consumed and not _is_empty(value)
     }
+
+
+def _coerce_examples(value: Any) -> List[Dict[str, str]]:
+    """
+    Coerce a command's ``examples`` into a list of ``{"description", "command"}`` dicts.
+
+    The normal ``examples=`` path already stores this shape (see ``RichCommand._normalize_examples``),
+    but ``examples`` can also reach us via a ``to_info_dict()`` override -- the documented extension
+    point -- where it may instead be raw ``(description, command)`` pairs, bare command strings, or
+    dicts. Normalizing at this single chokepoint means every output format (JSON, carapace, Markdown)
+    sees one consistent shape rather than each defending against the others' assumptions. Items that
+    can't be coerced are skipped rather than crashing the dump.
+    """
+    examples: List[Dict[str, str]] = []
+    for item in value or []:
+        if isinstance(item, dict):
+            command = item.get("command")
+            if command is None:
+                continue
+            examples.append({"description": str(item.get("description") or ""), "command": str(command)})
+        elif isinstance(item, str):
+            examples.append({"description": "", "command": item})
+        else:
+            # A (description, command) pair, like the constructor accepts.
+            try:
+                description, command = item
+            except (TypeError, ValueError):
+                continue
+            examples.append({"description": str(description), "command": str(command)})
+    return examples
 
 
 def _param_to_dict(info: Dict[str, Any]) -> Dict[str, Any]:
@@ -239,17 +270,49 @@ def _iter_child_contexts(cmd: click.Command, ctx: click.Context) -> Iterator[Tup
         try:
             child_ctx = child.make_context(name, [], parent=ctx, resilient_parsing=True)
         except click.ClickException:
-            # Skip a child that can't be contextualized with no args (a usage/parameter error). A real
-            # bug in the child (TypeError, etc.) is NOT swallowed -- it propagates so it isn't masked.
+            # ``resilient_parsing=True`` suppresses the usual missing-required-argument / bad-value
+            # errors, so this only fires for a child that raises a ClickException *even under resilient
+            # parsing* -- e.g. a custom command that validates eagerly in ``make_context``/``parse_args``.
+            # Such a child can't be entered, so it's skipped here. Callers that need set-equality with the
+            # lean index recover it: ``_subcommand_index_full`` falls back to a degraded node so it still
+            # appears (carapace, a completion spec, simply omits what it can't introspect). A real bug in
+            # the child (TypeError, etc.) is NOT swallowed -- it propagates so it isn't masked.
             continue
         yield name, child, child_ctx
 
 
+def _degraded_schema(name: str, info: Dict[str, Any], parent_ctx: click.Context) -> Dict[str, Any]:
+    """
+    Minimal schema node for a child that couldn't be contextualized (raised a ClickException even under
+    resilient parsing), so it can't be fully expanded.
+
+    Built from its ``to_info_dict()`` alone -- no context -- so the recursive formats still list it
+    (matching the lean ``--help json`` index) instead of silently dropping it. Its own descendants are
+    not walked, since we couldn't enter it; consumers can re-run ``--help`` on that command directly.
+    """
+    schema: Dict[str, Any] = {"name": info.get("name") or name, "path": f"{parent_ctx.command_path} {name}".strip()}
+    help_text = _strip_markup(info.get("help"))
+    if help_text:
+        schema["help"] = help_text
+    for key, value in _passthrough_extensions(info, _CONSUMED_CMD_KEYS).items():
+        schema.setdefault(key, value)
+    return schema
+
+
 def _subcommand_index_full(cmd: click.Command, ctx: click.Context, child_infos: Dict[str, Any]) -> Dict[str, Any]:
-    """Recursively expand every descendant to its full schema (params, usage, nested subcommands)."""
-    return {
+    """
+    Recursively expand every descendant to its full schema (params, usage, nested subcommands).
+
+    Iterates ``child_infos`` -- the same ``to_info_dict()``-derived source the lean index uses -- so the
+    full walk lists exactly the same subcommands as ``--help json`` (a child that can't be entered gets a
+    degraded node rather than vanishing), and the ordering stays stable.
+    """
+    full = {
         name: command_schema(child, child_ctx, recursive=True, info=child_infos.get(name))
         for name, child, child_ctx in _iter_child_contexts(cmd, ctx)
+    }
+    return {
+        name: full[name] if name in full else _degraded_schema(name, info, ctx) for name, info in child_infos.items()
     }
 
 
@@ -285,8 +348,9 @@ def command_schema(
         schema["help"] = help_text
     schema["usage"] = " ".join([ctx.command_path, *cmd.collect_usage_pieces(ctx)])
     schema["params"] = params
-    if info.get("examples"):
-        schema["examples"] = info["examples"]
+    examples = _coerce_examples(info.get("examples"))
+    if examples:
+        schema["examples"] = examples
     if "commands" in info:
         if recursive:
             schema["subcommands"] = _subcommand_index_full(cmd, ctx, info["commands"])
@@ -363,8 +427,14 @@ def _carapace_params(
                 if help_text:
                     documentation["positionalany"] = help_text
             else:
-                positional.append(candidates)
-                positional_doc.append(help_text)
+                # A fixed-arity argument occupies ``nargs`` positional slots (nargs defaults to 1).
+                # Carapace's positional arrays hold one entry per slot, so repeat this argument's
+                # candidates/help once per slot it consumes -- otherwise an ``nargs=2`` argument would
+                # shift every later positional one slot to the left and mis-target its completions.
+                slots = nargs if isinstance(nargs, int) and nargs > 0 else 1
+                for _ in range(slots):
+                    positional.append(candidates)
+                    positional_doc.append(help_text)
 
     if completion_flag:
         completion["flag"] = completion_flag
@@ -418,10 +488,11 @@ def carapace_command(cmd: click.Command, ctx: click.Context, info: Optional[Dict
     if documentation:
         result["documentation"] = documentation
 
-    # Carapace's ``examples`` is a {string: string} map; we key it by the command line.
-    examples = info.get("examples")
+    # Carapace's ``examples`` is a {string: string} map; we key it by the command line. (Two examples
+    # that share a command line collapse to one entry -- see the carapace note in the docs.)
+    examples = _coerce_examples(info.get("examples"))
     if examples:
-        result["examples"] = {ex["command"]: ex.get("description", "") for ex in examples}
+        result["examples"] = {ex["command"]: ex["description"] for ex in examples}
 
     children = _carapace_subcommands(cmd, ctx, info.get("commands") or {})
     if children:
@@ -489,22 +560,18 @@ def _md_param_description(param: Dict[str, Any]) -> str:
 
 def _md_param_table(params: List[Dict[str, Any]], *, is_option: bool) -> List[str]:
     """Render a list of option/argument dicts as a Markdown table."""
-    if is_option:
-        rows = ["| Option | Type | Required | Default | Description |", "| --- | --- | --- | --- | --- |"]
-    else:
-        rows = ["| Argument | Type | Required | Description |", "| --- | --- | --- | --- |"]
+    label = "Option" if is_option else "Argument"
+    rows = [f"| {label} | Type | Required | Default | Description |", "| --- | --- | --- | --- | --- |"]
     for param in params:
         required = "yes" if param.get("required") else ""
+        # An argument with a default carries it in the schema just like an option does, so render a
+        # Default column for both -- otherwise a positional's default silently disappears in Markdown.
+        default = f"`{_md_escape(param['default'])}`" if "default" in param else ""
         if is_option:
             names = ", ".join(f"`{opt}`" for opt in [*(param.get("opts") or []), *(param.get("secondary_opts") or [])])
-            default = f"`{_md_escape(param['default'])}`" if "default" in param else ""
-            rows.append(
-                f"| {names} | {_md_param_type(param)} | {required} | {default} | {_md_param_description(param)} |"
-            )
         else:
-            rows.append(
-                f"| `{param.get('name', '')}` | {_md_param_type(param)} | {required} | {_md_param_description(param)} |"
-            )
+            names = f"`{param.get('name', '')}`"
+        rows.append(f"| {names} | {_md_param_type(param)} | {required} | {default} | {_md_param_description(param)} |")
     return rows
 
 

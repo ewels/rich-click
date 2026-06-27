@@ -32,7 +32,7 @@ def test_groups_sorting_help(cli_runner: CliRunner, cli: rich_click.RichCommand)
 │ --debug/--no-debug  -d/-n  Show the debug log messages [default: no-debug]                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Help ───────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  -h  Show this message and exit.                                                          │
+│ --help  -h  [markdown|json|...]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Main usage ─────────────────────────────────────────────────────────────────────────────────────╮
 │ sync             Synchronise all your files between two places.                                  │
@@ -63,7 +63,7 @@ Debug mode is off
 │    --output  -o  TEXT  Output path                                                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Subcommand help ────────────────────────────────────────────────────────────────────────────────╮
-│ --help  -h  Show this message and exit.                                                          │
+│ --help  -h  [markdown|json|...]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --all        Sync all the things?                                                                │
@@ -86,7 +86,7 @@ Debug mode is off
  Pretend to download some files from somewhere.                                                     \n\
                                                                                                     \n\
 ╭─ Subcommand help ────────────────────────────────────────────────────────────────────────────────╮
-│ --help  -h  Show this message and exit.                                                          │
+│ --help  -h  [markdown|json|...]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --all  Get everything                                                                            │
@@ -108,7 +108,7 @@ Debug mode is off
  Set up the configuration.                                                                          \n\
                                                                                                     \n\
 ╭─ Subcommand help ────────────────────────────────────────────────────────────────────────────────╮
-│ --help  -h  Show this message and exit.                                                          │
+│ --help  -h  [markdown|json|...]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -135,7 +135,7 @@ Debug mode is off
 │ --role   -r  TEXT  Role                                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Auth help ──────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  -h  Show this message and exit.                                                          │
+│ --help  -h  [markdown|json|...]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )

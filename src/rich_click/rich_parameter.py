@@ -102,28 +102,34 @@ class RichHelpOption(RichOption):
     The ``--help`` option.
 
     Built as an optional-value option (``is_flag=False`` with a ``flag_value`` sentinel) so it can
-    accept an optional format -- ``--help json``, ``--help carapace``, ... -- while a bare ``--help``
+    accept an optional format -- ``--help markdown``, ``--help json``, ... -- while a bare ``--help``
     still shows the normal human-readable help. It renders like any other option whose value is a fixed
-    set: the available formats are listed as the metavar (``[json|markdown|...]``), rather than appended
-    to the help text.
+    set: a compact hint of the available formats is shown as the metavar (``[markdown|json|...]``),
+    rather than appended to the help text.
     """
 
     def make_metavar(self, *args: Any, **kwargs: Any) -> str:
         """
-        List the available formats as the metavar, like a ``Choice`` option.
+        Show a compact hint of the available formats as the metavar, like a ``Choice`` option.
 
-        The formats come from the command's ``help_formats`` registry, de-duplicated by target so an
-        alias (``md``) is not listed next to its canonical name (``markdown``). Falls back to ``FORMAT``
-        when the registry isn't reachable (e.g. older Click that calls ``make_metavar()`` without a ctx).
+        Listing every format would crowd the ``--help`` row (and wrap on narrow terminals), so we show a
+        couple of representative formats followed by an ellipsis, e.g. ``[markdown|json|...]``. The
+        preview is drawn from the command's ``help_formats`` registry -- preferring the headline names
+        and otherwise the first distinct formats in registry order. Falls back to ``FORMAT`` when the
+        registry isn't reachable (e.g. older Click that calls ``make_metavar()`` without a ctx).
         """
         ctx = args[0] if args else kwargs.get("ctx")
         formats = getattr(getattr(ctx, "command", None), "help_formats", None)
         if not formats:
             return "FORMAT"
-        seen = set()
-        names = []
-        for name, target in formats.items():
-            if target not in seen:
-                seen.add(target)
-                names.append(name)
-        return "[" + "|".join(names) + "]"
+        preview = [name for name in ("markdown", "json") if name in formats]
+        if not preview:
+            seen = set()
+            for name, target in formats.items():
+                if target not in seen:
+                    seen.add(target)
+                    preview.append(name)
+                if len(preview) == 2:
+                    break
+        suffix = "|..." if len(formats) > len(preview) else ""
+        return "[" + "|".join(preview) + suffix + "]"

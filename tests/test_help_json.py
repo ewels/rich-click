@@ -261,7 +261,10 @@ def test_help_json_passthrough_of_custom_fields(cli_runner: CliRunner) -> None:
         """Hi."""
 
     schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
-    assert schema["examples"] == ["cli --token=XXX"]
+    # `examples` injected via a to_info_dict override is normalized to the canonical {description,
+    # command} shape, so every format (json/carapace/markdown) sees the same thing -- a bare command
+    # string becomes an example with an empty description.
+    assert schema["examples"] == [{"description": "", "command": "cli --token=XXX"}]
     token = next(param for param in schema["params"] if param["name"] == "token")
     assert token["sensitive"] is True
 
@@ -629,6 +632,54 @@ def test_examples_in_carapace(cli_runner: CliRunner) -> None:
 
     doc = json.loads(cli_runner.invoke(cli, ["--help=carapace"]).output)
     assert doc["examples"] == {"tool do thing": "Do a thing", "tool do other": "Do the other thing"}
+
+
+def test_examples_non_dict_shape_via_to_info_dict_does_not_crash(cli_runner: CliRunner) -> None:
+    # `examples` can arrive via a to_info_dict override as raw strings or (description, command) pairs
+    # rather than the normalized dicts. Every format coerces to one shape rather than crashing.
+    class CustomCommand(RichCommand):
+        def to_info_dict(self, ctx: "click.Context") -> "Dict[str, Any]":
+            info = super().to_info_dict(ctx)
+            info["examples"] = ["tool raw", ("Greet", "tool hello")]  # str + tuple, not dicts
+            return info
+
+    @command(cls=CustomCommand)
+    def cli() -> None:
+        """Hi."""
+
+    expected = [{"description": "", "command": "tool raw"}, {"description": "Greet", "command": "tool hello"}]
+    assert json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["examples"] == expected
+    carapace = json.loads(cli_runner.invoke(cli, ["--help=carapace"]).output)
+    assert carapace["examples"] == {"tool raw": "", "tool hello": "Greet"}
+    md = cli_runner.invoke(cli, ["--help=md"]).output
+    assert "`tool raw`" in md and "Greet: `tool hello`" in md
+
+
+def test_json_full_lists_uncontextualizable_subcommand(cli_runner: CliRunner) -> None:
+    # A child that raises a ClickException even under resilient parsing can't be entered, but the
+    # recursive dump still lists it (as a degraded node) so json-full matches the lean json index
+    # rather than silently dropping it.
+    class Eager(RichCommand):
+        def make_context(self, *args: Any, **kwargs: Any) -> Any:
+            raise click.UsageError("cannot enter")
+
+    @group()
+    def cli() -> None:
+        """Root."""
+
+    @cli.command()
+    def normal() -> None:
+        """Normal."""
+
+    cli.add_command(Eager(name="eager", help="Eager command."))
+
+    lean = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["subcommands"]
+    full = json.loads(cli_runner.invoke(cli, ["--help=json-full"]).output)["subcommands"]
+    assert set(lean) == set(full) == {"normal", "eager"}
+    # The degraded node carries name/path/help but not the params/usage of a fully-walked command.
+    assert full["eager"] == {"name": "eager", "path": "cli eager", "help": "Eager command."}
+    # markdown-full renders the degraded node as a section rather than breaking on a missing path.
+    assert "# `cli eager`" in cli_runner.invoke(cli, ["--help=markdown-full"]).output
 
 
 def test_examples_recursive_json_full(cli_runner: CliRunner) -> None:

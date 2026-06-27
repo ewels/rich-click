@@ -32,7 +32,7 @@ def test_typer_types_help(typer_cli_runner: CliRunner, cli: typer.Typer) -> None
  --install-completion  Install completion for the current shell.                                    \n\
  --show-completion     Show completion for the current shell, to copy it or customize the           \n\
                        installation.                                                                \n\
- --help                Show this message and exit.                                                  \n\
+ --help                Show this message and exit. [markdown|json|...]                              \n\
                                                                                                     \n\
  ═ Logging ════════════════════════════════════════════════════════════════════════════════════════ \n\
  --log-level         [debug|info|warn|error] (Default: info)                                        \n\
@@ -61,7 +61,7 @@ def test_typer_types_help_renamed_default_panel(typer_cli_runner: CliRunner, cli
  --install-completion  Install completion for the current shell.                                    \n\
  --show-completion     Show completion for the current shell, to copy it or customize the           \n\
                        installation.                                                                \n\
- --help                Show this message and exit.                                                  \n\
+ --help                Show this message and exit. [markdown|json|...]                              \n\
                                                                                                     \n\
  ═ Logging ════════════════════════════════════════════════════════════════════════════════════════ \n\
  --log-level         [debug|info|warn|error] (Default: info)                                        \n\

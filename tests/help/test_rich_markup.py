@@ -27,11 +27,11 @@ def test_rich_markup_help(cli_runner: CliRunner, cli: rich_click.RichCommand) ->
  You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --input  PATH  Input file. [default: a custom default]                                           │
-│ --type   TEXT  Type of file to sync [default: files]                                             │
-│ --all          Sync all the things?                                                              │
-│ --debug        Enable 👉 debug mode 👈                                                           │
-│ --help         Show this message and exit.                                                       │
+│ --input  PATH                 Input file. [default: a custom default]                            │
+│ --type   TEXT                 Type of file to sync [default: files]                              │
+│ --all                         Sync all the things?                                               │
+│ --debug                       Enable 👉 debug mode 👈                                            │
+│ --help   [markdown|json|...]  Show this message and exit.                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -54,11 +54,11 @@ def test_rich_markup_help_turn_off_rich_markup(cli_runner: CliRunner, cli: rich_
  [i]You can try using --help at the top level and also for specific group subcommands.[/]           \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --input  PATH  Input [magenta bold]file[/]. [dim]\\[default: a custom default][/]                 │
-│ --type   TEXT  Type of file to sync [default: files]                                             │
-│ --all          Sync all the things?                                                              │
-│ --debug        Enable :point_right: [yellow]debug mode[/] :point_left:                           │
-│ --help         Show this message and exit.                                                       │
+│ --input  PATH                 Input [magenta bold]file[/]. [dim]\\[default: a custom default][/]  │
+│ --type   TEXT                 Type of file to sync [default: files]                              │
+│ --all                         Sync all the things?                                               │
+│ --debug                       Enable :point_right: [yellow]debug mode[/] :point_left:            │
+│ --help   [markdown|json|...]  Show this message and exit.                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -88,11 +88,11 @@ def test_markdown_help_text_markup_field(cli_runner: CliRunner, cli: rich_click.
  You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --input  PATH  Input file. [default: a custom default]                                           │
-│ --type   TEXT  Type of file to sync [default: files]                                             │
-│ --all          Sync all the things?                                                              │
-│ --debug        Enable 👉 debug mode 👈                                                           │
-│ --help         Show this message and exit.                                                       │
+│ --input  PATH                 Input file. [default: a custom default]                            │
+│ --type   TEXT                 Type of file to sync [default: files]                              │
+│ --all                         Sync all the things?                                               │
+│ --debug                       Enable 👉 debug mode 👈                                            │
+│ --help   [markdown|json|...]  Show this message and exit.                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )

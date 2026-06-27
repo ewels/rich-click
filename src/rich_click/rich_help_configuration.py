@@ -128,7 +128,7 @@ class RichHelpConfiguration:
     style_usage_command: "StyleType" = field(default=FROM_THEME)
     style_usage_separator: "StyleType" = field(default=FROM_THEME)
     # Styles for the command lines rendered in the Examples panel (independent of the rest of the help).
-    # Command/flag defaults mirror the main help styles; placeholders stand out in magenta.
+    # Command/flag defaults mirror the main help styles; placeholders stand out in blue.
     style_examples_command: "StyleType" = field(default="bold")
     style_examples_flag_long: "StyleType" = field(default="bold cyan")
     style_examples_flag_short: "StyleType" = field(default="bold green")

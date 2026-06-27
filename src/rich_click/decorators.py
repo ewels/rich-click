@@ -315,8 +315,9 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     and exits the program.
 
     Accepts an optional format value so the same flag can also emit machine-readable help:
-    ``--help json`` (progressive), ``--help json-full`` (whole tree) and ``--help carapace``. The space
-    form is the documented one, though the attached form (``--help=json``) works too. A bare ``--help``
+    ``--help markdown`` (LLM-friendly), ``--help json`` (progressive), ``--help json-full`` (whole tree)
+    and ``--help carapace``. The space form is the documented one, though the attached form
+    (``--help=json``) works too. A bare ``--help``
     is unchanged, and an unrecognized value falls back to the normal help rather than erroring (just as
     the plain ``--help`` always ignored anything that followed it).
 

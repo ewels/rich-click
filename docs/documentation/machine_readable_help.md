@@ -8,10 +8,10 @@ Those consumers struggle with the rendered `--help` screen: it is laid out for h
 | Invocation                       | Output                                                                                                               |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | `--help`                         | The normal human-readable help. **Unchanged** — byte-for-byte identical to before.                                   |
-| `--help json`                    | Machine-readable JSON for the current command, plus a name-only index of its subcommands (_progressive disclosure_). |
-| `--help json-full`               | The whole command tree in one call, with full parameter detail at every node.                                        |
 | `--help markdown` (alias `md`)   | LLM-friendly Markdown for the current command, plus a subcommand index (_progressive disclosure_).                   |
 | `--help markdown-full` (`md-full`) | LLM-friendly Markdown documenting every command in the tree.                                                        |
+| `--help json`                    | Machine-readable JSON for the current command, plus a name-only index of its subcommands (_progressive disclosure_). |
+| `--help json-full`               | The whole command tree in one call, with full parameter detail at every node.                                        |
 | `--help carapace`                | Output conforming to the [carapace](https://carapace.sh) completion spec.                                            |
 
 This capability is **always available** on every rich-click CLI — there is nothing to enable, and bare `--help` is untouched. The format machinery only engages when a value is given.
@@ -26,6 +26,36 @@ The example CLI used throughout this page:
 ```
 
 See the [Configuration](configuration.md) page for how to set config options globally or per-command with the `rich_config` decorator.
+
+## `--help markdown`: Markdown for LLMs
+
+`--help markdown` (alias `--help md`) renders the CLI's structure as Markdown, tuned for dropping into an LLM prompt: headings for hierarchy, each command titled by its **full invocation path** so the section is unambiguous out of context, and parameters laid out as compact tables.
+
+```console
+$ mytool hello --help markdown
+```
+
+```markdown
+# `cli hello`
+
+Greet someone.
+
+**Usage:** `cli hello [OPTIONS] NAME`
+
+## Arguments
+
+| Argument | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `name` | String | yes |  |  |
+
+## Options
+
+| Option | Type | Required | Default | Description |
+| --- | --- | --- | --- | --- |
+| `--count` | Int |  | `1` | Number of greetings. |
+```
+
+It is progressive: the current command is documented in full, and subcommands appear as a nested name index. `--help markdown-full` (alias `--help md-full`) instead documents **every** command in the tree, each as its own top-level (`#`) section — a flat, uniform layout that is easy for a model to parse and navigate by path.
 
 ## `--help json`: progressive disclosure
 
@@ -138,36 +168,6 @@ $ mytool --help json-full
 }
 ```
 
-## `--help markdown`: Markdown for LLMs
-
-`--help markdown` (alias `--help md`) renders the same data as Markdown, tuned for dropping into an LLM prompt: headings for hierarchy, each command titled by its **full invocation path** so the section is unambiguous out of context, and parameters laid out as compact tables.
-
-```console
-$ mytool hello --help markdown
-```
-
-```markdown
-# `cli hello`
-
-Greet someone.
-
-**Usage:** `cli hello [OPTIONS] NAME`
-
-## Arguments
-
-| Argument | Type | Required | Description |
-| --- | --- | --- | --- |
-| `name` | String | yes |  |
-
-## Options
-
-| Option | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `--count` | Int |  | `1` | Number of greetings. |
-```
-
-Like `--help json`, it is progressive: the current command is documented in full, and subcommands appear as a nested name index. `--help markdown-full` (alias `--help md-full`) instead documents **every** command in the tree, each as its own top-level (`#`) section — a flat, uniform layout that is easy for a model to parse and navigate by path.
-
 ## `--help carapace`: completion spec
 
 [carapace](https://carapace.sh) is a multi-shell completion engine. Emitting `--help carapace` produces a document conforming to its [command spec](https://carapace.sh/schemas/command.json), so a rich-click CLI becomes a **producer** for carapace's consumer ecosystem.
@@ -202,6 +202,12 @@ LLMs respond well to concrete examples. If you give commands examples with the [
 - `--help markdown` / `--help markdown-full` — an `## Examples` section.
 - `--help json` / `--help json-full` — an `examples` array of `{"command", "description"}` objects.
 - `--help carapace` — the spec's `examples` map, keyed by the command line.
+
+!!! note
+    The carapace `examples` field is a map keyed by the command line, as the spec requires. If two
+    examples share the same command (differing only in their descriptions), they collapse to a single
+    entry and the last description wins. The `--help json` formats keep every example as a list, so use
+    those if you need to preserve duplicates.
 
 See [Command Examples](examples.md) for how to define them.
 
@@ -282,10 +288,10 @@ For full control, the serialization mirrors Click's own `get_help` / `format_hel
 
 | Format             | `get_*` method          | Override this               |
 | ------------------ | ----------------------- | --------------------------- |
-| `--help json`          | `get_help_json`         | `format_help_json`          |
-| `--help json-full`     | `get_help_json_full`    | `format_help_json_full`     |
 | `--help markdown`      | `get_help_markdown`     | `format_help_markdown`      |
 | `--help markdown-full` | `get_help_markdown_full`| `format_help_markdown_full` |
+| `--help json`          | `get_help_json`         | `format_help_json`          |
+| `--help json-full`     | `get_help_json_full`    | `format_help_json_full`     |
 | `--help carapace`      | `get_help_carapace`     | `format_help_carapace`      |
 
 ```python

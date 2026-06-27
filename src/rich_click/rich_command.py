@@ -368,12 +368,12 @@ class RichCommand(Command):
     #: Maps a ``--help <format>`` value to the name of the method that renders it. Extend in a subclass
     #: to add a custom format, e.g. ``help_formats = {**RichCommand.help_formats, "yaml": "get_help_yaml"}``.
     help_formats: ClassVar[Dict[str, str]] = {
-        "json": "get_help_json",
-        "json-full": "get_help_json_full",
         "markdown": "get_help_markdown",
         "md": "get_help_markdown",
         "markdown-full": "get_help_markdown_full",
         "md-full": "get_help_markdown_full",
+        "json": "get_help_json",
+        "json-full": "get_help_json_full",
         "carapace": "get_help_carapace",
     }
 
@@ -381,8 +381,8 @@ class RichCommand(Command):
         """
         Return this command's help rendered in a machine-readable format, or ``None`` if unrecognized.
 
-        This is the dispatch behind the optional value on ``--help`` (``--help json``,
-        ``--help json-full``, ``--help carapace``), looked up in :attr:`help_formats`. An unknown format
+        This is the dispatch behind the optional value on ``--help`` (``--help markdown``,
+        ``--help json``, ``--help carapace``), looked up in :attr:`help_formats`. An unknown format
         returns ``None`` so the caller can fall back to the normal human-readable help rather than
         erroring -- the format machinery only ever *adds* behaviour; it never changes what bare
         ``--help`` does. Resolving via method name (not a bound method) means a subclass overriding e.g.
