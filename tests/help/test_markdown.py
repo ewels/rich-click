@@ -210,3 +210,80 @@ def test_markdown_help_text_markup_field_rich_13(cli_runner: CliRunner, cli: ric
 """
     )
     assert result.stderr == snapshot("")
+
+
+@pytest.mark.skipif(rich_version < packaging.version.parse("14.3.0"), reason="Rich >=14.3 has different table styles")
+def test_markdown_help_rich_14_3(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    with pytest.warns(PendingDeprecationWarning, match=r"`use_markdown=` will be deprecated.*"):
+        result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: cli [OPTIONS]                                                                               \n\
+                                                                                                    \n\
+ My amazing tool does all the things.                                                               \n\
+ This is a minimal example based on documentation from the click package.                           \n\
+                                                                                                    \n\
+ ▌ Remember:                                                                                        \n\
+ ▌  • You can try using --help at the top level                                                     \n\
+ ▌  • Also for specific group subcommands.                                                          \n\
+                                                                                                    \n\
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --input  PATH                 Input file. [default: a custom default]                            │
+│ --type   TEXT                 Type of file to sync                                               │
+│                               [default: files]                                                   │
+│ --all                         Sync                                                               │
+│                                                                                                  │
+│                                1 all                                                             │
+│                                2 the                                                             │
+│                                3 things?                                                         │
+│ --debug                                               Enable debug mode                          │
+│ --help   [markdown|json|...]  Show this message and exit.                                        │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+"""
+    )
+    assert result.stderr == snapshot("")
+
+
+@pytest.mark.skipif(rich_version < packaging.version.parse("14.3.0"), reason="Rich >=14.3 has different table styles")
+def test_markdown_help_text_markup_field_rich_14_3(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    # USE_MARKDOWN is silently deprecated, and we prefer `text_markup` mode.
+    #
+    # The previous test ensures that the global works properly when disabled.
+    #
+    # This test turns off the global, and wraps the code in a help config
+    # with `{"text_markup": "markdown"}`.
+    rc.USE_MARKDOWN = False
+    cli = rich_click.rich_config(help_config={"text_markup": "markdown"})(cli)
+
+    with pytest.warns(PendingDeprecationWarning, match=r"`use_markdown=` will be deprecated.*"):
+        result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot(
+        """\
+                                                                                                    \n\
+ Usage: cli [OPTIONS]                                                                               \n\
+                                                                                                    \n\
+ My amazing tool does all the things.                                                               \n\
+ This is a minimal example based on documentation from the click package.                           \n\
+                                                                                                    \n\
+ ▌ Remember:                                                                                        \n\
+ ▌  • You can try using --help at the top level                                                     \n\
+ ▌  • Also for specific group subcommands.                                                          \n\
+                                                                                                    \n\
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --input  PATH                 Input file. [default: a custom default]                            │
+│ --type   TEXT                 Type of file to sync                                               │
+│                               [default: files]                                                   │
+│ --all                         Sync                                                               │
+│                                                                                                  │
+│                                1 all                                                             │
+│                                2 the                                                             │
+│                                3 things?                                                         │
+│ --debug                                               Enable debug mode                          │
+│ --help   [markdown|json|...]  Show this message and exit.                                        │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+"""
+    )
+    assert result.stderr == snapshot("")
