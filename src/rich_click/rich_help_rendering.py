@@ -23,7 +23,7 @@ from rich_click._compat_click import (
 )
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_formatter import RichHelpFormatter
-from rich_click.rich_parameter import RichParameter
+from rich_click.rich_parameter import RichHelpOption, RichParameter
 
 
 if TYPE_CHECKING:
@@ -339,6 +339,21 @@ def _get_parameter_range(
     return None
 
 
+def _make_param_metavar(param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext) -> str:
+    """
+    Render a parameter's metavar, passing ``ctx`` whenever the parameter can accept it.
+
+    Click < 8.2 calls ``Parameter.make_metavar()`` without a ctx, and a plain option's signature there
+    can't take one -- hence the version gate. ``RichHelpOption.make_metavar()`` accepts a ctx on every
+    Click version, though, and it *needs* one to resolve the command's ``--help`` formats into the
+    ``[markdown|json|...]`` hint. So we always hand it the ctx, regardless of Click version; otherwise the
+    metavar degrades to a bare ``FORMAT`` on Click < 8.2 (e.g. for an explicit ``@click.help_option()``).
+    """
+    if CLICK_IS_BEFORE_VERSION_82 and not isinstance(param, RichHelpOption):
+        return param.make_metavar()  # type: ignore[call-arg]
+    return param.make_metavar(ctx)
+
+
 def _get_parameter_metavar(
     param: Union[click.Argument, click.Option, RichParameter],
     ctx: RichContext,
@@ -346,7 +361,7 @@ def _get_parameter_metavar(
     append: bool = True,
     show_range: bool = False,
 ) -> Optional[Text]:
-    metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
+    metavar_str = _make_param_metavar(param, ctx)
     # Do it ourselves if this is a positional argument
     if isinstance(param, Argument) and param.name is not None and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
         metavar_str = param.type.name.upper()
@@ -379,7 +394,7 @@ def _get_parameter_help_metavar_col(
 ) -> Optional[Text]:
     # Column for a metavar, if we have one
     metavar = Text(style=formatter.config.style_metavar, overflow="fold")
-    metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
+    metavar_str = _make_param_metavar(param, ctx)
 
     if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(param.name, str)

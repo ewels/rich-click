@@ -108,11 +108,6 @@ class RichHelpOption(RichOption):
     rather than appended to the help text.
     """
 
-    #: Format names stamped on by the owning command's ``get_help_option`` (see ``RichCommand``), used to
-    #: render the metavar when Click calls ``make_metavar()`` without a ctx (Click 8.0). ``None`` means the
-    #: option isn't bound to a format-supporting command, so the metavar degrades to ``FORMAT``.
-    _available_formats: Optional[List[str]] = None
-
     def make_metavar(self, *args: Any, **kwargs: Any) -> str:
         """
         Show a compact hint of the available formats as the metavar, like a ``Choice`` option.
@@ -122,21 +117,19 @@ class RichHelpOption(RichOption):
         preview is drawn from the command's ``help_formats`` registry -- preferring the headline names
         and otherwise the first distinct formats in registry order.
 
-        Older Click calls ``make_metavar()`` without a ctx, so the command/registry isn't reachable
-        then. To keep the rendered metavar identical across Click versions, a format-supporting command
-        stamps its formats onto this option when it builds it (see ``RichCommand.get_help_option``); the
-        no-ctx path falls back to that stamp. A help option on a plain ``click.Command`` (which can't
-        actually serve the formats) has no stamp, so it shows a bare ``FORMAT``.
+        Resolving the registry needs the ctx, which rich-click's renderer always passes (see
+        ``_make_param_metavar`` in ``rich_help_rendering`` -- it threads the ctx through even on Click
+        versions whose ``make_metavar()`` is normally called without one). Without a ctx -- or on a plain
+        ``click.Command`` that can't actually serve the formats -- the metavar degrades to ``FORMAT``.
         """
         headline = ("markdown", "json")
         ctx = args[0] if args else kwargs.get("ctx")
         cmd = getattr(ctx, "command", None)
-        if cmd is not None:
-            from rich_click.help_json import _help_format_names
+        if cmd is None:
+            return "FORMAT"
+        from rich_click.help_json import _help_format_names
 
-            names = _help_format_names(cmd, ctx)  # built-ins (deduped) + any config-registered formats
-        else:
-            names = self._available_formats or []
+        names = _help_format_names(cmd, ctx)  # built-ins (deduped) + any config-registered formats
         if not names:
             return "FORMAT"
         preview = [name for name in headline if name in names] or names[:2]
