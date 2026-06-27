@@ -232,12 +232,14 @@ def _subcommand_index(commands: Dict[str, Any], parent: Optional[click.Command])
     return index
 
 
-def _meta_option_ids(cmd: click.Command, ctx: click.Context) -> "set[int]":
+def _help_option_ids(cmd: click.Command, ctx: click.Context) -> "set[int]":
     """
-    Object id of the ``--help`` option, to keep it out of a command's reported params.
+    Object id of the ``--help`` option, used to recognise it among a command's params.
 
+    The ``--help`` option *is* reported (like the rendered help screen), but it is recognised here so we
+    can enrich it with the machine-readable formats it accepts (see :func:`_help_format_names`).
     Resolved by identity (not name) so a customized help flag name (e.g. ``-h``) still matches, and so
-    recursive walks exclude it at every node without the caller having to thread the option down the tree.
+    recursive walks find it at every node without the caller having to thread the option down the tree.
     """
     ids: "set[int]" = set()
     get_help_option = getattr(cmd, "get_help_option", None)
@@ -249,6 +251,26 @@ def _meta_option_ids(cmd: click.Command, ctx: click.Context) -> "set[int]":
         if option is not None:
             ids.add(id(option))
     return ids
+
+
+def _help_format_names(cmd: click.Command) -> List[str]:
+    """
+    Return the machine-readable format values ``--help`` accepts (``markdown``, ``json``, ...).
+
+    Drawn from the command's ``help_formats`` registry and de-duplicated by target, so an alias (``md``)
+    is not listed next to its canonical name (``markdown``). Surfaced as the ``--help`` option's
+    ``choices`` so an agent reading the schema can discover the formats exist.
+    """
+    formats = getattr(cmd, "help_formats", None)
+    if not formats:
+        return []
+    seen: "set[str]" = set()
+    names: List[str] = []
+    for name, target in formats.items():
+        if target not in seen:
+            seen.add(target)
+            names.append(name)
+    return names
 
 
 def _iter_child_contexts(cmd: click.Command, ctx: click.Context) -> Iterator[Tuple[str, click.Command, click.Context]]:
@@ -322,10 +344,11 @@ def command_schema(
     """
     Build the machine-readable JSON for a single command level.
 
-    Includes the command's own help, usage and full parameter detail (the ``--help`` meta-option is
-    always excluded). For groups, a ``subcommands`` key holds either a name-only index of descendants
-    (the default, progressive disclosure) or -- when ``recursive`` is set -- the full schema of every
-    descendant (powering ``--help json-full``).
+    Includes the command's own help, usage and full parameter detail -- including the ``--help``
+    option, just as the rendered help screen lists it, enriched with the machine-readable formats it
+    accepts (its ``choices``). For groups, a ``subcommands`` key holds either a name-only index of
+    descendants (the default, progressive disclosure) or -- when ``recursive`` is set -- the full schema
+    of every descendant (powering ``--help json-full``).
 
     The command's ``to_info_dict()`` is the single source of truth, so subclass overrides and
     custom fields flow through: unrecognized command-level keys are merged onto the top-level object
@@ -338,9 +361,17 @@ def command_schema(
     if info is None:
         info = cmd.to_info_dict(ctx)
 
-    exclude_ids = _meta_option_ids(cmd, ctx)
+    help_ids = _help_option_ids(cmd, ctx)
 
-    params = [_param_to_dict(param.to_info_dict()) for param in cmd.get_params(ctx) if id(param) not in exclude_ids]
+    params = []
+    for param in cmd.get_params(ctx):
+        param_dict = _param_to_dict(param.to_info_dict())
+        # Surface the formats ``--help`` accepts as its choices, so an agent discovers them in the data.
+        if id(param) in help_ids and not param_dict.get("choices"):
+            formats = _help_format_names(cmd)
+            if formats:
+                param_dict["choices"] = formats
+        params.append(param_dict)
 
     schema: Dict[str, Any] = {"name": info.get("name"), "path": ctx.command_path}
     help_text = _strip_markup(info.get("help"))
@@ -371,14 +402,15 @@ def _carapace_flag_name(opts: Sequence[str]) -> str:
 
 
 def _carapace_params(
-    cmd: click.Command, ctx: click.Context, exclude_ids: "set[int]"
+    cmd: click.Command, ctx: click.Context, help_ids: "set[int]"
 ) -> "tuple[Dict[str, Any], Dict[str, Any], Dict[str, Any]]":
     """
     Split a command's params into the carapace ``flags`` / ``completion`` / ``documentation`` blocks.
 
     Flag keys use carapace's string syntax: a trailing ``=`` marks a value-taking flag and ``*`` a
     repeatable one. Positional arguments have no first-class carapace object, so they contribute only
-    their help (``documentation``) and any ``Choice`` candidates (``completion``).
+    their help (``documentation``) and any ``Choice`` candidates (``completion``). The ``--help`` option
+    (in ``help_ids``) is included like any other, with the formats it accepts as its completions.
     """
     flags: Dict[str, Any] = {}
     completion: Dict[str, Any] = {}
@@ -388,8 +420,6 @@ def _carapace_params(
     positional_doc: List[Any] = []
 
     for param in cmd.get_params(ctx):
-        if id(param) in exclude_ids:
-            continue
         info = param.to_info_dict()
         kind = info.get("param_type_name")
         type_info = info.get("type") or {}
@@ -417,6 +447,12 @@ def _carapace_params(
                 flags[secondary] = help_text
             if choices:
                 completion_flag[_carapace_flag_name(opts)] = list(choices)
+            elif id(param) in help_ids:
+                # ``--help`` is not a Choice type, but it accepts the machine-readable format values;
+                # offer those as completions so `--help <TAB>` suggests markdown/json/...
+                formats = _help_format_names(cmd)
+                if formats:
+                    completion_flag[_carapace_flag_name(opts)] = formats
 
         elif kind == "argument":
             nargs = info.get("nargs")
@@ -461,7 +497,7 @@ def carapace_command(cmd: click.Command, ctx: click.Context, info: Optional[Dict
     """
     if info is None:
         info = cmd.to_info_dict(ctx)
-    exclude_ids = _meta_option_ids(cmd, ctx)
+    help_ids = _help_option_ids(cmd, ctx)
 
     result: Dict[str, Any] = {"name": info.get("name") or ctx.info_name or ""}
 
@@ -480,7 +516,7 @@ def carapace_command(cmd: click.Command, ctx: click.Context, info: Optional[Dict
     if getattr(cmd, "list_commands", None) is not None:
         result["parsing"] = "non-interspersed"
 
-    flags, completion, documentation = _carapace_params(cmd, ctx, exclude_ids)
+    flags, completion, documentation = _carapace_params(cmd, ctx, help_ids)
     if flags:
         result["flags"] = flags
     if completion:

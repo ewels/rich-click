@@ -50,10 +50,13 @@ def test_help_json_root(cli_runner: CliRunner) -> None:
     assert schema["help"] == "Root help text."
     assert schema["usage"].startswith("cli")
 
-    # Regular options are reported; the --help meta-option is hidden.
+    # Regular options are reported, and so is the --help meta-option (like the rendered help screen),
+    # carrying the machine-readable formats it accepts as its choices.
     param_opts = [opt for param in schema["params"] for opt in param["opts"]]
     assert "--verbose" in param_opts
-    assert "--help" not in param_opts
+    help_param = next(param for param in schema["params"] if param["name"] == "help")
+    assert help_param["opts"] == ["--help"]
+    assert "markdown" in help_param["choices"] and "json" in help_param["choices"]
 
     # Subcommands are indexed recursively by name, each entry carrying a one-line help (and
     # aliases / nested subcommands where present), so an agent can navigate without round-trips.
@@ -225,17 +228,19 @@ def test_help_json_group_reports_aliases(cli_runner: CliRunner) -> None:
     assert via_alias["name"] == "things"
 
 
-def test_help_json_excludes_customized_help_option(cli_runner: CliRunner) -> None:
-    # The help meta-option is excluded by object identity, so a non-default help option name (here `-h`)
-    # must still be kept out of the reported params.
+def test_help_json_enriches_customized_help_option(cli_runner: CliRunner) -> None:
+    # The help meta-option is recognised by object identity, so a non-default help option name (here
+    # `-h`) is still found and enriched with its formats, rather than mistaken for a regular option.
     @command(context_settings={"help_option_names": ["-h", "--help"]})
     @option("--real", help="A real option.")
     def cli(real: str) -> None:
         """Hi."""
 
     schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
-    param_opts = [opt for param in schema["params"] for opt in param["opts"]]
-    assert param_opts == ["--real"]
+    by_name = {param["name"]: param for param in schema["params"]}
+    assert by_name["real"]["opts"] == ["--real"]
+    assert set(by_name["help"]["opts"]) == {"-h", "--help"}
+    assert "markdown" in by_name["help"]["choices"]
 
 
 def test_help_json_passthrough_of_custom_fields(cli_runner: CliRunner) -> None:
@@ -357,13 +362,13 @@ def test_help_json_full_is_recursive(cli_runner: CliRunner) -> None:
     assert list_cmd["path"] == "cli things list"
     assert list_cmd["name"] == "list"
 
-    # A leaf's params carry the same detail a direct `--help=json` on it would, and the --help
-    # meta-option is excluded at every node.
+    # A leaf's params carry the same detail a direct `--help=json` on it would, including the --help
+    # meta-option (with its formats) at every node.
     hello = schema["subcommands"]["hello"]
     by_name = {p["name"]: p for p in hello["params"]}
     assert by_name["count"]["default"] == 3
     assert by_name["name"]["kind"] == "argument"
-    assert "--help" not in [opt for p in hello["params"] for opt in p.get("opts", [])]
+    assert "markdown" in by_name["help"]["choices"]
 
 
 def test_help_carapace_structure(cli_runner: CliRunner) -> None:
@@ -392,8 +397,9 @@ def test_help_carapace_structure(cli_runner: CliRunner) -> None:
     assert doc["flags"]["--debug"] == "Toggle debug."
     assert doc["flags"]["--no-debug"] == "Toggle debug."
     assert doc["flags"]["--tag=*"] == "Tags."
-    # The --help meta-option is not emitted as a flag.
-    assert not any("--help" in key for key in doc["flags"])
+    # The --help meta-option is emitted as a value-taking flag, completing to the available formats.
+    assert doc["flags"]["--help="] == "Show this message and exit."
+    assert "markdown" in doc["completion"]["flag"]["help"]
 
     remove_cmd = next(c for c in doc["commands"] if c["name"] == "remove")
     assert remove_cmd["hidden"] is True

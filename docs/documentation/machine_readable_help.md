@@ -79,6 +79,13 @@ $ mytool --help json
       "type": "Bool",
       "is_flag": true,
       "help": "Enable verbose output."
+    },
+    {
+      "name": "help",
+      "kind": "option",
+      "opts": ["--help"],
+      "choices": ["markdown", "markdown-full", "json", "json-full", "carapace"],
+      "help": "Show this message and exit."
     }
   ],
   "subcommands": {
@@ -90,6 +97,8 @@ $ mytool --help json
   }
 }
 ```
+
+Every command reports its `--help` option too, just as the rendered help screen lists it — with the machine-readable formats it accepts surfaced as `choices`, so an agent reading the schema discovers them. (The remaining examples on this page omit the `--help` entry for brevity.)
 
 The format is **contextual**: it reports the current command in full, but for its descendants lists only their names and a one-line description (not their parameters or usage).
 This lets tools and agents discover a CLI one level at a time — they can see what each subcommand does and drill down by name, rather than pulling the whole command tree into context at once.
@@ -221,7 +230,7 @@ For every command level, the `json` / `json-full` object contains:
 | `path`        | The full invocation path (e.g. `cli db migrate`).                                                                                                                   |
 | `help`        | The command's help text, with Rich markup stripped to plain text. Omitted if the command is undocumented.                                                           |
 | `usage`       | The usage string.                                                                                                                                                   |
-| `params`      | A list of the command's options and arguments. The `--help` meta-option is omitted.                                                                                 |
+| `params`      | A list of the command's options and arguments, including the `--help` option (its `choices` list the machine-readable formats it accepts).                            |
 | `subcommands` | Present only for groups. In `json` it is a name-only index (one-line `help`, plus `aliases` / nested `subcommands`); in `json-full` each entry is the full schema. |
 
 Each entry in `params` has the following keys when applicable:
@@ -234,7 +243,7 @@ Each entry in `params` has the following keys when applicable:
 | `secondary_opts` | An option's negation flags, e.g. `--no-debug` for `--debug/--no-debug`.              |
 | `type`           | The parameter type, e.g. `"Bool"`, `"Int"`, `"String"`, `"Path"`.                    |
 | `type_info`      | Extra type constraints (range min/max, `Path` flags, `Choice` case-sensitivity).     |
-| `choices`        | The allowed values, for a `Choice` type.                                             |
+| `choices`        | The allowed values, for a `Choice` type (and the formats accepted by `--help`).      |
 | `required`       | Present and `true` only when the parameter is required.                              |
 | `is_flag`        | Present and `true` only for boolean flags.                                           |
 | `flag_value`     | The value a value-flag sets (e.g. `--upper`/`--lower` sharing a destination).        |
