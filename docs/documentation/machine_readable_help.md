@@ -84,8 +84,9 @@ $ mytool --help json
       "name": "help",
       "kind": "option",
       "opts": ["--help"],
-      "choices": ["markdown", "markdown-full", "json", "json-full", "carapace"],
-      "help": "Show this message and exit."
+      "type": "String",
+      "help": "Show this message and exit.",
+      "choices": ["markdown", "markdown-full", "json", "json-full", "carapace"]
     }
   ],
   "subcommands": {

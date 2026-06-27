@@ -28,8 +28,8 @@ $ mytool deploy --help
  Deploy a service.
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
-│ --dry-run  Preview only.                                                     │
-│ --help     Show this message and exit.                                       │
+│ --dry-run                       Preview only.                                │
+│ --help     [markdown|json|...]  Show this message and exit.                  │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Examples ───────────────────────────────────────────────────────────────────╮
 │ - Deploy to production:                                                      │
