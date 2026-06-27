@@ -181,26 +181,36 @@ $ mytool --help json-full
 
 [carapace](https://carapace.sh) is a multi-shell completion engine. Emitting `--help carapace` produces a document conforming to its [command spec](https://carapace.sh/schemas/command.json), so a rich-click CLI becomes a **producer** for carapace's consumer ecosystem.
 
+The output is **YAML** — the format carapace's spec files use — led by the schema directive that editors use for validation:
+
 ```console
 $ mytool --help carapace
 ```
 
-```json
-{
-  "name": "cli",
-  "description": "A demo CLI.",
-  "parsing": "non-interspersed",
-  "flags": { "-v, --verbose": "Enable verbose output." },
-  "commands": [
-    {
-      "name": "hello",
-      "description": "Greet someone.",
-      "flags": { "--count=": "Number of greetings." }
-    },
-    { "name": "db", "description": "Manage the database.", "parsing": "non-interspersed", "commands": [...] }
-  ]
-}
+```yaml
+# yaml-language-server: $schema=https://carapace.sh/schemas/command.json
+name: cli
+description: A demo CLI.
+parsing: non-interspersed
+flags:
+  -v, --verbose: Enable verbose output.
+  --help=: Show this message and exit.
+completion:
+  flag:
+    help: [markdown, markdown-full, json, json-full, carapace]
+commands:
+- name: hello
+  description: Greet someone.
+  flags:
+    --count=: Number of greetings.
+- name: db
+  description: Manage the database.
+  parsing: non-interspersed
+  commands: [...]
 ```
+
+!!! note "YAML is optional"
+    YAML output needs `pyyaml`; install it with the `rich-click[carapace]` extra. Without it, `--help carapace` falls back to **JSON** — which is itself valid YAML, so carapace still consumes it (you just lose the schema directive comment).
 
 Carapace is a structure-and-completion spec rather than a type/validation one, so the mapping is intentionally lossy. Flag keys use carapace's string syntax (`-s, --long` for a boolean, a trailing `=` when the flag takes a value, `*` when it is repeatable, and the `{description, nargs}` object form for multi-value flags); negation flags such as `--no-debug` become their own entries; and `Choice` values are surfaced as completion candidates. Parameter **types** (`Int`/`Path`/…), **defaults**, **envvars** and per-flag **required** have no home in the carapace schema and are dropped — reach for `--help json-full` if you need those.
 

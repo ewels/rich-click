@@ -10,6 +10,13 @@ from rich_click import RichCommand, argument, command, group, option
 from rich_click.rich_context import RichContext
 
 
+def _load_carapace(output: str) -> Dict[str, Any]:
+    """`--help carapace` emits YAML (or JSON when pyyaml is absent); both parse as YAML."""
+    import yaml
+
+    return cast(Dict[str, Any], yaml.safe_load(output))
+
+
 def _build_cli() -> RichCommand:
     @group()
     @option("-v", "--verbose", is_flag=True, help="Be loud.")
@@ -387,7 +394,7 @@ def test_help_carapace_structure(cli_runner: CliRunner) -> None:
     def remove(coords: Tuple[int, ...], fmt: str, kind: str) -> None:
         """Remove."""
 
-    doc = json.loads(cli_runner.invoke(cli, ["--help=carapace"]).output)
+    doc = _load_carapace(cli_runner.invoke(cli, ["--help=carapace"]).output)
 
     assert doc["name"] == "cli"
     assert doc["description"] == "Root."
@@ -409,6 +416,33 @@ def test_help_carapace_structure(cli_runner: CliRunner) -> None:
     # Choice option -> completion candidates keyed by flag name; choice argument -> positional.
     assert remove_cmd["completion"]["flag"]["fmt"] == ["json", "yaml"]
     assert remove_cmd["completion"]["positional"] == [["a", "b"]]
+
+
+def test_help_carapace_is_yaml_with_schema_directive(cli_runner: CliRunner) -> None:
+    # carapace's ecosystem is YAML-first, so the output is YAML led by the schema-validation directive.
+    pytest.importorskip("yaml")
+
+    @group()
+    @option("-v", "--verbose", is_flag=True, help="Verbose.")
+    def cli(verbose: bool) -> None:
+        """Root."""
+
+    out = cli_runner.invoke(cli, ["--help=carapace"]).output
+    first_line = out.splitlines()[0]
+    assert first_line == "# yaml-language-server: $schema=https://carapace.sh/schemas/command.json"
+    assert "\nname: cli\n" in out  # block-style YAML, not JSON braces
+
+
+def test_help_carapace_falls_back_to_json_without_pyyaml(cli_runner: CliRunner, monkeypatch: Any) -> None:
+    # YAML is optional: with pyyaml unavailable, carapace emits JSON (which is itself valid YAML, so it
+    # is still consumable by carapace -- just without the schema directive).
+    import sys
+
+    monkeypatch.setitem(sys.modules, "yaml", None)  # force `import yaml` to raise ImportError
+    cli = _build_cli()
+    out = cli_runner.invoke(cli, ["--help=carapace"]).output
+    assert not out.startswith("#")  # no YAML directive
+    assert json.loads(out)["name"] == "cli"  # valid JSON
 
 
 def test_help_equals_unknown_format_falls_back_to_plain_help(cli_runner: CliRunner) -> None:
@@ -469,10 +503,10 @@ def test_help_full_and_carapace_direct_methods(cli_runner: CliRunner) -> None:
     with cli.make_context("cli", [], resilient_parsing=True) as ctx:
         rctx = cast(RichContext, ctx)
         full_direct = json.loads(cli.get_help_json_full(rctx))
-        carapace_direct = json.loads(cli.get_help_carapace(rctx))
+        carapace_direct = _load_carapace(cli.get_help_carapace(rctx))
 
     assert full_direct == json.loads(cli_runner.invoke(cli, ["--help=json-full"]).output)
-    assert carapace_direct == json.loads(cli_runner.invoke(cli, ["--help=carapace"]).output)
+    assert carapace_direct == _load_carapace(cli_runner.invoke(cli, ["--help=carapace"]).output)
 
 
 def test_help_carapace_override(cli_runner: CliRunner) -> None:
@@ -489,7 +523,7 @@ def test_help_carapace_override(cli_runner: CliRunner) -> None:
     def cli() -> None:
         """Hi."""
 
-    doc = json.loads(cli_runner.invoke(cli, ["--help=carapace"]).output)
+    doc = _load_carapace(cli_runner.invoke(cli, ["--help=carapace"]).output)
     assert doc["group"] == "custom"
 
 
@@ -636,7 +670,7 @@ def test_examples_in_carapace(cli_runner: CliRunner) -> None:
     def cli() -> None:
         """Hi."""
 
-    doc = json.loads(cli_runner.invoke(cli, ["--help=carapace"]).output)
+    doc = _load_carapace(cli_runner.invoke(cli, ["--help=carapace"]).output)
     assert doc["examples"] == {"tool do thing": "Do a thing", "tool do other": "Do the other thing"}
 
 
@@ -655,7 +689,7 @@ def test_examples_non_dict_shape_via_to_info_dict_does_not_crash(cli_runner: Cli
 
     expected = [{"description": "", "command": "tool raw"}, {"description": "Greet", "command": "tool hello"}]
     assert json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["examples"] == expected
-    carapace = json.loads(cli_runner.invoke(cli, ["--help=carapace"]).output)
+    carapace = _load_carapace(cli_runner.invoke(cli, ["--help=carapace"]).output)
     assert carapace["examples"] == {"tool raw": "", "tool hello": "Greet"}
     md = cli_runner.invoke(cli, ["--help=md"]).output
     assert "`tool raw`" in md and "Greet: `tool hello`" in md

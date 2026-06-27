@@ -398,6 +398,24 @@ class RichCommand(Command):
 
         return json.dumps(data, indent=2, default=str)
 
+    #: Editor directive prepended to the YAML carapace output, enabling schema validation/completion.
+    _CARAPACE_SCHEMA_DIRECTIVE = "# yaml-language-server: $schema=https://carapace.sh/schemas/command.json"
+
+    def _serialize_carapace(self, data: Dict[str, Any]) -> str:
+        """
+        Serialize the carapace spec as YAML -- the format carapace's ecosystem expects.
+
+        YAML is optional: if ``pyyaml`` isn't installed we fall back to JSON, which is valid YAML and so
+        still consumable by carapace (just without the schema directive). Install ``rich-click[carapace]``
+        for the idiomatic YAML output.
+        """
+        try:
+            import yaml
+        except ImportError:
+            return self._serialize_help(data)
+        body = yaml.safe_dump(data, sort_keys=False, default_flow_style=False, allow_unicode=True)
+        return f"{self._CARAPACE_SCHEMA_DIRECTIVE}\n{body}"
+
     def _build_help_json(self, ctx: "RichContext", formatter: RichHelpFormatter, recursive: bool) -> Dict[str, Any]:
         """Build the JSON schema (progressive or recursive) and apply the ``help_json_transform`` hook."""
         from rich_click.help_json import command_schema
@@ -449,9 +467,14 @@ class RichCommand(Command):
         return self._build_help_json(ctx, formatter, recursive=True)
 
     def get_help_carapace(self, ctx: "RichContext") -> str:
-        """Return this command's help as a carapace-spec JSON string (https://carapace.sh)."""
+        """
+        Return this command's help as a carapace-spec string (https://carapace.sh).
+
+        Serialized as YAML (the format carapace expects) when ``pyyaml`` is installed, else JSON -- which
+        is valid YAML, so carapace still consumes it. Install ``rich-click[carapace]`` for YAML.
+        """
         formatter = ctx.make_formatter()
-        return self._serialize_help(self.format_help_carapace(ctx, formatter))
+        return self._serialize_carapace(self.format_help_carapace(ctx, formatter))
 
     def format_help_carapace(self, ctx: "RichContext", formatter: RichHelpFormatter) -> Dict[str, Any]:
         """
