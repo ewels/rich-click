@@ -106,6 +106,7 @@ STYLE_PADDING_EPILOG: "StyleType" = FROM_THEME
 STYLE_HEADER_TEXT: "StyleType" = FROM_THEME
 STYLE_EPILOG_TEXT: "StyleType" = FROM_THEME
 STYLE_FOOTER_TEXT: "StyleType" = FROM_THEME
+STYLE_AI_MARKDOWN_HINT: "StyleType" = "dim"
 
 PANEL_TITLE_PADDING: int = FROM_THEME
 WIDTH: Optional[int] = terminal_width_default()
@@ -124,6 +125,8 @@ COMMANDS_TABLE_HELP_SECTIONS: List[CommandHelpSectionType] = FROM_THEME
 # Fixed strings
 HEADER_TEXT: Optional[Union[str, "Text"]] = None
 FOOTER_TEXT: Optional[Union[str, "Text"]] = None
+# AI hint shown under regular --help (opt in via SHOW_AI_MARKDOWN_HINT). `{help_option}` is replaced with the help flag.
+AI_MARKDOWN_HINT_TEXT: Optional[str] = None
 PANEL_TITLE_STRING: str = FROM_THEME
 DEPRECATED_STRING: str = FROM_THEME
 DEPRECATED_WITH_REASON_STRING: str = FROM_THEME
@@ -153,6 +156,7 @@ PADDING_HELPTEXT_DEPRECATED: "PaddingDimensions" = 0
 PADDING_HELPTEXT_FIRST_LINE: "PaddingDimensions" = 0
 PADDING_EPILOG: "PaddingDimensions" = FROM_THEME
 PADDING_FOOTER_TEXT: "PaddingDimensions" = FROM_THEME
+PADDING_AI_MARKDOWN_HINT: "PaddingDimensions" = (1, 1, 0, 1)
 PADDING_ERRORS_PANEL: "PaddingDimensions" = (0, 0, 1, 0)
 PADDING_ERRORS_SUGGESTION: "PaddingDimensions" = (0, 1, 0, 1)
 PADDING_ERRORS_EPILOGUE: "PaddingDimensions" = (0, 1, 1, 1)
@@ -179,6 +183,8 @@ COMMAND_GROUPS: Dict[str, List[CommandGroupDict]] = {}
 OPTION_GROUPS: Dict[str, List[OptionGroupDict]] = {}
 USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
 HELPTEXT_SHOW_ALIASES: bool = True
+# Opt-in dim hint under regular --help pointing LLMs at the machine-readable `--help markdown` format.
+SHOW_AI_MARKDOWN_HINT: bool = False
 # Machine-readable help (`--help markdown`, `--help json`, `--help carapace`) is always available on
 # the `--help` flag. Optional hook to post-process the JSON schema: (schema, command, ctx) -> schema
 HELP_JSON_TRANSFORM: Optional["HelpJSONTransform"] = None

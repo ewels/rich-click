@@ -27,6 +27,46 @@ The example CLI used throughout this page:
 
 See the [Configuration](configuration.md) page for how to set config options globally or per-command with the `rich_config` decorator.
 
+## Advertising the format with an AI hint
+
+The machine-readable formats are always available, but an LLM driving your CLI has no way of knowing that — `--help markdown` is not something it would think to try. You can opt in to a small, dimmed hint underneath the regular `--help` output that points it there.
+
+It is **off by default**. The simplest way to enable it is the global config, which applies to every command and subcommand at once — no need to decorate each one:
+
+```python
+import rich_click as click
+
+click.rich_click.SHOW_AI_MARKDOWN_HINT = True
+```
+
+It appears only on the normal human-readable `--help`. It is never shown for `--help json`, `--help markdown`, or any other machine-readable format — those consumers have already found what the hint advertises.
+
+```console
+$ mytool --help
+
+ ... usual help output ...
+
+ Tip: Run '--help markdown' to get AI-friendly CLI help with progressive disclosure.
+```
+
+It is styled `dim` (configurable via `style_ai_markdown_hint` / `STYLE_AI_MARKDOWN_HINT`) so it stays out of a human reader's way. Customize the wording with `ai_markdown_hint_text` / `AI_MARKDOWN_HINT_TEXT`; the literal token `{help_option}` is replaced with the command's help flag (e.g. `--help`, or `-h` if that is what you have configured):
+
+```python
+click.rich_click.SHOW_AI_MARKDOWN_HINT = True
+click.rich_click.AI_MARKDOWN_HINT_TEXT = "LLM agents: run '{help_option} json-full' for the complete command tree."
+```
+
+To enable or override it on a single command instead of globally, set it through the `rich_config` decorator:
+
+```python
+from rich_click import RichHelpConfiguration, rich_config
+
+@click.command()
+@rich_config(help_config=RichHelpConfiguration(show_ai_markdown_hint=True))
+def cli():
+    ...
+```
+
 ## `--help markdown`: Markdown for LLMs
 
 `--help markdown` (alias `--help md`) renders the CLI's structure as Markdown, tuned for dropping into an LLM prompt: headings for hierarchy, each command titled by its **full invocation path** so the section is unambiguous out of context, and parameters laid out as compact tables.

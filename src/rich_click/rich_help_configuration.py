@@ -124,6 +124,7 @@ class RichHelpConfiguration:
     style_header_text: "StyleType" = field(default=FROM_THEME)
     style_epilog_text: "StyleType" = field(default=FROM_THEME)
     style_footer_text: "StyleType" = field(default=FROM_THEME)
+    style_ai_markdown_hint: "StyleType" = field(default="dim")
     style_usage: "StyleType" = field(default=FROM_THEME)
     style_usage_command: "StyleType" = field(default=FROM_THEME)
     style_usage_separator: "StyleType" = field(default=FROM_THEME)
@@ -204,6 +205,11 @@ class RichHelpConfiguration:
     # Fixed strings
     header_text: Optional[Union[str, "Text"]] = field(default=None)
     footer_text: Optional[Union[str, "Text"]] = field(default=None)
+    ai_markdown_hint_text: Optional[str] = field(default=None)
+    """Text for the AI hint shown under regular ``--help`` output when :attr:`show_ai_markdown_hint` is set.
+
+    Defaults to a tip pointing at ``--help markdown``. The literal token ``{help_option}`` (if present)
+    is replaced with the command's help flag, e.g. ``--help``."""
     panel_title_string: str = field(default=FROM_THEME)
     deprecated_string: str = field(default=FROM_THEME)
     deprecated_with_reason_string: str = field(default=FROM_THEME)
@@ -234,6 +240,7 @@ class RichHelpConfiguration:
     padding_helptext_first_line: "PaddingDimensions" = field(default=0)
     padding_epilog: "PaddingDimensions" = field(default=FROM_THEME)
     padding_footer_text: "PaddingDimensions" = field(default=FROM_THEME)
+    padding_ai_markdown_hint: "PaddingDimensions" = field(default=(1, 1, 0, 1))
     padding_errors_panel: "PaddingDimensions" = field(default=(0, 0, 1, 0))
     padding_errors_suggestion: "PaddingDimensions" = field(default=(0, 1, 0, 1))
     padding_errors_epilogue: "PaddingDimensions" = field(default=(0, 1, 1, 1))
@@ -273,6 +280,10 @@ class RichHelpConfiguration:
     use_click_short_help: bool = field(default=False)
     """Use click's default function to truncate help text"""
     helptext_show_aliases: bool = field(default=True)
+    show_ai_markdown_hint: bool = field(default=False)
+    """Show a dim, opt-in hint under regular ``--help`` output alerting LLMs to the machine-readable
+    ``--help markdown`` format. Off by default; never shown for ``--help json`` and other machine formats.
+    Customize the wording with :attr:`ai_markdown_hint_text`."""
     help_json_transform: Optional["HelpJSONTransform"] = field(default=None, repr=False, compare=False)
     """Optional hook to post-process the machine-readable JSON schema: ``(schema, command, ctx) -> schema``."""
     help_formats: Dict[str, "HelpFormatRenderer"] = field(default_factory=lambda: {}, repr=False, compare=False)

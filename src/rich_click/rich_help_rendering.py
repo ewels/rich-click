@@ -35,6 +35,12 @@ if TYPE_CHECKING:
 
 RichPanelRow = List[Optional[RenderableType]]
 
+#: Default wording for the opt-in AI hint (see ``RichHelpConfiguration.show_ai_markdown_hint``). ``{help_option}``
+#: is substituted with the command's help flag (e.g. ``--help``) at render time.
+DEFAULT_AI_MARKDOWN_HINT_TEXT = (
+    "Tip: Run '{help_option} markdown' to get AI-friendly CLI help with progressive disclosure."
+)
+
 
 class RichClickRichPanel(Panel):
     """
@@ -1160,6 +1166,25 @@ def get_rich_epilog(
             Padding(
                 formatter.rich_text(formatter.config.footer_text, formatter.config.style_footer_text),
                 formatter.config.padding_footer_text,
+                style=formatter.config.style_padding_epilog,
+            )
+        )
+
+    # Opt-in AI hint, pointing LLMs at the machine-readable `--help markdown` format. Rendered here in the
+    # normal (human) help only -- machine-readable formats (`--help json`, etc.) are produced via
+    # get_help_for_format and never reach this code path.
+    if formatter.config.show_ai_markdown_hint:
+        # Prefer a long help flag (e.g. `--help` over `-h`) for the hint.
+        help_option_names = list(getattr(ctx, "help_option_names", None) or ["--help"])
+        help_option = next((n for n in help_option_names if n.startswith("--")), help_option_names[0])
+        hint = formatter.config.ai_markdown_hint_text or DEFAULT_AI_MARKDOWN_HINT_TEXT
+        hint = hint.replace("{help_option}", help_option)
+        # Plain styled Text (not formatter.rich_text), so the option highlighter doesn't colorize the
+        # flag and undo the deliberately understated "dim" styling.
+        formatter.write(
+            Padding(
+                Text(hint, style=formatter.config.style_ai_markdown_hint),
+                formatter.config.padding_ai_markdown_hint,
                 style=formatter.config.style_padding_epilog,
             )
         )
