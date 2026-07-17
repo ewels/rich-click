@@ -4,9 +4,13 @@ on:
   push:
   pull_request:
 
+permissions: {}
+
 jobs:
   test:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     strategy:
       matrix:
         python: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
@@ -38,10 +42,12 @@ jobs:
             typer: 0.25.*
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
 
       - name: Set up Python
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
           python-version: ${{ matrix.python }}
           activate-environment: true
