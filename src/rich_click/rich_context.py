@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Literal, Mapping, Optional, Type, Union
 
 import click
+from click.core import augment_usage_errors
 from click.globals import get_current_context as click_get_current_context
 
 from rich_click.rich_help_configuration import RichHelpConfiguration
@@ -13,6 +14,25 @@ if TYPE_CHECKING:  # pragma: no cover
     from types import TracebackType
 
     from rich.console import Console
+
+
+def _click_base_command_type() -> Type["click.Command"]:
+    """
+    Return the genuine ``click.Command`` class.
+
+    ``rich_click.patch.patch()`` rebinds ``click.Command`` /
+    ``click.core.Command`` to a rich-click subclass. Click's own
+    ``Context.forward`` / ``Context.invoke`` resolve the bare name ``Command``
+    from ``click.core`` at call time and use it in an ``isinstance`` guard, so
+    after patching that guard is narrowed to the subclass and rejects genuine
+    Click commands that are not that exact subclass (e.g. ``RichCommand``
+    instances or commands defined before ``patch()`` ran). Walk the MRO so we
+    always recover the real base class even when ``click.Command`` is patched.
+    """
+    for klass in click.Command.__mro__:
+        if klass.__module__ == "click.core" and klass.__name__ == "Command":
+            return klass
+    return click.Command
 
 
 class RichContext(click.Context):
@@ -99,6 +119,58 @@ class RichContext(click.Context):
             export_console_as=(self.export_console_as if not error_mode or self.errors_in_output_format else None),
         )
         return formatter
+
+    def forward(self, __cmd: "click.Command", *args: Any, **kwargs: Any) -> Any:
+        """
+        Forward to another command, tolerant of ``patch()``.
+
+        Mirrors ``click.Context.forward`` but validates against the genuine
+        ``click.Command`` base class so forwarding keeps working after
+        ``rich_click.patch.patch()`` rebinds ``click.Command`` to a subclass.
+        """
+        if not isinstance(__cmd, _click_base_command_type()):
+            raise TypeError("Callback is not a command.")
+
+        for param in self.params:
+            if param not in kwargs:
+                kwargs[param] = self.params[param]
+
+        return self.invoke(__cmd, *args, **kwargs)
+
+    def invoke(self, __callback: Any, *args: Any, **kwargs: Any) -> Any:
+        """
+        Invoke a command/callback, tolerant of ``patch()``.
+
+        ``click.Context.invoke`` decides whether its first argument is a command
+        via ``isinstance(arg, click.Command)``. After ``patch()`` narrows
+        ``click.Command`` to a subclass, genuine Click commands that are not that
+        exact subclass fall through to the raw-callback branch and get called as
+        ``cmd(**params)``, which is wrong. Detect that case and run Click's
+        command dispatch against the real base class; delegate everything else
+        unchanged.
+        """
+        base_command = _click_base_command_type()
+        if isinstance(__callback, base_command) and not isinstance(__callback, click.Command):
+            other_cmd = __callback
+            if other_cmd.callback is None:
+                raise TypeError("The given command does not have a callback that can be invoked.")
+            callback = other_cmd.callback
+
+            ctx = self._make_sub_context(other_cmd)
+
+            for param in other_cmd.params:
+                if param.name not in kwargs and param.expose_value:
+                    kwargs[param.name] = param.type_cast_value(ctx, param.get_default(ctx))
+
+            # Track all kwargs as params, so that forward() will pass
+            # them on in subsequent calls.
+            ctx.params.update(kwargs)
+
+            with augment_usage_errors(self):
+                with ctx:
+                    return callback(*args, **kwargs)
+
+        return super().invoke(__callback, *args, **kwargs)
 
     if TYPE_CHECKING:  # pragma: no cover
 
