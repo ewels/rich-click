@@ -10,8 +10,6 @@ from rich_click.rich_help_formatter import RichHelpFormatter
 
 
 if TYPE_CHECKING:  # pragma: no cover
-    from types import TracebackType
-
     from rich.console import Console
 
 
@@ -99,19 +97,6 @@ class RichContext(click.Context):
             export_console_as=(self.export_console_as if not error_mode or self.errors_in_output_format else None),
         )
         return formatter
-
-    if TYPE_CHECKING:  # pragma: no cover
-
-        def __enter__(self) -> "RichContext":
-            return super().__enter__()  # type: ignore[return-value]
-
-        def __exit__(
-            self,
-            exc_type: Optional[Type[BaseException]],
-            exc_value: Optional[BaseException],
-            tb: Optional[TracebackType],
-        ) -> None:
-            super().__exit__(exc_type, exc_value, tb)
 
 
 def get_current_context(silent: bool = False) -> Optional[RichContext]:

@@ -59,7 +59,7 @@ def patch(*args: Any, **kwargs: Any) -> None:  # noqa: D103
     return _patch(*args, **kwargs)
 
 
-class _RichHelpConfigurationParamType(click.ParamType):
+class _RichHelpConfigurationParamType(click.ParamType):  # type: ignore[type-arg]
     name = "JSON"
 
     def __repr__(self) -> str:

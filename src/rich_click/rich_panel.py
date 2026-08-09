@@ -180,8 +180,7 @@ class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
     @classmethod
     def list_all_objects(cls, ctx: Context) -> List[Tuple[str, Parameter]]:
         return [
-            (i.opts[0] if getattr(i, "flag_value", None) and i.opts else i.name, i)  # type: ignore[misc]
-            for i in ctx.command.get_params(ctx)
+            (i.opts[0] if getattr(i, "flag_value", None) and i.opts else i.name, i) for i in ctx.command.get_params(ctx)
         ]
 
     def get_objects(self, command: Command, ctx: Context) -> Generator[Parameter, None, None]:
@@ -228,8 +227,8 @@ class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
         headers = [i.replace("_", " ").title() for i in formatter.config.options_table_column_types]
 
         filtered = [(h, c) for h, c in zip(headers, zip(*rows)) if any(cell for cell in c)]
-        headers, rows = zip(*filtered) if filtered else ([], [])
-        rows = list(map(list, zip(*rows))) if rows else []
+        headers = [h for h, _ in filtered]
+        rows = [list(row) for row in zip(*[c for _, c in filtered])] if filtered else []
 
         for row in rows:
             table.add_row(*row)
@@ -393,8 +392,8 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
         headers = [i.replace("_", " ").title() for i in formatter.config.commands_table_column_types]
 
         filtered = [(h, c) for h, c in zip(headers, zip(*rows)) if any(cell for cell in c)]
-        headers, rows = zip(*filtered) if filtered else ([], [])
-        rows = list(map(list, zip(*rows))) if rows else []
+        headers = [h for h, _ in filtered]
+        rows = [list(row) for row in zip(*[c for _, c in filtered])] if filtered else []
 
         for row in rows:
             table.add_row(*row)
