@@ -22,8 +22,7 @@ def cli() -> rich_click.RichCommand:
 def test_options_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
@@ -41,8 +40,7 @@ def test_options_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> Non
 │    --help            -h                           Show help.                                     │
 │    --version         -v                           Show version.                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -51,8 +49,7 @@ def test_options_help_envvar_first(cli_runner: CliRunner, cli: rich_click.RichCo
     with pytest.warns(PendingDeprecationWarning, match=r"`option_envvar_first=` will be deprecated.*"):
         result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
@@ -70,8 +67,7 @@ def test_options_help_envvar_first(cli_runner: CliRunner, cli: rich_click.RichCo
 │    --help            -h                           Show help.                                     │
 │    --version         -v                           Show version.                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -80,8 +76,7 @@ def test_options_help_dont_show_metavars(cli_runner: CliRunner, cli: rich_click.
     with pytest.warns(PendingDeprecationWarning, match=r"`show_metavars_column=` will be deprecated.*"):
         result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
@@ -98,6 +93,5 @@ def test_options_help_dont_show_metavars(cli_runner: CliRunner, cli: rich_click.
 │    --help            -h  Show help.                                                              │
 │    --version         -v  Show version.                                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")

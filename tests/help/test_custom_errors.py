@@ -18,8 +18,7 @@ def test_custom_errors_bad_input(cli_runner: CliRunner, cli: rich_click.RichComm
     result = cli_runner.invoke(cli, "bad_input")
     assert result.exit_code == 2
     assert result.stdout == snapshot("")
-    assert result.stderr == snapshot(
-        """\
+    assert result.stderr == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] INPUT                                                                         \n\
                                                                                                     \n\
@@ -30,5 +29,4 @@ def test_custom_errors_bad_input(cli_runner: CliRunner, cli: rich_click.RichComm
                                                                                                     \n\
  To find out more, visit https://mytool.com                                                         \n\
                                                                                                     \n\
-"""
-    )
+""")

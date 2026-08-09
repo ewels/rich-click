@@ -17,8 +17,7 @@ def cli() -> rich_click.RichCommand:
 def test_arguments_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] INPUT OUTPUT                                                                  \n\
                                                                                                     \n\
@@ -37,8 +36,7 @@ def test_arguments_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> N
 │                                        (current)]                                                │
 │ --help                                 Show this message and exit.                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -46,8 +44,7 @@ def test_arguments_help_with_no_show_arguments(cli_runner: CliRunner, cli: rich_
     rc.SHOW_ARGUMENTS = False
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] INPUT OUTPUT                                                                  \n\
                                                                                                     \n\
@@ -62,8 +59,7 @@ def test_arguments_help_with_no_show_arguments(cli_runner: CliRunner, cli: rich_
 │                                        (current)]                                                │
 │ --help                                 Show this message and exit.                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -71,8 +67,7 @@ def test_arguments_help_with_help_panel_title(cli_runner: CliRunner, cli: rich_c
     rc.ARGUMENTS_PANEL_TITLE = "My amazing tool arguments"
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] INPUT OUTPUT                                                                  \n\
                                                                                                     \n\
@@ -91,8 +86,7 @@ def test_arguments_help_with_help_panel_title(cli_runner: CliRunner, cli: rich_c
 │                                        (current)]                                                │
 │ --help                                 Show this message and exit.                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -101,8 +95,7 @@ def test_arguments_help_with_help_panel_config(cli_runner: CliRunner, cli: rich_
     rc.OPTION_GROUPS = {"cli": [{"name": "My amazing tool arguments", "panel_styles": {"box": box.DOUBLE_EDGE}}]}
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] INPUT OUTPUT                                                                  \n\
                                                                                                     \n\
@@ -121,8 +114,7 @@ def test_arguments_help_with_help_panel_config(cli_runner: CliRunner, cli: rich_
 │                                        (current)]                                                │
 │ --help                                 Show this message and exit.                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -130,8 +122,7 @@ def test_arguments_help_grouped_with_options(cli_runner: CliRunner, cli: rich_cl
     rc.GROUP_ARGUMENTS_OPTIONS = True
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] INPUT OUTPUT                                                                  \n\
                                                                                                     \n\
@@ -148,6 +139,5 @@ def test_arguments_help_grouped_with_options(cli_runner: CliRunner, cli: rich_cl
 │                                           (current)]                                             │
 │    --help                                 Show this message and exit.                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")

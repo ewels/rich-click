@@ -26,6 +26,8 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 dynamic = [
     "version",
@@ -42,78 +44,6 @@ urls.Issues = "https://github.com/ewels/rich-click/issues"
 urls.Repository = "https://github.com/ewels/rich-click"
 scripts.rich-click = "rich_click.cli:main"
 
-[tool.setuptools.dynamic]
-version = { attr = "rich_click.__version__" }
-
-[tool.black]
-line-length = 120
-target-version = [ 'py37' ]
-
-[tool.ruff]
-line-length = 120
-exclude = [
-    ".git",
-    ".venv",
-    "__pycache__",
-    "build",
-    "docs/",
-    "examples/**",
-    "sdist",
-    "tests/fixtures/**",
-    "venv",
-]
-
-lint.select = [
-    "D",    # pydocstyle
-    "E",    # pycodestyle
-    "F",    # flake8
-    "I001", # isort
-    "W",    # pycodestyle
-]
-lint.ignore = [
-    "D100", # Missing docstring in public module
-    "D102", # Missing docstring in public method
-    "D105", # Missing docstring in magic method
-    "D203", # 1 blank line required before class docstring
-    "D205", # 1 blank line required between summary line and description
-    "D212", # Multi-line docstring summary should start at the first line
-    "E731", # Do not assign a lambda expression, use a def
-]
-lint.per-file-ignores."tests/**/*.py" = [
-    "D",
-]
-
-lint.isort.known-first-party = [ "rich_click" ]
-lint.isort.lines-after-imports = 2
-
-[tool.pyproject-fmt]
-indent = 4
-
-[tool.pytest.ini_options]
-addopts = "-s -rP -v --showlocals --cov --cov-report term"
-pythonpath = [ "tests", "src" ]
-testpaths = [ "tests" ]
-
-[tool.mypy]
-python_version = "3.10"
-scripts_are_modules = true
-strict = true
-follow_imports = "normal"
-exclude = [
-    '.*?live_style_editor\.py$',
-]
-
-[tool.pyright]
-include = [ "src" ]
-pythonVersion = "3.8"
-typeCheckingMode = "basic"
-executionEnvironments = [
-    { root = "src" },
-    { root = "tests", extra_paths = [
-        "src",
-    ] },
-]
-
 [dependency-groups]
 dev = [
     "inline-snapshot>=0.24",
@@ -121,11 +51,12 @@ dev = [
     "mypy>=1.14.1",
     "nodeenv>=1.9.1",                    # for --resolution=lowest support
     "packaging>=25",
-    "pre-commit>=3.5",
+    "prek>=0.4.12",
     "pytest>=8.3.5",
     "pytest-cov>=5",
     "rich-codex>=1.2.11",
     "ruff>=0.12.4",
+    "ty>=0.0.69",
     "typer>=0.15,<0.26",
     "types-setuptools>=75.8.0.20250110",
 ]
@@ -145,8 +76,76 @@ docs = [
     "typer>=0.15,<0.26",
 ]
 
+[tool.setuptools]
+dynamic.version = { attr = "rich_click.__version__" }
+
 [tool.uv]
 dependency-groups.docs = { requires-python = ">=3.13" }
+
+[tool.ruff]
+line-length = 120
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "build",
+    "docs/",
+    "sdist",
+    "tests/fixtures/**",
+    "venv",
+]
+lint.select = [
+    "D",    # pydocstyle
+    "E",    # pycodestyle
+    "F",    # flake8
+    "I001", # isort
+    "W",    # pycodestyle
+]
+lint.ignore = [
+    "D100", # Missing docstring in public module
+    "D102", # Missing docstring in public method
+    "D105", # Missing docstring in magic method
+    "D203", # 1 blank line required before class docstring
+    "D205", # 1 blank line required between summary line and description
+    "D212", # Multi-line docstring summary should start at the first line
+    "E731", # Do not assign a lambda expression, use a def
+]
+lint.exclude = [
+    "examples/**",
+]
+lint.per-file-ignores."tests/**/*.py" = [
+    "D",
+]
+lint.isort.known-first-party = [ "rich_click" ]
+lint.isort.lines-after-imports = 2
+
+[tool.pyproject-fmt]
+indent = 4
+
+[tool.mypy]
+exclude = [
+    '.*?live_style_editor\.py$',
+]
+follow_imports = "normal"
+python_version = "3.10"
+strict = true
+scripts_are_modules = true
+
+[tool.pyright]
+pythonVersion = "3.8"
+typeCheckingMode = "basic"
+include = [ "src" ]
+executionEnvironments = [
+    { root = "src" },
+    { root = "tests", extra_paths = [
+        "src",
+    ] },
+]
+
+[tool.pytest]
+ini_options.testpaths = [ "tests" ]
+ini_options.pythonpath = [ "tests", "src" ]
+ini_options.addopts = "-s -rP -v --showlocals --cov --cov-report term"
 
 [tool.inline-snapshot]
 hash-length = 15

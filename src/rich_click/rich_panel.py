@@ -134,7 +134,6 @@ class RichPanel(Generic[CT, ColT]):
         raise NotImplementedError()
 
     def _get_base_panel(self, table: "Table", **defaults: Any) -> "Panel":
-
         if self.panel_class is None:
             from rich_click.rich_help_rendering import RichClickRichPanel
 
@@ -181,7 +180,8 @@ class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
     @classmethod
     def list_all_objects(cls, ctx: Context) -> List[Tuple[str, Parameter]]:
         return [
-            (i.opts[0] if getattr(i, "flag_value", None) and i.opts else i.name, i) for i in ctx.command.get_params(ctx)  # type: ignore[misc]
+            (i.opts[0] if getattr(i, "flag_value", None) and i.opts else i.name, i)  # type: ignore[misc]
+            for i in ctx.command.get_params(ctx)
         ]
 
     def get_objects(self, command: Command, ctx: Context) -> Generator[Parameter, None, None]:
@@ -279,7 +279,6 @@ class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
                 inline_help_in_title = self.inline_help_in_title
 
             if inline_help_in_title:
-
                 p_styles["title"] = Text("", overflow="ellipsis").join(
                     [
                         Text(title, style=title_style),
@@ -333,7 +332,6 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
         callback_names = {c.callback.__name__: c for c in command.commands.values() if c.callback is not None}
 
         for cmd_name in self.commands:
-
             if cmd_name in commands_list:
                 yield command.get_command(ctx, cmd_name)  # type: ignore[misc]
             elif cmd_name in callback_names:
@@ -381,7 +379,6 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
         rows = []
 
         for cmd in self.get_objects(command, ctx):
-
             from rich_click.rich_command import RichCommand
             from rich_click.rich_help_rendering import get_command_rich_table_row
 
@@ -447,7 +444,6 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
                 inline_help_in_title = self.inline_help_in_title
 
             if inline_help_in_title:
-
                 p_styles["title"] = Text("", overflow="ellipsis").join(
                     [
                         Text(title, style=title_style),
@@ -507,7 +503,6 @@ def _resolve_panels_from_config(
             opts: List[str] = grp.get(panel_cls._object_attr, [])  # type: ignore[assignment]
             traversed = []
             for opt in grp.get(panel_cls._object_attr, []):  # type: ignore[attr-defined]
-
                 if grp.get("deduplicate", True) and opt in [
                     _opt
                     for _grp in final_groups_list

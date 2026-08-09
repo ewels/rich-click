@@ -17,8 +17,7 @@ def test_typer_rich_panels(typer_cli_runner: CliRunner, cli: typer.Typer) -> Non
     rc.THEME = "nu"
     result = typer_cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
  Usage: root [OPTIONS] COMMAND [ARGS]...                                                            \n\
                                                                                                     \n\
  ═ Options ════════════════════════════════════════════════════════════════════════════════════════ \n\
@@ -39,8 +38,7 @@ def test_typer_rich_panels(typer_cli_runner: CliRunner, cli: typer.Typer) -> Non
  help    Get help with the system. ❓                                                               \n\
  report  Report an issue. 🐛                                                                        \n\
                                                                                                     \n\
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -48,8 +46,7 @@ def test_typer_rich_panels_subcommand(typer_cli_runner: CliRunner, cli: typer.Ty
     rc.THEME = "nu"
     result = typer_cli_runner.invoke(cli, ["create", "--help"])
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
  Usage: root create [OPTIONS] USERNAME                                                              \n\
                                                                                                     \n\
  Create a new user. ✨                                                                              \n\
@@ -65,6 +62,5 @@ def test_typer_rich_panels_subcommand(typer_cli_runner: CliRunner, cli: typer.Ty
  --verbose/--no-verbose  (Default: no-verbose)                                                      \n\
  --debug/--no-debug      (Default: no-debug)                                                        \n\
                                                                                                     \n\
-"""
-    )
+""")
     assert result.stderr == snapshot("")
