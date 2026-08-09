@@ -9,10 +9,10 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    Iterable,
     Iterator,
     Literal,
     Optional,
-    Sequence,
     Tuple,
     Type,
     TypeVar,
@@ -360,7 +360,7 @@ class RichHelpFormatter(click.HelpFormatter):
 
     def write_dl(
         self,
-        rows: Sequence[Tuple[str, str]],
+        rows: Iterable[Tuple[str, str]],
         col_max: int = 30,
         col_spacing: int = 2,
     ) -> None:

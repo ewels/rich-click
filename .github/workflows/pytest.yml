@@ -54,7 +54,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv pip install ".[dev]"
+          uv pip install --group dev .
           uv pip install --upgrade "click==$CLICK_VERSION" "rich==$RICH_VERSION" "typer==$TYPER_VERSION" --prerelease=allow
         env:
           CLICK_VERSION: ${{ matrix.click }}

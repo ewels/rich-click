@@ -28,7 +28,7 @@ jobs:
           activate-environment: true
 
       - name: Install dependencies
-        run: uv pip install ".[docs]"
+        run: uv pip install --group docs .
 
       - name: Generate terminal images with rich-codex
         if: github.repository_owner == 'ewels' || github.event_name == 'workflow_dispatch'

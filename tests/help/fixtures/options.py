@@ -1,7 +1,7 @@
 import rich_click as click
 
 
-class Location(click.ParamType):  # type: ignore[type-arg]
+class Location(click.ParamType):
     name = "location"
 
 

@@ -14,7 +14,7 @@ Requirements:
 uv python pin 3.13
 uv venv .venv
 source .venv/bin/activate
-uv sync --extra dev
+uv sync --all-groups
 pre-commit install
 ```
 

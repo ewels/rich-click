@@ -21,7 +21,7 @@ jobs:
           activate-environment: true
 
       - name: Install dependencies
-        run: uv pip install ".[docs]"
+        run: uv pip install --group docs .
 
       - name: Generate terminal images with rich-codex
         uses: ewels/rich-codex@80de9de011c994f32274bb4cffee140567621d8e # v1.2.11
