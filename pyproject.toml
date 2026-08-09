@@ -48,7 +48,7 @@ scripts.rich-click = "rich_click.cli:main"
 dev = [
     "inline-snapshot>=0.24",
     "jsonschema>=4",
-    "mypy>=2.3",
+    "mypy>=2.3; python_version>='3.10'",
     "nodeenv>=1.9.1",
     "packaging>=25",
     "prek>=0.4.12",
@@ -80,7 +80,6 @@ docs = [
 dynamic.version = { attr = "rich_click.__version__" }
 
 [tool.uv]
-dependency-groups.dev = { requires-python = ">=3.10" }
 dependency-groups.docs = { requires-python = ">=3.13" }
 
 [tool.ruff]

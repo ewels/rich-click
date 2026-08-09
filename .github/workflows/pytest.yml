@@ -52,14 +52,15 @@ jobs:
           python-version: ${{ matrix.python }}
           activate-environment: true
 
-      - name: Install dependencies
+      - name: Run tests
         run: |
-          uv pip install --group dev .
-          uv pip install --upgrade "click==$CLICK_VERSION" "rich==$RICH_VERSION" "typer==$TYPER_VERSION" --prerelease=allow
+          uv run \
+            --with "click==$CLICK_VERSION" \
+            --with "rich==$RICH_VERSION" \
+            --with "typer==$TYPER_VERSION" \
+            --prerelease=allow \
+            pytest --cov --cov-report term
         env:
           CLICK_VERSION: ${{ matrix.click }}
           RICH_VERSION: ${{ matrix.rich }}
           TYPER_VERSION: ${{ matrix.typer }}
-
-      - name: Run tests
-        run: pytest --cov --cov-report term

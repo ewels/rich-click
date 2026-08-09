@@ -20,7 +20,6 @@ jobs:
           python-version: 3
           activate-environment: true
       - name: Install dependencies
-        run:  |
-          uv pip install --group dev .
+        run: uv sync --active
       - name: Run prek
         run: prek run -a
