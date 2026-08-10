@@ -57,7 +57,7 @@ and [mypy docs](https://mypy.readthedocs.io/en/stable/common_issues.html#spuriou
 ## Docs
 
 The documentation website is built with [Astro Starlight](https://starlight.astro.build) and lives in `docs/`.
-To work on the docs locally you need [Node.js](https://nodejs.org) (v20 or newer):
+To work on the docs locally you need [Node.js](https://nodejs.org) (v22.12 or newer):
 
 ```shell
 cd docs
