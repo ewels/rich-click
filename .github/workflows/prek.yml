@@ -6,7 +6,7 @@ on:
 permissions: {}
 
 jobs:
-  pre-commit:
+  prek:
     runs-on: ubuntu-latest
     permissions:
       contents: read

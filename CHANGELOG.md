@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+Development tooling only; no changes to the library itself.
+
+- Dev and docs requirements moved from optional dependencies to [dependency groups](https://peps.python.org/pep-0735/), so they are no longer published as package metadata. Install them with `uv sync --all-groups`.
+- Switched from [pre-commit](https://pre-commit.com/) to [prek](https://github.com/j178/prek), and replaced `.pre-commit-config.yaml` with `prek.toml`. Contributors should re-run `prek install` to replace their old git hook.
+- Replaced Black with `ruff format`, which resolves the formatting conflicts between the two.
+
 ## Version 1.9.8 (2026-05-28)
 
 - Fixed regression in patching with Click 8.4.0.
