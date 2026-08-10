@@ -5,7 +5,9 @@ import { satteri } from '@astrojs/markdown-satteri';
 import starlightBlog from 'starlight-blog';
 import starlightLinksValidator from 'starlight-links-validator';
 
-import { features, mdastPlugins } from './plugins/pipeline.mjs';
+import { satteriGithubAlerts } from './plugins/satteri-github-alerts.mjs';
+import { satteriInlineCode } from './plugins/satteri-inline-code.mjs';
+import { satteriMermaid } from './plugins/satteri-mermaid.mjs';
 import { sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
 
 // The site is deployed to versioned directories on GitHub Pages, mirroring the
@@ -19,7 +21,9 @@ export default defineConfig({
   site,
   base,
   markdown: {
-    processor: satteri({ features, mdastPlugins }),
+    processor: satteri({
+      mdastPlugins: [satteriInlineCode(), satteriMermaid(), satteriGithubAlerts()],
+    }),
   },
   redirects: {
     // Carried over from the mkdocs-redirects plugin.
