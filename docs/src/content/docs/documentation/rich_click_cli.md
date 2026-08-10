@@ -9,23 +9,23 @@ title: "`rich-click` CLI tool"
 <!-- RICH-CODEX
 head: 12
 -->
-![`rich-click --help`](../images/code_snippets/rich_click_cli/rich_click.svg){.screenshot}
+![`rich-click --help`](../images/code_snippets/rich_click_cli/rich_click.svg)
 
 To use, simply prefix `rich-click` to the command. Here are a few real world examples:
 
 :::tab[`flask`]
 
-![](../images/rich_click_cli_examples/flask.svg "flask --help"){.screenshot}
+![](../images/rich_click_cli_examples/flask.svg "flask --help")
 :::
 
 :::tab[`celery`]
 
-![](../images/rich_click_cli_examples/celery.svg "celery --help"){.screenshot}
+![](../images/rich_click_cli_examples/celery.svg "celery --help")
 :::
 
 :::tab[`dagster`]
 
-![](../images/rich_click_cli_examples/dagster.svg "dagster --help"){.screenshot}
+![](../images/rich_click_cli_examples/dagster.svg "dagster --help")
 :::
 
 If the CLI is not installed as a script, you can also pass the location with:
@@ -58,7 +58,7 @@ fake_command: rich-click --output svg app:main --help
 working_dir: docs/code_snippets/rich_click_cli
 head: 12
 -->
-![`rich-click --output svg app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_svg.svg){.screenshot}
+![`rich-click --output svg app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_svg.svg)
 
 HTML example:
 
@@ -69,13 +69,13 @@ fake_command: rich-click --output html app:main --help
 working_dir: docs/code_snippets/rich_click_cli
 head: 12
 -->
-![`rich-click --output html app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_html.svg){.screenshot}
+![`rich-click --output html app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_html.svg)
 
 _SVG and HTML generated from [`docs/code_snippets/rich_click_cli/app.py`](https://github.com/ewels/rich-click/blob/main/docs/code_snippets/rich_click_cli/app.py)_
 
 ## Typer support
 
-:::example[Experimental]
+:::tip[Experimental]
 This feature is still experimental.
 Please report any bugs or issues you run into!
 :::
@@ -93,13 +93,16 @@ Here is an example of overriding a Typer CLI with a **rich-click** theme:
 {% include "../../../../code_snippets/rich_click_cli/typer_example.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/rich_click_cli
 -->
-![`rich-click --theme magenta1-nu typer_example.py --help`](../images/code_snippets/rich_click_cli/typer_example.svg){.screenshot}
-:::
+![`rich-click --theme magenta1-nu typer_example.py --help`](../images/code_snippets/rich_click_cli/typer_example.svg)
+
+</details>
 
 ## Notes on how the `rich-click` CLI works
 
@@ -171,7 +174,7 @@ def cli():
 cli.add_command(another_cli)
 ```
 
-:::warning[Patching Typer]
+:::caution[Patching Typer]
 You can patch Typer using the same `patch()` function as above, but only if it occurs before **_any_** Typer imports.
 
 It is recommended instead that you use `patch_typer()`, which has no timing restrictions for when the patch can be applied:

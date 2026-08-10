@@ -14,13 +14,16 @@ By default, unless explicitly ordered otherwise, command panels always come afte
 {% include "../../../../../code_snippets/panels/panels_panel_order_explicit.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_panel_order_explicit.py --help`](../../images/code_snippets/panels/panels_panel_order_explicit.svg){.screenshot}
-:::
+![`python panels_panel_order_explicit.py --help`](../../images/code_snippets/panels/panels_panel_order_explicit.svg)
+
+</details>
 
 
 There exists a config option `commands_before_options` (default `False`), which changes the default behavior so that commands come before options.
@@ -31,13 +34,16 @@ So for example, the below code will set options _above_ commands:
 {% include "../../../../../code_snippets/panels/panels_panel_order_explicit_override.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_panel_order_explicit_override.py --help`](../../images/code_snippets/panels/panels_panel_order_explicit_override.svg){.screenshot}
-:::
+![`python panels_panel_order_explicit_override.py --help`](../../images/code_snippets/panels/panels_panel_order_explicit_override.svg)
+
+</details>
 
 If you do not explicitly define panels, then the sort order behavior is more advanced.
 The sort order in all situations is deliberate and also thoroughly tested, but it's not worth going into detail about.
@@ -77,13 +83,16 @@ Below is an example showing how column types can be used:
 {% include "../../../../../code_snippets/panels/panels_column_types.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_column_types.py --help`](../../images/code_snippets/panels/panels_column_types.svg){.screenshot}
-:::
+![`python panels_column_types.py --help`](../../images/code_snippets/panels/panels_column_types.svg)
+
+</details>
 
 ### Help Text Sections
 
@@ -116,13 +125,16 @@ Below is an example that does this, as well as doing some additional reordering 
 {% include "../../../../../code_snippets/panels/panels_help_section_types.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_help_section_types.py --help`](../../images/code_snippets/panels/panels_help_section_types.svg){.screenshot}
-:::
+![`python panels_help_section_types.py --help`](../../images/code_snippets/panels/panels_help_section_types.svg)
+
+</details>
 
 ## `RichPanel().to_info_dict()`
 
@@ -138,7 +150,7 @@ Note that both default panels and objects assigned by default do not render:
 
 ## Custom RichPanel Classes
 
-:::warning
+:::caution[Warning]
 The `RichPanel` API may be unstable across minor versions, since it is a new concept that we are still trying to find the best API for.
 If you subclass `RichPanel`, you may want to pin your **rich-click** version to `rich-click>=1.9,<1.10`.
 :::
@@ -149,10 +161,13 @@ RichPanels can be subclassed for additional functionality, if you so choose:
 {% include "../../../../../code_snippets/panels/panels_subclass.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_subclass.py --help`](../../images/code_snippets/panels/panels_subclass.svg){.screenshot}
-:::
+![`python panels_subclass.py --help`](../../images/code_snippets/panels/panels_subclass.svg)
+
+</details>

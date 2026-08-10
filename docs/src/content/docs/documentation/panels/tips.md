@@ -18,13 +18,16 @@ This is probably a mistake, and there are two ways to fix it:
 {% include "../../../../../code_snippets/panels/panels_handling_help_mistake.py" %}
 ```
 
-:::details[Output - Mistake]{variant=failure open}
+<details open>
+<summary>Output - Mistake</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_handling_help_mistake.py --help`](../../images/code_snippets/panels/panels_handling_help_mistake.svg){.screenshot}
-:::
+![`python panels_handling_help_mistake.py --help`](../../images/code_snippets/panels/panels_handling_help_mistake.svg)
+
+</details>
 ::::
 
 
@@ -33,13 +36,16 @@ working_dir: docs/code_snippets/panels
 {% include "../../../../../code_snippets/panels/panels_handling_help_fix_1.py" %}
 ```
 
-:::details[Output - Fix (method 1)]{variant=success open}
+<details open>
+<summary>Output - Fix (method 1)</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_handling_help_fix_1.py --help`](../../images/code_snippets/panels/panels_handling_help_fix_1.svg){.screenshot}
-:::
+![`python panels_handling_help_fix_1.py --help`](../../images/code_snippets/panels/panels_handling_help_fix_1.svg)
+
+</details>
 ::::
 
 ::::tab[Fix (method 2)]
@@ -47,13 +53,16 @@ working_dir: docs/code_snippets/panels
 {% include "../../../../../code_snippets/panels/panels_handling_help_fix_2.py" %}
 ```
 
-:::details[Output - Fix (method 2)]{variant=success open}
+<details open>
+<summary>Output - Fix (method 2)</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_handling_help_fix_2.py --help`](../../images/code_snippets/panels/panels_handling_help_fix_2.svg){.screenshot}
-:::
+![`python panels_handling_help_fix_2.py --help`](../../images/code_snippets/panels/panels_handling_help_fix_2.svg)
+
+</details>
 ::::
 
 ## Sort order of panels
@@ -84,13 +93,16 @@ Additionally, it is suggested you set _every_ object you intend on including in 
 {% include "../../../../../code_snippets/panels/panels_row_order.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_row_order.py --help`](../../images/code_snippets/panels/panels_row_order.svg){.screenshot}
-:::
+![`python panels_row_order.py --help`](../../images/code_snippets/panels/panels_row_order.svg)
+
+</details>
 
 That said, the default behavior is also predictable and follows what base Click does for ordering:
 

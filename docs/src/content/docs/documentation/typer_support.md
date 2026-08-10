@@ -2,12 +2,12 @@
 title: "Typer Support"
 ---
 
-:::error[Experimental]
+:::danger[Experimental]
 For now, Typer patching support does not work with `typer>=0.26.0`.
 Please use an older version of Typer if you'd like to use `patch_typer()`.
 :::
 
-:::example[Experimental]
+:::tip[Experimental]
 This feature is still experimental.
 Please report any bugs or issues you run into!
 :::
@@ -24,7 +24,9 @@ This does not need to be done at the top of the file, in fact you can do it righ
 {% include "../../../../code_snippets/typer_support/typer_example.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 Running the above Typer CLI works the same as you would otherwise expect,
 except now with a **rich-click** theme applied:
@@ -32,8 +34,9 @@ except now with a **rich-click** theme applied:
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/typer_support
 -->
-![`python typer_example.py --help`](../images/code_snippets/typer_support/typer_example.svg){.screenshot}
-:::
+![`python typer_example.py --help`](../images/code_snippets/typer_support/typer_example.svg)
+
+</details>
 
 ## Patching Typer via the `rich-click` CLI
 
@@ -46,4 +49,4 @@ rich-click my-typer-cli --help
 In addition to giving access to **rich-click**'s themes, another benefit of this is being able to generate HTML and SVG help text easily.
 Although, do note that Typer and **rich-click** have some minor differences in how they render help text.
 
-More information about usage of the `rich-click` CLI is in [the **rich-click CLI** docs](rich_click_cli.md), or you can run **`rich-click --help`** to view the CLI.
+More information about usage of the `rich-click` CLI is in [the **rich-click CLI** docs](../../documentation/rich_click_cli/), or you can run **`rich-click --help`** to view the CLI.

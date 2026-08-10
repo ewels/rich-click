@@ -21,7 +21,7 @@ This will affect _all_ CLI tools that use **rich-click**, even thought their aut
 The theme you choose is able to change not only the colors, but also change the structure of the help text, which can assist with screen readers.
 
 :::tip
-See the [Themes](themes.md) documentation for more information.
+See the [Themes](../../documentation/themes/) documentation for more information.
 Run `rich-click --themes` in your terminal to see all available themes and your current user's setting.
 :::
 
@@ -90,7 +90,7 @@ If you would like to make your CLI more accessible for others, there are a few r
 
 ### 1. Use Rich features over Click features
 
-There are some Click features that rich-click doesn't override such as print statements and interactive prompts (see [Comparison of Click and rich-click](comparison_of_click_and_rich_click.md#click-features-that-rich-click-does-not-override)).
+There are some Click features that rich-click doesn't override such as print statements and interactive prompts (see [Comparison of Click and rich-click](../../documentation/comparison_of_click_and_rich_click/#click-features-that-rich-click-does-not-override)).
 
 In these cases, we recommend using native Rich functionality so that your end users can benefit from `NO_COLOR`, which Click does not support.
 
@@ -123,20 +123,23 @@ Additionally, each one of these can be modified with `dim`, which in modern term
 
 Below is a script that renders all of these colors:
 
-:::details{variant=code}
+<details>
+<summary>Code</summary>
+
 ```python
 {%
     include "../../../../code_snippets/accessibility/colors.py"
 %}
 ```
-:::
+
+</details>
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/accessibility
 hide_command: true
 terminal_width: 48
 -->
-![`python colors.py`](../images/code_snippets/accessibility/colors.svg){.screenshot}
+![`python colors.py`](../images/code_snippets/accessibility/colors.svg)
 
 (The colors you see when running this locally will differ from the colors in the image.)
 

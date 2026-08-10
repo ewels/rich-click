@@ -11,12 +11,15 @@ title: "Text Markup & Formatting"
 - `'markdown'`: Rendered with markdown.
 - `None`: Rendered as plain text, ANSI escape codes are not handled.
 
-:::details[rich-click ≥1.8.0 deprecation]{variant=warning open}
+<details open>
+<summary>rich-click ≥1.8.0 deprecation</summary>
+
 Prior to **rich-click** 1.8.0, markup was controlled by the booleans `use_rich_markup` and `use_markdown`.
 
 These booleans have been silently deprecated (read: they will still be supported for the distant future),
 and users are encouraged to use the `text_markup` config option instead.
-:::
+
+</details>
 
 ### Rich markup
 
@@ -50,7 +53,7 @@ click.rich_click.TEXT_MARKUP = "rich"
 <!-- RICH-CODEX
 working_dir: .
 -->
-![`python examples/04_rich_markup.py --help`](../images/rich_markup.svg "Rich markup example"){.screenshot}
+![`python examples/04_rich_markup.py --help`](../images/rich_markup.svg "Rich markup example")
 
 > See [`examples/04_rich_markup.py`](https://github.com/ewels/rich-click/blob/main/examples/04_rich_markup.py) for an example.
 
@@ -79,7 +82,7 @@ click.rich_click.TEXT_MARKUP = "markdown"
 <!-- RICH-CODEX
 working_dir: .
 -->
-![`python examples/05_markdown.py --help`](../images/markdown.svg "Markdown example"){.screenshot}
+![`python examples/05_markdown.py --help`](../images/markdown.svg "Markdown example")
 
 > See [`examples/05_markdown.py`](https://github.com/ewels/rich-click/blob/main/examples/05_markdown.py) for an example.
 
@@ -97,13 +100,16 @@ The selected `text_markup` is used to render all text in your CLI help that can 
 {% include "../../../../code_snippets/text_markup_and_formatting/rich_markup.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
 -->
-![`python rich_markup.py --help`](../images/code_snippets/text_markup_and_formatting/rich_markup.svg){.screenshot}
-:::
+![`python rich_markup.py --help`](../images/code_snippets/text_markup_and_formatting/rich_markup.svg)
+
+</details>
 
 You can also set the styles of `help` for objects in decorators using `help_style=`.
 The below code renders the same as the above code:
@@ -112,13 +118,16 @@ The below code renders the same as the above code:
 {% include "../../../../code_snippets/text_markup_and_formatting/markup_with_help_style.py" %}
 ```
 
-:::details[Output]{variant=example}
+<details>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
 -->
-![`python markup_with_help_style.py --help`](../images/code_snippets/text_markup_and_formatting/markup_with_help_style.svg){.screenshot}
-:::
+![`python markup_with_help_style.py --help`](../images/code_snippets/text_markup_and_formatting/markup_with_help_style.svg)
+
+</details>
 
 ## Emojis
 
@@ -131,13 +140,16 @@ You can explicitly enable and disable emojis with the config option `text_emoji`
 {% include "../../../../code_snippets/text_markup_and_formatting/emojis.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
 -->
-![`python emojis.py --help`](../images/code_snippets/text_markup_and_formatting/emojis.svg){.screenshot}
-:::
+![`python emojis.py --help`](../images/code_snippets/text_markup_and_formatting/emojis.svg)
+
+</details>
 
 You can view all available emojis with the following command:
 
@@ -163,24 +175,30 @@ The following code snippet demonstrates this:
 {% include "../../../../code_snippets/text_markup_and_formatting/newline_control.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
 -->
-![`python newline_control.py --help`](../images/code_snippets/text_markup_and_formatting/newline_control.svg){.screenshot}
-:::
+![`python newline_control.py --help`](../images/code_snippets/text_markup_and_formatting/newline_control.svg)
+
+</details>
 
 Note that this differs from how base Click handles newlines.
 The following is the same CLI help text but using `import click` instead of `import rich_click as click`:
 
-:::details[Output - `import click` instead of `import rich_click as click`]{variant=example}
+<details>
+<summary>Output - <code>import click</code> instead of <code>import rich_click as click</code></summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
 -->
-![`python newline_control_base_click.py --help`](../images/code_snippets/text_markup_and_formatting/newline_control_base_click.svg){.screenshot}
-:::
+![`python newline_control_base_click.py --help`](../images/code_snippets/text_markup_and_formatting/newline_control_base_click.svg)
+
+</details>
 
 ### Spacing
 
@@ -193,16 +211,22 @@ However, you can override this behavior by setting the config option `text_parag
 {% include "../../../../code_snippets/text_markup_and_formatting/newline_control_double.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
 -->
-![`python newline_control_double.py --help`](../images/code_snippets/text_markup_and_formatting/newline_control_double.svg){.screenshot}
-:::
+![`python newline_control_double.py --help`](../images/code_snippets/text_markup_and_formatting/newline_control_double.svg)
+
+</details>
 
 
-:::details{variant=info open}
+<details open>
+<summary>Info</summary>
+
 This default behavior of collapsing newlines is not true when `text_markup='markdown'`.
 For markdown, we do not do any newline manipulation.
-:::
+
+</details>

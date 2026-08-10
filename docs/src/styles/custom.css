@@ -76,6 +76,7 @@ header.header {
 .sl-markdown-content p[align='center'] img {
   display: inline-block;
   cursor: default;
+  margin: 0;
 }
 
 /* Pixel display font for the site title and page headings. */
@@ -118,8 +119,9 @@ main h1 code,
   opacity: 100%;
 }
 
-/* Terminal screenshots (images tagged `{.screenshot}` in the Markdown). */
-.sl-markdown-content img.screenshot {
+/* Content images are mostly terminal screenshots: centre them and cap their
+   width, as the old site's `.screenshot` styling did. */
+.sl-markdown-content img {
   max-width: min(700px, 100%);
   margin: 2em auto 0.8em;
   display: block;

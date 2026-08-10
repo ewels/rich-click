@@ -108,7 +108,9 @@ def my_command():
 
 Below is a full list of configuration options from `rich_click.py`.
 
-:::details[Config]{variant=info}
+<details>
+<summary>Config</summary>
+
 ```python
 {%
     include '../../../../../src/rich_click/rich_click.py'
@@ -116,7 +118,8 @@ Below is a full list of configuration options from `rich_click.py`.
     end="#!ENDCONFIG"
 %}
 ```
-:::
+
+</details>
 
 All of these are available in the `RichHelpConfiguration` object, but as lowercase.
 
@@ -172,10 +175,10 @@ flowchart TD
 
 ## (Advanced) Themes
 
-:::success
+:::tip[Success]
 This section is specifically concerned with how themes interact with configurations.
 
-More general information about themes is described in [the **themes** docs](themes.md).
+More general information about themes is described in [the **themes** docs](../../documentation/themes/).
 :::
 
 Config options controlled by themes are assigned a sentinel value.

@@ -1,110 +1,29 @@
 /*
- * Material for MkDocs style admonitions, rendered by
- * plugins/satteri-admonitions.mjs and plugins/satteri-github-alerts.mjs using
- * Starlight's aside markup. Restyles the aside base to the Material shape
- * (elevated card, coloured left border, tinted title row) and adds the extra
- * variants used in the docs.
+ * Aside additions on top of Starlight's built-in styling:
+ * - the `important` variant used by GitHub `> [!IMPORTANT]` alerts in the
+ *   changelog/contributing pages (plugins/satteri-github-alerts.mjs);
+ * - collapsible <details> blocks used throughout the docs.
  */
 
-.starlight-aside {
-  padding: 0;
-  overflow: hidden;
-  border-inline-start: 0.25rem solid var(--sl-color-asides-border);
-  border-radius: 0.2rem;
-  background-color: var(--sl-color-bg);
-  box-shadow:
-    0 0.2rem 0.5rem rgba(0, 0, 0, 0.05),
-    0 0 0.05rem rgba(0, 0, 0, 0.1);
-  font-size: 0.9375rem;
-}
-
-.starlight-aside__title {
-  padding: 0.5rem 0.75rem;
-  margin: 0;
-  background-color: var(--rc-aside-tint);
-}
-
-.starlight-aside__content {
-  padding: 0.5rem 0.75rem 0.75rem;
-}
-
-.starlight-aside .starlight-aside__title + .starlight-aside__content {
-  margin-top: 0;
-}
-
-/* Variant colours (Material for MkDocs palette). */
-.starlight-aside--note {
-  --sl-color-asides-text-accent: #448aff;
-  --sl-color-asides-border: #448aff;
-  --rc-aside-tint: rgba(68, 138, 255, 0.1);
-}
-
-.starlight-aside--info {
-  --sl-color-asides-text-accent: #00b8d4;
-  --sl-color-asides-border: #00b8d4;
-  --rc-aside-tint: rgba(0, 184, 212, 0.1);
-}
-
-.starlight-aside--tip {
-  --sl-color-asides-text-accent: #00bfa5;
-  --sl-color-asides-border: #00bfa5;
-  --rc-aside-tint: rgba(0, 191, 165, 0.1);
-}
-
-.starlight-aside--success {
-  --sl-color-asides-text-accent: #00c853;
-  --sl-color-asides-border: #00c853;
-  --rc-aside-tint: rgba(0, 200, 83, 0.1);
-}
-
-.starlight-aside--warning,
-.starlight-aside--caution {
-  --sl-color-asides-text-accent: #ff9100;
-  --sl-color-asides-border: #ff9100;
-  --rc-aside-tint: rgba(255, 145, 0, 0.1);
-}
-
-.starlight-aside--failure {
-  --sl-color-asides-text-accent: #ff5252;
-  --sl-color-asides-border: #ff5252;
-  --rc-aside-tint: rgba(255, 82, 82, 0.1);
-}
-
-.starlight-aside--danger,
-.starlight-aside--error {
-  --sl-color-asides-text-accent: #ff1744;
-  --sl-color-asides-border: #ff1744;
-  --rc-aside-tint: rgba(255, 23, 68, 0.1);
-}
-
-.starlight-aside--example {
-  --sl-color-asides-text-accent: #7c4dff;
-  --sl-color-asides-border: #7c4dff;
-  --rc-aside-tint: rgba(124, 77, 255, 0.1);
-}
-
 .starlight-aside--important {
-  --sl-color-asides-text-accent: #8250df;
-  --sl-color-asides-border: #8250df;
-  --rc-aside-tint: rgba(130, 80, 223, 0.1);
+  --sl-color-asides-text-accent: var(--sl-color-purple-high);
+  --sl-color-asides-border: var(--sl-color-purple);
+  background-color: var(--sl-color-purple-low);
 }
 
-/* Collapsible admonitions (`??? note "Title"` in the old mkdocs syntax). */
-details.sl-details > summary.sl-details__summary {
+/* Collapsible sections (plain <details> HTML in the Markdown). */
+.sl-markdown-content details {
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.sl-markdown-content details > summary {
   cursor: pointer;
-  list-style: none;
+  font-weight: 600;
   user-select: none;
 }
 
-details.sl-details > summary.sl-details__summary::-webkit-details-marker {
-  display: none;
-}
-
-details.sl-details .sl-details__caret {
-  margin-inline-start: auto;
-  transition: transform 0.25s;
-}
-
-details.sl-details[open] > summary .sl-details__caret {
-  transform: rotate(90deg);
+.sl-markdown-content details[open] > summary {
+  margin-bottom: 0.5rem;
 }

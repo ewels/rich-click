@@ -19,7 +19,7 @@ extra_env:
     RICH_CLICK_THEME: '{"theme": "nord-nu", "color_system": "truecolor"}'
 -->
 
-![`python cli.py --help`](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_ex1.svg)
 :::
 
 :::tab[`dracula-modern`]
@@ -35,7 +35,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: '{"theme": "dracula-modern", "color_system": "truecolor"}'
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_ex2.svg)
 :::
 
 :::tab[`cargo-slim`]
@@ -51,7 +51,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: cargo-slim
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_ex3.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_ex3.svg)
 :::
 
 :::tab[`forest-robo`]
@@ -67,7 +67,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: forest-robo
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_ex4.svg)
 :::
 
 Themes consist of **Color Palettes** and **Formats**, which can be mixed and matched.
@@ -75,14 +75,17 @@ The name of a full theme has the following schema: `{color_palette}-{format}`.
 
 For example, the **forest-slim** theme uses the **forest** color palette and the **slim** format.
 
-:::details[Code for `cli.py`]{variant=info}
+<details>
+<summary>Code for <code>cli.py</code></summary>
+
 
 The following CLI code is used throughout this module to show off themes.
 
 ```python
 {% include "../../../../code_snippets/themes/cli.py" %}
 ```
-:::
+
+</details>
 
 ## Themes as an end-user
 
@@ -118,7 +121,7 @@ uv run --with=flask --with=rich-click \
 ```
 :::
 
-![](../images/code_snippets/themes/flask_themed.svg "RICH_CLICK_THEME=star-modern rich-click flask --help"){.screenshot}
+![](../images/code_snippets/themes/flask_themed.svg "RICH_CLICK_THEME=star-modern rich-click flask --help")
 
 Alternatively, when using the `rich-click [cmd]` CLI, you can pass a theme via the `--theme`/`-t` option:
 
@@ -134,7 +137,7 @@ uv run --with=flask --with=rich-click \
 ```
 :::
 
-![](../images/code_snippets/themes/flask_themed_2.svg "rich-click -t star-slim flask --help"){.screenshot}
+![](../images/code_snippets/themes/flask_themed_2.svg "rich-click -t star-slim flask --help")
 
 The `RICH_CLICK_THEME` env var can also be a full JSON representation of a config.
 For example, let's say you prefer having commands above options. There is a config option for this, `commands_before_options`, and you can place that in the `RICH_CLICK_THEME` env var:
@@ -153,7 +156,7 @@ uv run --with=flask --with=rich-click \
 ```
 :::
 
-![](../images/code_snippets/themes/flask_themed_3.svg "rich-click flask --help"){.screenshot}
+![](../images/code_snippets/themes/flask_themed_3.svg "rich-click flask --help")
 
 ## Themes as a developer
 
@@ -194,7 +197,7 @@ def cli():
 ```
 :::
 
-For more advanced CLIs, with lots of other customization options, there are additional considerations with themes and how they interact with your config that you may want to consider, especially in relation to end users being able to override the theme. For more information on this, read [the **Configuration** docs](configuration.md).
+For more advanced CLIs, with lots of other customization options, there are additional considerations with themes and how they interact with your config that you may want to consider, especially in relation to end users being able to override the theme. For more information on this, read [the **Configuration** docs](../../documentation/configuration/).
 
 ## All themes
 
@@ -211,7 +214,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: default-box
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_default_box.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_default_box.svg)
 :::
 
 :::tab[`slim`]
@@ -223,7 +226,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: default-slim
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_default_slim.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_default_slim.svg)
 :::
 
 :::tab[`modern`]
@@ -235,7 +238,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: default-modern
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_default_modern.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_default_modern.svg)
 :::
 
 :::tab[`robo`]
@@ -247,7 +250,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: default-robo
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_default_robo.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_default_robo.svg)
 :::
 
 :::tab[`nu`]
@@ -259,7 +262,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: default-nu
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_default_nu.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_default_nu.svg)
 :::
 
 ### Color palettes
@@ -276,7 +279,7 @@ export RICH_CLICK_THEME=default-box
 python docs/code_snippets/themes/cli.py --help
 ```
 
-![python cli.py --help](../images/code_snippets/themes/themes_default_box.svg){.screenshot}
+![python cli.py --help](../images/code_snippets/themes/themes_default_box.svg)
 :::
 
 :::tab[`solarized`]
@@ -293,7 +296,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: '{"theme": "solarized-box", "color_system": "truecolor"}'
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_solarized_box.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_solarized_box.svg)
 :::
 
 :::tab[`nord`]
@@ -310,7 +313,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: '{"theme": "nord-box", "color_system": "truecolor"}'
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_nord_box.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_nord_box.svg)
 :::
 
 :::tab[`star`]
@@ -327,7 +330,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: star-box
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_star_box.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_star_box.svg)
 :::
 
 :::tab[`quartz`]
@@ -344,7 +347,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: quartz-box
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_quartz_box.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_quartz_box.svg)
 :::
 
 :::tab[`quartz2`]
@@ -361,7 +364,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: quartz2-box
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_quartz2_box.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_quartz2_box.svg)
 :::
 
 :::tab[`cargo`]
@@ -378,7 +381,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: cargo-box
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_cargo_box.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_cargo_box.svg)
 :::
 
 :::tab[`forest`]
@@ -395,7 +398,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: forest-box
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_forest_box.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_forest_box.svg)
 :::
 
 :::tab[`dracula`]
@@ -412,10 +415,10 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: '{"theme": "dracula-box", "color_system": "truecolor"}'
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_dracula_box.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_dracula_box.svg)
 :::
 
-:::warning
+:::caution[Warning]
 The `dracula`, `nord`, and `solarized` themes use hex values,
 and **rich-click** currently does not detect background colors for users' terminals.
 
@@ -465,7 +468,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: red1-modern
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_red1_modern.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_red1_modern.svg)
 :::
 
 :::tab[`red2`]
@@ -482,7 +485,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: red2-modern
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_red2_modern.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_red2_modern.svg)
 :::
 
 :::tab[`green1`]
@@ -499,7 +502,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: green1-modern
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_green1_modern.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_green1_modern.svg)
 :::
 
 :::tab[`green2`]
@@ -516,7 +519,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: green2-modern
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_green2_modern.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_green2_modern.svg)
 :::
 
 :::tab[`yellow1`]
@@ -533,7 +536,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: yellow1-modern
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_yellow1_modern.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_yellow1_modern.svg)
 :::
 
 :::tab[`yellow2`]
@@ -550,7 +553,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: yellow2-modern
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_yellow2_modern.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_yellow2_modern.svg)
 :::
 
 :::tab[`blue1`]
@@ -567,7 +570,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: blue1-modern
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_blue1_modern.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_blue1_modern.svg)
 :::
 
 :::tab[`blue2`]
@@ -584,7 +587,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: blue2-modern
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_blue2_modern.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_blue2_modern.svg)
 :::
 
 :::tab[`magenta1`]
@@ -601,7 +604,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: magenta1-modern
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_magenta1_modern.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_magenta1_modern.svg)
 :::
 
 :::tab[`magenta2`]
@@ -618,7 +621,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: magenta2-modern
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_magenta2_modern.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_magenta2_modern.svg)
 :::
 
 :::tab[`cyan1`]
@@ -635,7 +638,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: cyan1-modern
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_cyan1_modern.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_cyan1_modern.svg)
 :::
 
 :::tab[`cyan2`]
@@ -652,7 +655,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: cyan2-modern
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_cyan2_modern.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_cyan2_modern.svg)
 :::
 
 
@@ -674,7 +677,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: mono-box
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_mono_box.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_mono_box.svg)
 :::
 
 :::tab[`plain`]
@@ -691,10 +694,12 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: plain-box
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_plain_box.svg){.screenshot}
+![`python cli.py --help`](../images/code_snippets/themes/themes_plain_box.svg)
 :::
 
-:::details[`plain-slim`]{variant=example}
+<details>
+<summary><code>plain-slim</code></summary>
+
 Of course, the most plain style of them all is `plain-slim`, which renders CLI help text in the most conventional way that **rich-click** can.
 
 For fun, we've included it here!
@@ -713,8 +718,9 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: plain-slim
 -->
-![`python cli.py --help`](../images/code_snippets/themes/themes_plain_slim.svg){.screenshot}
-:::
+![`python cli.py --help`](../images/code_snippets/themes/themes_plain_slim.svg)
+
+</details>
 
 
 
@@ -723,7 +729,9 @@ extra_env:
 Running `rich-click --themes` will provide help text that lists every theme available to you.
 The command will also tell you which theme you currently have enabled.
 
-:::details[Output of `rich-click --themes`]{variant=info}
+<details>
+<summary>Output of <code>rich-click --themes</code></summary>
+
 
 <!-- RICH-CODEX
 fake_command: rich-click --themes
@@ -732,5 +740,6 @@ extra_env:
     TERMINAL_WIDTH: 120
     TERMINAL_WIDTH: 140
 -->
-![`rich-click --themes`](../images/code_snippets/themes/all_themes.svg){.screenshot}
-:::
+![`rich-click --themes`](../images/code_snippets/themes/all_themes.svg)
+
+</details>

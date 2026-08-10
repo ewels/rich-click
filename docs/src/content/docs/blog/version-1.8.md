@@ -28,7 +28,9 @@ We hope that the live style editor makes it easier for users to make style chang
 
 Here is an example of a style that Phil made with the style editor:
 
-:::details[Phil's Generated Code]{variant=success}
+<details>
+<summary>Phil's Generated Code</summary>
+
 
 ```python
 import rich_click as click
@@ -70,13 +72,16 @@ def subcommand(foo, bar):
 if __name__ == "__main__":
     cli()
 ```
-:::
 
-![](../images/blog/version-1.8/phils_example.svg){.screenshot}
+</details>
+
+![](../images/blog/version-1.8/phils_example.svg)
 
 And here's one that Daniel made:
 
-:::details[Daniel's Generated Code]{variant=success}
+<details>
+<summary>Daniel's Generated Code</summary>
+
 
 ```python
 import rich_click as click
@@ -118,9 +123,10 @@ def subcommand(foo, bar):
 if __name__ == "__main__":
     cli()
 ```
-:::
 
-![](../images/blog/version-1.8/daniels_example.svg){.screenshot}
+</details>
+
+![](../images/blog/version-1.8/daniels_example.svg)
 
 ## **rich-click** version 1.8
 
@@ -132,7 +138,7 @@ The `rich-click` CLI now allows for `--output svg` and `--output html` to help e
 rich-click --output svg path.to.my.cli:main --help
 ```
 
-![](../images/blog/version-1.8/output_to_svg.svg){.screenshot}
+![](../images/blog/version-1.8/output_to_svg.svg)
 
 ### Easier decorator API
 
@@ -214,7 +220,9 @@ The biggest addition to **rich-click**'s styling options was control over panel 
 
 Here's a silly example of what this can do:
 
-:::details[Code for silly example]{variant=note}
+<details>
+<summary>Code for silly example</summary>
+
 
 ```python
 import rich_click as click
@@ -250,15 +258,18 @@ def self():
 if __name__ == "__main__":
     cli()
 ```
-:::
+
+</details>
 
 
-![](../images/blog/version-1.8/boxes_silly.svg){.screenshot}
+![](../images/blog/version-1.8/boxes_silly.svg)
 
 
 Here's a simple, stylish, and sleek example that would look great in your app:
 
-:::details[Code for stylish example]{variant=note}
+<details>
+<summary>Code for stylish example</summary>
+
 
 ```python
 import rich_click as click
@@ -308,10 +319,11 @@ def self():
 if __name__ == "__main__":
     cli()
 ```
-:::
+
+</details>
 
 
-![](../images/blog/version-1.8/boxes_sleek.svg){.screenshot}
+![](../images/blog/version-1.8/boxes_sleek.svg)
 
 
 ### Improvements to option and command group API
@@ -325,7 +337,9 @@ First, group keys used to only read from the `ctx.command_path`.
 Now they read from the `ctx.command_path` and the `ctx.command.name` (or the `f"{ctx.parent.command.name} {ctx.command.name}"` for subcommands).
 This should cause fewer headaches for users!
 
-:::details[Longer explanation]{variant=note}
+<details>
+<summary>Longer explanation</summary>
+
 
 What this means in practical terms is easier to explain by example.
 For example, the command path for `python hello.py --name world` is `hello.py`,
@@ -336,7 +350,8 @@ This causes an annoying issue where running `python my_script.py` and `venv/bin/
 and it was also unintuitive that the name of the CLI didn't always work, even when it's not an entry point.
 
 Now, both approaches work! 😊
-:::
+
+</details>
 
 ```python
 # cli.py
@@ -375,7 +390,9 @@ You can also stick wildcards in the front, middle, or end of a key, e.g.:
 - `cli * sub-sub-command`
 - `* sub-command *`
 
-:::details[Long example]{variant=note}
+<details>
+<summary>Long example</summary>
+
 
 ```python
 # foo.py
@@ -472,7 +489,8 @@ $ python foo.py x b --help
 │ --help           Show this message and exit.                                        │
 ╰─────────────────────────────────────────────────────────────────────────────────────╯
 ```
-:::
+
+</details>
 
 #### `panel_styles` + Arguments panel styling
 
@@ -515,7 +533,7 @@ if __name__ == "__main__":
     cli()
 ```
 
-![](../images/blog/version-1.8/arguments_box_and_panel_styles.svg){.screenshot}
+![](../images/blog/version-1.8/arguments_box_and_panel_styles.svg)
 
 
 ### Improved performance
@@ -526,14 +544,16 @@ During command execution, **rich-click** now loads faster and takes up less memo
 
 ![](../images/blog/version-1.8/memory_profiles.png "Memory consumption of different CLI frameworks")
 
-:::info
+:::note[Info]
 Python regularly compiles `.py` files into `.pyc` files to speed up code execution.
 The **with bytecode** metrics measure performance _with_ these `.pyc` files, and the **without bytecode** metrics measure performance _without_ them.
 :::
 
 We include the code we ran below. The metrics you see above were gathered by running the below script on an old Macbook.
 
-:::details[Profiling script]{variant=note}
+<details>
+<summary>Profiling script</summary>
+
 
 This is the script we used to generate the data in the bar chart.
 
@@ -719,7 +739,8 @@ uv pip install --no-binary :all: "rich-click==1.7"
 get_mprof hello_rich_click.py true
 get_mprof hello_rich_click.py false
 ```
-:::
+
+</details>
 
 We include Typer in our profiling to show a reasonable baseline for a Click wrapper's overhead.
 Typer is an ambitious and great project that's doing quite a bit under the hood, and it's reasonable to expect it to take a little more time and memory.

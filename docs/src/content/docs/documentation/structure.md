@@ -2,6 +2,6 @@
 title: "Structure"
 ---
 
-:::failure[Under construction]
+:::danger[Under construction]
 This page is still under construction
 :::

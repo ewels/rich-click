@@ -41,7 +41,7 @@ extra_env:
     RICH_CLICK_THEME: nord-nu
 -->
 
-![](../images/code_snippets/themes/themes_ex1.svg){.screenshot}
+![](../images/code_snippets/themes/themes_ex1.svg)
 :::
 
 :::tab[`dracula-modern`]
@@ -51,7 +51,7 @@ export RICH_CLICK_THEME=dracula-modern
 python docs/code_snippets/themes/cli.py --help
 ```
 
-![](../images/code_snippets/themes/themes_ex2.svg){.screenshot}
+![](../images/code_snippets/themes/themes_ex2.svg)
 :::
 
 :::tab[`cargo-slim`]
@@ -61,7 +61,7 @@ export RICH_CLICK_THEME=cargo-slim
 python docs/code_snippets/themes/cli.py --help
 ```
 
-![](../images/code_snippets/themes/themes_ex3.svg){.screenshot}
+![](../images/code_snippets/themes/themes_ex3.svg)
 :::
 
 :::tab[`forest-robo`]
@@ -77,7 +77,7 @@ extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: forest-robo
 -->
-![](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
+![](../images/code_snippets/themes/themes_ex4.svg)
 :::
 
 As you can see, themes are not _just_ colors, they can also completely change the formatting, too!
@@ -93,14 +93,17 @@ Our first adopter of **rich-click** themes is [Litestar](https://litestar.dev/),
 They have their own official color palette called `star`. (Of course, you can use this theme for your own CLI, too!)
 Here's what it looks like!
 
-![](../images/blog/version-1.9/litestar.svg){.screenshot}
+![](../images/blog/version-1.9/litestar.svg)
 
 If you want to see all the options available to you, you can run the CLI command `rich-click --themes`:
 
-:::details[Output of `rich-click --themes`]{variant=info}
+<details>
+<summary>Output of <code>rich-click --themes</code></summary>
 
-![](../images/code_snippets/themes/all_themes.svg){.screenshot}
-:::
+
+![](../images/code_snippets/themes/all_themes.svg)
+
+</details>
 
 If you are interested in learning more about themes, read about them in [the **Themes** docs](https://ewels.github.io/rich-click/1.9/documentation/themes/).
 
@@ -110,32 +113,44 @@ If you thought themes are cool in **rich-click**, wait until you see them in Typ
 
 The `rich-click` CLI now supports Typer, which also means that `rich-click` themes are available to Typer.
 
-:::details[Code - Example Typer CLI]{variant=info}
+<details>
+<summary>Code - Example Typer CLI</summary>
+
 ```python
 {% include "../../../../code_snippets/rich_click_cli/typer_example.py" %}
 ```
-:::
 
-:::details[Output - Example Typer CLI with rich-click]{variant=example open}
+</details>
 
-![](../images/code_snippets/rich_click_cli/typer_example.svg){.screenshot}
-:::
+<details open>
+<summary>Output - Example Typer CLI with rich-click</summary>
+
+
+![](../images/code_snippets/rich_click_cli/typer_example.svg)
+
+</details>
 
 Even cooler, you can patch Typer **directly in your code** to use **rich-click**'s themes.
 This means you don't need to rely on users to run `rich-click your-cli-tool` to get access to these themes.
 
 In the below example, we patch typer to use the `star-slim` theme directly in the CLI code:
 
-:::details[Code - Typer CLI with patch]{variant=info open}
+<details open>
+<summary>Code - Typer CLI with patch</summary>
+
 ```python {24-28}
 {% include "../../../../code_snippets/typer_support/typer_example.py" %}
 ```
-:::
 
-:::details[Output - Typer CLI with patch]{variant=example open}
+</details>
 
-![](../images/code_snippets/typer_support/typer_example.svg){.screenshot}
-:::
+<details open>
+<summary>Output - Typer CLI with patch</summary>
+
+
+![](../images/code_snippets/typer_support/typer_example.svg)
+
+</details>
 
 Under the hood, we are doing metaclass [dark magic](https://github.com/ewels/rich-click/blob/e57aa800555bb8f3e3c46582f61fb22080802f4b/src/rich_click/patch.py) to prevent needing to preemptively import Typer,
 and to prevent requiring users to specify that a CLI is a Typer CLI.
@@ -174,7 +189,7 @@ if __name__ == "__main__":
     move_item()
 ```
 
-![](../images/blog/version-1.9/panels_simple.svg){.screenshot}
+![](../images/blog/version-1.9/panels_simple.svg)
 
 You can also define the objects mapped to a panel in the panel itself.
 The below code is effectively equivalent to the above code:
@@ -235,7 +250,7 @@ if __name__ == "__main__":
     move_item()
 ```
 
-![](../images/blog/version-1.9/panels_complex.svg){.screenshot}
+![](../images/blog/version-1.9/panels_complex.svg)
 
 Neat, huh? If you are interested in learning more, read about panels in [the **Panels** docs](https://ewels.github.io/rich-click/1.9/documentation/panels/overview).
 
@@ -245,11 +260,11 @@ I love Click! That's why we maintain this repo, after all. That said, one thing 
 
 Well, we have fixed this issue in **rich-click** 1.9.0:
 
-![](../images/blog/version-1.9/ide1.png){.screenshot}
+![](../images/blog/version-1.9/ide1.png)
 
 We even typed the more opaque dicts, such as `context_settings`:
 
-![](../images/blog/version-1.9/ide2.png){.screenshot}
+![](../images/blog/version-1.9/ide2.png)
 
 Everything should be type-hinted, and we've tested this against both pyright and mypy to good results.
 
@@ -282,16 +297,22 @@ In prior versions, only the first way worked.
 We are now a little more careful and practical with how we handle newlines in help text.
 You can see a demo of rich-click 1.9's newline handling below:
 
-:::details[Code]{variant=info}
+<details>
+<summary>Code</summary>
+
 ```python
 {% include "../../../../code_snippets/text_markup_and_formatting/newline_control.py" %}
 ```
-:::
 
-:::details[Output]{variant=example}
+</details>
 
-![](../images/code_snippets/text_markup_and_formatting/newline_control.svg){.screenshot}
-:::
+<details>
+<summary>Output</summary>
+
+
+![](../images/code_snippets/text_markup_and_formatting/newline_control.svg)
+
+</details>
 
 ### Stderr help: `context_settings={"help_to_stderr": True}`
 
@@ -325,16 +346,22 @@ Of these config options being deprecated, the most popular is the combination of
 We deprecated support for these because in 1.9, this is handled via declaring order of elements explicitly with the config options `options_table_column_types` and `options_table_help_sections`.
 An example of this approach can be seen below:
 
-:::details[Code]{variant=info}
+<details>
+<summary>Code</summary>
+
 ```python {22-23}
 {% include "../../../../code_snippets/panels/panels_help_section_types.py" %}
 ```
-:::
 
-:::details[Output]{variant=example}
+</details>
 
-![](../images/code_snippets/panels/panels_help_section_types.svg){.screenshot}
-:::
+<details>
+<summary>Output</summary>
+
+
+![](../images/code_snippets/panels/panels_help_section_types.svg)
+
+</details>
 
 ## Plans for the future
 

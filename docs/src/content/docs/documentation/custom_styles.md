@@ -2,7 +2,7 @@
 title: "Formatting & Styles"
 ---
 
-:::info
+:::note[Info]
 All images below are auto-generated using another **rich** side-project: [rich-codex](https://github.com/ewels/rich-codex). Pretty cool!
 :::
 
@@ -33,7 +33,7 @@ click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
 <!-- RICH-CODEX
 working_dir: .
 -->
-![`python examples/06_arguments.py --help`](../images/arguments.svg "Positional arguments example"){.screenshot}
+![`python examples/06_arguments.py --help`](../images/arguments.svg "Positional arguments example")
 
 > See [`examples/06_arguments.py`](https://github.com/ewels/rich-click/blob/main/examples/06_arguments.py) for an example.
 
@@ -49,7 +49,7 @@ However, if you have a long list of choices, this column can be quite wide and r
 <!-- RICH-CODEX
 working_dir: .
 -->
-![`python examples/08_metavars_default.py --help`](../images/metavars_default.svg "Default metavar display"){.screenshot}
+![`python examples/08_metavars_default.py --help`](../images/metavars_default.svg "Default metavar display")
 
 It may look better to show metavars appended to the help text, instead of in their own column.
 For this, use the following:
@@ -73,7 +73,7 @@ click.rich_click.APPEND_METAVARS_HELP = True
 <!-- RICH-CODEX
 working_dir: .
 -->
-![`python examples/08_metavars.py --help`](../images/metavars_appended.svg "Appended metavar"){.screenshot}
+![`python examples/08_metavars.py --help`](../images/metavars_appended.svg "Appended metavar")
 
 > See [`examples/08_metavars.py`](https://github.com/ewels/rich-click/blob/main/examples/08_metavars.py) for an example.
 
@@ -84,7 +84,7 @@ By default, rich-click gives some nice formatting to error messages:
 <!-- RICH-CODEX
 working_dir: .
 -->
-![`python examples/01_simple.py --hep || true`](../images/error.svg "Error message"){.screenshot}
+![`python examples/01_simple.py --hep || true`](../images/error.svg "Error message")
 
 You can customize the _Try 'command --help' for help._ message with `ERRORS_SUGGESTION`
 using rich-click though, and add some text after the error with `ERRORS_EPILOGUE`.
@@ -113,7 +113,7 @@ click.rich_click.ERRORS_EPILOGUE = "To find out more, visit [link=https://mytool
 <!-- RICH-CODEX
 working_dir: .
 -->
-![`python examples/07_custom_errors.py --hep || true`](../images/custom_error.svg "Custom error message"){.screenshot}
+![`python examples/07_custom_errors.py --hep || true`](../images/custom_error.svg "Custom error message")
 
 > See [`examples/07_custom_errors.py`](https://github.com/ewels/rich-click/blob/main/examples/07_custom_errors.py) for an example.
 
@@ -138,8 +138,8 @@ Setting `MAX_WIDTH` overrides the effect of `WIDTH`
 
 ## Styles
 
-:::success
-Check out the [**Live Style Editor**](../editor.md) to easily get started building a custom **rich-click** style!
+:::tip[Success]
+Check out the [**Live Style Editor**](../../editor/) to easily get started building a custom **rich-click** style!
 :::
 
 Most aspects of rich-click formatting can be customized, from color to alignment.
@@ -164,9 +164,9 @@ working_dir: .
 extra_env:
     TERMINAL_WIDTH: 160
 -->
-![`python examples/10_table_styles.py --help`](../images/style_tables.svg "Rich markup example"){.screenshot}
+![`python examples/10_table_styles.py --help`](../images/style_tables.svg "Rich markup example")
 
 
 > See [`examples/10_table_styles.py`](https://github.com/ewels/rich-click/blob/main/examples/10_table_styles.py) for an example.
 
-See the [_Configuration options_](configuration.md#configuration-options) section below for the full list of available options.
+See the [_Configuration options_](../../documentation/configuration/#configuration-options) section below for the full list of available options.

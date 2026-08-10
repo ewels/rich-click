@@ -30,12 +30,12 @@ You can run the file like normal, or you can run `--help` to render the function
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
 -->
-![`python hello.py`](../images/code_snippets/introduction_to_click/hello.svg){.screenshot}
+![`python hello.py`](../images/code_snippets/introduction_to_click/hello.svg)
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
 -->
-![`python hello.py --help`](../images/code_snippets/introduction_to_click/hello_help.svg){.screenshot}
+![`python hello.py --help`](../images/code_snippets/introduction_to_click/hello_help.svg)
 
 ### Arguments and Options
 
@@ -54,12 +54,12 @@ The below code shows some of the features available with options and arguments:
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
 -->
-![`python hello_v2.py --say-goodbye --times 3 Edward`](../images/code_snippets/introduction_to_click/hello_v2.svg){.screenshot}
+![`python hello_v2.py --say-goodbye --times 3 Edward`](../images/code_snippets/introduction_to_click/hello_v2.svg)
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
 -->
-![`python hello_v2.py --help`](../images/code_snippets/introduction_to_click/hello_v2_help.svg){.screenshot}
+![`python hello_v2.py --help`](../images/code_snippets/introduction_to_click/hello_v2_help.svg)
 
 Click is able to parse the new arguments and options, e.g. it knows that `--times [number]` maps to the function argument `times`.
 Additionally, Click also knows to render these new arguments in the help text.
@@ -78,23 +78,23 @@ Running `python hello.py --help` gives you the help text for the group and lists
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
 -->
-![`python hello_v3.py --help`](../images/code_snippets/introduction_to_click/hello_v3_help.svg){.screenshot}
+![`python hello_v3.py --help`](../images/code_snippets/introduction_to_click/hello_v3_help.svg)
 
 And you can run any of the subcommands like so:
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
 -->
-![`python hello_v3.py french Jennifer`](../images/code_snippets/introduction_to_click/hello_v3_subcommand.svg){.screenshot}
+![`python hello_v3.py french Jennifer`](../images/code_snippets/introduction_to_click/hello_v3_subcommand.svg)
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
 -->
-![`python hello_v3.py french --help`](../images/code_snippets/introduction_to_click/hello_v3_subcommand_help.svg){.screenshot}
+![`python hello_v3.py french --help`](../images/code_snippets/introduction_to_click/hello_v3_subcommand_help.svg)
 
 ## Next Steps
 
-:::info
+:::note[Info]
 **There is a lot more to Click than what is covered here.** Read [the official Click docs](https://click.palletsprojects.com/en/8.1.x/) for more information.
 :::
 
@@ -117,7 +117,7 @@ That's the **_only_** change needed to use **rich-click**! And now we get the fo
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
 -->
-![`python hello_rich.py --help`](../images/code_snippets/introduction_to_click/hello_rich.svg){.screenshot}
+![`python hello_rich.py --help`](../images/code_snippets/introduction_to_click/hello_rich.svg)
 
 ## Other CLI libraries
 

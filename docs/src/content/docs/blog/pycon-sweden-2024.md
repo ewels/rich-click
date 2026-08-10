@@ -18,13 +18,13 @@ You can find my slides below:
 
 ## YouTube video
 
-[Watch on YouTube](https://youtu.be/vGSYj_5tGmY){ .md-button }
+<a class="md-button" href="https://youtu.be/vGSYj_5tGmY">Watch on YouTube</a>
 
 <iframe style="width: 100%; border: 1px solid #333; aspect-ratio: 16 / 10;" src="https://www.youtube.com/embed/vGSYj_5tGmY?si=BJIj4Yx7FjZI5zA3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## Slides
 
-[Open in new tab](../../images/blog/pycon-sweden-2024/Ewels-PyCon-Sweden-2024.pdf){ .md-button }
+<a class="md-button" href="../../images/blog/pycon-sweden-2024/Ewels-PyCon-Sweden-2024.pdf">Open in new tab</a>
 
 <iframe style="width: 100%; border: 1px solid #333; aspect-ratio: 16 / 10;" src="../../images/blog/pycon-sweden-2024/Ewels-PyCon-Sweden-2024.pdf" title="PyCon Sweden 2024 Slides - Phil Ewels"></iframe>
 

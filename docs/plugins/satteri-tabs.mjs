@@ -14,7 +14,7 @@
 // The generated markup is a radio-input based tab set (styled by
 // src/styles/tabs.css); a small script in the Header component links tabs with
 // identical labels together, mirroring Material's `content.tabs.link` feature.
-import { element } from './admonition-common.mjs';
+import { element } from './mdast-helpers.mjs';
 
 // src/styles/tabs.css enumerates per-index selectors up to this many tabs;
 // a longer run would render labels whose panels can never be shown.

@@ -16,7 +16,7 @@ By default, `RichCommand`s have a single panel for options named "Options", and 
 - Positional arguments can be given a separate panel, or included in options panels.
 - The styles of these panels can be modified.
 
-:::info
+:::note[Info]
 Panels are a replacement of rich-click "groups," which are deprecated as of version 1.9.0.
 We will support the old groups API for the foreseeable future, but its use is discouraged.
 
@@ -39,13 +39,16 @@ Options panels handle parameters for your command:
 {% include "../../../../../code_snippets/panels/panels_simple_decorators.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_simple_decorators.py --help`](../../images/code_snippets/panels/panels_simple_decorators.svg){.screenshot}
-:::
+![`python panels_simple_decorators.py --help`](../../images/code_snippets/panels/panels_simple_decorators.svg)
+
+</details>
 
 Alternatively, you can configure panels within the option itself.
 If the panel is not created in a decorator, then one is created on the fly.
@@ -56,14 +59,17 @@ The following code generates the same output as the example above:
 {% include "../../../../../code_snippets/panels/panels_simple_kwargs.py" %}
 ```
 
-:::details[Output]{variant=example}
+<details>
+<summary>Output</summary>
+
 
 Note that this output is the same as the previous example, even though it was defined differently.
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_simple_kwargs.py --help`](../../images/code_snippets/panels/panels_simple_kwargs.svg){.screenshot}
-:::
+![`python panels_simple_kwargs.py --help`](../../images/code_snippets/panels/panels_simple_kwargs.svg)
+
+</details>
 
 ### Arguments
 
@@ -75,13 +81,16 @@ Arguments can be given their own panel with the `show_arguments` config option:
 {% include "../../../../../code_snippets/panels/panels_simple_arguments.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_simple_arguments.py --help`](../../images/code_snippets/panels/panels_simple_arguments.svg){.screenshot}
-:::
+![`python panels_simple_arguments.py --help`](../../images/code_snippets/panels/panels_simple_arguments.svg)
+
+</details>
 
 Arguments can also be included in the options panel with the `group_arguments_options` config option (the `show_arguments` config option does not need to be set).
 
@@ -89,13 +98,16 @@ Arguments can also be included in the options panel with the `group_arguments_op
 {% include "../../../../../code_snippets/panels/panels_simple_arguments_combined.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_simple_arguments_combined.py --help`](../../images/code_snippets/panels/panels_simple_arguments_combined.svg){.screenshot}
-:::
+![`python panels_simple_arguments_combined.py --help`](../../images/code_snippets/panels/panels_simple_arguments_combined.svg)
+
+</details>
 
 In **rich-click**, unlike base Click, arguments can have `help` text.
 If `help=` if set for arguments, then the argument panel is automatically shown:
@@ -104,13 +116,16 @@ If `help=` if set for arguments, then the argument panel is automatically shown:
 {% include "../../../../../code_snippets/panels/panels_simple_arguments_help.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_simple_arguments_help.py --help`](../../images/code_snippets/panels/panels_simple_arguments_help.svg){.screenshot}
-:::
+![`python panels_simple_arguments_help.py --help`](../../images/code_snippets/panels/panels_simple_arguments_help.svg)
+
+</details>
 
 ### Commands
 
@@ -120,13 +135,16 @@ Sub-commands also have panels that are defined similarly to option panels:
 {% include "../../../../../code_snippets/panels/panels_commands.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_commands.py --help`](../../images/code_snippets/panels/panels_commands.svg){.screenshot}
-:::
+![`python panels_commands.py --help`](../../images/code_snippets/panels/panels_commands.svg)
+
+</details>
 
 ## Styles & Panel Help
 
@@ -140,13 +158,16 @@ The below example shows both of these things:
 {% include "../../../../../code_snippets/panels/panels_extra_kwargs.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_extra_kwargs.py --help`](../../images/code_snippets/panels/panels_extra_kwargs.svg){.screenshot}
-:::
+![`python panels_extra_kwargs.py --help`](../../images/code_snippets/panels/panels_extra_kwargs.svg)
+
+</details>
 
 The `panel_styles` is passed into the outer `rich.panel.Panel()`, and the `table_styles` dict is pass as kwargs into the inner `rich.table.Table()`.
 
@@ -165,24 +186,30 @@ Renamed panels can still have their panel-level configurations modified.
 {% include "../../../../../code_snippets/panels/panels_defaults_renamed.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_defaults_renamed.py --help`](../../images/code_snippets/panels/panels_defaults_renamed.svg){.screenshot}
-:::
+![`python panels_defaults_renamed.py --help`](../../images/code_snippets/panels/panels_defaults_renamed.svg)
+
+</details>
 
 Note that the rich config passes to subcommands, but panels are defined at the command level.
 So running `move-item --help` from the above example _will_ rename the children's panels (because that's set in the parent's config), but it does _not_ pass the `panel_styles=` to the subcommand:
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_defaults_renamed.py move-item --help`](../../images/code_snippets/panels/panels_defaults_renamed_move_item.svg){.screenshot}
-:::
+![`python panels_defaults_renamed.py move-item --help`](../../images/code_snippets/panels/panels_defaults_renamed_move_item.svg)
+
+</details>
 
 Default panel styles are also handled by the config, and will be overridden when conflicting options are defined at the panel level.
 
@@ -190,10 +217,13 @@ Default panel styles are also handled by the config, and will be overridden when
 {% include "../../../../../code_snippets/panels/panels_defaults_override_config.py" %}
 ```
 
-:::details[Output]{variant=example open}
+<details open>
+<summary>Output</summary>
+
 
 <!-- RICH-CODEX
 working_dir: docs/code_snippets/panels
 -->
-![`python panels_defaults_override_config.py --help`](../../images/code_snippets/panels/panels_defaults_override_config.svg){.screenshot}
-:::
+![`python panels_defaults_override_config.py --help`](../../images/code_snippets/panels/panels_defaults_override_config.svg)
+
+</details>

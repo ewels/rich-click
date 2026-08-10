@@ -22,7 +22,9 @@ You may associate **rich-click** with boxes, but did you know you can strip the 
 
 Here is an example of a **rich-click** style that does just that, and produces a nice and clean one-color format:
 
-:::details[Code for `1. Simple boxless one-color CLI`]{variant=success}
+<details>
+<summary>Code for <code>1. Simple boxless one-color CLI</code></summary>
+
 
 ```python
 # /// script
@@ -76,9 +78,10 @@ def self():
 if __name__ == "__main__":
     cli()
 ```
-:::
 
-![](../images/blog/five-pre-made-styles/example-1.svg){.screenshot}
+</details>
+
+![](../images/blog/five-pre-made-styles/example-1.svg)
 
 ## 2. Dark mode / light mode aware with three colors
 
@@ -109,7 +112,9 @@ rye sync
 
 The following example looks great in both dark and light terminals!
 
-:::details[Code for `2. Dark mode / light mode aware with three colors`]{variant=success}
+<details>
+<summary>Code for <code>2. Dark mode / light mode aware with three colors</code></summary>
+
 
 ```python
 # /// script
@@ -179,15 +184,16 @@ def self():
 if __name__ == "__main__":
     cli()
 ```
-:::
+
+</details>
 
 :::tab[Dark mode]
-![](../images/blog/five-pre-made-styles/example-2-dark.png){.screenshot}
+![](../images/blog/five-pre-made-styles/example-2-dark.png)
 :::
 
 
 :::tab[Light mode]
-![](../images/blog/five-pre-made-styles/example-2-light.png){.screenshot}
+![](../images/blog/five-pre-made-styles/example-2-light.png)
 :::
 
 ## 3. Gradient art header
@@ -217,7 +223,9 @@ rye sync
 ```
 :::
 
-:::details[Code for `3. Gradient art header`]{variant=success}
+<details>
+<summary>Code for <code>3. Gradient art header</code></summary>
+
 ```python
 # /// script
 # dependencies = [
@@ -293,9 +301,10 @@ def self():
 if __name__ == "__main__":
     cli()
 ```
-:::
 
-![](../images/blog/five-pre-made-styles/example-3.svg){.screenshot}
+</details>
+
+![](../images/blog/five-pre-made-styles/example-3.svg)
 
 ## Parting notes
 

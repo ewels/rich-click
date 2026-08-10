@@ -127,7 +127,7 @@ if __name__ == "__main__":
         ...
     ```
 - **rich-click** commands can be given **aliases**, similar to other Click extensions ([click-aliases](https://github.com/click-contrib/click-aliases/tree/master), [click-extra](https://kdeldycke.github.io/click-extra/), [cloup](https://cloup.readthedocs.io/en/stable/)).
-- **rich-click** has **themes** to beautify all CLIs, whether you're an end-user or a CLI developer. More information about this is described in [the **Themes** docs](themes.md). 
+- **rich-click** has **themes** to beautify all CLIs, whether you're an end-user or a CLI developer. More information about this is described in [the **Themes** docs](../../documentation/themes/). 
 - **rich-click** help text is formatted using highly configurable **option panels** and **command panels**:
     ```python
     import rich_click as click
@@ -145,6 +145,6 @@ if __name__ == "__main__":
         """My application"""
         ...
     ```
-    More information about this is described in [the **Panels** docs](panels/overview.md).
-- **rich-click** has a configuration object, **`RichHelpConfiguration()`**, that allows for control over how **rich-click** help text renders, so you are not locked into the defaults. More information about this is described in [the **Configuration** docs](configuration.md).
-- **rich-click** comes with a CLI tool that allows you to convert regular Click CLIs into **rich-click** CLIs, and also lets you render your **rich-click** CLI help text as HTML, SVG, JSON, and trees. More information about this is described in [the **rich-click CLI** docs](rich_click_cli.md), or you can run **`rich-click --help`** to view the CLI.
+    More information about this is described in [the **Panels** docs](../../documentation/panels/overview/).
+- **rich-click** has a configuration object, **`RichHelpConfiguration()`**, that allows for control over how **rich-click** help text renders, so you are not locked into the defaults. More information about this is described in [the **Configuration** docs](../../documentation/configuration/).
+- **rich-click** comes with a CLI tool that allows you to convert regular Click CLIs into **rich-click** CLIs, and also lets you render your **rich-click** CLI help text as HTML, SVG, JSON, and trees. More information about this is described in [the **rich-click CLI** docs](../../documentation/rich_click_cli/), or you can run **`rich-click --help`** to view the CLI.
