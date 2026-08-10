@@ -43,6 +43,8 @@
 /* The header is black in both colour schemes: force light-on-dark colours for
    everything inside it (site title, search, icons, selects). */
 header.header {
+  /* Explicit white: Starlight inverts --sl-color-white in light mode. */
+  --sl-color-header-text: #fff;
   --sl-color-text-accent: #fff;
   --sl-color-text: #eee;
   --sl-color-gray-1: #eee;
@@ -167,7 +169,7 @@ main h1 code,
 }
 
 [data-has-hero] .hero .rc-hero-logo img {
-  width: min(100%, 34rem);
+  width: min(100%, 40rem);
   height: auto;
 }
 
