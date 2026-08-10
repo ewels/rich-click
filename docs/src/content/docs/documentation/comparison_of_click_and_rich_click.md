@@ -4,7 +4,7 @@ title: "Comparison of Click and rich-click"
 
 **rich-click** is a thin wrapper around Click. The **rich-click** API is designed to mirror the Click API and intercept some of the calls to slightly different functions.
 
-Everything available via `import click` is also available via `import rich_click as click`.
+Everything available via `#!python import click` is also available via `#!python import rich_click as click`.
 
 **rich-click** is designed to keep the additional API surface introduced on top of Click as lightweight as possible.
 In other words, **rich-click** does not introduce many additional concepts not already in Click.
@@ -14,15 +14,15 @@ If you know Click, you already mostly know **rich-click**!
 
 The only things that **rich-click** explicitly overrides in the high-level API are the decorators:
 
-- `click.command()`
-- `click.group()`
-- `click.option()` (+ its variants)
-- `click.argument()`
+- `#!python click.command()`
+- `#!python click.group()`
+- `#!python click.option()` (+ its variants)
+- `#!python click.argument()`
 
-The only change to these decorators is that by default, their `cls=` parameters point to the **rich-click** implementations.
+The only change to these decorators is that by default, their `#!python cls=` parameters point to the **rich-click** implementations.
 
 :::note
-There is also a thin wrapper around `pass_context()` to cast the `click.Context` type in the function signature to `click.RichContext` to assist with static type-checking with MyPy. Aside from different typing, there are no substantive changes to the `pass_context()` decorator.
+There is also a thin wrapper around `#!python pass_context()` to cast the `#!python click.Context` type in the function signature to `#!python click.RichContext` to assist with static type-checking with MyPy. Aside from different typing, there are no substantive changes to the `pass_context()` decorator.
 :::
 
 ## Click features that rich-click does _not_ override
@@ -64,10 +64,10 @@ If you'd like Rich markup for your echos and interactive elements, then you can:
 
 | Click Function                    | Rich Replacement                     | Rich Documentation |
 |-----------------------------------|--------------------------------------|---------------|
-| `click.echo()`           | `rich.print()`              | [Quick start](https://rich.readthedocs.io/en/stable/introduction.html#quick-start) |
-| `click.echo_via_pager()` | `rich.Console().pager()`    | [Console](https://rich.readthedocs.io/en/stable/console.html#paging) |
-| `click.confirm()`        | `rich.prompt.Confirm.ask()` | [Prompt](https://rich.readthedocs.io/en/stable/prompt.html) |
-| `click.prompt()`         | `rich.prompt.Prompt.ask()`  | [Prompt](https://rich.readthedocs.io/en/stable/prompt.html) |
+| `#!python click.echo()`           | `#!python rich.print()`              | [Quick start](https://rich.readthedocs.io/en/stable/introduction.html#quick-start) |
+| `#!python click.echo_via_pager()` | `#!python rich.Console().pager()`    | [Console](https://rich.readthedocs.io/en/stable/console.html#paging) |
+| `#!python click.confirm()`        | `#!python rich.prompt.Confirm.ask()` | [Prompt](https://rich.readthedocs.io/en/stable/prompt.html) |
+| `#!python click.prompt()`         | `#!python rich.prompt.Prompt.ask()`  | [Prompt](https://rich.readthedocs.io/en/stable/prompt.html) |
 
 Below is a side-by-side comparison of Click and Rich implementations of echos and interactive elements in **rich-click**:
 

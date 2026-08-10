@@ -218,6 +218,16 @@ main h1 code,
   }
 }
 
+/* Inline code highlighted via the `#!lang` prefix (see
+   plugins/satteri-inline-code.mjs): Shiki emits per-theme CSS variables. */
+.sl-markdown-content code span[style*='--shiki'] {
+  color: var(--shiki-light);
+}
+
+[data-theme='dark'] .sl-markdown-content code span[style*='--shiki'] {
+  color: var(--shiki-dark);
+}
+
 /* Mermaid diagrams are rendered client-side into `pre.mermaid` blocks. */
 pre.mermaid {
   display: flex;

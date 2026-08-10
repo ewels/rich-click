@@ -96,8 +96,8 @@ In these cases, we recommend using native Rich functionality so that your end us
 
 So, for example:
 
-- `Confirm.ask("[red]Are you sure?[/]")` is more accessible because it works with `NO_COLOR`.
-- `click.confirm(click.echo("Are you sure?", fg="red"))` is less accessible because it cannot be overridden by `NO_COLOR`.
+- `#!python Confirm.ask("[red]Are you sure?[/]")` is more accessible because it works with `NO_COLOR`.
+- `#!python click.confirm(click.echo("Are you sure?", fg="red"))` is less accessible because it cannot be overridden by `NO_COLOR`.
 
 ### 2. Use ANSI colors
 
@@ -150,5 +150,5 @@ This means that developers looking to create a more accessible experience should
 
 So, for example:
 
-- `RichHelpConfiguration(style_option="red")` is more accessible because users can configure the hex value of this red.
-- `RichHelpConfiguration(style_option="#FF0000")` is less accessible because it is not configurable by the end user.
+- `#!python RichHelpConfiguration(style_option="red")` is more accessible because users can configure the hex value of this red.
+- `#!python RichHelpConfiguration(style_option="#FF0000")` is less accessible because it is not configurable by the end user.
