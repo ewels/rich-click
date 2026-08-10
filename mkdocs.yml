@@ -90,7 +90,6 @@ plugins:
   - search
   - blog
   - include-markdown
-  - gh-admonitions
   - social:
       cards_layout_options:
         font_family: Kode Mono
