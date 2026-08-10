@@ -10,6 +10,7 @@ Development tooling only; no changes to the library itself.
 - Docs are now built with [ProperDocs](https://properdocs.org/), a drop-in fork of MkDocs 1.x, as MkDocs itself is unmaintained. `mike` picks it up automatically, so the deploy flow is unchanged.
 - Upgraded Material for MkDocs from 9.5 to 9.7, the final feature release, which folds in the former Insiders features.
 - Dropped the unused `gh-admonitions` plugin.
+- Fixed some broken docs links, and enabled `strict` mode so that broken links and anchors fail the docs build.
 
 ## Version 1.9.8 (2026-05-28)
 

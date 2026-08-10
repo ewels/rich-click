@@ -1,4 +1,5 @@
 site_name: rich-click
+strict: true
 repo_name: ewels/rich-click
 repo_url: https://github.com/ewels/rich-click
 site_url: https://ewels.github.io/rich-click/
@@ -63,6 +64,13 @@ nav:
 # Deliberately unlisted above while still under construction.
 not_in_nav: |
   /documentation/structure.md
+
+# Both of these default to `info`, which means broken anchors and malformed
+# internal links pass silently. Raised to `warn` so `strict` catches them.
+validation:
+  links:
+    anchors: warn
+    unrecognized_links: warn
 
 markdown_extensions:
   - toc:
