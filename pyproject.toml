@@ -62,7 +62,7 @@ dev = [
 ]
 docs = [
     "markdown-include>=0.8.1",
-    "mike>=2.2",                             # 2.2 is the first release that detects ProperDocs
+    "mike>=2.2",                               # 2.2 is the first release that detects ProperDocs
     # MkDocs itself is abandoned upstream and its planned v2 drops support for
     # existing themes, plugins and config files. ProperDocs is a drop-in fork of
     # 1.x; `mike` picks it up automatically when installed. MkDocs is still
