@@ -1,4 +1,5 @@
 site_name: rich-click
+strict: true
 repo_name: ewels/rich-click
 repo_url: https://github.com/ewels/rich-click
 site_url: https://ewels.github.io/rich-click/
@@ -60,6 +61,17 @@ nav:
   - Changelog: changelog.md
   - Contributing: contributing.md
 
+# Deliberately unlisted above while still under construction.
+not_in_nav: |
+  /documentation/structure.md
+
+# Both of these default to `info`, which means broken anchors and malformed
+# internal links pass silently. Raised to `warn` so `strict` catches them.
+validation:
+  links:
+    anchors: warn
+    unrecognized_links: warn
+
 markdown_extensions:
   - toc:
       permalink: true
@@ -90,6 +102,8 @@ plugins:
   - search
   - blog
   - include-markdown
+  # Must run after include-markdown: the alerts it renders live in the root
+  # CHANGELOG.md and CONTRIBUTING.md, which are pulled in by that plugin.
   - gh-admonitions
   - social:
       cards_layout_options:
@@ -112,7 +126,7 @@ plugins:
       canonical_version: latest
   - redirects:
       redirect_maps:
-        'documentation/groups_and_sorting.md': 'documentation/panels.md'
+        'documentation/groups_and_sorting.md': 'documentation/panels/overview.md'
         'documentation/formatting_and_styles.md': 'documentation/text_markup_and_formatting.md'
 
 extra_css:

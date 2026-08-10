@@ -62,16 +62,21 @@ dev = [
 ]
 docs = [
     "markdown-include>=0.8.1",
-    "mike>=2.1.3",
-    "mkdocs>=1.6.1",
+    "mike>=2.2",                               # 2.2 is the first release that detects ProperDocs
+    # MkDocs itself is abandoned upstream and its planned v2 drops support for
+    # existing themes, plugins and config files. ProperDocs is a drop-in fork of
+    # 1.x; `mike` picks it up automatically when installed. MkDocs is still
+    # pulled in transitively (mkdocs-material, mike), so cap it below v2.
+    "mkdocs>=1.6.1,<2",
     "mkdocs-github-admonitions-plugin>=0.1.1",
     "mkdocs-glightbox>=0.4",
     "mkdocs-include-markdown-plugin>=7.1.7",
-    "mkdocs-material[imaging]~=9.5.18",
+    "mkdocs-material[imaging]~=9.7.7",
     "mkdocs-material-extensions>=1.3.1",
     "mkdocs-redirects>=1.2.2",
     "mkdocs-rss-plugin>=1.15",
     "mkdocstrings[python]>=0.26.1",
+    "properdocs>=1.6.7",
     "rich-codex>=1.2.11",
     "typer>=0.15,<0.26",
 ]
