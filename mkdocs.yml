@@ -60,6 +60,10 @@ nav:
   - Changelog: changelog.md
   - Contributing: contributing.md
 
+# Deliberately unlisted above while still under construction.
+not_in_nav: |
+  /documentation/structure.md
+
 markdown_extensions:
   - toc:
       permalink: true
@@ -111,7 +115,7 @@ plugins:
       canonical_version: latest
   - redirects:
       redirect_maps:
-        'documentation/groups_and_sorting.md': 'documentation/panels.md'
+        'documentation/groups_and_sorting.md': 'documentation/panels/overview.md'
         'documentation/formatting_and_styles.md': 'documentation/text_markup_and_formatting.md'
 
 extra_css:

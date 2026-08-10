@@ -3,7 +3,7 @@
 **rich-click** lets you configure grouping and sorting of command options and subcommands.
 The containers which contain grouped options and subcommands are called panels:
 
-![](../../../images/panels.svg)
+![](../../images/panels.svg)
 
 By default, `RichCommand`s have a single panel for options named "Options", and `RichGroup`s have an additional panel for commands named "Commands".
 
