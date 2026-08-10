@@ -9,7 +9,7 @@ const SHEBANG_RE = /^#!([\w-]+) /;
 export function satteriInlineCode() {
   return {
     name: 'rich-click-inline-code',
-    async inlineCode(node) {
+    async inlineCode(node, ctx) {
       const match = SHEBANG_RE.exec(node.value);
       if (!match) return;
       const code = node.value.slice(match[0].length);
@@ -19,7 +19,17 @@ export function satteriInlineCode() {
         defaultColor: false,
         structure: 'inline',
       });
-      return { type: 'html', value: `<code>${spans}</code>` };
+      const html = `<code>${spans}</code>`;
+      // Markdown and MDX require different AST shapes for raw HTML content.
+      if (ctx.sourceFormat === 'mdx') {
+        return {
+          type: 'mdxJsxTextElement',
+          name: 'Fragment',
+          attributes: [{ type: 'mdxJsxAttribute', name: 'set:html', value: html }],
+          children: [],
+        };
+      }
+      return { type: 'html', value: html };
     },
   };
 }

@@ -172,49 +172,6 @@ const currentPath = Astro.url.pathname.slice(base.length) || '/';
 </script>
 
 <script>
-  // Linked content tabs, mirroring Material for MkDocs' `content.tabs.link`:
-  // selecting a tab activates all tabs with the same label on the page and
-  // remembers the choice for future visits.
-  const STORAGE_KEY = '__tabs';
-
-  const labelFor = (input: HTMLInputElement): HTMLLabelElement | null =>
-    input.closest('.tabbed-set')?.querySelector(`label[for="${input.id}"]`) ?? null;
-
-  const activate = (text: string, save: boolean) => {
-    for (const input of document.querySelectorAll<HTMLInputElement>(
-      '.tabbed-set > input[type="radio"]'
-    )) {
-      const label = labelFor(input);
-      if (label && label.textContent?.trim() === text) input.checked = true;
-    }
-    if (save) {
-      try {
-        const saved: string[] = JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? '[]');
-        const updated = [text, ...saved.filter((entry) => entry !== text)].slice(0, 10);
-        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      } catch {
-        /* storage unavailable */
-      }
-    }
-  };
-
-  document.addEventListener('change', (event) => {
-    const input = event.target;
-    if (!(input instanceof HTMLInputElement)) return;
-    if (!input.matches('.tabbed-set > input[type="radio"]') || !input.checked) return;
-    const label = labelFor(input);
-    if (label?.textContent) activate(label.textContent.trim(), true);
-  });
-
-  try {
-    const saved: string[] = JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? '[]');
-    for (const text of saved.reverse()) activate(text, false);
-  } catch {
-    /* storage unavailable */
-  }
-</script>
-
-<script>
   // Lightweight image lightbox for content images (replaces mkdocs-glightbox):
   // clicking a documentation image opens it in a fullscreen overlay.
   document.addEventListener('click', (event) => {

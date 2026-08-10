@@ -2,6 +2,9 @@
 title: "Typer Support"
 ---
 
+import { Code } from '@astrojs/starlight/components';
+import typerExampleRaw from '../../../../code_snippets/typer_support/typer_example.py?raw';
+
 :::danger[Experimental]
 For now, Typer patching support does not work with `typer>=0.26.0`.
 Please use an older version of Typer if you'd like to use `patch_typer()`.
@@ -20,9 +23,7 @@ and set the global config's `THEME` (and other config options) to whatever you w
 All you need to do is import `patch_typer()` from `rich_click.patch`.
 This does not need to be done at the top of the file, in fact you can do it right before calling `app.run()` or `typer.run(...)`:
 
-```python {24-28}
-{% include "../../../../code_snippets/typer_support/typer_example.py" %}
-```
+<Code code={typerExampleRaw} lang="python" meta="{24-28}" />
 
 <details open>
 <summary>Output</summary>
@@ -31,9 +32,9 @@ This does not need to be done at the top of the file, in fact you can do it righ
 Running the above Typer CLI works the same as you would otherwise expect,
 except now with a **rich-click** theme applied:
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/typer_support
--->
+*/}
 ![`python typer_example.py --help`](../images/code_snippets/typer_support/typer_example.svg)
 
 </details>

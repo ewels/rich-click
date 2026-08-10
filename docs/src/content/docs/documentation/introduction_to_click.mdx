@@ -2,6 +2,11 @@
 title: "Introduction to Click"
 ---
 
+import { Code } from '@astrojs/starlight/components';
+import helloRaw from '../../../../code_snippets/introduction_to_click/hello.py?raw';
+import helloV2Raw from '../../../../code_snippets/introduction_to_click/hello_v2.py?raw';
+import helloV3Raw from '../../../../code_snippets/introduction_to_click/hello_v3.py?raw';
+
 :::note
 If you know what Click is, you can skip this page.
 :::
@@ -20,21 +25,18 @@ Click utilizes function decorators as its primary interface for composing a CLI.
 
 For example, the `@click.command` decorator creates a `Command` object that calls the function:
 
-```python
-# docs/code_snippets/introduction_to_click/hello.py
-{% include "../../../../code_snippets/introduction_to_click/hello.py" %}
-```
+<Code code={helloRaw} lang="python" title="docs/code_snippets/introduction_to_click/hello.py" />
 
 You can run the file like normal, or you can run `--help` to render the function's docstring:
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
--->
+*/}
 ![`python hello.py`](../images/code_snippets/introduction_to_click/hello.svg)
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
--->
+*/}
 ![`python hello.py --help`](../images/code_snippets/introduction_to_click/hello_help.svg)
 
 ### Arguments and Options
@@ -46,19 +48,16 @@ Arguments and options are also added with decorators. The difference between arg
 
 The below code shows some of the features available with options and arguments:
 
-```python
-# docs/code_snippets/introduction_to_click/hello_v2.py
-{% include "../../../../code_snippets/introduction_to_click/hello_v2.py" %}
-```
+<Code code={helloV2Raw} lang="python" title="docs/code_snippets/introduction_to_click/hello_v2.py" />
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
--->
+*/}
 ![`python hello_v2.py --say-goodbye --times 3 Edward`](../images/code_snippets/introduction_to_click/hello_v2.svg)
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
--->
+*/}
 ![`python hello_v2.py --help`](../images/code_snippets/introduction_to_click/hello_v2_help.svg)
 
 Click is able to parse the new arguments and options, e.g. it knows that `--times [number]` maps to the function argument `times`.
@@ -68,28 +67,25 @@ Additionally, Click also knows to render these new arguments in the help text.
 
 Last but not least, Click allows for command groups and sub-commands, which allows you to nest commands inside other commands.
 
-```python
-# docs/code_snippets/introduction_to_click/hello_v3.py
-{% include "../../../../code_snippets/introduction_to_click/hello_v3.py" %}
-```
+<Code code={helloV3Raw} lang="python" title="docs/code_snippets/introduction_to_click/hello_v3.py" />
 
 Running `python hello.py --help` gives you the help text for the group and lists the subcommands:
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
--->
+*/}
 ![`python hello_v3.py --help`](../images/code_snippets/introduction_to_click/hello_v3_help.svg)
 
 And you can run any of the subcommands like so:
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
--->
+*/}
 ![`python hello_v3.py french Jennifer`](../images/code_snippets/introduction_to_click/hello_v3_subcommand.svg)
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
--->
+*/}
 ![`python hello_v3.py french --help`](../images/code_snippets/introduction_to_click/hello_v3_subcommand_help.svg)
 
 ## Next Steps
@@ -114,9 +110,9 @@ import rich_click as click
 
 That's the **_only_** change needed to use **rich-click**! And now we get the following beautiful help text:
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/introduction_to_click
--->
+*/}
 ![`python hello_rich.py --help`](../images/code_snippets/introduction_to_click/hello_rich.svg)
 
 ## Other CLI libraries

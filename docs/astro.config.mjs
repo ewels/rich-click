@@ -56,7 +56,6 @@ export default defineConfig({
         '@fontsource/roboto-mono/700.css',
         './src/styles/custom.css',
         './src/styles/admonitions.css',
-        './src/styles/tabs.css',
       ],
       components: {
         Header: './src/components/Header.astro',

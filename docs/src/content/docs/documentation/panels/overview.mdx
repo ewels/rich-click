@@ -2,6 +2,17 @@
 title: "Panels - Overview"
 ---
 
+import { Code } from '@astrojs/starlight/components';
+import panelsSimpleDecoratorsRaw from '../../../../../code_snippets/panels/panels_simple_decorators.py?raw';
+import panelsSimpleKwargsRaw from '../../../../../code_snippets/panels/panels_simple_kwargs.py?raw';
+import panelsSimpleArgumentsRaw from '../../../../../code_snippets/panels/panels_simple_arguments.py?raw';
+import panelsSimpleArgumentsCombinedRaw from '../../../../../code_snippets/panels/panels_simple_arguments_combined.py?raw';
+import panelsSimpleArgumentsHelpRaw from '../../../../../code_snippets/panels/panels_simple_arguments_help.py?raw';
+import panelsCommandsRaw from '../../../../../code_snippets/panels/panels_commands.py?raw';
+import panelsExtraKwargsRaw from '../../../../../code_snippets/panels/panels_extra_kwargs.py?raw';
+import panelsDefaultsRenamedRaw from '../../../../../code_snippets/panels/panels_defaults_renamed.py?raw';
+import panelsDefaultsOverrideConfigRaw from '../../../../../code_snippets/panels/panels_defaults_override_config.py?raw';
+
 **rich-click** lets you configure grouping and sorting of command options and subcommands.
 The containers which contain grouped options and subcommands are called panels:
 
@@ -35,17 +46,15 @@ Under the hood, these decorators create **`RichPanel`** objects that are attache
 
 Options panels handle parameters for your command:
 
-```python {12-15}
-{% include "../../../../../code_snippets/panels/panels_simple_decorators.py" %}
-```
+<Code code={panelsSimpleDecoratorsRaw} lang="python" meta="{12-15}" />
 
 <details open>
 <summary>Output</summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/panels
--->
+*/}
 ![`python panels_simple_decorators.py --help`](../../images/code_snippets/panels/panels_simple_decorators.svg)
 
 </details>
@@ -55,18 +64,16 @@ If the panel is not created in a decorator, then one is created on the fly.
 
 The following code generates the same output as the example above:
 
-```python {7-12}
-{% include "../../../../../code_snippets/panels/panels_simple_kwargs.py" %}
-```
+<Code code={panelsSimpleKwargsRaw} lang="python" meta="{7-12}" />
 
 <details>
 <summary>Output</summary>
 
 
 Note that this output is the same as the previous example, even though it was defined differently.
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/panels
--->
+*/}
 ![`python panels_simple_kwargs.py --help`](../../images/code_snippets/panels/panels_simple_kwargs.svg)
 
 </details>
@@ -77,34 +84,30 @@ Despite the name, options panels handle more than just options; they can also ha
 
 Arguments can be given their own panel with the `show_arguments` config option:
 
-```python {11}
-{% include "../../../../../code_snippets/panels/panels_simple_arguments.py" %}
-```
+<Code code={panelsSimpleArgumentsRaw} lang="python" meta="{11}" />
 
 <details open>
 <summary>Output</summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/panels
--->
+*/}
 ![`python panels_simple_arguments.py --help`](../../images/code_snippets/panels/panels_simple_arguments.svg)
 
 </details>
 
 Arguments can also be included in the options panel with the `group_arguments_options` config option (the `show_arguments` config option does not need to be set).
 
-```python {11}
-{% include "../../../../../code_snippets/panels/panels_simple_arguments_combined.py" %}
-```
+<Code code={panelsSimpleArgumentsCombinedRaw} lang="python" meta="{11}" />
 
 <details open>
 <summary>Output</summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/panels
--->
+*/}
 ![`python panels_simple_arguments_combined.py --help`](../../images/code_snippets/panels/panels_simple_arguments_combined.svg)
 
 </details>
@@ -112,17 +115,15 @@ working_dir: docs/code_snippets/panels
 In **rich-click**, unlike base Click, arguments can have `help` text.
 If `help=` if set for arguments, then the argument panel is automatically shown:
 
-```python {7-8}
-{% include "../../../../../code_snippets/panels/panels_simple_arguments_help.py" %}
-```
+<Code code={panelsSimpleArgumentsHelpRaw} lang="python" meta="{7-8}" />
 
 <details open>
 <summary>Output</summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/panels
--->
+*/}
 ![`python panels_simple_arguments_help.py --help`](../../images/code_snippets/panels/panels_simple_arguments_help.svg)
 
 </details>
@@ -131,17 +132,15 @@ working_dir: docs/code_snippets/panels
 
 Sub-commands also have panels that are defined similarly to option panels:
 
-```python {7-11}
-{% include "../../../../../code_snippets/panels/panels_commands.py" %}
-```
+<Code code={panelsCommandsRaw} lang="python" meta="{7-11}" />
 
 <details open>
 <summary>Output</summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/panels
--->
+*/}
 ![`python panels_commands.py --help`](../../images/code_snippets/panels/panels_commands.svg)
 
 </details>
@@ -154,17 +153,15 @@ Panels can also have help text.
 
 The below example shows both of these things:
 
-```python {11-18}
-{% include "../../../../../code_snippets/panels/panels_extra_kwargs.py" %}
-```
+<Code code={panelsExtraKwargsRaw} lang="python" meta="{11-18}" />
 
 <details open>
 <summary>Output</summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/panels
--->
+*/}
 ![`python panels_extra_kwargs.py --help`](../../images/code_snippets/panels/panels_extra_kwargs.svg)
 
 </details>
@@ -182,17 +179,15 @@ See the available arguments for the **rich** library `Table` and `Panel` objects
 Default panel titles can be overridden with the config.
 Renamed panels can still have their panel-level configurations modified.
 
-```python {14-16}
-{% include "../../../../../code_snippets/panels/panels_defaults_renamed.py" %}
-```
+<Code code={panelsDefaultsRenamedRaw} lang="python" meta="{14-16}" />
 
 <details open>
 <summary>Output</summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/panels
--->
+*/}
 ![`python panels_defaults_renamed.py --help`](../../images/code_snippets/panels/panels_defaults_renamed.svg)
 
 </details>
@@ -204,26 +199,24 @@ So running `move-item --help` from the above example _will_ rename the children'
 <summary>Output</summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/panels
--->
+*/}
 ![`python panels_defaults_renamed.py move-item --help`](../../images/code_snippets/panels/panels_defaults_renamed_move_item.svg)
 
 </details>
 
 Default panel styles are also handled by the config, and will be overridden when conflicting options are defined at the panel level.
 
-```python {6-7, 15-16, 19}
-{% include "../../../../../code_snippets/panels/panels_defaults_override_config.py" %}
-```
+<Code code={panelsDefaultsOverrideConfigRaw} lang="python" meta="{6-7, 15-16, 19}" />
 
 <details open>
 <summary>Output</summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/panels
--->
+*/}
 ![`python panels_defaults_override_config.py --help`](../../images/code_snippets/panels/panels_defaults_override_config.svg)
 
 </details>

@@ -2,6 +2,13 @@
 title: "Text Markup & Formatting"
 ---
 
+import { Code, TabItem, Tabs } from '@astrojs/starlight/components';
+import richMarkupRaw from '../../../../code_snippets/text_markup_and_formatting/rich_markup.py?raw';
+import markupWithHelpStyleRaw from '../../../../code_snippets/text_markup_and_formatting/markup_with_help_style.py?raw';
+import emojisRaw from '../../../../code_snippets/text_markup_and_formatting/emojis.py?raw';
+import newlineControlRaw from '../../../../code_snippets/text_markup_and_formatting/newline_control.py?raw';
+import newlineControlDoubleRaw from '../../../../code_snippets/text_markup_and_formatting/newline_control_double.py?raw';
+
 ## Markup
 
 **rich-click** supports 4 different values for `text_markup`, which determines how text is rendered:
@@ -32,27 +39,29 @@ for example: `[dim]\[my-default: foo][\]`
 
 For more information, read the Rich docs on [markup](https://rich.readthedocs.io/en/stable/markup.html) and [styles](https://rich.readthedocs.io/en/stable/style.html).
 
-:::tab[`{}`]
+<Tabs syncKey="config-style">
+<TabItem label="{}">
 ```python
 help_config = {"text_markup": "rich"}
 ```
-:::
+</TabItem>
 
-:::tab[`RichHelpConfiguration()`]
+<TabItem label="RichHelpConfiguration()">
 ```python
 help_config = click.RichHelpConfiguration(text_markup="rich")
 ```
-:::
+</TabItem>
 
-:::tab[Global config]
+<TabItem label="Global config">
 ```python
 click.rich_click.TEXT_MARKUP = "rich"
 ```
-:::
+</TabItem>
+</Tabs>
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: .
--->
+*/}
 ![`python examples/04_rich_markup.py --help`](../images/rich_markup.svg "Rich markup example")
 
 > See [`examples/04_rich_markup.py`](https://github.com/ewels/rich-click/blob/main/examples/04_rich_markup.py) for an example.
@@ -61,27 +70,29 @@ working_dir: .
 
 If you prefer, you can use Markdown text.
 
-:::tab[`{}`]
+<Tabs syncKey="config-style">
+<TabItem label="{}">
 ```python
 help_config = {"text_markup": "markdown"}
 ```
-:::
+</TabItem>
 
-:::tab[`RichHelpConfiguration()`]
+<TabItem label="RichHelpConfiguration()">
 ```python
 help_config = click.RichHelpConfiguration(text_markup="markdown")
 ```
-:::
+</TabItem>
 
-:::tab[Global config]
+<TabItem label="Global config">
 ```python
 click.rich_click.TEXT_MARKUP = "markdown"
 ```
-:::
+</TabItem>
+</Tabs>
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: .
--->
+*/}
 ![`python examples/05_markdown.py --help`](../images/markdown.svg "Markdown example")
 
 > See [`examples/05_markdown.py`](https://github.com/ewels/rich-click/blob/main/examples/05_markdown.py) for an example.
@@ -96,17 +107,15 @@ The selected `text_markup` is used to render all text in your CLI help that can 
 - Each panel's `help`
 - Header text, footer text, and epilog text.
 
-```python
-{% include "../../../../code_snippets/text_markup_and_formatting/rich_markup.py" %}
-```
+<Code code={richMarkupRaw} lang="python" />
 
 <details open>
 <summary>Output</summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
--->
+*/}
 ![`python rich_markup.py --help`](../images/code_snippets/text_markup_and_formatting/rich_markup.svg)
 
 </details>
@@ -114,17 +123,15 @@ working_dir: docs/code_snippets/text_markup_and_formatting
 You can also set the styles of `help` for objects in decorators using `help_style=`.
 The below code renders the same as the above code:
 
-```python
-{% include "../../../../code_snippets/text_markup_and_formatting/markup_with_help_style.py" %}
-```
+<Code code={markupWithHelpStyleRaw} lang="python" />
 
 <details>
 <summary>Output</summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
--->
+*/}
 ![`python markup_with_help_style.py --help`](../images/code_snippets/text_markup_and_formatting/markup_with_help_style.svg)
 
 </details>
@@ -136,17 +143,15 @@ For other modes, including the default mode, emojis are not rendered.
 
 You can explicitly enable and disable emojis with the config option `text_emoji`:
 
-```python {9}
-{% include "../../../../code_snippets/text_markup_and_formatting/emojis.py" %}
-```
+<Code code={emojisRaw} lang="python" meta="{9}" />
 
 <details open>
 <summary>Output</summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
--->
+*/}
 ![`python emojis.py --help`](../images/code_snippets/text_markup_and_formatting/emojis.svg)
 
 </details>
@@ -171,17 +176,15 @@ For other modes, we implement the following rules:
 
 The following code snippet demonstrates this:
 
-```python
-{% include "../../../../code_snippets/text_markup_and_formatting/newline_control.py" %}
-```
+<Code code={newlineControlRaw} lang="python" />
 
 <details open>
 <summary>Output</summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
--->
+*/}
 ![`python newline_control.py --help`](../images/code_snippets/text_markup_and_formatting/newline_control.svg)
 
 </details>
@@ -193,9 +196,9 @@ The following is the same CLI help text but using `import click` instead of `imp
 <summary>Output - <code>import click</code> instead of <code>import rich_click as click</code></summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
--->
+*/}
 ![`python newline_control_base_click.py --help`](../images/code_snippets/text_markup_and_formatting/newline_control_base_click.svg)
 
 </details>
@@ -207,17 +210,15 @@ This is a deliberate decision to make help text take up less vertical space.
 
 However, you can override this behavior by setting the config option `text_paragraph_linebreaks` to `"\n\n"`.
 
-```python {7}
-{% include "../../../../code_snippets/text_markup_and_formatting/newline_control_double.py" %}
-```
+<Code code={newlineControlDoubleRaw} lang="python" meta="{7}" />
 
 <details open>
 <summary>Output</summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/text_markup_and_formatting
--->
+*/}
 ![`python newline_control_double.py --help`](../images/code_snippets/text_markup_and_formatting/newline_control_double.svg)
 
 </details>

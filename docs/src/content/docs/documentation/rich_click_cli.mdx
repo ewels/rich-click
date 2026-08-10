@@ -2,31 +2,36 @@
 title: "`rich-click` CLI tool"
 ---
 
+import { Code, TabItem, Tabs } from '@astrojs/starlight/components';
+import typerExampleRaw from '../../../../code_snippets/rich_click_cli/typer_example.py?raw';
+
 ## Overview
 
 **rich-click** comes with a CLI tool that allows you to format the Click help output for any CLI that uses Click.
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 head: 12
--->
+*/}
 ![`rich-click --help`](../images/code_snippets/rich_click_cli/rich_click.svg)
 
 To use, simply prefix `rich-click` to the command. Here are a few real world examples:
 
-:::tab[`flask`]
+<Tabs>
+<TabItem label="flask">
 
 ![](../images/rich_click_cli_examples/flask.svg "flask --help")
-:::
+</TabItem>
 
-:::tab[`celery`]
+<TabItem label="celery">
 
 ![](../images/rich_click_cli_examples/celery.svg "celery --help")
-:::
+</TabItem>
 
-:::tab[`dagster`]
+<TabItem label="dagster">
 
 ![](../images/rich_click_cli_examples/dagster.svg "dagster --help")
-:::
+</TabItem>
+</Tabs>
 
 If the CLI is not installed as a script, you can also pass the location with:
 
@@ -51,24 +56,24 @@ This works for RichCommands as well as normal click Commands.
 
 SVG example:
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 extra_env:
   PYTHONPATH: .
 fake_command: rich-click --output svg app:main --help
 working_dir: docs/code_snippets/rich_click_cli
 head: 12
--->
+*/}
 ![`rich-click --output svg app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_svg.svg)
 
 HTML example:
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 extra_env:
   PYTHONPATH: .
 fake_command: rich-click --output html app:main --help
 working_dir: docs/code_snippets/rich_click_cli
 head: 12
--->
+*/}
 ![`rich-click --output html app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_html.svg)
 
 _SVG and HTML generated from [`docs/code_snippets/rich_click_cli/app.py`](https://github.com/ewels/rich-click/blob/main/docs/code_snippets/rich_click_cli/app.py)_
@@ -89,17 +94,15 @@ Another reason is to print HTML and SVG.
 
 Here is an example of overriding a Typer CLI with a **rich-click** theme:
 
-```python
-{% include "../../../../code_snippets/rich_click_cli/typer_example.py" %}
-```
+<Code code={typerExampleRaw} lang="python" />
 
 <details open>
 <summary>Output</summary>
 
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/rich_click_cli
--->
+*/}
 ![`rich-click --theme magenta1-nu typer_example.py --help`](../images/code_snippets/rich_click_cli/typer_example.svg)
 
 </details>

@@ -8,13 +8,15 @@ tags:
   - Miscellaneous
 ---
 
+import { TabItem, Tabs } from '@astrojs/starlight/components';
+
 **rich-click**'s default style is nice, and naturally it's what most of our users end up using.
 But we won't be offended if you want to change things up!
 
 **rich-click** is flexible in terms of the custimisation options it gives you.
 In this blog post, we want to highlight a few neat design ideas for your CLI that you can do with **rich-click**.
 
-<!-- excerpt -->
+{/* excerpt */}
 
 ## 1. Simple boxless one-color CLI
 
@@ -91,24 +93,26 @@ Checking the terminal bg makes using RGB hex values much easier.
 
 Here is an example of such a tool you can use:
 
-:::tab[pip]
+<Tabs syncKey="pkg-manager">
+<TabItem label="pip">
 ```shell
 pip install term-background
 ```
-:::
+</TabItem>
 
-:::tab[uv]
+<TabItem label="uv">
 ```shell
 uv add term-background
 ```
-:::
+</TabItem>
 
-:::tab[Rye]
+<TabItem label="Rye">
 ```shell
 rye add term-background
 rye sync
 ```
-:::
+</TabItem>
+</Tabs>
 
 The following example looks great in both dark and light terminals!
 
@@ -187,14 +191,16 @@ if __name__ == "__main__":
 
 </details>
 
-:::tab[Dark mode]
+<Tabs>
+<TabItem label="Dark mode">
 ![](../images/blog/five-pre-made-styles/example-2-dark.png)
-:::
+</TabItem>
 
 
-:::tab[Light mode]
+<TabItem label="Light mode">
 ![](../images/blog/five-pre-made-styles/example-2-light.png)
-:::
+</TabItem>
+</Tabs>
 
 ## 3. Gradient art header
 
@@ -202,26 +208,28 @@ The following example combines ideas from the first two examples, and then adds 
 
 The below example requires `rich-click>=1.8.4`, as previous versions do not support `Gradient()` objects for the `header_text`.
 
-:::tab[pip]
+<Tabs syncKey="pkg-manager">
+<TabItem label="pip">
 ```shell
 pip install term-background art rich-gradient
 ```
-:::
+</TabItem>
 
-:::tab[uv]
+<TabItem label="uv">
 ```shell
 uv add term-background art rich-gradient
 ```
-:::
+</TabItem>
 
-:::tab[Rye]
+<TabItem label="Rye">
 ```shell
 rye add term-background
 rye add art
 rye add rich-gradient
 rye sync
 ```
-:::
+</TabItem>
+</Tabs>
 
 <details>
 <summary>Code for <code>3. Gradient art header</code></summary>

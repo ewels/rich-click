@@ -2,6 +2,9 @@
 title: "Accessibility"
 ---
 
+import { Code, TabItem, Tabs } from '@astrojs/starlight/components';
+import colorsRaw from '../../../../code_snippets/accessibility/colors.py?raw';
+
 This page goes over information relevant to both developers and users relating to accessibility considerations.
 
 Accessibility is very important to consider when developing applications.
@@ -27,17 +30,19 @@ Run `rich-click --themes` in your terminal to see all available themes and your 
 
 In order to set this environment variable automatically every time you use the terminal, you can add it to your `~/.bashrc` (if using bash) or `~/.zshrc` (if using zsh):
 
-:::tab[bash]
+<Tabs syncKey="shell">
+<TabItem label="bash">
 ```shell
 echo "export RICH_CLICK_THEME=nord-modern" >> ~/.bashrc
 ```
-:::
+</TabItem>
 
-:::tab[zsh]
+<TabItem label="zsh">
 ```shell
 echo "export RICH_CLICK_THEME=nord-modern" >> ~/.zshrc
 ```
-:::
+</TabItem>
+</Tabs>
 
 ### 2. Use the `NO_COLOR` environment variable
 
@@ -55,17 +60,19 @@ NO_COLOR=1 python cli.py
 
 In order to set this environment variable automatically every time you use the terminal, you can add it to your `~/.bashrc` (if using bash) or `~/.zshrc` (if using zsh):
 
-:::tab[bash]
+<Tabs syncKey="shell">
+<TabItem label="bash">
 ```shell
 echo "export NO_COLOR=1" >> ~/.bashrc
 ```
-:::
+</TabItem>
 
-:::tab[zsh]
+<TabItem label="zsh">
 ```shell
 echo "export NO_COLOR=1" >> ~/.zshrc
 ```
-:::
+</TabItem>
+</Tabs>
 
 :::tip
 Note that other programs may also respect `NO_COLOR`, so it could have other effects!
@@ -126,19 +133,15 @@ Below is a script that renders all of these colors:
 <details>
 <summary>Code</summary>
 
-```python
-{%
-    include "../../../../code_snippets/accessibility/colors.py"
-%}
-```
+<Code code={colorsRaw} lang="python" />
 
 </details>
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/accessibility
 hide_command: true
 terminal_width: 48
--->
+*/}
 ![`python colors.py`](../images/code_snippets/accessibility/colors.svg)
 
 (The colors you see when running this locally will differ from the colors in the image.)

@@ -2,6 +2,8 @@
 title: "Comparison of Click and rich-click"
 ---
 
+import { TabItem, Tabs } from '@astrojs/starlight/components';
+
 **rich-click** is a thin wrapper around Click. The **rich-click** API is designed to mirror the Click API and intercept some of the calls to slightly different functions.
 
 Everything available via `#!python import click` is also available via `#!python import rich_click as click`.
@@ -71,7 +73,8 @@ If you'd like Rich markup for your echos and interactive elements, then you can:
 
 Below is a side-by-side comparison of Click and Rich implementations of echos and interactive elements in **rich-click**:
 
-:::tab[Click]
+<Tabs>
+<TabItem label="Click">
 
 ```python
 import rich_click as click
@@ -89,9 +92,9 @@ def greet():
 if __name__ == "__main__":
     greet()
 ```
-:::
+</TabItem>
 
-:::tab[Rich]
+<TabItem label="Rich">
 
 ```python
 import rich_click as click
@@ -111,7 +114,8 @@ def greet():
 if __name__ == "__main__":
     greet()
 ```
-:::
+</TabItem>
+</Tabs>
 
 ## Additional rich-click features
 

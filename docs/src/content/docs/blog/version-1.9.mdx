@@ -9,9 +9,15 @@ tags:
   - Release notes
 ---
 
+import { Code, TabItem, Tabs } from '@astrojs/starlight/components';
+import typerExampleRaw from '../../../../code_snippets/rich_click_cli/typer_example.py?raw';
+import typerExampleRawX from '../../../../code_snippets/typer_support/typer_example.py?raw';
+import newlineControlRaw from '../../../../code_snippets/text_markup_and_formatting/newline_control.py?raw';
+import panelsHelpSectionTypesRaw from '../../../../code_snippets/panels/panels_help_section_types.py?raw';
+
 Today we are excited to release version 1.9 of **rich-click**, our biggest release yet with lots of amazing new features!
 
-<!-- excerpt -->
+{/* excerpt */}
 
 The big features of the 1.9 release are:
 
@@ -27,24 +33,25 @@ These can be set with an environment variable (as an end user) or in the `@click
 
 Here are some simple examples of themes:
 
-:::tab[`nord-nu`]
+<Tabs syncKey="theme-example">
+<TabItem label="nord-nu">
 
 ```shell
 export RICH_CLICK_THEME=nord-nu
 python docs/code_snippets/themes/cli.py --help
 ```
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/themes
 extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: nord-nu
--->
+*/}
 
 ![](../images/code_snippets/themes/themes_ex1.svg)
-:::
+</TabItem>
 
-:::tab[`dracula-modern`]
+<TabItem label="dracula-modern">
 
 ```shell
 export RICH_CLICK_THEME=dracula-modern
@@ -52,9 +59,9 @@ python docs/code_snippets/themes/cli.py --help
 ```
 
 ![](../images/code_snippets/themes/themes_ex2.svg)
-:::
+</TabItem>
 
-:::tab[`cargo-slim`]
+<TabItem label="cargo-slim">
 
 ```shell
 export RICH_CLICK_THEME=cargo-slim
@@ -62,23 +69,24 @@ python docs/code_snippets/themes/cli.py --help
 ```
 
 ![](../images/code_snippets/themes/themes_ex3.svg)
-:::
+</TabItem>
 
-:::tab[`forest-robo`]
+<TabItem label="forest-robo">
 
 ```shell
 export RICH_CLICK_THEME=forest-robo
 python docs/code_snippets/themes/cli.py --help
 ```
 
-<!-- RICH-CODEX
+{/* RICH-CODEX
 working_dir: docs/code_snippets/themes
 extra_env:
     TERMINAL_WIDTH: 120
     RICH_CLICK_THEME: forest-robo
--->
+*/}
 ![](../images/code_snippets/themes/themes_ex4.svg)
-:::
+</TabItem>
+</Tabs>
 
 As you can see, themes are not _just_ colors, they can also completely change the formatting, too!
 
@@ -116,9 +124,7 @@ The `rich-click` CLI now supports Typer, which also means that `rich-click` them
 <details>
 <summary>Code - Example Typer CLI</summary>
 
-```python
-{% include "../../../../code_snippets/rich_click_cli/typer_example.py" %}
-```
+<Code code={typerExampleRaw} lang="python" />
 
 </details>
 
@@ -138,9 +144,7 @@ In the below example, we patch typer to use the `star-slim` theme directly in th
 <details open>
 <summary>Code - Typer CLI with patch</summary>
 
-```python {24-28}
-{% include "../../../../code_snippets/typer_support/typer_example.py" %}
-```
+<Code code={typerExampleRawX} lang="python" meta="{24-28}" />
 
 </details>
 
@@ -300,9 +304,7 @@ You can see a demo of rich-click 1.9's newline handling below:
 <details>
 <summary>Code</summary>
 
-```python
-{% include "../../../../code_snippets/text_markup_and_formatting/newline_control.py" %}
-```
+<Code code={newlineControlRaw} lang="python" />
 
 </details>
 
@@ -349,9 +351,7 @@ An example of this approach can be seen below:
 <details>
 <summary>Code</summary>
 
-```python {22-23}
-{% include "../../../../code_snippets/panels/panels_help_section_types.py" %}
-```
+<Code code={panelsHelpSectionTypesRaw} lang="python" meta="{22-23}" />
 
 </details>
 

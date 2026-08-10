@@ -2,6 +2,9 @@
 title: "Configuration"
 ---
 
+import { Code, TabItem, Tabs } from '@astrojs/starlight/components';
+import richClickRaw from '../../../../../src/rich_click/rich_click.py?raw';
+
 There are two methods to configure **rich-click**:
 
 - Decorator: Use the `@rich_config()` decorator (and `RichHelpConfiguration()`).
@@ -111,13 +114,7 @@ Below is a full list of configuration options from `rich_click.py`.
 <details>
 <summary>Config</summary>
 
-```python
-{%
-    include '../../../../../src/rich_click/rich_click.py'
-    start="#!STARTCONFIG"
-    end="#!ENDCONFIG"
-%}
-```
+<Code code={richClickRaw.split('#!STARTCONFIG')[1].split('#!ENDCONFIG')[0].trim()} lang="python" />
 
 </details>
 
@@ -188,7 +185,8 @@ Other config resolution rules still apply.
 So for example, the below will **not** apply the `"green2-nu"` theme to the CLI
 because of the config resolution rule which states that `config = RichHelpConfiguration()` will not pull from globals:
 
-:::tab[Bad example]
+<Tabs>
+<TabItem label="Bad example">
 ```python
 import rich_click as click
 import rich_click.rich_click as rc
@@ -205,9 +203,9 @@ help_config = click.RichHelpConfiguration(style_option="magenta")
 def my_command():
     """Help text here."""
 ```
-:::
+</TabItem>
 
-:::tab[Fix 1a]
+<TabItem label="Fix 1a">
 ```python
 import rich_click as click
 
@@ -216,9 +214,9 @@ import rich_click as click
 def my_command():
     """Help text here."""
 ```
-:::
+</TabItem>
 
-:::tab[Fix 1b]
+<TabItem label="Fix 1b">
 ```python
 import rich_click as click
 
@@ -227,9 +225,9 @@ import rich_click as click
 def my_command():
     """Help text here."""
 ```
-:::
+</TabItem>
 
-:::tab[Fix 1c]
+<TabItem label="Fix 1c">
 ```python
 import rich_click as click
 import rich_click.rich_click as rc
@@ -241,9 +239,9 @@ rc.STYLE_OPTION = "magenta"
 def my_command():
     """Help text here."""
 ```
-:::
+</TabItem>
 
-:::tab[Fix 2]
+<TabItem label="Fix 2">
 ```python
 import rich_click as click
 import rich_click.rich_click as rc
@@ -258,7 +256,8 @@ rc.THEME = "green2-nu"
 def my_command():
     """Help text here."""
 ```
-:::
+</TabItem>
+</Tabs>
 
 When we go to render help text, if there is _still_ no theme, then the default theme (`default-box`) is applied.
 
@@ -279,7 +278,8 @@ The first is to **do nothing**. For many config options, like `commands_before_o
 
 The second way is to **explicitly prevent theme overrides** by setting the config option `enable_theme_env_var = False`. This option prevents **all** overrides when enabled.
 
-:::tab[`{}`]
+<Tabs syncKey="config-style">
+<TabItem label="{}">
 
 ```python
 import rich_click as click
@@ -289,9 +289,9 @@ import rich_click as click
 def cli():
     """My CLI help text"""
 ```
-:::
+</TabItem>
 
-:::tab[`RichHelpConfiguration()`]
+<TabItem label="RichHelpConfiguration()">
 ```python
 import rich_click as click
 
@@ -300,9 +300,9 @@ import rich_click as click
 def cli():
     """My CLI help text"""
 ```
-:::
+</TabItem>
 
-:::tab[Global config]
+<TabItem label="Global config">
 ```python
 import rich_click as click
 
@@ -313,7 +313,8 @@ click.rich_click.ENABLE_THEME_ENV_VAR = False
 def cli():
     """My CLI help text"""
 ```
-:::
+</TabItem>
+</Tabs>
 
 The final way is to **apply your config as a theme**.
 Basically, since themes are applied last and can be overridden, then if you have your config applied as a theme, then it can be overridden. RichHelpConfigurations have a method called to_theme which generates a theme from your config:
