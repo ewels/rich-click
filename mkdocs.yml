@@ -102,6 +102,9 @@ plugins:
   - search
   - blog
   - include-markdown
+  # Must run after include-markdown: the alerts it renders live in the root
+  # CHANGELOG.md and CONTRIBUTING.md, which are pulled in by that plugin.
+  - gh-admonitions
   - social:
       cards_layout_options:
         font_family: Kode Mono

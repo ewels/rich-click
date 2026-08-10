@@ -68,6 +68,7 @@ docs = [
     # 1.x; `mike` picks it up automatically when installed. MkDocs is still
     # pulled in transitively (mkdocs-material, mike), so cap it below v2.
     "mkdocs>=1.6.1,<2",
+    "mkdocs-github-admonitions-plugin>=0.1.1",
     "mkdocs-glightbox>=0.4",
     "mkdocs-include-markdown-plugin>=7.1.7",
     "mkdocs-material[imaging]~=9.7.7",
