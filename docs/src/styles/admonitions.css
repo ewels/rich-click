@@ -37,28 +37,24 @@
   --sl-color-asides-text-accent: #448aff;
   --sl-color-asides-border: #448aff;
   --rc-aside-tint: rgba(68, 138, 255, 0.1);
-  background-color: var(--sl-color-bg);
 }
 
 .starlight-aside--info {
   --sl-color-asides-text-accent: #00b8d4;
   --sl-color-asides-border: #00b8d4;
   --rc-aside-tint: rgba(0, 184, 212, 0.1);
-  background-color: var(--sl-color-bg);
 }
 
 .starlight-aside--tip {
   --sl-color-asides-text-accent: #00bfa5;
   --sl-color-asides-border: #00bfa5;
   --rc-aside-tint: rgba(0, 191, 165, 0.1);
-  background-color: var(--sl-color-bg);
 }
 
 .starlight-aside--success {
   --sl-color-asides-text-accent: #00c853;
   --sl-color-asides-border: #00c853;
   --rc-aside-tint: rgba(0, 200, 83, 0.1);
-  background-color: var(--sl-color-bg);
 }
 
 .starlight-aside--warning,
@@ -66,14 +62,12 @@
   --sl-color-asides-text-accent: #ff9100;
   --sl-color-asides-border: #ff9100;
   --rc-aside-tint: rgba(255, 145, 0, 0.1);
-  background-color: var(--sl-color-bg);
 }
 
 .starlight-aside--failure {
   --sl-color-asides-text-accent: #ff5252;
   --sl-color-asides-border: #ff5252;
   --rc-aside-tint: rgba(255, 82, 82, 0.1);
-  background-color: var(--sl-color-bg);
 }
 
 .starlight-aside--danger,
@@ -81,21 +75,18 @@
   --sl-color-asides-text-accent: #ff1744;
   --sl-color-asides-border: #ff1744;
   --rc-aside-tint: rgba(255, 23, 68, 0.1);
-  background-color: var(--sl-color-bg);
 }
 
 .starlight-aside--example {
   --sl-color-asides-text-accent: #7c4dff;
   --sl-color-asides-border: #7c4dff;
   --rc-aside-tint: rgba(124, 77, 255, 0.1);
-  background-color: var(--sl-color-bg);
 }
 
 .starlight-aside--important {
   --sl-color-asides-text-accent: #8250df;
   --sl-color-asides-border: #8250df;
   --rc-aside-tint: rgba(130, 80, 223, 0.1);
-  background-color: var(--sl-color-bg);
 }
 
 /* Collapsible admonitions (`??? note "Title"` in the old mkdocs syntax). */

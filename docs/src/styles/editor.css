@@ -13,14 +13,6 @@
   font-size: inherit;
 }
 
-#terminal-header {
-  overflow: hidden;
-  white-space: nowrap;
-  margin: 0 auto;
-  padding: 10px;
-  display: inline-block;
-}
-
 [data-termynal] {
   width: 100%;
   padding: 75px 25px 25px;

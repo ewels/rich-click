@@ -68,23 +68,15 @@ export const terminalHtml = liveTerminal
   .map((row) => `<span class="go">${row}</span>`)
   .join('\n');
 
-/** The editable style string spans inside generated code. */
-const styleSpans = (option: string): string => {
-  const style = DEFAULT_STYLES[option]!;
-  const pieces: [string, string][] = [
-    ['bold', style.bold ? 'bold' : ''],
-    ['dim', style.dim ? 'dim' : ''],
-    ['italic', style.italic ? 'italic' : ''],
-    ['color', style.color ?? ''],
-  ];
-  const lastFilled = pieces.reduce((last, [, text], i) => (text !== '' ? i : last), -1);
-  return `<span class="rccfg-code-outer">${pieces
-    .map(([kind, text], i) => {
-      const value = text !== '' && i < lastFilled ? `${text} ` : text;
-      return `<span class="rccfg-code-${kind} ${cls(option)}">${value}</span>`;
-    })
-    .join('')}</span>`;
-};
+/** Render style flags as a rich style string, e.g. `bold dim cyan`. */
+export const styleString = (style: StyleFlags): string =>
+  [style.bold && 'bold', style.dim && 'dim', style.italic && 'italic', style.color]
+    .filter(Boolean)
+    .join(' ');
+
+/** The editable style string span inside generated code. */
+const styleSpans = (option: string): string =>
+  `<span class="rccfg-code ${cls(option)}">${styleString(DEFAULT_STYLES[option]!)}</span>`;
 
 // Pygments-style highlighted Python for the generated-code tabs.
 const cliBody = (withRichConfig: boolean): string => `<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s2">&quot;my-command&quot;</span><span class="p">)</span>

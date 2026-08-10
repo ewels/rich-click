@@ -5,17 +5,13 @@ import { satteri } from '@astrojs/markdown-satteri';
 import starlightBlog from 'starlight-blog';
 import starlightLinksValidator from 'starlight-links-validator';
 
-import { satteriIncludes } from './plugins/satteri-includes.mjs';
-import { satteriAdmonitions } from './plugins/satteri-admonitions.mjs';
-import { satteriTabs } from './plugins/satteri-tabs.mjs';
-import { satteriImageAttrs } from './plugins/satteri-image-attrs.mjs';
-import { satteriGithubAlerts } from './plugins/satteri-github-alerts.mjs';
-import { satteriMdLinks } from './plugins/satteri-md-links.mjs';
-import { satteriMermaid } from './plugins/satteri-mermaid.mjs';
+import { features, mdastPlugins } from './plugins/pipeline.mjs';
+import { sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
 
 // The site is deployed to versioned directories on GitHub Pages, mirroring the
 // layout previously managed by `mike` (e.g. /rich-click/latest/, /rich-click/1.9/).
-// `docs/_deploy.py` builds once per deployed alias, overriding the base path.
+// docs/_deploy.py builds once per deployed alias, overriding the base path; the
+// default here must stay in sync with BASE_PREFIX/DEFAULT_ALIAS in that script.
 const site = 'https://ewels.github.io';
 const base = process.env.ASTRO_BASE ?? '/rich-click/latest';
 
@@ -23,23 +19,7 @@ export default defineConfig({
   site,
   base,
   markdown: {
-    processor: satteri({
-      features: {
-        directive: true,
-      },
-      mdastPlugins: [
-        // Plugins operating on the pristine tree first; the structural
-        // transforms (admonitions, tabs) come last.
-        satteriIncludes(),
-        satteriImageAttrs(),
-        satteriMdLinks(),
-        satteriMermaid(),
-        satteriGithubAlerts(),
-        satteriAdmonitions(),
-        // Passed as a factory so the tab-set id counter resets per document.
-        satteriTabs,
-      ],
-    }),
+    processor: satteri({ features, mdastPlugins }),
   },
   redirects: {
     // Carried over from the mkdocs-redirects plugin.
@@ -57,8 +37,8 @@ export default defineConfig({
   },
   integrations: [
     starlight({
-      title: 'rich-click',
-      description: 'Richly rendered command line interfaces in click.',
+      title: SITE_TITLE,
+      description: SITE_TAGLINE,
       logo: {
         src: './src/content/docs/images/logo-square-large.png',
         alt: 'rich-click logo',
@@ -83,41 +63,7 @@ export default defineConfig({
       },
       // Adds the auto-generated social card meta tags (see src/pages/og/).
       routeMiddleware: './src/starlight-route-data.ts',
-      sidebar: [
-        { label: 'Home', link: '/' },
-        { label: 'Live Style Editor', link: '/editor/' },
-        {
-          label: 'Documentation',
-          items: [
-            { label: 'Introduction to Click', slug: 'documentation/introduction_to_click' },
-            {
-              label: 'Comparison of Click & rich-click',
-              slug: 'documentation/comparison_of_click_and_rich_click',
-            },
-            { label: 'Themes', slug: 'documentation/themes' },
-            { label: 'Configuration', slug: 'documentation/configuration' },
-            {
-              label: 'Panels',
-              items: [
-                { label: 'Overview', slug: 'documentation/panels/overview' },
-                { label: 'Tips', slug: 'documentation/panels/tips' },
-                { label: 'Advanced', slug: 'documentation/panels/advanced' },
-              ],
-            },
-            {
-              label: 'Text Markup & Formatting',
-              slug: 'documentation/text_markup_and_formatting',
-            },
-            { label: 'Custom Styles', slug: 'documentation/custom_styles' },
-            { label: 'rich-click CLI tool', slug: 'documentation/rich_click_cli' },
-            { label: 'Typer Support', slug: 'documentation/typer_support' },
-            { label: 'Accessibility', slug: 'documentation/accessibility' },
-          ],
-        },
-        { label: 'Blog', link: '/blog/' },
-        { label: 'Changelog', slug: 'changelog' },
-        { label: 'Contributing', slug: 'contributing' },
-      ],
+      sidebar,
       plugins: [
         starlightBlog({
           // The header link is handled by the custom Header component tabs.

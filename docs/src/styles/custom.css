@@ -36,8 +36,6 @@
   --sl-color-accent: #4051b5;
   --sl-color-accent-high: #2c387e;
   --sl-color-bg: #fff;
-  --sl-color-bg-sidebar: var(--sl-color-bg);
-  --sl-color-bg-nav: #000;
 }
 
 /* The header is black in both colour schemes: force light-on-dark colours for
@@ -55,10 +53,15 @@ header.header {
   border-bottom: 1px solid #222;
 }
 
-/* Make room for the section tabs row on large screens (see Header.astro). */
+/* Make room for the section tabs row on large screens (see Header.astro).
+   72rem matches Starlight's `lg:` breakpoint; 4rem is its nav height there. */
+:root {
+  --rc-tabs-height: 2.4rem;
+}
+
 @media (min-width: 72rem) {
   :root {
-    --sl-nav-height: 6.4rem;
+    --sl-nav-height: calc(4rem + var(--rc-tabs-height));
   }
 }
 

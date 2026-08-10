@@ -26,6 +26,8 @@ from pathlib import Path
 import packaging.version
 
 DOCS_DIR = Path(__file__).parent.resolve()
+# Must stay in sync with the default `base` in astro.config.mjs
+# (BASE_PREFIX/DEFAULT_ALIAS compose the ASTRO_BASE passed to each build).
 BASE_PREFIX = "/rich-click"
 DEFAULT_ALIAS = "latest"
 
@@ -50,7 +52,8 @@ def build(base: str, dest: Path) -> None:
         dest.unlink()
     elif dest.is_dir():
         shutil.rmtree(dest)
-    shutil.copytree(DOCS_DIR / "dist", dest, symlinks=False)
+    # Move rather than copy: the next build regenerates dist/ from scratch.
+    shutil.move(DOCS_DIR / "dist", dest)
 
 
 def deploy() -> None:

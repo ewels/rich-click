@@ -1,34 +1,14 @@
-// Debug helper: render one Markdown file through the same satteri pipeline.
+// Debug helper: render one Markdown file through the site's satteri pipeline.
+// Usage: node scripts/debug-render.mjs src/content/docs/documentation/themes.md
 import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { createSatteriMarkdownProcessor } from '@astrojs/markdown-satteri';
-import { satteriIncludes } from '../plugins/satteri-includes.mjs';
-import { satteriAdmonitions } from '../plugins/satteri-admonitions.mjs';
-import { satteriTabs } from '../plugins/satteri-tabs.mjs';
-import { satteriImageAttrs } from '../plugins/satteri-image-attrs.mjs';
-import { satteriGithubAlerts } from '../plugins/satteri-github-alerts.mjs';
-import { satteriMdLinks } from '../plugins/satteri-md-links.mjs';
-import { satteriMermaid } from '../plugins/satteri-mermaid.mjs';
+import { features, mdastPlugins } from '../plugins/pipeline.mjs';
 
 const file = process.argv[2];
-const processor = await createSatteriMarkdownProcessor({
-  features: { directive: true },
-  mdastPlugins: [
-    satteriIncludes(),
-    satteriImageAttrs(),
-    satteriMdLinks(),
-    satteriMermaid(),
-    satteriGithubAlerts(),
-    satteriAdmonitions(),
-    satteriTabs,
-  ],
-});
+const processor = await createSatteriMarkdownProcessor({ features, mdastPlugins });
 
-try {
-  const result = await processor.render(fs.readFileSync(file, 'utf8'), {
-    fileURL: pathToFileURL(file),
-  });
-  console.log(result.code.slice(0, 2000));
-} catch (error) {
-  console.error(error);
-}
+const result = await processor.render(fs.readFileSync(file, 'utf8'), {
+  fileURL: pathToFileURL(file),
+});
+console.log(result.code);

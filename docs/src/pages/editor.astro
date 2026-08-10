@@ -106,31 +106,22 @@ import { COLORS, DEFAULT_STYLES, cls, options, terminalHtml, configCode, globalC
 <script>
   // Interactive behaviour: clicking a colour swatch or style-flag button
   // updates the terminal preview elements and the generated code in sync.
+  import { styleString } from '../editor-data';
+
   const terminalElements = (target: string) => document.querySelectorAll(`.rc-element.${target}`);
 
   /** Rewrite the style string spans in the generated code for one option. */
   const updateCode = (target: string) => {
-    for (const outer of document.querySelectorAll('.rccfg-code-outer')) {
-      const spans = {
-        bold: outer.querySelector(`.rccfg-code-bold.${target}`),
-        dim: outer.querySelector(`.rccfg-code-dim.${target}`),
-        italic: outer.querySelector(`.rccfg-code-italic.${target}`),
-        color: outer.querySelector(`.rccfg-code-color.${target}`),
-      };
-      if (!spans.bold || !spans.dim || !spans.italic || !spans.color) continue;
-
-      const sample = terminalElements(target)[0];
-      if (!sample) continue;
-      const pieces: [Element, string][] = [
-        [spans.bold, sample.classList.contains('s-bold') ? 'bold' : ''],
-        [spans.dim, sample.classList.contains('s-dim') ? 'dim' : ''],
-        [spans.italic, sample.classList.contains('s-italic') ? 'italic' : ''],
-        [spans.color, [...sample.classList].find((c) => c.startsWith('c-'))?.slice(2) ?? ''],
-      ];
-      const lastFilled = pieces.reduce((last, [, text], i) => (text !== '' ? i : last), -1);
-      pieces.forEach(([span, text], i) => {
-        span.textContent = text !== '' && i < lastFilled ? `${text} ` : text;
-      });
+    const sample = terminalElements(target)[0];
+    if (!sample) return;
+    const text = styleString({
+      bold: sample.classList.contains('s-bold'),
+      dim: sample.classList.contains('s-dim'),
+      italic: sample.classList.contains('s-italic'),
+      color: [...sample.classList].find((c) => c.startsWith('c-'))?.slice(2) ?? null,
+    });
+    for (const span of document.querySelectorAll(`.rccfg-code.${target}`)) {
+      span.textContent = text;
     }
   };
 

@@ -3,8 +3,8 @@
 // (a custom page outside the content collection). Used by the image endpoint
 // (pages/og/[...slug].ts) and the route middleware (starlight-route-data.ts).
 import { getCollection } from 'astro:content';
-
-export const SITE_TAGLINE = 'Richly rendered command line interfaces in click.';
+// @ts-expect-error -- untyped project-local JavaScript module.
+import { EDITOR_PAGE, SITE_TAGLINE } from './site.mjs';
 
 interface OgPageData {
   title: string;
@@ -18,5 +18,5 @@ export const ogPages: Record<string, OgPageData> = Object.fromEntries([
     entry.id,
     { title: entry.data.title, description: entry.data.description ?? SITE_TAGLINE },
   ]),
-  ['editor', { title: 'Live Style Editor', description: 'A live editor for rich-click styles.' }],
+  ['editor', { title: EDITOR_PAGE.label, description: EDITOR_PAGE.description }],
 ]);

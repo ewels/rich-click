@@ -1,6 +1,6 @@
 // Replaces mkdocs-include-markdown-style `{% include "path" %}` directives found
 // inside fenced code blocks with the contents of the referenced file, so code
-// samples can be kept in standalone, runnable files (docs/src/content/docs/code_snippets).
+// samples can be kept in standalone, runnable files (docs/code_snippets).
 //
 // Optional `start="..."` / `end="..."` arguments slice the file between two
 // marker strings (the markers themselves are excluded), e.g.:

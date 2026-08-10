@@ -10,6 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { SITE_TAGLINE, SITE_TITLE } from '../src/site.mjs';
 
 const docsRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const repoRoot = path.resolve(docsRoot, '..');
@@ -20,6 +21,8 @@ const GENERATED_NOTICE =
 
 function write(relPath, content) {
   const target = path.join(contentRoot, relPath);
+  // Skip identical rewrites so mtimes (and Astro's content cache) stay stable.
+  if (fs.existsSync(target) && fs.readFileSync(target, 'utf8') === content) return;
   fs.writeFileSync(target, content);
   console.log(`generated ${path.relative(repoRoot, target)}`);
 }
@@ -37,14 +40,25 @@ const readmeTail = readme
   .replaceAll('docs/src/content/docs/images/', 'images/')
   .trim();
 
+// The links validator doesn't cover images, so fail loudly here if a relative
+// image referenced by the landing page doesn't exist (e.g. a README image path
+// that the rewrite above didn't catch).
+for (const [, src] of readmeTail.matchAll(/!\[[^\]]*\]\(([^)\s]+)\)/g)) {
+  if (/^[a-z]+:/.test(src)) continue;
+  const target = path.join(contentRoot, src);
+  if (!fs.existsSync(target)) {
+    throw new Error(`Landing page references missing image: ${src} (from README.md)`);
+  }
+}
+
 write(
   'index.md',
   `---
-title: rich-click
-description: Richly rendered command line interfaces in click.
+title: ${SITE_TITLE}
+description: ${SITE_TAGLINE}
 template: splash
 hero:
-  tagline: Richly rendered command line interfaces in click.
+  tagline: ${SITE_TAGLINE}
   image:
     html: |
       <span class="rc-hero-logo">

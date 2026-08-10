@@ -16,6 +16,10 @@
 // identical labels together, mirroring Material's `content.tabs.link` feature.
 import { element } from './admonition-common.mjs';
 
+// src/styles/tabs.css enumerates per-index selectors up to this many tabs;
+// a longer run would render labels whose panels can never be shown.
+const MAX_TABS = 16;
+
 export function satteriTabs() {
   // Factory form: state resets for each document.
   let tabSetCount = 0;
@@ -39,6 +43,14 @@ export function satteriTabs() {
         const sibling = parent.children[i];
         if (!isTab(sibling)) break;
         run.push(sibling);
+      }
+      if (run.length > MAX_TABS) {
+        ctx.report({
+          message: `Tab set has ${run.length} tabs but the styling in src/styles/tabs.css only supports ${MAX_TABS}; extend the CSS before adding more tabs.`,
+          node,
+          severity: 'error',
+        });
+        return;
       }
 
       tabSetCount += 1;

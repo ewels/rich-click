@@ -10,13 +10,14 @@ import { buildAside, DEFAULT_TITLES } from './admonition-common.mjs';
 
 const ALERT_RE = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/;
 
-// GitHub alert type -> admonition variant/title.
+// GitHub alert type -> admonition variant. Titles come from DEFAULT_TITLES,
+// except CAUTION which keeps its GitHub name on the danger styling.
 const ALERT_VARIANTS = {
-  NOTE: ['note', 'Note'],
-  TIP: ['tip', 'Tip'],
-  IMPORTANT: ['important', 'Important'],
-  WARNING: ['warning', 'Warning'],
-  CAUTION: ['danger', 'Caution'],
+  NOTE: 'note',
+  TIP: 'tip',
+  IMPORTANT: 'important',
+  WARNING: 'warning',
+  CAUTION: 'danger',
 };
 
 export function satteriGithubAlerts() {
@@ -31,7 +32,8 @@ export function satteriGithubAlerts() {
       const match = ALERT_RE.exec(firstText.value);
       if (!match) return;
 
-      const [variant, title] = ALERT_VARIANTS[match[1]];
+      const variant = ALERT_VARIANTS[match[1]];
+      const title = match[1] === 'CAUTION' ? 'Caution' : DEFAULT_TITLES[variant];
       const remainder = firstText.value.slice(match[0].length);
       const inlineRest = [...firstParagraph.children.slice(1)];
       if (remainder.length > 0) {
@@ -42,8 +44,7 @@ export function satteriGithubAlerts() {
         children.unshift({ type: 'paragraph', children: inlineRest });
       }
 
-      const titleText = DEFAULT_TITLES[variant] ?? title;
-      return buildAside(variant, [{ type: 'text', value: title }], titleText, children);
+      return buildAside(variant, [{ type: 'text', value: title }], title, children);
     },
   };
 }

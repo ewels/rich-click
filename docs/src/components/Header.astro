@@ -3,21 +3,19 @@
 // linking the top-level site sections, plus a version selector fed by the
 // mike-format versions.json at the deployment root.
 import Default from '@astrojs/starlight/components/Header.astro';
+import { base } from '../base';
+import { entryPath, sidebar } from '../site.mjs';
 
-const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-
-const tabs = [
-  { label: 'Home', href: `${base}/`, match: /^\/$/ },
-  { label: 'Live Style Editor', href: `${base}/editor/`, match: /^\/editor\// },
-  {
-    label: 'Documentation',
-    href: `${base}/documentation/introduction_to_click/`,
-    match: /^\/documentation\//,
-  },
-  { label: 'Blog', href: `${base}/blog/`, match: /^\/blog\// },
-  { label: 'Changelog', href: `${base}/changelog/`, match: /^\/changelog\// },
-  { label: 'Contributing', href: `${base}/contributing/`, match: /^\/contributing\// },
-];
+// One tab per top-level sidebar entry, active for any URL under its section.
+const tabs = sidebar.map((entry) => {
+  const rootPath = entryPath(entry);
+  const section = rootPath.split('/').filter(Boolean)[0];
+  return {
+    label: entry.label,
+    href: `${base}${rootPath}`,
+    match: section === undefined ? /^\/$/ : new RegExp(`^/${section}/`),
+  };
+});
 
 const currentPath = Astro.url.pathname.slice(base.length) || '/';
 ---
@@ -54,12 +52,12 @@ const currentPath = Astro.url.pathname.slice(base.length) || '/';
   /* On large screens the header grows (see custom.css) to fit the tabs row. */
   @media (min-width: 72rem) {
     .rc-header-main {
-      height: calc(3.5rem - 2 * var(--sl-nav-pad-y));
+      height: calc(100% - var(--rc-tabs-height));
     }
   }
 
   .rc-header-tabs {
-    height: var(--rc-tabs-height, 2.4rem);
+    height: var(--rc-tabs-height);
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
@@ -113,22 +111,37 @@ const currentPath = Astro.url.pathname.slice(base.length) || '/';
   // Version selector: reads the mike-format versions.json from the deployment
   // root (one level above the versioned base path) and offers navigation
   // between deployed versions, preserving the current page path when possible.
+  import { base } from '../base';
+
+  interface VersionEntry {
+    version: string;
+    title: string;
+    aliases: string[];
+  }
+
   const setup = async () => {
     const label = document.querySelector<HTMLLabelElement>('.rc-version-select');
     const select = label?.querySelector('select');
     if (!label || !select) return;
 
-    const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     const parts = base.split('/');
     const currentVersion = parts.pop() ?? '';
     const deployRoot = parts.join('/');
     if (!currentVersion) return;
 
     try {
-      const response = await fetch(`${deployRoot}/versions.json`);
-      if (!response.ok) return;
-      const versions: { version: string; title: string; aliases: string[] }[] =
-        await response.json();
+      // Cached per browsing session: the header is on every page and the
+      // version list only changes on deploys.
+      let versions: VersionEntry[];
+      const cached = sessionStorage.getItem('__versions');
+      if (cached) {
+        versions = JSON.parse(cached);
+      } else {
+        const response = await fetch(`${deployRoot}/versions.json`);
+        if (!response.ok) return;
+        versions = await response.json();
+        sessionStorage.setItem('__versions', JSON.stringify(versions));
+      }
       if (!Array.isArray(versions) || versions.length === 0) return;
 
       for (const { version, title, aliases } of versions) {
@@ -212,13 +225,15 @@ const currentPath = Astro.url.pathname.slice(base.length) || '/';
     clone.removeAttribute('height');
     clone.removeAttribute('class');
     overlay.append(clone);
-    overlay.addEventListener('click', () => overlay.remove());
-    const onKey = (keyEvent: KeyboardEvent) => {
-      if (keyEvent.key === 'Escape') {
-        overlay.remove();
-        document.removeEventListener('keydown', onKey);
-      }
+
+    const close = () => {
+      overlay.remove();
+      document.removeEventListener('keydown', onKey);
     };
+    const onKey = (keyEvent: KeyboardEvent) => {
+      if (keyEvent.key === 'Escape') close();
+    };
+    overlay.addEventListener('click', close);
     document.addEventListener('keydown', onKey);
     document.body.append(overlay);
   });

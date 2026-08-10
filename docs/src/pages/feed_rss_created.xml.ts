@@ -7,7 +7,7 @@ export async function GET(context: APIContext) {
   return rss({
     title: FEED_TITLE,
     description: FEED_DESCRIPTION,
-    site: new URL(import.meta.env.BASE_URL, context.site ?? 'https://ewels.github.io'),
+    site: new URL(import.meta.env.BASE_URL, context.site),
     items: posts.map((entry) => ({
       title: entry.data.title,
       link: postPath(entry),
