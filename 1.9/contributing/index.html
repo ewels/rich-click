@@ -893,9 +893,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pre-commit" class="md-nav__link">
+  <a href="#prek" class="md-nav__link">
     <span class="md-ellipsis">
-      Pre-commit
+      Prek
     </span>
   </a>
   
@@ -956,9 +956,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pre-commit" class="md-nav__link">
+  <a href="#prek" class="md-nav__link">
     <span class="md-ellipsis">
-      Pre-commit
+      Prek
     </span>
   </a>
   
@@ -1003,25 +1003,38 @@ or better still, dive right in with a pull-request.</p>
 <div class="highlight"><pre><span></span><code>uv<span class="w"> </span>python<span class="w"> </span>pin<span class="w"> </span><span class="m">3</span>.13
 uv<span class="w"> </span>venv<span class="w"> </span>.venv
 <span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-uv<span class="w"> </span>sync<span class="w"> </span>--extra<span class="w"> </span>dev
-pre-commit<span class="w"> </span>install
+uv<span class="w"> </span>sync<span class="w"> </span>--all-groups
+prek<span class="w"> </span>install
 </code></pre></div>
-<h2 id="pre-commit">Pre-commit<a class="headerlink" href="#pre-commit" title="Permanent link">¶</a></h2>
-<p>Our pre-commit hooks contain the following hooks:</p>
+<h2 id="prek">Prek<a class="headerlink" href="#prek" title="Permanent link">¶</a></h2>
+<p>We use <a href="https://github.com/j178/prek">prek</a> to manage our git hooks.
+It is installed as part of <code>uv sync --all-groups</code>, and it is configured in
+<a href="https://github.com/ewels/rich-click/blob/main/prek.toml"><code>prek.toml</code></a>.</p>
+<p><code>prek install</code> sets up the git hook, so the checks run automatically whenever you commit.
+To run every hook against the whole repo without committing, use:</p>
+<div class="highlight"><pre><span></span><code>prek<span class="w"> </span>run<span class="w"> </span>-a
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We used to use <a href="https://pre-commit.com/">pre-commit</a> with a <code>.pre-commit-config.yaml</code> file.
+If you set up your local checkout before that change, re-run <code>prek install</code> to replace the
+old hook — otherwise the stale <code>pre-commit</code> hook will no longer find a config it recognises.</p>
+</div>
+<p><code>prek.toml</code> contains the following hooks:</p>
 <ul>
-<li><a href="https://prettier.io/">Prettier</a>: formats our markdown and yaml files nicely.</li>
-<li>no relative imports: prevents you from using relative imports.</li>
-<li><a href="https://pycqa.github.io/isort/">iSort</a>: will automatically sort the imports alphabetically.</li>
-<li><a href="https://black.readthedocs.io/">black</a>: will automatically format your code to be according to standardized python format.</li>
-<li><a href="https://flake8.pycqa.org/">flake8</a>: will do linting checks to make sure all your code is correctly styled and used.</li>
+<li><a href="https://github.com/rhysd/actionlint">actionlint</a>: lints our GitHub Actions workflow files.</li>
+<li><a href="https://pyproject-fmt.readthedocs.io/">pyproject-fmt</a>: formats and normalizes <code>pyproject.toml</code>.</li>
+<li><a href="https://docs.astral.sh/ruff/">Ruff</a>: does linting checks (including import sorting) and automatically fixes what it can.</li>
+<li><a href="https://docs.astral.sh/ruff/formatter/">Ruff format</a>: automatically formats your code to a standardized Python format.</li>
 <li><a href="http://mypy-lang.org/">mypy</a>: static type checker which verifies you are not using objects incorrectly.</li>
+<li><a href="https://github.com/codespell-project/codespell">codespell</a>: catches common spelling mistakes in the docs.</li>
 </ul>
 <p>As mentioned, some of these tools automatically fix your code while other only highlight potential issues.
 Sometimes it will be enough to try to commit a second time and it will pass, while other times it may require
 manual changes to your code.</p>
 <p>In rare cases it may be difficult or undesirable to change to code to pass the linting rules.
-If this happens, it's ok to add a flake8 <code># noqa</code> or mypy <code># type: ignore</code> comment to skip that line.
-For details of how to do this, please see the <a href="https://flake8.pycqa.org/en/3.1.1/user/ignoring-errors.html#in-line-ignoring-errors">flake8 docs</a>
+If this happens, it's ok to add a Ruff <code># noqa</code> or mypy <code># type: ignore</code> comment to skip that line.
+For details of how to do this, please see the <a href="https://docs.astral.sh/ruff/linter/#error-suppression">Ruff docs</a>
 and <a href="https://mypy.readthedocs.io/en/stable/common_issues.html#spurious-errors-and-locally-silencing-the-checker">mypy docs</a>.</p>
 <h2 id="credits">Credits<a class="headerlink" href="#credits" title="Permanent link">¶</a></h2>
 <p>This package was written by Phil Ewels (<a href="http://github.com/ewels/">@ewels</a>),
