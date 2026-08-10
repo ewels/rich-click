@@ -81,12 +81,8 @@ export default defineConfig({
       components: {
         Header: './src/components/Header.astro',
       },
-      head: [
-        {
-          tag: 'meta',
-          attrs: { property: 'og:image', content: `${site}${base}/images/logo-square-large.png` },
-        },
-      ],
+      // Adds the auto-generated social card meta tags (see src/pages/og/).
+      routeMiddleware: './src/starlight-route-data.ts',
       sidebar: [
         { label: 'Home', link: '/' },
         { label: 'Live Style Editor', link: '/editor/' },
