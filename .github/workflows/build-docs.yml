@@ -24,7 +24,6 @@ jobs:
       - name: Set up Python
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          # The docs group requires >=3.13 (see tool.uv in pyproject.toml).
           python-version: "3.13"
           activate-environment: true
 
@@ -41,6 +40,18 @@ jobs:
           terminal_width: 80
           skip_git_checks: "true"
           working_dir: "."
+
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Configure git for deploy commits
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Build and deploy docs
         run: uv run --with . docs/_deploy.py

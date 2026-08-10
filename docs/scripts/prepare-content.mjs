@@ -1,0 +1,97 @@
+// Generates the docs pages that mirror repo-root Markdown files, replacing the
+// mkdocs include-markdown plugin:
+//
+//   src/content/docs/index.md        <- landing page header + README.md tail
+//   src/content/docs/changelog.md    <- CHANGELOG.md
+//   src/content/docs/contributing.md <- CONTRIBUTING.md
+//
+// The generated files are gitignored and rebuilt on every `npm run dev` /
+// `npm run build` (see the predev/prebuild scripts in package.json).
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const docsRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const repoRoot = path.resolve(docsRoot, '..');
+const contentRoot = path.join(docsRoot, 'src/content/docs');
+
+const GENERATED_NOTICE =
+  '<!-- GENERATED FILE — built by docs/scripts/prepare-content.mjs; edit the source file instead. -->';
+
+function write(relPath, content) {
+  const target = path.join(contentRoot, relPath);
+  fs.writeFileSync(target, content);
+  console.log(`generated ${path.relative(repoRoot, target)}`);
+}
+
+// --- Landing page (README.md) ------------------------------------------------
+
+const readme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
+const marker = '<!--include-start-->';
+const markerIndex = readme.indexOf(marker);
+if (markerIndex === -1) throw new Error(`marker ${marker} not found in README.md`);
+const readmeTail = readme
+  .slice(markerIndex + marker.length)
+  // Image paths in the README are relative to the repository root; the landing
+  // page lives at the content root, next to the images directory.
+  .replaceAll('docs/src/content/docs/images/', 'images/')
+  .trim();
+
+write(
+  'index.md',
+  `---
+title: rich-click
+description: Richly rendered command line interfaces in click.
+template: splash
+hero:
+  tagline: Richly rendered command line interfaces in click.
+  image:
+    html: |
+      <span class="rc-hero-logo">
+        <img src="images/rich-click-logo.png" alt="rich-click" class="dark:sl-hidden" width="960" height="360">
+        <img src="images/rich-click-logo-darkmode.png" alt="rich-click" class="light:sl-hidden" width="960" height="360">
+      </span>
+editUrl: false
+tableOfContents: false
+---
+
+${GENERATED_NOTICE}
+
+<p align="center">
+    <img src="https://img.shields.io/pypi/v/rich-click?logo=pypi" alt="PyPI"/>
+    <img src="https://github.com/ewels/rich-click/workflows/Test%20Coverage/badge.svg" alt="Test Coverage badge">
+    <img src="https://github.com/ewels/rich-click/workflows/Lint%20code/badge.svg" alt="Lint code badge">
+</p>
+
+<p align="center">
+    <a href="documentation/introduction_to_click/">Documentation</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://github.com/ewels/rich-click">Source Code</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="changelog/">Changelog</a>
+</p>
+
+---
+
+${readmeTail}
+`
+);
+
+// --- Changelog / Contributing ------------------------------------------------
+
+function rootPage(sourceFile, title, outFile) {
+  let content = fs.readFileSync(path.join(repoRoot, sourceFile), 'utf8');
+  // Drop the first level-1 heading: the page title comes from the frontmatter.
+  content = content.replace(/^# .+\n/, '').trim();
+  write(
+    outFile,
+    `---
+title: ${title}
+editUrl: https://github.com/ewels/rich-click/edit/main/${sourceFile}
+---
+
+${GENERATED_NOTICE}
+
+${content}
+`
+  );
+}
+
+rootPage('CHANGELOG.md', 'Changelog', 'changelog.md');
+rootPage('CONTRIBUTING.md', 'Contributing', 'contributing.md');

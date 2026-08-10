@@ -1,0 +1,262 @@
+---
+// Wraps Starlight's default header with a Material-for-MkDocs style tabs row
+// linking the top-level site sections, plus a version selector fed by the
+// mike-format versions.json at the deployment root.
+import Default from '@astrojs/starlight/components/Header.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const tabs = [
+  { label: 'Home', href: `${base}/`, match: /^\/$/ },
+  { label: 'Live Style Editor', href: `${base}/editor/`, match: /^\/editor\// },
+  {
+    label: 'Documentation',
+    href: `${base}/documentation/introduction_to_click/`,
+    match: /^\/documentation\//,
+  },
+  { label: 'Blog', href: `${base}/blog/`, match: /^\/blog\// },
+  { label: 'Changelog', href: `${base}/changelog/`, match: /^\/changelog\// },
+  { label: 'Contributing', href: `${base}/contributing/`, match: /^\/contributing\// },
+];
+
+const currentPath = Astro.url.pathname.slice(base.length) || '/';
+---
+
+<div class="rc-header-main">
+  <Default><slot /></Default>
+</div>
+<nav class="rc-header-tabs sl-hidden lg:sl-flex" aria-label="Site sections">
+  <ul>
+    {
+      tabs.map((tab) => (
+        <li>
+          <a href={tab.href} aria-current={tab.match.test(currentPath) ? 'true' : undefined}>
+            {tab.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <label class="rc-version-select" hidden>
+    <span class="sr-only">Select documentation version</span>
+    <select></select>
+  </label>
+</nav>
+
+<style>
+  .rc-header-main {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* On large screens the header grows (see custom.css) to fit the tabs row. */
+  @media (min-width: 72rem) {
+    .rc-header-main {
+      height: calc(3.5rem - 2 * var(--sl-nav-pad-y));
+    }
+  }
+
+  .rc-header-tabs {
+    height: var(--rc-tabs-height, 2.4rem);
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .rc-header-tabs ul {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+  }
+
+  .rc-header-tabs a {
+    display: block;
+    color: var(--sl-color-header-text, var(--sl-color-white));
+    opacity: 0.7;
+    text-decoration: none;
+    font-size: var(--sl-text-sm);
+    padding: 0.35rem 0;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+  }
+
+  .rc-header-tabs a:hover {
+    opacity: 1;
+  }
+
+  .rc-header-tabs a[aria-current='true'] {
+    opacity: 1;
+    border-bottom-color: currentColor;
+    font-weight: 600;
+  }
+
+  .rc-version-select select {
+    background-color: transparent;
+    color: var(--sl-color-header-text, var(--sl-color-white));
+    border: 1px solid color-mix(in srgb, currentColor 40%, transparent);
+    border-radius: 0.25rem;
+    font-size: var(--sl-text-xs);
+    padding: 0.15rem 0.35rem;
+  }
+
+  .rc-version-select select option {
+    color: initial;
+  }
+</style>
+
+<script>
+  // Version selector: reads the mike-format versions.json from the deployment
+  // root (one level above the versioned base path) and offers navigation
+  // between deployed versions, preserving the current page path when possible.
+  const setup = async () => {
+    const label = document.querySelector<HTMLLabelElement>('.rc-version-select');
+    const select = label?.querySelector('select');
+    if (!label || !select) return;
+
+    const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+    const parts = base.split('/');
+    const currentVersion = parts.pop() ?? '';
+    const deployRoot = parts.join('/');
+    if (!currentVersion) return;
+
+    try {
+      const response = await fetch(`${deployRoot}/versions.json`);
+      if (!response.ok) return;
+      const versions: { version: string; title: string; aliases: string[] }[] =
+        await response.json();
+      if (!Array.isArray(versions) || versions.length === 0) return;
+
+      for (const { version, title, aliases } of versions) {
+        const option = document.createElement('option');
+        option.value = version;
+        option.textContent = aliases.length > 0 ? `${title} (${aliases.join(', ')})` : title;
+        if (version === currentVersion || aliases.includes(currentVersion)) {
+          option.selected = true;
+        }
+        select.append(option);
+      }
+      label.hidden = false;
+
+      select.addEventListener('change', () => {
+        const pagePath = window.location.pathname.slice(base.length + 1);
+        window.location.href = `${deployRoot}/${select.value}/${pagePath}`;
+      });
+    } catch {
+      // versions.json is absent in local development; leave the selector hidden.
+    }
+  };
+  setup();
+</script>
+
+<script>
+  // Linked content tabs, mirroring Material for MkDocs' `content.tabs.link`:
+  // selecting a tab activates all tabs with the same label on the page and
+  // remembers the choice for future visits.
+  const STORAGE_KEY = '__tabs';
+
+  const labelFor = (input: HTMLInputElement): HTMLLabelElement | null =>
+    input.closest('.tabbed-set')?.querySelector(`label[for="${input.id}"]`) ?? null;
+
+  const activate = (text: string, save: boolean) => {
+    for (const input of document.querySelectorAll<HTMLInputElement>(
+      '.tabbed-set > input[type="radio"]'
+    )) {
+      const label = labelFor(input);
+      if (label && label.textContent?.trim() === text) input.checked = true;
+    }
+    if (save) {
+      try {
+        const saved: string[] = JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? '[]');
+        const updated = [text, ...saved.filter((entry) => entry !== text)].slice(0, 10);
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      } catch {
+        /* storage unavailable */
+      }
+    }
+  };
+
+  document.addEventListener('change', (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) return;
+    if (!input.matches('.tabbed-set > input[type="radio"]') || !input.checked) return;
+    const label = labelFor(input);
+    if (label?.textContent) activate(label.textContent.trim(), true);
+  });
+
+  try {
+    const saved: string[] = JSON.parse(sessionStorage.getItem(STORAGE_KEY) ?? '[]');
+    for (const text of saved.reverse()) activate(text, false);
+  } catch {
+    /* storage unavailable */
+  }
+</script>
+
+<script>
+  // Lightweight image lightbox for content images (replaces mkdocs-glightbox):
+  // clicking a documentation image opens it in a fullscreen overlay.
+  document.addEventListener('click', (event) => {
+    const image = event.target;
+    if (!(image instanceof HTMLImageElement)) return;
+    if (!image.closest('.sl-markdown-content')) return;
+    if (image.closest('a')) return;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'rc-lightbox';
+    const clone = image.cloneNode() as HTMLImageElement;
+    clone.removeAttribute('width');
+    clone.removeAttribute('height');
+    clone.removeAttribute('class');
+    overlay.append(clone);
+    overlay.addEventListener('click', () => overlay.remove());
+    const onKey = (keyEvent: KeyboardEvent) => {
+      if (keyEvent.key === 'Escape') {
+        overlay.remove();
+        document.removeEventListener('keydown', onKey);
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.append(overlay);
+  });
+</script>
+
+<script>
+  // Client-side mermaid rendering for `<pre class="mermaid">` diagrams
+  // (produced by plugins/satteri-mermaid.mjs), re-rendered on theme change.
+  const diagrams = document.querySelectorAll<HTMLPreElement>('pre.mermaid');
+  if (diagrams.length > 0) {
+    for (const diagram of diagrams) {
+      diagram.dataset.source = diagram.textContent ?? '';
+    }
+
+    const render = async () => {
+      const { default: mermaid } = await import('mermaid');
+      const dark = document.documentElement.dataset.theme === 'dark';
+      let count = 0;
+      for (const diagram of diagrams) {
+        diagram.textContent = diagram.dataset.source ?? '';
+        diagram.removeAttribute('data-processed');
+        diagram.id = `rc-mermaid-${++count}`;
+      }
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: dark ? 'dark' : 'default',
+        fontFamily: 'var(--sl-font-system)',
+      });
+      await mermaid.run({ nodes: diagrams });
+    };
+
+    render();
+
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.attributeName === 'data-theme') render();
+      }
+    });
+    observer.observe(document.documentElement, { attributes: true });
+  }
+</script>

@@ -1,7 +1,7 @@
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich-click-logo-darkmode.png">
-        <img alt="rich-click logo" src="https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich-click-logo.png">
+        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ewels/rich-click/main/docs/src/content/docs/images/rich-click-logo-darkmode.png">
+        <img alt="rich-click logo" src="https://raw.githubusercontent.com/ewels/rich-click/main/docs/src/content/docs/images/rich-click-logo.png">
     </picture>
 </p>
 <p align="center">
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     hello()
 ```
 
-![`python examples/11_hello.py --help`](docs/images/hello.svg)
+![`python examples/11_hello.py --help`](docs/src/content/docs/images/hello.svg)
 
 _Screenshot from [`examples/11_hello.py`](https://github.com/ewels/rich-click/blob/main/examples/11_hello.py)_
 
@@ -79,7 +79,7 @@ _Screenshot from [`examples/11_hello.py`](https://github.com/ewels/rich-click/bl
 
 Below is a more complex example of what **rich-click** is capable of, utilizing **themes** and **panels**:
 
-![`python examples/03_groups_sorting.py --help`](docs/images/command_groups.svg)
+![`python examples/03_groups_sorting.py --help`](docs/src/content/docs/images/command_groups.svg)
 
 _Screenshot from [`examples/03_groups_sorting.py`](https://github.com/ewels/rich-click/blob/main/examples/03_groups_sorting.py)_
 

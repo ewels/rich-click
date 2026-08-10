@@ -1,0 +1,169 @@
+---
+// Live Style Editor: interactive playground for rich-click style options.
+// Port of the previous mkdocs-material page (docs/overrides/editor.html),
+// rebuilt as an Astro page with vanilla JavaScript instead of jQuery.
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import '@fontsource/fira-code/500.css';
+import '../styles/termynal.css';
+import '../styles/editor.css';
+import { COLORS, DEFAULT_STYLES, cls, options, terminalHtml, configCode, globalCode } from '../editor-data';
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'Live Style Editor',
+    template: 'splash',
+    tableOfContents: false,
+    editUrl: false,
+  }}
+>
+  <p>This page contains a live editor for <strong>rich-click</strong> styles.</p>
+
+  <p>At the bottom of the page, there is generated code for the sample output.</p>
+
+  <p>
+    <strong>The style options here are not exhaustive!</strong>{' '}
+    There are many more ways to customize your <strong>rich-click</strong> outputs. Modern
+    terminals also support more than the 8 colors used on this page;{' '}
+    <a href="https://rich.readthedocs.io/en/stable/appendix/colors.html"
+      >see here for more information about terminal colors</a
+    >. The Live Style Editor seeks to represent a useful subset of the available styling options.
+  </p>
+
+  <div class="container">
+    <div class="left-column">
+      <table id="option-table">
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Color</th>
+            <th>Other styles</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            options.map((option) => (
+              <tr>
+                <td>
+                  <label title={option.toUpperCase()}>{option.toUpperCase()}</label>
+                </td>
+                <td>
+                  <div class={`${cls(option)} color-grid`} data-target={cls(option)}>
+                    {COLORS.map((color) => (
+                      <div
+                        class={`color-option${color === DEFAULT_STYLES[option]?.color ? ' selected-color' : ''}`}
+                        data-color={color}
+                      />
+                    ))}
+                  </div>
+                </td>
+                <td>
+                  {(['bold', 'dim', 'italic'] as const).map((flag) => (
+                    <button
+                      class={`rc-button ${cls(option)} rccfg-${flag}-button${DEFAULT_STYLES[option]?.[flag] ? ' button-selected' : ''}`}
+                      data-target={cls(option)}
+                      data-flag={flag}
+                    >
+                      <code>{flag}</code>
+                    </button>
+                  ))}
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="right-column">
+      <div data-termynal style="height: 500px;">
+        <div><pre set:html={terminalHtml} /></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabbed-set tabbed-alternate" data-tabs="1:2">
+    <input checked id="__tabbed_1_1" name="__tabbed_1" type="radio" />
+    <input id="__tabbed_1_2" name="__tabbed_1" type="radio" />
+    <div class="tabbed-labels">
+      <label for="__tabbed_1_1"><code>RichHelpConfiguration()</code></label>
+      <label for="__tabbed_1_2">Global config</label>
+    </div>
+    <div class="tabbed-content">
+      <div class="tabbed-block">
+        <div class="editor-code highlight">
+          <pre><code set:html={configCode} /></pre>
+        </div>
+      </div>
+      <div class="tabbed-block">
+        <div class="editor-code highlight">
+          <pre><code set:html={globalCode} /></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</StarlightPage>
+
+<script>
+  // Interactive behaviour: clicking a colour swatch or style-flag button
+  // updates the terminal preview elements and the generated code in sync.
+  const terminalElements = (target: string) => document.querySelectorAll(`.rc-element.${target}`);
+
+  /** Rewrite the style string spans in the generated code for one option. */
+  const updateCode = (target: string) => {
+    for (const outer of document.querySelectorAll('.rccfg-code-outer')) {
+      const spans = {
+        bold: outer.querySelector(`.rccfg-code-bold.${target}`),
+        dim: outer.querySelector(`.rccfg-code-dim.${target}`),
+        italic: outer.querySelector(`.rccfg-code-italic.${target}`),
+        color: outer.querySelector(`.rccfg-code-color.${target}`),
+      };
+      if (!spans.bold || !spans.dim || !spans.italic || !spans.color) continue;
+
+      const sample = terminalElements(target)[0];
+      if (!sample) continue;
+      const pieces: [Element, string][] = [
+        [spans.bold, sample.classList.contains('s-bold') ? 'bold' : ''],
+        [spans.dim, sample.classList.contains('s-dim') ? 'dim' : ''],
+        [spans.italic, sample.classList.contains('s-italic') ? 'italic' : ''],
+        [spans.color, [...sample.classList].find((c) => c.startsWith('c-'))?.slice(2) ?? ''],
+      ];
+      const lastFilled = pieces.reduce((last, [, text], i) => (text !== '' ? i : last), -1);
+      pieces.forEach(([span, text], i) => {
+        span.textContent = text !== '' && i < lastFilled ? `${text} ` : text;
+      });
+    }
+  };
+
+  for (const grid of document.querySelectorAll<HTMLElement>('.color-grid')) {
+    const target = grid.dataset.target ?? '';
+    grid.addEventListener('click', (event) => {
+      const swatch = (event.target as HTMLElement).closest<HTMLElement>('.color-option');
+      if (!swatch) return;
+      const wasSelected = swatch.classList.contains('selected-color');
+      for (const other of grid.querySelectorAll('.color-option')) {
+        other.classList.remove('selected-color');
+      }
+      const color = swatch.dataset.color ?? '';
+      for (const element of terminalElements(target)) {
+        for (const existing of [...element.classList]) {
+          if (existing.startsWith('c-')) element.classList.remove(existing);
+        }
+        if (!wasSelected) element.classList.add(`c-${color}`);
+      }
+      if (!wasSelected) swatch.classList.add('selected-color');
+      updateCode(target);
+    });
+  }
+
+  for (const button of document.querySelectorAll<HTMLButtonElement>('.rc-button')) {
+    const target = button.dataset.target ?? '';
+    const flag = button.dataset.flag ?? '';
+    button.addEventListener('click', () => {
+      button.classList.toggle('button-selected');
+      for (const element of terminalElements(target)) {
+        element.classList.toggle(`s-${flag}`);
+      }
+      updateCode(target);
+    });
+  }
+</script>
