@@ -19,6 +19,37 @@ const contentRoot = path.join(docsRoot, 'src/content/docs');
 const GENERATED_NOTICE =
   '<!-- GENERATED FILE — built by docs/scripts/prepare-content.mjs; edit the source file instead. -->';
 
+// GitHub alert type -> Starlight aside variant + title. The source files keep
+// GitHub-flavoured syntax so they render on github.com; here they become
+// native asides.
+const GITHUB_ALERTS = {
+  NOTE: ['note', 'Note'],
+  TIP: ['tip', 'Tip'],
+  IMPORTANT: ['tip', 'Important'],
+  WARNING: ['caution', 'Warning'],
+  CAUTION: ['danger', 'Caution'],
+};
+
+/** Rewrite `> [!NOTE]` blockquote alerts as Starlight `:::note[Title]` asides. */
+function rewriteGithubAlerts(markdown) {
+  const lines = markdown.split('\n');
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    const match = /^>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*$/.exec(lines[i]);
+    if (!match) {
+      out.push(lines[i]);
+      continue;
+    }
+    const [variant, title] = GITHUB_ALERTS[match[1]];
+    const body = [];
+    while (i + 1 < lines.length && lines[i + 1].startsWith('>')) {
+      body.push(lines[++i].replace(/^>\s?/, ''));
+    }
+    out.push(`:::${variant}[${title}]`, ...body, ':::');
+  }
+  return out.join('\n');
+}
+
 function write(relPath, content) {
   const target = path.join(contentRoot, relPath);
   // Skip identical rewrites so mtimes (and Astro's content cache) stay stable.
@@ -93,6 +124,7 @@ function rootPage(sourceFile, title, outFile) {
   let content = fs.readFileSync(path.join(repoRoot, sourceFile), 'utf8');
   // Drop the first level-1 heading: the page title comes from the frontmatter.
   content = content.replace(/^# .+\n/, '').trim();
+  content = rewriteGithubAlerts(content);
   write(
     outFile,
     `---

@@ -45,8 +45,8 @@ def get_latest(versions: list[dict]) -> tuple[int, int] | None:
     return None
 
 
-def build(base: str, dest: Path) -> None:
-    env = os.environ | {"ASTRO_BASE": base}
+def build(base: str, dest: Path, docs_versions: str) -> None:
+    env = os.environ | {"ASTRO_BASE": base, "DOCS_VERSIONS": docs_versions}
     run(["npm", "run", "build"], cwd=DOCS_DIR, env=env)
     if dest.is_symlink() or dest.is_file():
         dest.unlink()
@@ -87,15 +87,19 @@ def deploy() -> None:
                     elif prerelease_dir.is_dir():
                         shutil.rmtree(prerelease_dir)
 
-            run(["npm", "ci"], cwd=DOCS_DIR)
-            for directory in [version_id, *sorted(aliases)]:
-                build(f"{BASE_PREFIX}/{directory}", worktree / directory)
-
+            # Update the version list first: the header's version dropdown is
+            # rendered at build time from DOCS_VERSIONS (see Header.astro).
             versions = [e for e in versions if e["version"] != version_id]
             for entry in versions:
                 entry["aliases"] = [a for a in entry["aliases"] if a not in aliases]
             versions.append({"version": version_id, "title": version_id, "aliases": sorted(aliases)})
             versions.sort(key=lambda e: packaging.version.parse(e["version"]), reverse=True)
+            docs_versions = json.dumps(versions)
+
+            run(["npm", "ci"], cwd=DOCS_DIR)
+            for directory in [version_id, *sorted(aliases)]:
+                build(f"{BASE_PREFIX}/{directory}", worktree / directory, docs_versions)
+
             versions_file.write_text(json.dumps(versions, indent=2) + "\n")
 
             index = worktree / "index.html"

@@ -1,11 +1,11 @@
 // @ts-check
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import { satteri } from '@astrojs/markdown-satteri';
 import starlightBlog from 'starlight-blog';
 import starlightLinksValidator from 'starlight-links-validator';
 
-import { satteriGithubAlerts } from './plugins/satteri-github-alerts.mjs';
 import { satteriInlineCode } from './plugins/satteri-inline-code.mjs';
 import { satteriMermaid } from './plugins/satteri-mermaid.mjs';
 import { sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
@@ -20,9 +20,19 @@ const base = process.env.ASTRO_BASE ?? '/rich-click/latest';
 export default defineConfig({
   site,
   base,
+  vite: {
+    resolve: {
+      alias: {
+        // Runnable example snippets, imported into MDX pages via `?raw`.
+        '@code_snippets': fileURLToPath(new URL('./code_snippets', import.meta.url)),
+        // The rich-click Python source, for docs that quote from it.
+        '@rich_click': fileURLToPath(new URL('../src/rich_click', import.meta.url)),
+      },
+    },
+  },
   markdown: {
     processor: satteri({
-      mdastPlugins: [satteriInlineCode(), satteriMermaid(), satteriGithubAlerts()],
+      mdastPlugins: [satteriInlineCode(), satteriMermaid()],
     }),
   },
   redirects: {
@@ -59,7 +69,6 @@ export default defineConfig({
         '@fontsource/roboto-mono/400.css',
         '@fontsource/roboto-mono/700.css',
         './src/styles/custom.css',
-        './src/styles/admonitions.css',
       ],
       components: {
         Header: './src/components/Header.astro',

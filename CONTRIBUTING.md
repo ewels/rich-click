@@ -72,7 +72,8 @@ Most pages live in `docs/src/content/docs/` and use standard
 [Starlight Markdown/MDX](https://starlight.astro.build/guides/authoring-content/):
 asides, plain `<details>` blocks, `<Tabs>`/`<TabItem>` for content tabs, and
 `<Code code={...} />` with `?raw` imports to embed the runnable snippets from
-`docs/code_snippets/`. One small local extension (see `docs/plugins/`) renders
+`docs/code_snippets/` (aliased as `@code_snippets`; the library source is
+`@rich_click`). One small local extension (see `docs/plugins/`) renders
 inline code prefixed with `` `#!python ...` `` with syntax highlighting.
 In `.mdx` pages, rich-codex screenshot markers use MDX comment syntax:
 `{/* RICH-CODEX ... */}`. The landing page, changelog and

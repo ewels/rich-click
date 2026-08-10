@@ -1,7 +1,6 @@
 ---
 // Wraps Starlight's default header with a Material-for-MkDocs style tabs row
-// linking the top-level site sections, plus a version selector fed by the
-// mike-format versions.json at the deployment root.
+// linking the top-level site sections, plus a docs version dropdown.
 import Default from '@astrojs/starlight/components/Header.astro';
 import { base } from '../base';
 import { entryPath, sidebar } from '../site.mjs';
@@ -18,14 +17,49 @@ const tabs = sidebar.map((entry) => {
 });
 
 const currentPath = Astro.url.pathname.slice(base.length) || '/';
+
+// Deployed docs versions, injected at build time by docs/_deploy.py (absent in
+// local development). Rendered as static per-page links: same mike-format data
+// that is also written to versions.json at the deployment root.
+interface VersionEntry {
+  version: string;
+  title: string;
+  aliases: string[];
+}
+const versions: VersionEntry[] = JSON.parse(process.env.DOCS_VERSIONS ?? '[]');
+const parts = base.split('/');
+const currentVersion = parts.at(-1) ?? '';
+const deployRoot = parts.slice(0, -1).join('/');
+const pagePath = Astro.url.pathname.slice(base.length + 1);
+const versionLinks = versions.map(({ version, title, aliases }) => ({
+  label: aliases.length > 0 ? `${title} (${aliases.join(', ')})` : title,
+  href: `${deployRoot}/${version}/${pagePath}`,
+  current: version === currentVersion || aliases.includes(currentVersion),
+}));
+const currentLabel = versionLinks.find((v) => v.current)?.label ?? currentVersion;
 ---
 
 <div class="rc-header-main">
   <div class="rc-header-default"><Default><slot /></Default></div>
-  <label class="rc-version-select" hidden>
-    <span class="sr-only">Select documentation version</span>
-    <select></select>
-  </label>
+  {
+    versionLinks.length > 0 && (
+      <details class="rc-version-select">
+        <summary>
+          <span class="sr-only">Documentation version: </span>
+          {currentLabel} ▾
+        </summary>
+        <ul>
+          {versionLinks.map((link) => (
+            <li>
+              <a href={link.href} aria-current={link.current ? 'true' : undefined}>
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </details>
+    )
+  }
 </div>
 <nav class="rc-header-tabs sl-hidden lg:sl-flex" aria-label="Site sections">
   <ul>
@@ -98,78 +132,59 @@ const currentPath = Astro.url.pathname.slice(base.length) || '/';
     font-weight: 600;
   }
 
-  .rc-version-select select {
-    background-color: transparent;
+  .rc-version-select {
+    position: relative;
     color: var(--sl-color-header-text, var(--sl-color-white));
+    font-size: var(--sl-text-xs);
+  }
+
+  .rc-version-select > summary {
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
     border: 1px solid color-mix(in srgb, currentColor 40%, transparent);
     border-radius: 0.25rem;
-    font-size: var(--sl-text-xs);
-    padding: 0.15rem 0.35rem;
+    padding: 0.15rem 0.5rem;
   }
 
-  .rc-version-select select option {
-    color: initial;
+  .rc-version-select > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .rc-version-select ul {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.25rem);
+    z-index: 10;
+    margin: 0;
+    padding: 0.25rem;
+    list-style: none;
+    min-width: 100%;
+    background-color: var(--sl-color-black, #181818);
+    border: 1px solid var(--sl-color-gray-5, #444);
+    border-radius: 0.25rem;
+    box-shadow: var(--sl-shadow-md);
+  }
+
+  .rc-version-select a {
+    display: block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.2rem;
+    color: var(--sl-color-gray-2, #ccc);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .rc-version-select a:hover {
+    background-color: color-mix(in srgb, currentColor 15%, transparent);
+  }
+
+  .rc-version-select a[aria-current='true'] {
+    font-weight: 600;
+    color: var(--sl-color-header-text, var(--sl-color-white));
   }
 </style>
-
-<script>
-  // Version selector: reads the mike-format versions.json from the deployment
-  // root (one level above the versioned base path) and offers navigation
-  // between deployed versions, preserving the current page path when possible.
-  import { base } from '../base';
-
-  interface VersionEntry {
-    version: string;
-    title: string;
-    aliases: string[];
-  }
-
-  const setup = async () => {
-    const label = document.querySelector<HTMLLabelElement>('.rc-version-select');
-    const select = label?.querySelector('select');
-    if (!label || !select) return;
-
-    const parts = base.split('/');
-    const currentVersion = parts.pop() ?? '';
-    const deployRoot = parts.join('/');
-    if (!currentVersion) return;
-
-    try {
-      // Cached per browsing session: the header is on every page and the
-      // version list only changes on deploys.
-      let versions: VersionEntry[];
-      const cached = sessionStorage.getItem('__versions');
-      if (cached) {
-        versions = JSON.parse(cached);
-      } else {
-        const response = await fetch(`${deployRoot}/versions.json`);
-        if (!response.ok) return;
-        versions = await response.json();
-        sessionStorage.setItem('__versions', JSON.stringify(versions));
-      }
-      if (!Array.isArray(versions) || versions.length === 0) return;
-
-      for (const { version, title, aliases } of versions) {
-        const option = document.createElement('option');
-        option.value = version;
-        option.textContent = aliases.length > 0 ? `${title} (${aliases.join(', ')})` : title;
-        if (version === currentVersion || aliases.includes(currentVersion)) {
-          option.selected = true;
-        }
-        select.append(option);
-      }
-      label.hidden = false;
-
-      select.addEventListener('change', () => {
-        const pagePath = window.location.pathname.slice(base.length + 1);
-        window.location.href = `${deployRoot}/${select.value}/${pagePath}`;
-      });
-    } catch {
-      // versions.json is absent in local development; leave the selector hidden.
-    }
-  };
-  setup();
-</script>
 
 <script>
   // Lightweight image lightbox for content images (replaces mkdocs-glightbox):
