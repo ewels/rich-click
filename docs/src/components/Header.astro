@@ -187,35 +187,24 @@ const currentLabel = versionLinks.find((v) => v.current)?.label ?? currentVersio
 </style>
 
 <script>
-  // Lightweight image lightbox for content images (replaces mkdocs-glightbox):
-  // clicking a documentation image opens it in a fullscreen overlay.
-  document.addEventListener('click', (event) => {
-    const image = event.target;
-    if (!(image instanceof HTMLImageElement)) return;
-    if (!image.closest('.sl-markdown-content')) return;
-    if (image.closest('a')) return;
-    // Skip the landing page badge rows (styled non-clickable in custom.css).
-    if (image.closest("p[align='center']")) return;
+  // Click-to-zoom for content images (replaces mkdocs-glightbox).
+  // starlight-image-zoom can't be used here: it wraps images with a rehype
+  // plugin, which the Sätteri Markdown processor doesn't run
+  // (https://github.com/HiDeoo/starlight-image-zoom/issues/63). medium-zoom
+  // works purely client-side, so it is processor-agnostic.
+  import mediumZoom from 'medium-zoom';
 
-    const overlay = document.createElement('div');
-    overlay.className = 'rc-lightbox';
-    const clone = image.cloneNode() as HTMLImageElement;
-    clone.removeAttribute('width');
-    clone.removeAttribute('height');
-    clone.removeAttribute('class');
-    overlay.append(clone);
-
-    const close = () => {
-      overlay.remove();
-      document.removeEventListener('keydown', onKey);
-    };
-    const onKey = (keyEvent: KeyboardEvent) => {
-      if (keyEvent.key === 'Escape') close();
-    };
-    overlay.addEventListener('click', close);
-    document.addEventListener('keydown', onKey);
-    document.body.append(overlay);
-  });
+  // Skip linked images and the landing page badge rows (which custom.css
+  // deliberately styles as non-clickable).
+  const images = document.querySelectorAll<HTMLImageElement>(
+    '.sl-markdown-content img:not(a img):not(p[align="center"] img)'
+  );
+  if (images.length > 0) {
+    mediumZoom(images, {
+      margin: 32,
+      background: getComputedStyle(document.documentElement).getPropertyValue('--rc-zoom-backdrop'),
+    });
+  }
 </script>
 
 <script>

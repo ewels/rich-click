@@ -185,37 +185,23 @@ main h1 code,
   align-items: center;
 }
 
-/* Image lightbox (see the script in components/Header.astro). */
-.sl-markdown-content img {
+/* Click-to-zoom images (medium-zoom, initialised in components/Header.astro).
+   The backdrop colour is read from this variable by the init script. */
+:root {
+  --rc-zoom-backdrop: rgba(24, 24, 27, 0.9);
+}
+
+:root[data-theme='light'] {
+  --rc-zoom-backdrop: rgba(255, 255, 255, 0.95);
+}
+
+.sl-markdown-content img:not(a img):not(p[align='center'] img) {
   cursor: zoom-in;
 }
 
-.rc-lightbox {
-  position: fixed;
-  inset: 0;
+.medium-zoom-overlay,
+.medium-zoom-image--opened {
   z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  background: rgba(0, 0, 0, 0.8);
-  cursor: zoom-out;
-  animation: rc-lightbox-fade 0.2s ease;
-}
-
-.rc-lightbox img {
-  max-width: min(100em, 100%);
-  max-height: 100%;
-  object-fit: contain;
-}
-
-@keyframes rc-lightbox-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
 
 /* Inline code highlighted via the `#!lang` prefix (see
