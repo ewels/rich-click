@@ -152,9 +152,9 @@ The `panel_styles` is passed into the outer `rich.panel.Panel()`, and the `table
 
 See the available arguments for the **rich** library `Table` and `Panel` objects for more information:
 
-- [Table options :octicons-link-external-24:](https://rich.readthedocs.io/en/latest/tables.html#table-options)
-- [Panel options :octicons-link-external-24:](https://rich.readthedocs.io/en/latest/reference/panel.html#rich.panel.Panel)
-  and [Box styles :octicons-link-external-24:](https://rich.readthedocs.io/en/latest/appendix/box.html#appendix-box)
+- [Table options](https://rich.readthedocs.io/en/latest/tables.html#table-options)
+- [Panel options](https://rich.readthedocs.io/en/latest/reference/panel.html#rich.panel.Panel)
+  and [Box styles](https://rich.readthedocs.io/en/latest/appendix/box.html#appendix-box)
 
 ## Overriding defaults
 

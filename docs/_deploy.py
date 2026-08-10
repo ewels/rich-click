@@ -78,6 +78,14 @@ def deploy() -> None:
                 latest = get_latest(versions)
                 if latest is None or (v.major, v.minor) >= latest:
                     aliases.add(DEFAULT_ALIAS)
+                # A stable release supersedes its own prerelease alias.
+                if "prerelease" in aliases:
+                    aliases.discard("prerelease")
+                    prerelease_dir = worktree / "prerelease"
+                    if prerelease_dir.is_symlink() or prerelease_dir.is_file():
+                        prerelease_dir.unlink()
+                    elif prerelease_dir.is_dir():
+                        shutil.rmtree(prerelease_dir)
 
             run(["npm", "ci"], cwd=DOCS_DIR)
             for directory in [version_id, *sorted(aliases)]:
@@ -108,7 +116,8 @@ def deploy() -> None:
             run(["git", "commit", "-m", f"Deploy docs for {v} ({', '.join(sorted(aliases)) or version_id})"], cwd=worktree)
             run(["git", "push", "origin", "gh-pages"], cwd=worktree)
         finally:
-            run(["git", "worktree", "remove", "--force", str(worktree)])
+            # Best-effort cleanup: never mask an exception from the deploy itself.
+            subprocess.run(["git", "worktree", "remove", "--force", str(worktree)], check=False)
 
 
 if __name__ == "__main__":

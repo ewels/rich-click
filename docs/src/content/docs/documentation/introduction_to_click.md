@@ -22,7 +22,7 @@ For example, the `@click.command` decorator creates a `Command` object that call
 
 ```python
 # docs/code_snippets/introduction_to_click/hello.py
-{!code_snippets/introduction_to_click/hello.py!}
+{% include "../../../../code_snippets/introduction_to_click/hello.py" %}
 ```
 
 You can run the file like normal, or you can run `--help` to render the function's docstring:
@@ -48,7 +48,7 @@ The below code shows some of the features available with options and arguments:
 
 ```python
 # docs/code_snippets/introduction_to_click/hello_v2.py
-{!code_snippets/introduction_to_click/hello_v2.py!}
+{% include "../../../../code_snippets/introduction_to_click/hello_v2.py" %}
 ```
 
 <!-- RICH-CODEX
@@ -70,7 +70,7 @@ Last but not least, Click allows for command groups and sub-commands, which allo
 
 ```python
 # docs/code_snippets/introduction_to_click/hello_v3.py
-{!code_snippets/introduction_to_click/hello_v3.py!}
+{% include "../../../../code_snippets/introduction_to_click/hello_v3.py" %}
 ```
 
 Running `python hello.py --help` gives you the help text for the group and lists the subcommands:

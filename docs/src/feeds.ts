@@ -25,6 +25,20 @@ export function postUrl(site: URL | undefined, entry: CollectionEntry<'docs'>): 
   return new URL(postPath(entry), site).href;
 }
 
+/**
+ * Plain-text post excerpt for feed descriptions: the frontmatter `excerpt` if
+ * set, otherwise the post body up to the `<!-- excerpt -->` delimiter.
+ */
+export function postExcerpt(entry: CollectionEntry<'docs'>): string | undefined {
+  const source = entry.data.excerpt ?? entry.body?.split('<!-- excerpt -->')[0];
+  if (!source) return undefined;
+  return source
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, '') // images
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1') // links -> text
+    .replace(/[*_`]/g, '')
+    .trim();
+}
+
 export function jsonFeed(site: URL | undefined, posts: CollectionEntry<'docs'>[]) {
   return Response.json({
     version: 'https://jsonfeed.org/version/1',

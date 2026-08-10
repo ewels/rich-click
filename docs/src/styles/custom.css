@@ -125,17 +125,6 @@ main h1 code,
   display: block;
 }
 
-/* Light/dark-only images (`#only-light` / `#only-dark` URL fragments). */
-[data-theme='light'] img[src*='#only-dark'],
-[data-theme='light'] img[src*='#gh-dark-mode-only'] {
-  display: none;
-}
-
-[data-theme='dark'] img[src*='#only-light'],
-[data-theme='dark'] img[src*='#gh-light-mode-only'] {
-  display: none;
-}
-
 /* Material-style buttons (`{ .md-button }` links). */
 .sl-markdown-content a.md-button {
   display: inline-block;
