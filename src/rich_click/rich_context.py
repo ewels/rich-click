@@ -122,7 +122,8 @@ class RichContext(RichContextMixin, click.Context):
     if TYPE_CHECKING:  # pragma: no cover
 
         def __enter__(self) -> "RichContext":
-            return super().__enter__()  # type: ignore[return-value]
+            super().__enter__()
+            return self
 
         def __exit__(
             self,
