@@ -22,7 +22,7 @@ import subprocess
 import sys
 from inspect import cleandoc
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import pytest
 
@@ -39,8 +39,8 @@ from rich_click.rich_async_command import RichAsyncCommand, RichAsyncContext, Ri
 BOX_BORDER = "\u2500"
 
 
-def _build_cli() -> Tuple[Any, Any, Dict[str, Any]]:
-    seen: Dict[str, Any] = {}
+def _build_cli() -> tuple[Any, Any, dict[str, Any]]:
+    seen: dict[str, Any] = {}
 
     @asyncclick.group(cls=RichAsyncGroup)
     @asyncclick.option("--token", help="Shared token.")
@@ -65,7 +65,7 @@ def _build_cli() -> Tuple[Any, Any, Dict[str, Any]]:
     return cli, greet, seen
 
 
-def _invoke(cli: Any, args: List[str]) -> Any:
+def _invoke(cli: Any, args: list[str]) -> Any:
     runner = asyncclick_testing.CliRunner()
     return asyncio.run(runner.invoke(cli, args))
 
@@ -170,7 +170,7 @@ if __name__ == "__main__":
 '''
 
 
-def _run_patch_script(tmp_path: Path, args: List[str]) -> "subprocess.CompletedProcess[bytes]":
+def _run_patch_script(tmp_path: Path, args: list[str]) -> subprocess.CompletedProcess[bytes]:
     script = tmp_path / "patched_cli.py"
     script.write_text(cleandoc(PATCH_SCRIPT))
     env = {**os.environ, "TERMINAL_WIDTH": "80", "FORCE_COLOR": "0", "NO_COLOR": "1"}

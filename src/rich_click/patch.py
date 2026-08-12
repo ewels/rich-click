@@ -286,7 +286,7 @@ def rich_group(*args, **kwargs):  # type: ignore[no-untyped-def]
     return _rich_group(*args, **kwargs)
 
 
-def _patch_async_module(module: Any, rich_config: Optional[RichHelpConfiguration] = None) -> None:
+def _patch_async_module(module: Any, rich_config: RichHelpConfiguration | None = None) -> None:
     """
     Install rich-click's async command classes into an async click fork's namespace.
 
@@ -345,7 +345,7 @@ def patch(
     *,
     patch_rich_click: bool = False,
     patch_typer: bool = False,
-    module: Optional[Any] = None,
+    module: Any | None = None,
 ) -> None:
     """
     Patch Click internals to use rich-click types.

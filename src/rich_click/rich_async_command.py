@@ -20,7 +20,8 @@ from __future__ import annotations
 import errno
 import os
 import sys
-from typing import Any, Dict, Optional, Sequence, Type
+from collections.abc import Sequence
+from typing import Any
 
 import asyncclick
 
@@ -46,19 +47,19 @@ class RichAsyncCommand(RichCommandMixin, asyncclick.Command):
     asyncclick's asynchronous :class:`asyncclick.Command` (async ``main``/``invoke``).
     """
 
-    context_class: Type[RichAsyncContext] = RichAsyncContext
+    context_class: type[RichAsyncContext] = RichAsyncContext
 
-    async def to_info_dict(self, ctx: asyncclick.Context) -> Dict[str, Any]:
-        info: Dict[str, Any] = await super().to_info_dict(ctx)
+    async def to_info_dict(self, ctx: asyncclick.Context) -> dict[str, Any]:
+        info: dict[str, Any] = await super().to_info_dict(ctx)
         info["panels"] = [p.to_info_dict(ctx) for p in self.panels]
         info["aliases"] = list(self.aliases) if self.aliases is not None else None
         return info
 
     async def main(
         self,
-        args: Optional[Sequence[str]] = None,
-        prog_name: Optional[str] = None,
-        complete_var: Optional[str] = None,
+        args: Sequence[str] | None = None,
+        prog_name: str | None = None,
+        complete_var: str | None = None,
         standalone_mode: bool = True,
         windows_expand_args: bool = True,
         **extra: Any,
@@ -130,9 +131,9 @@ class RichAsyncGroup(RichGroupMixin, RichAsyncCommand, asyncclick.Group):
     via ``command_class``/``group_class``, so the whole command tree renders richly.
     """
 
-    context_class: Type[RichAsyncContext] = RichAsyncContext
-    command_class: Optional[Type[RichAsyncCommand]] = RichAsyncCommand
-    group_class: Optional[Any] = None
+    context_class: type[RichAsyncContext] = RichAsyncContext
+    command_class: type[RichAsyncCommand] | None = RichAsyncCommand
+    group_class: Any | None = None
 
 
 # Self-reference must be set after the class body so subgroups reuse the async group.

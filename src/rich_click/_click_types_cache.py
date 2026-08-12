@@ -3,7 +3,7 @@
 # However, this file needs to be instantiated _before_ patching occurs.
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Tuple, Type
+from typing import TYPE_CHECKING, Any
 
 from click import Argument as Argument
 from click import Command as Command
@@ -30,11 +30,11 @@ if TYPE_CHECKING:  # pragma: no cover
 # for them. These tuples back the ``is_*`` helpers below; a fork registers its
 # classes once via :func:`register_click_impl` and detection then works for both.
 
-_ARGUMENT_TYPES: Tuple[type, ...] = (Argument,)
-_COMMAND_TYPES: Tuple[type, ...] = (Command,)
-_GROUP_TYPES: Tuple[type, ...] = (Group,)
-_OPTION_TYPES: Tuple[type, ...] = (Option,)
-_PARAMETER_TYPES: Tuple[type, ...] = (Parameter,)
+_ARGUMENT_TYPES: tuple[type, ...] = (Argument,)
+_COMMAND_TYPES: tuple[type, ...] = (Command,)
+_GROUP_TYPES: tuple[type, ...] = (Group,)
+_OPTION_TYPES: tuple[type, ...] = (Option,)
+_PARAMETER_TYPES: tuple[type, ...] = (Parameter,)
 
 
 def register_click_impl(module: Any) -> None:
@@ -60,8 +60,8 @@ def register_click_impl(module: Any) -> None:
         ("_OPTION_TYPES", "Option"),
         ("_PARAMETER_TYPES", "Parameter"),
     ):
-        cls: Type[Any] = getattr(module, attr)
-        existing: Tuple[type, ...] = globals()[tuple_name]
+        cls: type[Any] = getattr(module, attr)
+        existing: tuple[type, ...] = globals()[tuple_name]
         if cls not in existing:
             globals()[tuple_name] = existing + (cls,)
 
