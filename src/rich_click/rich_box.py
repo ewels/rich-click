@@ -1,5 +1,4 @@
 # fmt: off
-from typing import Union
 
 import rich.box
 from rich.box import Box
@@ -43,7 +42,7 @@ BLANK.top_left = ""
 BLANK.top_right = " " * 800  # Reasonably ensure padding
 BLANK.top_divider = ""
 
-def get_box(box: Union[str, Box]) -> Box:
+def get_box(box: str | Box) -> Box:
     """Retrieve a Rich Box by name."""
     if isinstance(box, Box):
         return box

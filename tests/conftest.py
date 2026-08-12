@@ -6,7 +6,7 @@ import sys
 from importlib import reload
 from inspect import cleandoc
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Protocol, cast
+from typing import Any, Protocol, cast
 
 import click
 import pytest
@@ -27,7 +27,7 @@ class WriteScript(Protocol):
         ...
 
 
-def run_as_subprocess(args: List[str], env: Optional[Dict[str, str]] = None) -> "subprocess.CompletedProcess[bytes]":
+def run_as_subprocess(args: list[str], env: dict[str, str] | None = None) -> "subprocess.CompletedProcess[bytes]":
     # Throughout most of this test module,
     # to avoid side effects and to test and uncover potential issues with lazy-loading,
     # we need to use subprocess.run() instead of cli_runner.invoke().
@@ -36,8 +36,7 @@ def run_as_subprocess(args: List[str], env: Optional[Dict[str, str]] = None) -> 
     _env.update(env or {})
     res = subprocess.run(
         args,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        capture_output=True,
         env=_env,
     )
     return res

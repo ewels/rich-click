@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 import sys
 import warnings
+from collections.abc import Generator
 from contextlib import contextmanager
 from functools import wraps
 from gettext import gettext
@@ -12,7 +13,7 @@ from importlib import (
     import_module,
     metadata,  # type: ignore[import,unused-ignore]
 )
-from typing import Any, Dict, Generator, List, Literal, Optional, Tuple
+from typing import Any, Literal
 
 import click
 from click.core import ParameterSource
@@ -33,16 +34,6 @@ DISABLE_WARNINGS_NOTE = (
     " or set the [b]RICH_CLICK_CLI_SUPPRESS_WARNINGS[/b] environment variable"
     " to disable this message.[/red]"
 )
-
-
-def entry_points(*, group: str) -> "metadata.EntryPoints":
-    """entry_points function that is compatible with Python 3.7+."""
-    if sys.version_info >= (3, 10):
-        return metadata.entry_points(group=group)
-
-    epg = metadata.entry_points()
-
-    return epg.get(group, [])
 
 
 @wraps(_patch)
@@ -67,10 +58,10 @@ class _RichHelpConfigurationParamType(click.ParamType):  # type: ignore[type-arg
 
     def convert(
         self,
-        value: Optional[str],
-        param: Optional[click.Parameter],
-        ctx: Optional[click.Context],
-    ) -> Optional[Dict[str, Any]]:
+        value: str | None,
+        param: click.Parameter | None,
+        ctx: click.Context | None,
+    ) -> dict[str, Any] | None:
         if value is None:
             return value
         else:
@@ -78,7 +69,7 @@ class _RichHelpConfigurationParamType(click.ParamType):  # type: ignore[type-arg
                 import json
 
                 if value.startswith("@"):
-                    with open(value[1:], "r") as f:
+                    with open(value[1:]) as f:
                         data = json.load(f)
                 else:
                     data = json.loads(value)
@@ -95,12 +86,12 @@ class _RichHelpConfigurationParamType(click.ParamType):  # type: ignore[type-arg
                     raise e
 
 
-def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> Tuple[str, str]:
-    _selected: List[str] = []
+def _get_module_path_and_function_name(script: str, suppress_warnings: bool) -> tuple[str, str]:
+    _selected: list[str] = []
     module_path = ""
     function_name = ""
 
-    for s in entry_points(group="console_scripts"):
+    for s in metadata.entry_points(group="console_scripts"):
         if script == s.name:
             if not _selected:
                 module_path, function_name = s.value.split(":", 1)
@@ -373,13 +364,13 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
 @pass_context
 def main(
     ctx: RichContext,
-    script_and_args: Tuple[str, ...],
+    script_and_args: tuple[str, ...],
     theme: str,
     output: Literal[None, "html", "svg"],
     errors_in_output_format: bool,
     suppress_warnings: bool,
     patch_rich_click: bool,
-    rich_config: Optional[Dict[str, Any]],
+    rich_config: dict[str, Any] | None,
     show_help: bool,
 ) -> None:
     """
