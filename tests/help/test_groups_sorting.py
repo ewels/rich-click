@@ -15,8 +15,7 @@ def cli() -> rich_click.RichCommand:
 def test_groups_sorting_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
@@ -42,16 +41,14 @@ def test_groups_sorting_help(cli_runner: CliRunner, cli: rich_click.RichCommand)
 │ config                Set up the configuration.                                                  │
 │ auth                  Authenticate the app.                                                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_groups_sorting_help_subcommand_sync(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "sync --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Debug mode is off
                                                                                                     \n\
  Usage: cli sync [OPTIONS]                                                                          \n\
@@ -69,16 +66,14 @@ Debug mode is off
 │ --all        Sync all the things?                                                                │
 │ --overwrite  Overwrite local files                                                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_groups_sorting_help_subcommand_download(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "download --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Debug mode is off
                                                                                                     \n\
  Usage: cli download [OPTIONS]                                                                      \n\
@@ -91,16 +86,14 @@ Debug mode is off
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --all  Get everything                                                                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_groups_sorting_help_subcommand_config(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "config --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Debug mode is off
                                                                                                     \n\
  Usage: cli config [OPTIONS]                                                                        \n\
@@ -110,16 +103,14 @@ Debug mode is off
 ╭─ Subcommand help ────────────────────────────────────────────────────────────────────────────────╮
 │ --help  -h  Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_groups_sorting_help_subcommand_auth(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "auth --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Debug mode is off
                                                                                                     \n\
  Usage: cli auth [OPTIONS]                                                                          \n\
@@ -137,6 +128,5 @@ Debug mode is off
 ╭─ Auth help ──────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  -h  Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")

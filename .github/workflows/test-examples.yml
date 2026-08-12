@@ -22,17 +22,15 @@ jobs:
           python-version: ${{ matrix.python }}
           activate-environment: true
 
-      - name: Install dependencies
-        run: |
-          uv pip install --editable "."
-          uv pip install --upgrade "click==$CLICK_VERSION"
-        env:
-          CLICK_VERSION: ${{ matrix.click }}
-
       - name: Test examples
         run: |
           for f in examples/*py
           do
             echo -e "\n\n$f"
-            python "${f}" --help || exit 1;
+            uv run \
+              --no-default-groups \
+              --with "click==$CLICK_VERSION" \
+              python "${f}" --help || exit 1;
           done
+        env:
+          CLICK_VERSION: ${{ matrix.click }}

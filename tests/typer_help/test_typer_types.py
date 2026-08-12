@@ -19,8 +19,7 @@ def test_typer_types_help(typer_cli_runner: CliRunner, cli: typer.Typer) -> None
     rc.THEME = "nu"
     result = typer_cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
  Usage: cli [OPTIONS] ID                                                                            \n\
                                                                                                     \n\
  ═ Arguments ══════════════════════════════════════════════════════════════════════════════════════ \n\
@@ -38,8 +37,7 @@ def test_typer_types_help(typer_cli_runner: CliRunner, cli: typer.Typer) -> None
  --log-level         [debug|info|warn|error] (Default: info)                                        \n\
  --color/--no-color  (Default: color)                                                               \n\
                                                                                                     \n\
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -48,8 +46,7 @@ def test_typer_types_help_renamed_default_panel(typer_cli_runner: CliRunner, cli
     rc.OPTIONS_PANEL_TITLE = "Custom Panel"
     result = typer_cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
  Usage: cli [OPTIONS] ID                                                                            \n\
                                                                                                     \n\
  ═ Arguments ══════════════════════════════════════════════════════════════════════════════════════ \n\
@@ -67,6 +64,5 @@ def test_typer_types_help_renamed_default_panel(typer_cli_runner: CliRunner, cli
  --log-level         [debug|info|warn|error] (Default: info)                                        \n\
  --color/--no-color  (Default: color)                                                               \n\
                                                                                                     \n\
-"""
-    )
+""")
     assert result.stderr == snapshot("")

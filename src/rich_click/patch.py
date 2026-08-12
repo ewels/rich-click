@@ -27,7 +27,6 @@ __TyperOption: type[typer.core.TyperOption]
 
 
 class _PatchedTyperContext(RichContext):
-
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         RichContext.__init__(self, *args, **kwargs)
 

@@ -4,6 +4,12 @@
 
 - Dropped support for Python 3.8 and 3.9; the minimum supported version is now Python 3.10.
 - Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python <3.10.
+- Dev and docs requirements moved from optional dependencies to [dependency groups](https://peps.python.org/pep-0735/), so they are no longer published as package metadata. Install them with `uv sync --all-groups`.
+- Switched from [pre-commit](https://pre-commit.com/) to [prek](https://github.com/j178/prek), and replaced `.pre-commit-config.yaml` with `prek.toml`. Contributors should re-run `prek install` to replace their old git hook.
+- Replaced Black with `ruff format`, which resolves the formatting conflicts between the two.
+- Docs are now built with [ProperDocs](https://properdocs.org/), a drop-in fork of MkDocs 1.x, as MkDocs itself is unmaintained. `mike` picks it up automatically, so the deploy flow is unchanged.
+- Upgraded Material for MkDocs from 9.5 to 9.7, the final feature release, which folds in the former Insiders features.
+- Fixed some broken docs links, and enabled `strict` mode so that broken links and anchors fail the docs build.
 
 ## Version 1.9.8 (2026-05-28)
 

@@ -33,7 +33,6 @@ G = TypeVar("G", bound=click.Group)
 OVERRIDES_GUARD: bool = False
 
 class RichCommand(click.Command):
-
     context_class: type[RichContext] = RichContext
     _formatter: RichHelpFormatter | None = None
     panels: list[RichPanel[Any, Any]]
