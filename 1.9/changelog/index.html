@@ -2065,8 +2065,9 @@
 
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">¶</a></h1>
 <h2 id="unreleased">Unreleased<a class="headerlink" href="#unreleased" title="Permanent link">¶</a></h2>
-<p>Development tooling only; no changes to the library itself.</p>
 <ul>
+<li>Dropped support for Python 3.8 and 3.9; the minimum supported version is now Python 3.10.</li>
+<li>Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python &lt;3.10.</li>
 <li>Dev and docs requirements moved from optional dependencies to <a href="https://peps.python.org/pep-0735/">dependency groups</a>, so they are no longer published as package metadata. Install them with <code>uv sync --all-groups</code>.</li>
 <li>Switched from <a href="https://pre-commit.com/">pre-commit</a> to <a href="https://github.com/j178/prek">prek</a>, and replaced <code>.pre-commit-config.yaml</code> with <code>prek.toml</code>. Contributors should re-run <code>prek install</code> to replace their old git hook.</li>
 <li>Replaced Black with <code>ruff format</code>, which resolves the formatting conflicts between the two.</li>

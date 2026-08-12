@@ -19,30 +19,30 @@
         font-weight: 700;
     }
 
-    .terminal-3702270632-matrix {
+    .rich-codex-4133755959-matrix {
         font-family: Fira Code, monospace;
         font-size: 20px;
         line-height: 24.4px;
         font-variant-east-asian: full-width;
     }
 
-    .terminal-3702270632-title {
+    .rich-codex-4133755959-title {
         font-size: 18px;
         font-weight: bold;
         font-family: arial;
     }
 
-    .terminal-3702270632-r1 { fill: #c5c8c6 }
+    .rich-codex-4133755959-r1 { fill: #c5c8c6 }
     </style>
 
     <defs>
-    <clipPath id="terminal-3702270632-clip-terminal">
+    <clipPath id="rich-codex-4133755959-clip-terminal">
       <rect x="0" y="0" width="975.0" height="72.19999999999999" />
     </clipPath>
-    <clipPath id="terminal-3702270632-line-0">
+    <clipPath id="rich-codex-4133755959-line-0">
     <rect x="0" y="1.5" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-3702270632-line-1">
+<clipPath id="rich-codex-4133755959-line-1">
     <rect x="0" y="25.9" width="976" height="24.65"/>
             </clipPath>
     </defs>
@@ -54,12 +54,12 @@
             <circle cx="44" cy="0" r="7" fill="#28c840"/>
             </g>
         
-    <g transform="translate(9, 41)" clip-path="url(#terminal-3702270632-clip-terminal)">
+    <g transform="translate(9, 41)" clip-path="url(#rich-codex-4133755959-clip-terminal)">
     
-    <g class="terminal-3702270632-matrix">
-    <text class="terminal-3702270632-r1" x="0" y="20" textLength="439.2" clip-path="url(#terminal-3702270632-line-0)">$&#160;python&#160;hello_v3.py&#160;french&#160;Jennifer</text><text class="terminal-3702270632-r1" x="976" y="20" textLength="12.2" clip-path="url(#terminal-3702270632-line-0)">
-</text><text class="terminal-3702270632-r1" x="0" y="44.4" textLength="219.6" clip-path="url(#terminal-3702270632-line-1)">Bonjour,&#160;Jennifer!</text><text class="terminal-3702270632-r1" x="976" y="44.4" textLength="12.2" clip-path="url(#terminal-3702270632-line-1)">
-</text><text class="terminal-3702270632-r1" x="976" y="68.8" textLength="12.2" clip-path="url(#terminal-3702270632-line-2)">
+    <g class="rich-codex-4133755959-matrix">
+    <text class="rich-codex-4133755959-r1" x="0" y="20" textLength="439.2" clip-path="url(#rich-codex-4133755959-line-0)">$&#160;python&#160;hello_v3.py&#160;french&#160;Jennifer</text><text class="rich-codex-4133755959-r1" x="976" y="20" textLength="12.2" clip-path="url(#rich-codex-4133755959-line-0)">
+</text><text class="rich-codex-4133755959-r1" x="0" y="44.4" textLength="219.6" clip-path="url(#rich-codex-4133755959-line-1)">Bonjour,&#160;Jennifer!</text><text class="rich-codex-4133755959-r1" x="976" y="44.4" textLength="12.2" clip-path="url(#rich-codex-4133755959-line-1)">
+</text><text class="rich-codex-4133755959-r1" x="976" y="68.8" textLength="12.2" clip-path="url(#rich-codex-4133755959-line-2)">
 </text>
     </g>
     </g>

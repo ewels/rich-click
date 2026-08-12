@@ -19,39 +19,39 @@
         font-weight: 700;
     }
 
-    .terminal-1124094114-matrix {
+    .rich-codex-3570276270-matrix {
         font-family: Fira Code, monospace;
         font-size: 20px;
         line-height: 24.4px;
         font-variant-east-asian: full-width;
     }
 
-    .terminal-1124094114-title {
+    .rich-codex-3570276270-title {
         font-size: 18px;
         font-weight: bold;
         font-family: arial;
     }
 
-    .terminal-1124094114-r1 { fill: #c5c8c6 }
+    .rich-codex-3570276270-r1 { fill: #c5c8c6 }
     </style>
 
     <defs>
-    <clipPath id="terminal-1124094114-clip-terminal">
+    <clipPath id="rich-codex-3570276270-clip-terminal">
       <rect x="0" y="0" width="975.0" height="145.39999999999998" />
     </clipPath>
-    <clipPath id="terminal-1124094114-line-0">
+    <clipPath id="rich-codex-3570276270-line-0">
     <rect x="0" y="1.5" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-1124094114-line-1">
+<clipPath id="rich-codex-3570276270-line-1">
     <rect x="0" y="25.9" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-1124094114-line-2">
+<clipPath id="rich-codex-3570276270-line-2">
     <rect x="0" y="50.3" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-1124094114-line-3">
+<clipPath id="rich-codex-3570276270-line-3">
     <rect x="0" y="74.7" width="976" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-1124094114-line-4">
+<clipPath id="rich-codex-3570276270-line-4">
     <rect x="0" y="99.1" width="976" height="24.65"/>
             </clipPath>
     </defs>
@@ -63,15 +63,15 @@
             <circle cx="44" cy="0" r="7" fill="#28c840"/>
             </g>
         
-    <g transform="translate(9, 41)" clip-path="url(#terminal-1124094114-clip-terminal)">
+    <g transform="translate(9, 41)" clip-path="url(#rich-codex-3570276270-clip-terminal)">
     
-    <g class="terminal-1124094114-matrix">
-    <text class="terminal-1124094114-r1" x="0" y="20" textLength="622.2" clip-path="url(#terminal-1124094114-line-0)">$&#160;python&#160;hello_v2.py&#160;--say-goodbye&#160;--times&#160;3&#160;Edward</text><text class="terminal-1124094114-r1" x="976" y="20" textLength="12.2" clip-path="url(#terminal-1124094114-line-0)">
-</text><text class="terminal-1124094114-r1" x="0" y="44.4" textLength="170.8" clip-path="url(#terminal-1124094114-line-1)">Hello,&#160;Edward!</text><text class="terminal-1124094114-r1" x="976" y="44.4" textLength="12.2" clip-path="url(#terminal-1124094114-line-1)">
-</text><text class="terminal-1124094114-r1" x="0" y="68.8" textLength="170.8" clip-path="url(#terminal-1124094114-line-2)">Hello,&#160;Edward!</text><text class="terminal-1124094114-r1" x="976" y="68.8" textLength="12.2" clip-path="url(#terminal-1124094114-line-2)">
-</text><text class="terminal-1124094114-r1" x="0" y="93.2" textLength="170.8" clip-path="url(#terminal-1124094114-line-3)">Hello,&#160;Edward!</text><text class="terminal-1124094114-r1" x="976" y="93.2" textLength="12.2" clip-path="url(#terminal-1124094114-line-3)">
-</text><text class="terminal-1124094114-r1" x="0" y="117.6" textLength="97.6" clip-path="url(#terminal-1124094114-line-4)">Goodbye!</text><text class="terminal-1124094114-r1" x="976" y="117.6" textLength="12.2" clip-path="url(#terminal-1124094114-line-4)">
-</text><text class="terminal-1124094114-r1" x="976" y="142" textLength="12.2" clip-path="url(#terminal-1124094114-line-5)">
+    <g class="rich-codex-3570276270-matrix">
+    <text class="rich-codex-3570276270-r1" x="0" y="20" textLength="622.2" clip-path="url(#rich-codex-3570276270-line-0)">$&#160;python&#160;hello_v2.py&#160;--say-goodbye&#160;--times&#160;3&#160;Edward</text><text class="rich-codex-3570276270-r1" x="976" y="20" textLength="12.2" clip-path="url(#rich-codex-3570276270-line-0)">
+</text><text class="rich-codex-3570276270-r1" x="0" y="44.4" textLength="170.8" clip-path="url(#rich-codex-3570276270-line-1)">Hello,&#160;Edward!</text><text class="rich-codex-3570276270-r1" x="976" y="44.4" textLength="12.2" clip-path="url(#rich-codex-3570276270-line-1)">
+</text><text class="rich-codex-3570276270-r1" x="0" y="68.8" textLength="170.8" clip-path="url(#rich-codex-3570276270-line-2)">Hello,&#160;Edward!</text><text class="rich-codex-3570276270-r1" x="976" y="68.8" textLength="12.2" clip-path="url(#rich-codex-3570276270-line-2)">
+</text><text class="rich-codex-3570276270-r1" x="0" y="93.2" textLength="170.8" clip-path="url(#rich-codex-3570276270-line-3)">Hello,&#160;Edward!</text><text class="rich-codex-3570276270-r1" x="976" y="93.2" textLength="12.2" clip-path="url(#rich-codex-3570276270-line-3)">
+</text><text class="rich-codex-3570276270-r1" x="0" y="117.6" textLength="97.6" clip-path="url(#rich-codex-3570276270-line-4)">Goodbye!</text><text class="rich-codex-3570276270-r1" x="976" y="117.6" textLength="12.2" clip-path="url(#rich-codex-3570276270-line-4)">
+</text><text class="rich-codex-3570276270-r1" x="976" y="142" textLength="12.2" clip-path="url(#rich-codex-3570276270-line-5)">
 </text>
     </g>
     </g>
