@@ -338,7 +338,7 @@ def _get_parameter_range(
     return None
 
 
-def _make_param_metavar(param: Any, ctx: "RichContext") -> str:
+def _make_param_metavar(param: Any, ctx: RichContext) -> str:
     # click >= 8.2 and asyncclick require a ctx argument to make_metavar; older click
     # does not. The installed click version does not determine a fork's
     # Parameter.make_metavar signature (an asyncclick param keeps asyncclick's signature

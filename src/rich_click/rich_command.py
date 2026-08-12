@@ -196,16 +196,16 @@ class RichCommandMixin(_CommandMixinBase):
 
     def get_rich_table_row(
         self,
-        ctx: "RichContext",
-        formatter: "RichHelpFormatter",
-        panel: "RichCommandPanel | None" = None,
-    ) -> "RichPanelRow":
+        ctx: RichContext,
+        formatter: RichHelpFormatter,
+        panel: RichCommandPanel | None = None,
+    ) -> RichPanelRow:
         """Create a row for the rich table corresponding with this parameter."""
         from rich_click.rich_help_rendering import get_command_rich_table_row
 
         return get_command_rich_table_row(self, ctx, formatter, panel)
 
-    def add_panel(self, panel: "RichPanel[Any, Any]") -> None:
+    def add_panel(self, panel: RichPanel[Any, Any]) -> None:
         """Add a RichPanel to the RichCommand."""
         self.panels.append(panel)
 
@@ -364,6 +364,7 @@ class RichCommand(RichCommandMixin, Command):
             self._help_option = self.params.pop()  # type: ignore[assignment]
 
         return self._help_option
+
 
 class RichGroupMixin(RichCommandMixin, _GroupMixinBase):
     """

@@ -66,26 +66,26 @@ def register_click_impl(module: Any) -> None:
             globals()[tuple_name] = existing + (cls,)
 
 
-def is_argument(obj: Any) -> "TypeIs[Argument]":
+def is_argument(obj: Any) -> TypeIs[Argument]:
     """Return whether ``obj`` is a click (or registered fork) Argument."""
     return isinstance(obj, _ARGUMENT_TYPES)
 
 
-def is_command(obj: Any) -> "TypeIs[Command]":
+def is_command(obj: Any) -> TypeIs[Command]:
     """Return whether ``obj`` is a click (or registered fork) Command."""
     return isinstance(obj, _COMMAND_TYPES)
 
 
-def is_group(obj: Any) -> "TypeIs[Group]":
+def is_group(obj: Any) -> TypeIs[Group]:
     """Return whether ``obj`` is a click (or registered fork) Group."""
     return isinstance(obj, _GROUP_TYPES)
 
 
-def is_option(obj: Any) -> "TypeIs[Option]":
+def is_option(obj: Any) -> TypeIs[Option]:
     """Return whether ``obj`` is a click (or registered fork) Option."""
     return isinstance(obj, _OPTION_TYPES)
 
 
-def is_parameter(obj: Any) -> "TypeIs[Parameter]":
+def is_parameter(obj: Any) -> TypeIs[Parameter]:
     """Return whether ``obj`` is a click (or registered fork) Parameter."""
     return isinstance(obj, _PARAMETER_TYPES)
