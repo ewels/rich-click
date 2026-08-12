@@ -1,9 +1,9 @@
 # ruff: noqa: D101,D103,D401,E501
 import json
 import sys
+from collections.abc import Callable
 from importlib.metadata import version
 from pathlib import Path
-from typing import Callable, List
 
 import packaging.version
 import pytest
@@ -16,8 +16,7 @@ from tests.conftest import WriteScript, run_as_subprocess
 
 @pytest.fixture
 def simple_script(mock_script_writer: WriteScript) -> Path:
-    return mock_script_writer(
-        '''
+    return mock_script_writer('''
         import click
 
         # Test if robust to subclassing
@@ -28,8 +27,7 @@ def simple_script(mock_script_writer: WriteScript) -> Path:
         def cli():
             """My help text"""
             print('Hello, world!')
-        '''
-    )
+        ''')
 
 
 @pytest.mark.parametrize(
@@ -39,11 +37,10 @@ def simple_script(mock_script_writer: WriteScript) -> Path:
         ["--", "mymodule:cli", "--help"],
     ],
 )
-def test_simple_rich_click_cli(simple_script: Path, command: List[str]) -> None:
+def test_simple_rich_click_cli(simple_script: Path, command: list[str]) -> None:
     res = run_as_subprocess([sys.executable, "-m", "src.rich_click", "mymodule:cli", "--help"])
     assert res.returncode == 0
-    assert res.stdout.decode() == snapshot(
-        """\
+    assert res.stdout.decode() == snapshot("""\
                                                                                                     \n\
  Usage: python -m src.rich_click.mymodule [OPTIONS]                                                 \n\
                                                                                                     \n\
@@ -52,8 +49,7 @@ def test_simple_rich_click_cli(simple_script: Path, command: List[str]) -> None:
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
 
 
 @pytest.mark.parametrize(
@@ -64,7 +60,7 @@ def test_simple_rich_click_cli(simple_script: Path, command: List[str]) -> None:
         ["mymodule:cli", "--"],
     ],
 )
-def test_simple_rich_click_cli_execute_command(simple_script: Path, cli_runner: CliRunner, command: List[str]) -> None:
+def test_simple_rich_click_cli_execute_command(simple_script: Path, cli_runner: CliRunner, command: list[str]) -> None:
     res = cli_runner.invoke(main, command)
 
     assert res.exit_code == 0
@@ -95,8 +91,7 @@ def test_rich_click_cli_help_with_rich_config_from_file(tmp_path: Path) -> None:
 
     res = run_as_subprocess([sys.executable, "-m", "src.rich_click", "--rich-config", f"@{config_file}", "--help"])
     assert res.returncode == 0
-    assert res.stdout.decode() == snapshot(
-        """\
+    assert res.stdout.decode() == snapshot("""\
                                                                                                     \n\
  Usage: python -m src.rich_click [OPTIONS] SCRIPT | MODULE[:CLICK_COMMAND] ...                      \n\
                                                                                                     \n\
@@ -139,8 +134,7 @@ def test_rich_click_cli_help_with_rich_config_from_file(tmp_path: Path) -> None:
 │ --output       -o  [html|svg|text]  Optionally render help text as HTML or SVG or plain text. By │
 │                                     default, help text is rendered normally.                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
 
 
 def test_rich_click_cli_help_with_bad_rich_config() -> None:
@@ -170,8 +164,7 @@ def test_custom_config_rich_click_cli(simple_script: Path) -> None:
         ]
     )
     assert res.returncode == 0
-    assert res.stdout.decode() == snapshot(
-        """\
+    assert res.stdout.decode() == snapshot("""\
                                                                                                     \n\
  Usage: python -m src.rich_click.mymodule [OPTIONS]                                                 \n\
                                                                                                     \n\
@@ -180,8 +173,7 @@ def test_custom_config_rich_click_cli(simple_script: Path) -> None:
 ╭─ Custom Name ────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
 
 
 def test_override_click_command(mock_script_writer: Callable[[str], Path]) -> None:
@@ -211,8 +203,7 @@ def test_override_click_command(mock_script_writer: Callable[[str], Path]) -> No
     )
     assert res.returncode == 0
 
-    assert res.stdout.decode() == snapshot(
-        """\
+    assert res.stdout.decode() == snapshot("""\
                                                                                                     \n\
  Usage: python -m src.rich_click.mymodule [OPTIONS]                                                 \n\
                                                                                                     \n\
@@ -221,8 +212,7 @@ def test_override_click_command(mock_script_writer: Callable[[str], Path]) -> No
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
 
 
 def test_override_click_group(mock_script_writer: Callable[[str], Path]) -> None:
@@ -260,8 +250,7 @@ def test_override_click_group(mock_script_writer: Callable[[str], Path]) -> None
     )
     assert res.returncode == 0
 
-    assert res.stdout.decode() == snapshot(
-        """\
+    assert res.stdout.decode() == snapshot("""\
                                                                                                     \n\
  Usage: python -m src.rich_click.mymodule [OPTIONS] COMMAND [ARGS]...                               \n\
                                                                                                     \n\
@@ -273,13 +262,11 @@ def test_override_click_group(mock_script_writer: Callable[[str], Path]) -> None
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ subcommand                        Subcommand help text                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
 
 
 def test_override_rich_click_command(mock_script_writer: WriteScript) -> None:
-    mock_script_writer(
-        '''
+    mock_script_writer('''
         import rich_click as click
 
         # Test if robust to subclassing
@@ -297,21 +284,18 @@ def test_override_rich_click_command(mock_script_writer: WriteScript) -> None:
         def cli():
             """My help text"""
             print('Hello, world!')
-        '''
-    )
+        ''')
 
     res = run_as_subprocess([sys.executable, "-m", "rich_click", "mymodule:cli", "--help"])
     assert res.returncode == 0
 
     assert res.returncode == 0
-    assert res.stdout.decode() == snapshot(
-        """\
+    assert res.stdout.decode() == snapshot("""\
 I am overriding RichCommand! (usage)
 I am overriding RichCommand! (help_text)
 I am overriding RichCommand! (options)
 I am overriding RichCommand! (epilog)
-"""
-    )
+""")
 
 
 def test_override_rich_click_group(mock_script_writer: Callable[[str], Path]) -> None:
@@ -346,14 +330,12 @@ def test_override_rich_click_group(mock_script_writer: Callable[[str], Path]) ->
     )
     assert res.returncode == 0
 
-    assert res.stdout.decode() == snapshot(
-        """\
+    assert res.stdout.decode() == snapshot("""\
 I am overriding RichCommand! (usage)
 I am overriding RichCommand! (help_text)
 I am overriding RichCommand! (options)
 I am overriding RichCommand! (epilog)
-"""
-    )
+""")
 
 
 def test_override_rich_click_command_collection(mock_script_writer: Callable[[str], Path]) -> None:
@@ -392,14 +374,12 @@ def test_override_rich_click_command_collection(mock_script_writer: Callable[[st
     )
     assert res.returncode == 0
 
-    assert res.stdout.decode() == snapshot(
-        """\
+    assert res.stdout.decode() == snapshot("""\
 I am overriding RichCommand! (usage)
 I am overriding RichCommand! (help_text)
 I am overriding RichCommand! (options)
 I am overriding RichCommand! (epilog)
-"""
-    )
+""")
 
 
 def test_override_guard_click_command(mock_script_writer: Callable[[str], Path]) -> None:
@@ -429,8 +409,7 @@ def test_override_guard_click_command(mock_script_writer: Callable[[str], Path])
     )
     assert res.returncode == 0
 
-    assert res.stdout.decode() == snapshot(
-        """\
+    assert res.stdout.decode() == snapshot("""\
                                                                                                     \n\
  Usage: python -m src.rich_click.mymodule [OPTIONS]                                                 \n\
                                                                                                     \n\
@@ -439,8 +418,7 @@ def test_override_guard_click_command(mock_script_writer: Callable[[str], Path])
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
 
 
 def test_override_guard_click_group(mock_script_writer: Callable[[str], Path]) -> None:
@@ -475,8 +453,7 @@ def test_override_guard_click_group(mock_script_writer: Callable[[str], Path]) -
     )
     assert res.returncode == 0
 
-    assert res.stdout.decode() == snapshot(
-        """\
+    assert res.stdout.decode() == snapshot("""\
                                                                                                     \n\
  Usage: python -m src.rich_click.mymodule [OPTIONS] COMMAND [ARGS]...                               \n\
                                                                                                     \n\
@@ -485,8 +462,7 @@ def test_override_guard_click_group(mock_script_writer: Callable[[str], Path]) -
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
 
 
 def test_override_guard_disabled_click_from_rich_click(mock_script_writer: Callable[[str], Path]) -> None:
@@ -558,8 +534,7 @@ def test_override_guard_enabled_click_from_rich_click(mock_script_writer: Callab
     )
     assert res.returncode == 0
 
-    assert res.stdout.decode() == snapshot(
-        """\
+    assert res.stdout.decode() == snapshot("""\
                                                                                                     \n\
  Usage: python -m src.rich_click.mymodule [OPTIONS] COMMAND [ARGS]...                               \n\
                                                                                                     \n\
@@ -568,8 +543,7 @@ def test_override_guard_enabled_click_from_rich_click(mock_script_writer: Callab
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
 
 
 @pytest.mark.skipif(
@@ -577,8 +551,7 @@ def test_override_guard_enabled_click_from_rich_click(mock_script_writer: Callab
     reason="Click >=8.4.0 renders --bad-input wrapped in single quotes",
 )
 def test_error_to_stderr(mock_script_writer: Callable[[str], Path]) -> None:
-    mock_script_writer(
-        '''
+    mock_script_writer('''
         import click
 
         @click.group("foo")
@@ -588,16 +561,14 @@ def test_error_to_stderr(mock_script_writer: Callable[[str], Path]) -> None:
         @foo.command("bar")
         def bar():
             """bar command"""
-        '''
-    )
+        ''')
 
     res_grp = run_as_subprocess(
         [sys.executable, "-m", "src.rich_click", "mymodule:foo", "--bad-input"],
     )
     assert res_grp.returncode == 2
     assert res_grp.stdout.decode() == ""
-    assert res_grp.stderr.decode() == snapshot(
-        """\
+    assert res_grp.stderr.decode() == snapshot("""\
                                                                                                     \n\
  Usage: python -m src.rich_click.mymodule [OPTIONS] COMMAND [ARGS]...                               \n\
                                                                                                     \n\
@@ -606,8 +577,7 @@ def test_error_to_stderr(mock_script_writer: Callable[[str], Path]) -> None:
 │ No such option: --bad-input                                                                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     \n\
-"""
-    )
+""")
 
     res_cmd = run_as_subprocess(
         [sys.executable, "-m", "src.rich_click", "mymodule:foo", "bar", "--bad-input"],
@@ -615,8 +585,7 @@ def test_error_to_stderr(mock_script_writer: Callable[[str], Path]) -> None:
     assert res_cmd.returncode == 2
 
     assert res_grp.stdout.decode() == ""
-    assert res_grp.stderr.decode() == snapshot(
-        """\
+    assert res_grp.stderr.decode() == snapshot("""\
                                                                                                     \n\
  Usage: python -m src.rich_click.mymodule [OPTIONS] COMMAND [ARGS]...                               \n\
                                                                                                     \n\
@@ -625,8 +594,7 @@ def test_error_to_stderr(mock_script_writer: Callable[[str], Path]) -> None:
 │ No such option: --bad-input                                                                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     \n\
-"""
-    )
+""")
 
 
 @pytest.mark.skipif(
@@ -634,8 +602,7 @@ def test_error_to_stderr(mock_script_writer: Callable[[str], Path]) -> None:
     reason="Click <8.4.0 renders --bad-input without single quotes",
 )
 def test_error_to_stderr_click_8_4(mock_script_writer: Callable[[str], Path]) -> None:
-    mock_script_writer(
-        '''
+    mock_script_writer('''
         import click
 
         @click.group("foo")
@@ -645,16 +612,14 @@ def test_error_to_stderr_click_8_4(mock_script_writer: Callable[[str], Path]) ->
         @foo.command("bar")
         def bar():
             """bar command"""
-        '''
-    )
+        ''')
 
     res_grp = run_as_subprocess(
         [sys.executable, "-m", "src.rich_click", "mymodule:foo", "--bad-input"],
     )
     assert res_grp.returncode == 2
     assert res_grp.stdout.decode() == ""
-    assert res_grp.stderr.decode() == snapshot(
-        """\
+    assert res_grp.stderr.decode() == snapshot("""\
                                                                                                     \n\
  Usage: python -m src.rich_click.mymodule [OPTIONS] COMMAND [ARGS]...                               \n\
                                                                                                     \n\
@@ -663,8 +628,7 @@ def test_error_to_stderr_click_8_4(mock_script_writer: Callable[[str], Path]) ->
 │ No such option '--bad-input'.                                                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     \n\
-"""
-    )
+""")
 
     res_cmd = run_as_subprocess(
         [sys.executable, "-m", "src.rich_click", "mymodule:foo", "bar", "--bad-input"],
@@ -672,8 +636,7 @@ def test_error_to_stderr_click_8_4(mock_script_writer: Callable[[str], Path]) ->
     assert res_cmd.returncode == 2
 
     assert res_grp.stdout.decode() == ""
-    assert res_grp.stderr.decode() == snapshot(
-        """\
+    assert res_grp.stderr.decode() == snapshot("""\
                                                                                                     \n\
  Usage: python -m src.rich_click.mymodule [OPTIONS] COMMAND [ARGS]...                               \n\
                                                                                                     \n\
@@ -682,8 +645,7 @@ def test_error_to_stderr_click_8_4(mock_script_writer: Callable[[str], Path]) ->
 │ No such option '--bad-input'.                                                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     \n\
-"""
-    )
+""")
 
 
 rich_version = packaging.version.parse(version("rich"))
@@ -706,8 +668,7 @@ def test_cli_output_html(mock_script_writer: Callable[[str], Path]) -> None:
     )
     assert res.returncode == 0
 
-    assert res.stdout.decode() == snapshot(
-        """\
+    assert res.stdout.decode() == snapshot("""\
 <!DOCTYPE html>
 <html>
 <head>
@@ -732,8 +693,7 @@ body {
 </code></pre>
 </body>
 </html>
-"""
-    )
+""")
 
 
 def test_cli_output_svg(mock_script_writer: Callable[[str], Path]) -> None:
@@ -752,8 +712,7 @@ def test_cli_output_svg(mock_script_writer: Callable[[str], Path]) -> None:
     )
     assert res.returncode == 0
 
-    assert res.stdout.decode() == snapshot(
-        """\
+    assert res.stdout.decode() == snapshot("""\
 <svg class="rich-terminal" viewBox="0 0 1238 245.2" xmlns="http://www.w3.org/2000/svg">
     <!-- Generated with Rich https://www.textualize.io -->
     <style>
@@ -846,8 +805,7 @@ def test_cli_output_svg(mock_script_writer: Callable[[str], Path]) -> None:
     </g>
     </g>
 </svg>
-"""
-    )
+""")
 
 
 def test_cli_output_text(mock_script_writer: Callable[[str], Path]) -> None:
@@ -868,8 +826,7 @@ def test_cli_output_text(mock_script_writer: Callable[[str], Path]) -> None:
     )
     assert res.returncode == 0
 
-    assert res.stdout.decode() == snapshot(
-        """\
+    assert res.stdout.decode() == snapshot("""\
                                                                                                     \n\
  Usage: python -m src.rich_click.mymodule [OPTIONS]                                                 \n\
                                                                                                     \n\
@@ -878,5 +835,4 @@ def test_cli_output_text(mock_script_writer: Callable[[str], Path]) -> None:
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")

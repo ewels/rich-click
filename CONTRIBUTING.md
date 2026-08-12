@@ -14,28 +14,44 @@ Requirements:
 uv python pin 3.13
 uv venv .venv
 source .venv/bin/activate
-uv sync --extra dev
-pre-commit install
+uv sync --all-groups
+prek install
 ```
 
-## Pre-commit
+## Prek
 
-Our pre-commit hooks contain the following hooks:
+We use [prek](https://github.com/j178/prek) to manage our git hooks.
+It is installed as part of `uv sync --all-groups`, and it is configured in
+[`prek.toml`](https://github.com/ewels/rich-click/blob/main/prek.toml).
 
-- [Prettier](https://prettier.io/): formats our markdown and yaml files nicely.
-- no relative imports: prevents you from using relative imports.
-- [iSort](https://pycqa.github.io/isort/): will automatically sort the imports alphabetically.
-- [black](https://black.readthedocs.io/): will automatically format your code to be according to standardized python format.
-- [flake8](https://flake8.pycqa.org/): will do linting checks to make sure all your code is correctly styled and used.
+`prek install` sets up the git hook, so the checks run automatically whenever you commit.
+To run every hook against the whole repo without committing, use:
+
+```shell
+prek run -a
+```
+
+> [!NOTE]
+> We used to use [pre-commit](https://pre-commit.com/) with a `.pre-commit-config.yaml` file.
+> If you set up your local checkout before that change, re-run `prek install` to replace the
+> old hook — otherwise the stale `pre-commit` hook will no longer find a config it recognises.
+
+`prek.toml` contains the following hooks:
+
+- [actionlint](https://github.com/rhysd/actionlint): lints our GitHub Actions workflow files.
+- [pyproject-fmt](https://pyproject-fmt.readthedocs.io/): formats and normalizes `pyproject.toml`.
+- [Ruff](https://docs.astral.sh/ruff/): does linting checks (including import sorting) and automatically fixes what it can.
+- [Ruff format](https://docs.astral.sh/ruff/formatter/): automatically formats your code to a standardized Python format.
 - [mypy](http://mypy-lang.org/): static type checker which verifies you are not using objects incorrectly.
+- [codespell](https://github.com/codespell-project/codespell): catches common spelling mistakes in the docs.
 
 As mentioned, some of these tools automatically fix your code while other only highlight potential issues.
 Sometimes it will be enough to try to commit a second time and it will pass, while other times it may require
 manual changes to your code.
 
 In rare cases it may be difficult or undesirable to change to code to pass the linting rules.
-If this happens, it's ok to add a flake8 `# noqa` or mypy `# type: ignore` comment to skip that line.
-For details of how to do this, please see the [flake8 docs](https://flake8.pycqa.org/en/3.1.1/user/ignoring-errors.html#in-line-ignoring-errors)
+If this happens, it's ok to add a Ruff `# noqa` or mypy `# type: ignore` comment to skip that line.
+For details of how to do this, please see the [Ruff docs](https://docs.astral.sh/ruff/linter/#error-suppression)
 and [mypy docs](https://mypy.readthedocs.io/en/stable/common_issues.html#spurious-errors-and-locally-silencing-the-checker).
 
 ## Credits

@@ -1,5 +1,6 @@
+from collections.abc import Callable
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 
 if TYPE_CHECKING:
@@ -20,11 +21,11 @@ class RichClickTheme:
         self,
         name: str,
         *,
-        description: Optional[str] = None,
+        description: str | None = None,
         hidden: bool = False,
-        styles: Optional[Dict[str, Any]] = None,
-        primary_colors: Optional[List["StyleType"]] = None,
-        post_combine_callback: Optional[Callable[[Dict[str, Any]], Dict[str, Any]]] = None,
+        styles: dict[str, Any] | None = None,
+        primary_colors: list["StyleType"] | None = None,
+        post_combine_callback: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
     ) -> None:
         """
         Create RichTheme instance.
@@ -72,20 +73,20 @@ class RichClickTheme:
         return other.combine(self)
 
 
-def _spaced_delimiters_callback(d: Dict[str, Any]) -> Dict[str, Any]:
+def _spaced_delimiters_callback(d: dict[str, Any]) -> dict[str, Any]:
     return {"delimiter_comma": ", ", "delimiter_slash": " / "}
 
 
-def _not_dim_title_callback(d: Dict[str, Any]) -> Dict[str, Any]:
+def _not_dim_title_callback(d: dict[str, Any]) -> dict[str, Any]:
     updates = {}
     for k in ["style_options_panel_title_style", "style_commands_panel_title_style"]:
-        v: Optional[str] = d.get(k)
+        v: str | None = d.get(k)
         if k in d and v is not None and "dim" not in v.split(" "):
             updates[k] = f"{v} not dim".strip()
     return updates
 
 
-COLORS: Dict[str, RichClickTheme] = {
+COLORS: dict[str, RichClickTheme] = {
     "default": RichClickTheme(
         name="default",
         description="[b](Default)[/b] Original rich-click colors",
@@ -870,7 +871,7 @@ COLORS: Dict[str, RichClickTheme] = {
     ),
 }
 
-FORMATS: Dict[str, RichClickTheme] = {
+FORMATS: dict[str, RichClickTheme] = {
     # Classic rich-click format with boxes
     "box": RichClickTheme(
         name="box",
@@ -1080,7 +1081,7 @@ FORMATS: Dict[str, RichClickTheme] = {
     ),
 }
 
-_THEME_CACHE: Dict[str, RichClickTheme] = {}
+_THEME_CACHE: dict[str, RichClickTheme] = {}
 
 
 class RichClickThemeNotFound(KeyError):
@@ -1089,8 +1090,8 @@ class RichClickThemeNotFound(KeyError):
 
 def get_theme(theme: str, raise_key_error: bool = True) -> RichClickTheme:
     """Get the theme based on the string name."""
-    clr: Optional[str] = None
-    fmt: Optional[str] = None
+    clr: str | None = None
+    fmt: str | None = None
 
     if theme == "random":
         import random

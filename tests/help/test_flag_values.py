@@ -15,8 +15,7 @@ def cli() -> rich_click.RichCommand:
 def test_flag_values_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
@@ -28,6 +27,5 @@ def test_flag_values_help(cli_runner: CliRunner, cli: rich_click.RichCommand) ->
 │ --c                          C flag.                                                             │
 │ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")

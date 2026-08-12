@@ -4,23 +4,14 @@ import errno
 import os
 import sys
 import warnings
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from typing import (
     TYPE_CHECKING,
     Any,
-    Callable,
     ClassVar,
-    Dict,
-    Iterable,
-    List,
     Literal,
-    Mapping,
     NoReturn,
-    Optional,
-    Sequence,
     TextIO,
-    Tuple,
-    Type,
-    Union,
     cast,
     overload,
 )
@@ -50,7 +41,7 @@ if TYPE_CHECKING:  # pragma: no cover
 OVERRIDES_GUARD: bool = False
 
 
-def _normalize_examples(examples: Optional[Iterable[Tuple[str, str]]]) -> List[Dict[str, str]]:
+def _normalize_examples(examples: Iterable[tuple[str, str]] | None) -> list[dict[str, str]]:
     """
     Normalize the ``examples=`` developer input to a list of ``{"description", "command"}`` dicts.
 
@@ -58,7 +49,7 @@ def _normalize_examples(examples: Optional[Iterable[Tuple[str, str]]]) -> List[D
     never shown without an explanation of what it does. This canonical shape is what every output (the
     rendered ``--help`` panel, ``--help markdown``, ``--help json`` and ``--help carapace``) consumes.
     """
-    normalized: List[Dict[str, str]] = []
+    normalized: list[dict[str, str]] = []
     for example in examples or []:
         if isinstance(example, str):
             raise TypeError(f"Each example must be a (description, command) tuple, not a string: {example!r}")
@@ -80,29 +71,29 @@ class RichCommand(Command):
     This class can be used as a mixin for other click command objects.
     """
 
-    context_class: Type[RichContext] = RichContext
-    _formatter: Optional[RichHelpFormatter] = None
+    context_class: type[RichContext] = RichContext
+    _formatter: RichHelpFormatter | None = None
 
     def __init__(
         self,
         *args: Any,
-        aliases: Optional[Iterable[str]] = None,
-        panels: Optional[List["RichPanel[Any, Any]"]] = None,
-        panel: Optional[Union[str, List[str]]] = None,
-        examples: Optional[Iterable[Tuple[str, str]]] = None,
+        aliases: Iterable[str] | None = None,
+        panels: list[RichPanel[Any, Any]] | None = None,
+        panel: str | list[str] | None = None,
+        examples: Iterable[tuple[str, str]] | None = None,
         **kwargs: Any,
     ) -> None:
         """Create Rich Command instance."""
         super().__init__(*args, **kwargs)
         self.panel = panel
-        self.panels: List["RichPanel[Any, Any]"] = panels or []
+        self.panels: list[RichPanel[Any, Any]] = panels or []
         self.aliases: Iterable[str] = aliases or []
-        self.examples: List[Dict[str, str]] = _normalize_examples(examples)
+        self.examples: list[dict[str, str]] = _normalize_examples(examples)
         if not hasattr(self, "_help_option"):
             self._help_option = None
 
     @property
-    def console(self) -> Optional["Console"]:
+    def console(self) -> Console | None:
         """
         Rich Console.
 
@@ -118,7 +109,7 @@ class RichCommand(Command):
         )
         return self.context_settings.get("rich_console")
 
-    def to_info_dict(self, ctx: click.Context) -> Dict[str, Any]:
+    def to_info_dict(self, ctx: click.Context) -> dict[str, Any]:
         info = super().to_info_dict(ctx)
         info["panels"] = [p.to_info_dict(ctx) for p in self.panels]
         info["aliases"] = list(self.aliases) if self.aliases is not None else None
@@ -126,7 +117,7 @@ class RichCommand(Command):
         return info
 
     @property
-    def help_config(self) -> Optional[RichHelpConfiguration]:
+    def help_config(self) -> RichHelpConfiguration | None:
         """Rich Help Configuration."""
         warnings.warn(
             "RichCommand.help_config is deprecated. Please use the click.Context's help config instead.",
@@ -202,9 +193,9 @@ class RichCommand(Command):
 
     def main(
         self,
-        args: Optional[Sequence[str]] = None,
-        prog_name: Optional[str] = None,
-        complete_var: Optional[str] = None,
+        args: Sequence[str] | None = None,
+        prog_name: str | None = None,
+        complete_var: str | None = None,
         standalone_mode: bool = True,
         windows_expand_args: bool = True,
         **extra: Any,
@@ -337,7 +328,7 @@ class RichCommand(Command):
 
         get_rich_epilog(self, ctx, formatter)
 
-    def get_help_option(self, ctx: click.Context) -> Union[click.Option, None]:
+    def get_help_option(self, ctx: click.Context) -> click.Option | None:
         """
         Return the help option object.
 
@@ -367,7 +358,7 @@ class RichCommand(Command):
 
     #: Maps a ``--help <format>`` value to the name of the method that renders it. Extend in a subclass
     #: to add a custom format, e.g. ``help_formats = {**RichCommand.help_formats, "yaml": "get_help_yaml"}``.
-    help_formats: ClassVar[Dict[str, str]] = {
+    help_formats: ClassVar[dict[str, str]] = {
         "markdown": "get_help_markdown",
         "md": "get_help_markdown",
         "markdown-full": "get_help_markdown_full",
@@ -377,7 +368,7 @@ class RichCommand(Command):
         "carapace": "get_help_carapace",
     }
 
-    def get_help_for_format(self, ctx: "RichContext", fmt: str) -> Optional[str]:
+    def get_help_for_format(self, ctx: RichContext, fmt: str) -> str | None:
         """
         Return this command's help rendered in a machine-readable format, or ``None`` if unrecognized.
 
@@ -393,13 +384,13 @@ class RichCommand(Command):
         fmt = (fmt or "").strip().lower()
         method_name = self.help_formats.get(fmt)
         if method_name is not None:
-            return cast(Optional[str], getattr(self, method_name)(ctx))
+            return cast(str | None, getattr(self, method_name)(ctx))
         renderer = getattr(ctx, "help_config", None) and ctx.help_config.help_formats.get(fmt)
         if renderer is not None:
-            return cast(Optional[str], renderer(self, ctx))
+            return cast(str | None, renderer(self, ctx))
         return None
 
-    def _serialize_help(self, data: Dict[str, Any]) -> str:
+    def _serialize_help(self, data: dict[str, Any]) -> str:
         import json
 
         return json.dumps(data, indent=2, default=str)
@@ -407,7 +398,7 @@ class RichCommand(Command):
     #: Editor directive prepended to the YAML carapace output, enabling schema validation/completion.
     _CARAPACE_SCHEMA_DIRECTIVE = "# yaml-language-server: $schema=https://carapace.sh/schemas/command.json"
 
-    def _serialize_carapace(self, data: Dict[str, Any]) -> str:
+    def _serialize_carapace(self, data: dict[str, Any]) -> str:
         """
         Serialize the carapace spec as YAML -- the format carapace's ecosystem expects.
 
@@ -422,7 +413,7 @@ class RichCommand(Command):
         body = yaml.safe_dump(data, sort_keys=False, default_flow_style=False, allow_unicode=True)
         return f"{self._CARAPACE_SCHEMA_DIRECTIVE}\n{body}"
 
-    def _build_help_json(self, ctx: "RichContext", formatter: RichHelpFormatter, recursive: bool) -> Dict[str, Any]:
+    def _build_help_json(self, ctx: RichContext, formatter: RichHelpFormatter, recursive: bool) -> dict[str, Any]:
         """Build the JSON schema (progressive or recursive) and apply the ``help_json_transform`` hook."""
         from rich_click.help_json import command_schema
 
@@ -433,7 +424,7 @@ class RichCommand(Command):
             schema = transform(schema, self, ctx)
         return schema
 
-    def get_help_json(self, ctx: "RichContext") -> str:
+    def get_help_json(self, ctx: RichContext) -> str:
         """
         Return this command's help as a machine-readable JSON string (progressive disclosure).
 
@@ -444,7 +435,7 @@ class RichCommand(Command):
         formatter = ctx.make_formatter()
         return self._serialize_help(self.format_help_json(ctx, formatter))
 
-    def format_help_json(self, ctx: "RichContext", formatter: RichHelpFormatter) -> Dict[str, Any]:
+    def format_help_json(self, ctx: RichContext, formatter: RichHelpFormatter) -> dict[str, Any]:
         """
         Build the machine-readable ``--help json`` schema for this command (progressive disclosure).
 
@@ -457,12 +448,12 @@ class RichCommand(Command):
         """
         return self._build_help_json(ctx, formatter, recursive=False)
 
-    def get_help_json_full(self, ctx: "RichContext") -> str:
+    def get_help_json_full(self, ctx: RichContext) -> str:
         """Return the recursive ``--help json-full`` schema as a JSON string (params at every node)."""
         formatter = ctx.make_formatter()
         return self._serialize_help(self.format_help_json_full(ctx, formatter))
 
-    def format_help_json_full(self, ctx: "RichContext", formatter: RichHelpFormatter) -> Dict[str, Any]:
+    def format_help_json_full(self, ctx: RichContext, formatter: RichHelpFormatter) -> dict[str, Any]:
         """
         Build the comprehensive recursive ``--help json-full`` schema for this command.
 
@@ -472,7 +463,7 @@ class RichCommand(Command):
         """
         return self._build_help_json(ctx, formatter, recursive=True)
 
-    def get_help_carapace(self, ctx: "RichContext") -> str:
+    def get_help_carapace(self, ctx: RichContext) -> str:
         """
         Return this command's help as a carapace-spec string (https://carapace.sh).
 
@@ -482,7 +473,7 @@ class RichCommand(Command):
         formatter = ctx.make_formatter()
         return self._serialize_carapace(self.format_help_carapace(ctx, formatter))
 
-    def format_help_carapace(self, ctx: "RichContext", formatter: RichHelpFormatter) -> Dict[str, Any]:
+    def format_help_carapace(self, ctx: RichContext, formatter: RichHelpFormatter) -> dict[str, Any]:
         """
         Build the carapace completion-spec representation of this command tree.
 
@@ -493,11 +484,11 @@ class RichCommand(Command):
 
         return carapace_command(self, ctx)
 
-    def get_help_markdown(self, ctx: "RichContext") -> str:
+    def get_help_markdown(self, ctx: RichContext) -> str:
         """Return this command's help as LLM-friendly Markdown (current command + subcommand index)."""
         return self.format_help_markdown(ctx)
 
-    def format_help_markdown(self, ctx: "RichContext") -> str:
+    def format_help_markdown(self, ctx: RichContext) -> str:
         """
         Build the ``--help markdown`` Markdown for this command. Override for full control of the output.
 
@@ -508,11 +499,11 @@ class RichCommand(Command):
 
         return command_markdown(self, ctx, recursive=False)
 
-    def get_help_markdown_full(self, ctx: "RichContext") -> str:
+    def get_help_markdown_full(self, ctx: RichContext) -> str:
         """Return the recursive ``--help markdown-full`` Markdown: every descendant documented in full."""
         return self.format_help_markdown_full(ctx)
 
-    def format_help_markdown_full(self, ctx: "RichContext") -> str:
+    def format_help_markdown_full(self, ctx: RichContext) -> str:
         """Build the recursive ``--help markdown-full`` Markdown for this command tree."""
         from rich_click.help_json import command_markdown
 
@@ -520,16 +511,16 @@ class RichCommand(Command):
 
     def get_rich_table_row(
         self,
-        ctx: "RichContext",
-        formatter: "RichHelpFormatter",
-        panel: Optional["RichCommandPanel"] = None,
-    ) -> "RichPanelRow":
+        ctx: RichContext,
+        formatter: RichHelpFormatter,
+        panel: RichCommandPanel | None = None,
+    ) -> RichPanelRow:
         """Create a row for the rich table corresponding with this parameter."""
         from rich_click.rich_help_rendering import get_command_rich_table_row
 
         return get_command_rich_table_row(self, ctx, formatter, panel)
 
-    def add_panel(self, panel: "RichPanel[Any, Any]") -> None:
+    def add_panel(self, panel: RichPanel[Any, Any]) -> None:
         """Add a RichPanel to the RichCommand."""
         self.panels.append(panel)
 
@@ -542,27 +533,27 @@ class RichGroup(RichCommand, Group):
     to print richly formatted output.
     """
 
-    command_class: Optional[Type[RichCommand]] = RichCommand
-    group_class: Optional[Union[Type[Group], Type[type]]] = type
+    command_class: type[RichCommand] | None = RichCommand
+    group_class: type[Group] | type[type] | None = type
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Create RichGroup instance."""
         super().__init__(*args, **kwargs)
 
-        self._alias_mapping: Dict[str, str] = {}
+        self._alias_mapping: dict[str, str] = {}
         # This allows non-RichCommands to be assigned to panels
         # + assigns without requiring mutation of panels.
-        self._panel_command_mapping: Dict[str, List[str]] = {}
+        self._panel_command_mapping: dict[str, list[str]] = {}
 
         for name in self.commands:
             cmd = self.commands[name]
 
-            aliases: Optional[Iterable[str]] = getattr(cmd, "aliases", None)
+            aliases: Iterable[str] | None = getattr(cmd, "aliases", None)
             if aliases:
                 for alias in aliases:
                     self._alias_mapping[alias] = name
 
-            panel: Optional[str] = getattr(cmd, "panel", None)
+            panel: str | None = getattr(cmd, "panel", None)
             if cmd.name and panel:
                 self.add_command_to_panel(cmd, panel)
 
@@ -593,7 +584,7 @@ class RichGroup(RichCommand, Group):
     @overload
     def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichCommand]: ...
 
-    def command(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], RichCommand], RichCommand]:
+    def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichCommand] | RichCommand:
         """
         A shortcut decorator for declaring and attaching a command to
         the group. This takes the same arguments as :func:`command` and
@@ -611,14 +602,14 @@ class RichGroup(RichCommand, Group):
         """  # noqa: D401
         from rich_click.decorators import command
 
-        func: Optional[Callable[..., Any]] = None
+        func: Callable[..., Any] | None = None
 
         if args and callable(args[0]):
             assert len(args) == 1 and not kwargs, "Use 'command(**kwargs)(callable)' to provide arguments."
             (func,) = args
             args = ()
 
-        cls: Optional[Type[Command]] = kwargs.get("cls")
+        cls: type[Command] | None = kwargs.get("cls")
         if self.command_class and cls is None:
             kwargs["cls"] = cls = self.command_class
 
@@ -641,12 +632,12 @@ class RichGroup(RichCommand, Group):
         return decorator
 
     @overload
-    def group(self, __func: Callable[..., Any]) -> "RichGroup": ...
+    def group(self, __func: Callable[..., Any]) -> RichGroup: ...
 
     @overload
-    def group(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], "RichGroup"]: ...
+    def group(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichGroup]: ...
 
-    def group(self, *args: Any, **kwargs: Any) -> Union[Callable[[Callable[..., Any]], "RichGroup"], "RichGroup"]:
+    def group(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichGroup] | RichGroup:
         """
         A shortcut decorator for declaring and attaching a group to
         the group. This takes the same arguments as :func:`group` and
@@ -664,14 +655,14 @@ class RichGroup(RichCommand, Group):
         """  # noqa: D401
         from rich_click.decorators import group
 
-        func: Optional[Callable[..., Any]] = None
+        func: Callable[..., Any] | None = None
 
         if args and callable(args[0]):
             assert len(args) == 1 and not kwargs, "Use 'group(**kwargs)(callable)' to provide arguments."
             (func,) = args
             args = ()
 
-        cls: Optional[Union[Type[Group], Type[type]]] = kwargs.get("cls")
+        cls: type[Group] | type[type] | None = kwargs.get("cls")
         if self.group_class is not None and cls is None:
             if self.group_class is type:
                 kwargs["cls"] = cls = type(self)
@@ -699,9 +690,9 @@ class RichGroup(RichCommand, Group):
     def _handle_extras_add_command(
         self,
         cmd: click.Command,
-        name: Optional[str] = None,
-        aliases: Optional[Iterable[str]] = None,
-        panel: Optional[Union[str, List[str]]] = None,
+        name: str | None = None,
+        aliases: Iterable[str] | None = None,
+        panel: str | list[str] | None = None,
     ) -> None:
         """
         Create backwards compatibility with add_command() subclass interfaces
@@ -725,16 +716,16 @@ class RichGroup(RichCommand, Group):
         if panel:
             self.add_command_to_panel(cmd, panel)
 
-    def get_command(self, ctx: click.Context, cmd_name: str) -> Optional[click.Command]:
+    def get_command(self, ctx: click.Context, cmd_name: str) -> click.Command | None:
         _cmd_name = self._alias_mapping.get(cmd_name, cmd_name)
         return super().get_command(ctx, _cmd_name)
 
     def add_command(
         self,
         cmd: click.Command,
-        name: Optional[str] = None,
-        aliases: Optional[Iterable[str]] = None,
-        panel: Optional[Union[str, List[str]]] = None,
+        name: str | None = None,
+        aliases: Iterable[str] | None = None,
+        panel: str | list[str] | None = None,
     ) -> None:
         """
         Register another :class:`Command` with this group. If the name
@@ -748,7 +739,7 @@ class RichGroup(RichCommand, Group):
     def add_command_to_panel(
         self,
         command: click.Command,
-        panel_name: Union[str, Iterable[str]],
+        panel_name: str | Iterable[str],
     ) -> None:
         if not command.name:
             return
@@ -788,7 +779,7 @@ def prevent_incompatible_overrides(
     import rich_click.patch
     from rich_click.utils import method_is_from_subclass_of
 
-    cls: Type[RichCommand] = getattr(rich_click.patch, f"_Patched{class_name}")
+    cls: type[RichCommand] = getattr(rich_click.patch, f"_Patched{class_name}")
 
     for method_name in ["format_usage", "format_help_text", "format_options", "format_examples", "format_epilog"]:
         if method_is_from_subclass_of(cmd.__class__, cls, method_name):

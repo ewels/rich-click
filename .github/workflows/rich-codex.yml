@@ -17,11 +17,12 @@ jobs:
       - name: Set up Python
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          python-version: 3
+          # The docs group requires >=3.13 (see tool.uv in pyproject.toml).
+          python-version: "3.13"
           activate-environment: true
 
       - name: Install dependencies
-        run: uv pip install ".[docs]"
+        run: uv sync --active --no-default-groups --group docs
 
       - name: Generate terminal images with rich-codex
         uses: ewels/rich-codex@80de9de011c994f32274bb4cffee140567621d8e # v1.2.11

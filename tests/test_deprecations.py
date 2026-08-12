@@ -39,7 +39,6 @@ def test_deprecation_warning_on_highlighter(cli_runner: CliRunner) -> None:
 
 
 def test_deprecation_cli_patch() -> None:
-
     with patch("rich_click.cli._patch") as mock_underlying_patch:
         with pytest.warns(DeprecationWarning, match=r"`rich_click\.cli\.patch\(\)` has moved.*"):
             import rich_click.cli
@@ -50,7 +49,6 @@ def test_deprecation_cli_patch() -> None:
 
 
 def test_deprecation_command_help_config() -> None:
-
     @rich_click.command()
     def cli1() -> None:
         pass
@@ -70,7 +68,6 @@ def test_deprecation_command_help_config() -> None:
 
 
 def test_deprecation_command_console() -> None:
-
     @rich_click.command()
     def cli1() -> None:
         pass
@@ -90,7 +87,6 @@ def test_deprecation_command_console() -> None:
 
 
 def test_not_implemented_warnings_for_help_formatter() -> None:
-
     formatter = rich_click.RichHelpFormatter()
 
     with pytest.warns(RuntimeWarning):

@@ -15,8 +15,7 @@ def cli() -> rich_click.RichCommand:
 def test_styles_command_panel(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
@@ -30,16 +29,14 @@ def test_styles_command_panel(cli_runner: CliRunner, cli: rich_click.RichCommand
   subcommand              Test basic styles for option panel.                                       \n\
                                         Additional Commands                                         \n\
                                                                                                     \n\
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_styles_options_panel(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "subcommand --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli subcommand [OPTIONS]                                                                    \n\
                                                                                                     \n\
@@ -55,6 +52,5 @@ def test_styles_options_panel(cli_runner: CliRunner, cli: rich_click.RichCommand
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")

@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import inspect
 import re
+from collections.abc import Callable, Iterable
 from enum import Enum
 from gettext import gettext
-from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, List, Literal, Optional, Set, Tuple, Union, overload
+from typing import TYPE_CHECKING, Any, Literal, overload
 
 import click
 from rich.align import Align
@@ -33,7 +34,7 @@ if TYPE_CHECKING:
     from rich_click.rich_panel import RichCommandPanel, RichOptionPanel
 
 
-RichPanelRow = List[Optional[RenderableType]]
+RichPanelRow = list[RenderableType | None]
 
 #: Default wording for the opt-in AI hint (see ``RichHelpConfiguration.show_ai_markdown_hint``). ``{help_option}``
 #: is substituted with the command's help flag (e.g. ``--help``) at render time.
@@ -65,7 +66,7 @@ class RichClickRichPanel(Panel):
         self.title_padding = title_padding
 
     @property
-    def _title(self) -> Optional[Text]:
+    def _title(self) -> Text | None:
         if self.title:
             title_text = Text.from_markup(self.title) if isinstance(self.title, str) else self.title.copy()
             title_text.end = ""
@@ -81,9 +82,7 @@ class RichClickRichPanel(Panel):
 
 
 @group()
-def _get_help_text(
-    obj: Union[Command, Group], formatter: RichHelpFormatter
-) -> Iterable[Union[Padding, "Markdown", Text]]:
+def _get_help_text(obj: Command | Group, formatter: RichHelpFormatter) -> Iterable[Padding | Markdown | Text]:
     """
     Build primary help text for a click command or group.
     Returns the prose help text for a command or group, rendered either as a
@@ -205,7 +204,7 @@ def _get_help_text(
 
 
 def _get_deprecated_text(
-    deprecated: Union[bool, str],
+    deprecated: bool | str,
     formatter: RichHelpFormatter,
 ) -> Text:
     if isinstance(deprecated, str):
@@ -216,10 +215,10 @@ def _get_deprecated_text(
 
 
 def _get_parameter_env_var(
-    param: Union[click.Argument, click.Option, RichParameter],
+    param: click.Argument | click.Option | RichParameter,
     ctx: RichContext,
     formatter: RichHelpFormatter,
-) -> Optional[Text]:
+) -> Text | None:
     if not getattr(param, "show_envvar", None):
         return None
 
@@ -244,20 +243,20 @@ def _get_parameter_env_var(
 
 
 def _get_parameter_deprecated(
-    param: Union[click.Argument, click.Option, RichParameter],
+    param: click.Argument | click.Option | RichParameter,
     ctx: RichContext,
     formatter: RichHelpFormatter,
-) -> Optional[Text]:
+) -> Text | None:
     if not getattr(param, "deprecated", None):
         return None
     return _get_deprecated_text(getattr(param, "deprecated"), formatter)
 
 
 def _get_parameter_help(
-    param: Union[click.Argument, click.Option, RichParameter],
+    param: click.Argument | click.Option | RichParameter,
     ctx: RichContext,
     formatter: RichHelpFormatter,
-) -> Optional[Union["Markdown", Text]]:
+) -> Markdown | Text | None:
     base_help_txt = getattr(param, "help", None)
     if not base_help_txt:
         return None
@@ -293,28 +292,28 @@ def _get_parameter_help(
 
 @overload
 def _get_parameter_range(
-    param: Union[click.Argument, click.Option, RichParameter],
+    param: click.Argument | click.Option | RichParameter,
     ctx: RichContext,
     formatter: RichHelpFormatter,
     mode: Literal["metavar_append"],
-) -> Optional[str]: ...
+) -> str | None: ...
 
 
 @overload
 def _get_parameter_range(
-    param: Union[click.Argument, click.Option, RichParameter],
+    param: click.Argument | click.Option | RichParameter,
     ctx: RichContext,
     formatter: RichHelpFormatter,
     mode: Literal["metavar_column", "help"],
-) -> Optional[Text]: ...
+) -> Text | None: ...
 
 
 def _get_parameter_range(
-    param: Union[click.Argument, click.Option, RichParameter],
+    param: click.Argument | click.Option | RichParameter,
     ctx: RichContext,
     formatter: RichHelpFormatter,
     mode: Literal["metavar_append", "metavar_column", "help"],
-) -> Optional[Union[Text, str]]:
+) -> Text | str | None:
     # Range - from
     # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706  # noqa: E501
     # skip count with default range type
@@ -345,7 +344,7 @@ def _get_parameter_range(
     return None
 
 
-def _make_param_metavar(param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext) -> str:
+def _make_param_metavar(param: click.Argument | click.Option | RichParameter, ctx: RichContext) -> str:
     """
     Render a parameter's metavar, passing ``ctx`` whenever the parameter can accept it.
 
@@ -361,12 +360,12 @@ def _make_param_metavar(param: Union[click.Argument, click.Option, RichParameter
 
 
 def _get_parameter_metavar(
-    param: Union[click.Argument, click.Option, RichParameter],
+    param: click.Argument | click.Option | RichParameter,
     ctx: RichContext,
     formatter: RichHelpFormatter,
     append: bool = True,
     show_range: bool = False,
-) -> Optional[Text]:
+) -> Text | None:
     metavar_str = _make_param_metavar(param, ctx)
     # Do it ourselves if this is a positional argument
     if isinstance(param, Argument) and param.name is not None and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
@@ -393,11 +392,11 @@ def _get_parameter_metavar(
 
 
 def _get_parameter_help_metavar_col(
-    param: Union[click.Argument, click.Option, RichParameter],
+    param: click.Argument | click.Option | RichParameter,
     ctx: RichContext,
     formatter: RichHelpFormatter,
     show_range: bool = True,
-) -> Optional[Text]:
+) -> Text | None:
     # Column for a metavar, if we have one
     metavar = Text(style=formatter.config.style_metavar, overflow="fold")
     metavar_str = _make_param_metavar(param, ctx)
@@ -444,15 +443,15 @@ def _get_parameter_help_metavar_col(
 
 
 def _get_parameter_help_opt(
-    param: Union[click.Argument, click.Option, RichParameter],
+    param: click.Argument | click.Option | RichParameter,
     ctx: RichContext,
     formatter: RichHelpFormatter,
-) -> Tuple[
-    Optional[Text],
-    Optional[Text],
-    Optional[Text],
-    Optional[Text],
-    Optional[Text],
+) -> tuple[
+    Text | None,
+    Text | None,
+    Text | None,
+    Text | None,
+    Text | None,
 ]:
     # This may seem convoluted to return tuples with widths instead of just renderables,
     # but there are two things we want to do that are impossible otherwise:
@@ -551,7 +550,7 @@ def _get_parameter_help_opt(
     if secondary_cols:
         all_cols = [*primary_cols[:-1], slash, *secondary_cols]
 
-    def _renderable(cols: List[Text]) -> Optional[Text]:
+    def _renderable(cols: list[Text]) -> Text | None:
         if not cols:
             return None
         if len(cols) == 1:
@@ -571,8 +570,8 @@ def _get_parameter_help_opt(
 
 
 def _get_parameter_default(
-    param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
-) -> Optional[Text]:
+    param: click.Argument | click.Option | RichParameter, ctx: RichContext, formatter: RichHelpFormatter
+) -> Text | None:
 
     if not hasattr(param, "show_default"):
         return None
@@ -587,7 +586,7 @@ def _get_parameter_default(
     finally:
         ctx.resilient_parsing = resilient
 
-    notset: Tuple[Any, ...]
+    notset: tuple[Any, ...]
     try:
         # try/except because it's unclear whether later versions of click will change this.
         if not CLICK_IS_BEFORE_VERSION_82:
@@ -607,7 +606,7 @@ def _get_parameter_default(
     elif ctx.show_default is not None:
         show_default = ctx.show_default
 
-    default_string: Optional[str] = None
+    default_string: str | None = None
 
     if show_default_is_str or (show_default and (default_value not in notset)):
         if show_default_is_str:
@@ -648,23 +647,23 @@ def _get_parameter_default(
 
 
 def _get_parameter_required(
-    param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
-) -> Optional[Text]:
+    param: click.Argument | click.Option | RichParameter, ctx: RichContext, formatter: RichHelpFormatter
+) -> Text | None:
     if param.required:
         return Text.from_markup(formatter.config.required_long_string, style=formatter.config.style_required_long)
     return None
 
 
 def _get_parameter_help_required_short(
-    param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
-) -> Optional[Text]:
+    param: click.Argument | click.Option | RichParameter, ctx: RichContext, formatter: RichHelpFormatter
+) -> Text | None:
     if param.required:
         return Text(formatter.config.required_short_string, style=formatter.config.style_required_short)
     return None
 
 
 def get_help_parameter(
-    param: Union[click.Argument, click.Option, RichParameter], ctx: RichContext, formatter: RichHelpFormatter
+    param: click.Argument | click.Option | RichParameter, ctx: RichContext, formatter: RichHelpFormatter
 ) -> Columns:
     """
     Build primary help text for a click option or argument.
@@ -686,7 +685,7 @@ def get_help_parameter(
     if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(param.name, str)
 
-    section_callbacks: Dict["OptionHelpSectionType", Callable[..., Any]] = {
+    section_callbacks: dict[OptionHelpSectionType, Callable[..., Any]] = {
         "help": _get_parameter_help,
         "required": _get_parameter_required,
         "envvar": _get_parameter_env_var,
@@ -697,7 +696,7 @@ def get_help_parameter(
         "deprecated": _get_parameter_deprecated,
     }
 
-    sections: List[Optional[RenderableType]] = []
+    sections: list[RenderableType | None] = []
     for sec in formatter.config.options_table_help_sections:
         sections.append(section_callbacks[sec](param, ctx, formatter))
 
@@ -721,14 +720,14 @@ def get_help_parameter(
 
 
 def get_parameter_rich_table_row(
-    param: Union[click.Argument, click.Option, RichParameter],
+    param: click.Argument | click.Option | RichParameter,
     ctx: RichContext,
     formatter: RichHelpFormatter,
-    panel: Optional["RichOptionPanel"],
+    panel: RichOptionPanel | None,
 ) -> RichPanelRow:
     """Create a row for the rich table corresponding with this parameter."""
     # Short and long form
-    column_types: List["OptionColumnType"]
+    column_types: list[OptionColumnType]
     if panel is None:
         column_types = formatter.config.options_table_column_types
     else:
@@ -795,21 +794,21 @@ def get_parameter_rich_table_row(
     if any(i in column_types for i in ["opt_all_metavar", "opt_long_metavar"]):
         _metavar_padded = _get_parameter_metavar(param, ctx, formatter, append=False, show_range=False)
 
-    def _opt_all_metavar() -> Optional[RenderableType]:
+    def _opt_all_metavar() -> RenderableType | None:
         if _metavar_padded is None:
             return _all
         if _all is None:
             return _metavar_padded
         return Text(" ", style=formatter.config.style_option_help).join([_all, _metavar_padded])
 
-    def _opt_long_metavar() -> Optional[RenderableType]:
+    def _opt_long_metavar() -> RenderableType | None:
         if _metavar_padded is None:
             return _long
         if _long is None:
             return _metavar_padded
         return Text(" ", style=formatter.config.style_option_help).join([_long, _metavar_padded])
 
-    column_callbacks: Dict["OptionColumnType", Callable[..., Any]] = {
+    column_callbacks: dict[OptionColumnType, Callable[..., Any]] = {
         "required": _get_parameter_help_required_short,
         "opt_long": lambda *args, **kwargs: _long,
         "opt_short": lambda *args, **kwargs: _short,
@@ -865,7 +864,7 @@ def _get_command_aliases_help(
     ctx: RichContext,
     formatter: RichHelpFormatter,
     include_name: bool = False,
-) -> Optional[Text]:
+) -> Text | None:
     aliases = getattr(command, "aliases", None)
     if aliases:
         txt_list = []
@@ -889,17 +888,17 @@ def get_command_rich_table_row(
     command: click.Command,
     ctx: RichContext,
     formatter: RichHelpFormatter,
-    panel: Optional["RichCommandPanel"],
+    panel: RichCommandPanel | None,
 ) -> RichPanelRow:
     """Create a row for the rich table corresponding with this command."""
     # todo
-    column_types: List["CommandColumnType"]
+    column_types: list[CommandColumnType]
     if panel is None:
         column_types = formatter.config.commands_table_column_types
     else:
         column_types = panel.column_types or formatter.config.commands_table_column_types
 
-    column_callbacks: Dict["CommandColumnType", Callable[..., Any]] = {
+    column_callbacks: dict[CommandColumnType, Callable[..., Any]] = {
         "name": _get_command_name_help,
         "aliases": _get_command_aliases_help,
         "name_with_aliases": lambda *args, **kwargs: _get_command_aliases_help(*args, **kwargs, include_name=True),  # type: ignore[misc]
@@ -918,7 +917,7 @@ def _get_command_help(
     command: click.Command,
     ctx: RichContext,
     formatter: RichHelpFormatter,
-) -> Union[Text, "Markdown", Columns]:
+) -> Text | Markdown | Columns:
     """
     Build cli help text for a click group command.
     That is, when calling help on groups with multiple subcommands
@@ -946,7 +945,7 @@ def _get_command_help(
     elif paragraphs[0].startswith("\b"):
         paragraphs[0] = paragraphs[0].replace("\b\n", "")
     help_text = paragraphs[0].strip()
-    renderable: Union[Text, "Markdown", Columns]
+    renderable: Text | Markdown | Columns
     renderable = formatter.rich_text(help_text, formatter.config.style_command_help)
     if deprecated:
         dep_txt = _get_deprecated_text(
@@ -961,7 +960,7 @@ def _get_command_help(
     return renderable
 
 
-def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", prefix: Optional[str] = None) -> None:
+def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = "", prefix: str | None = None) -> None:
     """Richly render usage text."""
     if prefix is None:
         prefix = "Usage:"
@@ -1033,7 +1032,7 @@ def _styled_example_command(command: str, cmd: Command, ctx: RichContext, format
     import shlex
 
     config = formatter.config
-    takes_value: Dict[str, bool] = {}
+    takes_value: dict[str, bool] = {}
     for param in cmd.get_params(ctx):
         if isinstance(param, click.Option):
             consumes = not param.is_flag and not param.count
@@ -1049,8 +1048,8 @@ def _styled_example_command(command: str, cmd: Command, ctx: RichContext, format
     # canonical name OR any alias at each level -- and any program name in first position -- so an example
     # written with an alias, or a different prog name, than the one help was invoked with still has its
     # command path recognised rather than mis-coloured as a placeholder.
-    level_names: List[Set[str]] = []
-    node: Optional[click.Context] = ctx
+    level_names: list[set[str]] = []
+    node: click.Context | None = ctx
     while node is not None:
         names = {node.info_name, getattr(node.command, "name", None)}
         names.update(getattr(node.command, "aliases", None) or [])
@@ -1108,7 +1107,7 @@ def get_rich_examples(
 
     # `tldr`-style layout: a description line, then the command indented beneath it, with placeholders
     # in the command coloured (see _styled_example_command).
-    renderables: List[RenderableType] = []
+    renderables: list[RenderableType] = []
     for i, example in enumerate(examples):
         if i:
             renderables.append(Text(""))  # blank line between examples
@@ -1256,7 +1255,6 @@ def rich_format_error(
     # attribute. Checking for the 'message' attribute works to make the
     # rich-click CLI compatible.
     if hasattr(self, "message"):
-
         from rich_click.rich_box import get_box
 
         formatter.write(

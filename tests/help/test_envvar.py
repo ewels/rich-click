@@ -16,8 +16,7 @@ def cli() -> rich_click.RichCommand:
 def test_envvar_greet_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "greet --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Debug mode is off
                                                                                                     \n\
  Usage: cli greet [OPTIONS]                                                                         \n\
@@ -31,8 +30,7 @@ Debug mode is off
 │ --token     -t  TEXT                 [env var: GREETER_GREET_TOKEN]                              │
 │ --help          [markdown|json|...]  Show this message and exit.                                 │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -40,8 +38,7 @@ def test_envvar_greet_help_with_envvar_string(cli_runner: CliRunner, cli: rich_c
     rc.ENVVAR_STRING = "(ENV: {})"
     result = cli_runner.invoke(cli, "greet --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Debug mode is off
                                                                                                     \n\
  Usage: cli greet [OPTIONS]                                                                         \n\
@@ -55,6 +52,5 @@ Debug mode is off
 │ --token     -t  TEXT                 (ENV: GREETER_GREET_TOKEN)                                  │
 │ --help          [markdown|json|...]  Show this message and exit.                                 │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
