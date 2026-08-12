@@ -30,28 +30,43 @@ DOCS_DIR = Path(__file__).parent.resolve()
 # (BASE_PREFIX/DEFAULT_ALIAS compose the ASTRO_BASE passed to each build).
 BASE_PREFIX = "/rich-click"
 DEFAULT_ALIAS = "latest"
+PRERELEASE_ALIAS = "prerelease"
+
+
+def announce(message: str) -> None:
+    # Flushed because the subprocesses below write straight to our stdout,
+    # and CI logs are block-buffered.
+    print("=" * 79, flush=True)
+    print(message, flush=True)
+    print("=" * 79, flush=True)
 
 
 def run(cmd: list[str], **kwargs) -> subprocess.CompletedProcess:
-    print(f"Running {' '.join(cmd)}")
+    announce(f"Command: {' '.join(cmd)}")
     return subprocess.run(cmd, check=True, **kwargs)
 
 
-def get_latest(versions: list[dict]) -> tuple[int, int] | None:
+def get_series(versions: list[dict], identifier: str) -> tuple[int, int] | None:
+    """(major, minor) of the version an alias or version id points at, or None if absent."""
     for entry in versions:
-        if DEFAULT_ALIAS in entry["aliases"]:
+        if entry["version"] == identifier or identifier in entry["aliases"]:
             major, minor, *_ = entry["version"].split(".")
             return int(major), int(minor)
     return None
 
 
+def remove(path: Path) -> None:
+    """Delete a deployed directory, whether it is a real directory or a mike-era symlink."""
+    if path.is_symlink() or path.is_file():
+        path.unlink()
+    elif path.is_dir():
+        shutil.rmtree(path)
+
+
 def build(base: str, dest: Path, docs_versions: str) -> None:
     env = os.environ | {"ASTRO_BASE": base, "DOCS_VERSIONS": docs_versions}
     run(["npm", "run", "build"], cwd=DOCS_DIR, env=env)
-    if dest.is_symlink() or dest.is_file():
-        dest.unlink()
-    elif dest.is_dir():
-        shutil.rmtree(dest)
+    remove(dest)
     # Move rather than copy: the next build regenerates dist/ from scratch.
     shutil.move(DOCS_DIR / "dist", dest)
 
@@ -68,30 +83,43 @@ def deploy() -> None:
             versions_file = worktree / "versions.json"
             versions = json.loads(versions_file.read_text()) if versions_file.exists() else []
 
+            head = (v.major, v.minor)
+            latest = get_series(versions, DEFAULT_ALIAS)
+            prerelease = get_series(versions, PRERELEASE_ALIAS)
+
+            # Aliases this deploy takes ownership of, carrying over any the
+            # series already has, plus aliases to retire from gh-pages entirely.
             aliases = set()
             for entry in versions:
                 if entry["version"] == version_id:
                     aliases.update(entry["aliases"])
+            retired: set[str] = set()
+
             if v.is_prerelease:
-                aliases.add("prerelease")
+                if latest is None or head > latest:
+                    aliases.add(PRERELEASE_ALIAS)
+                else:
+                    # Docs are published per `major.minor`, so a prerelease of an already
+                    # released series has nowhere of its own to go and overwrites it.
+                    announce(
+                        f"WARNING: {v} is a prerelease of {version_id}, which is already released."
+                        f" Deploying it will overwrite the published {version_id} docs."
+                    )
             else:
-                latest = get_latest(versions)
-                if latest is None or (v.major, v.minor) >= latest:
+                if latest is None or head >= latest:
                     aliases.add(DEFAULT_ALIAS)
-                # A stable release supersedes its own prerelease alias.
-                if "prerelease" in aliases:
-                    aliases.discard("prerelease")
-                    prerelease_dir = worktree / "prerelease"
-                    if prerelease_dir.is_symlink() or prerelease_dir.is_file():
-                        prerelease_dir.unlink()
-                    elif prerelease_dir.is_dir():
-                        shutil.rmtree(prerelease_dir)
+                # A release supersedes the prerelease alias once it is at least as new as
+                # the series that alias points at — otherwise an rc series that never ships
+                # a final release strands the alias forever.
+                if prerelease is not None and head >= prerelease:
+                    aliases.discard(PRERELEASE_ALIAS)
+                    retired.add(PRERELEASE_ALIAS)
 
             # Update the version list first: the header's version dropdown is
             # rendered at build time from DOCS_VERSIONS (see Header.astro).
             versions = [e for e in versions if e["version"] != version_id]
             for entry in versions:
-                entry["aliases"] = [a for a in entry["aliases"] if a not in aliases]
+                entry["aliases"] = [a for a in entry["aliases"] if a not in aliases | retired]
             versions.append({"version": version_id, "title": version_id, "aliases": sorted(aliases)})
             versions.sort(key=lambda e: packaging.version.parse(e["version"]), reverse=True)
             docs_versions = json.dumps(versions)
@@ -100,10 +128,17 @@ def deploy() -> None:
             for directory in [version_id, *sorted(aliases)]:
                 build(f"{BASE_PREFIX}/{directory}", worktree / directory, docs_versions)
 
+            # Retire superseded aliases only once the builds have succeeded, so a failed
+            # build never leaves gh-pages with the directory already gone.
+            for alias in sorted(retired):
+                announce(f"Retiring superseded alias: {alias}")
+                remove(worktree / alias)
+
             versions_file.write_text(json.dumps(versions, indent=2) + "\n")
 
             index = worktree / "index.html"
-            if not index.exists():
+            # Only point the site root at `latest` once such a build exists.
+            if not index.exists() and (latest is not None or DEFAULT_ALIAS in aliases):
                 index.write_text(
                     '<!DOCTYPE html><html><head><meta charset="utf-8">'
                     f'<meta http-equiv="refresh" content="0; url={DEFAULT_ALIAS}/">'
