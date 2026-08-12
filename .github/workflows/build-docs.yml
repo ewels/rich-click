@@ -32,7 +32,7 @@ jobs:
 
       - name: Generate terminal images with rich-codex
         if: github.repository_owner == 'ewels' || github.event_name == 'workflow_dispatch'
-        uses: ewels/rich-codex@80de9de011c994f32274bb4cffee140567621d8e # v1.2.11
+        uses: ewels/rich-codex@74d8432695de542da2f2acdbc5681cdf306791ec # v1.3.0
         with:
           skip_python_setup: "true"
           commit_changes: "true"

@@ -25,14 +25,21 @@ export function postUrl(site: URL | undefined, entry: CollectionEntry<'docs'>): 
   return new URL(postPath(entry), site).href;
 }
 
+// Excerpt delimiter marking the end of a post's summary. Markdown posts use an
+// HTML comment; MDX posts use a JSX comment, since MDX forbids HTML comments.
+const EXCERPT_DELIMITER = /<!--\s*excerpt\s*-->|\{\/\*\s*excerpt\s*\*\/\}/;
+
 /**
  * Plain-text post excerpt for feed descriptions: the frontmatter `excerpt` if
- * set, otherwise the post body up to the `<!-- excerpt -->` delimiter.
+ * set, otherwise the post body up to the excerpt delimiter.
  */
+
 export function postExcerpt(entry: CollectionEntry<'docs'>): string | undefined {
-  const source = entry.data.excerpt ?? entry.body?.split('<!-- excerpt -->')[0];
+  const source = entry.data.excerpt ?? entry.body?.split(EXCERPT_DELIMITER)[0];
   if (!source) return undefined;
   return source
+    // Drop MDX import statements, which precede the excerpt in converted posts.
+    .replace(/^\s*import\s.+$/gm, '')
     .replace(/!\[[^\]]*\]\([^)]*\)/g, '') // images
     .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1') // links -> text
     .replace(/[*_`]/g, '')
