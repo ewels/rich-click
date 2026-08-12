@@ -15,8 +15,7 @@ def cli() -> rich_click.RichCommand:
 def test_header_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Welcome to my CLI!                                                                                 \n\
                                                                                                     \n\
@@ -31,16 +30,14 @@ def test_header_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ subcommand                        Subcommand help text                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_header_subcommand_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "subcommand --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Debug mode is off
                                                                                                     \n\
  Welcome to my CLI! (with Text())                                                                   \n\
@@ -52,8 +49,7 @@ Debug mode is off
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -61,8 +57,7 @@ def test_header_help_turn_off_rich_markup(cli_runner: CliRunner, cli: rich_click
     cli.context_settings["rich_help_config"]["text_markup"] = None
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  [magenta]Welcome to my CLI![/]                                                                     \n\
                                                                                                     \n\
@@ -77,6 +72,5 @@ def test_header_help_turn_off_rich_markup(cli_runner: CliRunner, cli: rich_click
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ subcommand                        Subcommand help text                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")

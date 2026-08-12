@@ -82,16 +82,14 @@ def test_imports_during_help(recorded_imports: List[str], cli_runner: CliRunner)
 
     res = cli_runner.invoke(cli, "--help")
     assert res.exit_code == 0
-    assert res.stdout == snapshot(
-        """\
+    assert res.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
 
     assert any(m.startswith("click.") or m == "click" for m in recorded_imports)
     assert any(m.startswith("rich.") or m == "rich" for m in recorded_imports)
@@ -125,16 +123,14 @@ def test_imports_during_help_rich_click_cli(
 
     res = cli_runner.invoke(main, f"{check_imports_cli / 'my_script.py'} --help")
     assert res.exit_code == 0
-    assert res.stdout == snapshot(
-        """\
+    assert res.stdout == snapshot("""\
                                                                                                     \n\
  Usage: mymodule [OPTIONS]                                                                          \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
 
     assert any(m.startswith("click.") or m == "click" for m in recorded_imports)
     assert any(m.startswith("rich.") or m == "rich" for m in recorded_imports)

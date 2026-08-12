@@ -15,8 +15,7 @@ def cli() -> rich_click.RichCommand:
 def test_epilog_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
@@ -38,16 +37,14 @@ def test_epilog_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None
                                                                                                     \n\
  And here is some footer text!                                                                      \n\
                                                                                                     \n\
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_epilog_help_subcommand_no_footer(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "no-footer --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Debug mode is off
                                                                                                     \n\
  Usage: cli no-footer [OPTIONS]                                                                     \n\
@@ -60,16 +57,14 @@ Debug mode is off
                                                                                                     \n\
  This is epilog text                                                                                \n\
                                                                                                     \n\
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_epilog_help_subcommand_no_epilog(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "no-epilog --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Debug mode is off
                                                                                                     \n\
  Usage: cli no-epilog [OPTIONS]                                                                     \n\
@@ -82,16 +77,14 @@ Debug mode is off
                                                                                                     \n\
  This is footer text                                                                                \n\
                                                                                                     \n\
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_epilog_help_subcommand_footer_is_rich_text(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "footer-is-rich-text --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Debug mode is off
                                                                                                     \n\
  Usage: cli footer-is-rich-text [OPTIONS]                                                           \n\
@@ -107,16 +100,14 @@ Debug mode is off
                                                                                                     \n\
  Rich text footer                                                                                   \n\
                                                                                                     \n\
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_epilog_help_subcommand_epilog_is_rich_text(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "epilog-is-rich-text --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Debug mode is off
                                                                                                     \n\
  Usage: cli epilog-is-rich-text [OPTIONS]                                                           \n\
@@ -129,8 +120,7 @@ Debug mode is off
                                                                                                     \n\
  Rich text epilog                                                                                   \n\
                                                                                                     \n\
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -138,8 +128,7 @@ def test_epilog_help_turn_off_rich_markup(cli_runner: CliRunner, cli: rich_click
     cli.context_settings["rich_help_config"]["text_markup"] = None
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
@@ -161,6 +150,5 @@ def test_epilog_help_turn_off_rich_markup(cli_runner: CliRunner, cli: rich_click
                                                                                                     \n\
  And here is some footer text!                                                                      \n\
                                                                                                     \n\
-"""
-    )
+""")
     assert result.stderr == snapshot("")

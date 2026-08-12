@@ -15,8 +15,7 @@ def cli() -> rich_click.RichCommand:
 def test_table_styles_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
@@ -98,6 +97,5 @@ def test_table_styles_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -
 │ ║          ║ convallis.                                                                        ║ │
 │ ╚══════════╩═══════════════════════════════════════════════════════════════════════════════════╝ │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")

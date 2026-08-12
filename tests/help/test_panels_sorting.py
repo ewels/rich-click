@@ -15,8 +15,7 @@ def cli() -> rich_click.RichCommand:
 def test_command_panel_order(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
@@ -48,16 +47,14 @@ def test_command_panel_order(cli_runner: CliRunner, cli: rich_click.RichCommand)
 │ cmd12  Test all three methods of assigning a panel don't cause duplication.                      │
 │ cmd13  Test that command_panel.commands takes priority.                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_panel_order_in_panel_decorator(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "cmd1 --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli cmd1 [OPTIONS]                                                                          \n\
                                                                                                     \n\
@@ -78,16 +75,14 @@ def test_panel_order_in_panel_decorator(cli_runner: CliRunner, cli: rich_click.R
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_option_order_with_panel_decorator(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "cmd2 --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli cmd2 [OPTIONS]                                                                          \n\
                                                                                                     \n\
@@ -108,16 +103,14 @@ def test_option_order_with_panel_decorator(cli_runner: CliRunner, cli: rich_clic
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_panel_order_with_panel_kwarg(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "cmd3 --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli cmd3 [OPTIONS]                                                                          \n\
                                                                                                     \n\
@@ -138,16 +131,14 @@ def test_panel_order_with_panel_kwarg(cli_runner: CliRunner, cli: rich_click.Ric
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_option_order_with_panel_kwarg(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "cmd4 --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli cmd4 [OPTIONS]                                                                          \n\
                                                                                                     \n\
@@ -168,16 +159,14 @@ def test_option_order_with_panel_kwarg(cli_runner: CliRunner, cli: rich_click.Ri
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_panel_order_commands_above_options(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "cmd5 --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli cmd5 [OPTIONS] COMMAND [ARGS]...                                                        \n\
                                                                                                     \n\
@@ -190,16 +179,14 @@ def test_panel_order_commands_above_options(cli_runner: CliRunner, cli: rich_cli
 │ --a     TEXT                                                                                     │
 │ --help        Show this message and exit.                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_panel_order_options_above_commands(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "cmd6 --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli cmd6 [OPTIONS] COMMAND [ARGS]...                                                        \n\
                                                                                                     \n\
@@ -213,16 +200,14 @@ def test_panel_order_options_above_commands(cli_runner: CliRunner, cli: rich_cli
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ dummy                                                                                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_panel_order_options_above_commands_with_arguments(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "cmd7 --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli cmd7 [OPTIONS] A COMMAND [ARGS]...                                                      \n\
                                                                                                     \n\
@@ -238,16 +223,14 @@ def test_panel_order_options_above_commands_with_arguments(cli_runner: CliRunner
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ dummy                                                                                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_panel_order_arguments_options_commands(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "cmd8 --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli cmd8 [OPTIONS] A COMMAND [ARGS]...                                                      \n\
                                                                                                     \n\
@@ -263,16 +246,14 @@ def test_panel_order_arguments_options_commands(cli_runner: CliRunner, cli: rich
 │ --b     TEXT                                                                                     │
 │ --help        Show this message and exit.                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_panel_option_and_command_same_name(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "cmd9 --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli cmd9 [OPTIONS] COMMAND [ARGS]...                                                        \n\
                                                                                                     \n\
@@ -289,16 +270,14 @@ def test_panel_option_and_command_same_name(cli_runner: CliRunner, cli: rich_cli
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ samename                                                                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_panel_different_type_panels_same_name(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "cmd10 --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli cmd10 [OPTIONS] COMMAND [ARGS]...                                                       \n\
                                                                                                     \n\
@@ -314,16 +293,14 @@ def test_panel_different_type_panels_same_name(cli_runner: CliRunner, cli: rich_
 │ --foo  TEXT                                                                                      │
 │ --bar  TEXT                                                                                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_add_command_panel_kwarg(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "cmd11 --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli cmd11 [OPTIONS] COMMAND [ARGS]...                                                       \n\
                                                                                                     \n\
@@ -335,16 +312,14 @@ def test_add_command_panel_kwarg(cli_runner: CliRunner, cli: rich_click.RichComm
 ╭─ Some Panel ─────────────────────────────────────────────────────────────────────────────────────╮
 │ dummy2                                                                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_no_duplicatio_of_commands(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "cmd12 --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli cmd12 [OPTIONS] COMMAND [ARGS]...                                                       \n\
                                                                                                     \n\
@@ -356,16 +331,14 @@ def test_no_duplicatio_of_commands(cli_runner: CliRunner, cli: rich_click.RichCo
 ╭─ Some Panel ─────────────────────────────────────────────────────────────────────────────────────╮
 │ dummy2                                                                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_ignore_behavior_duplicate_assignments(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "cmd13 --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli cmd13 [OPTIONS] COMMAND [ARGS]...                                                       \n\
                                                                                                     \n\
@@ -377,6 +350,5 @@ def test_ignore_behavior_duplicate_assignments(cli_runner: CliRunner, cli: rich_
 ╭─ Prioritize me ──────────────────────────────────────────────────────────────────────────────────╮
 │ dummy2                                                                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")

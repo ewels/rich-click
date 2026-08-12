@@ -17,8 +17,7 @@ def cli() -> rich_click.RichCommand:
 def test_context_settings_help_for_click_8_1_plus(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
@@ -34,8 +33,7 @@ def test_context_settings_help_for_click_8_1_plus(cli_runner: CliRunner, cli: ri
 │ --version        Show the version and exit.                                                      │
 │ --help           Show this message and exit.                                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -43,8 +41,7 @@ def test_context_settings_help_for_click_8_1_plus(cli_runner: CliRunner, cli: ri
 def test_context_settings_help_for_click_8_0(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
@@ -60,6 +57,5 @@ def test_context_settings_help_for_click_8_0(cli_runner: CliRunner, cli: rich_cl
 │ --version        Show the version and exit. [default: False]                                     │
 │ --help           Show this message and exit. [default: False]                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")

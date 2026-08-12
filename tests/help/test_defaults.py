@@ -16,8 +16,7 @@ def cli() -> rich_click.RichCommand:
 def test_defaults_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
@@ -33,16 +32,14 @@ def test_defaults_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> No
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ download                             Download files                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_defaults_help_subcommand_with_show_default_string(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "download --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Environment: None
 Debug mode is off
                                                                                                     \n\
@@ -54,8 +51,7 @@ Debug mode is off
 │ --files  TEXT  What files to download [default: (All files)]                                     │
 │ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -65,8 +61,7 @@ def test_defaults_help_subcommand_with_show_default_string_and_markdown(
     rc.TEXT_MARKUP = "markdown"
     result = cli_runner.invoke(cli, "download --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Environment: None
 Debug mode is off
                                                                                                     \n\
@@ -79,6 +74,5 @@ Debug mode is off
 │                [default: (All files)]                                                            │
 │ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")

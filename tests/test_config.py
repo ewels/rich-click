@@ -186,8 +186,7 @@ def test_custom_console(cli_runner: CliRunner) -> None:
 
     cli_runner.invoke(cli, "--help")
 
-    assert f.getvalue() == snapshot(
-        """\
+    assert f.getvalue() == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
@@ -196,5 +195,4 @@ def test_custom_console(cli_runner: CliRunner) -> None:
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")

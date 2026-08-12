@@ -9,10 +9,10 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Dict,
+    Iterable,
     Iterator,
     Literal,
     Optional,
-    Sequence,
     Tuple,
     Type,
     TypeVar,
@@ -163,7 +163,7 @@ class RichHelpFormatter(click.HelpFormatter):
             import warnings
 
             warnings.warn(
-                "The file kwarg to `RichHelpFormatter()` is deprecated" " and will be removed in a future release.",
+                "The file kwarg to `RichHelpFormatter()` is deprecated and will be removed in a future release.",
                 DeprecationWarning,
                 stacklevel=2,
             )
@@ -327,7 +327,7 @@ class RichHelpFormatter(click.HelpFormatter):
                 res = self.console.export_svg(**kw)
             else:
                 raise ValueError(
-                    "Invalid value for `export_console_as`." " Must be one of 'text', 'html', 'svg', or None."
+                    "Invalid value for `export_console_as`. Must be one of 'text', 'html', 'svg', or None."
                 )
             return res
         else:
@@ -360,7 +360,7 @@ class RichHelpFormatter(click.HelpFormatter):
 
     def write_dl(
         self,
-        rows: Sequence[Tuple[str, str]],
+        rows: Iterable[Tuple[str, str]],
         col_max: int = 30,
         col_spacing: int = 2,
     ) -> None:

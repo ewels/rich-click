@@ -26,6 +26,8 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 dynamic = [
     "version",
@@ -36,47 +38,54 @@ dependencies = [
     "rich>=12",
     "typing-extensions>=4; python_version<'3.11'",
 ]
-optional-dependencies.dev = [
-    "inline-snapshot>=0.24",
-    "jsonschema>=4",                     # for --resolution=lowest support
-    "mypy>=1.14.1",
-    "nodeenv>=1.9.1",                    # for --resolution=lowest support
-    "packaging>=25",
-    "pre-commit>=3.5",
-    "pytest>=8.3.5",
-    "pytest-cov>=5",
-    "rich-codex>=1.2.11",
-    "ruff>=0.12.4",
-    "typer>=0.15,<0.26",
-    "types-setuptools>=75.8.0.20250110",
-]
-optional-dependencies.docs = [
-    "markdown-include>=0.8.1",
-    "mike>=2.1.3",
-    "mkdocs[docs]>=1.6.1",
-    "mkdocs-github-admonitions-plugin>=0.1.1",
-    "mkdocs-glightbox>=0.4",
-    "mkdocs-include-markdown-plugin>=7.1.7; python_version>='3.9'",
-    "mkdocs-material[imaging]~=9.5.18",
-    "mkdocs-material-extensions>=1.3.1",
-    "mkdocs-redirects>=1.2.2",
-    "mkdocs-rss-plugin>=1.15",
-    "mkdocstrings[python]>=0.26.1",
-    "rich-codex>=1.2.11",
-    "typer>=0.15,<0.26",
-]
 urls.Documentation = "https://github.com/ewels/rich-click"
 urls.Homepage = "https://github.com/ewels/rich-click"
 urls.Issues = "https://github.com/ewels/rich-click/issues"
 urls.Repository = "https://github.com/ewels/rich-click"
 scripts.rich-click = "rich_click.cli:main"
 
-[tool.setuptools.dynamic]
-version = { attr = "rich_click.__version__" }
+[dependency-groups]
+dev = [
+    "inline-snapshot>=0.24",
+    "jsonschema>=4",
+    "mypy>=2.3; python_version>='3.10'",
+    "nodeenv>=1.9.1",
+    "packaging>=25",
+    "prek>=0.4.12",
+    "pytest>=8.3.5",
+    "pytest-cov>=5",
+    "rich-codex>=1.2.11",
+    "ruff>=0.16.2",
+    "ty>=0.0.69",
+    "typer>=0.15,<0.26",
+    "types-setuptools>=75.8.0.20250110",
+]
+docs = [
+    "markdown-include>=0.8.1",
+    "mike>=2.2",                               # 2.2 is the first release that detects ProperDocs
+    # MkDocs itself is abandoned upstream and its planned v2 drops support for
+    # existing themes, plugins and config files. ProperDocs is a drop-in fork of
+    # 1.x; `mike` picks it up automatically when installed. MkDocs is still
+    # pulled in transitively (mkdocs-material, mike), so cap it below v2.
+    "mkdocs>=1.6.1,<2",
+    "mkdocs-github-admonitions-plugin>=0.1.1",
+    "mkdocs-glightbox>=0.4",
+    "mkdocs-include-markdown-plugin>=7.1.7",
+    "mkdocs-material[imaging]~=9.7.7",
+    "mkdocs-material-extensions>=1.3.1",
+    "mkdocs-redirects>=1.2.2",
+    "mkdocs-rss-plugin>=1.15",
+    "mkdocstrings[python]>=0.26.1",
+    "properdocs>=1.6.7",
+    "rich-codex>=1.2.11",
+    "typer>=0.15,<0.26",
+]
 
-[tool.black]
-line-length = 120
-target-version = [ 'py37' ]
+[tool.setuptools]
+dynamic.version = { attr = "rich_click.__version__" }
+
+[tool.uv]
+dependency-groups.docs = { requires-python = ">=3.13" }
 
 [tool.ruff]
 line-length = 120
@@ -86,12 +95,10 @@ exclude = [
     "__pycache__",
     "build",
     "docs/",
-    "examples/**",
     "sdist",
     "tests/fixtures/**",
     "venv",
 ]
-
 lint.select = [
     "D",    # pydocstyle
     "E",    # pycodestyle
@@ -108,40 +115,42 @@ lint.ignore = [
     "D212", # Multi-line docstring summary should start at the first line
     "E731", # Do not assign a lambda expression, use a def
 ]
+lint.exclude = [
+    "examples/**",
+]
 lint.per-file-ignores."tests/**/*.py" = [
     "D",
 ]
-
 lint.isort.known-first-party = [ "rich_click" ]
 lint.isort.lines-after-imports = 2
 
 [tool.pyproject-fmt]
 indent = 4
 
-[tool.pytest.ini_options]
-addopts = "-s -rP -v --showlocals --cov --cov-report term"
-pythonpath = [ "tests", "src" ]
-testpaths = [ "tests" ]
-
 [tool.mypy]
-python_version = "3.10"
-scripts_are_modules = true
-strict = true
-follow_imports = "normal"
 exclude = [
     '.*?live_style_editor\.py$',
 ]
+follow_imports = "normal"
+python_version = "3.10"
+strict = true
+scripts_are_modules = true
 
 [tool.pyright]
-include = [ "src" ]
 pythonVersion = "3.8"
 typeCheckingMode = "basic"
+include = [ "src" ]
 executionEnvironments = [
     { root = "src" },
     { root = "tests", extra_paths = [
         "src",
     ] },
 ]
+
+[tool.pytest]
+ini_options.testpaths = [ "tests" ]
+ini_options.pythonpath = [ "tests", "src" ]
+ini_options.addopts = "-s -rP -v --showlocals --cov --cov-report term"
 
 [tool.inline-snapshot]
 hash-length = 15

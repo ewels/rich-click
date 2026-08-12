@@ -17,8 +17,7 @@ def cli() -> rich_click.RichCommand:
 def test_simple_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
@@ -41,8 +40,7 @@ def test_simple_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None
 │ sync      Synchronise all your files between two places. Example command that doesn't do much    │
 │           except print to the terminal.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -56,8 +54,7 @@ def test_simple_help_no_args_is_help(cli_runner: CliRunner, cli: rich_click.Rich
         assert result.exit_code == 0
     else:
         assert result.exit_code == 2
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
@@ -80,8 +77,7 @@ def test_simple_help_no_args_is_help(cli_runner: CliRunner, cli: rich_click.Rich
 │ sync      Synchronise all your files between two places. Example command that doesn't do much    │
 │           except print to the terminal.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
     result_with_help = cli_runner.invoke(cli, "--help")
@@ -93,8 +89,7 @@ def test_simple_help_commands_before_options(cli_runner: CliRunner, cli: rich_cl
     rc.COMMANDS_BEFORE_OPTIONS = True
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
@@ -117,8 +112,7 @@ def test_simple_help_commands_before_options(cli_runner: CliRunner, cli: rich_cl
 │                            Double newlines are preserved.                                        │
 │ --help                     Show this message and exit.                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -127,8 +121,7 @@ def test_simple_help_no_such_command(cli_runner: CliRunner, cli: rich_click.Rich
     result = cli_runner.invoke(cli, "bad-input")
     assert result.exit_code == 2
     assert result.stdout == snapshot("")
-    assert result.stderr == snapshot(
-        """\
+    assert result.stderr == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
@@ -137,16 +130,14 @@ def test_simple_help_no_such_command(cli_runner: CliRunner, cli: rich_click.Rich
 │ No such command 'bad-input'.                                                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     \n\
-"""
-    )
+""")
 
 
 def test_simple_help_nu_theme(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     rc.THEME = "nu"
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
  My amazing tool does all the things.                                                               \n\
@@ -168,8 +159,7 @@ def test_simple_help_nu_theme(cli_runner: CliRunner, cli: rich_click.RichCommand
  sync      Synchronise all your files between two places. Example command that doesn't do much      \n\
            except print to the terminal.                                                            \n\
                                                                                                     \n\
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -177,8 +167,7 @@ def test_simple_help_slim_theme(cli_runner: CliRunner, cli: rich_click.RichComma
     rc.THEME = "slim"
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Usage: cli [OPTIONS] COMMAND [ARGS]...                                                              \n\
                                                                                                     \n\
 My amazing tool does all the things.                                                                \n\
@@ -200,8 +189,7 @@ Commands:                                                                       
   sync      Synchronise all your files between two places. Example command that doesn't do much     \n\
             except print to the terminal.                                                           \n\
                                                                                                     \n\
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -209,8 +197,7 @@ def test_simple_help_modern_theme(cli_runner: CliRunner, cli: rich_click.RichCom
     rc.THEME = "modern"
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
   Usage: cli [OPTIONS] COMMAND [ARGS]...                                                            \n\
                                                                                                     \n\
@@ -237,8 +224,7 @@ def test_simple_help_modern_theme(cli_runner: CliRunner, cli: rich_click.RichCom
              except print to the terminal.                                                          \n\
                                                                                                     \n\
                                                                                                     \n\
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -246,8 +232,7 @@ def test_simple_help_robo_theme(cli_runner: CliRunner, cli: rich_click.RichComma
     rc.THEME = "robo"
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Usage: cli [OPTIONS] COMMAND [ARGS]...                                                              \n\
                                                                                                     \n\
 My amazing tool does all the things.                                                                \n\
@@ -273,6 +258,5 @@ Here are things you can do:                                                     
 │            except print to the terminal.                                                         │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
-"""
-    )
+""")
     assert result.stderr == snapshot("")

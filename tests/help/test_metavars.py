@@ -16,8 +16,7 @@ def cli() -> rich_click.RichCommand:
 def test_metavars_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
@@ -35,8 +34,7 @@ def test_metavars_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> No
 │           seven|twenty-eight|twenty-nine|thirty]                                                 │
 │ --help                                                Show this message and exit.                │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -48,8 +46,7 @@ def test_metavars_help_flipped(cli_runner: CliRunner, cli: rich_click.RichComman
 
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
@@ -65,8 +62,7 @@ def test_metavars_help_flipped(cli_runner: CliRunner, cli: rich_click.RichComman
 │           ty-four|twenty-five|twenty-six|twenty-seven|twenty-eight|twenty-nine|thirty)           │
 │ --help    Show this message and exit.                                                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -80,8 +76,7 @@ def test_metavars_help_flipped_help_string(cli_runner: CliRunner, cli: rich_clic
 
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
@@ -97,6 +92,5 @@ def test_metavars_help_flipped_help_string(cli_runner: CliRunner, cli: rich_clic
 │           y-four|twenty-five|twenty-six|twenty-seven|twenty-eight|twenty-nine|thirty]            │
 │ --help    Show this message and exit.                                                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")

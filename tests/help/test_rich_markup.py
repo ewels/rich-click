@@ -17,8 +17,7 @@ def test_rich_markup_help(cli_runner: CliRunner, cli: rich_click.RichCommand) ->
     with pytest.warns(PendingDeprecationWarning, match=r"`use_rich_markup=` will be deprecated.*"):
         result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
@@ -33,8 +32,7 @@ def test_rich_markup_help(cli_runner: CliRunner, cli: rich_click.RichCommand) ->
 │ --debug        Enable 👉 debug mode 👈                                                           │
 │ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -43,8 +41,7 @@ def test_rich_markup_help_turn_off_rich_markup(cli_runner: CliRunner, cli: rich_
     with pytest.warns(PendingDeprecationWarning, match=r"`use_rich_markup=` will be deprecated.*"):
         result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
@@ -60,8 +57,7 @@ def test_rich_markup_help_turn_off_rich_markup(cli_runner: CliRunner, cli: rich_
 │ --debug        Enable :point_right: [yellow]debug mode[/] :point_left:                           │
 │ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -78,8 +74,7 @@ def test_markdown_help_text_markup_field(cli_runner: CliRunner, cli: rich_click.
     with pytest.warns(PendingDeprecationWarning, match=r"`use_rich_markup=` will be deprecated.*"):
         result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
@@ -94,6 +89,5 @@ def test_markdown_help_text_markup_field(cli_runner: CliRunner, cli: rich_click.
 │ --debug        Enable 👉 debug mode 👈                                                           │
 │ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
