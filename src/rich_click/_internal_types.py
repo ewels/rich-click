@@ -262,7 +262,7 @@ class RichHelpConfigurationDict(TypedDict):
     option_groups: NotRequired[Dict[str, List[OptionGroupDict]]]
     use_click_short_help: NotRequired[bool]
     helptext_show_aliases: NotRequired[bool]
-    show_ai_markdown_hint: NotRequired[bool]
+    show_ai_markdown_hint: NotRequired[Optional[bool]]
     help_json_transform: NotRequired[Optional["HelpJSONTransform"]]
     help_formats: NotRequired[Dict[str, "HelpFormatRenderer"]]
     highlighter_patterns: NotRequired[List[str]]

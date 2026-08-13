@@ -15,6 +15,7 @@ from pytest import MonkeyPatch
 from typer.testing import CliRunner as TyperCliRunner
 
 import rich_click.rich_click as rc
+from rich_click._agent_detection import _AGENT_ENV_VARS, _reset_agent_cache
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_82
 from rich_click._compat_typer import TYPER_IS_BEFORE_VERSION_026
 from rich_click.rich_command import RichCommand
@@ -76,6 +77,11 @@ def replace_link_ids(render: str) -> str:
 def default_config(monkeypatch) -> None:  # type: ignore[no-untyped-def]
     # Isolate rich_click global config module for each test:
     monkeypatch.delenv("RICH_CLICK_THEME", raising=False)
+    for env_var in ("AI_AGENT", "AGENT", "CLAUDE_CODE_IS_COWORK", "CURSOR_EXTENSION_HOST_ROLE", *_AGENT_ENV_VARS):
+        monkeypatch.delenv(env_var, raising=False)
+    # Suppress less common terminal, PATH and filesystem signals without mutating those process-wide inputs.
+    monkeypatch.setenv("RICH_CLICK_AGENT_MODE", "false")
+    _reset_agent_cache()
     reload(rc)
 
     # Default config settings

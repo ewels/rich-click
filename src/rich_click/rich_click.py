@@ -183,8 +183,9 @@ COMMAND_GROUPS: Dict[str, List[CommandGroupDict]] = {}
 OPTION_GROUPS: Dict[str, List[OptionGroupDict]] = {}
 USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
 HELPTEXT_SHOW_ALIASES: bool = True
-# Opt-in dim hint under regular --help pointing LLMs at the machine-readable `--help markdown` format.
-SHOW_AI_MARKDOWN_HINT: bool = False
+# Dim hint under regular --help pointing LLMs at the machine-readable `--help markdown` format.
+# None follows automatic agent detection; True always shows it; False always hides it.
+SHOW_AI_MARKDOWN_HINT: Optional[bool] = None
 # Machine-readable help (`--help markdown`, `--help json`, `--help carapace`) is always available on
 # the `--help` flag. Optional hook to post-process the JSON schema: (schema, command, ctx) -> schema
 HELP_JSON_TRANSFORM: Optional["HelpJSONTransform"] = None

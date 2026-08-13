@@ -16,6 +16,7 @@ from rich.padding import Padding
 from rich.panel import Panel
 from rich.text import Text
 
+from rich_click._agent_detection import is_agent_mode
 from rich_click._click_types_cache import Argument, Command, Group, Option
 from rich_click._compat_click import (
     CLICK_IS_BEFORE_VERSION_82,
@@ -1170,10 +1171,11 @@ def get_rich_epilog(
             )
         )
 
-    # Opt-in AI hint, pointing LLMs at the machine-readable `--help markdown` format. Rendered here in the
+    # AI hint, pointing LLMs at the machine-readable `--help markdown` format. Rendered here in the
     # normal (human) help only -- machine-readable formats (`--help json`, etc.) are produced via
     # get_help_for_format and never reach this code path.
-    if formatter.config.show_ai_markdown_hint:
+    show_ai_markdown_hint = formatter.config.show_ai_markdown_hint
+    if show_ai_markdown_hint is True or (show_ai_markdown_hint is None and is_agent_mode()):
         # Prefer a long help flag (e.g. `--help` over `-h`) for the hint.
         help_option_names = list(getattr(ctx, "help_option_names", None) or ["--help"])
         help_option = next((n for n in help_option_names if n.startswith("--")), help_option_names[0])

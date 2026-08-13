@@ -4,6 +4,7 @@ from inline_snapshot import snapshot
 
 import rich_click as click
 from rich_click import RichHelpConfiguration, rich_config
+from rich_click._agent_detection import _reset_agent_cache
 
 
 @pytest.fixture
@@ -16,10 +17,24 @@ def cli() -> click.RichCommand:
     return cli
 
 
-def test_ai_markdown_hint_off_by_default(cli_runner: CliRunner, cli: click.RichCommand) -> None:
+def test_ai_markdown_hint_hidden_without_agent_environment(cli_runner: CliRunner, cli: click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
     assert "AI-friendly" not in result.stdout
+
+
+@pytest.mark.parametrize("env_var", ["AGENT", "CLAUDECODE"])
+def test_ai_markdown_hint_shown_in_agent_environment(
+    monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner, cli: click.RichCommand, env_var: str
+) -> None:
+    monkeypatch.delenv("RICH_CLICK_AGENT_MODE")
+    monkeypatch.setenv(env_var, "1")
+    _reset_agent_cache()
+
+    result = cli_runner.invoke(cli, "--help")
+
+    assert result.exit_code == 0
+    assert "Tip: Run '--help markdown'" in result.stdout
 
 
 def test_ai_markdown_hint_shown_when_enabled(cli_runner: CliRunner) -> None:
@@ -47,6 +62,24 @@ def test_ai_markdown_hint_shown_when_enabled(cli_runner: CliRunner) -> None:
  disclosure.                                                                    \n\
 """
     )
+
+
+def test_ai_markdown_hint_explicit_false_overrides_agent_environment(
+    monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner
+) -> None:
+    monkeypatch.delenv("RICH_CLICK_AGENT_MODE")
+    monkeypatch.setenv("CLAUDECODE", "1")
+    _reset_agent_cache()
+
+    @click.command()
+    @rich_config(help_config=RichHelpConfiguration(show_ai_markdown_hint=False))
+    def cli() -> None:
+        """A demo command."""
+
+    result = cli_runner.invoke(cli, "--help")
+
+    assert result.exit_code == 0
+    assert "AI-friendly" not in result.stdout
 
 
 def test_ai_markdown_hint_not_shown_for_machine_formats(cli_runner: CliRunner) -> None:

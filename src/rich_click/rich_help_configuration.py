@@ -280,10 +280,10 @@ class RichHelpConfiguration:
     use_click_short_help: bool = field(default=False)
     """Use click's default function to truncate help text"""
     helptext_show_aliases: bool = field(default=True)
-    show_ai_markdown_hint: bool = field(default=False)
-    """Show a dim, opt-in hint under regular ``--help`` output alerting LLMs to the machine-readable
-    ``--help markdown`` format. Off by default; never shown for ``--help json`` and other machine formats.
-    Customize the wording with :attr:`ai_markdown_hint_text`."""
+    show_ai_markdown_hint: Optional[bool] = field(default=None)
+    """Show a dim hint under regular ``--help`` output alerting LLMs to the machine-readable
+    ``--help markdown`` format. ``None`` follows automatic agent detection; ``True`` always shows it and
+    ``False`` always hides it. Never shown for machine-readable formats."""
     help_json_transform: Optional["HelpJSONTransform"] = field(default=None, repr=False, compare=False)
     """Optional hook to post-process the machine-readable JSON schema: ``(schema, command, ctx) -> schema``."""
     help_formats: Dict[str, "HelpFormatRenderer"] = field(default_factory=lambda: {}, repr=False, compare=False)

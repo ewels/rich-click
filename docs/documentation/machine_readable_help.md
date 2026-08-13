@@ -29,15 +29,20 @@ See the [Configuration](configuration.md) page for how to set config options glo
 
 ## Advertising the format with an AI hint
 
-The machine-readable formats are always available, but an LLM driving your CLI has no way of knowing that — `--help markdown` is not something it would think to try. You can opt in to a small, dimmed hint underneath the regular `--help` output that points it there.
+The machine-readable formats are always available, but an LLM driving your CLI has no way of knowing that — `--help markdown` is not something it would think to try. A small, dimmed hint underneath the regular `--help` output points it there.
 
-It is **off by default**. The simplest way to enable it is the global config, which applies to every command and subcommand at once — no need to decorate each one:
+By default, `show_ai_markdown_hint` is `None` (auto): rich-click detects common coding-agent environments, including the emerging `AI_AGENT` and `AGENT` conventions, and otherwise leaves human-visible help unchanged. Detection controls only the hint; it never switches the help output format.
+
+Set the global config to `True` to show the hint in every environment, or to `False` to suppress it even when an agent is detected. The setting applies to every command and subcommand at once:
 
 ```python
 import rich_click as click
 
 click.rich_click.SHOW_AI_MARKDOWN_HINT = True
+# click.rich_click.SHOW_AI_MARKDOWN_HINT = False  # Always hide it.
 ```
+
+For shell-level control, set `RICH_CLICK_AGENT_MODE=true` to force detection on or `RICH_CLICK_AGENT_MODE=false` to force it off.
 
 It appears only on the normal human-readable `--help`. It is never shown for `--help json`, `--help markdown`, or any other machine-readable format — those consumers have already found what the hint advertises.
 
