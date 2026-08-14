@@ -65,7 +65,7 @@ _SUPPRESSION_ENV_VARS: tuple[str, ...] = (
     # pytest: per-test (all modern versions) and process-wide (pytest >= 8.2)
     "PYTEST_CURRENT_TEST",
     "PYTEST_VERSION",
-    # rich-codex, which generates the help screenshots in our docs
+    # rich-codex >= 1.3.1, which generates the help screenshots in our docs
     "RICH_CODEX",
 )
 """Markers of tooling that captures ``--help`` output for humans to read later.
