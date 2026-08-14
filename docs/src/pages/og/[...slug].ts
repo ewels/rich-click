@@ -25,7 +25,7 @@ export const { getStaticPaths, GET } = await OGImageRoute({
     border: { color: [64, 81, 181], width: 16, side: 'block-end' },
     // Kept in sync with CARD_PADDING in scripts/prepare-content.mjs, which pads
     // the logo out to the width this leaves.
-    padding: 48,
+    padding: 36,
     font: {
       title: {
         families: ['Kode Mono'],
