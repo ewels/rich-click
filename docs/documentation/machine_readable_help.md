@@ -7,14 +7,14 @@ Those consumers struggle with the rendered `--help` screen: it is laid out for h
 
 | Invocation                       | Output                                                                                                               |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `--help`                         | The normal human-readable help. **Unchanged** — byte-for-byte identical to before.                                   |
+| `--help`                         | The normal human-readable help — byte-for-byte identical to before, unless [an AI agent is detected](#automatic-agent-detection). |
 | `--help markdown` (alias `md`)   | LLM-friendly Markdown for the current command, plus a subcommand index (_progressive disclosure_).                   |
 | `--help markdown-full` (`md-full`) | LLM-friendly Markdown documenting every command in the tree.                                                        |
 | `--help json`                    | Machine-readable JSON for the current command, plus a name-only index of its subcommands (_progressive disclosure_). |
 | `--help json-full`               | The whole command tree in one call, with full parameter detail at every node.                                        |
 | `--help carapace`                | Output conforming to the [carapace](https://carapace.sh) completion spec.                                            |
 
-This capability is **always available** on every rich-click CLI — there is nothing to enable, and bare `--help` is untouched. The format machinery only engages when a value is given.
+This capability is **always available** on every rich-click CLI — there is nothing to enable. For a human at a terminal, bare `--help` is untouched: the format machinery only engages when a value is given, or when [an AI agent is detected](#automatic-agent-detection).
 
 !!! note "Pass the format after a space"
     The documented form is a space — `mytool --help json` — though the attached form `mytool --help=json` works too. A bare `--help`, or an unrecognized value (a typo, or `mytool --help install` mistakenly meaning "help for the `install` command"), simply shows the normal human-readable help rather than erroring — exactly as a plain `--help` always ignored anything that followed it. To get a subcommand's help, put `--help` after it: `mytool install --help`.
@@ -26,6 +26,69 @@ The example CLI used throughout this page:
 ```
 
 See the [Configuration](configuration.md) page for how to set config options globally or per-command with the `rich_config` decorator.
+
+## Automatic agent detection
+
+The machine-readable formats are always available, but an LLM driving your CLI has no way of knowing that — `--help markdown` is not something it would think to try, and a hint in the help output only works if the agent notices it and makes a second call.
+
+So rich-click does it for them: when it detects that it is running inside an **AI coding agent**, a bare `--help` renders `--help markdown` instead of the rendered help screen. No configuration, no discovery step, and nothing changes for human users.
+
+Detection is based on the environment variables that coding agents set — `CLAUDECODE`, `CURSOR_AGENT`, `CODEX_SANDBOX`, `GEMINI_CLI` and [many more](https://github.com/vercel/detect-agent), plus the emerging `AI_AGENT` and `AGENT` conventions — and a handful of terminal, `PATH` and filesystem signals.
+
+### What a bare `--help` renders
+
+| `RICH_CLICK_AGENT_MODE` | Suppression variable | Agent detected | Output               |
+| ----------------------- | -------------------- | -------------- | -------------------- |
+| unset                   | no                   | no             | Human-readable help  |
+| unset                   | yes                  | no             | Human-readable help  |
+| unset                   | no                   | **yes**        | **`--help markdown`** |
+| unset                   | yes                  | yes            | Human-readable help  |
+| `true`                  | any                  | any            | **`--help markdown`** |
+| `false`                 | any                  | any            | Human-readable help  |
+
+Only a **bare** `--help` is redirected. An explicit `--help json`, `--help markdown-full` and so on is always honoured exactly as given, in every environment. Error and usage output is never affected.
+
+### Choosing the format, or opting out
+
+The format is the `agent_help_format` config option (`AGENT_HELP_FORMAT` global), which defaults to `"markdown"`. Any registered format name works, including [your own](#adding-a-new-format):
+
+```python
+import rich_click as click
+
+click.rich_click.AGENT_HELP_FORMAT = "json"  # Or "markdown-full", "carapace", ...
+click.rich_click.AGENT_HELP_FORMAT = None  # Opt out: bare `--help` is always human-readable.
+```
+
+Per-command, via the `rich_config` decorator:
+
+```python
+from rich_click import RichHelpConfiguration, rich_config
+
+@click.command()
+@rich_config(help_config=RichHelpConfiguration(agent_help_format="json"))
+def cli():
+    ...
+```
+
+### Overriding detection from the shell
+
+Set `RICH_CLICK_AGENT_MODE=true` to force agent mode on, or `RICH_CLICK_AGENT_MODE=false` to force it off. It takes precedence over every other signal, so it is the escape hatch when a guess is wrong in either direction.
+
+### Suppression: tests and screenshots
+
+Detection looks at the whole environment, so a test suite or a docs screenshot run **from** an agent shell would otherwise inherit that shell's markers and capture Markdown where a human-readable help screen is expected. rich-click suppresses detection when any of these variables is present:
+
+| Variable                                | Set by                                                        |
+| --------------------------------------- | ------------------------------------------------------------- |
+| `PYTEST_CURRENT_TEST`                   | pytest, for each test (all modern versions)                   |
+| `PYTEST_VERSION`                        | pytest >= 8.2, for the whole process                          |
+| `RICH_CODEX`                            | [rich-codex](https://ewels.github.io/rich-codex/), always set to `1` when it generates help screenshots |
+
+Both cases therefore need no action at all: `--help` snapshots in your pytest suite and screenshots generated by rich-codex keep rendering the human-readable help, even when you run them from inside an agent.
+
+Other doc-generation or snapshot tooling can either export `RICH_CLICK_AGENT_MODE=false` for its runs, or — if it always sets an identifying variable of its own — [open an issue](https://github.com/ewels/rich-click/issues) to have it added to the list above.
+
+An explicitly falsy value (e.g. `RICH_CODEX=0`) does not suppress. pytest's own variables carry values that are neither truthy nor falsy (a test ID, a version number), so mere presence is what counts.
 
 ## `--help markdown`: Markdown for LLMs
 

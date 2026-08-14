@@ -273,6 +273,12 @@ class RichHelpConfiguration:
     use_click_short_help: bool = field(default=False)
     """Use click's default function to truncate help text"""
     helptext_show_aliases: bool = field(default=True)
+    agent_help_format: Optional[str] = field(default="markdown")
+    """Format that a bare ``--help`` renders in a detected AI agent environment.
+
+    Any registered ``--help <format>`` name (built-in or from :attr:`help_formats`). Set to ``None`` to
+    disable the switch, so a bare ``--help`` always renders the normal human-readable help. An explicit
+    ``--help <format>`` is unaffected either way."""
     help_json_transform: Optional["HelpJSONTransform"] = field(default=None, repr=False, compare=False)
     """Optional hook to post-process the machine-readable JSON schema: ``(schema, command, ctx) -> schema``."""
     help_formats: Dict[str, "HelpFormatRenderer"] = field(default_factory=lambda: {}, repr=False, compare=False)

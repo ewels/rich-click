@@ -13,6 +13,7 @@ from click import pass_context as click_pass_context
 from click import password_option as click_password_option
 from click import version_option as click_version_option
 
+from rich_click._agent_detection import is_agent_mode
 from rich_click.rich_command import RichCommand, RichGroup
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
@@ -317,9 +318,12 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     Accepts an optional format value so the same flag can also emit machine-readable help:
     ``--help markdown`` (LLM-friendly), ``--help json`` (progressive), ``--help json-full`` (whole tree)
     and ``--help carapace``. The space form is the documented one, though the attached form
-    (``--help=json``) works too. A bare ``--help``
-    is unchanged, and an unrecognized value falls back to the normal help rather than erroring (just as
-    the plain ``--help`` always ignored anything that followed it).
+    (``--help=json``) works too. An unrecognized value falls back to the normal help rather than erroring
+    (just as the plain ``--help`` always ignored anything that followed it).
+
+    A bare ``--help`` renders the normal human-readable help, except in a detected AI agent environment,
+    where it renders the ``agent_help_format`` config option's format (``markdown`` by default; ``None``
+    disables the switch).
 
     :param param_decls: One or more option names. Defaults to the single
         value ``"--help"``.
@@ -341,6 +345,20 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
                     print(rendered)
                     ctx.exit()
             # Unknown format (or a non-rich command): fall through to normal help.
+        else:
+            # Bare ``--help`` in a detected AI agent environment: render the configured machine-readable
+            # format instead, so an agent gets help it can parse without having to know the format exists.
+            # Only a bare ``--help`` is redirected -- an explicit ``--help <format>`` above is always
+            # honoured verbatim, in any environment.
+            agent_help_format = getattr(getattr(ctx, "help_config", None), "agent_help_format", None)
+            if agent_help_format is not None and is_agent_mode():
+                get_help_for_format = getattr(ctx.command, "get_help_for_format", None)
+                if get_help_for_format is not None:
+                    rendered = get_help_for_format(ctx, agent_help_format)
+                    if rendered is not None:
+                        print(rendered)
+                        ctx.exit()
+                # Unregistered format name: fall through to the normal help rather than erroring.
         # Avoid click.echo() because it ignores console settings like force_terminal.
         # Also, do not print() if empty string; assume console was record=False.
         if getattr(ctx, "help_to_stderr", False):

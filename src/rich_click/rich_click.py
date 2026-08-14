@@ -179,6 +179,9 @@ COMMAND_GROUPS: Dict[str, List[CommandGroupDict]] = {}
 OPTION_GROUPS: Dict[str, List[OptionGroupDict]] = {}
 USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
 HELPTEXT_SHOW_ALIASES: bool = True
+# Format that a bare `--help` renders when an AI agent environment is detected (see `_agent_detection`).
+# Any registered `--help <format>` name; None disables the switch, leaving bare `--help` always human-readable.
+AGENT_HELP_FORMAT: Optional[str] = "markdown"
 # Machine-readable help (`--help markdown`, `--help json`, `--help carapace`) is always available on
 # the `--help` flag. Optional hook to post-process the JSON schema: (schema, command, ctx) -> schema
 HELP_JSON_TRANSFORM: Optional["HelpJSONTransform"] = None
