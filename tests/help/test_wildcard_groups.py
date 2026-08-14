@@ -15,8 +15,7 @@ def cli() -> rich_click.RichCommand:
 def test_wildcard_groups_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
@@ -40,16 +39,14 @@ def test_wildcard_groups_help(cli_runner: CliRunner, cli: rich_click.RichCommand
 │ config                Set up the configuration.                                                  │
 │ auth                  Authenticate the app.                                                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_wildcard_groups_help_subcommand_sync(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "sync --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
 Debug mode is off
                                                                                                     \n\
  Usage: cli sync [OPTIONS]                                                                          \n\
@@ -65,6 +62,5 @@ Debug mode is off
 │ *  --input   -i  TEXT  Input path [required]                                                     │
 │    --output  -o  TEXT  Output path                                                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")

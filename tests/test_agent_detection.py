@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 import sys
-from typing import Iterator
+from collections.abc import Iterator
 
 import pytest
 

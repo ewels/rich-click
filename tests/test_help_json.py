@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict, Set, Tuple, cast
+from typing import Any, cast
 
 import click
 import pytest
@@ -10,11 +10,11 @@ from rich_click import RichCommand, argument, command, group, option
 from rich_click.rich_context import RichContext
 
 
-def _load_carapace(output: str) -> Dict[str, Any]:
+def _load_carapace(output: str) -> dict[str, Any]:
     """`--help carapace` emits YAML (or JSON when pyyaml is absent); both parse as YAML."""
     import yaml
 
-    return cast(Dict[str, Any], yaml.safe_load(output))
+    return cast(dict[str, Any], yaml.safe_load(output))
 
 
 def _build_cli() -> RichCommand:
@@ -162,9 +162,9 @@ def test_help_json_reports_secondary_opts_envvar_and_nargs(cli_runner: CliRunner
         token: str,
         verbose: int,
         transform: str,
-        pair: Tuple[str, ...],
+        pair: tuple[str, ...],
         shout: bool,
-        files: Tuple[str, ...],
+        files: tuple[str, ...],
     ) -> None:
         """Hi."""
 
@@ -256,13 +256,13 @@ def test_help_json_passthrough_of_custom_fields(cli_runner: CliRunner) -> None:
     from rich_click import RichOption
 
     class SecretOption(RichOption):
-        def to_info_dict(self) -> "Dict[str, Any]":
+        def to_info_dict(self) -> "dict[str, Any]":
             info = super().to_info_dict()
             info["sensitive"] = True
             return info
 
     class DocumentedCommand(RichCommand):
-        def to_info_dict(self, ctx: "click.Context") -> "Dict[str, Any]":
+        def to_info_dict(self, ctx: "click.Context") -> "dict[str, Any]":
             info = super().to_info_dict(ctx)
             info["examples"] = ["cli --token=XXX"]
             return info
@@ -309,7 +309,7 @@ def test_help_json_format_help_json_override(cli_runner: CliRunner) -> None:
     # `--help=json` serializes whatever `format_help_json` returns, mirroring click's
     # get_help/format_help split, so subclasses can customize the schema by overriding it.
     class MyCommand(RichCommand):
-        def format_help_json(self, ctx: Any, formatter: Any) -> Dict[str, Any]:
+        def format_help_json(self, ctx: Any, formatter: Any) -> dict[str, Any]:
             data = super().format_help_json(ctx, formatter)
             data["custom"] = "yes"
             return data
@@ -408,14 +408,14 @@ def test_help_carapace_structure(cli_runner: CliRunner) -> None:
     @group()
     @option("--debug/--no-debug", help="Toggle debug.")
     @option("--tag", multiple=True, help="Tags.")
-    def cli(debug: bool, tag: Tuple[str, ...]) -> None:
+    def cli(debug: bool, tag: tuple[str, ...]) -> None:
         """Root."""
 
     @cli.command(aliases=["rm"], hidden=True)
     @option("--coords", type=int, nargs=2, help="Two ints.")
     @option("--fmt", type=click.Choice(["json", "yaml"]), help="Format.")
     @argument("kind", type=click.Choice(["a", "b"]))
-    def remove(coords: Tuple[int, ...], fmt: str, kind: str) -> None:
+    def remove(coords: tuple[int, ...], fmt: str, kind: str) -> None:
         """Remove."""
 
     doc = _load_carapace(cli_runner.invoke(cli, ["--help=carapace"]).output)
@@ -538,7 +538,7 @@ def test_help_carapace_override(cli_runner: CliRunner) -> None:
     from rich_click import RichGroup
 
     class MyGroup(RichGroup):
-        def format_help_carapace(self, ctx: Any, formatter: Any) -> Dict[str, Any]:
+        def format_help_carapace(self, ctx: Any, formatter: Any) -> dict[str, Any]:
             data = super().format_help_carapace(ctx, formatter)
             data["group"] = "custom"
             return data
@@ -702,7 +702,7 @@ def test_examples_non_dict_shape_via_to_info_dict_does_not_crash(cli_runner: Cli
     # `examples` can arrive via a to_info_dict override as raw strings or (description, command) pairs
     # rather than the normalized dicts. Every format coerces to one shape rather than crashing.
     class CustomCommand(RichCommand):
-        def to_info_dict(self, ctx: "click.Context") -> "Dict[str, Any]":
+        def to_info_dict(self, ctx: "click.Context") -> "dict[str, Any]":
             info = super().to_info_dict(ctx)
             info["examples"] = ["tool raw", ("Greet", "tool hello")]  # str + tuple, not dicts
             return info
@@ -823,7 +823,7 @@ def test_examples_placeholder_detection_handles_aliases(cli_runner: CliRunner) -
             formatter = rctx.make_formatter()
             assert sctx.command_path == "foo b"  # help was reached via the alias
 
-            def placeholder_tokens(example: str) -> Set[str]:
+            def placeholder_tokens(example: str) -> set[str]:
                 styled = _styled_example_command(example, sub, rctx, formatter)
                 ph = formatter.config.style_examples_placeholder
                 return {styled.plain[s.start : s.end] for s in styled.spans if s.style == ph}

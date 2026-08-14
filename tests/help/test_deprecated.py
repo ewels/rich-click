@@ -18,8 +18,7 @@ def cli() -> rich_click.RichCommand:
 def test_deprecated_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
@@ -40,8 +39,7 @@ def test_deprecated_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> 
 │ sync      Synchronise all your files between two places. Example command that doesn't do much    │
 │           except print to the terminal. [deprecated: Removing in later version]                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -49,8 +47,7 @@ def test_deprecated_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> 
 def test_deprecated_help_subcommand_bool(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "download --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli download [OPTIONS]                                                                      \n\
                                                                                                     \n\
@@ -61,8 +58,7 @@ def test_deprecated_help_subcommand_bool(cli_runner: CliRunner, cli: rich_click.
 │ --all                        Get everything                                                      │
 │ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -70,8 +66,7 @@ def test_deprecated_help_subcommand_bool(cli_runner: CliRunner, cli: rich_click.
 def test_deprecated_help_subcommand_string(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "sync --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli sync [OPTIONS]                                                                          \n\
                                                                                                     \n\
@@ -83,8 +78,7 @@ def test_deprecated_help_subcommand_string(cli_runner: CliRunner, cli: rich_clic
 │ --all                                                                                            │
 │ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -93,8 +87,7 @@ def test_deprecated_help_with_markdown(cli_runner: CliRunner, cli: rich_click.Ri
     rc.TEXT_MARKUP = "markdown"
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
@@ -121,8 +114,7 @@ def test_deprecated_help_with_markdown(cli_runner: CliRunner, cli: rich_click.Ri
 │           except print to the terminal.                                                          │
 │           [deprecated: Removing in later version]                                                │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -131,8 +123,7 @@ def test_deprecated_help_subcommand_bool_with_markdown(cli_runner: CliRunner, cl
     rc.TEXT_MARKUP = "markdown"
     result = cli_runner.invoke(cli, "download --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli download [OPTIONS]                                                                      \n\
                                                                                                     \n\
@@ -143,8 +134,7 @@ def test_deprecated_help_subcommand_bool_with_markdown(cli_runner: CliRunner, cl
 │ --all                        Get everything                                                      │
 │ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
@@ -153,8 +143,7 @@ def test_deprecated_help_subcommand_string_with_markdown(cli_runner: CliRunner, 
     rc.TEXT_MARKUP = "markdown"
     result = cli_runner.invoke(cli, "sync --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli sync [OPTIONS]                                                                          \n\
                                                                                                     \n\
@@ -166,6 +155,5 @@ def test_deprecated_help_subcommand_string_with_markdown(cli_runner: CliRunner, 
 │ --all                                                                                            │
 │ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")

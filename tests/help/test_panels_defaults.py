@@ -15,8 +15,7 @@ def cli() -> rich_click.RichCommand:
 def test_panels_defaults_command_panel(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
@@ -43,16 +42,14 @@ def test_panels_defaults_command_panel(cli_runner: CliRunner, cli: rich_click.Ri
   cmd2                             cmd2 help                                                        \n\
   cmd3                             cmd3 help                                                        \n\
                                                                                                     \n\
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_panels_defaults_argument_panel(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "cmd4 --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli cmd4 [OPTIONS] ARG1 ARG3 ARG2                                                           \n\
                                                                                                     \n\
@@ -67,16 +64,14 @@ def test_panels_defaults_argument_panel(cli_runner: CliRunner, cli: rich_click.R
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help  [markdown|json|...]  Show this message and exit.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")
 
 
 def test_panels_defaults_order(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
     result = cli_runner.invoke(cli, "cmd6 --help")
     assert result.exit_code == 0
-    assert result.stdout == snapshot(
-        """\
+    assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli cmd6 [OPTIONS]                                                                          \n\
                                                                                                     \n\
@@ -98,6 +93,5 @@ def test_panels_defaults_order(cli_runner: CliRunner, cli: rich_click.RichComman
 ╭─ Panel 3 ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --d  TEXT                                                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-"""
-    )
+""")
     assert result.stderr == snapshot("")

@@ -2,9 +2,9 @@
 # dependencies = ["rich-click>=1.9", "typer>=0.15"]
 # ///
 from enum import Enum
+from typing import Annotated
 
 import typer
-from typing_extensions import Annotated
 
 
 class LogLevel(str, Enum):

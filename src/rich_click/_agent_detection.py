@@ -6,12 +6,11 @@ import os
 import re
 import sys
 from functools import lru_cache
-from typing import Optional, Tuple
 
 from rich_click.utils import truthy
 
 
-_AGENT_ENV_VARS: Tuple[str, ...] = (
+_AGENT_ENV_VARS: tuple[str, ...] = (
     # Claude Code and Cowork
     "CLAUDECODE",
     "CLAUDE_CODE",
@@ -62,7 +61,7 @@ The generic ``AGENT`` variable follows the proposal in
 """
 
 
-_SUPPRESSION_ENV_VARS: Tuple[str, ...] = (
+_SUPPRESSION_ENV_VARS: tuple[str, ...] = (
     # pytest: per-test (all modern versions) and process-wide (pytest >= 8.2)
     "PYTEST_CURRENT_TEST",
     "PYTEST_VERSION",
@@ -79,13 +78,13 @@ explicitly falsy value (e.g. ``RICH_CODEX=0``) is ignored, since pytest's own va
 """
 
 
-def _normalize_agent_name(name: str) -> Optional[str]:
+def _normalize_agent_name(name: str) -> str | None:
     normalized = re.sub(r"[^a-z0-9]+", "-", name.strip().lower()).strip("-")
     return normalized or None
 
 
 @lru_cache(maxsize=1)
-def detect_agent() -> Optional[str]:
+def detect_agent() -> str | None:
     """Return a lowercase-hyphenated agent identifier when in agent mode."""
     override = truthy(os.getenv("RICH_CLICK_AGENT_MODE"))
     if override is True:

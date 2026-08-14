@@ -27,13 +27,14 @@ override ``format_help_json`` for full control, or use the lighter-touch
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, Iterator, List, Optional, Sequence, Tuple
+from collections.abc import Callable, Iterator, Sequence
+from typing import Any
 
 import click
 
 
 #: Type of the optional ``help_json_transform`` hook: ``(schema, command, ctx) -> schema``.
-HelpJSONTransform = Callable[[Dict[str, Any], click.Command, click.Context], Dict[str, Any]]
+HelpJSONTransform = Callable[[dict[str, Any], click.Command, click.Context], dict[str, Any]]
 
 #: Type of a custom ``--help`` format renderer registered via the ``help_formats`` config option:
 #: ``(command, ctx) -> str``. Lets a new ``--help <name>`` format be added without subclassing.
@@ -75,7 +76,7 @@ _REDUNDANT_TYPE_KEYS = frozenset({"param_type", "name", "choices"})
 _CONSUMED_CMD_KEYS = frozenset({"name", "help", "params", "commands", "short_help", "examples"})
 
 
-def _strip_markup(text: Optional[str]) -> Optional[str]:
+def _strip_markup(text: str | None) -> str | None:
     r"""Render Rich console markup (``[dim]``, ``\[default: …]``, …) to plain text."""
     if not text:
         return text
@@ -101,7 +102,7 @@ def _is_empty(value: Any) -> bool:
     return value is False or _is_unset(value)
 
 
-def _passthrough_extensions(info: Dict[str, Any], consumed: "frozenset[str]") -> Dict[str, Any]:
+def _passthrough_extensions(info: dict[str, Any], consumed: frozenset[str]) -> dict[str, Any]:
     """
     Collect developer-supplied / non-standard keys from a ``to_info_dict()`` to pass through.
 
@@ -115,7 +116,7 @@ def _passthrough_extensions(info: Dict[str, Any], consumed: "frozenset[str]") ->
     }
 
 
-def _coerce_examples(value: Any) -> List[Dict[str, str]]:
+def _coerce_examples(value: Any) -> list[dict[str, str]]:
     """
     Coerce a command's ``examples`` into a list of ``{"description", "command"}`` dicts.
 
@@ -126,7 +127,7 @@ def _coerce_examples(value: Any) -> List[Dict[str, str]]:
     sees one consistent shape rather than each defending against the others' assumptions. Items that
     can't be coerced are skipped rather than crashing the dump.
     """
-    examples: List[Dict[str, str]] = []
+    examples: list[dict[str, str]] = []
     for item in value or []:
         if isinstance(item, dict):
             command = item.get("command")
@@ -145,7 +146,7 @@ def _coerce_examples(value: Any) -> List[Dict[str, str]]:
     return examples
 
 
-def _param_to_dict(info: Dict[str, Any]) -> Dict[str, Any]:
+def _param_to_dict(info: dict[str, Any]) -> dict[str, Any]:
     """Convert a parameter's ``to_info_dict()`` into a compact, JSON-friendly dict."""
     type_info = info.get("type") or {}
     kind = info.get("param_type_name")  # "option" or "argument"
@@ -200,7 +201,7 @@ def _param_to_dict(info: Dict[str, Any]) -> Dict[str, Any]:
     return result
 
 
-def _subcommand_index(commands: Dict[str, Any], parent: Optional[click.Command]) -> Dict[str, Any]:
+def _subcommand_index(commands: dict[str, Any], parent: click.Command | None) -> dict[str, Any]:
     """
     Index ``to_info_dict()``'s recursive ``commands`` block by name.
 
@@ -214,10 +215,10 @@ def _subcommand_index(commands: Dict[str, Any], parent: Optional[click.Command])
     never cut off mid-word. ``parent`` is the owning group, used to resolve each child command object
     (which carries that method); we fall back to the info dict's first help line if it can't be found.
     """
-    index: Dict[str, Any] = {}
+    index: dict[str, Any] = {}
     parent_commands = getattr(parent, "commands", {})
     for name, info in commands.items():
-        entry: Dict[str, Any] = {}
+        entry: dict[str, Any] = {}
         child = parent_commands.get(name)
         if child is not None:
             help_text = _strip_markup(child.get_short_help_str(limit=120))
@@ -236,7 +237,7 @@ def _subcommand_index(commands: Dict[str, Any], parent: Optional[click.Command])
     return index
 
 
-def _help_option_ids(cmd: click.Command, ctx: click.Context) -> "set[int]":
+def _help_option_ids(cmd: click.Command, ctx: click.Context) -> set[int]:
     """
     Object id of the ``--help`` option, used to recognise it among a command's params.
 
@@ -245,7 +246,7 @@ def _help_option_ids(cmd: click.Command, ctx: click.Context) -> "set[int]":
     Resolved by identity (not name) so a customized help flag name (e.g. ``-h``) still matches, and so
     recursive walks find it at every node without the caller having to thread the option down the tree.
     """
-    ids: "set[int]" = set()
+    ids: set[int] = set()
     get_help_option = getattr(cmd, "get_help_option", None)
     if get_help_option is not None:
         try:
@@ -257,7 +258,7 @@ def _help_option_ids(cmd: click.Command, ctx: click.Context) -> "set[int]":
     return ids
 
 
-def _help_format_names(cmd: click.Command, ctx: Optional[click.Context] = None) -> List[str]:
+def _help_format_names(cmd: click.Command, ctx: click.Context | None = None) -> list[str]:
     """
     Return the machine-readable format values ``--help`` accepts (``markdown``, ``json``, ...).
 
@@ -266,8 +267,8 @@ def _help_format_names(cmd: click.Command, ctx: Optional[click.Context] = None) 
     registered on the config (``help_formats``) are appended. Surfaced as the ``--help`` option's
     ``choices`` and in its metavar, so both a human and an agent can discover the formats exist.
     """
-    names: List[str] = []
-    seen_targets: "set[str]" = set()
+    names: list[str] = []
+    seen_targets: set[str] = set()
     for name, target in (getattr(cmd, "help_formats", None) or {}).items():
         if target not in seen_targets:
             seen_targets.add(target)
@@ -279,7 +280,7 @@ def _help_format_names(cmd: click.Command, ctx: Optional[click.Context] = None) 
     return names
 
 
-def _iter_child_contexts(cmd: click.Command, ctx: click.Context) -> Iterator[Tuple[str, click.Command, click.Context]]:
+def _iter_child_contexts(cmd: click.Command, ctx: click.Context) -> Iterator[tuple[str, click.Command, click.Context]]:
     """
     Yield ``(name, child, child_ctx)`` for each subcommand, building a fresh context per child.
 
@@ -309,7 +310,7 @@ def _iter_child_contexts(cmd: click.Command, ctx: click.Context) -> Iterator[Tup
         yield name, child, child_ctx
 
 
-def _degraded_schema(name: str, info: Dict[str, Any], parent_ctx: click.Context) -> Dict[str, Any]:
+def _degraded_schema(name: str, info: dict[str, Any], parent_ctx: click.Context) -> dict[str, Any]:
     """
     Minimal schema node for a child that couldn't be contextualized (raised a ClickException even under
     resilient parsing), so it can't be fully expanded.
@@ -318,7 +319,7 @@ def _degraded_schema(name: str, info: Dict[str, Any], parent_ctx: click.Context)
     (matching the lean ``--help json`` index) instead of silently dropping it. Its own descendants are
     not walked, since we couldn't enter it; consumers can re-run ``--help`` on that command directly.
     """
-    schema: Dict[str, Any] = {"name": info.get("name") or name, "path": f"{parent_ctx.command_path} {name}".strip()}
+    schema: dict[str, Any] = {"name": info.get("name") or name, "path": f"{parent_ctx.command_path} {name}".strip()}
     help_text = _strip_markup(info.get("help"))
     if help_text:
         schema["help"] = help_text
@@ -327,7 +328,7 @@ def _degraded_schema(name: str, info: Dict[str, Any], parent_ctx: click.Context)
     return schema
 
 
-def _subcommand_index_full(cmd: click.Command, ctx: click.Context, child_infos: Dict[str, Any]) -> Dict[str, Any]:
+def _subcommand_index_full(cmd: click.Command, ctx: click.Context, child_infos: dict[str, Any]) -> dict[str, Any]:
     """
     Recursively expand every descendant to its full schema (params, usage, nested subcommands).
 
@@ -345,8 +346,8 @@ def _subcommand_index_full(cmd: click.Command, ctx: click.Context, child_infos: 
 
 
 def command_schema(
-    cmd: click.Command, ctx: click.Context, recursive: bool = False, info: Optional[Dict[str, Any]] = None
-) -> Dict[str, Any]:
+    cmd: click.Command, ctx: click.Context, recursive: bool = False, info: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """
     Build the machine-readable JSON for a single command level.
 
@@ -379,7 +380,7 @@ def command_schema(
                 param_dict["choices"] = formats
         params.append(param_dict)
 
-    schema: Dict[str, Any] = {"name": info.get("name"), "path": ctx.command_path}
+    schema: dict[str, Any] = {"name": info.get("name"), "path": ctx.command_path}
     help_text = _strip_markup(info.get("help"))
     if help_text:  # omit rather than emit a null help for undocumented commands
         schema["help"] = help_text
@@ -408,8 +409,8 @@ def _carapace_flag_name(opts: Sequence[str]) -> str:
 
 
 def _carapace_params(
-    cmd: click.Command, ctx: click.Context, help_ids: "set[int]"
-) -> "tuple[Dict[str, Any], Dict[str, Any], Dict[str, Any]]":
+    cmd: click.Command, ctx: click.Context, help_ids: set[int]
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     """
     Split a command's params into the carapace ``flags`` / ``completion`` / ``documentation`` blocks.
 
@@ -418,12 +419,12 @@ def _carapace_params(
     their help (``documentation``) and any ``Choice`` candidates (``completion``). The ``--help`` option
     (in ``help_ids``) is included like any other, with the formats it accepts as its completions.
     """
-    flags: Dict[str, Any] = {}
-    completion: Dict[str, Any] = {}
-    documentation: Dict[str, Any] = {}
-    completion_flag: Dict[str, Any] = {}
-    positional: List[Any] = []
-    positional_doc: List[Any] = []
+    flags: dict[str, Any] = {}
+    completion: dict[str, Any] = {}
+    documentation: dict[str, Any] = {}
+    completion_flag: dict[str, Any] = {}
+    positional: list[Any] = []
+    positional_doc: list[Any] = []
 
     for param in cmd.get_params(ctx):
         info = param.to_info_dict()
@@ -488,7 +489,7 @@ def _carapace_params(
     return flags, completion, documentation
 
 
-def carapace_command(cmd: click.Command, ctx: click.Context, info: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+def carapace_command(cmd: click.Command, ctx: click.Context, info: dict[str, Any] | None = None) -> dict[str, Any]:
     """
     Describe a command (recursively) as a carapace ``Command`` object.
 
@@ -505,7 +506,7 @@ def carapace_command(cmd: click.Command, ctx: click.Context, info: Optional[Dict
         info = cmd.to_info_dict(ctx)
     help_ids = _help_option_ids(cmd, ctx)
 
-    result: Dict[str, Any] = {"name": info.get("name") or ctx.info_name or ""}
+    result: dict[str, Any] = {"name": info.get("name") or ctx.info_name or ""}
 
     get_short_help = getattr(cmd, "get_short_help_str", None)
     description = _strip_markup(get_short_help(limit=120)) if get_short_help is not None else None
@@ -542,7 +543,7 @@ def carapace_command(cmd: click.Command, ctx: click.Context, info: Optional[Dict
     return result
 
 
-def _carapace_subcommands(cmd: click.Command, ctx: click.Context, child_infos: Dict[str, Any]) -> List[Any]:
+def _carapace_subcommands(cmd: click.Command, ctx: click.Context, child_infos: dict[str, Any]) -> list[Any]:
     """Recursively build the carapace ``commands`` array."""
     return [
         carapace_command(child, child_ctx, info=child_infos.get(name))
@@ -565,7 +566,7 @@ def _md_escape(value: Any) -> str:
     return str(value).replace("\n", " ").replace("|", "\\|").strip()
 
 
-def _md_param_type(param: Dict[str, Any]) -> str:
+def _md_param_type(param: dict[str, Any]) -> str:
     """Human-readable type label for a parameter, e.g. ``flag``, ``choice: a / b``, ``Int (repeatable)``."""
     if param.get("count"):
         label = "counter"
@@ -588,7 +589,7 @@ def _md_param_type(param: Dict[str, Any]) -> str:
     return _md_escape(label)
 
 
-def _md_param_description(param: Dict[str, Any]) -> str:
+def _md_param_description(param: dict[str, Any]) -> str:
     """Help text plus inline env-var / prompt annotations, for a parameter's table cell."""
     parts = []
     if param.get("help"):
@@ -600,7 +601,7 @@ def _md_param_description(param: Dict[str, Any]) -> str:
     return _md_escape(" ".join(parts))
 
 
-def _md_param_table(params: List[Dict[str, Any]], *, is_option: bool) -> List[str]:
+def _md_param_table(params: list[dict[str, Any]], *, is_option: bool) -> list[str]:
     """Render a list of option/argument dicts as a Markdown table."""
     label = "Option" if is_option else "Argument"
     rows = [f"| {label} | Type | Required | Default | Description |", "| --- | --- | --- | --- | --- |"]
@@ -617,7 +618,7 @@ def _md_param_table(params: List[Dict[str, Any]], *, is_option: bool) -> List[st
     return rows
 
 
-def _md_subcommand_index(index: Dict[str, Any], lines: List[str], indent: int) -> None:
+def _md_subcommand_index(index: dict[str, Any], lines: list[str], indent: int) -> None:
     """Render the progressive (name-only) subcommand index as a nested bullet list."""
     for name, entry in index.items():
         bullet = "  " * indent + f"- `{name}`"
@@ -631,7 +632,7 @@ def _md_subcommand_index(index: Dict[str, Any], lines: List[str], indent: int) -
             _md_subcommand_index(nested, lines, indent + 1)
 
 
-def _render_command_markdown(schema: Dict[str, Any], lines: List[str], recursive: bool) -> None:
+def _render_command_markdown(schema: dict[str, Any], lines: list[str], recursive: bool) -> None:
     """
     Append one command's Markdown section.
 
@@ -683,6 +684,6 @@ def command_markdown(cmd: click.Command, ctx: click.Context, recursive: bool = F
     from :func:`command_schema`, so it shares the JSON formats' extraction and single ``to_info_dict()``
     walk.
     """
-    lines: List[str] = []
+    lines: list[str] = []
     _render_command_markdown(command_schema(cmd, ctx, recursive=recursive), lines, recursive)
     return "\n".join(lines).strip() + "\n"

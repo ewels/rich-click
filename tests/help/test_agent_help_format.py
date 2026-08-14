@@ -1,4 +1,4 @@
-from typing import Callable, Iterator, Optional
+from collections.abc import Callable, Iterator
 
 import pytest
 from click.testing import CliRunner, Result
@@ -26,7 +26,7 @@ def agent_env(monkeypatch: pytest.MonkeyPatch) -> Iterator[ConfigureEnv]:
     dropped for the duration of the body itself.
     """
 
-    def configure(*, marker: bool = False, suppress: Optional[str] = None, override: Optional[str] = None) -> None:
+    def configure(*, marker: bool = False, suppress: str | None = None, override: str | None = None) -> None:
         for env_var in (
             *_SUPPRESSION_ENV_VARS,
             *_AGENT_ENV_VARS,

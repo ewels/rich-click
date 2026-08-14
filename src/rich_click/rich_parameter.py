@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import inspect
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 import click
 
@@ -27,9 +27,9 @@ class RichParameter(click.Parameter):
     def __init__(
         self,
         *args: Any,
-        panel: Optional[Union[str, List[str]]] = None,
-        help: Optional[str] = None,
-        help_style: Optional["StyleType"] = None,
+        panel: str | list[str] | None = None,
+        help: str | None = None,
+        help_style: StyleType | None = None,
         **kwargs: Any,
     ):
         """Create RichParameter instance."""
@@ -60,7 +60,7 @@ class RichParameter(click.Parameter):
         info.setdefault("help", self.help)
         return info
 
-    def get_rich_help(self, ctx: "RichContext", formatter: "RichHelpFormatter") -> "Columns":
+    def get_rich_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> Columns:
         """Get the rich help text for this parameter."""
         from rich_click.rich_help_rendering import get_help_parameter
 
@@ -68,10 +68,10 @@ class RichParameter(click.Parameter):
 
     def get_rich_table_row(
         self,
-        ctx: "RichContext",
-        formatter: "RichHelpFormatter",
-        panel: Optional["RichOptionPanel"] = None,
-    ) -> "RichPanelRow":
+        ctx: RichContext,
+        formatter: RichHelpFormatter,
+        panel: RichOptionPanel | None = None,
+    ) -> RichPanelRow:
         """Create a row for the rich table corresponding with this parameter."""
         from rich_click.rich_help_rendering import get_parameter_rich_table_row
 

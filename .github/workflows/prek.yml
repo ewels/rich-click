@@ -6,7 +6,7 @@ on:
 permissions: {}
 
 jobs:
-  pre-commit:
+  prek:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -20,8 +20,6 @@ jobs:
           python-version: 3
           activate-environment: true
       - name: Install dependencies
-        run:  |
-          uv pip install ".[dev]"
-          uv pip install "mypy<1.16"  # later versions don't work with python 3.8
-      - name: Run pre-commit
-        run: pre-commit run -a
+        run: uv sync --active
+      - name: Run prek
+        run: prek run -a
