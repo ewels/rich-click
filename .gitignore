@@ -782,3 +782,4 @@ docs/.cache/
 docs/src/content/docs/index.md
 docs/src/content/docs/changelog.md
 docs/src/content/docs/contributing.md
+docs/src/generated/

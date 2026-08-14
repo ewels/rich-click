@@ -5,11 +5,16 @@
 //   src/content/docs/changelog.md    <- CHANGELOG.md
 //   src/content/docs/contributing.md <- CONTRIBUTING.md
 //
+// ...and the trimmed logotype the social cards are drawn with:
+//
+//   src/generated/og-logo.png        <- public/images/rich-click-logo-darkmode.png
+//
 // The generated files are gitignored and rebuilt on every `npm run dev` /
 // `npm run build` (see the predev/prebuild scripts in package.json).
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import sharp from 'sharp';
 import { SITE_TAGLINE, SITE_TITLE } from '../src/site.mjs';
 
 const docsRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -152,3 +157,22 @@ rootPage(
   'How to set up a rich-click development environment, run the tests and open a pull request.',
   'contributing.md'
 );
+
+// --- Social card logotype -----------------------------------------------------
+
+// The logotype ships on a 960x360 canvas with the artwork occupying 656x147 of
+// it, so scaling the file to fill a social card leaves the wordmark looking
+// small and floating. astro-og-canvas takes a path rather than a buffer, so
+// trim the transparent margin once here and let the card route point at the
+// result (see src/pages/og/[...slug].ts).
+const ogLogoSource = path.join(docsRoot, 'public/images/rich-click-logo-darkmode.png');
+const ogLogoOut = path.join(docsRoot, 'src/generated/og-logo.png');
+fs.mkdirSync(path.dirname(ogLogoOut), { recursive: true });
+// Skip the re-trim when the source hasn't moved, like write() above.
+if (
+  !fs.existsSync(ogLogoOut) ||
+  fs.statSync(ogLogoOut).mtimeMs < fs.statSync(ogLogoSource).mtimeMs
+) {
+  await sharp(ogLogoSource).trim({ threshold: 0 }).toFile(ogLogoOut);
+  console.log(`generated ${path.relative(repoRoot, ogLogoOut)}`);
+}
