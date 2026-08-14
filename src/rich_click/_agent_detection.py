@@ -62,6 +62,23 @@ The generic ``AGENT`` variable follows the proposal in
 """
 
 
+_SUPPRESSION_ENV_VARS: Tuple[str, ...] = (
+    # pytest: per-test (all modern versions) and process-wide (pytest >= 8.2)
+    "PYTEST_CURRENT_TEST",
+    "PYTEST_VERSION",
+    # rich-codex, which generates the help screenshots in our docs
+    "RICH_CODEX",
+)
+"""Markers of tooling that captures ``--help`` output for humans to read later.
+
+A test suite or a screenshot generator run from an agent shell inherits that shell's agent markers, but
+its output is committed and compared, so it must stay human-readable. These variables suppress detection
+so downstream snapshot tests and generated docs need no action from their maintainers. Anything set to an
+explicitly falsy value (e.g. ``RICH_CODEX=0``) is ignored, since pytest's own variables carry values
+(a test ID, a version) that are neither truthy nor falsy.
+"""
+
+
 def _normalize_agent_name(name: str) -> Optional[str]:
     normalized = re.sub(r"[^a-z0-9]+", "-", name.strip().lower()).strip("-")
     return normalized or None
@@ -75,6 +92,12 @@ def detect_agent() -> Optional[str]:
         return "agent"
     if override is False:
         return None
+
+    # Only the explicit override outranks the suppression markers: everything else is a guess about the
+    # environment, whereas these say the output is being captured for human consumption.
+    for env_var in _SUPPRESSION_ENV_VARS:
+        if env_var in os.environ and truthy(os.environ[env_var]) is not False:
+            return None
 
     for env_var in ("AI_AGENT", "AGENT"):
         if env_var not in os.environ:
