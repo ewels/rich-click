@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Fixed `ctx.forward(rich_cmd)` raising `TypeError` after `patch()` replaced `click.Command` with a subclass. [[#338](https://github.com/ewels/rich-click/issues/338)]
 - Dropped support for Python 3.8 and 3.9; the minimum supported version is now Python 3.10.
 - Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python <3.10.
 - Dev and docs requirements moved from optional dependencies to [dependency groups](https://peps.python.org/pep-0735/), so they are no longer published as package metadata. Install them with `uv sync --all-groups`.
