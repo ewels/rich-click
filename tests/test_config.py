@@ -138,7 +138,6 @@ def test_config_is_serializable_and_invertible() -> None:
         config2.style_options_panel_padding = tuple(config2.style_options_panel_padding)  # type: ignore[arg-type,assignment]
         config2.style_commands_panel_padding = tuple(config2.style_commands_panel_padding)  # type: ignore[arg-type,assignment]
         config2.style_commands_table_column_width_ratio = tuple(config2.style_commands_table_column_width_ratio)  # type: ignore[arg-type,assignment]
-        config2.padding_ai_markdown_hint = tuple(config2.padding_ai_markdown_hint)  # type: ignore[arg-type,assignment]
         config2.padding_header_text = tuple(config2.padding_header_text)  # type: ignore[arg-type,assignment]
         config2.padding_helptext = tuple(config2.padding_helptext)  # type: ignore[arg-type,assignment]
         config2.padding_errors_panel = tuple(config2.padding_errors_panel)  # type: ignore[arg-type,assignment]
