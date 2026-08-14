@@ -19,12 +19,15 @@ jobs:
     steps:
       - name: Check out the repo
         # persisted credentials are required for the rich-codex step to push commits
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3 # zizmor: ignore[artipacked]
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1 # zizmor: ignore[artipacked]
+        with:
+          # Full history and tags: starlight-pydocs extracts past release tags to
+          # work out which version each API object was added in.
+          fetch-depth: 0
 
       - name: Set up Python
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          # The docs group requires >=3.13 (see tool.uv in pyproject.toml).
           python-version: "3.13"
           activate-environment: true
 
@@ -33,7 +36,7 @@ jobs:
 
       - name: Generate terminal images with rich-codex
         if: github.repository_owner == 'ewels' || github.event_name == 'workflow_dispatch'
-        uses: ewels/rich-codex@80de9de011c994f32274bb4cffee140567621d8e # v1.2.11
+        uses: ewels/rich-codex@74d8432695de542da2f2acdbc5681cdf306791ec # v1.3.0
         with:
           skip_python_setup: "true"
           commit_changes: "true"
@@ -41,6 +44,33 @@ jobs:
           terminal_width: 80
           skip_git_checks: "true"
           working_dir: "."
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+
+      # The API reference badges each object with the release it appeared in, by
+      # extracting every v1.* tag with griffe. The dumps are keyed by commit, so
+      # they only need generating once per tag across all builds.
+      - name: Key the API version cache on the tag list
+        id: pydocs_refs
+        run: echo "key=$(git tag --list 'v1.*' | sha256sum | cut -c1-16)" >> "$GITHUB_OUTPUT"
+
+      - name: Restore the API version dumps
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          # Dumps only: the worktrees beside them are large and cheap to remake.
+          path: docs/.cache/starlight-pydocs/versions
+          key: pydocs-versions-${{ steps.pydocs_refs.outputs.key }}
+          restore-keys: pydocs-versions-
+
+      - name: Configure git for deploy commits
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Build and deploy docs
         run: uv run --with . docs/_deploy.py

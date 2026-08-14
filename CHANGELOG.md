@@ -7,9 +7,8 @@
 - Dev and docs requirements moved from optional dependencies to [dependency groups](https://peps.python.org/pep-0735/), so they are no longer published as package metadata. Install them with `uv sync --all-groups`.
 - Switched from [pre-commit](https://pre-commit.com/) to [prek](https://github.com/j178/prek), and replaced `.pre-commit-config.yaml` with `prek.toml`. Contributors should re-run `prek install` to replace their old git hook.
 - Replaced Black with `ruff format`, which resolves the formatting conflicts between the two.
-- Docs are now built with [ProperDocs](https://properdocs.org/), a drop-in fork of MkDocs 1.x, as MkDocs itself is unmaintained. `mike` picks it up automatically, so the deploy flow is unchanged.
-- Upgraded Material for MkDocs from 9.5 to 9.7, the final feature release, which folds in the former Insiders features.
-- Fixed some broken docs links, and enabled `strict` mode so that broken links and anchors fail the docs build.
+- Docs are now built with [Astro Starlight](https://starlight.astro.build/) instead of MkDocs (which is unmaintained), using Astro's Rust-based Sätteri Markdown processor for faster builds. The site keeps the same URLs, versioned deploys, styling and features as before.
+- Fixed some broken docs links; broken links and anchors now fail the docs build (via `starlight-links-validator`).
 - Fixed docs versioning, so that a released version no longer keeps the `prerelease` alias alongside `latest`. [[#343](https://github.com/ewels/rich-click/pull/343)] ([@dwreeves](https://github.com/dwreeves))
 
 ## Version 1.9.8 (2026-05-28)
