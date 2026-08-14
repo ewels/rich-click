@@ -4,9 +4,9 @@ from __future__ import annotations
 
 # ruff: noqa: D103
 from abc import ABCMeta
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, ClassVar
 
-from click import Argument, Command, Context, Group, Option
+from click import Argument, Command, CommandCollection, Context, Group, Option
 
 from rich_click.decorators import command as _rich_command
 from rich_click.decorators import group as _rich_group
@@ -241,13 +241,27 @@ class PatchMeta(type):
             elif name == "TyperArgument":
                 _patch_typer_argument(cls)  # type: ignore[arg-type]
 
+    def __instancecheck__(cls, instance: Any) -> bool:
+        if type.__instancecheck__(cls, instance):
+            return True
+        # patch() replaces click.Command with a subclass. Existing RichCommand
+        # (and original click.Command) instances are parents of that subclass,
+        # so a normal isinstance() check fails and ctx.forward(rich_cmd) raises
+        # TypeError("Callback is not a command."). Recognize the original type
+        # on this class only — not inherited — so Typer patches stay narrow.
+        orig = cls.__dict__.get("_rich_click_isinstance_base")
+        if orig is not None:
+            return isinstance(instance, orig)
+        return False
+
 
 # Click >=8.4.0 Parameters subclass ABC.
 class PatchMetaAbc(PatchMeta, ABCMeta): ...
 
 
 class _PatchedRichCommand(RichCommand, metaclass=PatchMeta):
-    pass
+    # Original click.Command captured at import time (before patch()).
+    _rich_click_isinstance_base: ClassVar[type[Any]] = Command
 
 
 class _PatchedRichMultiCommand(RichMultiCommand, _PatchedRichCommand):
@@ -255,11 +269,11 @@ class _PatchedRichMultiCommand(RichMultiCommand, _PatchedRichCommand):
 
 
 class _PatchedRichCommandCollection(RichCommandCollection, _PatchedRichCommand):
-    pass
+    _rich_click_isinstance_base = CommandCollection
 
 
 class _PatchedRichGroup(RichGroup, _PatchedRichCommand):
-    pass
+    _rich_click_isinstance_base = Group
 
 
 # Options and Arguments don't need to be patched for base click CLIs.
@@ -267,11 +281,11 @@ class _PatchedRichGroup(RichGroup, _PatchedRichCommand):
 
 
 class _PatchedOption(Option, metaclass=PatchMetaAbc):
-    pass
+    _rich_click_isinstance_base = Option
 
 
 class _PatchedArgument(Argument, metaclass=PatchMetaAbc):
-    pass
+    _rich_click_isinstance_base = Argument
 
 
 def rich_command(*args, **kwargs):  # type: ignore[no-untyped-def]
