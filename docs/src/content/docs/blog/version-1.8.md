@@ -1,5 +1,7 @@
 ---
 title: "New blog + v1.8 released!"
+description: >-
+  rich-click 1.8 lands alongside a new documentation site and Live Style Editor: SVG and HTML output from the CLI, an easier decorator API, more style options and better performance.
 slug: blog/version-1.8
 date: 2024-04-30
 authors:
@@ -505,7 +507,7 @@ can now be stylized through the API so long as the following is true:
 
 Example:
 
-```python {8-11}
+```python {8-11} wrap
 import rich_click as click
 from rich import box
 
@@ -768,7 +770,7 @@ def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None
 
 ...with code like this...:
 
-```python {1, 5, 8, 9}
+```python {1, 5, 8, 9} wrap
 from typing import TYPE_CHECKING, IO, Optional
 
 from rich_click.rich_help_configuration import RichHelpConfiguration

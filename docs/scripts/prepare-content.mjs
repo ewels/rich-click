@@ -120,7 +120,7 @@ ${readmeTail}
 
 // --- Changelog / Contributing ------------------------------------------------
 
-function rootPage(sourceFile, title, outFile) {
+function rootPage(sourceFile, title, description, outFile) {
   let content = fs.readFileSync(path.join(repoRoot, sourceFile), 'utf8');
   // Drop the first level-1 heading: the page title comes from the frontmatter.
   content = content.replace(/^# .+\n/, '').trim();
@@ -129,6 +129,7 @@ function rootPage(sourceFile, title, outFile) {
     outFile,
     `---
 title: ${title}
+description: ${description}
 editUrl: https://github.com/ewels/rich-click/edit/main/${sourceFile}
 ---
 
@@ -139,5 +140,15 @@ ${content}
   );
 }
 
-rootPage('CHANGELOG.md', 'Changelog', 'changelog.md');
-rootPage('CONTRIBUTING.md', 'Contributing', 'contributing.md');
+rootPage(
+  'CHANGELOG.md',
+  'Changelog',
+  'Release notes for every rich-click version, newest first.',
+  'changelog.md'
+);
+rootPage(
+  'CONTRIBUTING.md',
+  'Contributing',
+  'How to set up a rich-click development environment, run the tests and open a pull request.',
+  'contributing.md'
+);

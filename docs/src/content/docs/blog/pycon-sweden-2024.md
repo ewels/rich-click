@@ -1,5 +1,7 @@
 ---
 title: "PyCon Sweden 2024"
+description: >-
+  Slides and notes from presenting rich-click at PyCon Sweden 2024.
 slug: blog/pycon-sweden-2024
 date: 2024-11-15
 authors:
