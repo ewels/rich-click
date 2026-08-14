@@ -1,3 +1,4 @@
+import re
 from collections.abc import Callable, Iterator
 
 import pytest
@@ -58,15 +59,29 @@ def cli() -> click.RichCommand:
     return cli
 
 
+re_ansi = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def unstyled(text: str) -> str:
+    """
+    Strip ANSI styling, so assertions on the rendered help do not depend on the environment.
+
+    A config passed to ``rich_config`` as a ``RichHelpConfiguration`` does not inherit the global
+    ``COLOR_SYSTEM = None`` this suite sets, and its ``force_terminal`` default reads ``GITHUB_ACTIONS``
+    -- so the very same help output is styled on CI and plain locally.
+    """
+    return re_ansi.sub("", text)
+
+
 def assert_regular_help(result: Result) -> None:
     assert result.exit_code == 0
-    assert "╭─ Options ─" in result.stdout
+    assert "╭─ Options ─" in unstyled(result.stdout)
     assert "# `cli`" not in result.stdout
 
 
 def assert_markdown_help(result: Result) -> None:
     assert result.exit_code == 0
-    assert "╭─ Options ─" not in result.stdout
+    assert "╭─ Options ─" not in unstyled(result.stdout)
     assert result.stdout == snapshot(
         """\
 # `cli`
