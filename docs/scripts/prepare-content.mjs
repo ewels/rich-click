@@ -160,19 +160,32 @@ rootPage(
 
 // --- Social card logotype -----------------------------------------------------
 
-// The logotype ships on a 960x360 canvas with the artwork occupying 656x147 of
-// it, so scaling the file to fill a social card leaves the wordmark looking
-// small and floating. astro-og-canvas takes a path rather than a buffer, so
-// trim the transparent margin once here and let the card route point at the
-// result (see src/pages/og/[...slug].ts).
+// astro-og-canvas draws the logo from the left padding edge at whatever size it
+// is given: it has no alignment option, and the shipped logotype sits on a
+// 960x360 canvas with the artwork occupying only 656x147 of it. So both the
+// size and the centring are baked in here — trim the transparent margin, scale
+// the wordmark to 60% of the card, and re-pad it symmetrically to the full
+// width between the card's paddings. The card route then draws the file at its
+// own dimensions and needs no numbers of its own (see src/pages/og/[...slug].ts).
+const CARD_WIDTH = 1200;
+const CARD_PADDING = 48;
+const WORDMARK_SHARE = 0.6;
+const TRANSPARENT = { r: 0, g: 0, b: 0, alpha: 0 };
+
+const contentWidth = CARD_WIDTH - CARD_PADDING * 2;
+const wordmarkWidth = Math.round(CARD_WIDTH * WORDMARK_SHARE);
 const ogLogoSource = path.join(docsRoot, 'public/images/rich-click-logo-darkmode.png');
 const ogLogoOut = path.join(docsRoot, 'src/generated/og-logo.png');
 fs.mkdirSync(path.dirname(ogLogoOut), { recursive: true });
-// Skip the re-trim when the source hasn't moved, like write() above.
-if (
-  !fs.existsSync(ogLogoOut) ||
-  fs.statSync(ogLogoOut).mtimeMs < fs.statSync(ogLogoSource).mtimeMs
-) {
-  await sharp(ogLogoSource).trim({ threshold: 0 }).toFile(ogLogoOut);
+// Skip the rebuild when the source hasn't moved, like write() above.
+if (!fs.existsSync(ogLogoOut) || fs.statSync(ogLogoOut).mtimeMs < fs.statSync(ogLogoSource).mtimeMs) {
+  const wordmark = await sharp(ogLogoSource)
+    .trim({ threshold: 0 })
+    .resize({ width: wordmarkWidth })
+    .toBuffer();
+  const margin = Math.round((contentWidth - wordmarkWidth) / 2);
+  await sharp(wordmark)
+    .extend({ left: margin, right: contentWidth - wordmarkWidth - margin, background: TRANSPARENT })
+    .toFile(ogLogoOut);
   console.log(`generated ${path.relative(repoRoot, ogLogoOut)}`);
 }
