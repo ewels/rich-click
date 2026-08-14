@@ -89,6 +89,13 @@ main h1 code,
   text-shadow: var(--rc-pixel-shadow);
 }
 
+/* ...except on the generated API reference pages (marked by .pyd-module), where
+   the titles are long dotted module paths that the pixel font makes unreadable. */
+main:has(.pyd-module) h1 {
+  font-family: var(--sl-font), sans-serif;
+  text-shadow: none;
+}
+
 /* Square list bullets with accent hover, as on the old site. */
 .sl-markdown-content ul:not([class]) {
   list-style: none;
@@ -228,19 +235,21 @@ pre.mermaid:not([data-processed]) {
   min-height: 4rem;
 }
 
-/* Collapsible sections (plain <details> HTML in the Markdown). */
-.sl-markdown-content details {
+/* Collapsible sections (plain <details> HTML in the Markdown). These rules are
+   unlayered, so they beat any cascade layer: exclude the API reference's own
+   folds, which bring their own chrome. */
+.sl-markdown-content details:not(:where(.pyd-fold)) {
   border: 1px solid var(--sl-color-gray-5);
   border-radius: 0.5rem;
   padding: 0.75rem 1rem;
 }
 
-.sl-markdown-content details > summary {
+.sl-markdown-content details:not(:where(.pyd-fold)) > summary {
   cursor: pointer;
   font-weight: 600;
   user-select: none;
 }
 
-.sl-markdown-content details[open] > summary {
+.sl-markdown-content details:not(:where(.pyd-fold))[open] > summary {
   margin-bottom: 0.5rem;
 }

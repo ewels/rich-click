@@ -20,6 +20,10 @@ jobs:
       - name: Check out the repo
         # persisted credentials are required for the rich-codex step to push commits
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3 # zizmor: ignore[artipacked]
+        with:
+          # Full history and tags: starlight-pydocs extracts past release tags to
+          # work out which version each API object was added in.
+          fetch-depth: 0
 
       - name: Set up Python
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
@@ -47,6 +51,21 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: docs/package-lock.json
+
+      # The API reference badges each object with the release it appeared in, by
+      # extracting every v1.* tag with griffe. The dumps are keyed by commit, so
+      # they only need generating once per tag across all builds.
+      - name: Key the API version cache on the tag list
+        id: pydocs_refs
+        run: echo "key=$(git tag --list 'v1.*' | sha256sum | cut -c1-16)" >> "$GITHUB_OUTPUT"
+
+      - name: Restore the API version dumps
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          # Dumps only: the worktrees beside them are large and cheap to remake.
+          path: docs/.cache/starlight-pydocs/versions
+          key: pydocs-versions-${{ steps.pydocs_refs.outputs.key }}
+          restore-keys: pydocs-versions-
 
       - name: Configure git for deploy commits
         run: |

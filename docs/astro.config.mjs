@@ -1,14 +1,16 @@
 // @ts-check
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import { satteri } from '@astrojs/markdown-satteri';
 import starlightBlog from 'starlight-blog';
 import starlightLinksValidator from 'starlight-links-validator';
+import starlightPydocs, { pydocsSidebarGroup } from 'starlight-pydocs';
 
 import { satteriInlineCode } from './plugins/satteri-inline-code.mjs';
 import { satteriMermaid } from './plugins/satteri-mermaid.mjs';
-import { sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
+import { API_PATH, sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
 
 // The site is deployed to versioned directories on GitHub Pages, mirroring the
 // layout previously managed by `mike` (e.g. /rich-click/latest/, /rich-click/1.9/).
@@ -17,11 +19,29 @@ import { sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
 const site = 'https://ewels.github.io';
 const base = process.env.ASTRO_BASE ?? '/rich-click/latest';
 
+// Every 1.x release tag, oldest first: starlight-pydocs extracts each one and
+// badges each API object with the release it first appeared in. Features land in
+// patch releases, so patches are listed too — one extraction costs ~0.3s, cached
+// per commit afterwards. The oldest tag is the baseline and gets no badge.
+// Read from git rather than listed by hand so new releases need no edit here; a
+// clone without tags yields no badges (see fetch-depth in build-docs.yml).
+const releaseTags = execFileSync('git', ['tag', '--list', 'v1.*', '--sort=v:refname'], {
+  cwd: fileURLToPath(new URL('..', import.meta.url)),
+  encoding: 'utf8',
+})
+  .split('\n')
+  // Releases only: excludes the `v1.9.0.dev0` style prerelease tags.
+  .filter((tag) => /^v\d+\.\d+(\.\d+)?$/.test(tag))
+  .map((tag) => ({ ref: tag, label: tag.slice(1) }));
+
 export default defineConfig({
   site,
   base,
   vite: {
     resolve: {
+      // Only matters when starlight-pydocs is symlinked in from a local
+      // checkout: without this its own copies of these get loaded too.
+      dedupe: ['astro', '@astrojs/starlight'],
       alias: {
         // Runnable example snippets, imported into MDX pages via `?raw`.
         '@code_snippets': fileURLToPath(new URL('./code_snippets', import.meta.url)),
@@ -75,7 +95,15 @@ export default defineConfig({
       },
       // Adds the auto-generated social card meta tags (see src/pages/og/).
       routeMiddleware: './src/starlight-route-data.ts',
-      sidebar,
+      // site.mjs can't import starlight-pydocs (it is also loaded by plain
+      // `node` scripts, which can't strip types), so the API Reference entry is
+      // a plain link there — for the header tab — and becomes the placeholder
+      // group here, which the plugin fills with the generated module tree.
+      sidebar: sidebar.map((entry) =>
+        entry.link === API_PATH
+          ? { label: entry.label, collapsed: true, items: [pydocsSidebarGroup] }
+          : entry
+      ),
       plugins: [
         starlightBlog({
           // The header link is handled by the custom Header component tabs.
@@ -97,6 +125,35 @@ export default defineConfig({
         }),
         starlightLinksValidator({
           errorOnRelativeLinks: false,
+        }),
+        // API reference, generated from the rich_click source with griffe.
+        starlightPydocs({
+          packages: [
+            {
+              name: 'rich_click',
+              search: ['../src'],
+              sidebar: { collapsed: true },
+              ...(releaseTags.length > 0 && { versions: { refs: releaseTags } }),
+              sourceLink: {
+                host: 'github',
+                repo: 'ewels/rich-click',
+                // Docs are built from the checkout being released, so pin the
+                // links to that commit rather than a moving branch.
+                ref: process.env.GITHUB_SHA ?? 'main',
+                root: '..',
+              },
+            },
+          ],
+          // Outside node_modules so `npm ci` cannot delete it, and so CI can
+          // cache the per-release griffe dumps (see build-docs.yml).
+          cacheDir: '.cache',
+          // Link type annotations out to the libraries rich-click builds on.
+          inventories: [
+            'python',
+            { url: 'https://click.palletsprojects.com/en/stable/objects.inv' },
+            { url: 'https://rich.readthedocs.io/en/stable/objects.inv' },
+            { url: 'https://typer.tiangolo.com/objects.inv' },
+          ],
         }),
       ],
     }),

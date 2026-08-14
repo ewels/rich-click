@@ -12,6 +12,9 @@ export const EDITOR_PAGE = {
   description: 'A live editor for rich-click styles.',
 };
 
+// Root of the generated API reference pages (starlight-pydocs `base` default).
+export const API_PATH = '/api/rich_click/';
+
 // Starlight sidebar config; the header tabs row (components/Header.astro) is
 // derived from the same top-level entries.
 export const sidebar = [
@@ -45,6 +48,9 @@ export const sidebar = [
       { label: 'Accessibility', slug: 'documentation/accessibility' },
     ],
   },
+  // A link here so the header tab has somewhere to point; astro.config.mjs
+  // turns it into the starlight-pydocs placeholder group for the sidebar.
+  { label: 'API Reference', link: API_PATH },
   { label: 'Blog', link: '/blog/' },
   { label: 'Changelog', slug: 'changelog' },
   { label: 'Contributing', slug: 'contributing' },
