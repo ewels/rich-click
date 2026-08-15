@@ -1066,6 +1066,19 @@ def test_compact_usage_line_only_when_there_are_positionals(cli_runner: CliRunne
     assert "# sweep — Sweep the records.\n--force" in out  # no usage line at all
 
 
+def test_compact_usage_keeps_every_positional_slot(cli_runner: CliRunner) -> None:
+    # An explicit `metavar=""` leaves an argument with nothing to render. Dropping it from the usage line
+    # would shift every later positional one slot left, making the line say the opposite of the truth --
+    # so it falls back to the name, as Click does when no metavar is given at all.
+    @command()
+    @argument("what", metavar="")
+    @argument("dest")
+    def cli(what: str, dest: str) -> None:
+        """Do a thing."""
+
+    assert "usage: cli WHAT DEST" in cli_runner.invoke(cli, ["--help=compact"]).output
+
+
 def test_compact_documents_arguments_that_carry_their_own_help(cli_runner: CliRunner) -> None:
     # A bare positional is fully described by the usage line, so it gets no line of its own; one with
     # help text or a default does, keyed by the same metavar the usage line uses.

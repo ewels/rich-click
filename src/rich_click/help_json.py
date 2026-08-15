@@ -1086,8 +1086,11 @@ def _compact_usage(schema: dict[str, Any]) -> str | None:
     arguments = _visible(schema.get("params", []), "argument")
     if not arguments:
         return None
-    pieces = [metavar for param in arguments if (metavar := _compact_metavar(param))]
-    return " ".join(["usage:", _schema_path(schema), *pieces])
+    # An explicit ``metavar=""`` leaves an argument with nothing to show, and dropping it would silently
+    # shift every later positional one slot to the left -- the exact information this line exists for.
+    # Fall back to the name, which is what Click itself shows when no metavar is given.
+    pieces = [_compact_metavar(param) or str(param.get("name") or "").upper() for param in arguments]
+    return " ".join(["usage:", _schema_path(schema), *(piece for piece in pieces if piece)])
 
 
 def _compact_index_entry(name: str, entry: dict[str, Any]) -> str:

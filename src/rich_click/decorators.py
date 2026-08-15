@@ -319,13 +319,14 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     and exits the program.
 
     Accepts an optional format value so the same flag can also emit machine-readable help:
-    ``--help markdown`` (LLM-friendly), ``--help json`` (progressive), ``--help json-full`` (whole tree)
-    and ``--help carapace``. The space form is the documented one, though the attached form
-    (``--help=json``) works too. An unrecognized value falls back to the normal help rather than erroring
-    (just as the plain ``--help`` always ignored anything that followed it).
+    ``--help compact`` (character-lean, whole tree), ``--help markdown`` (LLM-friendly),
+    ``--help json`` (progressive), ``--help json-full`` (whole tree) and ``--help carapace``. The space
+    form is the documented one, though the attached form (``--help=json``) works too. An unrecognized
+    value falls back to the normal help rather than erroring (just as the plain ``--help`` always ignored
+    anything that followed it).
 
     A bare ``--help`` renders the normal human-readable help, except in a detected AI agent environment,
-    where it renders the ``agent_help_format`` config option's format (``markdown`` by default; ``None``
+    where it renders the ``agent_help_format`` config option's format (``compact`` by default; ``None``
     disables the switch).
 
     :param param_decls: One or more option names. Defaults to the single
