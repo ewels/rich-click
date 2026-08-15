@@ -13,6 +13,7 @@ Those consumers struggle with the rendered `--help` screen: it is laid out for h
 | `--help json`                    | Machine-readable JSON for the current command, plus a name-only index of its subcommands (_progressive disclosure_). |
 | `--help json-full`               | The whole command tree in one call, with full parameter detail at every node.                                        |
 | `--help carapace`                | Output conforming to the [carapace](https://carapace.sh) completion spec.                                            |
+| `--help compact`                 | Experimental. The leanest rendering of the same data: one line per option, one line per subcommand, no tables.       |
 
 This capability is **always available** on every rich-click CLI — there is nothing to enable. For a human at a terminal, bare `--help` is untouched: the format machinery only engages when a value is given, or when [an AI agent is detected](#automatic-agent-detection).
 
@@ -184,7 +185,7 @@ $ mytool --help json
       "opts": ["--help"],
       "type": "String",
       "help": "Show this message and exit.",
-      "choices": ["markdown", "markdown-full", "json", "json-full", "carapace"]
+      "choices": ["markdown", "markdown-full", "json", "json-full", "carapace", "compact"]
     }
   ],
   "subcommands": {
@@ -296,7 +297,7 @@ flags:
   --help=: Show this message and exit.
 completion:
   flag:
-    help: [markdown, markdown-full, json, json-full, carapace]
+    help: [markdown, markdown-full, json, json-full, carapace, compact]
 commands:
 - name: hello
   description: Greet someone.
@@ -312,6 +313,31 @@ commands:
     YAML output needs `pyyaml`; install it with the `rich-click[carapace]` extra. Without it, `--help carapace` falls back to **JSON** — which is itself valid YAML, so carapace still consumes it (you just lose the schema directive comment).
 
 Carapace is a structure-and-completion spec rather than a type/validation one, so the mapping is intentionally lossy. Flag keys use carapace's string syntax (`-s, --long` for a boolean, a trailing `=` when the flag takes a value, `*` when it is repeatable, and the `{description, nargs}` object form for multi-value flags); negation flags such as `--no-debug` become their own entries; and `Choice` values are surfaced as completion candidates. Parameter **types** (`Int`/`Path`/…), **defaults**, **envvars** and per-flag **required** have no home in the carapace schema and are dropped — reach for `--help json-full` if you need those.
+
+## `--help compact`: experimental token-lean output
+
+`--help compact` renders the same information as everything else on this page, as tersely as it can: one line per option, one line per subcommand, no tables and no Markdown scaffolding.
+
+```console
+$ mytool hello --help compact
+```
+
+```
+cli hello — Greet someone.
+Usage: cli hello [OPTIONS] NAME
+
+Arguments:
+  NAME (required)
+
+Options:
+  --count INTEGER (default: 1) — Number of greetings.
+  --help [markdown|markdown-full|json|json-full|carapace|compact] — Show this message and exit.
+```
+
+Each option is `--name METAVAR (notes) — description`, with choice values folded into the metavar (`--mode [fast|safe]`) since that is the form you have to type anyway, and required / default / envvar collected into the parenthesised notes. Subcommands are one line each, nested by indentation.
+
+!!! warning "Experimental, and explicitly requested only"
+    `--help compact` is **never** what a bare `--help` renders, in any environment, and is not a supported value for `agent_help_format`'s intended use. It exists so that a token-lean rendering and a familiar one can be measured against each other over identical content. If you just want fewer tokens in everyday use, the Markdown formats already drop empty table columns, which captures most of the practical saving.
 
 ## Error diagnosis
 

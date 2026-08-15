@@ -371,6 +371,7 @@ class RichCommand(Command):
         "json": "get_help_json",
         "json-full": "get_help_json_full",
         "carapace": "get_help_carapace",
+        "compact": "get_help_compact",
     }
 
     def get_help_for_format(self, ctx: RichContext, fmt: str) -> str | None:
@@ -516,6 +517,21 @@ class RichCommand(Command):
         from rich_click.help_json import command_markdown
 
         return command_markdown(self, ctx, recursive=True)
+
+    def get_help_compact(self, ctx: RichContext) -> str:
+        """Return this command's help in the experimental token-lean ``--help compact`` form."""
+        return self.format_help_compact(ctx)
+
+    def format_help_compact(self, ctx: RichContext) -> str:
+        """
+        Build the ``--help compact`` rendering: one line per option, one line per subcommand, no tables.
+
+        Experimental, and never used as the agent default: it exists so that a token-lean and a familiar
+        rendering of identical content can be measured against each other. Override for full control.
+        """
+        from rich_click.help_json import compact_command
+
+        return compact_command(self, ctx)
 
     def get_rich_table_row(
         self,

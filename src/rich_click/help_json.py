@@ -1068,3 +1068,100 @@ def command_markdown(
     lines: list[str] = []
     _render_command_markdown(command_schema(cmd, ctx, recursive=recursive), lines, recursive)
     return "\n".join(lines).strip() + "\n"
+
+
+# --------------------------------------------------------------------------------------------------
+# Compact (``--help compact``): experimental, explicitly requested only.
+#
+# The leanest rendering of the same data: one line per option, one line per subcommand, no tables and
+# no Markdown scaffolding. It exists so that token-lean and familiar renderings of identical content can
+# be measured against each other -- the Markdown formats are the ones tuned for everyday use, and this
+# is never a default. The shape is progressive (the invoked command in full, descendants as one-liners)
+# so that only the *rendering* differs from ``--help markdown`` at its most degraded.
+# --------------------------------------------------------------------------------------------------
+
+
+def _one_line(text: Any) -> str:
+    """Collapse a value onto a single line, so one record stays one line."""
+    return " ".join(str(text).split())
+
+
+def _compact_param_line(param: dict[str, Any], *, is_option: bool) -> str:
+    """
+    Render one parameter as ``--name METAVAR (notes) — description``.
+
+    Choices are folded into the metavar (``--mode [fast|safe]``) rather than listed separately: it is
+    both shorter and the form the caller has to type anyway.
+    """
+    if is_option:
+        head = _md_param_signature(param, is_option=True)
+    else:
+        # A positional's name *is* its metavar, so only a choice set or a variadic marker adds anything.
+        head = str(param.get("name", "")).upper()
+        if param.get("choices"):
+            head += " [" + "|".join(str(choice) for choice in param["choices"]) + "]"
+        if param.get("multiple") or param.get("nargs") == -1:
+            head += "..."
+
+    notes = []
+    if param.get("required"):
+        notes.append("required")
+    if "default" in param:
+        notes.append(f"default: {_one_line(param['default'])}")
+    if param.get("envvar"):
+        notes.append(f"env: {_one_line(param['envvar'])}")
+    line = f"{head} ({'; '.join(notes)})" if notes else head
+    if param.get("help"):
+        line += f" — {_one_line(param['help'])}"
+    return line
+
+
+def _compact_index(index: dict[str, Any], lines: list[str], indent: int) -> None:
+    """Render the subcommand index, one line per command, nested by indentation."""
+    for name, entry in index.items():
+        line = "  " * indent + name
+        if entry.get("aliases"):
+            line += f" ({', '.join(entry['aliases'])})"
+        if entry.get("help"):
+            line += f" — {_one_line(entry['help'])}"
+        lines.append(line)
+        nested = entry.get("subcommands")
+        if nested:
+            _compact_index(nested, lines, indent + 1)
+
+
+def compact_command(cmd: click.Command, ctx: click.Context) -> str:
+    """
+    Render a command in the token-lean ``--help compact`` form.
+
+    Built from the same :func:`command_schema` data as every other format, so it reports exactly what
+    they report -- only more tersely. Sections keep the agent-facing order, with examples ahead of the
+    parameters.
+    """
+    schema = command_schema(cmd, ctx, recursive=False)
+
+    title = schema.get("path") or schema.get("name") or ""
+    summary = _md_short_help(schema.get("help"))
+    lines = [f"{title} — {summary}" if summary else str(title)]
+    if schema.get("aliases"):
+        lines.append(f"Aliases: {', '.join(schema['aliases'])}")
+    if schema.get("usage"):
+        lines.append(f"Usage: {schema['usage']}")
+
+    if schema.get("examples"):
+        lines += ["", "Examples:"]
+        lines += [f"  {_one_line(example['description'])}: {example['command']}" for example in schema["examples"]]
+
+    params = schema.get("params", [])
+    for label, is_option in (("Arguments", False), ("Options", True)):
+        selected = [
+            p for p in params if p.get("kind") == ("option" if is_option else "argument") and not p.get("hidden")
+        ]
+        if selected:
+            lines += ["", f"{label}:"]
+            lines += [f"  {_compact_param_line(param, is_option=is_option)}" for param in selected]
+
+    if schema.get("subcommands"):
+        lines += ["", "Commands:"]
+        _compact_index(schema["subcommands"], lines, indent=1)
+    return "\n".join(lines).strip() + "\n"

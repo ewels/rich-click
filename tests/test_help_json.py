@@ -642,7 +642,7 @@ Root help text.
 | Option | Type | Description |
 | --- | --- | --- |
 | `-v`, `--verbose` | flag | Be loud. |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace | Show this message and exit. |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact | Show this message and exit. |
 
 # `cli hello`
 
@@ -661,7 +661,7 @@ Say hello.
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
 | `--count` | Int | `3` | How many times. |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace |  | Show this message and exit. |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact |  | Show this message and exit. |
 
 # `cli things`
 
@@ -675,7 +675,7 @@ Manage things.
 
 | Option | Type | Description |
 | --- | --- | --- |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace | Show this message and exit. |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact | Show this message and exit. |
 
 # `cli things list`
 
@@ -687,7 +687,7 @@ List things.
 
 | Option | Type | Description |
 | --- | --- | --- |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace | Show this message and exit. |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact | Show this message and exit. |
 
 """
     )
@@ -766,7 +766,7 @@ def test_large_tree_degrades_nearest_first(cli_runner: CliRunner) -> None:
 
     # Near commands are promoted to their own sections with a compact option signature list...
     assert "# `cli grp00`" in out
-    assert "- `--help [markdown|markdown-full|json|json-full|carapace]`" in out
+    assert "- `--help [markdown|" in out  # a signature list, not a table
     # ...while distant ones stay name-only rows in their parent's index.
     assert "# `cli grp14 cmd19`" not in out
     assert "- `cmd19` — Do a thing to the target." in out
@@ -858,6 +858,65 @@ def test_help_markdown_override(cli_runner: CliRunner) -> None:
         """Hi."""
 
     assert cli_runner.invoke(cli, ["--help=md"]).output.strip() == "CUSTOM MD"
+
+
+# --------------------------------------------------------------------------------------------------
+# `--help compact`: experimental, explicitly requested only. The leanest rendering of the same data.
+# --------------------------------------------------------------------------------------------------
+
+
+def test_help_compact_is_one_line_per_record(cli_runner: CliRunner) -> None:
+    @group()
+    def cli() -> None:
+        """A demo CLI."""
+
+    @cli.command(examples=[("Greet loudly", "cli hello --shout Bob")])
+    @option("--count", type=int, default=1, help="Number of greetings.")
+    @option("--mode", type=click.Choice(["fast", "safe"]), help="How to run.")
+    @option("--token", envvar="MY_TOKEN", required=True, help="Auth token.")
+    @argument("name")
+    @argument("extras", nargs=-1)
+    def hello(count: int, mode: str, token: str, name: str, extras: tuple[str, ...]) -> None:
+        """Greet someone warmly."""
+
+    out = cli_runner.invoke(cli, ["hello", "--help=compact"]).output
+
+    assert "| --- |" not in out and "#" not in out  # no tables, no Markdown scaffolding
+    assert out.splitlines()[0] == "cli hello — Greet someone warmly."
+    assert "Usage: cli hello [OPTIONS] NAME [EXTRAS]..." in out
+    # One line per option: names, metavar (choices folded in), notes, description.
+    assert "  --count INTEGER (default: 1) — Number of greetings." in out
+    assert "  --mode [fast|safe] — How to run." in out
+    assert "  --token TEXT (required; env: MY_TOKEN) — Auth token." in out
+    # One line per argument, variadic marked.
+    assert "  NAME (required)" in out
+    assert "  EXTRAS..." in out
+    # Examples keep their agent-facing position, ahead of the parameters.
+    assert out.index("Examples:") < out.index("Arguments:") < out.index("Options:")
+
+
+def test_help_compact_lists_subcommands_one_per_line(cli_runner: CliRunner) -> None:
+    out = cli_runner.invoke(_build_cli(), ["--help=compact"]).output
+
+    assert "Commands:" in out
+    assert "  hello — Say hello." in out
+    assert "  things (sub) — Manage things." in out
+    assert "    list — List things." in out
+
+
+def test_help_compact_is_leaner_than_markdown(cli_runner: CliRunner) -> None:
+    # The whole point of the format: the same content, fewer tokens.
+    cli = _build_cli()
+    compact = cli_runner.invoke(cli, ["hello", "--help=compact"]).output
+    markdown = cli_runner.invoke(cli, ["hello", "--help=md"]).output
+    assert estimate_tokens(compact) < estimate_tokens(markdown)
+
+
+def test_help_compact_is_never_a_default(cli_runner: CliRunner) -> None:
+    # Explicitly requested only: it is not what a bare `--help` renders for an agent, and asking for it
+    # is what makes it appear.
+    assert RichHelpConfiguration().agent_help_format == "markdown"
+    assert "compact" in json.loads(cli_runner.invoke(_build_cli(), ["--help=json"]).output)["params"][-1]["choices"]
 
 
 # --------------------------------------------------------------------------------------------------

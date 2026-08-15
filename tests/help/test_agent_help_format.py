@@ -95,7 +95,7 @@ A demo command.
 | Option | Type | Description |
 | --- | --- | --- |
 | `--name` | String | Your name. |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace | Show this message and exit. |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact | Show this message and exit. |
 
 """
     )
@@ -238,7 +238,7 @@ A demo subcommand.
 
 | Option | Type | Description |
 | --- | --- | --- |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace | Show this message and exit. |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact | Show this message and exit. |
 
 """
     )
