@@ -313,6 +313,65 @@ commands:
 
 Carapace is a structure-and-completion spec rather than a type/validation one, so the mapping is intentionally lossy. Flag keys use carapace's string syntax (`-s, --long` for a boolean, a trailing `=` when the flag takes a value, `*` when it is repeatable, and the `{description, nargs}` object form for multi-value flags); negation flags such as `--no-debug` become their own entries; and `Choice` values are surfaced as completion candidates. Parameter **types** (`Int`/`Path`/…), **defaults**, **envvars** and per-flag **required** have no home in the carapace schema and are dropped — reach for `--help json-full` if you need those.
 
+## Error diagnosis
+
+Getting help right only solves half the problem. The other half is what happens when a caller gets the invocation *wrong*.
+
+Click's usage errors report the symptom: `No such option: --repo`. A human reads that, remembers that `--repo` belongs to the parent group, and moves the flag. An agent frequently cannot — the message says nothing about **why** the option was rejected, so there is nothing to correct against, and it retries variations of the same broken command until it runs out of turns. An error that states the rule it broke is usually fixed on the very next attempt.
+
+So rich-click diagnoses usage errors where it can, and says what it worked out. It derives, when derivable:
+
+- **The violated rule**, stated as a rule — including the parent-group case: `'--repo' is an option of the parent group 'tool', not of 'tool build'. A group's options must be given before its subcommand.`
+- **Near matches** by edit distance over the command's *real* option names, or over its subcommand names for an unknown command.
+- **The valid values** of a `Choice`, and the requirement behind a missing parameter.
+- **A corrected invocation**, copyable as-is, whenever one can be constructed confidently.
+
+### Two renderings
+
+For a human, the diagnosis is a terse addition inside the existing error panel — the rule, the nearest alternatives, the corrected command:
+
+```console
+$ tool build --repo ewels/rich-click thing
+```
+
+```
+ Usage: tool build [OPTIONS] NAME
+
+ Try 'tool build --help' for help
+╭─ Error ────────────────────────────────────────────────────────────────────╮
+│ No such option '--repo'.                                                   │
+│                                                                            │
+│ '--repo' is an option of the parent group 'tool', not of 'tool build'. A   │
+│ group's options must be given before its subcommand.                       │
+│ Try: tool --repo VALUE build ...                                           │
+│ See 'tool --help' for help                                                 │
+╰────────────────────────────────────────────────────────────────────────────╯
+```
+
+Inside a [detected agent environment](#automatic-agent-detection), the same diagnosis is rendered as a plain-text block instead — no panel, no ANSI, one fact per line, and the attempted invocation restated (an agent has no scrollback to look at):
+
+```
+Error: No such option '--repo'.
+
+Attempted: tool build --repo ewels/rich-click thing
+Rule: '--repo' is an option of the parent group 'tool', not of 'tool build'. A group's options must be given before its subcommand.
+Try: tool --repo VALUE build ...
+Usage: tool build [OPTIONS] NAME
+Help: tool --help
+```
+
+This is **strictly additive**. Exit codes are unchanged, and Click's own error message is still the first line, so anything matching on it keeps working. An error rich-click cannot say anything useful about — a `ctx.fail()` from your own callback, which already states its rule — is left exactly as it was, rather than padded out with guesses.
+
+### Turning it off
+
+Set the `error_diagnosis` config option (`ERROR_DIAGNOSIS` global) to `False`, or the `RICH_CLICK_ERROR_DIAGNOSIS` environment variable to a falsy value — which overrides the config option in both directions, so the behaviour can be A/B'd across runs without touching your CLI's source:
+
+```shell
+RICH_CLICK_ERROR_DIAGNOSIS=0 mytool build --repo x thing
+```
+
+With diagnosis off, errors render exactly as Click and rich-click rendered them before, in every environment.
+
 ## Command examples
 
 LLMs respond well to concrete examples. If you give commands examples with the [`examples=` argument](examples.md) — primarily to enrich the rendered `--help` — they flow into the machine-readable formats too:

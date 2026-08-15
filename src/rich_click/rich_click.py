@@ -185,6 +185,10 @@ AGENT_HELP_FORMAT: str | None = "markdown"
 # Approximate token ceiling for the adaptive `--help markdown` output: as much of the command tree as
 # fits is disclosed, nearest commands first. None disables adaptation (current command + name index).
 AGENT_HELP_MAX_TOKENS: int | None = 10_000
+# Diagnose usage errors: state the rule that was broken, not just the symptom. Rendered as a terse
+# addition to the error panel, or as a plain-text block when an AI agent is detected.
+# `RICH_CLICK_ERROR_DIAGNOSIS` overrides this in both directions.
+ERROR_DIAGNOSIS: bool = True
 # Machine-readable help (`--help markdown`, `--help json`, `--help carapace`) is always available on
 # the `--help` flag. Optional hook to post-process the JSON schema: (schema, command, ctx) -> schema
 HELP_JSON_TRANSFORM: HelpJSONTransform | None = None

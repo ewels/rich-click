@@ -224,6 +224,10 @@ class RichCommand(Command):
         # Process shell completion requests and exit early.
         self._main_shell_completion(extra, prog_name, complete_var)
 
+        # Snapshot what was typed, for the error path below: Click's parser consumes ``args`` in place,
+        # and its exceptions carry the context but never the original argv.
+        invocation = [prog_name, *args]
+
         ctx = None
 
         try:
@@ -253,6 +257,7 @@ class RichCommand(Command):
                         sys.exit(e.exit_code)
                 if not standalone_mode:
                     raise
+                e._rich_click_argv = invocation  # type: ignore[attr-defined]
                 formatter = self._error_formatter()
                 formatter.write_error(e)
                 print(formatter.getvalue(), file=sys.stderr, end="")

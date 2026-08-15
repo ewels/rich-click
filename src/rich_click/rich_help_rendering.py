@@ -1164,6 +1164,41 @@ def get_rich_epilog(
         )
 
 
+def _error_panel_body(self: click.ClickException, formatter: RichHelpFormatter) -> RenderableType:
+    """
+    Build the contents of the error panel: Click's message, plus a terse diagnosis where one exists.
+
+    The addition is deliberately short -- the rule that was broken, the nearest alternatives, and a
+    corrected invocation. A human reading a terminal does not need the attempted command line restated
+    back at them (they can see it); that fuller treatment is the agent renderer's job.
+    """
+    from rich_click.error_diagnosis import diagnose, diagnosis_enabled
+
+    message = formatter.highlighter(self.format_message())
+    if not isinstance(self, click.UsageError) or not diagnosis_enabled(formatter.config):
+        return message
+
+    diagnosis = diagnose(self)
+    if diagnosis is None:
+        return message
+
+    config = formatter.config
+    style = config.style_errors_suggestion if config.style_errors_suggestion is not None else config.style_helptext
+    lines = []
+    if diagnosis.rule:
+        lines.append(diagnosis.rule)
+    if diagnosis.suggestions:
+        lines.append(f"{diagnosis.suggestions_label}: {', '.join(diagnosis.suggestions)}")
+    if diagnosis.correction:
+        lines.append(f"Try: {diagnosis.correction}")
+    if diagnosis.help_command:
+        lines.append(f"See '{diagnosis.help_command}' for help")
+
+    from rich.console import Group as RichRenderGroup
+
+    return RichRenderGroup(message, Text(""), *(formatter.highlighter(Text(line, style=style)) for line in lines))
+
+
 def rich_format_error(
     self: click.ClickException, formatter: RichHelpFormatter, export_console_as: Literal[None, "html", "svg"] = None
 ) -> None:
@@ -1235,7 +1270,7 @@ def rich_format_error(
         formatter.write(
             Padding(
                 Panel(
-                    formatter.highlighter(self.format_message()),
+                    _error_panel_body(self, formatter),
                     border_style=config.style_errors_panel_border,
                     title=config.errors_panel_title,
                     title_align=config.align_errors_panel,
