@@ -42,26 +42,17 @@ def unstyled(text: str) -> str:
 def assert_regular_help(result: Result) -> None:
     assert result.exit_code == 0
     assert "╭─ Options ─" in unstyled(result.stdout)
-    assert "# `cli`" not in result.stdout
+    assert "# cli" not in result.stdout
 
 
-def assert_markdown_help(result: Result) -> None:
+def assert_agent_help(result: Result) -> None:
+    """A bare `--help` in agent mode renders `--help compact`: the leanest complete rendering."""
     assert result.exit_code == 0
     assert "╭─ Options ─" not in unstyled(result.stdout)
     assert result.stdout == snapshot(
         """\
-# `cli`
-
-A demo command.
-
-**Usage:** `cli [OPTIONS]`
-
-## Options
-
-| Option | Type | Description |
-| --- | --- | --- |
-| `--name` | String | Your name. |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact | Show this message and exit. |
+# cli — A demo command.
+--name TEXT  Your name.
 
 """
     )
@@ -83,10 +74,10 @@ def test_no_agent_with_suppression_renders_regular_help(cli_runner: CliRunner, c
     assert_regular_help(cli_runner.invoke(cli, "--help"))
 
 
-def test_agent_marker_renders_markdown(cli_runner: CliRunner, cli: click.RichCommand, agent_env: ConfigureEnv) -> None:
+def test_agent_marker_renders_compact(cli_runner: CliRunner, cli: click.RichCommand, agent_env: ConfigureEnv) -> None:
     agent_env(marker=True)
 
-    assert_markdown_help(cli_runner.invoke(cli, "--help"))
+    assert_agent_help(cli_runner.invoke(cli, "--help"))
 
 
 @pytest.mark.parametrize("suppress", _SUPPRESSION_ENV_VARS)
@@ -104,7 +95,7 @@ def test_override_true_beats_suppression(
 ) -> None:
     agent_env(suppress=suppress, override="true")
 
-    assert_markdown_help(cli_runner.invoke(cli, "--help"))
+    assert_agent_help(cli_runner.invoke(cli, "--help"))
 
 
 def test_override_false_beats_agent_marker(
@@ -194,17 +185,70 @@ def test_agent_mode_switches_subcommand_help(cli_runner: CliRunner, agent_env: C
     assert result.exit_code == 0
     assert result.stdout == snapshot(
         """\
-# `cli subcommand`
-
-A demo subcommand.
-
-**Usage:** `cli subcommand [OPTIONS]`
-
-## Options
-
-| Option | Type | Description |
-| --- | --- | --- |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact | Show this message and exit. |
+# subcommand — A demo subcommand.
 
 """
     )
+
+
+# The compact format behaves differently depending on *how* it was asked for: named explicitly it is a
+# whole-tree format, while as the agent default it adapts to the character ceiling. Both are the same
+# renderer; only the ceiling differs.
+
+
+def _tree(**config: object) -> click.RichCommand:
+    """A group with three subcommands, each carrying enough help to be worth abbreviating."""
+
+    @click.group()
+    @rich_config(help_config=RichHelpConfiguration(**config))  # type: ignore[arg-type]
+    def cli() -> None:
+        """A demo group."""
+
+    for index in range(3):
+
+        @cli.command(name=f"run{index}")
+        @click.option("--mode", help="How to run the operation, end to end, in detail.")
+        def run(mode: str) -> None:
+            """Run the thing against a target."""
+
+    return cli
+
+
+def test_explicit_compact_ignores_the_ceiling(cli_runner: CliRunner, agent_env: ConfigureEnv) -> None:
+    # Naming the format is a request for the whole tree: every command's block, ceiling or no ceiling.
+    agent_env(marker=True)
+
+    result = cli_runner.invoke(_tree(agent_help_max_chars=1), ["--help", "compact"])
+
+    assert result.exit_code == 0
+    for index in range(3):
+        assert f"# run{index} — Run the thing against a target." in result.stdout
+        assert "--mode TEXT  How to run the operation, end to end, in detail." in result.stdout
+
+
+def test_agent_default_compact_adapts_to_the_ceiling(cli_runner: CliRunner, agent_env: ConfigureEnv) -> None:
+    # Reached through agent detection instead, the same format degrades under the ceiling rather than
+    # letting the harness truncate it -- but still names every command.
+    agent_env(marker=True)
+
+    result = cli_runner.invoke(_tree(agent_help_max_chars=300), "--help")
+
+    assert result.exit_code == 0
+    assert len(result.stdout.strip()) <= 300
+    assert "# cli — A demo group." in result.stdout
+    for index in range(3):
+        assert f"run{index}  Run the thing against a target." in result.stdout
+    assert "How to run the operation" not in result.stdout
+    assert "size-limited" in result.stdout
+
+
+def test_agent_default_markdown_is_still_available(cli_runner: CliRunner, agent_env: ConfigureEnv) -> None:
+    # Compact is the default, not the only option: the Markdown formats are unchanged and one config
+    # value away.
+    agent_env(marker=True)
+
+    result = cli_runner.invoke(_tree(agent_help_format="markdown"), "--help")
+
+    assert result.exit_code == 0
+    assert "# `cli`" in result.stdout
+    assert "| Option | Type | Description |" in result.stdout

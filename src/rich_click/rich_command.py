@@ -61,6 +61,11 @@ def _normalize_examples(examples: Iterable[tuple[str, str]] | None) -> list[dict
     return normalized
 
 
+def _agent_help_max_chars(ctx: RichContext) -> int | None:
+    """Return the character ceiling the adaptive agent-facing help renders under, if one is configured."""
+    return cast("int | None", getattr(getattr(ctx, "help_config", None), "agent_help_max_chars", None))
+
+
 class RichCommand(Command):
     """
     Richly formatted click Command.
@@ -498,15 +503,14 @@ class RichCommand(Command):
         """
         Build the ``--help markdown`` Markdown for this command. Override for full control of the output.
 
-        Disclosure adapts to the ``agent_help_max_tokens`` config option: as much of the command tree as
+        Disclosure adapts to the ``agent_help_max_chars`` config option: as much of the command tree as
         fits that ceiling is documented, nearest commands first. Unlike the JSON ``format_help_*``
         methods, this returns the finished string (Markdown has no dict-to-serialize step) and takes no
         formatter -- it needs no console config beyond that ceiling.
         """
         from rich_click.help_json import command_markdown
 
-        max_tokens = getattr(getattr(ctx, "help_config", None), "agent_help_max_tokens", None)
-        return command_markdown(self, ctx, recursive=False, max_tokens=max_tokens)
+        return command_markdown(self, ctx, recursive=False, max_chars=_agent_help_max_chars(ctx))
 
     def get_help_markdown_full(self, ctx: RichContext) -> str:
         """Return the recursive ``--help markdown-full`` Markdown: every descendant documented in full."""
@@ -519,19 +523,25 @@ class RichCommand(Command):
         return command_markdown(self, ctx, recursive=True)
 
     def get_help_compact(self, ctx: RichContext) -> str:
-        """Return this command's help in the experimental token-lean ``--help compact`` form."""
+        """Return this command's help in the character-lean ``--help compact`` form."""
         return self.format_help_compact(ctx)
 
     def format_help_compact(self, ctx: RichContext) -> str:
         """
-        Build the ``--help compact`` rendering: one line per option, one line per subcommand, no tables.
+        Build the ``--help compact`` rendering: one line per record, no tables, no Markdown scaffolding.
 
-        Experimental, and never used as the agent default: it exists so that a token-lean and a familiar
-        rendering of identical content can be measured against each other. Override for full control.
+        Asked for explicitly (``--help compact``), this renders the **whole** command tree with no
+        ceiling -- the format is lean enough that a mid-size CLI still fits one agent tool response, and
+        a caller who names the format is asking for everything. As the *agent default* (a bare ``--help``
+        with ``agent_help_format="compact"``) it instead adapts to ``agent_help_max_chars``, exactly as
+        ``--help markdown`` does, so a very large tree degrades rather than being truncated by the
+        harness. Override for full control.
         """
         from rich_click.help_json import compact_command
 
-        return compact_command(self, ctx)
+        if getattr(ctx, "agent_help_default", False):
+            return compact_command(self, ctx, max_chars=_agent_help_max_chars(ctx))
+        return compact_command(self, ctx, recursive=True)
 
     def get_rich_table_row(
         self,
