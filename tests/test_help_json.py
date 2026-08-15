@@ -917,6 +917,57 @@ def test_examples_in_markdown(cli_runner: CliRunner) -> None:
     assert "- Do the other thing: `tool do other`" in out
 
 
+def test_examples_come_before_the_parameters_in_markdown(cli_runner: CliRunner) -> None:
+    # Ordering is not cosmetic: an example is a complete, copyable invocation, so it is the highest-value
+    # thing a model can read about a command. Agent-facing formats put it first, right after the usage
+    # line, so the answer is already there before the option tables are reached.
+    @command(examples=[("Do a thing", "tool do thing")])
+    @option("--mode", type=click.Choice(["fast", "safe"]), help="How to run.")
+    @argument("name")
+    def cli(mode: str, name: str) -> None:
+        """Hi."""
+
+    out = cli_runner.invoke(cli, ["--help=md"]).output
+    assert out.index("**Usage:**") < out.index("## Examples") < out.index("## Arguments") < out.index("## Options")
+
+
+def test_examples_come_before_the_parameters_at_every_level(cli_runner: CliRunner) -> None:
+    @group()
+    def cli() -> None:
+        """Root."""
+
+    for index in range(6):
+
+        @cli.command(name=f"run{index}", examples=[("Run it", f"cli run{index} thing")])
+        @option("--mode", type=click.Choice(["fast", "safe"]), help="How to run the operation end to end.")
+        @argument("target")
+        def run(mode: str, target: str) -> None:
+            """Run the thing against a target."""
+
+    # markdown-full documents every node; the ordering holds in each of their sections.
+    for section in cli_runner.invoke(cli, ["--help=md-full"]).output.split("# `cli run")[1:]:
+        assert section.index("**Usage:**") < section.index("## Examples") < section.index("## Options")
+
+    # And at the compact signature level too: examples are short, and a worked invocation earns its
+    # tokens against a list of flags the model would still have to assemble.
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        last = command_markdown(cli, ctx, max_tokens=900).split("# `cli run5`")[1]
+    assert "| --- |" not in last  # a signature section, not a full one
+    assert last.index("**Usage:**") < last.index("## Examples") < last.index("## Options")
+
+
+def test_human_help_keeps_examples_after_the_options(cli_runner: CliRunner) -> None:
+    # The rendered help is laid out the other way round, and stays that way: a person scanning a
+    # terminal wants the reference material first and the worked examples at the end.
+    @command(examples=[("Do a thing", "tool do thing")])
+    @option("--mode", help="How to run.")
+    def cli(mode: str) -> None:
+        """Hi."""
+
+    out = cli_runner.invoke(cli, ["--help"]).output
+    assert out.index("Options") < out.index("Examples")
+
+
 def test_examples_in_carapace(cli_runner: CliRunner) -> None:
     @command(examples=[("Do a thing", "tool do thing"), ("Do the other thing", "tool do other")])
     def cli() -> None:

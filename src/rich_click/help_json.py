@@ -728,6 +728,25 @@ def _md_subcommand_index(index: dict[str, Any], lines: list[str], indent: int) -
             _md_subcommand_index(nested, lines, indent + 1)
 
 
+def _render_examples(schema: dict[str, Any], lines: list[str]) -> None:
+    """
+    Append a command's Examples section -- always immediately after the usage line.
+
+    Examples come *before* the parameters in every agent-facing format, and the ordering is not
+    cosmetic: an example is a complete, copyable invocation, so it is the single highest-value thing a
+    model can read about a command, and models demonstrably copy the ones they are shown. Making it the
+    first thing after the usage line means the answer is already there before the option tables are
+    reached. (The human help is laid out the other way round, with an Examples panel after the options:
+    a person scanning a terminal wants the reference material first and the worked examples at the end.)
+    """
+    if not schema.get("examples"):
+        return
+    lines += ["## Examples", ""]
+    for example in schema["examples"]:
+        lines.append(f"- {_md_escape(example['description'])}: `{example['command']}`")
+    lines.append("")
+
+
 def _render_command_body(schema: dict[str, Any], lines: list[str]) -> None:
     """
     Append one command's own Markdown -- everything but its subcommands (level **L2**, "full").
@@ -744,11 +763,7 @@ def _render_command_body(schema: dict[str, Any], lines: list[str]) -> None:
     if schema.get("usage"):
         lines += [f"**Usage:** `{schema['usage']}`", ""]
 
-    if schema.get("examples"):
-        lines += ["## Examples", ""]
-        for example in schema["examples"]:
-            lines.append(f"- {_md_escape(example['description'])}: `{example['command']}`")
-        lines.append("")
+    _render_examples(schema, lines)
 
     params = schema.get("params", [])
     arguments = [p for p in params if p.get("kind") == "argument" and not p.get("hidden")]
@@ -768,6 +783,9 @@ def _render_command_signature(schema: dict[str, Any], lines: list[str]) -> None:
     a command is the one it wants and to build a syntactically valid invocation, at a fraction of the
     cost of the full option table. Positional arguments are already spelled out in the usage line, so
     they are not repeated here.
+
+    Examples are the one thing kept in full at this level. They are short, and a worked invocation
+    earns its tokens several times over against a list of flags a model still has to assemble.
     """
     lines += [f"# `{schema.get('path') or schema.get('name') or ''}`", ""]
     summary = _md_short_help(schema.get("help"))
@@ -777,6 +795,8 @@ def _render_command_signature(schema: dict[str, Any], lines: list[str]) -> None:
         lines += [f"**Aliases:** {', '.join(f'`{alias}`' for alias in schema['aliases'])}", ""]
     if schema.get("usage"):
         lines += [f"**Usage:** `{schema['usage']}`", ""]
+
+    _render_examples(schema, lines)
 
     options = [p for p in schema.get("params", []) if p.get("kind") == "option" and not p.get("hidden")]
     if options:

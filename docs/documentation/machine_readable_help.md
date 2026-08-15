@@ -376,7 +376,7 @@ With diagnosis off, errors render exactly as Click and rich-click rendered them 
 
 LLMs respond well to concrete examples. If you give commands examples with the [`examples=` argument](examples.md) — primarily to enrich the rendered `--help` — they flow into the machine-readable formats too:
 
-- `--help markdown` / `--help markdown-full` — an `## Examples` section.
+- `--help markdown` / `--help markdown-full` — an `## Examples` section, placed immediately after the usage line and **before** the parameter tables.
 - `--help json` / `--help json-full` — an `examples` array of `{"command", "description"}` objects.
 - `--help carapace` — the spec's `examples` map, keyed by the command line.
 
@@ -385,6 +385,10 @@ LLMs respond well to concrete examples. If you give commands examples with the [
     examples share the same command (differing only in their descriptions), they collapse to a single
     entry and the last description wins. The `--help json` formats keep every example as a list, so use
     those if you need to preserve duplicates.
+
+The placement in the Markdown formats is deliberate. An example is a complete, copyable invocation — the highest-value thing a model can read about a command — and models demonstrably copy the ones they are shown, so it goes first, before the reference material. Examples survive [adaptive disclosure](#adaptive-disclosure) too: a command abbreviated to its signature keeps its examples in full.
+
+The rendered human `--help` is laid out the other way round, with the Examples panel *after* the options: someone scanning a terminal wants the reference material first and the worked examples at the end.
 
 See [Command Examples](examples.md) for how to define them.
 
