@@ -257,7 +257,12 @@ class RichCommand(Command):
                         sys.exit(e.exit_code)
                 if not standalone_mode:
                     raise
-                e._rich_click_argv = invocation  # type: ignore[attr-defined]
+                try:
+                    e._rich_click_argv = invocation  # type: ignore[attr-defined]
+                except AttributeError:  # pragma: no cover - a slotted ClickException subclass
+                    # Best-effort only: the diagnosis just goes without the attempted argv rather than
+                    # letting an exotic exception class break error reporting altogether.
+                    pass
                 formatter = self._error_formatter()
                 formatter.write_error(e)
                 print(formatter.getvalue(), file=sys.stderr, end="")

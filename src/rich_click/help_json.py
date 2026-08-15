@@ -2,16 +2,19 @@
 Machine-readable help formats for rich-click CLIs.
 
 These power the format values on the existing ``--help`` flag -- ``--help markdown``,
-``--help json``, ``--help json-full`` and ``--help carapace`` -- so tooling and LLM agents can
-discover a CLI's structure as data instead of scraping the rendered ``--help`` screen. No new
-flag is added; the capability lives on ``--help`` and bare ``--help`` is unchanged.
+``--help json``, ``--help json-full``, ``--help carapace`` and ``--help compact`` -- so tooling and
+LLM agents can discover a CLI's structure as data instead of scraping the rendered ``--help``
+screen. No new flag is added; the capability lives on ``--help`` and bare ``--help`` is unchanged.
 
-``--help markdown`` renders the structure as LLM-friendly Markdown; like ``--help json`` it uses
-progressive disclosure, reporting the *current* command's help, usage and full parameter detail,
-plus a name-only index of subcommands, so agents land on a command, read its parameters as data,
-and drill into subcommands by name as needed. The ``-full`` variants (``--help markdown-full`` /
+``--help json`` uses progressive disclosure, reporting the *current* command's help, usage and full
+parameter detail plus a name-only index of subcommands, so agents land on a command, read its
+parameters as data, and drill into subcommands by name as needed. ``--help markdown`` renders the
+same structure as LLM-friendly Markdown, but with *adaptive* disclosure: the invoked command in full
+plus as much of the rest of the tree as fits a token ceiling, nearest hop first (see
+:func:`adaptive_command_markdown`). The ``-full`` variants (``--help markdown-full`` /
 ``--help json-full``) expand every descendant to full detail in one call; ``--help carapace``
-maps the tree onto the carapace completion spec.
+maps the tree onto the carapace completion spec; and ``--help compact`` is an experimental,
+explicitly-requested, token-lean rendering (see :func:`compact_command`).
 
 Composability: the schema is built from each command's ``to_info_dict()`` -- the
 same Click method that powers introspection elsewhere -- so anything a developer
