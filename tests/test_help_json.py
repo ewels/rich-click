@@ -834,9 +834,10 @@ def test_large_tree_degrades_nearest_first(cli_runner: CliRunner) -> None:
     assert "--help markdown` on any command for its full detail." in out
 
 
-def test_adaptive_output_is_deterministic(cli_runner: CliRunner) -> None:
+@pytest.mark.parametrize("fmt", ["md", "compact"])
+def test_adaptive_output_is_deterministic(cli_runner: CliRunner, fmt: str) -> None:
     cli = _big_cli()
-    outputs = {cli_runner.invoke(cli, ["--help=md"]).output for _ in range(3)}
+    outputs = {cli_runner.invoke(cli, [f"--help={fmt}"]).output for _ in range(3)}
     assert len(outputs) == 1
 
 
@@ -1025,15 +1026,18 @@ examples:
 def test_compact_never_pads_or_trails(cli_runner: CliRunner) -> None:
     # The two-space separator is the whole layout: one space would be ambiguous with the spaces inside a
     # signature, and padding to a column would make the boundary depend on the widest row in the block.
-    out = cli_runner.invoke(_record_cli(), ["plarv", "crell", "--help=compact"]).output
+    # Asserted over a whole large tree, at every detail level, since that is where a stray pad would
+    # hide -- the block above is already pinned byte-for-byte by the snapshot.
+    cli = _big_cli(groups=3, commands=3)
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        out = compact_command(cli, ctx, recursive=True) + compact_command(cli, ctx, max_chars=1_200)
 
     for line in out.splitlines():
         assert line == line.rstrip(), repr(line)  # no trailing whitespace, anywhere
-        assert "   " not in line, repr(line)  # no column padding
-        if line.startswith("-") and not line.startswith("- "):
-            signature, separator, description = line.partition("  ")
-            assert separator == "  " and description[:1] != " ", repr(line)
-            assert signature.strip() == signature, repr(line)
+        assert "   " not in line, repr(line)  # no column padding: two spaces is always the separator
+        signature, separator, description = line.partition("  ")
+        if separator:  # a line without one is a bare signature, which is a whole line by itself
+            assert signature and description, repr(line)
 
 
 def test_compact_usage_line_only_when_there_are_positionals(cli_runner: CliRunner) -> None:
@@ -1214,11 +1218,6 @@ def test_compact_adaptive_promotes_signatures_before_full_blocks(cli_runner: Cli
     # Signatures everywhere, descriptions only on the commands whose full block also fit.
     assert "--target alpha|beta\n--seed INTEGER\n" in out
     assert 0 < out.count("--target alpha|beta  Which target to act on.") < 36
-
-
-def test_compact_output_is_deterministic(cli_runner: CliRunner) -> None:
-    cli = _big_cli()
-    assert len({cli_runner.invoke(cli, ["--help=compact"]).output for _ in range(3)}) == 1
 
 
 def test_compact_is_the_agent_default(cli_runner: CliRunner) -> None:

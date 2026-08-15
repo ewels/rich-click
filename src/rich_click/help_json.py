@@ -647,13 +647,24 @@ def _md_param_type(param: dict[str, Any]) -> str:
     return _md_escape(label)
 
 
+def _param_envvars(param: dict[str, Any]) -> str:
+    """Render a parameter's environment variable(s) as a comma-separated list, or ``""`` when it has none."""
+    envvar = param.get("envvar")
+    if not envvar:
+        return ""
+    # Click accepts either a single name or a list of them; a list rendered via ``str()`` would come out
+    # as ``['A', 'B']``, which is Python syntax rather than the names the reader has to export.
+    return ", ".join(str(name) for name in envvar) if isinstance(envvar, (list, tuple)) else str(envvar)
+
+
 def _md_param_description(param: dict[str, Any]) -> str:
     """Help text plus inline env-var / prompt annotations, for a parameter's table cell."""
     parts = []
     if param.get("help"):
         parts.append(param["help"])
-    if param.get("envvar"):
-        parts.append(f"[env: {param['envvar']}]")
+    envvars = _param_envvars(param)
+    if envvars:
+        parts.append(f"[env: {envvars}]")
     if param.get("prompt"):
         parts.append(f"[prompt: {param['prompt']}]")
     return _md_escape(" ".join(parts))
@@ -711,29 +722,42 @@ def _param_metavar(param: click.Parameter, ctx: click.Context) -> str:
     return metavar
 
 
+def _schema_path(schema: dict[str, Any]) -> str:
+    """Return a command's full invocation path (program name included), or its bare name as a fallback."""
+    return str(schema.get("path") or schema.get("name") or "")
+
+
 def _md_param_opts(param: dict[str, Any]) -> list[str]:
     """Return an option's flags, negation flags included."""
     return [*(param.get("opts") or []), *(param.get("secondary_opts") or [])]
 
 
-def _md_param_metavar(param: dict[str, Any]) -> str:
+def _md_param_metavar(param: dict[str, Any], *, brackets: bool = True) -> str:
     """
-    Return the metavar to show in a compact rendering, preferring a spelled-out choice list.
+    Return the metavar to show in a lean rendering, preferring a spelled-out choice list.
 
-    A ``Choice`` renders as ``[fast|safe]`` from the schema's own ``choices`` rather than from Click's
-    metavar, because these renderings have no description column to lean on and the choice values *are*
-    the vocabulary needed to construct a valid invocation. That also keeps the ``--help`` option's full
-    format list, which the rendered help abbreviates to ``[markdown|json|...]`` to fit a terminal.
+    A ``Choice`` renders from the schema's own ``choices`` rather than from Click's metavar, because
+    these renderings have no description column to lean on and the choice values *are* the vocabulary
+    needed to construct a valid invocation. That also keeps the ``--help`` option's full format list,
+    which the rendered help abbreviates to ``[markdown|json|...]`` to fit a terminal. ``brackets=False``
+    drops the enclosing brackets (``fast|safe``), which is how the compact format spells the same thing.
     """
     choices = param.get("choices")
     if choices:
-        return "[" + "|".join(str(choice) for choice in choices) + "]"
+        joined = "|".join(str(choice) for choice in choices)
+        return f"[{joined}]" if brackets else joined
     return param.get("metavar") or ""
 
 
-def _md_param_signature(param: dict[str, Any]) -> str:
-    """Return an option's flags and the value it takes, e.g. ``-c, --count INTEGER`` or ``--mode [a|b]``."""
-    return f"{', '.join(_md_param_opts(param))} {_md_param_metavar(param)}".strip()
+def _md_param_signature(param: dict[str, Any], metavar: str | None = None) -> str:
+    """
+    Return an option's flags and the value it takes, e.g. ``-c, --count INTEGER`` or ``--mode [a|b]``.
+
+    ``metavar`` overrides the value part, for a rendering that spells it differently.
+    """
+    if metavar is None:
+        metavar = _md_param_metavar(param)
+    return f"{', '.join(_md_param_opts(param))} {metavar}".strip()
 
 
 def _summary(schema: dict[str, Any]) -> str:
@@ -751,20 +775,40 @@ def _summary(schema: dict[str, Any]) -> str:
     return _one_line((schema.get("help") or "").split("\n\n", 1)[0])
 
 
+def _md_child_prefix(prefix: str, name: str) -> str:
+    """Nest a Markdown index one level deeper: indentation, as a bullet list is nested."""
+    return f"{prefix}  "
+
+
+def _compact_child_prefix(prefix: str, name: str) -> str:
+    """
+    Nest a compact index one level deeper: by path, so ``list`` under ``things`` reads ``things list``.
+
+    It costs the same characters as indentation and hands the reader the invocation to type, instead of
+    a bare name they would have to assemble from an enclosing line.
+    """
+    return f"{prefix}{name} "
+
+
 def _subcommand_index_lines(
-    index: dict[str, Any], lines: list[str], indent: int, entry_line: Callable[[str, dict[str, Any]], str]
+    index: dict[str, Any],
+    lines: list[str],
+    prefix: str,
+    entry_line: Callable[[str, dict[str, Any]], str],
+    child_prefix: Callable[[str, str], str],
 ) -> None:
     """
-    Walk a name-only subcommand index depth-first, one line per command, nested by indentation.
+    Walk a name-only subcommand index depth-first, one line per command.
 
-    ``entry_line`` formats a single command; the Markdown and compact renderings differ only in that
-    formatting, so they share this walk rather than each carrying their own copy of the tree recursion.
+    ``entry_line`` formats a single command and ``child_prefix`` decides how nesting is expressed; the
+    Markdown and compact renderings differ only in those two, so they share this walk rather than each
+    carrying their own copy of the tree recursion.
     """
     for name, entry in index.items():
-        lines.append("  " * indent + entry_line(name, entry))
+        lines.append(prefix + entry_line(name, entry))
         nested = entry.get("subcommands")
         if nested:
-            _subcommand_index_lines(nested, lines, indent + 1, entry_line)
+            _subcommand_index_lines(nested, lines, child_prefix(prefix, name), entry_line, child_prefix)
 
 
 def _md_index_entry(name: str, entry: dict[str, Any]) -> str:
@@ -810,7 +854,7 @@ def _render_command_header(schema: dict[str, Any], lines: list[str], *, descript
     nested headings whose level would otherwise collide with the per-command sub-sections. Only the
     ``description`` differs between levels: the full help text, or a one-line summary of it.
     """
-    lines += [f"# `{schema.get('path') or schema.get('name') or ''}`", ""]
+    lines += [f"# `{_schema_path(schema)}`", ""]
     if description:
         lines += [description, ""]
     if schema.get("aliases"):
@@ -857,29 +901,25 @@ def _render_command_signature(schema: dict[str, Any], lines: list[str]) -> None:
         lines.append("")
 
 
+def _pointer_entry(schema: dict[str, Any]) -> tuple[str, dict[str, Any]]:
+    """Reduce a full schema to the ``(name, entry)`` pair a subcommand-index formatter takes."""
+    return str(schema.get("name") or ""), {"aliases": schema.get("aliases"), "help": _summary(schema)}
+
+
 def _render_command_pointer(schema: dict[str, Any]) -> str:
     """Render a command as a single index bullet (level **L0**) -- name, aliases, one-line summary."""
-    return _md_index_entry(str(schema.get("name") or ""), {"aliases": schema.get("aliases"), "help": _summary(schema)})
+    return _md_index_entry(*_pointer_entry(schema))
 
 
-def _render_command_markdown(schema: dict[str, Any], lines: list[str], recursive: bool) -> None:
-    """
-    Append one command's Markdown section, including its subcommands.
-
-    When ``recursive``, subcommands are full schemas rendered as their own sections; otherwise they are
-    the progressive name index rendered as a bullet list.
-    """
+def _render_command_markdown(schema: dict[str, Any], lines: list[str]) -> None:
+    """Append one command's Markdown section, followed by a name index of its subcommands."""
     _render_command_body(schema, lines)
 
     subcommands = schema.get("subcommands")
     if subcommands:
-        if recursive:
-            for entry in subcommands.values():
-                _render_command_markdown(entry, lines, recursive=True)
-        else:
-            lines += ["## Subcommands", ""]
-            _subcommand_index_lines(subcommands, lines, 0, _md_index_entry)
-            lines.append("")
+        lines += ["## Subcommands", ""]
+        _subcommand_index_lines(subcommands, lines, "", _md_index_entry, _md_child_prefix)
+        lines.append("")
 
 
 # --------------------------------------------------------------------------------------------------
@@ -952,7 +992,12 @@ def _compact_anchor(schema: dict[str, Any]) -> str:
     return f"{line} — {_one_line(summary)}" if summary else line
 
 
-def _compact_metavar(param: dict[str, Any], *, is_option: bool) -> str:
+def _is_option(param: dict[str, Any]) -> bool:
+    """Report whether a parameter is an option rather than a positional argument."""
+    return param.get("kind") == "option"
+
+
+def _compact_metavar(param: dict[str, Any]) -> str:
     """
     Return the value a parameter takes, as the compact format spells it.
 
@@ -962,8 +1007,7 @@ def _compact_metavar(param: dict[str, Any], *, is_option: bool) -> str:
     an argument's line is the same token the usage line shows -- including the ``{a|b}`` a ``Choice``
     argument already renders as, and the brackets that mark an optional one.
     """
-    choices = param.get("choices") if is_option else None
-    metavar = "|".join(str(choice) for choice in choices) if choices else str(param.get("metavar") or "")
+    metavar = _md_param_metavar(param, brackets=False) if _is_option(param) else str(param.get("metavar") or "")
     if param.get("multiple"):
         # ``_param_metavar`` marks a repeatable option by gluing an ellipsis onto the metavar; separating
         # it keeps ``...`` a token of its own, which is how every CLI convention writes "repeat this".
@@ -972,7 +1016,7 @@ def _compact_metavar(param: dict[str, Any], *, is_option: bool) -> str:
     return metavar
 
 
-def _compact_signature(param: dict[str, Any], *, is_option: bool) -> str:
+def _compact_signature(param: dict[str, Any]) -> str:
     """
     Return a parameter's signature: ``*--crull TEXT``, ``--kolm pelm|crox|zeff``, ``SRC``.
 
@@ -980,10 +1024,11 @@ def _compact_signature(param: dict[str, Any], *, is_option: bool) -> str:
     uses -- rather than a trailing ``[required]``, which costs ten times as many characters to say the
     same thing. Arguments carry no marker: Click's metavar already brackets the optional ones.
     """
-    if not is_option:
-        return _compact_metavar(param, is_option=False)
+    metavar = _compact_metavar(param)
+    if not _is_option(param):
+        return metavar
     required = "*" if param.get("required") else ""
-    return f"{required}{', '.join(_md_param_opts(param))} {_compact_metavar(param, is_option=True)}".strip()
+    return f"{required}{_md_param_signature(param, metavar)}"
 
 
 def _compact_tags(param: dict[str, Any]) -> list[str]:
@@ -996,20 +1041,24 @@ def _compact_tags(param: dict[str, Any]) -> list[str]:
     tags = []
     if "default" in param:
         tags.append(f"[default: {_one_line(param['default'])}]")
-    envvar = param.get("envvar")
-    if envvar:
-        names = ", ".join(str(name) for name in envvar) if isinstance(envvar, (list, tuple)) else str(envvar)
-        tags.append(f"[env: {names}]")
+    envvars = _param_envvars(param)
+    if envvars:
+        tags.append(f"[env: {envvars}]")
     if param.get("prompt"):
         tags.append(f"[prompt: {_one_line(param['prompt'])}]")
     return tags
 
 
-def _compact_param_line(param: dict[str, Any], *, is_option: bool) -> str:
-    """Render one parameter as ``<signature>  <description> [default: x] [env: NAME]``."""
+def _compact_param_line(param: dict[str, Any], tags: list[str] | None = None) -> str:
+    """
+    Render one parameter as ``<signature>  <description> [default: x] [env: NAME]``.
+
+    ``tags`` accepts an already-computed :func:`_compact_tags` result, for a caller that had to look at
+    them to decide whether to emit the line at all.
+    """
     description = [_one_line(param["help"])] if param.get("help") else []
-    description += _compact_tags(param)
-    signature = _compact_signature(param, is_option=is_option)
+    description += _compact_tags(param) if tags is None else tags
+    signature = _compact_signature(param)
     # No description and no tags means no separator: the format never emits trailing whitespace.
     return f"{signature}{_COMPACT_GAP}{' '.join(description)}" if description else signature
 
@@ -1037,31 +1086,23 @@ def _compact_usage(schema: dict[str, Any]) -> str | None:
     arguments = _visible(schema.get("params", []), "argument")
     if not arguments:
         return None
-    path = str(schema.get("path") or schema.get("name") or "")
-    pieces = [_compact_metavar(param, is_option=False) or str(param.get("name") or "").upper() for param in arguments]
-    return " ".join(["usage:", path, *pieces])
+    pieces = [metavar for param in arguments if (metavar := _compact_metavar(param))]
+    return " ".join(["usage:", _schema_path(schema), *pieces])
 
 
-def _compact_index_entry(path: str, entry: dict[str, Any]) -> str:
-    """Format one listed subcommand as ``<path> [aliases: …]  <short help>``."""
-    line = f"{path}{_compact_aliases(entry.get('aliases'))}"
+def _compact_index_entry(name: str, entry: dict[str, Any]) -> str:
+    """Format one listed subcommand as ``<name> [aliases: …]  <short help>``."""
+    line = f"{name}{_compact_aliases(entry.get('aliases'))}"
     help_text = entry.get("help")
     return f"{line}{_COMPACT_GAP}{_one_line(help_text)}" if help_text else line
 
 
-def _compact_index_lines(index: dict[str, Any], lines: list[str], prefix: str = "") -> None:
-    """
-    Walk a name-only subcommand index depth-first, one line per command.
-
-    Nesting is carried by the path (``things list``) rather than by indentation: it costs the same
-    characters, and it hands the reader the invocation to type instead of a name it would have to
-    assemble from an enclosing line.
-    """
-    for name, entry in index.items():
-        lines.append(_compact_index_entry(prefix + name, entry))
-        nested = entry.get("subcommands")
-        if nested:
-            _compact_index_lines(nested, lines, f"{prefix}{name} ")
+def _compact_head(schema: dict[str, Any], lines: list[str]) -> None:
+    """Append the lines every compact block opens with, at any detail level: anchor, then usage."""
+    lines.append(_compact_anchor(schema))
+    usage = _compact_usage(schema)
+    if usage:
+        lines.append(usage)
 
 
 def _render_compact_body(schema: dict[str, Any], lines: list[str]) -> None:
@@ -1073,17 +1114,15 @@ def _render_compact_body(schema: dict[str, Any], lines: list[str]) -> None:
     examples land as the summary of what the option lines just spelled out rather than as an answer
     ahead of the reference material.
     """
-    lines.append(_compact_anchor(schema))
-    usage = _compact_usage(schema)
-    if usage:
-        lines.append(usage)
+    _compact_head(schema, lines)
 
     for param in _visible(schema.get("params", []), "argument"):
         # A bare positional is already fully described by the usage line; only one that carries a
         # description or a tag has anything left to say.
-        if param.get("help") or _compact_tags(param):
-            lines.append(_compact_param_line(param, is_option=False))
-    lines += [_compact_param_line(param, is_option=True) for param in _compact_options(schema)]
+        tags = _compact_tags(param)
+        if param.get("help") or tags:
+            lines.append(_compact_param_line(param, tags))
+    lines += [_compact_param_line(param) for param in _compact_options(schema)]
 
     if schema.get("examples"):
         # The command lines alone, without their descriptions: sitting under the option list, a worked
@@ -1100,18 +1139,13 @@ def _render_compact_signature(schema: dict[str, Any], lines: list[str]) -> None:
     wants and to build a syntactically valid invocation, without paying for a word of description. The
     usage line survives when there are positionals, since nothing else at this level would mention them.
     """
-    lines.append(_compact_anchor(schema))
-    usage = _compact_usage(schema)
-    if usage:
-        lines.append(usage)
-    lines += [_compact_signature(param, is_option=True) for param in _compact_options(schema)]
+    _compact_head(schema, lines)
+    lines += [_compact_signature(param) for param in _compact_options(schema)]
 
 
 def _render_compact_pointer(schema: dict[str, Any]) -> str:
     """Render a command as a single listing line (level **L0**) -- name, aliases, one-line summary."""
-    return _compact_index_entry(
-        str(schema.get("name") or ""), {"aliases": schema.get("aliases"), "help": _summary(schema)}
-    )
+    return _compact_index_entry(*_pointer_entry(schema))
 
 
 # --------------------------------------------------------------------------------------------------
@@ -1146,79 +1180,68 @@ DETAIL_FULL = 2
 """Everything: description, usage, examples and the full option/argument detail."""
 
 
+def _line_chars(lines: Sequence[str]) -> int:
+    """Count the characters a block of lines occupies once joined with newlines."""
+    return sum(len(line) + 1 for line in lines)
+
+
 class _RenderStyle(NamedTuple):
     """
     How one rendering draws the three detail levels, so the budgeting machinery can be shared.
 
-    Markdown and compact differ only in what a node's block looks like at each level and how listed
-    (L0) descendants are introduced -- not in how the tree is priced or promoted. Keeping that
-    difference in one small record means the two formats cannot drift apart in their disclosure
-    behaviour, only in their typography.
+    Markdown and compact differ only in what a node's block looks like at each level, how listed (L0)
+    descendants are introduced, and how the closing note is worded -- not in how the tree is priced or
+    promoted. Keeping the whole difference in one record means the two formats cannot drift apart in
+    their disclosure behaviour, only in their typography, and that a style is never half-defined.
     """
 
-    #: ``--help <name>`` this style renders; named in the closing note so the reader can ask for more.
-    name: str
     #: Append a node's block at L2 / L1 to a line buffer.
     full: Callable[[dict[str, Any], list[str]], None]
     signature: Callable[[dict[str, Any], list[str]], None]
     #: Render a node as a single L0 listing line, without its prefix.
     pointer: Callable[[dict[str, Any]], str]
     #: Extend the prefix carried down to a listed node's own children (indentation, or a path).
-    child_prefix: Callable[[str, dict[str, Any]], str]
-    #: Emitted before a block's listed children, after them, and after the block itself.
+    child_prefix: Callable[[str, str], str]
+    #: Emitted before a block's listed children, with its character count alongside -- the pricing walk
+    #: asks for that on every node of every pass, and the answer cannot change. Build a style with
+    #: :func:`_style` so the two cannot disagree.
     pointer_heading: tuple[str, ...]
-    pointer_end: tuple[str, ...]
-    block_end: tuple[str, ...]
+    pointer_heading_chars: int
+    #: Closing note when the tree did not fit, as a template over ``path``/``full``/``signature``/``pointer``.
+    note: str
 
 
-def _markdown_budget_note(path: str, full: int, signature: int, pointer: int) -> str:
-    """Build the Markdown rendering's closing note, telling the reader what was abbreviated."""
-    return (
-        f"> **Note:** this help was size-limited: {full} command(s) documented in full, {signature} in "
-        f"brief, {pointer} listed by name only. Run "
-        f"`{path} <COMMAND> --help markdown` on any command for its full detail."
-    )
+def _style(pointer_heading: tuple[str, ...] = (), **fields: Any) -> _RenderStyle:
+    """Build a :class:`_RenderStyle`, pricing its pointer heading once so the walk never re-counts it."""
+    return _RenderStyle(pointer_heading=pointer_heading, pointer_heading_chars=_line_chars(pointer_heading), **fields)
 
 
-def _compact_budget_note(path: str, full: int, signature: int, pointer: int) -> str:
-    """Build the compact closing note -- the same facts, in the format's own plain-text idiom."""
-    return (
-        f"note: size-limited: {full} command(s) shown in full, {signature} in brief, {pointer} by name "
-        f"only. Run `{path} <COMMAND> --help compact` on any command for its full detail."
-    )
-
-
-_MARKDOWN_STYLE = _RenderStyle(
-    name="markdown",
+_MARKDOWN_STYLE = _style(
     full=_render_command_body,
     signature=_render_command_signature,
     pointer=_render_command_pointer,
-    # Markdown nests its listing by indentation, under a heading, and its blocks end in a blank line of
-    # their own -- so only the listing needs one appended.
-    child_prefix=lambda prefix, schema: f"{prefix}  ",
-    pointer_heading=("## Subcommands", ""),
-    pointer_end=("",),
-    block_end=(),
+    child_prefix=_md_child_prefix,
+    # The heading opens with a blank line to separate the listing from the block it belongs to.
+    pointer_heading=("", "## Subcommands", ""),
+    note=(
+        "> **Note:** this help was size-limited: {full} command(s) documented in full, {signature} in "
+        "brief, {pointer} listed by name only. Run "
+        "`{path} <COMMAND> --help markdown` on any command for its full detail."
+    ),
 )
 
-_COMPACT_STYLE = _RenderStyle(
-    name="compact",
+_COMPACT_STYLE = _style(
     full=_render_compact_body,
     signature=_render_compact_signature,
     pointer=_render_compact_pointer,
-    # Compact nests its listing by path, needs no heading to introduce it (an option line starts with a
-    # dash and a listing line does not), and separates one command block from the next by a blank line.
-    child_prefix=lambda prefix, schema: f"{prefix}{schema.get('name') or ''} ",
-    pointer_heading=(),
-    pointer_end=(),
-    block_end=("",),
+    # Compact nests its listing by path, and needs no heading to introduce it: an option line starts
+    # with a dash or a star, and a listing line does not.
+    child_prefix=_compact_child_prefix,
+    note=(
+        "note: size-limited: {full} command(s) shown in full, {signature} in brief, {pointer} by name "
+        "only. Run `{path} <COMMAND> --help compact` on any command for its full detail."
+    ),
 )
-
-#: Closing note builder per style, keyed by format name.
-_BUDGET_NOTES: dict[str, Callable[[str, int, int, int], str]] = {
-    "markdown": _markdown_budget_note,
-    "compact": _compact_budget_note,
-}
 
 
 class _HelpNode:
@@ -1241,12 +1264,20 @@ class _HelpNode:
         self._pointer: tuple[str, int] | None = None
 
     def section(self) -> tuple[list[str], int]:
-        """Return this node's own block at its current level, as ``(lines, characters)``."""
+        """
+        Return this node's own block at its current level, as ``(lines, characters)``.
+
+        Trailing blank lines are stripped, so that every block ends the same way whatever produced it
+        (the Markdown renderers close their last section with one; the compact ones do not) and
+        :func:`_emit` can terminate a block with a single rule instead of a per-style knob.
+        """
         cached = self._sections.get(self.level)
         if cached is None:
             lines: list[str] = []
             render = self.style.full if self.level == DETAIL_FULL else self.style.signature
             render(self.schema, lines)
+            while lines and not lines[-1]:
+                lines.pop()
             cached = (lines, _line_chars(lines))
             self._sections[self.level] = cached
         return cached
@@ -1257,11 +1288,6 @@ class _HelpNode:
             line = self.style.pointer(self.schema)
             self._pointer = (line, len(line) + 1)
         return self._pointer
-
-
-def _line_chars(lines: Sequence[str]) -> int:
-    """Count the characters a block of lines occupies once joined with newlines."""
-    return sum(len(line) + 1 for line in lines)
 
 
 def _breadth_first(root: _HelpNode) -> list[_HelpNode]:
@@ -1291,9 +1317,10 @@ def _emit(node: _HelpNode, prefix: str, out: list[str] | None) -> int:
         if out is not None:
             out.append(prefix + line)
         total = chars + len(prefix)
-        child_prefix = style.child_prefix(prefix, node.schema)
-        for child in node.children:
-            total += _emit(child, child_prefix, out)
+        if node.children:  # most nodes are leaves; building a prefix for nobody is the common case
+            child_prefix = style.child_prefix(prefix, str(node.schema.get("name") or ""))
+            for child in node.children:
+                total += _emit(child, child_prefix, out)
         return total
 
     lines, total = node.section()
@@ -1306,15 +1333,12 @@ def _emit(node: _HelpNode, prefix: str, out: list[str] | None) -> int:
     if pointers:
         if out is not None:
             out.extend(style.pointer_heading)
-        total += _line_chars(style.pointer_heading)
+        total += style.pointer_heading_chars
         for child in pointers:
             total += _emit(child, "", out)
-        if out is not None:
-            out.extend(style.pointer_end)
-        total += _line_chars(style.pointer_end)
     if out is not None:
-        out.extend(style.block_end)
-    total += _line_chars(style.block_end)
+        out.append("")  # one blank line closes every block, and separates it from the next
+    total += 1
     for child in node.children:
         if child.level != DETAIL_POINTER:
             total += _emit(child, "", out)
@@ -1345,11 +1369,6 @@ def _promote(root: _HelpNode, order: Sequence[_HelpNode], max_chars: int) -> Non
                 return
 
 
-def _root_path(root: _HelpNode) -> str:
-    """Return the invoked command's path, as the closing note spells it."""
-    return str(root.schema.get("path") or root.schema.get("name") or "")
-
-
 def _note_reserve(root: _HelpNode, order: Sequence[_HelpNode], style: _RenderStyle) -> int:
     """
     Characters to hold back from the ceiling for the closing note, which is only emitted when the tree
@@ -1359,7 +1378,8 @@ def _note_reserve(root: _HelpNode, order: Sequence[_HelpNode], style: _RenderSty
     maximum number of digits -- plus the blank line before it and its own newline. Reserving the real
     upper bound, rather than a guessed constant, is what makes the ceiling an exact one.
     """
-    widest = _BUDGET_NOTES[style.name](_root_path(root), len(order), len(order), len(order))
+    counts = len(order)
+    widest = style.note.format(path=_schema_path(root.schema), full=counts, signature=counts, pointer=counts)
     return len(widest) + 2
 
 
@@ -1391,14 +1411,15 @@ def _adaptive_help(cmd: click.Command, ctx: click.Context, max_chars: int, style
 
     lines: list[str] = []
     _emit(root, "", lines)
+    text = "\n".join(lines).strip()
     if truncated:
         full = sum(1 for node in order if node.level == DETAIL_FULL)
         signature = sum(1 for node in order if node.level == DETAIL_SIGNATURE)
-        note = _BUDGET_NOTES[style.name](_root_path(root), full, signature, len(order) - full - signature)
-        while lines and not lines[-1]:  # one blank line before the note, whatever the block ended with
-            lines.pop()
-        lines += ["", note]
-    return "\n".join(lines).strip() + "\n"
+        note = style.note.format(
+            path=_schema_path(root.schema), full=full, signature=signature, pointer=len(order) - full - signature
+        )
+        text += f"\n\n{note}"
+    return text + "\n"
 
 
 def _whole_tree_help(cmd: click.Command, ctx: click.Context, style: _RenderStyle) -> str:
@@ -1433,10 +1454,12 @@ def command_markdown(
     listing its descendants as a name index. Built from :func:`command_schema`, so it shares the JSON
     formats' extraction and single ``to_info_dict()`` walk.
     """
-    if not recursive and max_chars is not None:
+    if recursive:
+        return _whole_tree_help(cmd, ctx, _MARKDOWN_STYLE)
+    if max_chars is not None:
         return adaptive_command_markdown(cmd, ctx, max_chars)
     lines: list[str] = []
-    _render_command_markdown(command_schema(cmd, ctx, recursive=recursive, display=True), lines, recursive)
+    _render_command_markdown(command_schema(cmd, ctx, recursive=False, display=True), lines)
     return "\n".join(lines).strip() + "\n"
 
 
@@ -1461,5 +1484,5 @@ def compact_command(
     lines: list[str] = []
     _render_compact_body(schema, lines)
     if schema.get("subcommands"):
-        _compact_index_lines(schema["subcommands"], lines)
+        _subcommand_index_lines(schema["subcommands"], lines, "", _compact_index_entry, _compact_child_prefix)
     return "\n".join(lines).strip() + "\n"
