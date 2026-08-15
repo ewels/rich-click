@@ -112,6 +112,14 @@ class RichHelpFormatter(click.HelpFormatter):
     """
     export_console_as: Literal[None, "html", "svg", "text"] = None
 
+    error_argv: list[str] | None = None
+    """The invocation that produced the error being formatted, set by ``RichCommand.main``.
+
+    Click's parser consumes its argument list in place and its exceptions carry the context but never
+    the original argv, so the command records it here on its way to the error renderers. The agent
+    error rendering restates it, since an agent has no terminal scrollback to look at. ``None`` when
+    the error did not come through ``main`` (e.g. a renderer called directly)."""
+
     option_panel_class: type[RichOptionPanel] = RichOptionPanel
     command_panel_class: type[RichCommandPanel] = RichCommandPanel
 

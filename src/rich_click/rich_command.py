@@ -224,6 +224,10 @@ class RichCommand(Command):
         # Process shell completion requests and exit early.
         self._main_shell_completion(extra, prog_name, complete_var)
 
+        # Snapshot what was typed, for the error path below: Click's parser consumes ``args`` in place,
+        # and its exceptions carry the context but never the original argv.
+        invocation = [prog_name, *args]
+
         ctx = None
 
         try:
@@ -254,6 +258,7 @@ class RichCommand(Command):
                 if not standalone_mode:
                     raise
                 formatter = self._error_formatter()
+                formatter.error_argv = invocation
                 formatter.write_error(e)
                 print(formatter.getvalue(), file=sys.stderr, end="")
                 sys.exit(e.exit_code)
@@ -366,6 +371,7 @@ class RichCommand(Command):
         "json": "get_help_json",
         "json-full": "get_help_json_full",
         "carapace": "get_help_carapace",
+        "compact": "get_help_compact",
     }
 
     def get_help_for_format(self, ctx: RichContext, fmt: str) -> str | None:
@@ -492,12 +498,15 @@ class RichCommand(Command):
         """
         Build the ``--help markdown`` Markdown for this command. Override for full control of the output.
 
-        Unlike the JSON ``format_help_*`` methods, this returns the finished string (Markdown has no
-        dict-to-serialize step) and takes no formatter -- it needs no console config.
+        Disclosure adapts to the ``agent_help_max_tokens`` config option: as much of the command tree as
+        fits that ceiling is documented, nearest commands first. Unlike the JSON ``format_help_*``
+        methods, this returns the finished string (Markdown has no dict-to-serialize step) and takes no
+        formatter -- it needs no console config beyond that ceiling.
         """
         from rich_click.help_json import command_markdown
 
-        return command_markdown(self, ctx, recursive=False)
+        max_tokens = getattr(getattr(ctx, "help_config", None), "agent_help_max_tokens", None)
+        return command_markdown(self, ctx, recursive=False, max_tokens=max_tokens)
 
     def get_help_markdown_full(self, ctx: RichContext) -> str:
         """Return the recursive ``--help markdown-full`` Markdown: every descendant documented in full."""
@@ -508,6 +517,21 @@ class RichCommand(Command):
         from rich_click.help_json import command_markdown
 
         return command_markdown(self, ctx, recursive=True)
+
+    def get_help_compact(self, ctx: RichContext) -> str:
+        """Return this command's help in the experimental token-lean ``--help compact`` form."""
+        return self.format_help_compact(ctx)
+
+    def format_help_compact(self, ctx: RichContext) -> str:
+        """
+        Build the ``--help compact`` rendering: one line per option, one line per subcommand, no tables.
+
+        Experimental, and never used as the agent default: it exists so that a token-lean and a familiar
+        rendering of identical content can be measured against each other. Override for full control.
+        """
+        from rich_click.help_json import compact_command
+
+        return compact_command(self, ctx)
 
     def get_rich_table_row(
         self,

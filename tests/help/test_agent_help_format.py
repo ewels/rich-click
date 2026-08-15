@@ -1,5 +1,5 @@
 import re
-from collections.abc import Callable, Iterator
+from collections.abc import Callable
 
 import pytest
 from click.testing import CliRunner, Result
@@ -8,45 +8,11 @@ from inline_snapshot import snapshot
 import rich_click as click
 import rich_click.rich_click as rc
 from rich_click import RichHelpConfiguration, rich_config
-from rich_click._agent_detection import _AGENT_ENV_VARS, _SUPPRESSION_ENV_VARS, _reset_agent_cache
+from rich_click._agent_detection import _SUPPRESSION_ENV_VARS
 
 
-#: One representative agent marker; the full list is covered in `tests/test_agent_detection.py`.
-AGENT_MARKER = "CLAUDECODE"
-
+#: The `agent_env` fixture from conftest; see there for what it does.
 ConfigureEnv = Callable[..., None]
-
-
-@pytest.fixture
-def agent_env(monkeypatch: pytest.MonkeyPatch) -> Iterator[ConfigureEnv]:
-    """
-    Set up an agent-detection environment, and reset the cached detection so it takes effect.
-
-    Call this from inside the test body, not from another fixture: pytest re-sets
-    ``PYTEST_CURRENT_TEST`` at the start of every test phase, so the suppression markers can only be
-    dropped for the duration of the body itself.
-    """
-
-    def configure(*, marker: bool = False, suppress: str | None = None, override: str | None = None) -> None:
-        for env_var in (
-            *_SUPPRESSION_ENV_VARS,
-            *_AGENT_ENV_VARS,
-            "AI_AGENT",
-            "AGENT",
-            "CURSOR_EXTENSION_HOST_ROLE",
-            "TERM_PROGRAM",
-        ):
-            monkeypatch.delenv(env_var, raising=False)
-        if suppress is not None:
-            monkeypatch.setenv(suppress, "1")
-        if marker:
-            monkeypatch.setenv(AGENT_MARKER, "1")
-        if override is not None:
-            monkeypatch.setenv("RICH_CLICK_AGENT_MODE", override)
-        _reset_agent_cache()
-
-    yield configure
-    _reset_agent_cache()
 
 
 @pytest.fixture
@@ -92,10 +58,10 @@ A demo command.
 
 ## Options
 
-| Option | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `--name` | String |  |  | Your name. |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace |  |  | Show this message and exit. |
+| Option | Type | Description |
+| --- | --- | --- |
+| `--name` | String | Your name. |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact | Show this message and exit. |
 
 """
     )
@@ -236,9 +202,9 @@ A demo subcommand.
 
 ## Options
 
-| Option | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace |  |  | Show this message and exit. |
+| Option | Type | Description |
+| --- | --- | --- |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact | Show this message and exit. |
 
 """
     )

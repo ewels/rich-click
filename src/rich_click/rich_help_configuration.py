@@ -279,6 +279,21 @@ class RichHelpConfiguration:
     Any registered ``--help <format>`` name (built-in or from :attr:`help_formats`). Set to ``None`` to
     disable the switch, so a bare ``--help`` always renders the normal human-readable help. An explicit
     ``--help <format>`` is unaffected either way."""
+    agent_help_max_tokens: int | None = field(default=10_000)
+    """Approximate size ceiling, in tokens, for the adaptive ``--help markdown`` output.
+
+    ``--help markdown`` discloses as much of the command tree as fits this ceiling, promoting commands
+    nearest the invoked one first. The default is comfortably above what a small or mid-size CLI needs,
+    so most CLIs emit their whole tree in full detail and never touch this setting; only a very large
+    tree degrades. Set to ``None`` to disable adaptive disclosure, documenting just the invoked command
+    plus a name index of its descendants. Does not affect ``--help markdown-full``."""
+    error_diagnosis: bool = field(default=True)
+    """Diagnose usage errors, stating the rule that was broken instead of only the symptom.
+
+    Adds a terse note to the rich error panel (the violated rule, near matches, a corrected
+    invocation), and in a detected AI agent environment renders the error as a plain-text block
+    instead. Exit codes and Click's own error message are unchanged either way. The
+    ``RICH_CLICK_ERROR_DIAGNOSIS`` environment variable overrides this in both directions."""
     help_json_transform: HelpJSONTransform | None = field(default=None, repr=False, compare=False)
     """Optional hook to post-process the machine-readable JSON schema: ``(schema, command, ctx) -> schema``."""
     help_formats: dict[str, HelpFormatRenderer] = field(default_factory=lambda: {}, repr=False, compare=False)

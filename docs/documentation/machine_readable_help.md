@@ -8,11 +8,12 @@ Those consumers struggle with the rendered `--help` screen: it is laid out for h
 | Invocation                       | Output                                                                                                               |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | `--help`                         | The normal human-readable help — byte-for-byte identical to before, unless [an AI agent is detected](#automatic-agent-detection). |
-| `--help markdown` (alias `md`)   | LLM-friendly Markdown for the current command, plus a subcommand index (_progressive disclosure_).                   |
+| `--help markdown` (alias `md`)   | LLM-friendly Markdown: the current command in full, plus as much of the rest of the tree as fits a token budget ([_adaptive disclosure_](#adaptive-disclosure)). |
 | `--help markdown-full` (`md-full`) | LLM-friendly Markdown documenting every command in the tree.                                                        |
 | `--help json`                    | Machine-readable JSON for the current command, plus a name-only index of its subcommands (_progressive disclosure_). |
 | `--help json-full`               | The whole command tree in one call, with full parameter detail at every node.                                        |
 | `--help carapace`                | Output conforming to the [carapace](https://carapace.sh) completion spec.                                            |
+| `--help compact`                 | Experimental. The leanest rendering of the same data: one line per option, one line per subcommand, no tables.       |
 
 This capability is **always available** on every rich-click CLI — there is nothing to enable. For a human at a terminal, bare `--help` is untouched: the format machinery only engages when a value is given, or when [an AI agent is detected](#automatic-agent-detection).
 
@@ -92,7 +93,7 @@ An explicitly falsy value (e.g. `RICH_CODEX=0`) does not suppress. pytest's own 
 
 ## `--help markdown`: Markdown for LLMs
 
-`--help markdown` (alias `--help md`) renders the CLI's structure as Markdown, tuned for dropping into an LLM prompt: headings for hierarchy, each command titled by its **full invocation path** so the section is unambiguous out of context, and parameters laid out as compact tables.
+`--help markdown` (alias `--help md`) renders the CLI's structure as Markdown, tuned for dropping into an LLM prompt: headings for hierarchy, each command titled by its **full invocation path** so the section is unambiguous out of context, and parameters laid out as compact tables. How much of the command tree comes back is [decided by a token budget](#adaptive-disclosure).
 
 ```console
 $ mytool hello --help markdown
@@ -107,18 +108,53 @@ Greet someone.
 
 ## Arguments
 
-| Argument | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `name` | String | yes |  |  |
+| Argument | Type | Required |
+| --- | --- | --- |
+| `name` | String | yes |
 
 ## Options
 
-| Option | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `--count` | Int |  | `1` | Number of greetings. |
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `--count` | Int | `1` | Number of greetings. |
 ```
 
-It is progressive: the current command is documented in full, and subcommands appear as a nested name index. `--help markdown-full` (alias `--help md-full`) instead documents **every** command in the tree, each as its own top-level (`#`) section — a flat, uniform layout that is easy for a model to parse and navigate by path.
+A column that is empty for **every** row of a table — here Required and Default in the options table, Default and Description in the arguments table — is dropped rather than padded out with empty cells. For a consumer reading the help that costs no information, and an all-empty column is pure token padding.
+
+`--help markdown-full` (alias `--help md-full`) documents **every** command in the tree, each as its own top-level (`#`) section — a flat, uniform layout that is easy for a model to parse and navigate by path.
+
+### Adaptive disclosure
+
+`--help markdown` does not stop at the invoked command. It renders that command in full, and then discloses as much of the rest of the tree as fits an approximate **token ceiling**, promoting commands **nearest the invoked one first**.
+
+Why not just document the invoked command and list its subcommands by name? Because a name and a one-line summary are usually not enough to choose between subcommands: the vocabulary that decides which one is right — the flag that does the thing you need — lives in the option help text. An agent given only names has to guess, descend, read, and backtrack, spending turns on navigation. Given the whole tree up front it does not have to guess at all.
+
+So each command in the tree is rendered at one of three levels of detail:
+
+| Level | Contents |
+| ----- | -------- |
+| **Full** | Description, usage, examples and the full option/argument tables — what the invoked command always gets. |
+| **Signature** | Usage line, one-line description, examples, and the options as a bare signature list (`--mode [fast|safe]`, `--count INTEGER`) — names, metavars and choice values, with no description column. |
+| **Pointer** | A single row in the parent's subcommand index: name, aliases and a one-line description. |
+
+The invoked command is always Full. Every other command starts as a Pointer and is promoted breadth-first — nearest hop first, in command order within a hop — first to Signature and then to Full, for as long as the estimated size of the whole response stays under the ceiling. Promotion stops at the first step that does not fit, so what gets disclosed is always a contiguous nearest-first slice of the tree, and the same command always renders exactly the same help.
+
+**In practice, most CLIs never hit the ceiling at all**: the default is set well above what a small or mid-size CLI (up to roughly 40 commands) needs, so the entire tree comes back in full detail from a single `--help` — the shape that works best for an agent. Only a genuinely large CLI degrades, and it degrades gracefully rather than falling back to bare names. When anything was abbreviated, the output ends with a note saying so and pointing at `--help markdown` on the individual commands.
+
+### Tuning the ceiling
+
+The ceiling is the `agent_help_max_tokens` config option (`AGENT_HELP_MAX_TOKENS` global), in tokens:
+
+```python
+import rich_click as click
+
+click.rich_click.AGENT_HELP_MAX_TOKENS = 25_000  # Disclose more of a large tree.
+click.rich_click.AGENT_HELP_MAX_TOKENS = None  # Off: current command + a name index, nothing more.
+```
+
+The size estimate is a deliberate approximation — `rich_click.help_json.CHARS_PER_TOKEN`, calibrated at 3.3 characters per token against real rendered Markdown help, which tokenizes more densely than prose because of its tables, backticks and flag names. Estimating rather than tokenizing keeps `--help` fast and keeps rich-click free of a tokenizer dependency; the renderer only needs to compare a response against a ceiling, which a ratio does perfectly well.
+
+`--help markdown-full`, `--help json`, `--help json-full` and `--help carapace` are unaffected by this setting.
 
 ## `--help json`: progressive disclosure
 
@@ -149,7 +185,7 @@ $ mytool --help json
       "opts": ["--help"],
       "type": "String",
       "help": "Show this message and exit.",
-      "choices": ["markdown", "markdown-full", "json", "json-full", "carapace"]
+      "choices": ["markdown", "markdown-full", "json", "json-full", "carapace", "compact"]
     }
   ],
   "subcommands": {
@@ -258,10 +294,10 @@ description: A demo CLI.
 parsing: non-interspersed
 flags:
   -v, --verbose: Enable verbose output.
-  --help=: Show this message and exit.
+  --help?: Show this message and exit.
 completion:
   flag:
-    help: [markdown, markdown-full, json, json-full, carapace]
+    help: [markdown, markdown-full, json, json-full, carapace, compact]
 commands:
 - name: hello
   description: Greet someone.
@@ -276,13 +312,99 @@ commands:
 !!! note "YAML is optional"
     YAML output needs `pyyaml`; install it with the `rich-click[carapace]` extra. Without it, `--help carapace` falls back to **JSON** — which is itself valid YAML, so carapace still consumes it (you just lose the schema directive comment).
 
-Carapace is a structure-and-completion spec rather than a type/validation one, so the mapping is intentionally lossy. Flag keys use carapace's string syntax (`-s, --long` for a boolean, a trailing `=` when the flag takes a value, `*` when it is repeatable, and the `{description, nargs}` object form for multi-value flags); negation flags such as `--no-debug` become their own entries; and `Choice` values are surfaced as completion candidates. Parameter **types** (`Int`/`Path`/…), **defaults**, **envvars** and per-flag **required** have no home in the carapace schema and are dropped — reach for `--help json-full` if you need those.
+Carapace is a structure-and-completion spec rather than a type/validation one, so the mapping is intentionally lossy. Flag keys use carapace's string syntax (`-s, --long` for a flag that takes no value — booleans and counters alike, a trailing `=` when the flag requires a value, `?` when the value is optional as it is for `--help`, `*` when it is repeatable, and the `{description, nargs}` object form for multi-value flags); negation flags such as `--no-debug` become their own entries; and `Choice` values are surfaced as completion candidates. Parameter **types** (`Int`/`Path`/…), **defaults**, **envvars** and per-flag **required** have no home in the carapace schema and are dropped — reach for `--help json-full` if you need those.
+
+## `--help compact`: experimental token-lean output
+
+`--help compact` renders the same information as everything else on this page, as tersely as it can: one line per option, one line per subcommand, no tables and no Markdown scaffolding.
+
+```console
+$ mytool hello --help compact
+```
+
+```
+cli hello — Greet someone.
+Usage: cli hello [OPTIONS] NAME
+
+Arguments:
+  NAME (required)
+
+Options:
+  --count INTEGER (default: 1) — Number of greetings.
+  --help [markdown|markdown-full|json|json-full|carapace|compact] — Show this message and exit.
+```
+
+Each option is `--name METAVAR (notes) — description`, with choice values folded into the metavar (`--mode [fast|safe]`) since that is the form you have to type anyway, and required / default / envvar collected into the parenthesised notes. Subcommands are one line each, nested by indentation.
+
+Metavars come from Click itself, so an explicit `metavar=`, a `Path(file_okay=False)`'s `DIRECTORY`, and any custom `ParamType`'s own rendering all appear exactly as they do in the rendered help. The same applies to the signature level of [adaptive disclosure](#adaptive-disclosure).
+
+!!! warning "Experimental, and explicitly requested only"
+    `--help compact` is **never** what a bare `--help` renders, in any environment, and is not a supported value for `agent_help_format`'s intended use. It exists so that a token-lean rendering and a familiar one can be measured against each other over identical content. If you just want fewer tokens in everyday use, the Markdown formats already drop empty table columns, which captures most of the practical saving.
+
+## Error diagnosis
+
+Getting help right only solves half the problem. The other half is what happens when a caller gets the invocation *wrong*.
+
+Click's usage errors report the symptom: `No such option: --repo`. A human reads that, remembers that `--repo` belongs to the parent group, and moves the flag. An agent frequently cannot — the message says nothing about **why** the option was rejected, so there is nothing to correct against, and it retries variations of the same broken command until it runs out of turns. An error that states the rule it broke is usually fixed on the very next attempt.
+
+So rich-click diagnoses usage errors where it can, and says what it worked out. It derives, when derivable:
+
+- **The violated rule**, stated as a rule — including the parent-group case: `'--repo' is an option of the parent group 'tool', not of 'tool build'. A group's options must be given before its subcommand.`
+- **Near matches** by edit distance over the command's *real* option names, or over its subcommand names for an unknown command.
+- **The valid values** of a `Choice`, and the requirement behind a missing parameter.
+- **A corrected invocation**, copyable as-is, whenever one can be constructed confidently.
+
+### Two renderings
+
+For a human, the diagnosis is a terse addition inside the existing error panel — the rule, the nearest alternatives, the corrected command:
+
+```console
+$ tool build --repo ewels/rich-click thing
+```
+
+```
+ Usage: tool build [OPTIONS] NAME
+
+ Try 'tool build --help' for help
+╭─ Error ────────────────────────────────────────────────────────────────────╮
+│ No such option '--repo'.                                                   │
+│                                                                            │
+│ '--repo' is an option of the parent group 'tool', not of 'tool build'. A   │
+│ group's options must be given before its subcommand.                       │
+│ Try: tool --repo TEXT build ...                                           │
+│ See 'tool --help' for help                                                 │
+╰────────────────────────────────────────────────────────────────────────────╯
+```
+
+Inside a [detected agent environment](#automatic-agent-detection), the same diagnosis is rendered as a plain-text block instead — no panel, no ANSI, one fact per line, and the attempted invocation restated (an agent has no scrollback to look at):
+
+```
+Error: No such option '--repo'.
+
+Attempted: tool build --repo ewels/rich-click thing
+Rule: '--repo' is an option of the parent group 'tool', not of 'tool build'. A group's options must be given before its subcommand.
+Try: tool --repo TEXT build ...
+Usage: tool build [OPTIONS] NAME
+Help: tool --help
+```
+
+This is **strictly additive**. Exit codes are unchanged, and Click's own error message is still the first line, so anything matching on it keeps working. An error rich-click cannot say anything useful about — a `ctx.fail()` from your own callback, which already states its rule — is left exactly as it was, rather than padded out with guesses.
+
+### Turning it off
+
+Set the `error_diagnosis` config option (`ERROR_DIAGNOSIS` global) to `False`, or the `RICH_CLICK_ERROR_DIAGNOSIS` environment variable to a falsy value — which overrides the config option in both directions, so the behaviour can be A/B'd across runs without touching your CLI's source:
+
+```shell
+RICH_CLICK_ERROR_DIAGNOSIS=0 mytool build --repo x thing
+```
+
+With diagnosis off, errors render exactly as Click and rich-click rendered them before, in every environment.
 
 ## Command examples
 
 LLMs respond well to concrete examples. If you give commands examples with the [`examples=` argument](examples.md) — primarily to enrich the rendered `--help` — they flow into the machine-readable formats too:
 
-- `--help markdown` / `--help markdown-full` — an `## Examples` section.
+- `--help markdown` / `--help markdown-full` — an `## Examples` section, placed immediately after the usage line and **before** the parameter tables.
 - `--help json` / `--help json-full` — an `examples` array of `{"command", "description"}` objects.
 - `--help carapace` — the spec's `examples` map, keyed by the command line.
 
@@ -291,6 +413,10 @@ LLMs respond well to concrete examples. If you give commands examples with the [
     examples share the same command (differing only in their descriptions), they collapse to a single
     entry and the last description wins. The `--help json` formats keep every example as a list, so use
     those if you need to preserve duplicates.
+
+The placement in the Markdown formats is deliberate. An example is a complete, copyable invocation — the highest-value thing a model can read about a command — and models demonstrably copy the ones they are shown, so it goes first, before the reference material. Examples survive [adaptive disclosure](#adaptive-disclosure) too: a command abbreviated to its signature keeps its examples in full.
+
+The rendered human `--help` is laid out the other way round, with the Examples panel *after* the options: someone scanning a terminal wants the reference material first and the worked examples at the end.
 
 See [Command Examples](examples.md) for how to define them.
 

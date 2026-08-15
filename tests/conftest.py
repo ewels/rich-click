@@ -3,6 +3,7 @@ import os
 import re
 import subprocess
 import sys
+from collections.abc import Callable, Iterator
 from importlib import reload
 from inspect import cleandoc
 from pathlib import Path
@@ -15,7 +16,7 @@ from pytest import MonkeyPatch
 from typer.testing import CliRunner as TyperCliRunner
 
 import rich_click.rich_click as rc
-from rich_click._agent_detection import _reset_agent_cache
+from rich_click._agent_detection import _AGENT_ENV_VARS, _SUPPRESSION_ENV_VARS, _reset_agent_cache
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_82
 from rich_click._compat_typer import TYPER_IS_BEFORE_VERSION_026
 from rich_click.rich_command import RichCommand
@@ -128,3 +129,41 @@ def typer_cli_runner() -> TyperCliRunner:
         return TyperCliRunner(mix_stderr=False)  # type: ignore[call-arg,unused-ignore]
     else:
         return TyperCliRunner()
+
+
+#: One representative agent marker; the full list is covered in `tests/test_agent_detection.py`.
+AGENT_MARKER = "CLAUDECODE"
+
+ConfigureAgentEnv = Callable[..., None]
+
+
+@pytest.fixture
+def agent_env(monkeypatch: MonkeyPatch) -> Iterator[ConfigureAgentEnv]:
+    """
+    Set up an agent-detection environment, and reset the cached detection so it takes effect.
+
+    Call this from inside the test body, not from another fixture: pytest re-sets
+    ``PYTEST_CURRENT_TEST`` at the start of every test phase, so the suppression markers can only be
+    dropped for the duration of the body itself.
+    """
+
+    def configure(*, marker: bool = False, suppress: str | None = None, override: str | None = None) -> None:
+        for env_var in (
+            *_SUPPRESSION_ENV_VARS,
+            *_AGENT_ENV_VARS,
+            "AI_AGENT",
+            "AGENT",
+            "CURSOR_EXTENSION_HOST_ROLE",
+            "TERM_PROGRAM",
+        ):
+            monkeypatch.delenv(env_var, raising=False)
+        if suppress is not None:
+            monkeypatch.setenv(suppress, "1")
+        if marker:
+            monkeypatch.setenv(AGENT_MARKER, "1")
+        if override is not None:
+            monkeypatch.setenv("RICH_CLICK_AGENT_MODE", override)
+        _reset_agent_cache()
+
+    yield configure
+    _reset_agent_cache()

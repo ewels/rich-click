@@ -4,9 +4,11 @@ from typing import Any, cast
 import click
 import pytest
 from click.testing import CliRunner
+from inline_snapshot import snapshot
 
 import rich_click.rich_click as rc
-from rich_click import RichCommand, argument, command, group, option
+from rich_click import RichCommand, RichHelpConfiguration, argument, command, group, option, rich_config
+from rich_click.help_json import CHARS_PER_TOKEN, command_markdown, estimate_tokens
 from rich_click.rich_context import RichContext
 
 
@@ -109,6 +111,21 @@ def test_bare_help_is_unchanged_and_eager(cli_runner: CliRunner) -> None:
     assert json.loads(eager.output)["name"] == "hello"
 
 
+def test_help_to_stderr_covers_the_machine_readable_formats(cli_runner: CliRunner) -> None:
+    # `help_to_stderr` exists to keep stdout clean for piping. It has to hold for every help document,
+    # not just the human one -- otherwise a machine-readable help leaks into the pipe it was set to
+    # protect. Covers an explicit format and the bare `--help` an agent environment redirects.
+    @group(context_settings={"help_to_stderr": True})
+    def cli() -> None:
+        """Hi."""
+
+    for args in (["--help"], ["--help=json"], ["--help=md"], ["--help=compact"]):
+        result = cli_runner.invoke(cli, args)
+        assert result.exit_code == 0
+        assert result.stdout == "", args
+        assert result.stderr.strip(), args
+
+
 def test_help_json_leaf(cli_runner: CliRunner) -> None:
     cli = _build_cli()
     result = cli_runner.invoke(cli, ["hello", "--help=json"])
@@ -128,6 +145,20 @@ def test_help_json_leaf(cli_runner: CliRunner) -> None:
     assert by_name["name"]["required"] is True
     assert "opts" not in by_name["name"]
     assert "opts" in by_name["count"]
+
+
+def test_help_json_reports_a_flag_that_defaults_on(cli_runner: CliRunner) -> None:
+    # A flag defaulting to False is the implied case and is dropped; one defaulting to True is real
+    # signal a consumer cannot infer, so the two must not serialize identically.
+    @command()
+    @option("--debug/--no-debug", default=True, help="Debug mode.")
+    @option("--quiet/--no-quiet", default=False, help="Quiet mode.")
+    def cli(debug: bool, quiet: bool) -> None:
+        """Hi."""
+
+    by_name = {param["name"]: param for param in json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["params"]}
+    assert by_name["debug"]["default"] is True
+    assert "default" not in by_name["quiet"]
 
 
 def test_help_json_choice(cli_runner: CliRunner) -> None:
@@ -331,7 +362,7 @@ def test_help_json_get_help_json_direct(cli_runner: CliRunner) -> None:
     def cli(count: int) -> None:
         """Hi."""
 
-    with cli.make_context("cli", []) as ctx:
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
         direct = json.loads(cli.get_help_json(cast(RichContext, ctx)))
 
     via_flag = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
@@ -408,7 +439,8 @@ def test_help_carapace_structure(cli_runner: CliRunner) -> None:
     @group()
     @option("--debug/--no-debug", help="Toggle debug.")
     @option("--tag", multiple=True, help="Tags.")
-    def cli(debug: bool, tag: tuple[str, ...]) -> None:
+    @option("-v", "--verbose", count=True, help="Verbosity.")
+    def cli(debug: bool, tag: tuple[str, ...], verbose: int) -> None:
         """Root."""
 
     @cli.command(aliases=["rm"], hidden=True)
@@ -428,8 +460,12 @@ def test_help_carapace_structure(cli_runner: CliRunner) -> None:
     assert doc["flags"]["--debug"] == "Toggle debug."
     assert doc["flags"]["--no-debug"] == "Toggle debug."
     assert doc["flags"]["--tag=*"] == "Tags."
-    # The --help meta-option is emitted as a value-taking flag, completing to the available formats.
-    assert doc["flags"]["--help="] == "Show this message and exit."
+    # A counter takes no value on the command line, so it is a bare key -- `=` would have carapace
+    # demand an argument for `-v`.
+    assert doc["flags"]["-v, --verbose"] == "Verbosity."
+    # The --help meta-option takes an *optional* value (`?`), since a bare `--help` is valid too. It
+    # completes to the available formats.
+    assert doc["flags"]["--help?"] == "Show this message and exit."
     assert "markdown" in doc["completion"]["flag"]["help"]
 
     remove_cmd = next(c for c in doc["commands"] if c["name"] == "remove")
@@ -557,8 +593,11 @@ def test_help_carapace_override(cli_runner: CliRunner) -> None:
 
 
 def test_help_markdown_progressive(cli_runner: CliRunner) -> None:
+    # `max_tokens=None` opts out of adaptive disclosure: the invoked command in full, descendants as a
+    # name index. (The default `--help md` adapts instead -- see the adaptive-disclosure tests below.)
     cli = _build_cli()
-    out = cli_runner.invoke(cli, ["--help=md"]).output
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        out = command_markdown(cli, ctx, recursive=False, max_tokens=None)
 
     # Command titled by its full path; help, usage, and a subcommand index (not full subcommand bodies).
     assert "# `cli`" in out
@@ -571,6 +610,7 @@ def test_help_markdown_progressive(cli_runner: CliRunner) -> None:
     # Nested name index, with aliases; progressive mode does NOT emit the subcommand's own option tables.
     assert "- `things` (aliases: sub) — Manage things." in out
     assert "  - `list` — List things." in out
+    assert "# `cli hello`" not in out
 
 
 def test_help_markdown_aliases_match(cli_runner: CliRunner) -> None:
@@ -619,6 +659,274 @@ def test_help_markdown_escapes_pipes_in_cells(cli_runner: CliRunner) -> None:
     assert "Pick a \\| b." in out
 
 
+def test_help_markdown_full_is_unchanged_but_for_column_compaction(cli_runner: CliRunner) -> None:
+    # `--help markdown-full` renders exactly as it always has, except that a column empty for every row
+    # of a table (here Required and Default) is dropped rather than padded out.
+    cli = _build_cli()
+    assert cli_runner.invoke(cli, ["--help=md-full"]).output == snapshot(
+        """\
+# `cli`
+
+Root help text.
+
+**Usage:** `cli [OPTIONS] COMMAND [ARGS]...`
+
+## Options
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `-v`, `--verbose` | flag | Be loud. |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact | Show this message and exit. |
+
+# `cli hello`
+
+Say hello.
+
+**Usage:** `cli hello [OPTIONS] NAME`
+
+## Arguments
+
+| Argument | Type | Required |
+| --- | --- | --- |
+| `name` | String | yes |
+
+## Options
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `--count` | Int | `3` | How many times. |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact |  | Show this message and exit. |
+
+# `cli things`
+
+Manage things.
+
+**Aliases:** `sub`
+
+**Usage:** `cli things [OPTIONS] COMMAND [ARGS]...`
+
+## Options
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact | Show this message and exit. |
+
+# `cli things list`
+
+List things.
+
+**Usage:** `cli things list [OPTIONS]`
+
+## Options
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact | Show this message and exit. |
+
+"""
+    )
+
+
+def test_text_renderings_omit_hidden_commands(cli_runner: CliRunner) -> None:
+    # A text rendering stands in for the help screen, so it must not show what the help screen hides --
+    # and adaptive disclosure would otherwise document a hidden command's whole option table, not just
+    # name it. The JSON formats still report it, like `to_info_dict` and like hidden *parameters* do.
+    @group()
+    def cli() -> None:
+        """A tool."""
+
+    @cli.command(hidden=True)
+    @option("--secret", help="A secret option.")
+    def internal(secret: str) -> None:
+        """An internal command."""
+
+    @cli.command()
+    def visible() -> None:
+        """A visible command."""
+
+    for fmt in ("md", "md-full", "compact"):
+        out = cli_runner.invoke(cli, [f"--help={fmt}"]).output
+        assert "visible" in out, fmt
+        assert "internal" not in out, fmt
+        assert "secret" not in out, fmt
+
+    assert "internal" in cli_runner.invoke(cli, ["--help=json"]).output
+
+
+def test_markdown_table_keeps_columns_that_any_row_uses(cli_runner: CliRunner) -> None:
+    # A column is dropped only when *every* row leaves it empty: one row using it keeps it for all.
+    @command()
+    @option("--count", type=int, default=3, help="How many.")
+    @option("--name", required=True, help="Who.")
+    def cli(count: int, name: str) -> None:
+        """Hi."""
+
+    out = cli_runner.invoke(cli, ["--help=md"]).output
+    assert "| Option | Type | Required | Default | Description |" in out
+    assert "| `--name` | String | yes |  | Who. |" in out
+
+
+def test_markdown_table_drops_the_columns_no_row_uses(cli_runner: CliRunner) -> None:
+    # Nothing is required and nothing has a default, so both columns are pure padding and are dropped.
+    @command()
+    @option("--name", help="Who.")
+    def cli(name: str) -> None:
+        """Hi."""
+
+    out = cli_runner.invoke(cli, ["--help=md"]).output
+    assert "| Option | Type | Description |" in out
+    assert "Required" not in out
+    assert "Default" not in out
+
+
+# --------------------------------------------------------------------------------------------------
+# Adaptive disclosure: `--help markdown` discloses as much of the tree as fits `agent_help_max_tokens`,
+# promoting commands nearest the invoked one first. Small CLIs therefore get their whole tree.
+# --------------------------------------------------------------------------------------------------
+
+
+def _big_cli(groups: int = 15, commands: int = 20) -> RichCommand:
+    """A synthetic tree far too large to render in full: `groups * commands` leaves plus the groups."""
+
+    @group()
+    def cli() -> None:
+        """A very large CLI."""
+
+    for group_index in range(groups):
+
+        @cli.group(name=f"grp{group_index:02d}")
+        def subgroup() -> None:
+            """A group of related commands."""
+
+        for command_index in range(commands):
+
+            @subgroup.command(name=f"cmd{command_index:02d}")
+            @option("--target", type=click.Choice(["alpha", "beta"]), help="Which target to act on.")
+            @option("--seed", type=int, help="Seed for deterministic behaviour.")
+            def leaf(target: str, seed: int) -> None:
+                """Do a thing to the target."""
+
+    return cast(RichCommand, cli)
+
+
+def test_small_cli_renders_its_whole_tree(cli_runner: CliRunner) -> None:
+    # The headline behaviour: a CLI that fits the default budget renders identically to markdown-full,
+    # so out of the box an agent gets the whole tree from one bare `--help`.
+    cli = _build_cli()
+    assert cli_runner.invoke(cli, ["--help=md"]).output == cli_runner.invoke(cli, ["--help=md-full"]).output
+
+
+def test_large_tree_degrades_nearest_first(cli_runner: CliRunner) -> None:
+    out = cli_runner.invoke(_big_cli(), ["--help=md"]).output
+
+    # Under the ceiling, with the invoked command rendered in full (a table, not a signature list).
+    assert estimate_tokens(out) <= RichHelpConfiguration().agent_help_max_tokens  # type: ignore[operator]
+    assert "# `cli`" in out
+    assert "| Option | Type | Description |" in out
+
+    # Near commands are promoted to their own sections with a compact option signature list...
+    assert "# `cli grp00`" in out
+    assert "- `--help [markdown|" in out  # a signature list, not a table
+    # ...while distant ones stay name-only rows in their parent's index.
+    assert "# `cli grp14 cmd19`" not in out
+    assert "- `cmd19` — Do a thing to the target." in out
+    # And the reader is told what was left out, and how to get it.
+    assert "--help markdown` on any command for its full detail." in out
+
+
+def test_adaptive_output_is_deterministic(cli_runner: CliRunner) -> None:
+    cli = _big_cli()
+    outputs = {cli_runner.invoke(cli, ["--help=md"]).output for _ in range(3)}
+    assert len(outputs) == 1
+
+
+@pytest.fixture
+def mixed_level_cli() -> RichCommand:
+    """
+    A CLI whose tree does not fit `_MIXED_LEVEL_TOKENS`, so it renders at more than one detail level.
+
+    Six sibling commands, each with enough option help to be expensive at full detail: the nearest are
+    promoted all the way, the furthest only as far as a signature.
+    """
+
+    @group()
+    def cli() -> None:
+        """Root."""
+
+    for index in range(6):
+
+        @cli.command(name=f"run{index}", examples=[("Run it", f"cli run{index} thing")])
+        @option("--mode", type=click.Choice(["fast", "safe"]), help="How to run the operation end to end.")
+        @option("--count", type=int, required=True, help="How many iterations to perform in total.")
+        @argument("target")
+        def run(mode: str, count: int, target: str) -> None:
+            """Run the thing against a target."""
+
+    return cast(RichCommand, cli)
+
+
+#: A ceiling that fits every `mixed_level_cli` command's signature, but only the nearest few in full.
+_MIXED_LEVEL_TOKENS = 1000
+
+
+def _render_mixed_levels(cli: RichCommand) -> tuple[str, str]:
+    """Render `mixed_level_cli` at its mixed-level ceiling, as `(whole document, last command's section)`."""
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        out = command_markdown(cli, ctx, max_tokens=_MIXED_LEVEL_TOKENS)
+    return out, out.split("# `cli run5`")[1]
+
+
+def test_signature_level_carries_metavars_and_choices(mixed_level_cli: RichCommand) -> None:
+    # The point of the middle tier: an agent sees what each option *takes* -- metavars and choice
+    # values -- without paying for a description column.
+    out, last = _render_mixed_levels(mixed_level_cli)
+
+    # The first command was promoted all the way to a full option table...
+    assert "| `--mode` | choice: fast / safe |" in out.split("# `cli run1`")[0]
+    # ...the last only to a signature: names, metavars, choice values, required marker -- no
+    # descriptions, and no table.
+    assert "**Usage:** `cli run5 [OPTIONS] TARGET`" in last  # the argument lives in the usage line
+    assert "- `--mode [fast|safe]`" in last
+    assert "- `--count INTEGER` (required)" in last
+    assert "How to run the operation end to end." not in last
+    assert "| --- |" not in last  # a signature list, not a table
+
+
+def test_adaptive_disclosure_can_be_tuned_and_disabled(cli_runner: CliRunner) -> None:
+    cli = _build_cli()
+
+    @group()
+    @rich_config(help_config=RichHelpConfiguration(agent_help_max_tokens=None))
+    def off() -> None:
+        """Root help text."""
+
+    @off.command()
+    def hello() -> None:
+        """Say hello."""
+
+    # `None` restores plain progressive disclosure: a name index, no subcommand sections.
+    out = cli_runner.invoke(off, ["--help=md"]).output
+    assert "## Subcommands" in out
+    assert "# `off hello`" not in out
+
+    # A ceiling too small for the whole tree truncates it, even though the CLI is tiny.
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        assert "# `cli things list`" not in command_markdown(cli, ctx, max_tokens=200)
+
+
+def test_token_estimator_constant_is_sane(cli_runner: CliRunner) -> None:
+    # The estimator is a ratio, not a tokenizer: assert the calibration, not a specific tokenizer's
+    # output. Markdown help is denser than prose, so the constant sits below the ~4 chars/token rule
+    # of thumb, and comfortably above 1 char/token.
+    assert 2.5 <= CHARS_PER_TOKEN <= 4.0
+
+    out = cli_runner.invoke(_build_cli(), ["--help=md"]).output
+    assert estimate_tokens("") == 0
+    assert estimate_tokens(out) == pytest.approx(len(out) / CHARS_PER_TOKEN, abs=1)
+    # Monotonic in length, so comparing an estimate against a ceiling is meaningful.
+    assert estimate_tokens(out) < estimate_tokens(out * 2)
+
+
 def test_help_markdown_override(cli_runner: CliRunner) -> None:
     # format_help_markdown is overridable for full control of the output.
     class MyCommand(RichCommand):
@@ -630,6 +938,87 @@ def test_help_markdown_override(cli_runner: CliRunner) -> None:
         """Hi."""
 
     assert cli_runner.invoke(cli, ["--help=md"]).output.strip() == "CUSTOM MD"
+
+
+# --------------------------------------------------------------------------------------------------
+# `--help compact`: experimental, explicitly requested only. The leanest rendering of the same data.
+# --------------------------------------------------------------------------------------------------
+
+
+def test_help_compact_is_one_line_per_record(cli_runner: CliRunner) -> None:
+    @group()
+    def cli() -> None:
+        """A demo CLI."""
+
+    @cli.command(examples=[("Greet loudly", "cli hello --shout Bob")])
+    @option("--count", type=int, default=1, help="Number of greetings.")
+    @option("--mode", type=click.Choice(["fast", "safe"]), help="How to run.")
+    @option("--token", envvar="MY_TOKEN", required=True, help="Auth token.")
+    @argument("name")
+    @argument("extras", nargs=-1)
+    def hello(count: int, mode: str, token: str, name: str, extras: tuple[str, ...]) -> None:
+        """Greet someone warmly."""
+
+    out = cli_runner.invoke(cli, ["hello", "--help=compact"]).output
+
+    assert "| --- |" not in out and "#" not in out  # no tables, no Markdown scaffolding
+    assert out.splitlines()[0] == "cli hello — Greet someone warmly."
+    assert "Usage: cli hello [OPTIONS] NAME [EXTRAS]..." in out
+    # One line per option: names, metavar (choices folded in), notes, description.
+    assert "  --count INTEGER (default: 1) — Number of greetings." in out
+    assert "  --mode [fast|safe] — How to run." in out
+    assert "  --token TEXT (required; env: MY_TOKEN) — Auth token." in out
+    # One line per argument, using Click's own metavar (so a variadic reads as it does in the usage line).
+    assert "  NAME (required)" in out
+    assert "  [EXTRAS]..." in out
+    # Examples keep their agent-facing position, ahead of the parameters.
+    assert out.index("Examples:") < out.index("Arguments:") < out.index("Options:")
+
+
+def test_compact_renderings_use_clicks_own_metavars(cli_runner: CliRunner) -> None:
+    # The signature and compact renderings have no description column to lean on, so the metavar is what
+    # tells the reader what to type. It comes from Click itself, which means an explicit `metavar=` and
+    # every type's own rendering (DIRECTORY, custom ParamTypes) survive rather than being guessed at.
+    @command()
+    @option("--pkg", metavar="PKG_NAME", help="Which package.")
+    @option("--out", type=click.Path(file_okay=False), help="Where to write.")
+    @option("--tag", multiple=True, help="Repeatable.")
+    @option("--shout", is_flag=True, help="Be loud.")
+    def cli(pkg: str, out: str, tag: tuple[str, ...], shout: bool) -> None:
+        """Hi."""
+
+    out = cli_runner.invoke(cli, ["--help=compact"]).output
+    assert "  --pkg PKG_NAME —" in out
+    assert "  --out DIRECTORY —" in out
+    assert "  --tag TEXT... —" in out  # repeatable, which Click's own metavar does not mark
+    assert "  --shout — Be loud." in out  # a flag takes no value, so it shows none
+
+    # The metavars are a rendering concern only: the JSON formats are untouched by them.
+    assert "metavar" not in cli_runner.invoke(cli, ["--help=json"]).output
+
+
+def test_help_compact_lists_subcommands_one_per_line(cli_runner: CliRunner) -> None:
+    out = cli_runner.invoke(_build_cli(), ["--help=compact"]).output
+
+    assert "Commands:" in out
+    assert "  hello — Say hello." in out
+    assert "  things (sub) — Manage things." in out
+    assert "    list — List things." in out
+
+
+def test_help_compact_is_leaner_than_markdown(cli_runner: CliRunner) -> None:
+    # The whole point of the format: the same content, fewer tokens.
+    cli = _build_cli()
+    compact = cli_runner.invoke(cli, ["hello", "--help=compact"]).output
+    markdown = cli_runner.invoke(cli, ["hello", "--help=md"]).output
+    assert estimate_tokens(compact) < estimate_tokens(markdown)
+
+
+def test_help_compact_is_never_a_default(cli_runner: CliRunner) -> None:
+    # Explicitly requested only: it is not what a bare `--help` renders for an agent, and asking for it
+    # is what makes it appear.
+    assert RichHelpConfiguration().agent_help_format == "markdown"
+    assert "compact" in json.loads(cli_runner.invoke(_build_cli(), ["--help=json"]).output)["params"][-1]["choices"]
 
 
 # --------------------------------------------------------------------------------------------------
@@ -687,6 +1076,46 @@ def test_examples_in_markdown(cli_runner: CliRunner) -> None:
     assert "## Examples" in out
     assert "- Do a thing: `tool do thing`" in out
     assert "- Do the other thing: `tool do other`" in out
+
+
+def test_examples_come_before_the_parameters_in_markdown(cli_runner: CliRunner) -> None:
+    # Ordering is not cosmetic: an example is a complete, copyable invocation, so it is the highest-value
+    # thing a model can read about a command. Agent-facing formats put it first, right after the usage
+    # line, so the answer is already there before the option tables are reached.
+    @command(examples=[("Do a thing", "tool do thing")])
+    @option("--mode", type=click.Choice(["fast", "safe"]), help="How to run.")
+    @argument("name")
+    def cli(mode: str, name: str) -> None:
+        """Hi."""
+
+    out = cli_runner.invoke(cli, ["--help=md"]).output
+    assert out.index("**Usage:**") < out.index("## Examples") < out.index("## Arguments") < out.index("## Options")
+
+
+def test_examples_come_before_the_parameters_at_every_level(
+    cli_runner: CliRunner, mixed_level_cli: RichCommand
+) -> None:
+    # markdown-full documents every node; the ordering holds in each of their sections.
+    for section in cli_runner.invoke(mixed_level_cli, ["--help=md-full"]).output.split("# `cli run")[1:]:
+        assert section.index("**Usage:**") < section.index("## Examples") < section.index("## Options")
+
+    # And at the compact signature level too: examples are short, and a worked invocation earns its
+    # tokens against a list of flags the model would still have to assemble.
+    _, last = _render_mixed_levels(mixed_level_cli)
+    assert "| --- |" not in last  # a signature section, not a full one
+    assert last.index("**Usage:**") < last.index("## Examples") < last.index("## Options")
+
+
+def test_human_help_keeps_examples_after_the_options(cli_runner: CliRunner) -> None:
+    # The rendered help is laid out the other way round, and stays that way: a person scanning a
+    # terminal wants the reference material first and the worked examples at the end.
+    @command(examples=[("Do a thing", "tool do thing")])
+    @option("--mode", help="How to run.")
+    def cli(mode: str) -> None:
+        """Hi."""
+
+    out = cli_runner.invoke(cli, ["--help"]).output
+    assert out.index("Options") < out.index("Examples")
 
 
 def test_examples_in_carapace(cli_runner: CliRunner) -> None:
