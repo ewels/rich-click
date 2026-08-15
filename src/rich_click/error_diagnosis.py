@@ -255,21 +255,30 @@ def diagnose(error: click.UsageError) -> Diagnosis | None:
     ``None`` is the common and correct outcome for an error that already states its own rule -- a
     ``ctx.fail("exactly one seeding option is required")`` from a callback needs no help from us -- so
     diagnosis stays silent rather than restating what the message already says.
+
+    A diagnosis is an enhancement, never a prerequisite: if working one out raises -- a custom command
+    whose ``get_params`` needs real parse state, an exotic ``ParamType``, a ``get_error_hint`` override
+    that assumes more than it has -- that is swallowed and treated as "nothing to say". Letting it
+    propagate would replace the error the user actually needs to read with a traceback, which is a far
+    worse failure than a missing hint.
     """
     ctx = getattr(error, "ctx", None)
     if ctx is None:
         return None
 
     diagnosis: Diagnosis | None
-    if isinstance(error, click.NoSuchOption):
-        diagnosis = _diagnose_unknown_option(error, ctx)
-    elif isinstance(error, click.MissingParameter):
-        # Checked before BadParameter, which it subclasses.
-        diagnosis = _diagnose_missing_parameter(error, ctx)
-    elif isinstance(error, click.BadParameter):
-        diagnosis = _diagnose_bad_value(error, ctx)
-    else:
-        diagnosis = _diagnose_unknown_command(error, ctx)
+    try:
+        if isinstance(error, click.NoSuchOption):
+            diagnosis = _diagnose_unknown_option(error, ctx)
+        elif isinstance(error, click.MissingParameter):
+            # Checked before BadParameter, which it subclasses.
+            diagnosis = _diagnose_missing_parameter(error, ctx)
+        elif isinstance(error, click.BadParameter):
+            diagnosis = _diagnose_bad_value(error, ctx)
+        else:
+            diagnosis = _diagnose_unknown_command(error, ctx)
+    except Exception:
+        return None
     return diagnosis or None
 
 

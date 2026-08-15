@@ -111,6 +111,21 @@ def test_bare_help_is_unchanged_and_eager(cli_runner: CliRunner) -> None:
     assert json.loads(eager.output)["name"] == "hello"
 
 
+def test_help_to_stderr_covers_the_machine_readable_formats(cli_runner: CliRunner) -> None:
+    # `help_to_stderr` exists to keep stdout clean for piping. It has to hold for every help document,
+    # not just the human one -- otherwise a machine-readable help leaks into the pipe it was set to
+    # protect. Covers an explicit format and the bare `--help` an agent environment redirects.
+    @group(context_settings={"help_to_stderr": True})
+    def cli() -> None:
+        """Hi."""
+
+    for args in (["--help"], ["--help=json"], ["--help=md"], ["--help=compact"]):
+        result = cli_runner.invoke(cli, args)
+        assert result.exit_code == 0
+        assert result.stdout == "", args
+        assert result.stderr.strip(), args
+
+
 def test_help_json_leaf(cli_runner: CliRunner) -> None:
     cli = _build_cli()
     result = cli_runner.invoke(cli, ["hello", "--help=json"])
@@ -130,6 +145,20 @@ def test_help_json_leaf(cli_runner: CliRunner) -> None:
     assert by_name["name"]["required"] is True
     assert "opts" not in by_name["name"]
     assert "opts" in by_name["count"]
+
+
+def test_help_json_reports_a_flag_that_defaults_on(cli_runner: CliRunner) -> None:
+    # A flag defaulting to False is the implied case and is dropped; one defaulting to True is real
+    # signal a consumer cannot infer, so the two must not serialize identically.
+    @command()
+    @option("--debug/--no-debug", default=True, help="Debug mode.")
+    @option("--quiet/--no-quiet", default=False, help="Quiet mode.")
+    def cli(debug: bool, quiet: bool) -> None:
+        """Hi."""
+
+    by_name = {param["name"]: param for param in json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["params"]}
+    assert by_name["debug"]["default"] is True
+    assert "default" not in by_name["quiet"]
 
 
 def test_help_json_choice(cli_runner: CliRunner) -> None:
@@ -410,7 +439,8 @@ def test_help_carapace_structure(cli_runner: CliRunner) -> None:
     @group()
     @option("--debug/--no-debug", help="Toggle debug.")
     @option("--tag", multiple=True, help="Tags.")
-    def cli(debug: bool, tag: tuple[str, ...]) -> None:
+    @option("-v", "--verbose", count=True, help="Verbosity.")
+    def cli(debug: bool, tag: tuple[str, ...], verbose: int) -> None:
         """Root."""
 
     @cli.command(aliases=["rm"], hidden=True)
@@ -430,8 +460,12 @@ def test_help_carapace_structure(cli_runner: CliRunner) -> None:
     assert doc["flags"]["--debug"] == "Toggle debug."
     assert doc["flags"]["--no-debug"] == "Toggle debug."
     assert doc["flags"]["--tag=*"] == "Tags."
-    # The --help meta-option is emitted as a value-taking flag, completing to the available formats.
-    assert doc["flags"]["--help="] == "Show this message and exit."
+    # A counter takes no value on the command line, so it is a bare key -- `=` would have carapace
+    # demand an argument for `-v`.
+    assert doc["flags"]["-v, --verbose"] == "Verbosity."
+    # The --help meta-option takes an *optional* value (`?`), since a bare `--help` is valid too. It
+    # completes to the available formats.
+    assert doc["flags"]["--help?"] == "Show this message and exit."
     assert "markdown" in doc["completion"]["flag"]["help"]
 
     remove_cmd = next(c for c in doc["commands"] if c["name"] == "remove")

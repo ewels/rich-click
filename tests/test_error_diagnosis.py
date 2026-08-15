@@ -125,6 +125,25 @@ def test_diagnose_returns_none_without_a_context() -> None:
     assert diagnose(click.UsageError("something went wrong")) is None
 
 
+def test_a_failed_diagnosis_never_costs_the_error_message(
+    cli_runner: CliRunner, cli: click.RichGroup, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # A diagnosis is an enhancement, never a prerequisite. If working one out raises -- a custom command
+    # whose introspection needs real parse state, an exotic ParamType -- the user must still get the
+    # error they actually need to read, not a traceback in place of it.
+    import rich_click.error_diagnosis as error_diagnosis
+
+    def boom(*args: object, **kwargs: object) -> None:
+        raise RuntimeError("diagnosis blew up")
+
+    monkeypatch.setattr(error_diagnosis, "_diagnose_unknown_option", boom)
+
+    result = cli_runner.invoke(cli, ["build", "--repo", "x", "thing"])
+    assert result.exit_code == 2
+    assert "No such option" in flat(result)
+    assert "parent group" not in flat(result)
+
+
 # --------------------------------------------------------------------------------------------------
 # The two renderers, chosen by the same agent detection that drives agent help.
 # --------------------------------------------------------------------------------------------------

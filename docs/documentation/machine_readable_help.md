@@ -294,7 +294,7 @@ description: A demo CLI.
 parsing: non-interspersed
 flags:
   -v, --verbose: Enable verbose output.
-  --help=: Show this message and exit.
+  --help?: Show this message and exit.
 completion:
   flag:
     help: [markdown, markdown-full, json, json-full, carapace, compact]
@@ -312,7 +312,7 @@ commands:
 !!! note "YAML is optional"
     YAML output needs `pyyaml`; install it with the `rich-click[carapace]` extra. Without it, `--help carapace` falls back to **JSON** — which is itself valid YAML, so carapace still consumes it (you just lose the schema directive comment).
 
-Carapace is a structure-and-completion spec rather than a type/validation one, so the mapping is intentionally lossy. Flag keys use carapace's string syntax (`-s, --long` for a boolean, a trailing `=` when the flag takes a value, `*` when it is repeatable, and the `{description, nargs}` object form for multi-value flags); negation flags such as `--no-debug` become their own entries; and `Choice` values are surfaced as completion candidates. Parameter **types** (`Int`/`Path`/…), **defaults**, **envvars** and per-flag **required** have no home in the carapace schema and are dropped — reach for `--help json-full` if you need those.
+Carapace is a structure-and-completion spec rather than a type/validation one, so the mapping is intentionally lossy. Flag keys use carapace's string syntax (`-s, --long` for a flag that takes no value — booleans and counters alike, a trailing `=` when the flag requires a value, `?` when the value is optional as it is for `--help`, `*` when it is repeatable, and the `{description, nargs}` object form for multi-value flags); negation flags such as `--no-debug` become their own entries; and `Choice` values are surfaced as completion candidates. Parameter **types** (`Int`/`Path`/…), **defaults**, **envvars** and per-flag **required** have no home in the carapace schema and are dropped — reach for `--help json-full` if you need those.
 
 ## `--help compact`: experimental token-lean output
 

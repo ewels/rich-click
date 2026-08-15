@@ -195,9 +195,11 @@ def _param_to_dict(info: dict[str, Any]) -> dict[str, Any]:
     }
     if type_detail:
         result["type_info"] = type_detail
-    # A flag's False default is implied; keep a real default for everything else (including 0 or "").
+    # A flag defaulting to False is the implied case and says nothing, so it is dropped. Every other
+    # default is kept -- including 0 and "", and including a flag that defaults to *True*
+    # (``--debug/--no-debug`` starting on), which is real signal a consumer cannot infer.
     default = info.get("default")
-    if default is not None and not is_flag:
+    if default is not None and not (is_flag and default is False):
         result["default"] = default
     # ``flag_value`` is the value a flag sets; only meaningful for value-flags (``--upper``/``--lower``
     # sharing a destination). For plain boolean flags it is just ``True``, which is noise, so skip it.
@@ -454,10 +456,11 @@ def _carapace_params(
     """
     Split a command's params into the carapace ``flags`` / ``completion`` / ``documentation`` blocks.
 
-    Flag keys use carapace's string syntax: a trailing ``=`` marks a value-taking flag and ``*`` a
-    repeatable one. Positional arguments have no first-class carapace object, so they contribute only
-    their help (``documentation``) and any ``Choice`` candidates (``completion``). The ``--help`` option
-    (in ``help_ids``) is included like any other, with the formats it accepts as its completions.
+    Flag keys use carapace's string syntax: a bare name takes no value, a trailing ``=`` marks a
+    required value, ``?`` an optional one, and ``*`` a repeatable flag. Positional arguments have no
+    first-class carapace object, so they contribute only their help (``documentation``) and any
+    ``Choice`` candidates (``completion``). The ``--help`` option (in ``help_ids``) is included like any
+    other, with the formats it accepts as its completions.
     """
     flags: dict[str, Any] = {}
     completion: dict[str, Any] = {}
@@ -480,12 +483,17 @@ def _carapace_params(
             is_flag = bool(info.get("is_flag"))
             multiple = bool(info.get("multiple"))
             nargs = info.get("nargs") or 1
+            # A counter (``-v/-vv/-vvv``) is not ``is_flag``, but it takes no value either -- marking it
+            # ``=`` would have carapace demand an argument for it. An optional-value option (Click sets a
+            # ``flag_value`` on a non-flag, as ``--help`` does) takes ``?``, since a bare ``--help`` is
+            # valid too.
+            takes_value = not is_flag and not info.get("count")
             key = ", ".join(opts)
-            if not is_flag:
-                key += "="
+            if takes_value:
+                key += "?" if info.get("flag_value") is not None else "="
             if multiple:
                 key += "*"
-            if not is_flag and isinstance(nargs, int) and nargs > 1:
+            if takes_value and isinstance(nargs, int) and nargs > 1:
                 flags[key] = {"description": help_text, "nargs": nargs}
             else:
                 flags[key] = help_text

@@ -334,7 +334,17 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     """
 
     def show_help(ctx: Context, param: Parameter, value: Any) -> None:
-        """Callback that prints the help page (human or machine-readable) on stdout and exits."""
+        """Callback that prints the help page (human or machine-readable) and exits."""
+
+        def emit(text: str) -> None:
+            # Avoid click.echo(), which ignores console settings like force_terminal. Every help
+            # document goes through here -- human and machine-readable alike -- so ``help_to_stderr``
+            # keeps stdout clean whichever one is rendered.
+            if getattr(ctx, "help_to_stderr", False):
+                print(text, file=sys.stderr)
+            else:
+                print(text)
+
         # ``None`` / ``False`` mean the flag was not given; an empty string (``--help=``) is still a
         # request for help -- it falls through to the normal help below, like a bare ``--help``.
         if value is None or value is False or ctx.resilient_parsing:
@@ -345,7 +355,7 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
             if get_help_for_format is not None:
                 rendered = get_help_for_format(ctx, value)
                 if rendered is not None:
-                    print(rendered)
+                    emit(rendered)
                     ctx.exit()
             # Unknown format (or a non-rich command): fall through to normal help.
         else:
@@ -359,15 +369,11 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
                 if get_help_for_format is not None:
                     rendered = get_help_for_format(ctx, agent_help_format)
                     if rendered is not None:
-                        print(rendered)
+                        emit(rendered)
                         ctx.exit()
                 # Unregistered format name: fall through to the normal help rather than erroring.
-        # Avoid click.echo() because it ignores console settings like force_terminal.
-        # Also, do not print() if empty string; assume console was record=False.
-        if getattr(ctx, "help_to_stderr", False):
-            print(ctx.get_help(), file=sys.stderr)
-        else:
-            print(ctx.get_help())
+        # Do not print() if empty string; assume console was record=False.
+        emit(ctx.get_help())
         ctx.exit()
 
     if not param_decls:
