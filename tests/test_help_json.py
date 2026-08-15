@@ -8,7 +8,7 @@ from inline_snapshot import snapshot
 
 import rich_click.rich_click as rc
 from rich_click import RichCommand, RichHelpConfiguration, argument, command, group, option, rich_config
-from rich_click.help_json import CHARS_PER_TOKEN, command_markdown, estimate_tokens
+from rich_click.help_json import command_markdown, compact_command
 from rich_click.rich_context import RichContext
 
 
@@ -593,11 +593,11 @@ def test_help_carapace_override(cli_runner: CliRunner) -> None:
 
 
 def test_help_markdown_progressive(cli_runner: CliRunner) -> None:
-    # `max_tokens=None` opts out of adaptive disclosure: the invoked command in full, descendants as a
+    # `max_chars=None` opts out of adaptive disclosure: the invoked command in full, descendants as a
     # name index. (The default `--help md` adapts instead -- see the adaptive-disclosure tests below.)
     cli = _build_cli()
     with cli.make_context("cli", [], resilient_parsing=True) as ctx:
-        out = command_markdown(cli, ctx, recursive=False, max_tokens=None)
+        out = command_markdown(cli, ctx, recursive=False, max_chars=None)
 
     # Command titled by its full path; help, usage, and a subcommand index (not full subcommand bodies).
     assert "# `cli`" in out
@@ -780,7 +780,7 @@ def test_markdown_table_drops_the_columns_no_row_uses(cli_runner: CliRunner) -> 
 
 
 # --------------------------------------------------------------------------------------------------
-# Adaptive disclosure: `--help markdown` discloses as much of the tree as fits `agent_help_max_tokens`,
+# Adaptive disclosure: `--help markdown` discloses as much of the tree as fits `agent_help_max_chars`,
 # promoting commands nearest the invoked one first. Small CLIs therefore get their whole tree.
 # --------------------------------------------------------------------------------------------------
 
@@ -820,7 +820,7 @@ def test_large_tree_degrades_nearest_first(cli_runner: CliRunner) -> None:
     out = cli_runner.invoke(_big_cli(), ["--help=md"]).output
 
     # Under the ceiling, with the invoked command rendered in full (a table, not a signature list).
-    assert estimate_tokens(out) <= RichHelpConfiguration().agent_help_max_tokens  # type: ignore[operator]
+    assert len(out) <= RichHelpConfiguration().agent_help_max_chars  # type: ignore[operator]
     assert "# `cli`" in out
     assert "| Option | Type | Description |" in out
 
@@ -866,13 +866,13 @@ def mixed_level_cli() -> RichCommand:
 
 
 #: A ceiling that fits every `mixed_level_cli` command's signature, but only the nearest few in full.
-_MIXED_LEVEL_TOKENS = 1000
+_MIXED_LEVEL_CHARS = 3300
 
 
 def _render_mixed_levels(cli: RichCommand) -> tuple[str, str]:
     """Render `mixed_level_cli` at its mixed-level ceiling, as `(whole document, last command's section)`."""
     with cli.make_context("cli", [], resilient_parsing=True) as ctx:
-        out = command_markdown(cli, ctx, max_tokens=_MIXED_LEVEL_TOKENS)
+        out = command_markdown(cli, ctx, max_chars=_MIXED_LEVEL_CHARS)
     return out, out.split("# `cli run5`")[1]
 
 
@@ -896,7 +896,7 @@ def test_adaptive_disclosure_can_be_tuned_and_disabled(cli_runner: CliRunner) ->
     cli = _build_cli()
 
     @group()
-    @rich_config(help_config=RichHelpConfiguration(agent_help_max_tokens=None))
+    @rich_config(help_config=RichHelpConfiguration(agent_help_max_chars=None))
     def off() -> None:
         """Root help text."""
 
@@ -911,20 +911,36 @@ def test_adaptive_disclosure_can_be_tuned_and_disabled(cli_runner: CliRunner) ->
 
     # A ceiling too small for the whole tree truncates it, even though the CLI is tiny.
     with cli.make_context("cli", [], resilient_parsing=True) as ctx:
-        assert "# `cli things list`" not in command_markdown(cli, ctx, max_tokens=200)
+        assert "# `cli things list`" not in command_markdown(cli, ctx, max_chars=700)
 
 
-def test_token_estimator_constant_is_sane(cli_runner: CliRunner) -> None:
-    # The estimator is a ratio, not a tokenizer: assert the calibration, not a specific tokenizer's
-    # output. Markdown help is denser than prose, so the constant sits below the ~4 chars/token rule
-    # of thumb, and comfortably above 1 char/token.
-    assert 2.5 <= CHARS_PER_TOKEN <= 4.0
+@pytest.mark.parametrize("max_chars", [15_000, 20_000, 25_000])
+def test_the_character_budget_is_exact_not_estimated(max_chars: int) -> None:
+    # The whole reason the ceiling is in characters: `len()` is exact, so the rendered document can be
+    # asserted against the configured number rather than against an estimate of it. A token ceiling
+    # needed a chars-per-token divisor, and an agent harness truncates by characters anyway.
+    cli = _big_cli()
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        for render in (command_markdown, compact_command):
+            out = render(cli, ctx, max_chars=max_chars)
+            assert len(out) <= max_chars, (render.__name__, len(out))
+            # And the budget is actually spent, not left mostly unused: adaptive disclosure that stops
+            # far short of the ceiling would be silently withholding detail that fits.
+            assert len(out) > max_chars * 0.9, (render.__name__, len(out))
 
-    out = cli_runner.invoke(_build_cli(), ["--help=md"]).output
-    assert estimate_tokens("") == 0
-    assert estimate_tokens(out) == pytest.approx(len(out) / CHARS_PER_TOKEN, abs=1)
-    # Monotonic in length, so comparing an estimate against a ceiling is meaningful.
-    assert estimate_tokens(out) < estimate_tokens(out * 2)
+
+def test_the_budget_never_hides_a_commands_existence() -> None:
+    # The one thing a ceiling does not buy: a floor of the invoked command's own block plus a name for
+    # every descendant is always emitted, however small the ceiling. Truncating that would leave an
+    # agent unable to discover a command at all, which is worse than a long response.
+    cli = _big_cli(groups=4, commands=4)
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        out = compact_command(cli, ctx, max_chars=10)
+
+    assert out.startswith("# cli — A very large CLI.")
+    for group_index in range(4):
+        for command_index in range(4):
+            assert f"grp{group_index:02d} cmd{command_index:02d}  Do a thing to the target." in out
 
 
 def test_help_markdown_override(cli_runner: CliRunner) -> None:
@@ -941,84 +957,289 @@ def test_help_markdown_override(cli_runner: CliRunner) -> None:
 
 
 # --------------------------------------------------------------------------------------------------
-# `--help compact`: experimental, explicitly requested only. The leanest rendering of the same data.
+# `--help compact`: the character-lean rendering, and what a bare `--help` gives a detected agent.
+#
+# The format is designed against one constraint: agent harnesses truncate a tool's output by
+# *characters* (Claude Code at ~30,000), and a help page that gets cut costs the agent turns re-reading
+# it. So every rule below buys characters back -- and spends none on anything a model cannot already
+# read without being taught a new notation.
 # --------------------------------------------------------------------------------------------------
 
 
-def test_help_compact_is_one_line_per_record(cli_runner: CliRunner) -> None:
+def _record_cli() -> RichCommand:
+    """The reference command from the format's design: five options, an alias, two examples."""
+
     @group()
-    def cli() -> None:
+    def quorv() -> None:
         """A demo CLI."""
 
-    @cli.command(examples=[("Greet loudly", "cli hello --shout Bob")])
-    @option("--count", type=int, default=1, help="Number of greetings.")
-    @option("--mode", type=click.Choice(["fast", "safe"]), help="How to run.")
-    @option("--token", envvar="MY_TOKEN", required=True, help="Auth token.")
-    @argument("name")
-    @argument("extras", nargs=-1)
-    def hello(count: int, mode: str, token: str, name: str, extras: tuple[str, ...]) -> None:
-        """Greet someone warmly."""
+    @quorv.group()
+    def plarv() -> None:
+        """Manage records."""
 
-    out = cli_runner.invoke(cli, ["hello", "--help=compact"]).output
+    @plarv.command(
+        aliases=["cl"],
+        examples=[
+            ("Create a record", "quorv plarv crell --crull 'north ledger'"),
+            ("Pick a mode and weight", "quorv plarv crell --crull 'north ledger' --kolm crox --wover 12"),
+        ],
+    )
+    @option("--crull", required=True, help="Annotation text for the record.")
+    @option("--kolm", type=click.Choice(["pelm", "crox", "zeff"]), default="pelm", help="Mode of the record.")
+    @option("--wover", type=int, metavar="INT", default=7, help="Weight of the record.")
+    @option("--torv", multiple=True, help="Label to attach; repeat for several.")
+    @option("--murd", default="veld", envvar="QUORV_MURD", help="Steward name.")
+    def crell(**kwargs: Any) -> None:
+        """Create a record."""
 
-    assert "| --- |" not in out and "#" not in out  # no tables, no Markdown scaffolding
-    assert out.splitlines()[0] == "cli hello — Greet someone warmly."
-    assert "Usage: cli hello [OPTIONS] NAME [EXTRAS]..." in out
-    # One line per option: names, metavar (choices folded in), notes, description.
-    assert "  --count INTEGER (default: 1) — Number of greetings." in out
-    assert "  --mode [fast|safe] — How to run." in out
-    assert "  --token TEXT (required; env: MY_TOKEN) — Auth token." in out
-    # One line per argument, using Click's own metavar (so a variadic reads as it does in the usage line).
-    assert "  NAME (required)" in out
-    assert "  [EXTRAS]..." in out
-    # Examples keep their agent-facing position, ahead of the parameters.
-    assert out.index("Examples:") < out.index("Arguments:") < out.index("Options:")
+    return cast(RichCommand, quorv)
 
 
-def test_compact_renderings_use_clicks_own_metavars(cli_runner: CliRunner) -> None:
-    # The signature and compact renderings have no description column to lean on, so the metavar is what
-    # tells the reader what to type. It comes from Click itself, which means an explicit `metavar=` and
-    # every type's own rendering (DIRECTORY, custom ParamTypes) survive rather than being guessed at.
+def test_compact_block_is_exactly_this(cli_runner: CliRunner) -> None:
+    # The format, pinned byte-for-byte. Every element of the design is visible in these ten lines: the
+    # `#` anchor that makes a block greppable, the two-space signature/description boundary, `*` for
+    # required, choices inline in place of the metavar, `...` for repeatable, Click's own `[default: ]`
+    # and `[env: ]` tags, no `--help` row, no usage line (nothing positional to order), and examples as
+    # bare command lines.
+    out = cli_runner.invoke(_record_cli(), ["plarv", "crell", "--help=compact"]).output
+
+    assert out == snapshot(
+        """\
+# plarv crell (cl) — Create a record.
+*--crull TEXT  Annotation text for the record.
+--kolm pelm|crox|zeff  Mode of the record. [default: pelm]
+--wover INT  Weight of the record. [default: 7]
+--torv TEXT ...  Label to attach; repeat for several.
+--murd TEXT  Steward name. [default: veld] [env: QUORV_MURD]
+examples:
+- quorv plarv crell --crull 'north ledger'
+- quorv plarv crell --crull 'north ledger' --kolm crox --wover 12
+
+"""
+    )
+    # The size target this format exists to hit: the same command renders at ~2,000 characters of
+    # Markdown, which is what put a mid-size CLI past a harness's truncation point.
+    assert len(out) <= 520
+
+
+def test_compact_never_pads_or_trails(cli_runner: CliRunner) -> None:
+    # The two-space separator is the whole layout: one space would be ambiguous with the spaces inside a
+    # signature, and padding to a column would make the boundary depend on the widest row in the block.
+    out = cli_runner.invoke(_record_cli(), ["plarv", "crell", "--help=compact"]).output
+
+    for line in out.splitlines():
+        assert line == line.rstrip(), repr(line)  # no trailing whitespace, anywhere
+        assert "   " not in line, repr(line)  # no column padding
+        if line.startswith("-") and not line.startswith("- "):
+            signature, separator, description = line.partition("  ")
+            assert separator == "  " and description[:1] != " ", repr(line)
+            assert signature.strip() == signature, repr(line)
+
+
+def test_compact_usage_line_only_when_there_are_positionals(cli_runner: CliRunner) -> None:
+    # A usage line for an option-only command repeats the anchor line and nothing else. With positional
+    # arguments it carries something no other line can: their *order*.
+    @group()
+    def cli() -> None:
+        """A tool."""
+
+    @cli.command()
+    @option("--force", is_flag=True, help="Overwrite.")
+    @argument("src")
+    @argument("dest", required=False)
+    def move(force: bool, src: str, dest: str) -> None:
+        """Move a record."""
+
+    @cli.command()
+    @option("--force", is_flag=True, help="Overwrite.")
+    def sweep(force: bool) -> None:
+        """Sweep the records."""
+
+    out = cli_runner.invoke(cli, ["--help=compact"]).output
+
+    assert "usage: cli move SRC [DEST]" in out  # positionals in order, and `[OPTIONS]` left out
+    assert "# move — Move a record.\nusage:" in out  # directly under the anchor line
+    assert "# sweep — Sweep the records.\n--force" in out  # no usage line at all
+
+
+def test_compact_documents_arguments_that_carry_their_own_help(cli_runner: CliRunner) -> None:
+    # A bare positional is fully described by the usage line, so it gets no line of its own; one with
+    # help text or a default does, keyed by the same metavar the usage line uses.
+    @command()
+    @argument("src")
+    @argument("mode", type=click.Choice(["fast", "safe"]), required=False, help="How to run.")
+    def cli(src: str, mode: str) -> None:
+        """Hi."""
+
+    out = cli_runner.invoke(cli, ["--help=compact"]).output
+
+    assert "usage: cli SRC [fast|safe]" in out
+    assert "[fast|safe]  How to run." in out
+    assert "\nSRC" not in out
+
+
+def test_compact_omits_the_help_option(cli_runner: CliRunner) -> None:
+    # The one row that is identical on every command of every CLI, and the largest block of pure
+    # repetition in a whole-tree rendering. The other formats still report it.
+    cli = _build_cli()
+
+    assert "--help" not in cli_runner.invoke(cli, ["--help=compact"]).output
+    assert "--help" in cli_runner.invoke(cli, ["--help=md"]).output
+    assert "--help" in cli_runner.invoke(cli, ["--help=json"]).output
+
+
+def test_compact_uses_clicks_own_metavars(cli_runner: CliRunner) -> None:
+    # The signature is what tells the reader what to type, and it comes from Click itself: an explicit
+    # `metavar=`, a `Path(file_okay=False)`'s DIRECTORY and any custom ParamType survive as they are.
     @command()
     @option("--pkg", metavar="PKG_NAME", help="Which package.")
     @option("--out", type=click.Path(file_okay=False), help="Where to write.")
     @option("--tag", multiple=True, help="Repeatable.")
     @option("--shout", is_flag=True, help="Be loud.")
-    def cli(pkg: str, out: str, tag: tuple[str, ...], shout: bool) -> None:
+    @option("--debug/--no-debug", default=True, help="Toggle.")
+    def cli(pkg: str, out: str, tag: tuple[str, ...], shout: bool, debug: bool) -> None:
         """Hi."""
 
     out = cli_runner.invoke(cli, ["--help=compact"]).output
-    assert "  --pkg PKG_NAME —" in out
-    assert "  --out DIRECTORY —" in out
-    assert "  --tag TEXT... —" in out  # repeatable, which Click's own metavar does not mark
-    assert "  --shout — Be loud." in out  # a flag takes no value, so it shows none
+
+    assert "--pkg PKG_NAME  Which package." in out
+    assert "--out DIRECTORY  Where to write." in out
+    assert "--tag TEXT ...  Repeatable." in out  # repeatable, which Click's own metavar does not mark
+    assert "--shout  Be loud." in out  # a flag takes no value, so it shows none
+    assert "--debug, --no-debug  Toggle. [default: True]" in out  # negation flag included
 
     # The metavars are a rendering concern only: the JSON formats are untouched by them.
     assert "metavar" not in cli_runner.invoke(cli, ["--help=json"]).output
 
 
-def test_help_compact_lists_subcommands_one_per_line(cli_runner: CliRunner) -> None:
+def test_compact_marks_required_with_a_star_not_a_word(cli_runner: CliRunner) -> None:
+    # `*` is the marker rich-click's rendered help already uses, and it costs one character where
+    # `[required]` costs ten -- on every required option of every command.
+    @command()
+    @option("--name", required=True, help="Who.")
+    @option("--nick", help="Optional.")
+    def cli(name: str, nick: str) -> None:
+        """Hi."""
+
+    out = cli_runner.invoke(cli, ["--help=compact"]).output
+
+    assert "*--name TEXT  Who." in out
+    assert "--nick TEXT  Optional." in out
+    assert "required" not in out
+
+
+def test_compact_group_lists_its_subcommands(cli_runner: CliRunner) -> None:
+    # A group that is *not* rendering its descendants in full lists them instead: one line each, same
+    # two-space separator, nested by path rather than indentation so each line is a runnable command.
+    cli = _build_cli()
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        out = compact_command(cli, ctx, max_chars=None)
+
+    assert out == snapshot(
+        """\
+# cli — Root help text.
+-v, --verbose  Be loud.
+hello  Say hello.
+things (sub)  Manage things.
+things list  List things.
+"""
+    )
+
+
+def test_compact_renders_the_whole_tree(cli_runner: CliRunner) -> None:
+    # What an explicit `--help compact` is for: every command in the tree, depth-first in definition
+    # order, one blank line between blocks, no ceiling. A caller who names the format wants everything.
     out = cli_runner.invoke(_build_cli(), ["--help=compact"]).output
 
-    assert "Commands:" in out
-    assert "  hello — Say hello." in out
-    assert "  things (sub) — Manage things." in out
-    assert "    list — List things." in out
+    assert out == snapshot(
+        """\
+# cli — Root help text.
+-v, --verbose  Be loud.
+
+# hello — Say hello.
+usage: cli hello NAME
+--count INTEGER  How many times. [default: 3]
+
+# things (sub) — Manage things.
+
+# things list — List things.
+
+"""
+    )
 
 
-def test_help_compact_is_leaner_than_markdown(cli_runner: CliRunner) -> None:
-    # The whole point of the format: the same content, fewer tokens.
-    cli = _build_cli()
-    compact = cli_runner.invoke(cli, ["hello", "--help=compact"]).output
-    markdown = cli_runner.invoke(cli, ["hello", "--help=md"]).output
-    assert estimate_tokens(compact) < estimate_tokens(markdown)
+def test_compact_is_leaner_than_markdown(cli_runner: CliRunner) -> None:
+    # The whole point of the format: the same content, a fraction of the characters -- the currency an
+    # agent harness truncates in.
+    cli = _big_cli()
+    compact = cli_runner.invoke(cli, ["--help=compact"]).output
+    markdown = cli_runner.invoke(cli, ["--help=md-full"]).output
+
+    assert len(compact) < len(markdown) / 2
 
 
-def test_help_compact_is_never_a_default(cli_runner: CliRunner) -> None:
-    # Explicitly requested only: it is not what a bare `--help` renders for an agent, and asking for it
-    # is what makes it appear.
-    assert RichHelpConfiguration().agent_help_format == "markdown"
+def test_compact_adaptive_uses_all_three_tiers(cli_runner: CliRunner) -> None:
+    # As the agent default the format adapts like Markdown does: the invoked command in full, the rest
+    # promoted breadth-first from a listing line, through a bare signature, to a full block.
+    cli = _big_cli()
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        out = compact_command(cli, ctx, max_chars=15_000)
+
+    assert len(out) <= 15_000
+    # L2, the invoked command: its own block, in full.
+    assert out.startswith("# cli — A very large CLI.")
+    # L1, a near command: anchor line and bare signatures, no descriptions.
+    assert "# grp00 cmd00 — Do a thing to the target.\n--target alpha|beta\n--seed INTEGER\n" in out
+    assert "# grp00 cmd00 — Do a thing to the target.\n--target alpha|beta  Which" not in out
+    # L0, a distant one: a listing line under the nearest ancestor with a block, named but not documented.
+    assert "cmd19  Do a thing to the target." in out
+    assert "# grp14 cmd19" not in out
+    # And the reader is told what was abbreviated, and how to get the rest.
+    assert out.rstrip().endswith("Run `cli <COMMAND> --help compact` on any command for its full detail.")
+    assert "note: size-limited: 1 command(s) shown in full," in out
+
+
+def test_compact_adaptive_promotes_signatures_before_full_blocks(cli_runner: CliRunner) -> None:
+    # Breadth before depth: every command's option *names* are worth more to an agent choosing between
+    # commands than an exhaustive treatment of the first few. So no command is documented in full until
+    # every command has at least a signature.
+    cli = _big_cli(groups=6, commands=6)
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        out = compact_command(cli, ctx, max_chars=4_000)
+
+    assert len(out) <= 4_000
+    for group_index in range(6):
+        for command_index in range(6):
+            assert f"# grp{group_index:02d} cmd{command_index:02d} —" in out
+    # Signatures everywhere, descriptions only on the commands whose full block also fit.
+    assert "--target alpha|beta\n--seed INTEGER\n" in out
+    assert 0 < out.count("--target alpha|beta  Which target to act on.") < 36
+
+
+def test_compact_output_is_deterministic(cli_runner: CliRunner) -> None:
+    cli = _big_cli()
+    assert len({cli_runner.invoke(cli, ["--help=compact"]).output for _ in range(3)}) == 1
+
+
+def test_compact_is_the_agent_default(cli_runner: CliRunner) -> None:
+    # The format a bare `--help` renders when an agent is detected: the leanest complete rendering, and
+    # the one that keeps a mid-size CLI inside a single tool response.
+    assert RichHelpConfiguration().agent_help_format == "compact"
+    assert RichHelpConfiguration().agent_help_max_chars == 25_000
     assert "compact" in json.loads(cli_runner.invoke(_build_cli(), ["--help=json"]).output)["params"][-1]["choices"]
+
+
+def test_help_compact_override(cli_runner: CliRunner) -> None:
+    # format_help_compact is overridable for full control of the output.
+    class MyCommand(RichCommand):
+        def format_help_compact(self, ctx: Any) -> str:
+            return "CUSTOM COMPACT"
+
+    @command(cls=MyCommand)
+    def cli() -> None:
+        """Hi."""
+
+    assert cli_runner.invoke(cli, ["--help=compact"]).output.strip() == "CUSTOM COMPACT"
 
 
 # --------------------------------------------------------------------------------------------------

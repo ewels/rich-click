@@ -10,11 +10,12 @@ screen. No new flag is added; the capability lives on ``--help`` and bare ``--he
 parameter detail plus a name-only index of subcommands, so agents land on a command, read its
 parameters as data, and drill into subcommands by name as needed. ``--help markdown`` renders the
 same structure as LLM-friendly Markdown, but with *adaptive* disclosure: the invoked command in full
-plus as much of the rest of the tree as fits a token ceiling, nearest hop first (see
-:func:`adaptive_command_markdown`). The ``-full`` variants (``--help markdown-full`` /
-``--help json-full``) expand every descendant to full detail in one call; ``--help carapace``
-maps the tree onto the carapace completion spec; and ``--help compact`` is an experimental,
-explicitly-requested, token-lean rendering (see :func:`compact_command`).
+plus as much of the rest of the tree as fits a character ceiling, nearest hop first (see
+:func:`adaptive_command_markdown`). ``--help compact`` renders the whole tree in the leanest form that
+keeps it complete -- one line per record, no tables -- which is what a bare ``--help`` renders in a
+detected agent environment, there under the same character ceiling (see :func:`compact_command`). The
+``-full`` variants (``--help markdown-full`` / ``--help json-full``) expand every descendant to full
+detail in one call, and ``--help carapace`` maps the tree onto the carapace completion spec.
 
 Composability: the schema is built from each command's ``to_info_dict()`` -- the
 same Click method that powers introspection elsewhere -- so anything a developer
@@ -31,8 +32,7 @@ override ``format_help_json`` for full control, or use the lighter-touch
 from __future__ import annotations
 
 from collections.abc import Callable, Iterator, Sequence
-from math import ceil
-from typing import Any
+from typing import Any, NamedTuple
 
 import click
 
@@ -398,10 +398,11 @@ def command_schema(
     already serializes the whole subtree, so the recursive walk reuses those child entries instead of
     re-serializing each subtree -- one ``to_info_dict()`` call for the tree rather than one per node.
 
-    ``display`` adds the two fields the *text* renderings need and the JSON formats deliberately omit:
-    each parameter's rendered ``metavar`` and the command's one-line ``short_help``. Both are computed
-    by Click itself here, where the live command and parameter objects are in hand, so the Markdown and
-    compact renderers do not have to reconstruct them from the serialized type name further downstream.
+    ``display`` adds the fields the *text* renderings need and the JSON formats deliberately omit: each
+    parameter's rendered ``metavar``, an ``is_help_option`` marker on the ``--help`` option, and the
+    command's one-line ``short_help``. All are computed by Click itself here, where the live command and
+    parameter objects are in hand, so the Markdown and compact renderers do not have to reconstruct them
+    from the serialized type name further downstream.
     """
     if info is None:
         info = cmd.to_info_dict(ctx)
@@ -418,6 +419,10 @@ def command_schema(
                 param_dict["choices"] = formats
         if display:
             param_dict["metavar"] = _param_metavar(param, ctx)
+            if id(param) in help_ids:
+                # Flagged (in the display schema only) so a rendering can drop the ``--help`` row, which
+                # is the same boilerplate on every command in the tree. See :func:`compact_command`.
+                param_dict["is_help_option"] = True
         params.append(param_dict)
 
     schema: dict[str, Any] = {"name": info.get("name"), "path": ctx.command_path}
@@ -878,7 +883,229 @@ def _render_command_markdown(schema: dict[str, Any], lines: list[str], recursive
 
 
 # --------------------------------------------------------------------------------------------------
-# Adaptive disclosure for ``--help markdown``.
+# Compact (``--help compact``).
+#
+# The same data as the Markdown formats, in the shape a truncating agent harness can actually hold.
+# Agent harnesses cut a tool's output at a *character* count (Claude Code at ~30,000), and a help page
+# that gets cut is worse than a short one: the agent re-reads it through grep/tail, spending turns. So
+# every rule here buys characters back, and spends them only where a model needs them:
+#
+# * One line per record, with the signature and the description separated by exactly two spaces. No
+#   tables, no box drawing, no column padding -- alignment is the single most expensive habit in a help
+#   screen and carries no information a separator does not.
+# * Only conventions models already know: a leading ``*`` for a required option (rich-click's rendered
+#   help marks required options the same way), ``a|b|c`` in place of a choice metavar, ``...`` for a
+#   repeatable one, and Click's own ``[default: x]`` / ``[env: NAME]`` tags. No invented sigils, so
+#   nothing has to be explained to the reader before the page can be used.
+# * Every command block opens with a ``#`` anchor line, which is what makes a multi-command document
+#   greppable and gives a model something to navigate by.
+# * Boilerplate is dropped: the ``--help`` row (identical on every command) and the ``usage:`` line for
+#   commands that have no positional arguments (the anchor line already gives the path, and the options
+#   are listed underneath -- only argument *order* is information a heading cannot carry).
+# --------------------------------------------------------------------------------------------------
+
+#: The separator between a signature and its description, on every line of every compact block.
+#:
+#: Exactly two spaces. One space is ambiguous with the spaces inside a signature (``--kolm a|b|c``), and
+#: padding to a column would make the boundary depend on the widest row in the block -- costing
+#: characters and making the format harder, not easier, to read a line at a time.
+_COMPACT_GAP = "  "
+
+
+def _compact_path(schema: dict[str, Any]) -> str:
+    """
+    Return a command's invocation path with the program name dropped, for its anchor line.
+
+    ``cli things list`` becomes ``things list``: the program name is a constant repeated on every one of
+    a large tree's anchor lines, and it is already spelled out in the usage line and the examples, which
+    are the lines a reader copies. A top-level command, whose path *is* the program name, keeps it.
+    """
+    path = str(schema.get("path") or schema.get("name") or "")
+    _, _, rest = path.partition(" ")
+    return rest or path
+
+
+def _compact_aliases(aliases: Any) -> str:
+    """Render a command's aliases as ``` (co, cr)```, or nothing at all when it has none."""
+    return f" ({', '.join(str(alias) for alias in aliases)})" if aliases else ""
+
+
+def _compact_anchor(schema: dict[str, Any]) -> str:
+    """
+    Return a command block's opening line: ``# <path> (<aliases>) — <short help>``.
+
+    The ``#`` is the anchor: in a document holding a whole command tree it is what a model greps for and
+    what tells it where one command's block ends and the next begins.
+    """
+    line = f"# {_compact_path(schema)}{_compact_aliases(schema.get('aliases'))}"
+    summary = _summary(schema)
+    return f"{line} — {_one_line(summary)}" if summary else line
+
+
+def _compact_metavar(param: dict[str, Any], *, is_option: bool) -> str:
+    """
+    Return the value a parameter takes, as the compact format spells it.
+
+    An option's ``Choice`` is spelled out inline (``pelm|crox|zeff``) in place of Click's bracketed
+    metavar: the choice values *are* the vocabulary needed to build a valid invocation, and there is no
+    description column here to carry them. Arguments keep Click's own metavar unchanged, so the token in
+    an argument's line is the same token the usage line shows -- including the ``{a|b}`` a ``Choice``
+    argument already renders as, and the brackets that mark an optional one.
+    """
+    choices = param.get("choices") if is_option else None
+    metavar = "|".join(str(choice) for choice in choices) if choices else str(param.get("metavar") or "")
+    if param.get("multiple"):
+        # ``_param_metavar`` marks a repeatable option by gluing an ellipsis onto the metavar; separating
+        # it keeps ``...`` a token of its own, which is how every CLI convention writes "repeat this".
+        metavar = metavar.removesuffix("...").rstrip()
+        metavar = f"{metavar} ..." if metavar else "..."
+    return metavar
+
+
+def _compact_signature(param: dict[str, Any], *, is_option: bool) -> str:
+    """
+    Return a parameter's signature: ``*--crull TEXT``, ``--kolm pelm|crox|zeff``, ``SRC``.
+
+    A required option is marked with a leading ``*`` -- the marker rich-click's rendered help already
+    uses -- rather than a trailing ``[required]``, which costs ten times as many characters to say the
+    same thing. Arguments carry no marker: Click's metavar already brackets the optional ones.
+    """
+    if not is_option:
+        return _compact_metavar(param, is_option=False)
+    required = "*" if param.get("required") else ""
+    return f"{required}{', '.join(_md_param_opts(param))} {_compact_metavar(param, is_option=True)}".strip()
+
+
+def _compact_tags(param: dict[str, Any]) -> list[str]:
+    """
+    Return a parameter's trailing ``[default: x]`` / ``[env: NAME]`` / ``[prompt: …]`` tags.
+
+    Click's own phrasing, verbatim, because a model has read it a thousand times in rendered help
+    screens. ``[required]`` is deliberately absent: the signature's ``*`` already says it.
+    """
+    tags = []
+    if "default" in param:
+        tags.append(f"[default: {_one_line(param['default'])}]")
+    envvar = param.get("envvar")
+    if envvar:
+        names = ", ".join(str(name) for name in envvar) if isinstance(envvar, (list, tuple)) else str(envvar)
+        tags.append(f"[env: {names}]")
+    if param.get("prompt"):
+        tags.append(f"[prompt: {_one_line(param['prompt'])}]")
+    return tags
+
+
+def _compact_param_line(param: dict[str, Any], *, is_option: bool) -> str:
+    """Render one parameter as ``<signature>  <description> [default: x] [env: NAME]``."""
+    description = [_one_line(param["help"])] if param.get("help") else []
+    description += _compact_tags(param)
+    signature = _compact_signature(param, is_option=is_option)
+    # No description and no tags means no separator: the format never emits trailing whitespace.
+    return f"{signature}{_COMPACT_GAP}{' '.join(description)}" if description else signature
+
+
+def _compact_options(schema: dict[str, Any]) -> list[dict[str, Any]]:
+    """
+    Return the options a compact block lists: every visible one except ``--help``.
+
+    ``--help`` is dropped because it is the one row that is identical on every command of every CLI. In
+    a whole-tree rendering it is the single largest block of pure repetition, and a model that has read
+    one help page already knows the flag exists.
+    """
+    return [param for param in _visible(schema.get("params", []), "option") if not param.get("is_help_option")]
+
+
+def _compact_usage(schema: dict[str, Any]) -> str | None:
+    """
+    Return the ``usage:`` line, or ``None`` for a command that does not need one.
+
+    Only commands with positional arguments get one, and it lists only those positionals: their *order*
+    is real information no other line carries. ``[OPTIONS]`` is omitted -- the options are listed
+    directly underneath -- and a command with no positionals is fully described by its anchor line and
+    its option lines, so a usage line would be pure repetition.
+    """
+    arguments = _visible(schema.get("params", []), "argument")
+    if not arguments:
+        return None
+    path = str(schema.get("path") or schema.get("name") or "")
+    pieces = [_compact_metavar(param, is_option=False) or str(param.get("name") or "").upper() for param in arguments]
+    return " ".join(["usage:", path, *pieces])
+
+
+def _compact_index_entry(path: str, entry: dict[str, Any]) -> str:
+    """Format one listed subcommand as ``<path> (<aliases>)  <short help>``."""
+    line = f"{path}{_compact_aliases(entry.get('aliases'))}"
+    help_text = entry.get("help")
+    return f"{line}{_COMPACT_GAP}{_one_line(help_text)}" if help_text else line
+
+
+def _compact_index_lines(index: dict[str, Any], lines: list[str], prefix: str = "") -> None:
+    """
+    Walk a name-only subcommand index depth-first, one line per command.
+
+    Nesting is carried by the path (``things list``) rather than by indentation: it costs the same
+    characters, and it hands the reader the invocation to type instead of a name it would have to
+    assemble from an enclosing line.
+    """
+    for name, entry in index.items():
+        lines.append(_compact_index_entry(prefix + name, entry))
+        nested = entry.get("subcommands")
+        if nested:
+            _compact_index_lines(nested, lines, f"{prefix}{name} ")
+
+
+def _render_compact_body(schema: dict[str, Any], lines: list[str]) -> None:
+    """
+    Append one command's full compact block (level **L2**).
+
+    Order is anchor, usage, arguments, options, examples. Examples come last here -- the opposite of the
+    Markdown formats, where they lead -- because a compact block is short enough to read whole, so the
+    examples land as the summary of what the option lines just spelled out rather than as an answer
+    ahead of the reference material.
+    """
+    lines.append(_compact_anchor(schema))
+    usage = _compact_usage(schema)
+    if usage:
+        lines.append(usage)
+
+    for param in _visible(schema.get("params", []), "argument"):
+        # A bare positional is already fully described by the usage line; only one that carries a
+        # description or a tag has anything left to say.
+        if param.get("help") or _compact_tags(param):
+            lines.append(_compact_param_line(param, is_option=False))
+    lines += [_compact_param_line(param, is_option=True) for param in _compact_options(schema)]
+
+    if schema.get("examples"):
+        # The command lines alone, without their descriptions: sitting under the option list, a worked
+        # invocation describes itself, and the description is the part a model does not copy.
+        lines.append("examples:")
+        lines += [f"- {_one_line(example['command'])}" for example in schema["examples"]]
+
+
+def _render_compact_signature(schema: dict[str, Any], lines: list[str]) -> None:
+    """
+    Append a command's compact *signature* block (level **L1**) -- anchor line plus bare signatures.
+
+    The middle tier of adaptive disclosure: enough for a model to tell whether this is the command it
+    wants and to build a syntactically valid invocation, without paying for a word of description. The
+    usage line survives when there are positionals, since nothing else at this level would mention them.
+    """
+    lines.append(_compact_anchor(schema))
+    usage = _compact_usage(schema)
+    if usage:
+        lines.append(usage)
+    lines += [_compact_signature(param, is_option=True) for param in _compact_options(schema)]
+
+
+def _render_compact_pointer(schema: dict[str, Any]) -> str:
+    """Render a command as a single listing line (level **L0**) -- name, aliases, one-line summary."""
+    return _compact_index_entry(
+        str(schema.get("name") or ""), {"aliases": schema.get("aliases"), "help": _summary(schema)}
+    )
+
+
+# --------------------------------------------------------------------------------------------------
+# Adaptive disclosure, shared by ``--help markdown`` and the compact agent default.
 #
 # Plain progressive disclosure -- the invoked command in full, its descendants as name-only rows -- is
 # cheap but makes an agent *guess*: the vocabulary that decides which subcommand is the right one lives
@@ -888,49 +1115,103 @@ def _render_command_markdown(schema: dict[str, Any], lines: list[str], recursive
 #
 # Adaptive disclosure is the middle path, and needs no configuration: render the invoked command in
 # full, then keep promoting descendants -- nearest hop first -- to richer detail levels for as long as
-# the estimated size of the whole response stays under a token ceiling. A small or mid-size CLI (the
-# overwhelming majority) therefore emits its *entire* tree in full detail, and only a genuinely large
-# one degrades, gracefully and nearest-first.
+# the whole response stays under a character ceiling. A small or mid-size CLI (the overwhelming
+# majority) therefore emits its *entire* tree in full detail, and only a genuinely large one degrades,
+# gracefully and nearest-first.
+#
+# The budget is in **characters**, not tokens, because the failure it exists to prevent is an agent
+# harness truncating the output -- and every known harness measures its cap in characters (Claude Code
+# cuts a tool result at ~30,000). Characters also need no estimator: ``len(text)`` is exact, where a
+# token count would need a per-format chars-per-token divisor that drifts from what is actually emitted.
+# A character ceiling bounds the token cost implicitly, since help text does not go below ~2.5
+# characters per token.
 # --------------------------------------------------------------------------------------------------
-
-#: Characters per token, used to estimate a response's size without a tokenizer dependency.
-#:
-#: Measured against real rendered Markdown help: the tables, backticks, flag names and punctuation that
-#: dominate this output tokenize far more densely than prose (~4 chars/token), landing around 3.3. The
-#: constant is deliberately on the pessimistic side -- underestimating the size would let a response
-#: overshoot its budget, while overestimating only makes the renderer slightly more conservative.
-CHARS_PER_TOKEN = 3.3
 
 #: The three per-node detail levels the adaptive renderer promotes between.
 DETAIL_POINTER = 0
-"""Name + one-line description, as a row in the parent's subcommand index."""
+"""Name + one-line description, as a row in the parent's subcommand listing."""
 DETAIL_SIGNATURE = 1
-"""Usage, one-line description and a compact option signature list (no descriptions)."""
+"""One-line description and a bare option signature list (no descriptions)."""
 DETAIL_FULL = 2
-"""Everything: description, usage, examples and the full option/argument tables."""
-
-#: Tokens held back from the ceiling for the closing note, which is only emitted when the tree did not
-#: fit in full and therefore has to tell the reader how to get the rest.
-_BUDGET_NOTE_TOKENS = 80
+"""Everything: description, usage, examples and the full option/argument detail."""
 
 
-def estimate_tokens(text: str) -> int:
+class _RenderStyle(NamedTuple):
     """
-    Estimate how many tokens a string costs, without a tokenizer.
+    How one rendering draws the three detail levels, so the budgeting machinery can be shared.
 
-    A deliberate approximation (see :data:`CHARS_PER_TOKEN`): the adaptive renderer only needs to
-    compare a response against a ceiling, and a real tokenizer would mean a heavyweight dependency and
-    a per-render cost, to decide something a ratio decides just as well.
+    Markdown and compact differ only in what a node's block looks like at each level and how listed
+    (L0) descendants are introduced -- not in how the tree is priced or promoted. Keeping that
+    difference in one small record means the two formats cannot drift apart in their disclosure
+    behaviour, only in their typography.
     """
-    return _tokens_from_chars(len(text))
+
+    #: ``--help <name>`` this style renders; named in the closing note so the reader can ask for more.
+    name: str
+    #: Append a node's block at L2 / L1 to a line buffer.
+    full: Callable[[dict[str, Any], list[str]], None]
+    signature: Callable[[dict[str, Any], list[str]], None]
+    #: Render a node as a single L0 listing line, without its prefix.
+    pointer: Callable[[dict[str, Any]], str]
+    #: Extend the prefix carried down to a listed node's own children (indentation, or a path).
+    child_prefix: Callable[[str, dict[str, Any]], str]
+    #: Emitted before a block's listed children, after them, and after the block itself.
+    pointer_heading: tuple[str, ...]
+    pointer_end: tuple[str, ...]
+    block_end: tuple[str, ...]
 
 
-def _tokens_from_chars(chars: int) -> int:
-    """Convert a character count to the estimated token count, rounding up."""
-    return ceil(chars / CHARS_PER_TOKEN)
+def _markdown_budget_note(path: str, full: int, signature: int, pointer: int) -> str:
+    """Build the Markdown rendering's closing note, telling the reader what was abbreviated."""
+    return (
+        f"> **Note:** this help was size-limited: {full} command(s) documented in full, {signature} in "
+        f"brief, {pointer} listed by name only. Run "
+        f"`{path} <COMMAND> --help markdown` on any command for its full detail."
+    )
 
 
-class _MarkdownNode:
+def _compact_budget_note(path: str, full: int, signature: int, pointer: int) -> str:
+    """Build the compact closing note -- the same facts, in the format's own plain-text idiom."""
+    return (
+        f"note: size-limited: {full} command(s) shown in full, {signature} in brief, {pointer} by name "
+        f"only. Run `{path} <COMMAND> --help compact` on any command for its full detail."
+    )
+
+
+_MARKDOWN_STYLE = _RenderStyle(
+    name="markdown",
+    full=_render_command_body,
+    signature=_render_command_signature,
+    pointer=_render_command_pointer,
+    # Markdown nests its listing by indentation, under a heading, and its blocks end in a blank line of
+    # their own -- so only the listing needs one appended.
+    child_prefix=lambda prefix, schema: f"{prefix}  ",
+    pointer_heading=("## Subcommands", ""),
+    pointer_end=("",),
+    block_end=(),
+)
+
+_COMPACT_STYLE = _RenderStyle(
+    name="compact",
+    full=_render_compact_body,
+    signature=_render_compact_signature,
+    pointer=_render_compact_pointer,
+    # Compact nests its listing by path, needs no heading to introduce it (an option line starts with a
+    # dash and a listing line does not), and separates one command block from the next by a blank line.
+    child_prefix=lambda prefix, schema: f"{prefix}{schema.get('name') or ''} ",
+    pointer_heading=(),
+    pointer_end=(),
+    block_end=("",),
+)
+
+#: Closing note builder per style, keyed by format name.
+_BUDGET_NOTES: dict[str, Callable[[str, int, int, int], str]] = {
+    "markdown": _markdown_budget_note,
+    "compact": _compact_budget_note,
+}
+
+
+class _HelpNode:
     """
     One command in the tree the adaptive renderer budgets over.
 
@@ -939,32 +1220,31 @@ class _MarkdownNode:
     document on every attempt.
     """
 
-    __slots__ = ("children", "level", "schema", "_pointer", "_sections")
+    __slots__ = ("children", "level", "schema", "style", "_pointer", "_sections")
 
-    def __init__(self, schema: dict[str, Any]) -> None:
+    def __init__(self, schema: dict[str, Any], style: _RenderStyle) -> None:
         self.schema = schema
+        self.style = style
         self.level = DETAIL_POINTER
-        self.children = [_MarkdownNode(child) for child in (schema.get("subcommands") or {}).values()]
+        self.children = [_HelpNode(child, style) for child in (schema.get("subcommands") or {}).values()]
         self._sections: dict[int, tuple[list[str], int]] = {}
         self._pointer: tuple[str, int] | None = None
 
     def section(self) -> tuple[list[str], int]:
-        """Return this node's own section at its current level, as ``(lines, characters)``."""
+        """Return this node's own block at its current level, as ``(lines, characters)``."""
         cached = self._sections.get(self.level)
         if cached is None:
             lines: list[str] = []
-            if self.level == DETAIL_FULL:
-                _render_command_body(self.schema, lines)
-            else:
-                _render_command_signature(self.schema, lines)
+            render = self.style.full if self.level == DETAIL_FULL else self.style.signature
+            render(self.schema, lines)
             cached = (lines, _line_chars(lines))
             self._sections[self.level] = cached
         return cached
 
     def pointer(self) -> tuple[str, int]:
-        """Return this node's index bullet (L0), as ``(line, characters)``, excluding its indent."""
+        """Return this node's listing line (L0), as ``(line, characters)``, excluding its prefix."""
         if self._pointer is None:
-            line = _render_command_pointer(self.schema)
+            line = self.style.pointer(self.schema)
             self._pointer = (line, len(line) + 1)
         return self._pointer
 
@@ -974,13 +1254,7 @@ def _line_chars(lines: Sequence[str]) -> int:
     return sum(len(line) + 1 for line in lines)
 
 
-#: The heading that introduces a node's un-promoted children, and its cost -- a constant, so the
-#: pricing walk does not rebuild it on every one of its many passes.
-_SUBCOMMANDS_HEADING = ["## Subcommands", ""]
-_SUBCOMMANDS_HEADING_CHARS = _line_chars(_SUBCOMMANDS_HEADING)
-
-
-def _breadth_first(root: _MarkdownNode) -> list[_MarkdownNode]:
+def _breadth_first(root: _HelpNode) -> list[_HelpNode]:
     """Return the tree in breadth-first order: nearest hop first, declaration order within a hop."""
     order = [root]
     index = 0
@@ -990,47 +1264,54 @@ def _breadth_first(root: _MarkdownNode) -> list[_MarkdownNode]:
     return order
 
 
-def _emit(node: _MarkdownNode, indent: int, out: list[str] | None) -> int:
+def _emit(node: _HelpNode, prefix: str, out: list[str] | None) -> int:
     """
     Render (when ``out`` is given) and price one node and its descendants at their current levels.
 
     Doubling as the renderer and the estimator is deliberate: a separate size model would be free to
     drift from what is actually emitted, and a budget computed from a stale model is worse than no
-    budget at all. Sections come out in the same depth-first order ``--help markdown-full`` uses, so a
-    tree that is entirely at L2 renders byte-for-byte like ``markdown-full``.
+    budget at all. Because the price is a character count of the very lines that get emitted, the
+    ceiling is exact rather than approximate. Blocks come out in the same depth-first order the
+    whole-tree formats use, so a tree that is entirely at L2 renders byte-for-byte like
+    ``--help markdown-full`` / ``--help compact``.
     """
+    style = node.style
     if node.level == DETAIL_POINTER:
         line, chars = node.pointer()
-        prefix = "  " * indent
         if out is not None:
             out.append(prefix + line)
         total = chars + len(prefix)
+        child_prefix = style.child_prefix(prefix, node.schema)
         for child in node.children:
-            total += _emit(child, indent + 1, out)
+            total += _emit(child, child_prefix, out)
         return total
 
     lines, total = node.section()
     if out is not None:
         out.extend(lines)
-    # Children that were not promoted are listed as an index under this node, the nearest ancestor with
-    # a section of its own; promoted ones follow as their own sections.
+    # Children that were not promoted are listed under this node, the nearest ancestor with a block of
+    # its own; promoted ones follow as their own blocks. The listing starts a fresh prefix, since it is
+    # written relative to the command whose block it sits in.
     pointers = [child for child in node.children if child.level == DETAIL_POINTER]
     if pointers:
         if out is not None:
-            out += _SUBCOMMANDS_HEADING
-        total += _SUBCOMMANDS_HEADING_CHARS
+            out.extend(style.pointer_heading)
+        total += _line_chars(style.pointer_heading)
         for child in pointers:
-            total += _emit(child, 0, out)
+            total += _emit(child, "", out)
         if out is not None:
-            out.append("")
-        total += 1
+            out.extend(style.pointer_end)
+        total += _line_chars(style.pointer_end)
+    if out is not None:
+        out.extend(style.block_end)
+    total += _line_chars(style.block_end)
     for child in node.children:
         if child.level != DETAIL_POINTER:
-            total += _emit(child, 0, out)
+            total += _emit(child, "", out)
     return total
 
 
-def _promote(root: _MarkdownNode, order: Sequence[_MarkdownNode], max_tokens: int) -> None:
+def _promote(root: _HelpNode, order: Sequence[_HelpNode], max_chars: int) -> None:
     """
     Promote descendants L0 -> L1 -> L2, breadth-first, for as long as the response fits the ceiling.
 
@@ -1049,144 +1330,126 @@ def _promote(root: _MarkdownNode, order: Sequence[_MarkdownNode], max_tokens: in
             if node.level >= target:
                 continue
             node.level = target
-            if _tokens_from_chars(_emit(root, 0, None)) > max_tokens:
+            if _emit(root, "", None) > max_chars:
                 node.level = target - 1
                 return
 
 
-def _budget_note(root: _MarkdownNode, order: Sequence[_MarkdownNode]) -> str:
-    """Build the closing note telling the reader what was abbreviated, and how to get the rest."""
-    full = sum(1 for node in order if node.level == DETAIL_FULL)
-    signature = sum(1 for node in order if node.level == DETAIL_SIGNATURE)
-    path = root.schema.get("path") or root.schema.get("name") or ""
-    return (
-        f"> **Note:** this help was size-limited: {full} command(s) documented in full, {signature} in "
-        f"brief, {len(order) - full - signature} listed by name only. Run "
-        f"`{path} <COMMAND> --help markdown` on any command for its full detail."
-    )
+def _root_path(root: _HelpNode) -> str:
+    """Return the invoked command's path, as the closing note spells it."""
+    return str(root.schema.get("path") or root.schema.get("name") or "")
 
 
-def adaptive_command_markdown(cmd: click.Command, ctx: click.Context, max_tokens: int) -> str:
+def _note_reserve(root: _HelpNode, order: Sequence[_HelpNode], style: _RenderStyle) -> int:
     """
-    Render a command tree as Markdown, disclosing as much detail as ``max_tokens`` allows.
+    Characters to hold back from the ceiling for the closing note, which is only emitted when the tree
+    did not fit and therefore has to tell the reader how to get the rest.
+
+    Priced against the widest the note can get -- every count at its maximum, so every number is at its
+    maximum number of digits -- plus the blank line before it and its own newline. Reserving the real
+    upper bound, rather than a guessed constant, is what makes the ceiling an exact one.
+    """
+    widest = _BUDGET_NOTES[style.name](_root_path(root), len(order), len(order), len(order))
+    return len(widest) + 2
+
+
+def _adaptive_help(cmd: click.Command, ctx: click.Context, max_chars: int, style: _RenderStyle) -> str:
+    """
+    Render a command tree, disclosing as much detail as ``max_chars`` allows.
 
     The invoked command is always rendered in full; its descendants are promoted breadth-first from a
-    name-only pointer, through a compact signature, to full detail, until the ceiling is reached. Trees
-    that fit entirely are emitted in full -- identical to ``--help markdown-full`` -- and only larger
-    ones degrade, nearest hop first.
+    name-only pointer, through a bare signature, to full detail, until the ceiling is reached. Trees
+    that fit entirely are emitted in full -- identical to the format's whole-tree variant -- and only
+    larger ones degrade, nearest hop first.
+
+    The result never exceeds ``max_chars`` above the format's floor -- the invoked command's own block
+    plus a name-only line per descendant, which is what the least-disclosed rendering costs. Neither is
+    abbreviated further: a ceiling below that floor is overshot rather than dropping the command that
+    was asked about, or hiding a command's existence entirely.
     """
-    root = _MarkdownNode(command_schema(cmd, ctx, recursive=True, display=True))
+    root = _HelpNode(command_schema(cmd, ctx, recursive=True, display=True), style)
     order = _breadth_first(root)
 
     for node in order:
         node.level = DETAIL_FULL
-    truncated = _tokens_from_chars(_emit(root, 0, None)) > max_tokens
+    truncated = _emit(root, "", None) > max_chars
     if truncated:
         for node in order:
             node.level = DETAIL_POINTER
         root.level = DETAIL_FULL  # the invoked command is never abbreviated
-        _promote(root, order[1:], max_tokens - _BUDGET_NOTE_TOKENS)
+        _promote(root, order[1:], max_chars - _note_reserve(root, order, style))
 
     lines: list[str] = []
-    _emit(root, 0, lines)
+    _emit(root, "", lines)
     if truncated:
-        lines += ["", _budget_note(root, order)]
+        full = sum(1 for node in order if node.level == DETAIL_FULL)
+        signature = sum(1 for node in order if node.level == DETAIL_SIGNATURE)
+        note = _BUDGET_NOTES[style.name](_root_path(root), full, signature, len(order) - full - signature)
+        while lines and not lines[-1]:  # one blank line before the note, whatever the block ended with
+            lines.pop()
+        lines += ["", note]
     return "\n".join(lines).strip() + "\n"
 
 
+def _whole_tree_help(cmd: click.Command, ctx: click.Context, style: _RenderStyle) -> str:
+    """Render every command in the tree at full detail, depth-first in definition order."""
+    root = _HelpNode(command_schema(cmd, ctx, recursive=True, display=True), style)
+    for node in _breadth_first(root):
+        node.level = DETAIL_FULL
+    lines: list[str] = []
+    _emit(root, "", lines)
+    return "\n".join(lines).strip() + "\n"
+
+
+def adaptive_command_markdown(cmd: click.Command, ctx: click.Context, max_chars: int) -> str:
+    """Render a command tree as Markdown, disclosing as much detail as ``max_chars`` allows."""
+    return _adaptive_help(cmd, ctx, max_chars, _MARKDOWN_STYLE)
+
+
+def adaptive_command_compact(cmd: click.Command, ctx: click.Context, max_chars: int) -> str:
+    """Render a command tree in the compact format, disclosing as much detail as ``max_chars`` allows."""
+    return _adaptive_help(cmd, ctx, max_chars, _COMPACT_STYLE)
+
+
 def command_markdown(
-    cmd: click.Command, ctx: click.Context, recursive: bool = False, max_tokens: int | None = None
+    cmd: click.Command, ctx: click.Context, recursive: bool = False, max_chars: int | None = None
 ) -> str:
     """
     Render a command as Markdown, tuned for LLM consumption.
 
     ``recursive=True`` (``--help markdown-full``) documents every descendant in full. Otherwise
-    (``--help markdown``) the output adapts to ``max_tokens``: see :func:`adaptive_command_markdown`.
-    Passing ``max_tokens=None`` opts out of adaptation entirely, documenting the current command and
+    (``--help markdown``) the output adapts to ``max_chars``: see :func:`adaptive_command_markdown`.
+    Passing ``max_chars=None`` opts out of adaptation entirely, documenting the current command and
     listing its descendants as a name index. Built from :func:`command_schema`, so it shares the JSON
     formats' extraction and single ``to_info_dict()`` walk.
     """
-    if not recursive and max_tokens is not None:
-        return adaptive_command_markdown(cmd, ctx, max_tokens)
+    if not recursive and max_chars is not None:
+        return adaptive_command_markdown(cmd, ctx, max_chars)
     lines: list[str] = []
     _render_command_markdown(command_schema(cmd, ctx, recursive=recursive, display=True), lines, recursive)
     return "\n".join(lines).strip() + "\n"
 
 
-# --------------------------------------------------------------------------------------------------
-# Compact (``--help compact``): experimental, explicitly requested only.
-#
-# The leanest rendering of the same data: one line per option, one line per subcommand, no tables and
-# no Markdown scaffolding. It exists so that token-lean and familiar renderings of identical content can
-# be measured against each other -- the Markdown formats are the ones tuned for everyday use, and this
-# is never a default. The shape is progressive (the invoked command in full, descendants as one-liners)
-# so that only the *rendering* differs from ``--help markdown`` at its most degraded.
-# --------------------------------------------------------------------------------------------------
-
-
-def _compact_param_line(param: dict[str, Any], *, is_option: bool) -> str:
+def compact_command(
+    cmd: click.Command, ctx: click.Context, recursive: bool = False, max_chars: int | None = None
+) -> str:
     """
-    Render one parameter as ``--name METAVAR (notes) — description``.
+    Render a command in the compact format: one line per record, no tables, no Markdown scaffolding.
 
-    Choices are folded into the metavar (``--mode [fast|safe]``) rather than listed separately: it is
-    both shorter and the form the caller has to type anyway. A positional has no flags of its own, so
-    its metavar -- ``NAME``, or ``[EXTRAS]...`` when variadic -- is the whole head.
+    ``recursive=True`` -- what an explicit ``--help compact`` asks for -- renders the invoked command's
+    block followed by every descendant's, depth-first, with no ceiling: the whole tree, in the smallest
+    form that keeps it complete. Otherwise the output adapts to ``max_chars`` (see
+    :func:`adaptive_command_compact`), which is what a bare ``--help`` uses in a detected agent
+    environment. ``max_chars=None`` opts out of adaptation, rendering this command's block plus a
+    name listing of its descendants.
     """
-    head = _md_param_signature(param) if is_option else _md_param_metavar(param)
-
-    notes = []
-    if param.get("required"):
-        notes.append("required")
-    if "default" in param:
-        notes.append(f"default: {_one_line(param['default'])}")
-    if param.get("envvar"):
-        notes.append(f"env: {_one_line(param['envvar'])}")
-    line = f"{head} ({'; '.join(notes)})" if notes else head
-    if param.get("help"):
-        line += f" — {_one_line(param['help'])}"
-    return line
-
-
-def _compact_index_entry(name: str, entry: dict[str, Any]) -> str:
-    """Format one subcommand as a bare compact line."""
-    line = name
-    if entry.get("aliases"):
-        line += f" ({', '.join(entry['aliases'])})"
-    if entry.get("help"):
-        line += f" — {_one_line(entry['help'])}"
-    return line
-
-
-def compact_command(cmd: click.Command, ctx: click.Context) -> str:
-    """
-    Render a command in the token-lean ``--help compact`` form.
-
-    Built from the same :func:`command_schema` data as every other format, so it reports exactly what
-    they report -- only more tersely. Sections keep the agent-facing order, with examples ahead of the
-    parameters.
-    """
+    if recursive:
+        return _whole_tree_help(cmd, ctx, _COMPACT_STYLE)
+    if max_chars is not None:
+        return adaptive_command_compact(cmd, ctx, max_chars)
     schema = command_schema(cmd, ctx, recursive=False, display=True)
-
-    title = schema.get("path") or schema.get("name") or ""
-    summary = _summary(schema)
-    lines = [f"{title} — {summary}" if summary else str(title)]
-    if schema.get("aliases"):
-        lines.append(f"Aliases: {', '.join(schema['aliases'])}")
-    if schema.get("usage"):
-        lines.append(f"Usage: {schema['usage']}")
-
-    if schema.get("examples"):
-        lines += ["", "Examples:"]
-        lines += [f"  {_one_line(example['description'])}: {example['command']}" for example in schema["examples"]]
-
-    params = schema.get("params", [])
-    for label, kind in (("Arguments", "argument"), ("Options", "option")):
-        selected = _visible(params, kind)
-        if selected:
-            lines += ["", f"{label}:"]
-            lines += [f"  {_compact_param_line(param, is_option=kind == 'option')}" for param in selected]
-
+    lines: list[str] = []
+    _render_compact_body(schema, lines)
     if schema.get("subcommands"):
-        lines += ["", "Commands:"]
-        _subcommand_index_lines(schema["subcommands"], lines, 1, _compact_index_entry)
+        _compact_index_lines(schema["subcommands"], lines)
     return "\n".join(lines).strip() + "\n"

@@ -367,7 +367,17 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
             if agent_help_format is not None and is_agent_mode():
                 get_help_for_format = getattr(ctx.command, "get_help_for_format", None)
                 if get_help_for_format is not None:
-                    rendered = get_help_for_format(ctx, agent_help_format)
+                    # Flagged for the duration of the render, so a format can tell "the agent default"
+                    # apart from "asked for by name" -- `--help compact` renders the whole tree, while
+                    # the same format as the agent default adapts to `agent_help_max_chars`.
+                    agent_default = isinstance(ctx, RichContext)
+                    if agent_default:
+                        ctx.agent_help_default = True
+                    try:
+                        rendered = get_help_for_format(ctx, agent_help_format)
+                    finally:
+                        if agent_default:
+                            ctx.agent_help_default = False
                     if rendered is not None:
                         emit(rendered)
                         ctx.exit()

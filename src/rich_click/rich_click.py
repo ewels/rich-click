@@ -181,10 +181,11 @@ USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate h
 HELPTEXT_SHOW_ALIASES: bool = True
 # Format that a bare `--help` renders when an AI agent environment is detected (see `_agent_detection`).
 # Any registered `--help <format>` name; None disables the switch, leaving bare `--help` always human-readable.
-AGENT_HELP_FORMAT: str | None = "markdown"
-# Approximate token ceiling for the adaptive `--help markdown` output: as much of the command tree as
-# fits is disclosed, nearest commands first. None disables adaptation (current command + name index).
-AGENT_HELP_MAX_TOKENS: int | None = 10_000
+AGENT_HELP_FORMAT: str | None = "compact"
+# Character ceiling for the adaptive agent-facing help output: as much of the command tree as fits is
+# disclosed, nearest commands first. Characters because agent harnesses truncate output by characters.
+# None disables adaptation (current command + name index).
+AGENT_HELP_MAX_CHARS: int | None = 25_000
 # Diagnose usage errors: state the rule that was broken, not just the symptom. Rendered as a terse
 # addition to the error panel, or as a plain-text block when an AI agent is detected.
 # `RICH_CLICK_ERROR_DIAGNOSIS` overrides this in both directions.
