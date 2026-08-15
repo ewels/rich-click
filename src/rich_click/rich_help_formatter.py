@@ -112,6 +112,14 @@ class RichHelpFormatter(click.HelpFormatter):
     """
     export_console_as: Literal[None, "html", "svg", "text"] = None
 
+    error_argv: list[str] | None = None
+    """The invocation that produced the error being formatted, set by ``RichCommand.main``.
+
+    Click's parser consumes its argument list in place and its exceptions carry the context but never
+    the original argv, so the command records it here on its way to the error renderers. The agent
+    error rendering restates it, since an agent has no terminal scrollback to look at. ``None`` when
+    the error did not come through ``main`` (e.g. a renderer called directly)."""
+
     option_panel_class: type[RichOptionPanel] = RichOptionPanel
     command_panel_class: type[RichCommandPanel] = RichCommandPanel
 
@@ -203,21 +211,7 @@ class RichHelpFormatter(click.HelpFormatter):
         get_rich_usage(formatter=self, prog=prog, args=args, prefix=prefix)
 
     def write_error(self, e: click.ClickException) -> None:
-        from rich_click._agent_detection import is_agent_mode
-        from rich_click.error_diagnosis import diagnose, diagnosis_enabled, format_diagnosis_for_agent
         from rich_click.rich_help_rendering import rich_format_error
-
-        # In a detected AI agent environment, errors are rendered the same way agent help is: as plain
-        # text an agent can parse, rather than a panel laid out for a terminal. Same detection machinery,
-        # same off switch as the diagnosis itself -- turning diagnosis off restores the rich panel.
-        if isinstance(e, click.UsageError) and diagnosis_enabled(self.config) and is_agent_mode():
-            from rich.text import Text
-
-            block = format_diagnosis_for_agent(e, diagnose(e), getattr(e, "_rich_click_argv", None))
-            # ``soft_wrap`` keeps the corrected invocation on one line: a command line broken across a
-            # terminal width is no longer copyable, which defeats the point of offering it.
-            self.console.print(Text(block), soft_wrap=True)
-            return
 
         rich_format_error(self=e, formatter=self)
 

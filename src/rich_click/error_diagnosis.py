@@ -58,10 +58,7 @@ class Diagnosis:
     """The violated rule, stated as a rule -- the part an agent can actually correct against."""
 
     suggestions: list[str] = field(default_factory=list)
-    """Near matches over the command's real names, or the valid values of a choice."""
-
-    suggestions_label: str = "Did you mean"
-    """How to introduce :attr:`suggestions` (they may be corrections, or the full set of valid values)."""
+    """Near matches over the command's real names, or over the valid values of a choice."""
 
     correction: str | None = None
     """A corrected invocation, copyable as-is. Only set when it can be constructed confidently."""
@@ -140,23 +137,24 @@ def _choices(param: click.Parameter | None) -> list[str]:
     return [str(choice) for choice in choices] if choices else []
 
 
-def _param_label(error: click.BadParameter, ctx: click.Context | None) -> str | None:
+def _param_label(error: click.BadParameter, ctx: click.Context) -> str | None:
     """Name the parameter a bad-value error is about, quoted the way the rest of the diagnosis quotes."""
     label: Any = None
     if error.param_hint is not None:
         label = error.param_hint if isinstance(error.param_hint, str) else " / ".join(error.param_hint)
     elif error.param is not None:
-        label = (error.param.get_error_hint(ctx) if ctx is not None else None) or error.param.name
+        label = error.param.get_error_hint(ctx) or error.param.name
     if not label:
         return None
     return f"'{str(label).strip(chr(39))}'"
 
 
-def _value_metavar(param: click.Option) -> str:
+def _value_metavar(param: click.Option, ctx: click.Context) -> str:
     """Return the placeholder to show after an option in a corrected invocation."""
-    if param.is_flag:
-        return ""
-    return f" {param.metavar or 'VALUE'}"
+    from rich_click.help_json import _param_metavar
+
+    metavar = _param_metavar(param, ctx)
+    return f" {metavar}" if metavar else ""
 
 
 def _diagnose_unknown_option(error: click.NoSuchOption, ctx: click.Context) -> Diagnosis | None:
@@ -176,7 +174,7 @@ def _diagnose_unknown_option(error: click.NoSuchOption, ctx: click.Context) -> D
         if owner is not None:
             tail = ctx.command_path[len(parent.command_path) :].strip()
             correction = " ".join(
-                piece for piece in [parent.command_path, f"{name}{_value_metavar(owner)}", tail, "..."] if piece
+                piece for piece in [parent.command_path, f"{name}{_value_metavar(owner, parent)}", tail, "..."] if piece
             )
             return Diagnosis(
                 rule=(
@@ -197,7 +195,16 @@ def _diagnose_unknown_option(error: click.NoSuchOption, ctx: click.Context) -> D
 
 
 def _diagnose_unknown_command(error: click.UsageError, ctx: click.Context) -> Diagnosis | None:
-    """Diagnose a subcommand name the group does not know, offering near matches over the real ones."""
+    """
+    Diagnose a subcommand name the group does not know, offering near matches over the real ones.
+
+    Click raises this through the generic ``ctx.fail()``, so there is no exception type to key off and
+    the name has to be recovered from the message. The group check comes first to keep that regex away
+    from the errors it has no business reading: a leaf command cannot have an unknown subcommand, so
+    every ``ctx.fail()`` a leaf's own callback raises is left alone.
+    """
+    if getattr(ctx.command, "list_commands", None) is None:
+        return None
     match = _NO_SUCH_COMMAND.search(error.format_message())
     if match is None:
         return None
@@ -216,7 +223,7 @@ def _diagnose_unknown_command(error: click.UsageError, ctx: click.Context) -> Di
     )
 
 
-def _diagnose_missing_parameter(error: click.MissingParameter, ctx: click.Context | None) -> Diagnosis | None:
+def _diagnose_missing_parameter(error: click.MissingParameter, ctx: click.Context) -> Diagnosis | None:
     """State a missing required parameter as the rule it is, and list its values if it takes a fixed set."""
     label = _param_label(error, ctx)
     if label is None:
@@ -226,7 +233,7 @@ def _diagnose_missing_parameter(error: click.MissingParameter, ctx: click.Contex
     return Diagnosis(rule=rule)
 
 
-def _diagnose_bad_value(error: click.BadParameter, ctx: click.Context | None) -> Diagnosis | None:
+def _diagnose_bad_value(error: click.BadParameter, ctx: click.Context) -> Diagnosis | None:
     """Diagnose a value a parameter rejected, spelling out the valid set when there is one."""
     choices = _choices(error.param)
     if not choices:
@@ -285,7 +292,7 @@ def format_diagnosis_for_agent(error: click.UsageError, diagnosis: Diagnosis | N
         if diagnosis.correction:
             lines.append(f"Try: {diagnosis.correction}")
         if diagnosis.suggestions:
-            lines.append(f"{diagnosis.suggestions_label}: {', '.join(diagnosis.suggestions)}")
+            lines.append(f"Did you mean: {', '.join(diagnosis.suggestions)}")
 
     ctx = getattr(error, "ctx", None)
     if ctx is not None:

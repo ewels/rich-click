@@ -780,31 +780,51 @@ def test_adaptive_output_is_deterministic(cli_runner: CliRunner) -> None:
     assert len(outputs) == 1
 
 
-def test_signature_level_carries_metavars_and_choices(cli_runner: CliRunner) -> None:
-    # The point of the middle tier: an agent sees what each option *takes* -- metavars and choice
-    # values -- without paying for a description column.
+@pytest.fixture
+def mixed_level_cli() -> RichCommand:
+    """
+    A CLI whose tree does not fit `_MIXED_LEVEL_TOKENS`, so it renders at more than one detail level.
+
+    Six sibling commands, each with enough option help to be expensive at full detail: the nearest are
+    promoted all the way, the furthest only as far as a signature.
+    """
+
     @group()
     def cli() -> None:
         """Root."""
 
     for index in range(6):
 
-        @cli.command(name=f"run{index}")
+        @cli.command(name=f"run{index}", examples=[("Run it", f"cli run{index} thing")])
         @option("--mode", type=click.Choice(["fast", "safe"]), help="How to run the operation end to end.")
         @option("--count", type=int, required=True, help="How many iterations to perform in total.")
         @argument("target")
         def run(mode: str, count: int, target: str) -> None:
             """Run the thing against a target."""
 
-    # A ceiling that fits every command's signature, but only the nearest few in full.
+    return cast(RichCommand, cli)
+
+
+#: A ceiling that fits every `mixed_level_cli` command's signature, but only the nearest few in full.
+_MIXED_LEVEL_TOKENS = 1000
+
+
+def _render_mixed_levels(cli: RichCommand) -> tuple[str, str]:
+    """Render `mixed_level_cli` at its mixed-level ceiling, as `(whole document, last command's section)`."""
     with cli.make_context("cli", [], resilient_parsing=True) as ctx:
-        out = command_markdown(cli, ctx, max_tokens=900)
+        out = command_markdown(cli, ctx, max_tokens=_MIXED_LEVEL_TOKENS)
+    return out, out.split("# `cli run5`")[1]
+
+
+def test_signature_level_carries_metavars_and_choices(mixed_level_cli: RichCommand) -> None:
+    # The point of the middle tier: an agent sees what each option *takes* -- metavars and choice
+    # values -- without paying for a description column.
+    out, last = _render_mixed_levels(mixed_level_cli)
 
     # The first command was promoted all the way to a full option table...
     assert "| `--mode` | choice: fast / safe |" in out.split("# `cli run1`")[0]
     # ...the last only to a signature: names, metavars, choice values, required marker -- no
     # descriptions, and no table.
-    last = out.split("# `cli run5`")[1]
     assert "**Usage:** `cli run5 [OPTIONS] TARGET`" in last  # the argument lives in the usage line
     assert "- `--mode [fast|safe]`" in last
     assert "- `--count INTEGER` (required)" in last
@@ -888,11 +908,33 @@ def test_help_compact_is_one_line_per_record(cli_runner: CliRunner) -> None:
     assert "  --count INTEGER (default: 1) — Number of greetings." in out
     assert "  --mode [fast|safe] — How to run." in out
     assert "  --token TEXT (required; env: MY_TOKEN) — Auth token." in out
-    # One line per argument, variadic marked.
+    # One line per argument, using Click's own metavar (so a variadic reads as it does in the usage line).
     assert "  NAME (required)" in out
-    assert "  EXTRAS..." in out
+    assert "  [EXTRAS]..." in out
     # Examples keep their agent-facing position, ahead of the parameters.
     assert out.index("Examples:") < out.index("Arguments:") < out.index("Options:")
+
+
+def test_compact_renderings_use_clicks_own_metavars(cli_runner: CliRunner) -> None:
+    # The signature and compact renderings have no description column to lean on, so the metavar is what
+    # tells the reader what to type. It comes from Click itself, which means an explicit `metavar=` and
+    # every type's own rendering (DIRECTORY, custom ParamTypes) survive rather than being guessed at.
+    @command()
+    @option("--pkg", metavar="PKG_NAME", help="Which package.")
+    @option("--out", type=click.Path(file_okay=False), help="Where to write.")
+    @option("--tag", multiple=True, help="Repeatable.")
+    @option("--shout", is_flag=True, help="Be loud.")
+    def cli(pkg: str, out: str, tag: tuple[str, ...], shout: bool) -> None:
+        """Hi."""
+
+    out = cli_runner.invoke(cli, ["--help=compact"]).output
+    assert "  --pkg PKG_NAME —" in out
+    assert "  --out DIRECTORY —" in out
+    assert "  --tag TEXT... —" in out  # repeatable, which Click's own metavar does not mark
+    assert "  --shout — Be loud." in out  # a flag takes no value, so it shows none
+
+    # The metavars are a rendering concern only: the JSON formats are untouched by them.
+    assert "metavar" not in cli_runner.invoke(cli, ["--help=json"]).output
 
 
 def test_help_compact_lists_subcommands_one_per_line(cli_runner: CliRunner) -> None:
@@ -990,27 +1032,16 @@ def test_examples_come_before_the_parameters_in_markdown(cli_runner: CliRunner) 
     assert out.index("**Usage:**") < out.index("## Examples") < out.index("## Arguments") < out.index("## Options")
 
 
-def test_examples_come_before_the_parameters_at_every_level(cli_runner: CliRunner) -> None:
-    @group()
-    def cli() -> None:
-        """Root."""
-
-    for index in range(6):
-
-        @cli.command(name=f"run{index}", examples=[("Run it", f"cli run{index} thing")])
-        @option("--mode", type=click.Choice(["fast", "safe"]), help="How to run the operation end to end.")
-        @argument("target")
-        def run(mode: str, target: str) -> None:
-            """Run the thing against a target."""
-
+def test_examples_come_before_the_parameters_at_every_level(
+    cli_runner: CliRunner, mixed_level_cli: RichCommand
+) -> None:
     # markdown-full documents every node; the ordering holds in each of their sections.
-    for section in cli_runner.invoke(cli, ["--help=md-full"]).output.split("# `cli run")[1:]:
+    for section in cli_runner.invoke(mixed_level_cli, ["--help=md-full"]).output.split("# `cli run")[1:]:
         assert section.index("**Usage:**") < section.index("## Examples") < section.index("## Options")
 
     # And at the compact signature level too: examples are short, and a worked invocation earns its
     # tokens against a list of flags the model would still have to assemble.
-    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
-        last = command_markdown(cli, ctx, max_tokens=900).split("# `cli run5`")[1]
+    _, last = _render_mixed_levels(mixed_level_cli)
     assert "| --- |" not in last  # a signature section, not a full one
     assert last.index("**Usage:**") < last.index("## Examples") < last.index("## Options")
 

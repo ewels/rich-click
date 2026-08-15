@@ -134,7 +134,7 @@ So each command in the tree is rendered at one of three levels of detail:
 | Level | Contents |
 | ----- | -------- |
 | **Full** | Description, usage, examples and the full option/argument tables — what the invoked command always gets. |
-| **Signature** | Usage line, one-line description, and the options as a bare signature list (`--mode [fast|safe]`, `--count INTEGER`) — names, metavars and choice values, with no description column. |
+| **Signature** | Usage line, one-line description, examples, and the options as a bare signature list (`--mode [fast|safe]`, `--count INTEGER`) — names, metavars and choice values, with no description column. |
 | **Pointer** | A single row in the parent's subcommand index: name, aliases and a one-line description. |
 
 The invoked command is always Full. Every other command starts as a Pointer and is promoted breadth-first — nearest hop first, in command order within a hop — first to Signature and then to Full, for as long as the estimated size of the whole response stays under the ceiling. Promotion stops at the first step that does not fit, so what gets disclosed is always a contiguous nearest-first slice of the tree, and the same command always renders exactly the same help.
@@ -336,6 +336,8 @@ Options:
 
 Each option is `--name METAVAR (notes) — description`, with choice values folded into the metavar (`--mode [fast|safe]`) since that is the form you have to type anyway, and required / default / envvar collected into the parenthesised notes. Subcommands are one line each, nested by indentation.
 
+Metavars come from Click itself, so an explicit `metavar=`, a `Path(file_okay=False)`'s `DIRECTORY`, and any custom `ParamType`'s own rendering all appear exactly as they do in the rendered help. The same applies to the signature level of [adaptive disclosure](#adaptive-disclosure).
+
 !!! warning "Experimental, and explicitly requested only"
     `--help compact` is **never** what a bare `--help` renders, in any environment, and is not a supported value for `agent_help_format`'s intended use. It exists so that a token-lean rendering and a familiar one can be measured against each other over identical content. If you just want fewer tokens in everyday use, the Markdown formats already drop empty table columns, which captures most of the practical saving.
 
@@ -369,7 +371,7 @@ $ tool build --repo ewels/rich-click thing
 │                                                                            │
 │ '--repo' is an option of the parent group 'tool', not of 'tool build'. A   │
 │ group's options must be given before its subcommand.                       │
-│ Try: tool --repo VALUE build ...                                           │
+│ Try: tool --repo TEXT build ...                                           │
 │ See 'tool --help' for help                                                 │
 ╰────────────────────────────────────────────────────────────────────────────╯
 ```
@@ -381,7 +383,7 @@ Error: No such option '--repo'.
 
 Attempted: tool build --repo ewels/rich-click thing
 Rule: '--repo' is an option of the parent group 'tool', not of 'tool build'. A group's options must be given before its subcommand.
-Try: tool --repo VALUE build ...
+Try: tool --repo TEXT build ...
 Usage: tool build [OPTIONS] NAME
 Help: tool --help
 ```

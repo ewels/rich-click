@@ -31,6 +31,7 @@ override ``format_help_json`` for full control, or use the lighter-touch
 from __future__ import annotations
 
 from collections.abc import Callable, Iterator, Sequence
+from math import ceil
 from typing import Any
 
 import click
@@ -83,6 +84,11 @@ def _strip_markup(text: str | None) -> str | None:
     r"""Render Rich console markup (``[dim]``, ``\[default: …]``, …) to plain text."""
     if not text:
         return text
+    if "[" not in text:
+        # No markup is possible without a bracket, and the overwhelming majority of help strings have
+        # none. Worth the guard: a whole-tree walk runs this over every help string in the CLI, and
+        # ``Text.from_markup`` on markup-free text is two orders of magnitude slower than the check.
+        return text.strip()
     from rich.errors import MarkupError
     from rich.text import Text
 
@@ -331,7 +337,9 @@ def _degraded_schema(name: str, info: dict[str, Any], parent_ctx: click.Context)
     return schema
 
 
-def _subcommand_index_full(cmd: click.Command, ctx: click.Context, child_infos: dict[str, Any]) -> dict[str, Any]:
+def _subcommand_index_full(
+    cmd: click.Command, ctx: click.Context, child_infos: dict[str, Any], display: bool = False
+) -> dict[str, Any]:
     """
     Recursively expand every descendant to its full schema (params, usage, nested subcommands).
 
@@ -340,7 +348,7 @@ def _subcommand_index_full(cmd: click.Command, ctx: click.Context, child_infos: 
     degraded node rather than vanishing), and the ordering stays stable.
     """
     full = {
-        name: command_schema(child, child_ctx, recursive=True, info=child_infos.get(name))
+        name: command_schema(child, child_ctx, recursive=True, info=child_infos.get(name), display=display)
         for name, child, child_ctx in _iter_child_contexts(cmd, ctx)
     }
     return {
@@ -349,7 +357,11 @@ def _subcommand_index_full(cmd: click.Command, ctx: click.Context, child_infos: 
 
 
 def command_schema(
-    cmd: click.Command, ctx: click.Context, recursive: bool = False, info: dict[str, Any] | None = None
+    cmd: click.Command,
+    ctx: click.Context,
+    recursive: bool = False,
+    info: dict[str, Any] | None = None,
+    display: bool = False,
 ) -> dict[str, Any]:
     """
     Build the machine-readable JSON for a single command level.
@@ -367,6 +379,11 @@ def command_schema(
     ``info`` carries a precomputed ``to_info_dict()`` for ``cmd``. Click's ``Group.to_info_dict()``
     already serializes the whole subtree, so the recursive walk reuses those child entries instead of
     re-serializing each subtree -- one ``to_info_dict()`` call for the tree rather than one per node.
+
+    ``display`` adds the two fields the *text* renderings need and the JSON formats deliberately omit:
+    each parameter's rendered ``metavar`` and the command's one-line ``short_help``. Both are computed
+    by Click itself here, where the live command and parameter objects are in hand, so the Markdown and
+    compact renderers do not have to reconstruct them from the serialized type name further downstream.
     """
     if info is None:
         info = cmd.to_info_dict(ctx)
@@ -381,12 +398,16 @@ def command_schema(
             formats = _help_format_names(cmd, ctx)
             if formats:
                 param_dict["choices"] = formats
+        if display:
+            param_dict["metavar"] = _param_metavar(param, ctx)
         params.append(param_dict)
 
     schema: dict[str, Any] = {"name": info.get("name"), "path": ctx.command_path}
     help_text = _strip_markup(info.get("help"))
     if help_text:  # omit rather than emit a null help for undocumented commands
         schema["help"] = help_text
+    if display:
+        schema["short_help"] = _strip_markup(cmd.get_short_help_str(limit=120)) or ""
     schema["usage"] = " ".join([ctx.command_path, *cmd.collect_usage_pieces(ctx)])
     schema["params"] = params
     examples = _coerce_examples(info.get("examples"))
@@ -394,7 +415,7 @@ def command_schema(
         schema["examples"] = examples
     if "commands" in info:
         if recursive:
-            schema["subcommands"] = _subcommand_index_full(cmd, ctx, info["commands"])
+            schema["subcommands"] = _subcommand_index_full(cmd, ctx, info["commands"], display=display)
         else:
             schema["subcommands"] = _subcommand_index(info["commands"], cmd)
 
@@ -564,9 +585,14 @@ def _carapace_subcommands(cmd: click.Command, ctx: click.Context, child_infos: d
 # --------------------------------------------------------------------------------------------------
 
 
+def _one_line(value: Any) -> str:
+    """Collapse a value onto a single line, so one record stays one line."""
+    return " ".join(str(value).split())
+
+
 def _md_escape(value: Any) -> str:
     """Make a value safe for a Markdown table cell: single line, pipes escaped."""
-    return str(value).replace("\n", " ").replace("|", "\\|").strip()
+    return _one_line(value).replace("|", "\\|")
 
 
 def _md_param_type(param: dict[str, Any]) -> str:
@@ -604,13 +630,6 @@ def _md_param_description(param: dict[str, Any]) -> str:
     return _md_escape(" ".join(parts))
 
 
-def _md_param_names(param: dict[str, Any], *, is_option: bool) -> str:
-    """Return the identifying cell of a parameter row: an option's flags, or an argument's name."""
-    if is_option:
-        return ", ".join(f"`{opt}`" for opt in [*(param.get("opts") or []), *(param.get("secondary_opts") or [])])
-    return f"`{param.get('name', '')}`"
-
-
 def _md_param_table(params: list[dict[str, Any]], *, is_option: bool) -> list[str]:
     """
     Render a list of option/argument dicts as a Markdown table.
@@ -625,7 +644,7 @@ def _md_param_table(params: list[dict[str, Any]], *, is_option: bool) -> list[st
     for param in params:
         rows.append(
             [
-                _md_param_names(param, is_option=is_option),
+                ", ".join(f"`{opt}`" for opt in _md_param_opts(param)) if is_option else f"`{param.get('name', '')}`",
                 _md_param_type(param),
                 "yes" if param.get("required") else "",
                 # An argument with a default carries it in the schema just like an option does, so render
@@ -642,93 +661,91 @@ def _md_param_table(params: list[dict[str, Any]], *, is_option: bool) -> list[st
     ]
 
 
-#: Metavars for the parameter types Click ships, keyed by the ``param_type`` in its ``to_info_dict()``.
-#: Used by the compact signature renderings, which have no description column to lean on -- the metavar
-#: is what tells a reader (or an agent) what an option expects. Mirrors the metavars Click's own
-#: ``ParamType.get_metavar()`` produces, so the two renderings agree. An unknown (custom) type falls
-#: back to its uppercased name.
-_MD_METAVAR_BY_TYPE = {
-    "String": "TEXT",
-    "Int": "INTEGER",
-    "Float": "FLOAT",
-    "Bool": "BOOLEAN",
-    "UUID": "UUID",
-    "File": "FILENAME",
-    "Path": "PATH",
-    "IntRange": "INTEGER RANGE",
-    "FloatRange": "FLOAT RANGE",
-    "DateTime": "DATETIME",
-    "Tuple": "TEXT",
-    "FuncParamType": "TEXT",
-    "Unprocessed": "TEXT",
-}
-
-
-def _md_param_metavar(param: dict[str, Any]) -> str:
+def _param_metavar(param: click.Parameter, ctx: click.Context) -> str:
     """
-    Return the value a parameter takes, as it would appear on the command line.
+    Render the value a parameter takes, as it would appear on the command line.
 
-    Choices are spelled out (``[a|b|c]``) rather than named, because the choice values *are* the
-    vocabulary an agent needs to construct a valid invocation. Flags take no value, so they get none.
+    Defers to Click's own ``make_metavar`` (via rich-click's version-safe wrapper), so an explicit
+    ``metavar=``, a ``Path(file_okay=False)``'s ``DIRECTORY``, a ``Tuple``'s ``<INT TEXT>`` and any
+    custom ``ParamType`` all come out exactly as they do in the rendered help. Flags and counters are
+    blanked: Click reports ``BOOLEAN`` / ``INTEGER RANGE`` for them, but on the command line they take
+    no value at all, and these renderings show what you type.
     """
-    if param.get("is_flag") or param.get("count"):
+    from rich_click.rich_help_rendering import _make_param_metavar
+
+    if getattr(param, "is_flag", False) or getattr(param, "count", False):
         return ""
-    choices = param.get("choices")
-    if choices:
-        metavar = "[" + "|".join(str(choice) for choice in choices) + "]"
-    else:
-        type_name = param.get("type")
-        metavar = _MD_METAVAR_BY_TYPE.get(str(type_name), str(type_name).upper() if type_name else "TEXT")
-    nargs = param.get("nargs")
-    if nargs == -1:
-        metavar = f"[{metavar}]..."
-    elif isinstance(nargs, int) and nargs > 1:
-        metavar = " ".join([metavar] * nargs)
-    if param.get("multiple"):
+    metavar = _make_param_metavar(param, ctx)  # type: ignore[arg-type]
+    # Click renders a repeatable option as a plain metavar; the ellipsis is what says "give it again".
+    if getattr(param, "multiple", False) and not metavar.endswith("..."):
         metavar += "..."
     return metavar
 
 
-def _md_param_signature(param: dict[str, Any], *, is_option: bool = True) -> str:
-    """Return a parameter's names and the value it takes, e.g. ``-c, --count INTEGER`` or ``--mode [a|b]``."""
-    if is_option:
-        names = ", ".join([*(param.get("opts") or []), *(param.get("secondary_opts") or [])])
-    else:
-        names = str(param.get("name", ""))
-    return f"{names} {_md_param_metavar(param)}".strip()
+def _md_param_opts(param: dict[str, Any]) -> list[str]:
+    """Return an option's flags, negation flags included."""
+    return [*(param.get("opts") or []), *(param.get("secondary_opts") or [])]
 
 
-def _md_short_help(text: str | None, limit: int = 120) -> str:
+def _md_param_metavar(param: dict[str, Any]) -> str:
     """
-    Collapse a command's help down to a single summary line.
+    Return the metavar to show in a compact rendering, preferring a spelled-out choice list.
 
-    Mirrors what Click's ``get_short_help_str`` does with a docstring -- first paragraph, cut at the
-    first sentence, truncated on a word boundary -- but works from the schema's already-extracted help
-    text, so the recursive walk needs no second pass over the command objects to summarise a node.
+    A ``Choice`` renders as ``[fast|safe]`` from the schema's own ``choices`` rather than from Click's
+    metavar, because these renderings have no description column to lean on and the choice values *are*
+    the vocabulary needed to construct a valid invocation. That also keeps the ``--help`` option's full
+    format list, which the rendered help abbreviates to ``[markdown|json|...]`` to fit a terminal.
     """
-    if not text:
-        return ""
-    summary = " ".join(text.strip().split("\n\n", 1)[0].split())
-    sentence, separator, _ = summary.partition(". ")
-    if separator:
-        summary = f"{sentence}."
-    if len(summary) > limit:
-        summary = summary[: limit - 3].rsplit(" ", 1)[0] + "..."
-    return summary
+    choices = param.get("choices")
+    if choices:
+        return "[" + "|".join(str(choice) for choice in choices) + "]"
+    return param.get("metavar") or ""
 
 
-def _md_subcommand_index(index: dict[str, Any], lines: list[str], indent: int) -> None:
-    """Render the progressive (name-only) subcommand index as a nested bullet list."""
+def _md_param_signature(param: dict[str, Any]) -> str:
+    """Return an option's flags and the value it takes, e.g. ``-c, --count INTEGER`` or ``--mode [a|b]``."""
+    return f"{', '.join(_md_param_opts(param))} {_md_param_metavar(param)}".strip()
+
+
+def _summary(schema: dict[str, Any]) -> str:
+    """
+    Return a command's one-line summary.
+
+    Normally Click's own ``get_short_help_str`` result, computed into the schema by ``command_schema``
+    so an explicit ``short_help=`` is honoured and the truncation matches the rendered help exactly. The
+    fallback covers a node that could not be contextualized at all (see ``_degraded_schema``), which has
+    no command object to ask.
+    """
+    short_help = schema.get("short_help")
+    if short_help:
+        return str(short_help)
+    return _one_line((schema.get("help") or "").split("\n\n", 1)[0])
+
+
+def _subcommand_index_lines(
+    index: dict[str, Any], lines: list[str], indent: int, entry_line: Callable[[str, dict[str, Any]], str]
+) -> None:
+    """
+    Walk a name-only subcommand index depth-first, one line per command, nested by indentation.
+
+    ``entry_line`` formats a single command; the Markdown and compact renderings differ only in that
+    formatting, so they share this walk rather than each carrying their own copy of the tree recursion.
+    """
     for name, entry in index.items():
-        bullet = "  " * indent + f"- `{name}`"
-        if entry.get("aliases"):
-            bullet += f" (aliases: {', '.join(entry['aliases'])})"
-        if entry.get("help"):
-            bullet += f" — {_md_escape(entry['help'])}"
-        lines.append(bullet)
+        lines.append("  " * indent + entry_line(name, entry))
         nested = entry.get("subcommands")
         if nested:
-            _md_subcommand_index(nested, lines, indent + 1)
+            _subcommand_index_lines(nested, lines, indent + 1, entry_line)
+
+
+def _md_index_entry(name: str, entry: dict[str, Any]) -> str:
+    """Format one subcommand as a Markdown bullet."""
+    bullet = f"- `{name}`"
+    if entry.get("aliases"):
+        bullet += f" (aliases: {', '.join(entry['aliases'])})"
+    if entry.get("help"):
+        bullet += f" — {_md_escape(entry['help'])}"
+    return bullet
 
 
 def _render_examples(schema: dict[str, Any], lines: list[str]) -> None:
@@ -750,27 +767,37 @@ def _render_examples(schema: dict[str, Any], lines: list[str]) -> None:
     lines.append("")
 
 
-def _render_command_body(schema: dict[str, Any], lines: list[str]) -> None:
+def _visible(params: list[dict[str, Any]], kind: str) -> list[dict[str, Any]]:
+    """Return a command's non-hidden parameters of one kind."""
+    return [param for param in params if param.get("kind") == kind and not param.get("hidden")]
+
+
+def _render_command_header(schema: dict[str, Any], lines: list[str], *, description: str) -> None:
     """
-    Append one command's own Markdown -- everything but its subcommands (level **L2**, "full").
+    Append the part of a command's section that is the same at every detail level.
 
     Every command is a top-level (``#``) section titled by its full invocation path, so each is
     self-describing and the document stays flat and uniform -- easier for an LLM to parse than deeply
-    nested headings whose level would otherwise collide with the per-command sub-sections.
+    nested headings whose level would otherwise collide with the per-command sub-sections. Only the
+    ``description`` differs between levels: the full help text, or a one-line summary of it.
     """
     lines += [f"# `{schema.get('path') or schema.get('name') or ''}`", ""]
-    if schema.get("help"):
-        lines += [schema["help"], ""]
+    if description:
+        lines += [description, ""]
     if schema.get("aliases"):
         lines += [f"**Aliases:** {', '.join(f'`{alias}`' for alias in schema['aliases'])}", ""]
     if schema.get("usage"):
         lines += [f"**Usage:** `{schema['usage']}`", ""]
-
     _render_examples(schema, lines)
 
+
+def _render_command_body(schema: dict[str, Any], lines: list[str]) -> None:
+    """Append one command's own Markdown -- everything but its subcommands (level **L2**, "full")."""
+    _render_command_header(schema, lines, description=schema.get("help") or "")
+
     params = schema.get("params", [])
-    arguments = [p for p in params if p.get("kind") == "argument" and not p.get("hidden")]
-    options = [p for p in params if p.get("kind") == "option" and not p.get("hidden")]
+    arguments = _visible(params, "argument")
+    options = _visible(params, "option")
     if arguments:
         lines += ["## Arguments", "", *_md_param_table(arguments, is_option=False), ""]
     if options:
@@ -790,18 +817,9 @@ def _render_command_signature(schema: dict[str, Any], lines: list[str]) -> None:
     Examples are the one thing kept in full at this level. They are short, and a worked invocation
     earns its tokens several times over against a list of flags a model still has to assemble.
     """
-    lines += [f"# `{schema.get('path') or schema.get('name') or ''}`", ""]
-    summary = _md_short_help(schema.get("help"))
-    if summary:
-        lines += [summary, ""]
-    if schema.get("aliases"):
-        lines += [f"**Aliases:** {', '.join(f'`{alias}`' for alias in schema['aliases'])}", ""]
-    if schema.get("usage"):
-        lines += [f"**Usage:** `{schema['usage']}`", ""]
+    _render_command_header(schema, lines, description=_summary(schema))
 
-    _render_examples(schema, lines)
-
-    options = [p for p in schema.get("params", []) if p.get("kind") == "option" and not p.get("hidden")]
+    options = _visible(schema.get("params", []), "option")
     if options:
         lines += ["## Options", ""]
         for param in options:
@@ -812,13 +830,7 @@ def _render_command_signature(schema: dict[str, Any], lines: list[str]) -> None:
 
 def _render_command_pointer(schema: dict[str, Any]) -> str:
     """Render a command as a single index bullet (level **L0**) -- name, aliases, one-line summary."""
-    bullet = f"- `{schema.get('name') or ''}`"
-    if schema.get("aliases"):
-        bullet += f" (aliases: {', '.join(schema['aliases'])})"
-    summary = _md_short_help(schema.get("help"))
-    if summary:
-        bullet += f" — {_md_escape(summary)}"
-    return bullet
+    return _md_index_entry(str(schema.get("name") or ""), {"aliases": schema.get("aliases"), "help": _summary(schema)})
 
 
 def _render_command_markdown(schema: dict[str, Any], lines: list[str], recursive: bool) -> None:
@@ -837,7 +849,7 @@ def _render_command_markdown(schema: dict[str, Any], lines: list[str], recursive
                 _render_command_markdown(entry, lines, recursive=True)
         else:
             lines += ["## Subcommands", ""]
-            _md_subcommand_index(subcommands, lines, indent=0)
+            _subcommand_index_lines(subcommands, lines, 0, _md_index_entry)
             lines.append("")
 
 
@@ -891,9 +903,7 @@ def estimate_tokens(text: str) -> int:
 
 def _tokens_from_chars(chars: int) -> int:
     """Convert a character count to the estimated token count, rounding up."""
-    import math
-
-    return math.ceil(chars / CHARS_PER_TOKEN)
+    return ceil(chars / CHARS_PER_TOKEN)
 
 
 class _MarkdownNode:
@@ -914,17 +924,17 @@ class _MarkdownNode:
         self._sections: dict[int, tuple[list[str], int]] = {}
         self._pointer: tuple[str, int] | None = None
 
-    def section(self, level: int) -> tuple[list[str], int]:
-        """Return this node's own section at ``level`` (L1 or L2), as ``(lines, characters)``."""
-        cached = self._sections.get(level)
+    def section(self) -> tuple[list[str], int]:
+        """Return this node's own section at its current level, as ``(lines, characters)``."""
+        cached = self._sections.get(self.level)
         if cached is None:
             lines: list[str] = []
-            if level == DETAIL_FULL:
+            if self.level == DETAIL_FULL:
                 _render_command_body(self.schema, lines)
             else:
                 _render_command_signature(self.schema, lines)
             cached = (lines, _line_chars(lines))
-            self._sections[level] = cached
+            self._sections[self.level] = cached
         return cached
 
     def pointer(self) -> tuple[str, int]:
@@ -938,6 +948,12 @@ class _MarkdownNode:
 def _line_chars(lines: Sequence[str]) -> int:
     """Count the characters a block of lines occupies once joined with newlines."""
     return sum(len(line) + 1 for line in lines)
+
+
+#: The heading that introduces a node's un-promoted children, and its cost -- a constant, so the
+#: pricing walk does not rebuild it on every one of its many passes.
+_SUBCOMMANDS_HEADING = ["## Subcommands", ""]
+_SUBCOMMANDS_HEADING_CHARS = _line_chars(_SUBCOMMANDS_HEADING)
 
 
 def _breadth_first(root: _MarkdownNode) -> list[_MarkdownNode]:
@@ -969,7 +985,7 @@ def _emit(node: _MarkdownNode, indent: int, out: list[str] | None) -> int:
             total += _emit(child, indent + 1, out)
         return total
 
-    lines, total = node.section(node.level)
+    lines, total = node.section()
     if out is not None:
         out.extend(lines)
     # Children that were not promoted are listed as an index under this node, the nearest ancestor with
@@ -977,8 +993,8 @@ def _emit(node: _MarkdownNode, indent: int, out: list[str] | None) -> int:
     pointers = [child for child in node.children if child.level == DETAIL_POINTER]
     if pointers:
         if out is not None:
-            out += ["## Subcommands", ""]
-        total += _line_chars(["## Subcommands", ""])
+            out += _SUBCOMMANDS_HEADING
+        total += _SUBCOMMANDS_HEADING_CHARS
         for child in pointers:
             total += _emit(child, 0, out)
         if out is not None:
@@ -1035,7 +1051,7 @@ def adaptive_command_markdown(cmd: click.Command, ctx: click.Context, max_tokens
     that fit entirely are emitted in full -- identical to ``--help markdown-full`` -- and only larger
     ones degrade, nearest hop first.
     """
-    root = _MarkdownNode(command_schema(cmd, ctx, recursive=True))
+    root = _MarkdownNode(command_schema(cmd, ctx, recursive=True, display=True))
     order = _breadth_first(root)
 
     for node in order:
@@ -1084,27 +1100,15 @@ def command_markdown(
 # --------------------------------------------------------------------------------------------------
 
 
-def _one_line(text: Any) -> str:
-    """Collapse a value onto a single line, so one record stays one line."""
-    return " ".join(str(text).split())
-
-
 def _compact_param_line(param: dict[str, Any], *, is_option: bool) -> str:
     """
     Render one parameter as ``--name METAVAR (notes) — description``.
 
     Choices are folded into the metavar (``--mode [fast|safe]``) rather than listed separately: it is
-    both shorter and the form the caller has to type anyway.
+    both shorter and the form the caller has to type anyway. A positional has no flags of its own, so
+    its metavar -- ``NAME``, or ``[EXTRAS]...`` when variadic -- is the whole head.
     """
-    if is_option:
-        head = _md_param_signature(param, is_option=True)
-    else:
-        # A positional's name *is* its metavar, so only a choice set or a variadic marker adds anything.
-        head = str(param.get("name", "")).upper()
-        if param.get("choices"):
-            head += " [" + "|".join(str(choice) for choice in param["choices"]) + "]"
-        if param.get("multiple") or param.get("nargs") == -1:
-            head += "..."
+    head = _md_param_signature(param) if is_option else _md_param_metavar(param)
 
     notes = []
     if param.get("required"):
@@ -1119,18 +1123,14 @@ def _compact_param_line(param: dict[str, Any], *, is_option: bool) -> str:
     return line
 
 
-def _compact_index(index: dict[str, Any], lines: list[str], indent: int) -> None:
-    """Render the subcommand index, one line per command, nested by indentation."""
-    for name, entry in index.items():
-        line = "  " * indent + name
-        if entry.get("aliases"):
-            line += f" ({', '.join(entry['aliases'])})"
-        if entry.get("help"):
-            line += f" — {_one_line(entry['help'])}"
-        lines.append(line)
-        nested = entry.get("subcommands")
-        if nested:
-            _compact_index(nested, lines, indent + 1)
+def _compact_index_entry(name: str, entry: dict[str, Any]) -> str:
+    """Format one subcommand as a bare compact line."""
+    line = name
+    if entry.get("aliases"):
+        line += f" ({', '.join(entry['aliases'])})"
+    if entry.get("help"):
+        line += f" — {_one_line(entry['help'])}"
+    return line
 
 
 def compact_command(cmd: click.Command, ctx: click.Context) -> str:
@@ -1141,10 +1141,10 @@ def compact_command(cmd: click.Command, ctx: click.Context) -> str:
     they report -- only more tersely. Sections keep the agent-facing order, with examples ahead of the
     parameters.
     """
-    schema = command_schema(cmd, ctx, recursive=False)
+    schema = command_schema(cmd, ctx, recursive=False, display=True)
 
     title = schema.get("path") or schema.get("name") or ""
-    summary = _md_short_help(schema.get("help"))
+    summary = _summary(schema)
     lines = [f"{title} — {summary}" if summary else str(title)]
     if schema.get("aliases"):
         lines.append(f"Aliases: {', '.join(schema['aliases'])}")
@@ -1156,15 +1156,13 @@ def compact_command(cmd: click.Command, ctx: click.Context) -> str:
         lines += [f"  {_one_line(example['description'])}: {example['command']}" for example in schema["examples"]]
 
     params = schema.get("params", [])
-    for label, is_option in (("Arguments", False), ("Options", True)):
-        selected = [
-            p for p in params if p.get("kind") == ("option" if is_option else "argument") and not p.get("hidden")
-        ]
+    for label, kind in (("Arguments", "argument"), ("Options", "option")):
+        selected = _visible(params, kind)
         if selected:
             lines += ["", f"{label}:"]
-            lines += [f"  {_compact_param_line(param, is_option=is_option)}" for param in selected]
+            lines += [f"  {_compact_param_line(param, is_option=kind == 'option')}" for param in selected]
 
     if schema.get("subcommands"):
         lines += ["", "Commands:"]
-        _compact_index(schema["subcommands"], lines, indent=1)
+        _subcommand_index_lines(schema["subcommands"], lines, 1, _compact_index_entry)
     return "\n".join(lines).strip() + "\n"

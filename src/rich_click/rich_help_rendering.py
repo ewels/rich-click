@@ -1172,6 +1172,8 @@ def _error_panel_body(self: click.ClickException, formatter: RichHelpFormatter) 
     corrected invocation. A human reading a terminal does not need the attempted command line restated
     back at them (they can see it); that fuller treatment is the agent renderer's job.
     """
+    from rich.console import Group as RichRenderGroup
+
     from rich_click.error_diagnosis import diagnose, diagnosis_enabled
 
     message = formatter.highlighter(self.format_message())
@@ -1188,15 +1190,29 @@ def _error_panel_body(self: click.ClickException, formatter: RichHelpFormatter) 
     if diagnosis.rule:
         lines.append(diagnosis.rule)
     if diagnosis.suggestions:
-        lines.append(f"{diagnosis.suggestions_label}: {', '.join(diagnosis.suggestions)}")
+        lines.append(f"Did you mean: {', '.join(diagnosis.suggestions)}")
     if diagnosis.correction:
         lines.append(f"Try: {diagnosis.correction}")
     if diagnosis.help_command:
         lines.append(f"See '{diagnosis.help_command}' for help")
 
-    from rich.console import Group as RichRenderGroup
-
     return RichRenderGroup(message, Text(""), *(formatter.highlighter(Text(line, style=style)) for line in lines))
+
+
+def agent_format_error(self: click.UsageError, formatter: RichHelpFormatter) -> None:
+    """
+    Print a usage error as plain text for an AI agent: no panel, no ANSI, one fact per line.
+
+    The peer of :func:`rich_format_error`, chosen by the same agent detection that drives agent help,
+    and dispatched from it so that every caller of either agrees on which rendering an environment
+    gets. Override or monkeypatch this to change the agent block, exactly as with the rich renderer.
+    """
+    from rich_click.error_diagnosis import diagnose, format_diagnosis_for_agent
+
+    block = format_diagnosis_for_agent(self, diagnose(self), formatter.error_argv)
+    # ``soft_wrap`` keeps the corrected invocation on one line: a command line broken across a terminal
+    # width is no longer copyable, which defeats the point of offering it.
+    formatter.write(Text(block), soft_wrap=True)
 
 
 def rich_format_error(
@@ -1208,6 +1224,11 @@ def rich_format_error(
     Called by custom exception handler to print richly formatted click errors.
     Mimics original click.ClickException.echo() function but with rich formatting.
 
+    In a detected AI agent environment a usage error is handed to :func:`agent_format_error` instead,
+    which renders it as plain text. The dispatch lives here rather than in the caller so that every
+    entry point -- ``RichHelpFormatter.write_error``, a subclass overriding it, or a direct call to this
+    function -- agrees on which rendering the environment gets.
+
     Args:
     ----
         self (click.ClickException): Click exception to format.
@@ -1215,6 +1236,13 @@ def rich_format_error(
         export_console_as: If set, outputs error message as HTML or SVG.
 
     """
+    from rich_click._agent_detection import is_agent_mode
+    from rich_click.error_diagnosis import diagnosis_enabled
+
+    if isinstance(self, click.UsageError) and diagnosis_enabled(formatter.config) and is_agent_mode():
+        agent_format_error(self, formatter)
+        return
+
     config = formatter.config
     # Print usage
     if getattr(self, "ctx", None) is not None:

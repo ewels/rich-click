@@ -6,38 +6,18 @@ plain-text block when an AI agent is detected. Both are strictly additive: exit 
 Click's own message is still the first thing emitted.
 """
 
-from collections.abc import Callable, Iterator
+from collections.abc import Callable
 
 import pytest
 from click.testing import CliRunner, Result
 
 import rich_click as click
 from rich_click import RichHelpConfiguration, rich_config
-from rich_click._agent_detection import _AGENT_ENV_VARS, _SUPPRESSION_ENV_VARS, _reset_agent_cache
 from rich_click.error_diagnosis import diagnose
 
 
+#: The `agent_env` fixture from conftest; see there for what it does.
 ConfigureEnv = Callable[..., None]
-
-
-@pytest.fixture
-def agent_env(monkeypatch: pytest.MonkeyPatch) -> Iterator[ConfigureEnv]:
-    """
-    Turn agent detection on or off for the body of a test, and reset the cached detection.
-
-    Call this from inside the test body, not from another fixture: pytest re-sets
-    ``PYTEST_CURRENT_TEST`` at the start of every test phase, so the suppression markers can only be
-    dropped for the duration of the body itself.
-    """
-
-    def configure(*, marker: bool = False) -> None:
-        for env_var in (*_SUPPRESSION_ENV_VARS, *_AGENT_ENV_VARS, "AI_AGENT", "AGENT", "TERM_PROGRAM"):
-            monkeypatch.delenv(env_var, raising=False)
-        monkeypatch.setenv("RICH_CLICK_AGENT_MODE", "true" if marker else "false")
-        _reset_agent_cache()
-
-    yield configure
-    _reset_agent_cache()
 
 
 @pytest.fixture
@@ -86,7 +66,7 @@ def test_option_of_the_parent_group_is_named_as_such(cli_runner: CliRunner, cli:
     assert result.exit_code == 2
     assert "'--repo' is an option of the parent group 'tool', not of 'tool build'." in output
     assert "A group's options must be given before its subcommand." in output
-    assert "tool --repo VALUE build ..." in output
+    assert "tool --repo TEXT build ..." in output
     assert "tool --help" in output
 
 
@@ -175,7 +155,8 @@ def test_agent_rendering_is_a_plain_text_block(
     assert "\x1b[" not in output
     assert "Attempted: tool build --repo x thing" in output
     assert "Rule: '--repo' is an option of the parent group" in output
-    assert "Try: tool --repo VALUE build ..." in output
+    # The placeholder is Click's own metavar for the option, so it matches what the help shows.
+    assert "Try: tool --repo TEXT build ..." in output
     assert "Usage: tool build [OPTIONS] NAME" in output
     assert "Help: tool --help" in output
 
@@ -199,28 +180,22 @@ def test_agent_rendering_still_reports_undiagnosable_errors(
 # --------------------------------------------------------------------------------------------------
 
 
-def test_config_option_turns_diagnosis_off(cli_runner: CliRunner) -> None:
-    @click.group()
-    @rich_config(help_config=RichHelpConfiguration(error_diagnosis=False))
-    @click.option("--repo", help="Which repository.")
-    def tool(repo: str) -> None:
-        """A tool."""
-
-    @tool.command()
-    @click.argument("name")
-    def build(name: str) -> None:
-        """Build a thing."""
-
-    output = flat(cli_runner.invoke(tool, ["build", "--repo", "x", "thing"]))
-    assert "No such option" in output
-    assert "parent group" not in output
-
-
-@pytest.mark.parametrize(("value", "diagnosed"), [("0", False), ("false", False), ("1", True)])
-def test_env_var_overrides_the_config_option(
-    cli_runner: CliRunner, monkeypatch: pytest.MonkeyPatch, value: str, diagnosed: bool
+@pytest.mark.parametrize(
+    ("env_var", "diagnosed"),
+    [
+        (None, False),  # the config option alone
+        ("0", False),  # ...and the env var, which outranks it in both directions
+        ("false", False),
+        ("1", True),
+    ],
+)
+def test_diagnosis_can_be_switched_off(
+    cli_runner: CliRunner, monkeypatch: pytest.MonkeyPatch, env_var: str | None, diagnosed: bool
 ) -> None:
-    monkeypatch.setenv("RICH_CLICK_ERROR_DIAGNOSIS", value)
+    if env_var is None:
+        monkeypatch.delenv("RICH_CLICK_ERROR_DIAGNOSIS", raising=False)
+    else:
+        monkeypatch.setenv("RICH_CLICK_ERROR_DIAGNOSIS", env_var)
 
     @click.group()
     @rich_config(help_config=RichHelpConfiguration(error_diagnosis=False))
@@ -234,6 +209,7 @@ def test_env_var_overrides_the_config_option(
         """Build a thing."""
 
     output = flat(cli_runner.invoke(tool, ["build", "--repo", "x", "thing"]))
+    assert "No such option" in output  # Click's own message is never suppressed
     assert ("parent group" in output) is diagnosed
 
 
