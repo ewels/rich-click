@@ -210,7 +210,12 @@ def _param_to_dict(info: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
-def _subcommand_index(commands: dict[str, Any], parent: click.Command | None) -> dict[str, Any]:
+def _hidden(info: dict[str, Any] | None) -> bool:
+    """Report whether a command's ``to_info_dict()`` marks it hidden."""
+    return bool((info or {}).get("hidden"))
+
+
+def _subcommand_index(commands: dict[str, Any], parent: click.Command | None, display: bool = False) -> dict[str, Any]:
     """
     Index ``to_info_dict()``'s recursive ``commands`` block by name.
 
@@ -223,10 +228,16 @@ def _subcommand_index(commands: dict[str, Any], parent: click.Command | None) ->
     docstring to its first sentence and truncates on a word boundary with an ellipsis, so summaries
     never cut off mid-word. ``parent`` is the owning group, used to resolve each child command object
     (which carries that method); we fall back to the info dict's first help line if it can't be found.
+
+    ``display`` drops ``hidden=True`` commands, matching the rendered help screen. The JSON formats
+    keep them (like ``to_info_dict`` does, and like hidden *parameters*), but a text rendering meant to
+    stand in for the help screen must not show what the help screen hides.
     """
     index: dict[str, Any] = {}
     parent_commands = getattr(parent, "commands", {})
     for name, info in commands.items():
+        if display and _hidden(info):
+            continue
         entry: dict[str, Any] = {}
         child = parent_commands.get(name)
         if child is not None:
@@ -241,7 +252,9 @@ def _subcommand_index(commands: dict[str, Any], parent: click.Command | None) ->
             entry["aliases"] = list(aliases)
         children = info.get("commands")
         if children:
-            entry["subcommands"] = _subcommand_index(children, child)
+            nested = _subcommand_index(children, child, display)
+            if nested:
+                entry["subcommands"] = nested
         index[name] = entry
     return index
 
@@ -347,9 +360,12 @@ def _subcommand_index_full(
     full walk lists exactly the same subcommands as ``--help json`` (a child that can't be entered gets a
     degraded node rather than vanishing), and the ordering stays stable.
     """
+    if display:  # a text rendering must not show what the rendered help screen hides
+        child_infos = {name: info for name, info in child_infos.items() if not _hidden(info)}
     full = {
         name: command_schema(child, child_ctx, recursive=True, info=child_infos.get(name), display=display)
         for name, child, child_ctx in _iter_child_contexts(cmd, ctx)
+        if name in child_infos
     }
     return {
         name: full[name] if name in full else _degraded_schema(name, info, ctx) for name, info in child_infos.items()
@@ -417,7 +433,7 @@ def command_schema(
         if recursive:
             schema["subcommands"] = _subcommand_index_full(cmd, ctx, info["commands"], display=display)
         else:
-            schema["subcommands"] = _subcommand_index(info["commands"], cmd)
+            schema["subcommands"] = _subcommand_index(info["commands"], cmd, display)
 
     # Passthrough: rich-click extras (aliases) + any developer-supplied command metadata.
     for key, value in _passthrough_extensions(info, _CONSUMED_CMD_KEYS).items():
@@ -1085,7 +1101,7 @@ def command_markdown(
     if not recursive and max_tokens is not None:
         return adaptive_command_markdown(cmd, ctx, max_tokens)
     lines: list[str] = []
-    _render_command_markdown(command_schema(cmd, ctx, recursive=recursive), lines, recursive)
+    _render_command_markdown(command_schema(cmd, ctx, recursive=recursive, display=True), lines, recursive)
     return "\n".join(lines).strip() + "\n"
 
 

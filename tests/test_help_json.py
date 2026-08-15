@@ -693,6 +693,32 @@ List things.
     )
 
 
+def test_text_renderings_omit_hidden_commands(cli_runner: CliRunner) -> None:
+    # A text rendering stands in for the help screen, so it must not show what the help screen hides --
+    # and adaptive disclosure would otherwise document a hidden command's whole option table, not just
+    # name it. The JSON formats still report it, like `to_info_dict` and like hidden *parameters* do.
+    @group()
+    def cli() -> None:
+        """A tool."""
+
+    @cli.command(hidden=True)
+    @option("--secret", help="A secret option.")
+    def internal(secret: str) -> None:
+        """An internal command."""
+
+    @cli.command()
+    def visible() -> None:
+        """A visible command."""
+
+    for fmt in ("md", "md-full", "compact"):
+        out = cli_runner.invoke(cli, [f"--help={fmt}"]).output
+        assert "visible" in out, fmt
+        assert "internal" not in out, fmt
+        assert "secret" not in out, fmt
+
+    assert "internal" in cli_runner.invoke(cli, ["--help=json"]).output
+
+
 def test_markdown_table_keeps_columns_that_any_row_uses(cli_runner: CliRunner) -> None:
     # A column is dropped only when *every* row leaves it empty: one row using it keeps it for all.
     @command()
