@@ -1005,7 +1005,7 @@ def test_compact_block_is_exactly_this(cli_runner: CliRunner) -> None:
 
     assert out == snapshot(
         """\
-# plarv crell (cl) — Create a record.
+# plarv crell [aliases: cl] — Create a record.
 *--crull TEXT  Annotation text for the record.
 --kolm pelm|crox|zeff  Mode of the record. [default: pelm]
 --wover INT  Weight of the record. [default: 7]
@@ -1140,7 +1140,7 @@ def test_compact_group_lists_its_subcommands(cli_runner: CliRunner) -> None:
 # cli — Root help text.
 -v, --verbose  Be loud.
 hello  Say hello.
-things (sub)  Manage things.
+things [aliases: sub]  Manage things.
 things list  List things.
 """
     )
@@ -1160,7 +1160,7 @@ def test_compact_renders_the_whole_tree(cli_runner: CliRunner) -> None:
 usage: cli hello NAME
 --count INTEGER  How many times. [default: 3]
 
-# things (sub) — Manage things.
+# things [aliases: sub] — Manage things.
 
 # things list — List things.
 

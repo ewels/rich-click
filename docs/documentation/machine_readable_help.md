@@ -115,7 +115,7 @@ usage: mytool hello NAME
 A block with more to say looks like this:
 
 ```
-# plarv crell (cl) — Create a record.
+# plarv crell [aliases: cl] — Create a record.
 *--crull TEXT  Annotation text for the record.
 --kolm pelm|crox|zeff  Mode of the record. [default: pelm]
 --wover INT  Weight of the record. [default: 7]
@@ -126,7 +126,7 @@ examples:
 - quorv plarv crell --crull 'north ledger' --kolm crox --wover 12
 ```
 
-That is 497 characters. The same command as Markdown is 2,025 — and a 132-command CLI is ~80,000 characters of Markdown against ~28,000 compact, which is the difference between a help page an agent reads in one call and one its harness cuts in half.
+That is 435 characters. The same command rendered as Markdown is around 2,000 — and a 132-command CLI is ~80,000 characters of Markdown against ~28,000 compact, which is the difference between a help page an agent reads in one call and one its harness cuts in half.
 
 ### Why it is shaped this way
 
@@ -136,7 +136,8 @@ That is 497 characters. The same command as Markdown is 2,025 — and a 132-comm
 
 | Element | Means |
 | ------- | ----- |
-| `# <path> (<aliases>) — <summary>` | The start of a command's block. The `#` is the anchor a model greps for and navigates by; the program name is dropped from the path, since it is constant and already in the usage line and examples. |
+| `# <path> — <summary>` | The start of a command's block. The `#` is the anchor a model greps for and navigates by, and the summary stays on it so that one `grep '^#'` over a whole-tree rendering is a table of contents saying what each command *does*. The program name is dropped from the path, since it is constant and already in the usage line and examples. |
+| `[aliases: cl]` | Other names the command answers to, after the path. Labelled rather than bare parentheses, and omitted entirely when a command has none. |
 | `*--crull TEXT` | A **required** option — the same `*` the rendered `--help` screen marks required options with. There is no `[required]` tag; the star replaces it. |
 | `--kolm pelm\|crox\|zeff` | A `Choice`, spelled out where the metavar would go. The choice values *are* the vocabulary needed to construct a valid invocation. |
 | `--torv TEXT ...` | A **repeatable** option (`multiple=True`). |

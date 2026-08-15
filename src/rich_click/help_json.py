@@ -926,16 +926,26 @@ def _compact_path(schema: dict[str, Any]) -> str:
 
 
 def _compact_aliases(aliases: Any) -> str:
-    """Render a command's aliases as ``` (co, cr)```, or nothing at all when it has none."""
-    return f" ({', '.join(str(alias) for alias in aliases)})" if aliases else ""
+    """
+    Render a command's aliases as ``` [aliases: co, cr]```, or nothing at all when it has none.
+
+    Labelled, not just parenthesised: a bare ``(co)`` after a command name is a guess for the reader,
+    and aliases are rare enough that the handful of characters costs almost nothing across a whole tree.
+    The label is the same one rich-click's rendered help uses, and the bracket tag is the same shape as
+    ``[default: x]`` -- plural whatever the count, like every other fixed tag.
+    """
+    return f" [aliases: {', '.join(str(alias) for alias in aliases)}]" if aliases else ""
 
 
 def _compact_anchor(schema: dict[str, Any]) -> str:
     """
-    Return a command block's opening line: ``# <path> (<aliases>) — <short help>``.
+    Return a command block's opening line: ``# <path> [aliases: …] — <short help>``.
 
     The ``#`` is the anchor: in a document holding a whole command tree it is what a model greps for and
-    what tells it where one command's block ends and the next begins.
+    what tells it where one command's block ends and the next begins. The summary stays on that line
+    rather than moving to the one below, so a single ``grep '^#'`` over a whole-tree rendering returns a
+    table of contents that says what each command *does* -- which is what makes the anchor worth
+    grepping for in the first place.
     """
     line = f"# {_compact_path(schema)}{_compact_aliases(schema.get('aliases'))}"
     summary = _summary(schema)
@@ -1033,7 +1043,7 @@ def _compact_usage(schema: dict[str, Any]) -> str | None:
 
 
 def _compact_index_entry(path: str, entry: dict[str, Any]) -> str:
-    """Format one listed subcommand as ``<path> (<aliases>)  <short help>``."""
+    """Format one listed subcommand as ``<path> [aliases: …]  <short help>``."""
     line = f"{path}{_compact_aliases(entry.get('aliases'))}"
     help_text = entry.get("help")
     return f"{line}{_COMPACT_GAP}{_one_line(help_text)}" if help_text else line
