@@ -8,7 +8,7 @@ Those consumers struggle with the rendered `--help` screen: it is laid out for h
 | Invocation                       | Output                                                                                                               |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | `--help`                         | The normal human-readable help — byte-for-byte identical to before, unless [an AI agent is detected](#automatic-agent-detection). |
-| `--help markdown` (alias `md`)   | LLM-friendly Markdown for the current command, plus a subcommand index (_progressive disclosure_).                   |
+| `--help markdown` (alias `md`)   | LLM-friendly Markdown: the current command in full, plus as much of the rest of the tree as fits a token budget ([_adaptive disclosure_](#adaptive-disclosure)). |
 | `--help markdown-full` (`md-full`) | LLM-friendly Markdown documenting every command in the tree.                                                        |
 | `--help json`                    | Machine-readable JSON for the current command, plus a name-only index of its subcommands (_progressive disclosure_). |
 | `--help json-full`               | The whole command tree in one call, with full parameter detail at every node.                                        |
@@ -92,7 +92,7 @@ An explicitly falsy value (e.g. `RICH_CODEX=0`) does not suppress. pytest's own 
 
 ## `--help markdown`: Markdown for LLMs
 
-`--help markdown` (alias `--help md`) renders the CLI's structure as Markdown, tuned for dropping into an LLM prompt: headings for hierarchy, each command titled by its **full invocation path** so the section is unambiguous out of context, and parameters laid out as compact tables.
+`--help markdown` (alias `--help md`) renders the CLI's structure as Markdown, tuned for dropping into an LLM prompt: headings for hierarchy, each command titled by its **full invocation path** so the section is unambiguous out of context, and parameters laid out as compact tables. How much of the command tree comes back is [decided by a token budget](#adaptive-disclosure).
 
 ```console
 $ mytool hello --help markdown
@@ -107,18 +107,53 @@ Greet someone.
 
 ## Arguments
 
-| Argument | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `name` | String | yes |  |  |
+| Argument | Type | Required |
+| --- | --- | --- |
+| `name` | String | yes |
 
 ## Options
 
-| Option | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `--count` | Int |  | `1` | Number of greetings. |
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `--count` | Int | `1` | Number of greetings. |
 ```
 
-It is progressive: the current command is documented in full, and subcommands appear as a nested name index. `--help markdown-full` (alias `--help md-full`) instead documents **every** command in the tree, each as its own top-level (`#`) section — a flat, uniform layout that is easy for a model to parse and navigate by path.
+A column that is empty for **every** row of a table — here Required and Default in the options table, Default and Description in the arguments table — is dropped rather than padded out with empty cells. For a consumer reading the help that costs no information, and an all-empty column is pure token padding.
+
+`--help markdown-full` (alias `--help md-full`) documents **every** command in the tree, each as its own top-level (`#`) section — a flat, uniform layout that is easy for a model to parse and navigate by path.
+
+### Adaptive disclosure
+
+`--help markdown` does not stop at the invoked command. It renders that command in full, and then discloses as much of the rest of the tree as fits an approximate **token ceiling**, promoting commands **nearest the invoked one first**.
+
+Why not just document the invoked command and list its subcommands by name? Because a name and a one-line summary are usually not enough to choose between subcommands: the vocabulary that decides which one is right — the flag that does the thing you need — lives in the option help text. An agent given only names has to guess, descend, read, and backtrack, spending turns on navigation. Given the whole tree up front it does not have to guess at all.
+
+So each command in the tree is rendered at one of three levels of detail:
+
+| Level | Contents |
+| ----- | -------- |
+| **Full** | Description, usage, examples and the full option/argument tables — what the invoked command always gets. |
+| **Signature** | Usage line, one-line description, and the options as a bare signature list (`--mode [fast|safe]`, `--count INTEGER`) — names, metavars and choice values, with no description column. |
+| **Pointer** | A single row in the parent's subcommand index: name, aliases and a one-line description. |
+
+The invoked command is always Full. Every other command starts as a Pointer and is promoted breadth-first — nearest hop first, in command order within a hop — first to Signature and then to Full, for as long as the estimated size of the whole response stays under the ceiling. Promotion stops at the first step that does not fit, so what gets disclosed is always a contiguous nearest-first slice of the tree, and the same command always renders exactly the same help.
+
+**In practice, most CLIs never hit the ceiling at all**: the default is set well above what a small or mid-size CLI (up to roughly 40 commands) needs, so the entire tree comes back in full detail from a single `--help` — the shape that works best for an agent. Only a genuinely large CLI degrades, and it degrades gracefully rather than falling back to bare names. When anything was abbreviated, the output ends with a note saying so and pointing at `--help markdown` on the individual commands.
+
+### Tuning the ceiling
+
+The ceiling is the `agent_help_max_tokens` config option (`AGENT_HELP_MAX_TOKENS` global), in tokens:
+
+```python
+import rich_click as click
+
+click.rich_click.AGENT_HELP_MAX_TOKENS = 25_000  # Disclose more of a large tree.
+click.rich_click.AGENT_HELP_MAX_TOKENS = None  # Off: current command + a name index, nothing more.
+```
+
+The size estimate is a deliberate approximation — `rich_click.help_json.CHARS_PER_TOKEN`, calibrated at 3.3 characters per token against real rendered Markdown help, which tokenizes more densely than prose because of its tables, backticks and flag names. Estimating rather than tokenizing keeps `--help` fast and keeps rich-click free of a tokenizer dependency; the renderer only needs to compare a response against a ceiling, which a ratio does perfectly well.
+
+`--help markdown-full`, `--help json`, `--help json-full` and `--help carapace` are unaffected by this setting.
 
 ## `--help json`: progressive disclosure
 

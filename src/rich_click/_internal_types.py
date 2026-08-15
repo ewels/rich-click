@@ -252,6 +252,7 @@ class RichHelpConfigurationDict(TypedDict):
     use_click_short_help: NotRequired[bool]
     helptext_show_aliases: NotRequired[bool]
     agent_help_format: NotRequired[str | None]
+    agent_help_max_tokens: NotRequired[int | None]
     help_json_transform: NotRequired[HelpJSONTransform | None]
     help_formats: NotRequired[dict[str, HelpFormatRenderer]]
     highlighter_patterns: NotRequired[list[str]]

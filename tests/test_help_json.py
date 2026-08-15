@@ -4,9 +4,11 @@ from typing import Any, cast
 import click
 import pytest
 from click.testing import CliRunner
+from inline_snapshot import snapshot
 
 import rich_click.rich_click as rc
-from rich_click import RichCommand, argument, command, group, option
+from rich_click import RichCommand, RichHelpConfiguration, argument, command, group, option, rich_config
+from rich_click.help_json import CHARS_PER_TOKEN, command_markdown, estimate_tokens
 from rich_click.rich_context import RichContext
 
 
@@ -331,7 +333,7 @@ def test_help_json_get_help_json_direct(cli_runner: CliRunner) -> None:
     def cli(count: int) -> None:
         """Hi."""
 
-    with cli.make_context("cli", []) as ctx:
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
         direct = json.loads(cli.get_help_json(cast(RichContext, ctx)))
 
     via_flag = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
@@ -557,8 +559,11 @@ def test_help_carapace_override(cli_runner: CliRunner) -> None:
 
 
 def test_help_markdown_progressive(cli_runner: CliRunner) -> None:
+    # `max_tokens=None` opts out of adaptive disclosure: the invoked command in full, descendants as a
+    # name index. (The default `--help md` adapts instead -- see the adaptive-disclosure tests below.)
     cli = _build_cli()
-    out = cli_runner.invoke(cli, ["--help=md"]).output
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        out = command_markdown(cli, ctx, recursive=False, max_tokens=None)
 
     # Command titled by its full path; help, usage, and a subcommand index (not full subcommand bodies).
     assert "# `cli`" in out
@@ -571,6 +576,7 @@ def test_help_markdown_progressive(cli_runner: CliRunner) -> None:
     # Nested name index, with aliases; progressive mode does NOT emit the subcommand's own option tables.
     assert "- `things` (aliases: sub) — Manage things." in out
     assert "  - `list` — List things." in out
+    assert "# `cli hello`" not in out
 
 
 def test_help_markdown_aliases_match(cli_runner: CliRunner) -> None:
@@ -617,6 +623,228 @@ def test_help_markdown_escapes_pipes_in_cells(cli_runner: CliRunner) -> None:
 
     out = cli_runner.invoke(cli, ["--help=md"]).output
     assert "Pick a \\| b." in out
+
+
+def test_help_markdown_full_is_unchanged_but_for_column_compaction(cli_runner: CliRunner) -> None:
+    # `--help markdown-full` renders exactly as it always has, except that a column empty for every row
+    # of a table (here Required and Default) is dropped rather than padded out.
+    cli = _build_cli()
+    assert cli_runner.invoke(cli, ["--help=md-full"]).output == snapshot(
+        """\
+# `cli`
+
+Root help text.
+
+**Usage:** `cli [OPTIONS] COMMAND [ARGS]...`
+
+## Options
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `-v`, `--verbose` | flag | Be loud. |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace | Show this message and exit. |
+
+# `cli hello`
+
+Say hello.
+
+**Usage:** `cli hello [OPTIONS] NAME`
+
+## Arguments
+
+| Argument | Type | Required |
+| --- | --- | --- |
+| `name` | String | yes |
+
+## Options
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `--count` | Int | `3` | How many times. |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace |  | Show this message and exit. |
+
+# `cli things`
+
+Manage things.
+
+**Aliases:** `sub`
+
+**Usage:** `cli things [OPTIONS] COMMAND [ARGS]...`
+
+## Options
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace | Show this message and exit. |
+
+# `cli things list`
+
+List things.
+
+**Usage:** `cli things list [OPTIONS]`
+
+## Options
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace | Show this message and exit. |
+
+"""
+    )
+
+
+def test_markdown_table_keeps_columns_that_any_row_uses(cli_runner: CliRunner) -> None:
+    # A column is dropped only when *every* row leaves it empty: one row using it keeps it for all.
+    @command()
+    @option("--count", type=int, default=3, help="How many.")
+    @option("--name", required=True, help="Who.")
+    def cli(count: int, name: str) -> None:
+        """Hi."""
+
+    out = cli_runner.invoke(cli, ["--help=md"]).output
+    assert "| Option | Type | Required | Default | Description |" in out
+    assert "| `--name` | String | yes |  | Who. |" in out
+
+
+def test_markdown_table_drops_the_columns_no_row_uses(cli_runner: CliRunner) -> None:
+    # Nothing is required and nothing has a default, so both columns are pure padding and are dropped.
+    @command()
+    @option("--name", help="Who.")
+    def cli(name: str) -> None:
+        """Hi."""
+
+    out = cli_runner.invoke(cli, ["--help=md"]).output
+    assert "| Option | Type | Description |" in out
+    assert "Required" not in out
+    assert "Default" not in out
+
+
+# --------------------------------------------------------------------------------------------------
+# Adaptive disclosure: `--help markdown` discloses as much of the tree as fits `agent_help_max_tokens`,
+# promoting commands nearest the invoked one first. Small CLIs therefore get their whole tree.
+# --------------------------------------------------------------------------------------------------
+
+
+def _big_cli(groups: int = 15, commands: int = 20) -> RichCommand:
+    """A synthetic tree far too large to render in full: `groups * commands` leaves plus the groups."""
+
+    @group()
+    def cli() -> None:
+        """A very large CLI."""
+
+    for group_index in range(groups):
+
+        @cli.group(name=f"grp{group_index:02d}")
+        def subgroup() -> None:
+            """A group of related commands."""
+
+        for command_index in range(commands):
+
+            @subgroup.command(name=f"cmd{command_index:02d}")
+            @option("--target", type=click.Choice(["alpha", "beta"]), help="Which target to act on.")
+            @option("--seed", type=int, help="Seed for deterministic behaviour.")
+            def leaf(target: str, seed: int) -> None:
+                """Do a thing to the target."""
+
+    return cast(RichCommand, cli)
+
+
+def test_small_cli_renders_its_whole_tree(cli_runner: CliRunner) -> None:
+    # The headline behaviour: a CLI that fits the default budget renders identically to markdown-full,
+    # so out of the box an agent gets the whole tree from one bare `--help`.
+    cli = _build_cli()
+    assert cli_runner.invoke(cli, ["--help=md"]).output == cli_runner.invoke(cli, ["--help=md-full"]).output
+
+
+def test_large_tree_degrades_nearest_first(cli_runner: CliRunner) -> None:
+    out = cli_runner.invoke(_big_cli(), ["--help=md"]).output
+
+    # Under the ceiling, with the invoked command rendered in full (a table, not a signature list).
+    assert estimate_tokens(out) <= RichHelpConfiguration().agent_help_max_tokens  # type: ignore[operator]
+    assert "# `cli`" in out
+    assert "| Option | Type | Description |" in out
+
+    # Near commands are promoted to their own sections with a compact option signature list...
+    assert "# `cli grp00`" in out
+    assert "- `--help [markdown|markdown-full|json|json-full|carapace]`" in out
+    # ...while distant ones stay name-only rows in their parent's index.
+    assert "# `cli grp14 cmd19`" not in out
+    assert "- `cmd19` — Do a thing to the target." in out
+    # And the reader is told what was left out, and how to get it.
+    assert "--help markdown` on any command for its full detail." in out
+
+
+def test_adaptive_output_is_deterministic(cli_runner: CliRunner) -> None:
+    cli = _big_cli()
+    outputs = {cli_runner.invoke(cli, ["--help=md"]).output for _ in range(3)}
+    assert len(outputs) == 1
+
+
+def test_signature_level_carries_metavars_and_choices(cli_runner: CliRunner) -> None:
+    # The point of the middle tier: an agent sees what each option *takes* -- metavars and choice
+    # values -- without paying for a description column.
+    @group()
+    def cli() -> None:
+        """Root."""
+
+    for index in range(6):
+
+        @cli.command(name=f"run{index}")
+        @option("--mode", type=click.Choice(["fast", "safe"]), help="How to run the operation end to end.")
+        @option("--count", type=int, required=True, help="How many iterations to perform in total.")
+        @argument("target")
+        def run(mode: str, count: int, target: str) -> None:
+            """Run the thing against a target."""
+
+    # A ceiling that fits every command's signature, but only the nearest few in full.
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        out = command_markdown(cli, ctx, max_tokens=900)
+
+    # The first command was promoted all the way to a full option table...
+    assert "| `--mode` | choice: fast / safe |" in out.split("# `cli run1`")[0]
+    # ...the last only to a signature: names, metavars, choice values, required marker -- no
+    # descriptions, and no table.
+    last = out.split("# `cli run5`")[1]
+    assert "**Usage:** `cli run5 [OPTIONS] TARGET`" in last  # the argument lives in the usage line
+    assert "- `--mode [fast|safe]`" in last
+    assert "- `--count INTEGER` (required)" in last
+    assert "How to run the operation end to end." not in last
+    assert "| --- |" not in last  # a signature list, not a table
+
+
+def test_adaptive_disclosure_can_be_tuned_and_disabled(cli_runner: CliRunner) -> None:
+    cli = _build_cli()
+
+    @group()
+    @rich_config(help_config=RichHelpConfiguration(agent_help_max_tokens=None))
+    def off() -> None:
+        """Root help text."""
+
+    @off.command()
+    def hello() -> None:
+        """Say hello."""
+
+    # `None` restores plain progressive disclosure: a name index, no subcommand sections.
+    out = cli_runner.invoke(off, ["--help=md"]).output
+    assert "## Subcommands" in out
+    assert "# `off hello`" not in out
+
+    # A ceiling too small for the whole tree truncates it, even though the CLI is tiny.
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        assert "# `cli things list`" not in command_markdown(cli, ctx, max_tokens=200)
+
+
+def test_token_estimator_constant_is_sane(cli_runner: CliRunner) -> None:
+    # The estimator is a ratio, not a tokenizer: assert the calibration, not a specific tokenizer's
+    # output. Markdown help is denser than prose, so the constant sits below the ~4 chars/token rule
+    # of thumb, and comfortably above 1 char/token.
+    assert 2.5 <= CHARS_PER_TOKEN <= 4.0
+
+    out = cli_runner.invoke(_build_cli(), ["--help=md"]).output
+    assert estimate_tokens("") == 0
+    assert estimate_tokens(out) == pytest.approx(len(out) / CHARS_PER_TOKEN, abs=1)
+    # Monotonic in length, so comparing an estimate against a ceiling is meaningful.
+    assert estimate_tokens(out) < estimate_tokens(out * 2)
 
 
 def test_help_markdown_override(cli_runner: CliRunner) -> None:

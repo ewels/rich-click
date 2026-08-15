@@ -92,10 +92,10 @@ A demo command.
 
 ## Options
 
-| Option | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `--name` | String |  |  | Your name. |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace |  |  | Show this message and exit. |
+| Option | Type | Description |
+| --- | --- | --- |
+| `--name` | String | Your name. |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace | Show this message and exit. |
 
 """
     )
@@ -236,9 +236,9 @@ A demo subcommand.
 
 ## Options
 
-| Option | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace |  |  | Show this message and exit. |
+| Option | Type | Description |
+| --- | --- | --- |
+| `--help` | choice: markdown / markdown-full / json / json-full / carapace | Show this message and exit. |
 
 """
     )

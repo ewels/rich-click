@@ -492,12 +492,15 @@ class RichCommand(Command):
         """
         Build the ``--help markdown`` Markdown for this command. Override for full control of the output.
 
-        Unlike the JSON ``format_help_*`` methods, this returns the finished string (Markdown has no
-        dict-to-serialize step) and takes no formatter -- it needs no console config.
+        Disclosure adapts to the ``agent_help_max_tokens`` config option: as much of the command tree as
+        fits that ceiling is documented, nearest commands first. Unlike the JSON ``format_help_*``
+        methods, this returns the finished string (Markdown has no dict-to-serialize step) and takes no
+        formatter -- it needs no console config beyond that ceiling.
         """
         from rich_click.help_json import command_markdown
 
-        return command_markdown(self, ctx, recursive=False)
+        max_tokens = getattr(getattr(ctx, "help_config", None), "agent_help_max_tokens", None)
+        return command_markdown(self, ctx, recursive=False, max_tokens=max_tokens)
 
     def get_help_markdown_full(self, ctx: RichContext) -> str:
         """Return the recursive ``--help markdown-full`` Markdown: every descendant documented in full."""
