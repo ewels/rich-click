@@ -235,7 +235,7 @@ including some information about subcommands but not everything, the models woul
 guess the subcommand usage, fail, and end up running the subcommand `--help` anyway.
 
 Once I compared the different formats with equivalent content, their success rates
-and effeciency were basically identical.
+and efficiency were basically identical.
 
 ### Examples didn't help either
 
@@ -293,7 +293,7 @@ in one go. This means that the agent could can find the right command right away
 
 This was good, but I was worried about token usage and bloating session context.
 I expanded the size of the CLI to make it truly massive.
-I was only poking around token effeciency, yet to my surprise the behaviour changed
+I was only poking around token efficiency, yet to my surprise the behaviour changed
 completely and suddenly the full markdown output was much _worse_ than regular help again.
 
 ![Number of help lookups per task](../../images/blog/cli-help-for-ai-agents/help-reads-regular-vs-whole-tree-36-vs-132.svg)
@@ -420,7 +420,7 @@ This was a fun side-project to do. It's another great example of why benchmarkin
 is so important with anything to do with AI. I came in with a set of expectations
 which turned out to be almost entirely incorrect, but along the way my testing
 uncovered some stuff which did help and that's now going to hopefully improve
-agent usage and effeciency in the hundreds of CLIs that use `rich-click` to render
+agent usage and efficiency in the hundreds of CLIs that use `rich-click` to render
 their help texts.
 
 I hope that this blog post also inspires authors of other CLI frameworks to add
