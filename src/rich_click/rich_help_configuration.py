@@ -18,7 +18,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.style import StyleType
     from rich.text import Text
 
-    from rich_click.help_json import HelpFormatRenderer, HelpJSONTransform
+    from rich_click.help_formats import HelpFormatRenderer
+    from rich_click.help_json import HelpJSONTransform
 
 T = TypeVar("T", bound="RichHelpConfiguration")
 
@@ -282,15 +283,14 @@ class RichHelpConfiguration:
     agent_help_max_chars: int | None = field(default=25_000)
     """Size ceiling, in characters, for the adaptive agent-facing help output.
 
-    A bare ``--help`` in an agent environment, and ``--help markdown``, disclose as much of the command
-    tree as fits this ceiling, promoting commands nearest the invoked one first. Characters, not tokens,
+    A bare ``--help`` in an agent environment discloses as much of the command tree as fits this ceiling.
+    It promotes commands nearest the invoked one first. Characters, not tokens,
     because the failure this prevents is an agent harness truncating the output, and harness caps are
     measured in characters (Claude Code cuts a tool result at ~30,000); ``len()`` also makes the ceiling
     exact rather than estimated. The default is comfortably above what a small or mid-size CLI needs, so
     most CLIs emit their whole tree in full detail and never touch this setting; only a very large tree
     degrades. Set to ``None`` to disable adaptive disclosure, rendering just the invoked command plus a
-    name index of its descendants. Does not affect ``--help markdown-full`` or an explicit
-    ``--help compact``, which are whole-tree formats by definition."""
+    name index of its descendants. Does not affect explicit help formats, which return the whole tree."""
     error_diagnosis: bool = field(default=True)
     """Diagnose usage errors, stating the rule that was broken instead of only the symptom.
 

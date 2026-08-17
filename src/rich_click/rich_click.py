@@ -21,7 +21,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.style import StyleType
     from rich.text import Text
 
-    from rich_click.help_json import HelpFormatRenderer, HelpJSONTransform
+    from rich_click.help_formats import HelpFormatRenderer
+    from rich_click.help_json import HelpJSONTransform
     from rich_click.rich_click_theme import RichClickTheme
 
 #!STARTCONFIG
@@ -190,7 +191,7 @@ AGENT_HELP_MAX_CHARS: int | None = 25_000
 # addition to the error panel, or as a plain-text block when an AI agent is detected.
 # `RICH_CLICK_ERROR_DIAGNOSIS` overrides this in both directions.
 ERROR_DIAGNOSIS: bool = True
-# Machine-readable help (`--help markdown`, `--help json`, `--help carapace`) is always available on
+# Machine-readable help (`--help markdown`, `--help json`, and plugin formats) is available on
 # the `--help` flag. Optional hook to post-process the JSON schema: (schema, command, ctx) -> schema
 HELP_JSON_TRANSFORM: HelpJSONTransform | None = None
 # Register custom `--help <name>` formats without subclassing: {name: (command, ctx) -> str}.

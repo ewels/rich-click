@@ -12,13 +12,6 @@ from rich_click.help_json import command_markdown, compact_command
 from rich_click.rich_context import RichContext
 
 
-def _load_carapace(output: str) -> dict[str, Any]:
-    """`--help carapace` emits YAML (or JSON when pyyaml is absent); both parse as YAML."""
-    import yaml
-
-    return cast(dict[str, Any], yaml.safe_load(output))
-
-
 def _build_cli() -> RichCommand:
     @group()
     @option("-v", "--verbose", is_flag=True, help="Be loud.")
@@ -43,7 +36,7 @@ def _build_cli() -> RichCommand:
 
 
 # --------------------------------------------------------------------------------------------------
-# `--help=json`: progressive disclosure. Available on every rich-click CLI without any config -- the
+# `--help=json`: complete structured help. Available on every rich-click CLI without config -- the
 # capability lives on the always-present `--help` flag, so there is no new flag and bare `--help` is
 # unchanged. Only the attached (`=`) form is documented.
 # --------------------------------------------------------------------------------------------------
@@ -67,12 +60,11 @@ def test_help_json_root(cli_runner: CliRunner) -> None:
     assert help_param["opts"] == ["--help"]
     assert "markdown" in help_param["choices"] and "json" in help_param["choices"]
 
-    # Subcommands are indexed recursively by name, each entry carrying a one-line help (and
-    # aliases / nested subcommands where present), so an agent can navigate without round-trips.
-    assert schema["subcommands"] == {
-        "hello": {"help": "Say hello."},
-        "things": {"help": "Manage things.", "aliases": ["sub"], "subcommands": {"list": {"help": "List things."}}},
-    }
+    # JSON includes the complete tree. Each child has its params and usage.
+    assert schema["subcommands"]["hello"]["path"] == "cli hello"
+    assert schema["subcommands"]["hello"]["params"]
+    assert schema["subcommands"]["things"]["aliases"] == ["sub"]
+    assert schema["subcommands"]["things"]["subcommands"]["list"]["path"] == "cli things list"
 
 
 def test_help_json_works_without_any_config(cli_runner: CliRunner) -> None:
@@ -119,7 +111,7 @@ def test_help_to_stderr_covers_the_machine_readable_formats(cli_runner: CliRunne
     def cli() -> None:
         """Hi."""
 
-    for args in (["--help"], ["--help=json"], ["--help=md"], ["--help=compact"]):
+    for args in (["--help"], ["--help=json"], ["--help=markdown"], ["--help=compact"]):
         result = cli_runner.invoke(cli, args)
         assert result.exit_code == 0
         assert result.stdout == "", args
@@ -259,7 +251,8 @@ def test_help_json_group_reports_aliases(cli_runner: CliRunner) -> None:
     schema = json.loads(result.output)
     # rich-click's `aliases` flows through to_info_dict() as a passthrough field.
     assert schema["aliases"] == ["sub"]
-    assert schema["subcommands"] == {"list": {"help": "List things."}}
+    assert schema["subcommands"]["list"]["path"] == "cli things list"
+    assert "params" in schema["subcommands"]["list"]
 
     # The same command is reachable via the alias.
     via_alias = json.loads(cli_runner.invoke(cli, ["sub", "--help=json"]).output)
@@ -406,15 +399,14 @@ def test_custom_help_format_registered_via_config(cli_runner: CliRunner) -> None
 
 
 # --------------------------------------------------------------------------------------------------
-# `--help=json-full` (recursive) and `--help=carapace`.
+# `--help=json` (recursive).
 # --------------------------------------------------------------------------------------------------
 
 
-def test_help_json_full_is_recursive(cli_runner: CliRunner) -> None:
-    # json-full expands every descendant to its full schema (params + usage + nested subcommands) in a
-    # single call, unlike the progressive json format.
+def test_help_json_is_recursive(cli_runner: CliRunner) -> None:
+    # JSON expands every descendant to its full schema in one call.
     cli = _build_cli()
-    schema = json.loads(cli_runner.invoke(cli, ["--help=json-full"]).output)
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
 
     things = schema["subcommands"]["things"]
     assert things["path"] == "cli things"
@@ -431,78 +423,6 @@ def test_help_json_full_is_recursive(cli_runner: CliRunner) -> None:
     assert by_name["count"]["default"] == 3
     assert by_name["name"]["kind"] == "argument"
     assert "markdown" in by_name["help"]["choices"]
-
-
-def test_help_carapace_structure(cli_runner: CliRunner) -> None:
-    # Carapace mapping: flag-string keys, value/repeatable suffixes, negation pairs, choices as
-    # completion candidates, multi-value nargs, hidden commands, parsing mode and recursion.
-    @group()
-    @option("--debug/--no-debug", help="Toggle debug.")
-    @option("--tag", multiple=True, help="Tags.")
-    @option("-v", "--verbose", count=True, help="Verbosity.")
-    def cli(debug: bool, tag: tuple[str, ...], verbose: int) -> None:
-        """Root."""
-
-    @cli.command(aliases=["rm"], hidden=True)
-    @option("--coords", type=int, nargs=2, help="Two ints.")
-    @option("--fmt", type=click.Choice(["json", "yaml"]), help="Format.")
-    @argument("kind", type=click.Choice(["a", "b"]))
-    def remove(coords: tuple[int, ...], fmt: str, kind: str) -> None:
-        """Remove."""
-
-    doc = _load_carapace(cli_runner.invoke(cli, ["--help=carapace"]).output)
-
-    assert doc["name"] == "cli"
-    assert doc["description"] == "Root."
-    # Groups parse flags strictly before the subcommand.
-    assert doc["parsing"] == "non-interspersed"
-    # Bool flag with a negation -> two entries; repeatable value flag -> trailing `=*`.
-    assert doc["flags"]["--debug"] == "Toggle debug."
-    assert doc["flags"]["--no-debug"] == "Toggle debug."
-    assert doc["flags"]["--tag=*"] == "Tags."
-    # A counter takes no value on the command line, so it is a bare key -- `=` would have carapace
-    # demand an argument for `-v`.
-    assert doc["flags"]["-v, --verbose"] == "Verbosity."
-    # The --help meta-option takes an *optional* value (`?`), since a bare `--help` is valid too. It
-    # completes to the available formats.
-    assert doc["flags"]["--help?"] == "Show this message and exit."
-    assert "markdown" in doc["completion"]["flag"]["help"]
-
-    remove_cmd = next(c for c in doc["commands"] if c["name"] == "remove")
-    assert remove_cmd["hidden"] is True
-    assert remove_cmd["aliases"] == ["rm"]
-    # Multi-value flag uses the object form with nargs.
-    assert remove_cmd["flags"]["--coords="] == {"description": "Two ints.", "nargs": 2}
-    # Choice option -> completion candidates keyed by flag name; choice argument -> positional.
-    assert remove_cmd["completion"]["flag"]["fmt"] == ["json", "yaml"]
-    assert remove_cmd["completion"]["positional"] == [["a", "b"]]
-
-
-def test_help_carapace_is_yaml_with_schema_directive(cli_runner: CliRunner) -> None:
-    # carapace's ecosystem is YAML-first, so the output is YAML led by the schema-validation directive.
-    pytest.importorskip("yaml")
-
-    @group()
-    @option("-v", "--verbose", is_flag=True, help="Verbose.")
-    def cli(verbose: bool) -> None:
-        """Root."""
-
-    out = cli_runner.invoke(cli, ["--help=carapace"]).output
-    first_line = out.splitlines()[0]
-    assert first_line == "# yaml-language-server: $schema=https://carapace.sh/schemas/command.json"
-    assert "\nname: cli\n" in out  # block-style YAML, not JSON braces
-
-
-def test_help_carapace_falls_back_to_json_without_pyyaml(cli_runner: CliRunner, monkeypatch: Any) -> None:
-    # YAML is optional: with pyyaml unavailable, carapace emits JSON (which is itself valid YAML, so it
-    # is still consumable by carapace -- just without the schema directive).
-    import sys
-
-    monkeypatch.setitem(sys.modules, "yaml", None)  # force `import yaml` to raise ImportError
-    cli = _build_cli()
-    out = cli_runner.invoke(cli, ["--help=carapace"]).output
-    assert not out.startswith("#")  # no YAML directive
-    assert json.loads(out)["name"] == "cli"  # valid JSON
 
 
 def test_help_equals_unknown_format_falls_back_to_plain_help(cli_runner: CliRunner) -> None:
@@ -557,44 +477,24 @@ def test_help_space_form_works_like_the_attached_form(cli_runner: CliRunner) -> 
     assert non_format.output.lstrip().startswith("Usage:")
 
 
-def test_help_full_and_carapace_direct_methods(cli_runner: CliRunner) -> None:
-    # The get_help_* methods can be called directly and match what the flag prints.
+def test_help_json_direct_method(cli_runner: CliRunner) -> None:
+    # The get_help_json method can be called directly and matches what the flag prints.
     cli = _build_cli()
     with cli.make_context("cli", [], resilient_parsing=True) as ctx:
         rctx = cast(RichContext, ctx)
-        full_direct = json.loads(cli.get_help_json_full(rctx))
-        carapace_direct = _load_carapace(cli.get_help_carapace(rctx))
+        direct = json.loads(cli.get_help_json(rctx))
 
-    assert full_direct == json.loads(cli_runner.invoke(cli, ["--help=json-full"]).output)
-    assert carapace_direct == _load_carapace(cli_runner.invoke(cli, ["--help=carapace"]).output)
-
-
-def test_help_carapace_override(cli_runner: CliRunner) -> None:
-    # format_help_carapace is overridable for full control of the carapace output.
-    from rich_click import RichGroup
-
-    class MyGroup(RichGroup):
-        def format_help_carapace(self, ctx: Any, formatter: Any) -> dict[str, Any]:
-            data = super().format_help_carapace(ctx, formatter)
-            data["group"] = "custom"
-            return data
-
-    @group(cls=MyGroup)
-    def cli() -> None:
-        """Hi."""
-
-    doc = _load_carapace(cli_runner.invoke(cli, ["--help=carapace"]).output)
-    assert doc["group"] == "custom"
+    assert direct == json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
 
 
 # --------------------------------------------------------------------------------------------------
-# Markdown: `--help=md` / `--help=md-full` (aliases `markdown` / `markdown-full`).
+# Markdown.
 # --------------------------------------------------------------------------------------------------
 
 
-def test_help_markdown_progressive(cli_runner: CliRunner) -> None:
+def test_help_markdown_nonrecursive_helper(cli_runner: CliRunner) -> None:
     # `max_chars=None` opts out of adaptive disclosure: the invoked command in full, descendants as a
-    # name index. (The default `--help md` adapts instead -- see the adaptive-disclosure tests below.)
+    # name index. This tests the lower-level nonrecursive rendering mode.
     cli = _build_cli()
     with cli.make_context("cli", [], resilient_parsing=True) as ctx:
         out = command_markdown(cli, ctx, recursive=False, max_chars=None)
@@ -613,15 +513,17 @@ def test_help_markdown_progressive(cli_runner: CliRunner) -> None:
     assert "# `cli hello`" not in out
 
 
-def test_help_markdown_aliases_match(cli_runner: CliRunner) -> None:
+def test_removed_formats_fall_back_to_plain_help(cli_runner: CliRunner) -> None:
     cli = _build_cli()
-    assert cli_runner.invoke(cli, ["--help=markdown"]).output == cli_runner.invoke(cli, ["--help=md"]).output
-    assert cli_runner.invoke(cli, ["--help=markdown-full"]).output == cli_runner.invoke(cli, ["--help=md-full"]).output
+    assert list(RichCommand.help_formats) == ["markdown", "json", "compact"]
+    for removed in ("md", "md-full", "markdown-full", "json-full", "carapace"):
+        output = cli_runner.invoke(cli, [f"--help={removed}"]).output
+        assert output.lstrip().startswith("Usage:")
 
 
 def test_help_markdown_leaf_tables(cli_runner: CliRunner) -> None:
     cli = _build_cli()
-    out = cli_runner.invoke(cli, ["hello", "--help=md"]).output
+    out = cli_runner.invoke(cli, ["hello", "--help=markdown"]).output
 
     assert "# `cli hello`" in out
     # Positional argument rendered in its own table, marked required.
@@ -633,9 +535,9 @@ def test_help_markdown_leaf_tables(cli_runner: CliRunner) -> None:
     assert "`3`" in out  # default surfaced in the table
 
 
-def test_help_markdown_full_is_recursive_and_flat(cli_runner: CliRunner) -> None:
+def test_help_markdown_is_recursive_and_flat(cli_runner: CliRunner) -> None:
     cli = _build_cli()
-    out = cli_runner.invoke(cli, ["--help=md-full"]).output
+    out = cli_runner.invoke(cli, ["--help=markdown"]).output
 
     # Every command is its own top-level (`#`) section titled by full path; no deeper heading nesting.
     assert "# `cli`" in out
@@ -655,15 +557,15 @@ def test_help_markdown_escapes_pipes_in_cells(cli_runner: CliRunner) -> None:
     def cli(mode: str) -> None:
         """Hi."""
 
-    out = cli_runner.invoke(cli, ["--help=md"]).output
+    out = cli_runner.invoke(cli, ["--help=markdown"]).output
     assert "Pick a \\| b." in out
 
 
-def test_help_markdown_full_is_unchanged_but_for_column_compaction(cli_runner: CliRunner) -> None:
-    # `--help markdown-full` renders exactly as it always has, except that a column empty for every row
+def test_help_markdown_snapshot(cli_runner: CliRunner) -> None:
+    # Markdown renders the complete tree and drops a column that is empty for every row
     # of a table (here Required and Default) is dropped rather than padded out.
     cli = _build_cli()
-    assert cli_runner.invoke(cli, ["--help=md-full"]).output == snapshot(
+    assert cli_runner.invoke(cli, ["--help=markdown"]).output == snapshot(
         """\
 # `cli`
 
@@ -676,7 +578,7 @@ Root help text.
 | Option | Type | Description |
 | --- | --- | --- |
 | `-v`, `--verbose` | flag | Be loud. |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact | Show this message and exit. |
+| `--help` | choice: markdown / json / compact | Show this message and exit. |
 
 # `cli hello`
 
@@ -695,7 +597,7 @@ Say hello.
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
 | `--count` | Int | `3` | How many times. |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact |  | Show this message and exit. |
+| `--help` | choice: markdown / json / compact |  | Show this message and exit. |
 
 # `cli things`
 
@@ -709,7 +611,7 @@ Manage things.
 
 | Option | Type | Description |
 | --- | --- | --- |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact | Show this message and exit. |
+| `--help` | choice: markdown / json / compact | Show this message and exit. |
 
 # `cli things list`
 
@@ -721,7 +623,7 @@ List things.
 
 | Option | Type | Description |
 | --- | --- | --- |
-| `--help` | choice: markdown / markdown-full / json / json-full / carapace / compact | Show this message and exit. |
+| `--help` | choice: markdown / json / compact | Show this message and exit. |
 
 """
     )
@@ -744,7 +646,7 @@ def test_text_renderings_omit_hidden_commands(cli_runner: CliRunner) -> None:
     def visible() -> None:
         """A visible command."""
 
-    for fmt in ("md", "md-full", "compact"):
+    for fmt in ("markdown", "compact"):
         out = cli_runner.invoke(cli, [f"--help={fmt}"]).output
         assert "visible" in out, fmt
         assert "internal" not in out, fmt
@@ -761,7 +663,7 @@ def test_markdown_table_keeps_columns_that_any_row_uses(cli_runner: CliRunner) -
     def cli(count: int, name: str) -> None:
         """Hi."""
 
-    out = cli_runner.invoke(cli, ["--help=md"]).output
+    out = cli_runner.invoke(cli, ["--help=markdown"]).output
     assert "| Option | Type | Required | Default | Description |" in out
     assert "| `--name` | String | yes |  | Who. |" in out
 
@@ -773,15 +675,14 @@ def test_markdown_table_drops_the_columns_no_row_uses(cli_runner: CliRunner) -> 
     def cli(name: str) -> None:
         """Hi."""
 
-    out = cli_runner.invoke(cli, ["--help=md"]).output
+    out = cli_runner.invoke(cli, ["--help=markdown"]).output
     assert "| Option | Type | Description |" in out
     assert "Required" not in out
     assert "Default" not in out
 
 
 # --------------------------------------------------------------------------------------------------
-# Adaptive disclosure: `--help markdown` discloses as much of the tree as fits `agent_help_max_chars`,
-# promoting commands nearest the invoked one first. Small CLIs therefore get their whole tree.
+# Adaptive disclosure helpers remain available for the agent-facing compact format.
 # --------------------------------------------------------------------------------------------------
 
 
@@ -809,32 +710,24 @@ def _big_cli(groups: int = 15, commands: int = 20) -> RichCommand:
     return cast(RichCommand, cli)
 
 
-def test_small_cli_renders_its_whole_tree(cli_runner: CliRunner) -> None:
-    # The headline behaviour: a CLI that fits the default budget renders identically to markdown-full,
-    # so out of the box an agent gets the whole tree from one bare `--help`.
+def test_explicit_markdown_renders_the_whole_tree(cli_runner: CliRunner) -> None:
     cli = _build_cli()
-    assert cli_runner.invoke(cli, ["--help=md"]).output == cli_runner.invoke(cli, ["--help=md-full"]).output
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        expected = command_markdown(cli, ctx, recursive=True)
+    assert cli_runner.invoke(cli, ["--help=markdown"]).output.rstrip() == expected.rstrip()
 
 
-def test_large_tree_degrades_nearest_first(cli_runner: CliRunner) -> None:
-    out = cli_runner.invoke(_big_cli(), ["--help=md"]).output
+def test_explicit_markdown_does_not_apply_the_agent_character_limit(cli_runner: CliRunner) -> None:
+    out = cli_runner.invoke(_big_cli(), ["--help=markdown"]).output
 
-    # Under the ceiling, with the invoked command rendered in full (a table, not a signature list).
-    assert len(out) <= RichHelpConfiguration().agent_help_max_chars  # type: ignore[operator]
+    assert len(out) > RichHelpConfiguration().agent_help_max_chars  # type: ignore[operator]
     assert "# `cli`" in out
     assert "| Option | Type | Description |" in out
-
-    # Near commands are promoted to their own sections with a compact option signature list...
     assert "# `cli grp00`" in out
-    assert "- `--help [markdown|" in out  # a signature list, not a table
-    # ...while distant ones stay name-only rows in their parent's index.
-    assert "# `cli grp14 cmd19`" not in out
-    assert "- `cmd19` — Do a thing to the target." in out
-    # And the reader is told what was left out, and how to get it.
-    assert "--help markdown` on any command for its full detail." in out
+    assert "# `cli grp14 cmd19`" in out
 
 
-@pytest.mark.parametrize("fmt", ["md", "compact"])
+@pytest.mark.parametrize("fmt", ["markdown", "compact"])
 def test_adaptive_output_is_deterministic(cli_runner: CliRunner, fmt: str) -> None:
     cli = _big_cli()
     outputs = {cli_runner.invoke(cli, [f"--help={fmt}"]).output for _ in range(3)}
@@ -905,12 +798,11 @@ def test_adaptive_disclosure_can_be_tuned_and_disabled(cli_runner: CliRunner) ->
     def hello() -> None:
         """Say hello."""
 
-    # `None` restores plain progressive disclosure: a name index, no subcommand sections.
-    out = cli_runner.invoke(off, ["--help=md"]).output
-    assert "## Subcommands" in out
-    assert "# `off hello`" not in out
+    # Explicit Markdown ignores the agent limit and returns the full tree.
+    out = cli_runner.invoke(off, ["--help=markdown"]).output
+    assert "# `off hello`" in out
 
-    # A ceiling too small for the whole tree truncates it, even though the CLI is tiny.
+    # The lower-level adaptive renderer can still limit agent-facing output.
     with cli.make_context("cli", [], resilient_parsing=True) as ctx:
         assert "# `cli things list`" not in command_markdown(cli, ctx, max_chars=700)
 
@@ -954,7 +846,7 @@ def test_help_markdown_override(cli_runner: CliRunner) -> None:
     def cli() -> None:
         """Hi."""
 
-    assert cli_runner.invoke(cli, ["--help=md"]).output.strip() == "CUSTOM MD"
+    assert cli_runner.invoke(cli, ["--help=markdown"]).output.strip() == "CUSTOM MD"
 
 
 # --------------------------------------------------------------------------------------------------
@@ -1101,7 +993,7 @@ def test_compact_omits_the_help_option(cli_runner: CliRunner) -> None:
     cli = _build_cli()
 
     assert "--help" not in cli_runner.invoke(cli, ["--help=compact"]).output
-    assert "--help" in cli_runner.invoke(cli, ["--help=md"]).output
+    assert "--help" in cli_runner.invoke(cli, ["--help=markdown"]).output
     assert "--help" in cli_runner.invoke(cli, ["--help=json"]).output
 
 
@@ -1190,7 +1082,7 @@ def test_compact_is_leaner_than_markdown(cli_runner: CliRunner) -> None:
     # agent harness truncates in.
     cli = _big_cli()
     compact = cli_runner.invoke(cli, ["--help=compact"]).output
-    markdown = cli_runner.invoke(cli, ["--help=md-full"]).output
+    markdown = cli_runner.invoke(cli, ["--help=markdown"]).output
 
     assert len(compact) < len(markdown) / 2
 
@@ -1305,7 +1197,7 @@ def test_examples_in_markdown(cli_runner: CliRunner) -> None:
     def cli() -> None:
         """Hi."""
 
-    out = cli_runner.invoke(cli, ["--help=md"]).output
+    out = cli_runner.invoke(cli, ["--help=markdown"]).output
     assert "## Examples" in out
     assert "- Do a thing: `tool do thing`" in out
     assert "- Do the other thing: `tool do other`" in out
@@ -1321,15 +1213,15 @@ def test_examples_come_before_the_parameters_in_markdown(cli_runner: CliRunner) 
     def cli(mode: str, name: str) -> None:
         """Hi."""
 
-    out = cli_runner.invoke(cli, ["--help=md"]).output
+    out = cli_runner.invoke(cli, ["--help=markdown"]).output
     assert out.index("**Usage:**") < out.index("## Examples") < out.index("## Arguments") < out.index("## Options")
 
 
 def test_examples_come_before_the_parameters_at_every_level(
     cli_runner: CliRunner, mixed_level_cli: RichCommand
 ) -> None:
-    # markdown-full documents every node; the ordering holds in each of their sections.
-    for section in cli_runner.invoke(mixed_level_cli, ["--help=md-full"]).output.split("# `cli run")[1:]:
+    # Markdown documents every node; the ordering holds in each section.
+    for section in cli_runner.invoke(mixed_level_cli, ["--help=markdown"]).output.split("# `cli run")[1:]:
         assert section.index("**Usage:**") < section.index("## Examples") < section.index("## Options")
 
     # And at the compact signature level too: examples are short, and a worked invocation earns its
@@ -1351,15 +1243,6 @@ def test_human_help_keeps_examples_after_the_options(cli_runner: CliRunner) -> N
     assert out.index("Options") < out.index("Examples")
 
 
-def test_examples_in_carapace(cli_runner: CliRunner) -> None:
-    @command(examples=[("Do a thing", "tool do thing"), ("Do the other thing", "tool do other")])
-    def cli() -> None:
-        """Hi."""
-
-    doc = _load_carapace(cli_runner.invoke(cli, ["--help=carapace"]).output)
-    assert doc["examples"] == {"tool do thing": "Do a thing", "tool do other": "Do the other thing"}
-
-
 def test_examples_non_dict_shape_via_to_info_dict_does_not_crash(cli_runner: CliRunner) -> None:
     # `examples` can arrive via a to_info_dict override as raw strings or (description, command) pairs
     # rather than the normalized dicts. Every format coerces to one shape rather than crashing.
@@ -1375,16 +1258,13 @@ def test_examples_non_dict_shape_via_to_info_dict_does_not_crash(cli_runner: Cli
 
     expected = [{"description": "", "command": "tool raw"}, {"description": "Greet", "command": "tool hello"}]
     assert json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["examples"] == expected
-    carapace = _load_carapace(cli_runner.invoke(cli, ["--help=carapace"]).output)
-    assert carapace["examples"] == {"tool raw": "", "tool hello": "Greet"}
-    md = cli_runner.invoke(cli, ["--help=md"]).output
+    md = cli_runner.invoke(cli, ["--help=markdown"]).output
     assert "`tool raw`" in md and "Greet: `tool hello`" in md
 
 
-def test_json_full_lists_uncontextualizable_subcommand(cli_runner: CliRunner) -> None:
+def test_json_lists_uncontextualizable_subcommand(cli_runner: CliRunner) -> None:
     # A child that raises a ClickException even under resilient parsing can't be entered, but the
-    # recursive dump still lists it (as a degraded node) so json-full matches the lean json index
-    # rather than silently dropping it.
+    # recursive dump still lists it as a degraded node rather than silently dropping it.
     class Eager(RichCommand):
         def make_context(self, *args: Any, **kwargs: Any) -> Any:
             raise click.UsageError("cannot enter")
@@ -1399,16 +1279,15 @@ def test_json_full_lists_uncontextualizable_subcommand(cli_runner: CliRunner) ->
 
     cli.add_command(Eager(name="eager", help="Eager command."))
 
-    lean = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["subcommands"]
-    full = json.loads(cli_runner.invoke(cli, ["--help=json-full"]).output)["subcommands"]
-    assert set(lean) == set(full) == {"normal", "eager"}
+    full = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["subcommands"]
+    assert set(full) == {"normal", "eager"}
     # The degraded node carries name/path/help but not the params/usage of a fully-walked command.
     assert full["eager"] == {"name": "eager", "path": "cli eager", "help": "Eager command."}
-    # markdown-full renders the degraded node as a section rather than breaking on a missing path.
-    assert "# `cli eager`" in cli_runner.invoke(cli, ["--help=markdown-full"]).output
+    # Markdown renders the degraded node as a section rather than breaking on a missing path.
+    assert "# `cli eager`" in cli_runner.invoke(cli, ["--help=markdown"]).output
 
 
-def test_examples_recursive_json_full(cli_runner: CliRunner) -> None:
+def test_examples_recursive_json(cli_runner: CliRunner) -> None:
     # Examples on a subcommand appear at that node in the recursive dump.
     @group()
     def cli() -> None:
@@ -1418,7 +1297,7 @@ def test_examples_recursive_json_full(cli_runner: CliRunner) -> None:
     def sub() -> None:
         """Sub."""
 
-    schema = json.loads(cli_runner.invoke(cli, ["--help=json-full"]).output)
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
     assert schema["subcommands"]["sub"]["examples"] == [{"description": "Run now", "command": "cli sub --now"}]
 
 

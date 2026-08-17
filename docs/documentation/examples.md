@@ -116,8 +116,8 @@ click.rich_click.STYLE_EXAMPLES_PLACEHOLDER = "bold red"
 
 Examples are not just for humans. The same data flows into every [machine-readable format](machine_readable_help.md), so tooling and LLM agents see them too:
 
-- `--help markdown` / `--help markdown-full` — an `## Examples` section.
-- `--help json` / `--help json-full` — an `examples` array of `{"command", "description"}` objects.
-- `--help carapace` — the spec's `examples` map, keyed by the command line.
+- `--help markdown` adds an `## Examples` section.
+- `--help json` adds an `examples` array of `{"command", "description"}` objects.
+- Plugin renderers can read the same `examples` field from the shared command schema.
 
 LLMs in particular tend to produce better invocations when a few worked examples are present, which makes `examples=` a cheap, high-value addition for any agent-facing CLI.

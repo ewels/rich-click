@@ -319,8 +319,8 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     and exits the program.
 
     Accepts an optional format value so the same flag can also emit machine-readable help:
-    ``--help compact`` (character-lean, whole tree), ``--help markdown`` (LLM-friendly),
-    ``--help json`` (progressive), ``--help json-full`` (whole tree) and ``--help carapace``. The space
+    ``--help compact`` (character-lean, whole tree), ``--help markdown`` (LLM-friendly), and
+    ``--help json`` (structured data). Installed plugins can add more values. The space
     form is the documented one, though the attached form (``--help=json``) works too. An unrecognized
     value falls back to the normal help rather than erroring (just as the plain ``--help`` always ignored
     anything that followed it).
@@ -371,14 +371,14 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
                     # Flagged for the duration of the render, so a format can tell "the agent default"
                     # apart from "asked for by name" -- `--help compact` renders the whole tree, while
                     # the same format as the agent default adapts to `agent_help_max_chars`.
-                    agent_default = isinstance(ctx, RichContext)
-                    if agent_default:
-                        ctx.agent_help_default = True
+                    agent_ctx = ctx if isinstance(ctx, RichContext) else None
+                    if agent_ctx is not None:
+                        agent_ctx.agent_help_default = True
                     try:
                         rendered = get_help_for_format(ctx, agent_help_format)
                     finally:
-                        if agent_default:
-                            ctx.agent_help_default = False
+                        if agent_ctx is not None:
+                            agent_ctx.agent_help_default = False
                     if rendered is not None:
                         emit(rendered)
                         ctx.exit()

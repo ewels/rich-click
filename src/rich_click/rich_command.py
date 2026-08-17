@@ -47,7 +47,7 @@ def _normalize_examples(examples: Iterable[tuple[str, str]] | None) -> list[dict
 
     Every example is a ``(description, command)`` tuple -- the description is required, so an example is
     never shown without an explanation of what it does. This canonical shape is what every output (the
-    rendered ``--help`` panel, ``--help markdown``, ``--help json`` and ``--help carapace``) consumes.
+    rendered ``--help`` panel and each structured help format) consumes.
     """
     normalized: list[dict[str, str]] = []
     for example in examples or []:
@@ -370,12 +370,7 @@ class RichCommand(Command):
     #: to add a custom format, e.g. ``help_formats = {**RichCommand.help_formats, "yaml": "get_help_yaml"}``.
     help_formats: ClassVar[dict[str, str]] = {
         "markdown": "get_help_markdown",
-        "md": "get_help_markdown",
-        "markdown-full": "get_help_markdown_full",
-        "md-full": "get_help_markdown_full",
         "json": "get_help_json",
-        "json-full": "get_help_json_full",
-        "carapace": "get_help_carapace",
         "compact": "get_help_compact",
     }
 
@@ -383,11 +378,9 @@ class RichCommand(Command):
         """
         Return this command's help rendered in a machine-readable format, or ``None`` if unrecognized.
 
-        This is the dispatch behind the optional value on ``--help`` (``--help markdown``,
-        ``--help json``, ``--help carapace``). It looks up the built-in :attr:`help_formats` registry
-        (name -> method), then the config's ``help_formats`` (name -> ``(command, ctx) -> str`` renderer),
-        so a custom format can be added either by subclassing or process-wide via config without
-        subclassing. An unknown format returns ``None`` so the caller can fall back to the normal
+        This is the dispatch behind the optional value on ``--help``. It checks built-ins, explicit
+        config renderers, and installed plugin entry points in that order. An unknown format returns
+        ``None`` so the caller can fall back to the normal
         human-readable help rather than erroring -- the format machinery only ever *adds* behaviour; it
         never changes what bare ``--help`` does. Resolving via method name (not a bound method) means a
         subclass overriding e.g. ``get_help_json`` is honoured.
@@ -399,6 +392,11 @@ class RichCommand(Command):
         renderer = getattr(ctx, "help_config", None) and ctx.help_config.help_formats.get(fmt)
         if renderer is not None:
             return cast("str | None", renderer(self, ctx))
+        from rich_click.help_formats import load_help_format_plugin
+
+        renderer = load_help_format_plugin(fmt)
+        if renderer is not None:
+            return cast("str | None", renderer(self, ctx))
         return None
 
     def _serialize_help(self, data: dict[str, Any]) -> str:
@@ -406,26 +404,8 @@ class RichCommand(Command):
 
         return json.dumps(data, indent=2, default=str)
 
-    #: Editor directive prepended to the YAML carapace output, enabling schema validation/completion.
-    _CARAPACE_SCHEMA_DIRECTIVE = "# yaml-language-server: $schema=https://carapace.sh/schemas/command.json"
-
-    def _serialize_carapace(self, data: dict[str, Any]) -> str:
-        """
-        Serialize the carapace spec as YAML -- the format carapace's ecosystem expects.
-
-        YAML is optional: if ``pyyaml`` isn't installed we fall back to JSON, which is valid YAML and so
-        still consumable by carapace (just without the schema directive). Install ``rich-click[carapace]``
-        for the idiomatic YAML output.
-        """
-        try:
-            import yaml
-        except ImportError:
-            return self._serialize_help(data)
-        body = yaml.safe_dump(data, sort_keys=False, default_flow_style=False, allow_unicode=True)
-        return f"{self._CARAPACE_SCHEMA_DIRECTIVE}\n{body}"
-
     def _build_help_json(self, ctx: RichContext, formatter: RichHelpFormatter, recursive: bool) -> dict[str, Any]:
-        """Build the JSON schema (progressive or recursive) and apply the ``help_json_transform`` hook."""
+        """Build the JSON schema and apply the ``help_json_transform`` hook."""
         from rich_click.help_json import command_schema
 
         schema = command_schema(self, ctx, recursive=recursive)
@@ -437,7 +417,7 @@ class RichCommand(Command):
 
     def get_help_json(self, ctx: RichContext) -> str:
         """
-        Return this command's help as a machine-readable JSON string (progressive disclosure).
+        Return this command's full command tree as a machine-readable JSON string.
 
         Mirrors click's :meth:`get_help`: the data is built by :meth:`format_help_json`
         and then serialized. Override :meth:`format_help_json` to change the structure
@@ -448,76 +428,25 @@ class RichCommand(Command):
 
     def format_help_json(self, ctx: RichContext, formatter: RichHelpFormatter) -> dict[str, Any]:
         """
-        Build the machine-readable ``--help json`` schema for this command (progressive disclosure).
+        Build the machine-readable ``--help json`` schema for this command.
 
-        Reports this command in full but lists only the *names* of its descendants, so agents can
-        discover a CLI one level at a time. Mirrors click's :meth:`format_help`, but returns the data
-        statelessly rather than writing to the formatter's buffer (the formatter is carried for its
-        config and parity with the regular help path). Subclass ``RichCommand`` and override this for
-        full control of the JSON schema; the ``help_json_transform`` config hook is a lighter-touch
-        alternative.
-        """
-        return self._build_help_json(ctx, formatter, recursive=False)
-
-    def get_help_json_full(self, ctx: RichContext) -> str:
-        """Return the recursive ``--help json-full`` schema as a JSON string (params at every node)."""
-        formatter = ctx.make_formatter()
-        return self._serialize_help(self.format_help_json_full(ctx, formatter))
-
-    def format_help_json_full(self, ctx: RichContext, formatter: RichHelpFormatter) -> dict[str, Any]:
-        """
-        Build the comprehensive recursive ``--help json-full`` schema for this command.
-
-        Unlike :meth:`format_help_json`, every descendant is expanded to its full detail (params, usage,
-        nested subcommands) in a single call -- aimed at codegen / MCP-generation consumers that want the
-        whole tree at once. Shares the ``help_json_transform`` hook with the progressive format.
+        Reports this command and every descendant in full. Mirrors click's :meth:`format_help`, but
+        returns the data statelessly instead of writing to the formatter's buffer. The formatter carries
+        the configuration and keeps parity with the regular help path. Subclass ``RichCommand`` and
+        override this method for full control. The ``help_json_transform`` config hook is a lighter option.
         """
         return self._build_help_json(ctx, formatter, recursive=True)
 
-    def get_help_carapace(self, ctx: RichContext) -> str:
-        """
-        Return this command's help as a carapace-spec string (https://carapace.sh).
-
-        Serialized as YAML (the format carapace expects) when ``pyyaml`` is installed, else JSON -- which
-        is valid YAML, so carapace still consumes it. Install ``rich-click[carapace]`` for YAML.
-        """
-        formatter = ctx.make_formatter()
-        return self._serialize_carapace(self.format_help_carapace(ctx, formatter))
-
-    def format_help_carapace(self, ctx: RichContext, formatter: RichHelpFormatter) -> dict[str, Any]:
-        """
-        Build the carapace completion-spec representation of this command tree.
-
-        Conforms to https://carapace.sh/schemas/command.json so a rich-click CLI can be consumed by
-        carapace's completion ecosystem. Override for full control of the carapace output.
-        """
-        from rich_click.help_json import carapace_command
-
-        return carapace_command(self, ctx)
-
     def get_help_markdown(self, ctx: RichContext) -> str:
-        """Return this command's help as LLM-friendly Markdown (current command + subcommand index)."""
+        """Return this command's full command tree as LLM-friendly Markdown."""
         return self.format_help_markdown(ctx)
 
     def format_help_markdown(self, ctx: RichContext) -> str:
         """
         Build the ``--help markdown`` Markdown for this command. Override for full control of the output.
 
-        Disclosure adapts to the ``agent_help_max_chars`` config option: as much of the command tree as
-        fits that ceiling is documented, nearest commands first. Unlike the JSON ``format_help_*``
-        methods, this returns the finished string (Markdown has no dict-to-serialize step) and takes no
-        formatter -- it needs no console config beyond that ceiling.
+        This returns the finished string because Markdown has no separate serialization step.
         """
-        from rich_click.help_json import command_markdown
-
-        return command_markdown(self, ctx, recursive=False, max_chars=_agent_help_max_chars(ctx))
-
-    def get_help_markdown_full(self, ctx: RichContext) -> str:
-        """Return the recursive ``--help markdown-full`` Markdown: every descendant documented in full."""
-        return self.format_help_markdown_full(ctx)
-
-    def format_help_markdown_full(self, ctx: RichContext) -> str:
-        """Build the recursive ``--help markdown-full`` Markdown for this command tree."""
         from rich_click.help_json import command_markdown
 
         return command_markdown(self, ctx, recursive=True)
@@ -533,9 +462,8 @@ class RichCommand(Command):
         Asked for explicitly (``--help compact``), this renders the **whole** command tree with no
         ceiling -- the format is lean enough that a mid-size CLI still fits one agent tool response, and
         a caller who names the format is asking for everything. As the *agent default* (a bare ``--help``
-        with ``agent_help_format="compact"``) it instead adapts to ``agent_help_max_chars``, exactly as
-        ``--help markdown`` does, so a very large tree degrades rather than being truncated by the
-        harness. Override for full control.
+        with ``agent_help_format="compact"``) it instead adapts to ``agent_help_max_chars``. A very
+        large tree degrades rather than being truncated by the harness. Override for full control.
         """
         from rich_click.help_json import compact_command
 

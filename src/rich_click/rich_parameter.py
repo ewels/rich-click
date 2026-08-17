@@ -129,7 +129,7 @@ class RichHelpOption(RichOption):
             return "FORMAT"
         from rich_click.help_json import _help_format_names
 
-        names = _help_format_names(cmd, ctx)  # built-ins (deduped) + any config-registered formats
+        names = _help_format_names(cmd, ctx)  # built-ins, config renderers, and installed plugins
         if not names:
             return "FORMAT"
         preview = [name for name in headline if name in names] or names[:2]

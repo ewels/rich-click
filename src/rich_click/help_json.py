@@ -1,21 +1,10 @@
 """
 Machine-readable help formats for rich-click CLIs.
 
-These power the format values on the existing ``--help`` flag -- ``--help markdown``,
-``--help json``, ``--help json-full``, ``--help carapace`` and ``--help compact`` -- so tooling and
-LLM agents can discover a CLI's structure as data instead of scraping the rendered ``--help``
-screen. No new flag is added; the capability lives on ``--help`` and bare ``--help`` is unchanged.
-
-``--help json`` uses progressive disclosure, reporting the *current* command's help, usage and full
-parameter detail plus a name-only index of subcommands, so agents land on a command, read its
-parameters as data, and drill into subcommands by name as needed. ``--help markdown`` renders the
-same structure as LLM-friendly Markdown, but with *adaptive* disclosure: the invoked command in full
-plus as much of the rest of the tree as fits a character ceiling, nearest hop first (see
-:func:`adaptive_command_markdown`). ``--help compact`` renders the whole tree in the leanest form that
-keeps it complete -- one line per record, no tables -- which is what a bare ``--help`` renders in a
-detected agent environment, there under the same character ceiling (see :func:`compact_command`). The
-``-full`` variants (``--help markdown-full`` / ``--help json-full``) expand every descendant to full
-detail in one call, and ``--help carapace`` maps the tree onto the carapace completion spec.
+These functions power ``--help markdown``, ``--help json``, and ``--help compact``. The Markdown and
+JSON formats include the full command tree. Compact help also includes the full tree when a caller
+requests it by name. A bare ``--help`` in an agent environment applies a character limit to compact
+help so that a large CLI does not exceed the agent's output limit.
 
 Composability: the schema is built from each command's ``to_info_dict()`` -- the
 same Click method that powers introspection elsewhere -- so anything a developer
@@ -39,10 +28,6 @@ import click
 
 #: Type of the optional ``help_json_transform`` hook: ``(schema, command, ctx) -> schema``.
 HelpJSONTransform = Callable[[dict[str, Any], click.Command, click.Context], dict[str, Any]]
-
-#: Type of a custom ``--help`` format renderer registered via the ``help_formats`` config option:
-#: ``(command, ctx) -> str``. Lets a new ``--help <name>`` format be added without subclassing.
-HelpFormatRenderer = Callable[[click.Command, click.Context], str]
 
 # Keys Click/rich-click put in a *parameter's* ``to_info_dict()``. We map the useful ones onto a
 # compact representation deliberately; any key NOT listed here is treated as developer-supplied
@@ -132,7 +117,7 @@ def _coerce_examples(value: Any) -> list[dict[str, str]]:
     The normal ``examples=`` path already stores this shape (see ``RichCommand._normalize_examples``),
     but ``examples`` can also reach us via a ``to_info_dict()`` override -- the documented extension
     point -- where it may instead be raw ``(description, command)`` pairs, bare command strings, or
-    dicts. Normalizing at this single chokepoint means every output format (JSON, carapace, Markdown)
+    dicts. Normalizing at this single chokepoint means every output format
     sees one consistent shape rather than each defending against the others' assumptions. Items that
     can't be coerced are skipped rather than crashing the dump.
     """
@@ -286,10 +271,9 @@ def _help_format_names(cmd: click.Command, ctx: click.Context | None = None) -> 
     """
     Return the machine-readable format values ``--help`` accepts (``markdown``, ``json``, ...).
 
-    Built-ins come from the command's ``help_formats`` registry, de-duplicated by target so an alias
-    (``md``) is not listed next to its canonical name (``markdown``). Any process-wide custom formats
-    registered on the config (``help_formats``) are appended. Surfaced as the ``--help`` option's
-    ``choices`` and in its metavar, so both a human and an agent can discover the formats exist.
+    Built-ins come from the command's ``help_formats`` registry. Process-wide config formats and
+    installed plugin formats follow them. The result appears in the ``--help`` option's choices and
+    metavar so that humans and agents can discover each available format.
     """
     names: list[str] = []
     seen_targets: set[str] = set()
@@ -301,6 +285,11 @@ def _help_format_names(cmd: click.Command, ctx: click.Context | None = None) -> 
     for name in getattr(config, "help_formats", None) or {}:
         if name not in names:
             names.append(name)
+    from rich_click.help_formats import get_help_format_plugin_names
+
+    for name in get_help_format_plugin_names():
+        if name not in names:
+            names.append(name)
     return names
 
 
@@ -310,8 +299,7 @@ def _iter_child_contexts(cmd: click.Command, ctx: click.Context) -> Iterator[tup
 
     A child that cannot be contextualized (e.g. a custom loader that needs real args) is skipped rather
     than aborting the whole dump. Yields nothing for a leaf command. Powers the recursive
-    ``--help json-full`` and ``--help carapace`` walks, where every node is described by the same
-    machinery a direct ``--help`` on that node would use.
+    recursive format walks, where every node uses the same machinery as direct help on that node.
     """
     list_commands = getattr(cmd, "list_commands", None)
     if list_commands is None:
@@ -328,8 +316,8 @@ def _iter_child_contexts(cmd: click.Command, ctx: click.Context) -> Iterator[tup
             # parsing* -- e.g. a custom command that validates eagerly in ``make_context``/``parse_args``.
             # Such a child can't be entered, so it's skipped here. Callers that need set-equality with the
             # lean index recover it: ``_subcommand_index_full`` falls back to a degraded node so it still
-            # appears (carapace, a completion spec, simply omits what it can't introspect). A real bug in
-            # the child (TypeError, etc.) is NOT swallowed -- it propagates so it isn't masked.
+            # appears in formats which require set equality. A real bug in the child (TypeError, etc.)
+            # is NOT swallowed -- it propagates so it isn't masked.
             continue
         yield name, child, child_ctx
 
@@ -387,8 +375,8 @@ def command_schema(
     Includes the command's own help, usage and full parameter detail -- including the ``--help``
     option, just as the rendered help screen lists it, enriched with the machine-readable formats it
     accepts (its ``choices``). For groups, a ``subcommands`` key holds either a name-only index of
-    descendants (the default, progressive disclosure) or -- when ``recursive`` is set -- the full schema
-    of every descendant (powering ``--help json-full``).
+    descendants (the default internal mode) or -- when ``recursive`` is set -- the full schema
+    of every descendant (powering ``--help json``).
 
     The command's ``to_info_dict()`` is the single source of truth, so subclass overrides and
     custom fields flow through: unrecognized command-level keys are merged onto the top-level object
@@ -448,164 +436,8 @@ def command_schema(
     return schema
 
 
-def _carapace_flag_name(opts: Sequence[str]) -> str:
-    """Return the bare flag name carapace keys completion by (long name preferred, dashes stripped)."""
-    longs = [opt for opt in opts if opt.startswith("--")]
-    chosen = longs[0] if longs else opts[0]
-    return chosen.lstrip("-")
-
-
-def _carapace_params(
-    cmd: click.Command, ctx: click.Context, help_ids: set[int]
-) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
-    """
-    Split a command's params into the carapace ``flags`` / ``completion`` / ``documentation`` blocks.
-
-    Flag keys use carapace's string syntax: a bare name takes no value, a trailing ``=`` marks a
-    required value, ``?`` an optional one, and ``*`` a repeatable flag. Positional arguments have no
-    first-class carapace object, so they contribute only their help (``documentation``) and any
-    ``Choice`` candidates (``completion``). The ``--help`` option (in ``help_ids``) is included like any
-    other, with the formats it accepts as its completions.
-    """
-    flags: dict[str, Any] = {}
-    completion: dict[str, Any] = {}
-    documentation: dict[str, Any] = {}
-    completion_flag: dict[str, Any] = {}
-    positional: list[Any] = []
-    positional_doc: list[Any] = []
-
-    for param in cmd.get_params(ctx):
-        info = param.to_info_dict()
-        kind = info.get("param_type_name")
-        type_info = info.get("type") or {}
-        choices = type_info.get("choices")
-        help_text = _strip_markup(info.get("help")) or ""
-
-        if kind == "option":
-            opts = info.get("opts") or []
-            if not opts:
-                continue
-            is_flag = bool(info.get("is_flag"))
-            multiple = bool(info.get("multiple"))
-            nargs = info.get("nargs") or 1
-            # A counter (``-v/-vv/-vvv``) is not ``is_flag``, but it takes no value either -- marking it
-            # ``=`` would have carapace demand an argument for it. An optional-value option (Click sets a
-            # ``flag_value`` on a non-flag, as ``--help`` does) takes ``?``, since a bare ``--help`` is
-            # valid too.
-            takes_value = not is_flag and not info.get("count")
-            key = ", ".join(opts)
-            if takes_value:
-                key += "?" if info.get("flag_value") is not None else "="
-            if multiple:
-                key += "*"
-            if takes_value and isinstance(nargs, int) and nargs > 1:
-                flags[key] = {"description": help_text, "nargs": nargs}
-            else:
-                flags[key] = help_text
-            # Boolean negation flags (``--no-foo``) become their own bool entries.
-            for secondary in info.get("secondary_opts") or []:
-                flags[secondary] = help_text
-            if choices:
-                completion_flag[_carapace_flag_name(opts)] = list(choices)
-            elif id(param) in help_ids:
-                # ``--help`` is not a Choice type, but it accepts the machine-readable format values;
-                # offer those as completions so `--help <TAB>` suggests markdown/json/...
-                formats = _help_format_names(cmd, ctx)
-                if formats:
-                    completion_flag[_carapace_flag_name(opts)] = formats
-
-        elif kind == "argument":
-            nargs = info.get("nargs")
-            candidates = list(choices) if choices else []
-            if nargs == -1:
-                if candidates:
-                    completion["positionalany"] = candidates
-                if help_text:
-                    documentation["positionalany"] = help_text
-            else:
-                # A fixed-arity argument occupies ``nargs`` positional slots (nargs defaults to 1).
-                # Carapace's positional arrays hold one entry per slot, so repeat this argument's
-                # candidates/help once per slot it consumes -- otherwise an ``nargs=2`` argument would
-                # shift every later positional one slot to the left and mis-target its completions.
-                slots = nargs if isinstance(nargs, int) and nargs > 0 else 1
-                for _ in range(slots):
-                    positional.append(candidates)
-                    positional_doc.append(help_text)
-
-    if completion_flag:
-        completion["flag"] = completion_flag
-    # Only emit the positional completion list if at least one slot actually has candidates.
-    if any(positional):
-        completion["positional"] = positional
-    if any(positional_doc):
-        documentation["positional"] = positional_doc
-    return flags, completion, documentation
-
-
-def carapace_command(cmd: click.Command, ctx: click.Context, info: dict[str, Any] | None = None) -> dict[str, Any]:
-    """
-    Describe a command (recursively) as a carapace ``Command`` object.
-
-    Conforms to the carapace completion spec (https://carapace.sh/schemas/command.json) so a rich-click
-    CLI can act as a producer for carapace's consumer ecosystem. Carapace is a structure + completion
-    spec, not a type/validation one, so some rich-click detail is intentionally dropped: parameter
-    *types* (Int/Path/...), *defaults*, *envvars* and per-flag *required* have no home in the schema.
-
-    ``info`` is a precomputed ``to_info_dict()`` for ``cmd``; the recursive walk passes each child's
-    entry so the whole tree is serialized once rather than re-serialized per node (see
-    :func:`command_schema`).
-    """
-    if info is None:
-        info = cmd.to_info_dict(ctx)
-    help_ids = _help_option_ids(cmd, ctx)
-
-    result: dict[str, Any] = {"name": info.get("name") or ctx.info_name or ""}
-
-    get_short_help = getattr(cmd, "get_short_help_str", None)
-    description = _strip_markup(get_short_help(limit=120)) if get_short_help is not None else None
-    if description:
-        result["description"] = description
-
-    aliases = info.get("aliases")
-    if aliases:
-        result["aliases"] = list(aliases)
-    if info.get("hidden"):
-        result["hidden"] = True
-
-    # Click groups parse flags strictly before the subcommand; leaves allow them interspersed.
-    if getattr(cmd, "list_commands", None) is not None:
-        result["parsing"] = "non-interspersed"
-
-    flags, completion, documentation = _carapace_params(cmd, ctx, help_ids)
-    if flags:
-        result["flags"] = flags
-    if completion:
-        result["completion"] = completion
-    if documentation:
-        result["documentation"] = documentation
-
-    # Carapace's ``examples`` is a {string: string} map; we key it by the command line. (Two examples
-    # that share a command line collapse to one entry -- see the carapace note in the docs.)
-    examples = _coerce_examples(info.get("examples"))
-    if examples:
-        result["examples"] = {ex["command"]: ex["description"] for ex in examples}
-
-    children = _carapace_subcommands(cmd, ctx, info.get("commands") or {})
-    if children:
-        result["commands"] = children
-    return result
-
-
-def _carapace_subcommands(cmd: click.Command, ctx: click.Context, child_infos: dict[str, Any]) -> list[Any]:
-    """Recursively build the carapace ``commands`` array."""
-    return [
-        carapace_command(child, child_ctx, info=child_infos.get(name))
-        for name, child, child_ctx in _iter_child_contexts(cmd, ctx)
-    ]
-
-
 # --------------------------------------------------------------------------------------------------
-# Markdown (``--help markdown`` / ``--help markdown-full``).
+# Markdown (``--help markdown``).
 #
 # A presentation layer over the same :func:`command_schema` data, so all the extraction (and the
 # serialize-the-tree-once optimisation) is shared with the JSON formats. The output is tuned for LLM
@@ -925,7 +757,7 @@ def _render_command_markdown(schema: dict[str, Any], lines: list[str]) -> None:
 # --------------------------------------------------------------------------------------------------
 # Compact (``--help compact``).
 #
-# The same data as the Markdown formats, in the shape a truncating agent harness can actually hold.
+# The same data as Markdown, in the shape a truncating agent harness can actually hold.
 # Agent harnesses cut a tool's output at a *character* count (Claude Code at ~30,000), and a help page
 # that gets cut is worse than a short one: the agent re-reads it through grep/tail, spending turns. So
 # every rule here buys characters back, and spends them only where a model needs them:
@@ -1113,7 +945,7 @@ def _render_compact_body(schema: dict[str, Any], lines: list[str]) -> None:
     Append one command's full compact block (level **L2**).
 
     Order is anchor, usage, arguments, options, examples. Examples come last here -- the opposite of the
-    Markdown formats, where they lead -- because a compact block is short enough to read whole, so the
+    Markdown format, where they lead -- because a compact block is short enough to read whole, so the
     examples land as the summary of what the option lines just spelled out rather than as an answer
     ahead of the reference material.
     """
@@ -1152,12 +984,12 @@ def _render_compact_pointer(schema: dict[str, Any]) -> str:
 
 
 # --------------------------------------------------------------------------------------------------
-# Adaptive disclosure, shared by ``--help markdown`` and the compact agent default.
+# Adaptive disclosure helpers for the compact agent default.
 #
-# Plain progressive disclosure -- the invoked command in full, its descendants as name-only rows -- is
+# The minimum disclosure level -- the invoked command in full and descendants as name-only rows -- is
 # cheap but makes an agent *guess*: the vocabulary that decides which subcommand is the right one lives
 # in option help text, which a name-only row does not carry. So the agent descends, reads, backtracks,
-# and burns turns. Dumping the whole tree instead (``--help markdown-full``) removes the guessing, but
+# and burns turns. Dumping the whole tree instead removes the guessing, but
 # does not scale to a large CLI.
 #
 # Adaptive disclosure is the middle path, and needs no configuration: render the invoked command in
@@ -1312,7 +1144,7 @@ def _emit(node: _HelpNode, prefix: str, out: list[str] | None) -> int:
     budget at all. Because the price is a character count of the very lines that get emitted, the
     ceiling is exact rather than approximate. Blocks come out in the same depth-first order the
     whole-tree formats use, so a tree that is entirely at L2 renders byte-for-byte like
-    ``--help markdown-full`` / ``--help compact``.
+    whole-tree Markdown and ``--help compact``.
     """
     style = node.style
     if node.level == DETAIL_POINTER:
@@ -1451,8 +1283,8 @@ def command_markdown(
     """
     Render a command as Markdown, tuned for LLM consumption.
 
-    ``recursive=True`` (``--help markdown-full``) documents every descendant in full. Otherwise
-    (``--help markdown``) the output adapts to ``max_chars``: see :func:`adaptive_command_markdown`.
+    ``recursive=True`` (used by ``--help markdown``) documents every descendant in full. Otherwise
+    the output adapts to ``max_chars``: see :func:`adaptive_command_markdown`.
     Passing ``max_chars=None`` opts out of adaptation entirely, documenting the current command and
     listing its descendants as a name index. Built from :func:`command_schema`, so it shares the JSON
     formats' extraction and single ``to_info_dict()`` walk.
