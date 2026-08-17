@@ -548,6 +548,16 @@ def _param_metavar(param: click.Parameter, ctx: click.Context) -> str:
     if getattr(param, "is_flag", False) or getattr(param, "count", False):
         return ""
     metavar = _make_param_metavar(param, ctx)  # type: ignore[arg-type]
+    # Click 8.0 through 8.3 add a second bracket layer to generated optional Choice metavars.
+    if (
+        isinstance(param, click.Argument)
+        and isinstance(param.type, click.Choice)
+        and param.metavar is None
+        and not param.required
+        and metavar.startswith("[[")
+        and metavar.endswith("]]")
+    ):
+        metavar = metavar[1:-1]
     # Click renders a repeatable option as a plain metavar; the ellipsis is what says "give it again".
     if getattr(param, "multiple", False) and not metavar.endswith("..."):
         metavar += "..."

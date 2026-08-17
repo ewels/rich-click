@@ -5,17 +5,15 @@ from __future__ import annotations
 from collections.abc import Callable
 from functools import cache
 from importlib.metadata import EntryPoint, entry_points
-from typing import TYPE_CHECKING, cast
+from typing import cast
 
-
-if TYPE_CHECKING:
-    import click
+import click
 
 
 HELP_FORMAT_ENTRY_POINT_GROUP = "rich_click.help_formats"
 """Entry-point group for third-party help format renderers."""
 
-HelpFormatRenderer = Callable[["click.Command", "click.Context"], str]
+HelpFormatRenderer = Callable[[click.Command, click.Context], str]
 """A callable that renders a command and its context as a string."""
 
 

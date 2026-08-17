@@ -987,6 +987,16 @@ def test_compact_documents_arguments_that_carry_their_own_help(cli_runner: CliRu
     assert "\nSRC" not in out
 
 
+def test_compact_preserves_explicit_nested_bracket_metavar() -> None:
+    from rich_click.help_json import _param_metavar
+    from rich_click.rich_help_rendering import _make_param_metavar
+
+    param = click.Argument(["value"], required=False, metavar="[[VALUE]]")
+    ctx = RichContext(RichCommand(name="cli"))
+
+    assert _param_metavar(param, ctx) == _make_param_metavar(param, ctx)
+
+
 def test_compact_omits_the_help_option(cli_runner: CliRunner) -> None:
     # The one row that is identical on every command of every CLI, and the largest block of pure
     # repetition in a whole-tree rendering. The other formats still report it.

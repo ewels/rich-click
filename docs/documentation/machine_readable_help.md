@@ -142,12 +142,13 @@ An explicit `--help <format>` always uses the requested format.
 
 Python packages can add formats through the `rich_click.help_formats` entry-point group. rich-click discovers these packages automatically. A CLI that already uses rich-click does not need a source change.
 
-For example, [`rich-click-help-formats`](https://github.com/ewels/rich-click-help-formats) adds Carapace and HTML:
+For example, [`rich-click-help-formats`](https://github.com/ewels/rich-click-help-formats) adds YAML, HTML, and Carapace:
 
 ```console
 pip install rich-click-help-formats
-mytool --help carapace
+mytool --help yaml
 mytool --help html
+mytool --help carapace
 ```
 
 rich-click reads entry-point metadata when it builds the format list. It imports a plugin renderer only when a caller selects that format.
