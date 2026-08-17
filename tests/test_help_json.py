@@ -392,6 +392,7 @@ def test_custom_help_format_registered_via_config(cli_runner: CliRunner) -> None
     schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
     help_param = next(param for param in schema["params"] if param["name"] == "help")
     assert "yaml" in help_param["choices"]
+    assert "[markdown|json|compact|yaml]" in cli_runner.invoke(cli, ["--help"]).output
     # 3. An unknown format still falls back to the normal human-readable help.
     fallback = cli_runner.invoke(cli, ["--help=bogus"])
     assert fallback.exit_code == 0

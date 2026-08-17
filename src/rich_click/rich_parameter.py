@@ -104,25 +104,18 @@ class RichHelpOption(RichOption):
     Built as an optional-value option (``is_flag=False`` with a ``flag_value`` sentinel) so it can
     accept an optional format -- ``--help markdown``, ``--help json``, ... -- while a bare ``--help``
     still shows the normal human-readable help. It renders like any other option whose value is a fixed
-    set: a compact hint of the available formats is shown as the metavar (``[markdown|json|...]``),
-    rather than appended to the help text.
+    set: all available formats are shown as the metavar, rather than appended to the help text.
     """
 
     def make_metavar(self, *args: Any, **kwargs: Any) -> str:
         """
-        Show a compact hint of the available formats as the metavar, like a ``Choice`` option.
-
-        Listing every format would crowd the ``--help`` row (and wrap on narrow terminals), so we show a
-        couple of representative formats followed by an ellipsis, e.g. ``[markdown|json|...]``. The
-        preview is drawn from the command's ``help_formats`` registry -- preferring the headline names
-        and otherwise the first distinct formats in registry order.
+        Show all available formats as the metavar, like a ``Choice`` option.
 
         Resolving the registry needs the ctx, which rich-click's renderer always passes (see
         ``_make_param_metavar`` in ``rich_help_rendering`` -- it threads the ctx through even on Click
         versions whose ``make_metavar()`` is normally called without one). Without a ctx -- or on a plain
         ``click.Command`` that can't actually serve the formats -- the metavar degrades to ``FORMAT``.
         """
-        headline = ("markdown", "json")
         ctx = args[0] if args else kwargs.get("ctx")
         cmd = getattr(ctx, "command", None)
         if cmd is None:
@@ -132,6 +125,4 @@ class RichHelpOption(RichOption):
         names = _help_format_names(cmd, ctx)  # built-ins, config renderers, and installed plugins
         if not names:
             return "FORMAT"
-        preview = [name for name in headline if name in names] or names[:2]
-        suffix = "|..." if len(names) > len(preview) else ""
-        return "[" + "|".join(preview) + suffix + "]"
+        return "[" + "|".join(names) + "]"

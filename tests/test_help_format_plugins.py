@@ -43,6 +43,7 @@ def test_installed_help_format_is_discovered_and_dispatched(monkeypatch: pytest.
     schema = json.loads(runner.invoke(cli, ["--help", "json"]).output)
     help_param = next(param for param in schema["params"] if param["name"] == "help")
     assert help_param["choices"] == ["markdown", "json", "compact", "html"]
+    assert "[markdown|json|compact|html]" in runner.invoke(cli, ["--help"], terminal_width=120).output
 
 
 def test_plugin_renderer_loads_only_when_selected(monkeypatch: pytest.MonkeyPatch) -> None:

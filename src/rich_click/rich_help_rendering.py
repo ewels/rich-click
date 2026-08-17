@@ -345,7 +345,8 @@ def _make_param_metavar(param: click.Argument | click.Option | RichParameter, ct
     Click < 8.2 calls ``Parameter.make_metavar()`` without a ctx, and a plain option's signature there
     can't take one -- hence the version gate. ``RichHelpOption.make_metavar()`` accepts a ctx on every
     Click version, though, and it *needs* one to resolve the command's ``--help`` formats into the
-    ``[markdown|json|...]`` hint. So we always hand it the ctx, regardless of Click version; otherwise the
+    full ``[markdown|json|compact]`` list. So we always hand it the ctx, regardless of Click version;
+    otherwise the
     metavar degrades to a bare ``FORMAT`` on Click < 8.2 (e.g. for an explicit ``@click.help_option()``).
     """
     if CLICK_IS_BEFORE_VERSION_82 and not isinstance(param, RichHelpOption):

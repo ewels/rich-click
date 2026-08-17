@@ -7,7 +7,7 @@
   - `--help compact` returns the complete tree in a concise text format. A bare `--help` uses adaptive compact output in detected coding-agent environments.
   - `help_to_stderr` applies to structured help as well as normal terminal help.
   - Hidden commands stay out of Markdown and compact output. JSON retains them for introspection.
-  - The `--help` parameter lists all available formats in its JSON `choices` field.
+  - The `--help` parameter lists all available formats in normal help and in its JSON `choices` field.
   - Installed packages can add formats with the `rich_click.help_formats` entry-point group. A renderer has the signature `(command, ctx) -> str`. rich-click discovers these formats without changes to the CLI source.
   - The schema starts with each command's `to_info_dict()` result. Use `help_json_transform`, a `RichCommand` subclass, or the `help_formats` configuration for in-process customization.
   - The space form (`--help json`) and attached form (`--help=json`) both work. An unknown format shows normal terminal help.

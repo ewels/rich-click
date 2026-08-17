@@ -580,9 +580,9 @@ def _md_param_metavar(param: dict[str, Any], *, brackets: bool = True) -> str:
 
     A ``Choice`` renders from the schema's own ``choices`` rather than from Click's metavar, because
     these renderings have no description column to lean on and the choice values *are* the vocabulary
-    needed to construct a valid invocation. That also keeps the ``--help`` option's full format list,
-    which the rendered help abbreviates to ``[markdown|json|...]`` to fit a terminal. ``brackets=False``
-    drops the enclosing brackets (``fast|safe``), which is how the compact format spells the same thing.
+    needed to construct a valid invocation. That also keeps the ``--help`` option's full format list.
+    ``brackets=False`` drops the enclosing brackets (``fast|safe``), which is how the compact format
+    spells the same thing.
     """
     choices = param.get("choices")
     if choices:
