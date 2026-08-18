@@ -115,11 +115,33 @@ class RichCommand(Command):
         return self.context_settings.get("rich_console")
 
     def to_info_dict(self, ctx: click.Context) -> dict[str, Any]:
-        info = super().to_info_dict(ctx)
+        # Structured help collects the command tree itself so that lazy commands are loaded once and
+        # descendant contexts never parse arguments. During that collection, the context carries the
+        # already-built Click portion of this node. Calling this method still lets subclass overrides
+        # compose through ``super()`` without asking Click's Group implementation to walk the tree again.
+        prebuilt = getattr(ctx, "_rich_click_prebuilt_info", None)
+        info = dict(prebuilt[1]) if prebuilt is not None and prebuilt[0] is self else super().to_info_dict(ctx)
         info["panels"] = [p.to_info_dict(ctx) for p in self.panels]
         info["aliases"] = list(self.aliases) if self.aliases is not None else None
         info["examples"] = self.examples
         return info
+
+    def make_context_without_parsing(
+        self,
+        info_name: str,
+        parent: click.Context | None = None,
+        **extra: Any,
+    ) -> click.Context:
+        """
+        Create a context for recursive help without running argument parsing or callbacks.
+
+        Override this method when structured help needs the same custom context setup that an
+        overridden :meth:`make_context` normally provides. The override must not parse arguments.
+        """
+        for key, value in self.context_settings.items():
+            extra.setdefault(key, value)
+        extra.setdefault("resilient_parsing", True)
+        return self.context_class(self, info_name=info_name, parent=parent, **extra)
 
     @property
     def help_config(self) -> RichHelpConfiguration | None:
@@ -229,10 +251,6 @@ class RichCommand(Command):
         # Process shell completion requests and exit early.
         self._main_shell_completion(extra, prog_name, complete_var)
 
-        # Snapshot what was typed, for the error path below: Click's parser consumes ``args`` in place,
-        # and its exceptions carry the context but never the original argv.
-        invocation = [prog_name, *args]
-
         ctx = None
 
         try:
@@ -263,7 +281,6 @@ class RichCommand(Command):
                 if not standalone_mode:
                     raise
                 formatter = self._error_formatter()
-                formatter.error_argv = invocation
                 formatter.write_error(e)
                 print(formatter.getvalue(), file=sys.stderr, end="")
                 sys.exit(e.exit_code)
@@ -386,10 +403,17 @@ class RichCommand(Command):
         subclass overriding e.g. ``get_help_json`` is honoured.
         """
         fmt = (fmt or "").strip().lower()
-        method_name = self.help_formats.get(fmt)
+        method_name = next(
+            (target for name, target in self.help_formats.items() if name.strip().lower() == fmt),
+            None,
+        )
         if method_name is not None:
             return cast("str | None", getattr(self, method_name)(ctx))
-        renderer = getattr(ctx, "help_config", None) and ctx.help_config.help_formats.get(fmt)
+        configured_formats = getattr(getattr(ctx, "help_config", None), "help_formats", {})
+        renderer = next(
+            (renderer for name, renderer in configured_formats.items() if name.strip().lower() == fmt),
+            None,
+        )
         if renderer is not None:
             return cast("str | None", renderer(self, ctx))
         from rich_click.help_formats import load_help_format_plugin

@@ -22,7 +22,7 @@ def test_panels_defaults_command_panel(cli_runner: CliRunner, cli: rich_click.Ri
  CLI help text                                                                                      \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  [markdown|json|...]  Show this message and exit.                                         │
+│ --help  [markdown|json|compact]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
    Command Panel A                                                                                  \n\
   cmd4  Test args assigned to arguments panel when help is defined, and test that arg3 is assigned  \n\
@@ -62,7 +62,7 @@ def test_panels_defaults_argument_panel(cli_runner: CliRunner, cli: rich_click.R
 │ *  ARG2  TEXT  arg2 help [required]                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  [markdown|json|...]  Show this message and exit.                                         │
+│ --help  [markdown|json|compact]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -79,7 +79,7 @@ def test_panels_defaults_order(cli_runner: CliRunner, cli: rich_click.RichComman
  ordered.                                                                                           \n\
                                                                                                     \n\
 ╭─ Help ───────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  [markdown|json|...]  Show this message and exit.                                         │
+│ --help  [markdown|json|compact]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Panel 1 ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --a  TEXT                                                                                        │

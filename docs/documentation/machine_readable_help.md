@@ -78,9 +78,14 @@ Each parameter can contain these fields:
 | `choices` | Accepted values for a `Choice`. |
 | `required` | Present and true for a required parameter. |
 | `default` | Present when the default carries useful information. |
+| `is_flag` | Present and true for a flag option. |
+| `flag_value` | Value assigned by a non-boolean value flag. |
+| `count` | Present and true for a counting flag such as `-vvv`. |
 | `multiple` | Present and true for a repeatable parameter. |
 | `nargs` | Present when the arity is not one. |
 | `envvar` | One environment variable or a list of variables. |
+| `prompt` | Text shown when the option prompts for input. |
+| `hidden` | Present and true when the parameter is hidden from normal help. |
 | `help` | Plain parameter help text. |
 
 The `--help` parameter includes a `choices` list. This list contains the built-in formats, config formats, and installed plugin formats.
@@ -103,7 +108,22 @@ click.rich_click.HELP_JSON_TRANSFORM = add_version
 
 You can also override `format_help_json()` on a `RichCommand` subclass.
 
-The schema starts with Click's `to_info_dict()` result. Custom command and parameter fields pass through when they do not replace a derived field.
+The schema starts with Click's `to_info_dict()` fields. Custom fields from `RichCommand` subclasses,
+plain Click leaf commands, and parameter subclasses pass through when they do not replace a derived
+field. Plain Click group subclasses use Click's standard group fields so rich-click can traverse lazy
+commands once without triggering Click's second recursive walk. Custom `get_params()`,
+`collect_usage_pieces()`, and plain Click leaf `to_info_dict()` implementations must be stable when
+Click calls them more than once.
+
+Named JSON, Markdown, and compact formats are introspection interfaces, so they can include declared
+defaults that normal terminal help does not show. Set `show_default=False` explicitly to omit a default
+from Markdown and compact output. Automatic agent help always follows Click's effective default
+visibility. JSON retains defaults as schema data.
+
+Recursive help creates descendant contexts without parsing arguments. This prevents option callbacks
+from running during help generation. If a `RichCommand` subclass adds context setup in `make_context()`,
+put the equivalent no-parse setup in `make_context_without_parsing()`. A command that only overrides
+`make_context()` causes explicit recursive help to fail instead of returning an incomplete schema.
 
 ## Compact
 

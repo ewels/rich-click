@@ -33,6 +33,10 @@ class RichParameter(click.Parameter):
         **kwargs: Any,
     ):
         """Create RichParameter instance."""
+        # Click 8.0 stores ``False`` both when this setting is omitted and when the caller supplies it.
+        # Structured text help needs the distinction so it can preserve ordinary introspection defaults
+        # while honoring an explicit request to hide one.
+        self._rich_click_show_default_explicit = "show_default" in kwargs
         super().__init__(*args, **kwargs)
         self.panel = panel
 
@@ -118,11 +122,11 @@ class RichHelpOption(RichOption):
         """
         ctx = args[0] if args else kwargs.get("ctx")
         cmd = getattr(ctx, "command", None)
-        if cmd is None:
-            return "FORMAT"
+        if cmd is None or not callable(getattr(cmd, "get_help_for_format", None)):
+            return ""
         from rich_click.help_json import _help_format_names
 
         names = _help_format_names(cmd, ctx)  # built-ins, config renderers, and installed plugins
         if not names:
-            return "FORMAT"
+            return ""
         return "[" + "|".join(names) + "]"

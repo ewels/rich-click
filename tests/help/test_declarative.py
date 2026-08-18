@@ -23,7 +23,7 @@ def test_declarative_help(cli_runner: CliRunner, cli: rich_click.RichCommand) ->
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --debug/--no-debug                                                                               │
-│ --help              [markdown|json|...]  Show this message and exit.                             │
+│ --help              [markdown|json|compact]  Show this message and exit.                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ check                Check the context type.                                                     │
@@ -43,7 +43,7 @@ Debug mode is off
  Check the context type.                                                                            \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  [markdown|json|...]  Show this message and exit.                                         │
+│ --help  [markdown|json|compact]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

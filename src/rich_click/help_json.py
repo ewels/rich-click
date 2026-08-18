@@ -6,10 +6,11 @@ JSON formats include the full command tree. Compact help also includes the full 
 requests it by name. A bare ``--help`` in an agent environment applies a character limit to compact
 help so that a large CLI does not exceed the agent's output limit.
 
-Composability: the schema is built from each command's ``to_info_dict()`` -- the
-same Click method that powers introspection elsewhere -- so anything a developer
-adds there flows through automatically. Custom command-level fields appear at the
-top level; custom parameter fields appear on the parameter.
+Composability: the schema is built from each command's ``to_info_dict()``. Custom fields from
+``RichCommand`` subclasses and plain Click leaf commands flow through automatically. Plain Click group
+subclasses use Click's standard fields because invoking their group override would recursively load the
+same command tree a second time. Custom parameter fields appear on the parameter. As with Click's normal
+help path, custom introspection methods must return stable parameters across repeated calls.
 
 The serialization mirrors Click's own ``get_help``/``format_help`` split:
 ``RichCommand.get_help_json()`` serializes whatever ``RichCommand.format_help_json()``
@@ -20,8 +21,9 @@ override ``format_help_json`` for full control, or use the lighter-touch
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterator, Sequence
-from typing import Any, NamedTuple
+from collections.abc import Callable, Sequence
+from dataclasses import dataclass
+from typing import Any, NamedTuple, cast
 
 import click
 
@@ -65,14 +67,17 @@ _REDUNDANT_TYPE_KEYS = frozenset({"param_type", "name", "choices"})
 _CONSUMED_CMD_KEYS = frozenset({"name", "help", "params", "commands", "short_help", "examples"})
 
 
-def _strip_markup(text: str | None) -> str | None:
-    r"""Render Rich console markup (``[dim]``, ``\[default: …]``, …) to plain text."""
+def _strip_markup(text: str | None, *, markup_mode: str | None = None) -> str | None:
+    r"""Return plain text, interpreting only the configured markup engine."""
     if not text:
         return text
-    if "[" not in text:
-        # No markup is possible without a bracket, and the overwhelming majority of help strings have
-        # none. Worth the guard: a whole-tree walk runs this over every help string in the CLI, and
-        # ``Text.from_markup`` on markup-free text is two orders of magnitude slower than the check.
+    if markup_mode == "ansi":
+        if "\x1b" not in text:
+            return text.strip()
+        from rich.text import Text
+
+        return Text.from_ansi(text).plain.strip()
+    if markup_mode != "rich" or "[" not in text:
         return text.strip()
     from rich.errors import MarkupError
     from rich.text import Text
@@ -81,6 +86,24 @@ def _strip_markup(text: str | None) -> str | None:
         return Text.from_markup(text).plain.strip()
     except MarkupError:
         return text.strip()
+
+
+def _markup_mode(ctx: click.Context) -> str | None:
+    """Resolve the effective text engine, including legacy defaults and plain child contexts."""
+    current: click.Context | None = ctx
+    while current is not None:
+        config = getattr(current, "help_config", None)
+        if config is not None:
+            mode = getattr(config, "text_markup", None)
+            if mode in {"ansi", "rich", "markdown", None}:
+                return mode
+            if getattr(config, "use_markdown", False):
+                return "markdown"
+            if getattr(config, "use_rich_markup", False):
+                return "rich"
+            return "ansi"
+        current = current.parent
+    return None
 
 
 def _is_unset(value: Any) -> bool:
@@ -96,7 +119,9 @@ def _is_empty(value: Any) -> bool:
     return value is False or _is_unset(value)
 
 
-def _passthrough_extensions(info: dict[str, Any], consumed: frozenset[str]) -> dict[str, Any]:
+def _passthrough_extensions(
+    info: dict[str, Any], consumed: frozenset[str], *, markup_mode: str | None = None
+) -> dict[str, Any]:
     """
     Collect developer-supplied / non-standard keys from a ``to_info_dict()`` to pass through.
 
@@ -104,7 +129,7 @@ def _passthrough_extensions(info: dict[str, Any], consumed: frozenset[str]) -> d
     string values so the output stays plain text.
     """
     return {
-        key: _strip_markup(value) if isinstance(value, str) else value
+        key: _strip_markup(value, markup_mode=markup_mode) if isinstance(value, str) else value
         for key, value in info.items()
         if key not in consumed and not _is_empty(value)
     }
@@ -140,7 +165,7 @@ def _coerce_examples(value: Any) -> list[dict[str, str]]:
     return examples
 
 
-def _param_to_dict(info: dict[str, Any]) -> dict[str, Any]:
+def _param_to_dict(info: dict[str, Any], *, markup_mode: str | None = None) -> dict[str, Any]:
     """Convert a parameter's ``to_info_dict()`` into a compact, JSON-friendly dict."""
     type_info = info.get("type") or {}
     kind = info.get("param_type_name")  # "option" or "argument"
@@ -167,7 +192,7 @@ def _param_to_dict(info: dict[str, Any]) -> dict[str, Any]:
         "prompt": info.get("prompt"),
         # Hidden params are kept (parity with to_info_dict) but flagged so consumers can skip them.
         "hidden": info.get("hidden") or None,
-        "help": _strip_markup(info.get("help")),
+        "help": _strip_markup(info.get("help"), markup_mode=markup_mode),
     }
     result = {key: value for key, value in fields.items() if not _is_empty(value)}
     # Remaining type constraints (range min/max, DateTime formats, Path flags, Choice case-sensitivity)
@@ -192,7 +217,7 @@ def _param_to_dict(info: dict[str, Any]) -> dict[str, Any]:
     if is_flag and not isinstance(flag_value, bool) and not _is_unset(flag_value):
         result["flag_value"] = flag_value
     # Passthrough: developer-supplied custom keys (e.g. a RichOption subclass adding ``sensitive``).
-    for key, value in _passthrough_extensions(info, _STANDARD_PARAM_KEYS).items():
+    for key, value in _passthrough_extensions(info, _STANDARD_PARAM_KEYS, markup_mode=markup_mode).items():
         result.setdefault(key, value)
     return result
 
@@ -200,50 +225,6 @@ def _param_to_dict(info: dict[str, Any]) -> dict[str, Any]:
 def _hidden(info: dict[str, Any] | None) -> bool:
     """Report whether a command's ``to_info_dict()`` marks it hidden."""
     return bool((info or {}).get("hidden"))
-
-
-def _subcommand_index(commands: dict[str, Any], parent: click.Command | None, display: bool = False) -> dict[str, Any]:
-    """
-    Index ``to_info_dict()``'s recursive ``commands`` block by name.
-
-    Each entry carries a one-line ``help`` (so an agent can pick where to drill without a round-trip),
-    plus ``aliases`` and a nested ``subcommands`` index where present. This mirrors the entry shape
-    used by sibling tools (e.g. Nextflow's ``-help-json``) so a single consumer can parse both.
-    Reusing the already-computed tree avoids a second full walk of the command hierarchy.
-
-    The summary comes from each command's ``get_short_help_str(limit=120)`` -- Click collapses the
-    docstring to its first sentence and truncates on a word boundary with an ellipsis, so summaries
-    never cut off mid-word. ``parent`` is the owning group, used to resolve each child command object
-    (which carries that method); we fall back to the info dict's first help line if it can't be found.
-
-    ``display`` drops ``hidden=True`` commands, matching the rendered help screen. The JSON formats
-    keep them (like ``to_info_dict`` does, and like hidden *parameters*), but a text rendering meant to
-    stand in for the help screen must not show what the help screen hides.
-    """
-    index: dict[str, Any] = {}
-    parent_commands = getattr(parent, "commands", {})
-    for name, info in commands.items():
-        if display and _hidden(info):
-            continue
-        entry: dict[str, Any] = {}
-        child = parent_commands.get(name)
-        if child is not None:
-            help_text = _strip_markup(child.get_short_help_str(limit=120))
-        else:  # custom MultiCommand without a ``commands`` mapping: best-effort first line
-            full_help = _strip_markup(info.get("help"))
-            help_text = full_help.split("\n", 1)[0].strip() if full_help else None
-        if help_text:
-            entry["help"] = help_text
-        aliases = info.get("aliases")
-        if aliases:
-            entry["aliases"] = list(aliases)
-        children = info.get("commands")
-        if children:
-            nested = _subcommand_index(children, child, display)
-            if nested:
-                entry["subcommands"] = nested
-        index[name] = entry
-    return index
 
 
 def _help_option_ids(cmd: click.Command, ctx: click.Context) -> set[int]:
@@ -276,15 +257,15 @@ def _help_format_names(cmd: click.Command, ctx: click.Context | None = None) -> 
     metavar so that humans and agents can discover each available format.
     """
     names: list[str] = []
-    seen_targets: set[str] = set()
-    for name, target in (getattr(cmd, "help_formats", None) or {}).items():
-        if target not in seen_targets:
-            seen_targets.add(target)
-            names.append(name)
+    for name in getattr(cmd, "help_formats", None) or {}:
+        normalized = name.strip().lower()
+        if normalized and normalized not in names:
+            names.append(normalized)
     config = getattr(ctx, "help_config", None)
     for name in getattr(config, "help_formats", None) or {}:
-        if name not in names:
-            names.append(name)
+        normalized = name.strip().lower()
+        if normalized and normalized not in names:
+            names.append(normalized)
     from rich_click.help_formats import get_help_format_plugin_names
 
     for name in get_help_format_plugin_names():
@@ -293,36 +274,203 @@ def _help_format_names(cmd: click.Command, ctx: click.Context | None = None) -> 
     return names
 
 
-def _iter_child_contexts(cmd: click.Command, ctx: click.Context) -> Iterator[tuple[str, click.Command, click.Context]]:
-    """
-    Yield ``(name, child, child_ctx)`` for each subcommand, building a fresh context per child.
+@dataclass
+class _CommandNode:
+    """One command and the exact child objects loaded while collecting its schema."""
 
-    A child that cannot be contextualized (e.g. a custom loader that needs real args) is skipped rather
-    than aborting the whole dump. Yields nothing for a leaf command. Powers the recursive
-    recursive format walks, where every node uses the same machinery as direct help on that node.
-    """
-    list_commands = getattr(cmd, "list_commands", None)
-    if list_commands is None:
-        return
-    for name in list_commands(ctx):
-        child = cmd.get_command(ctx, name)  # type: ignore[attr-defined]
-        if child is None:
-            continue
+    command: click.Command
+    ctx: click.Context
+    info: dict[str, Any]
+    params: list[tuple[click.Parameter, dict[str, Any]]]
+    usage_pieces: list[str]
+    custom_usage: bool
+    children: dict[str, _CommandNode | None]
+
+
+def _minimal_command_info(command: click.Command | None, name: str) -> dict[str, Any]:
+    """Return stable metadata for a child that could not be loaded or contextualized."""
+    return {
+        "name": getattr(command, "name", None) or name,
+        "help": getattr(command, "help", None),
+        "hidden": getattr(command, "hidden", False),
+        "aliases": list(getattr(command, "aliases", None) or []),
+    }
+
+
+def _make_child_context(child: click.Command, name: str, parent: click.Context) -> click.Context:
+    """Construct a child context with its settings, without calling ``parse_args``."""
+    from rich_click.rich_command import RichCommand
+
+    if (
+        isinstance(child, RichCommand)
+        and type(child).make_context is not click.Command.make_context
+        and type(child).make_context_without_parsing is RichCommand.make_context_without_parsing
+    ):
+        raise TypeError(
+            f"{type(child).__name__} overrides make_context(); recursive structured help cannot call it "
+            "without parsing arguments. Override make_context_without_parsing() with the required "
+            "context setup."
+        )
+
+    context_builder = getattr(child, "make_context_without_parsing", None)
+    if callable(context_builder):
+        return cast(click.Context, context_builder(name, parent=parent))
+
+    # Calling a custom ``make_context`` would also call ``parse_args``. That can run callbacks merely
+    # because help was requested. Fail clearly instead of silently omitting custom context setup.
+    if type(child).make_context is not click.Command.make_context:
+        raise TypeError(
+            f"{type(child).__name__} overrides make_context(); recursive structured help cannot call it "
+            "without parsing arguments. Subclass RichCommand and override "
+            "make_context_without_parsing() with the required context setup."
+        )
+
+    settings = dict(child.context_settings)
+    settings.setdefault("resilient_parsing", True)
+    return child.context_class(child, info_name=name, parent=parent, **settings)
+
+
+def _command_info(
+    command: click.Command,
+    ctx: click.Context,
+    param_infos: list[dict[str, Any]],
+    children: dict[str, dict[str, Any]],
+    supplied: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Call the command's extension point once, with Click's recursive group data prebuilt."""
+    if supplied is not None:
+        return supplied
+
+    is_group = callable(getattr(command, "list_commands", None))
+    info: dict[str, Any] = {
+        "name": command.name,
+        "params": param_infos,
+        "help": command.help,
+        "epilog": command.epilog,
+        "short_help": command.short_help,
+        "hidden": command.hidden,
+        "deprecated": command.deprecated,
+    }
+    if is_group:
+        info["commands"] = children
+        if hasattr(command, "chain"):
+            info["chain"] = command.chain
+
+    marker = object()
+    previous = getattr(ctx, "_rich_click_prebuilt_info", marker)
+    ctx._rich_click_prebuilt_info = (command, info)  # type: ignore[attr-defined]
+    try:
+        # RichCommand uses the prebuilt value before adding its own fields. A custom Rich subclass that
+        # calls super() therefore remains authoritative. A plain leaf is also safe to call because its
+        # Click implementation cannot recurse. Plain Group overrides use the standard shape above.
+        from rich_click.rich_command import RichCommand
+
+        if isinstance(command, RichCommand):
+            return command.to_info_dict(ctx)
+        if not is_group:
+            return command.to_info_dict(ctx)
+        return info
+    finally:
+        if previous is marker:
+            del ctx._rich_click_prebuilt_info  # type: ignore[attr-defined]
+        else:
+            ctx._rich_click_prebuilt_info = previous  # type: ignore[attr-defined]
+
+
+def _collect_node(
+    command: click.Command,
+    ctx: click.Context,
+    owned_contexts: list[click.Context],
+    *,
+    supplied_info: dict[str, Any] | None = None,
+    tolerate_load_errors: bool = False,
+    display: bool = False,
+) -> _CommandNode:
+    """Collect a command tree once, without parsing descendant arguments."""
+    parameters = list(command.get_params(ctx))
+    param_infos = [param.to_info_dict() for param in parameters]
+    implementation = type(command).collect_usage_pieces
+    custom_usage = implementation not in {click.Command.collect_usage_pieces, click.Group.collect_usage_pieces}
+    if custom_usage:
+        usage_pieces = command.collect_usage_pieces(ctx)
+    else:
+        usage_pieces = [command.options_metavar] if command.options_metavar else []
+        for param in parameters:
+            usage_pieces.extend(param.get_usage_pieces(ctx))
+        if callable(getattr(command, "list_commands", None)):
+            usage_pieces.append(command.subcommand_metavar)  # type: ignore[attr-defined]
+
+    children: dict[str, _CommandNode | None] = {}
+    child_infos: dict[str, dict[str, Any]] = {}
+    list_commands = getattr(command, "list_commands", None)
+    if callable(list_commands):
         try:
-            child_ctx = child.make_context(name, [], parent=ctx, resilient_parsing=True)
-        except click.ClickException:
-            # ``resilient_parsing=True`` suppresses the usual missing-required-argument / bad-value
-            # errors, so this only fires for a child that raises a ClickException *even under resilient
-            # parsing* -- e.g. a custom command that validates eagerly in ``make_context``/``parse_args``.
-            # Such a child can't be entered, so it's skipped here. Callers that need set-equality with the
-            # lean index recover it: ``_subcommand_index_full`` falls back to a degraded node so it still
-            # appears in formats which require set equality. A real bug in the child (TypeError, etc.)
-            # is NOT swallowed -- it propagates so it isn't masked.
-            continue
-        yield name, child, child_ctx
+            names = list(list_commands(ctx))
+        except Exception:
+            if not tolerate_load_errors:
+                raise
+            names = list(getattr(command, "commands", {}))
+
+        for name in names:
+            try:
+                child = command.get_command(ctx, name)  # type: ignore[attr-defined]
+            except Exception:
+                if not tolerate_load_errors:
+                    raise
+                child = None
+            if child is None:
+                children[name] = None
+                child_infos[name] = _minimal_command_info(None, name)
+                continue
+
+            if display and child.hidden:
+                children[name] = None
+                child_infos[name] = _minimal_command_info(child, name)
+                continue
+
+            try:
+                child_ctx = _make_child_context(child, name, ctx)
+            except Exception:
+                if not tolerate_load_errors:
+                    raise
+                children[name] = None
+                child_infos[name] = _minimal_command_info(child, name)
+                continue
+
+            owned_contexts.append(child_ctx)
+            try:
+                with child_ctx.scope(cleanup=False):
+                    child_node = _collect_node(
+                        child,
+                        child_ctx,
+                        owned_contexts,
+                        tolerate_load_errors=tolerate_load_errors,
+                        display=display,
+                    )
+            except Exception:
+                if not tolerate_load_errors:
+                    raise
+                children[name] = None
+                child_infos[name] = _minimal_command_info(child, name)
+            else:
+                children[name] = child_node
+                child_infos[name] = child_node.info
+
+    info = _command_info(command, ctx, param_infos, child_infos, supplied_info)
+    return _CommandNode(
+        command,
+        ctx,
+        info,
+        list(zip(parameters, param_infos, strict=True)),
+        usage_pieces,
+        custom_usage,
+        children,
+    )
 
 
-def _degraded_schema(name: str, info: dict[str, Any], parent_ctx: click.Context) -> dict[str, Any]:
+def _degraded_schema(
+    name: str, info: dict[str, Any], parent_ctx: click.Context, *, markup_mode: str | None = None
+) -> dict[str, Any]:
     """
     Minimal schema node for a child that couldn't be contextualized (raised a ClickException even under
     resilient parsing), so it can't be fully expanded.
@@ -332,74 +480,57 @@ def _degraded_schema(name: str, info: dict[str, Any], parent_ctx: click.Context)
     not walked, since we couldn't enter it; consumers can re-run ``--help`` on that command directly.
     """
     schema: dict[str, Any] = {"name": info.get("name") or name, "path": f"{parent_ctx.command_path} {name}".strip()}
-    help_text = _strip_markup(info.get("help"))
+    help_text = _strip_markup(info.get("help"), markup_mode=markup_mode)
     if help_text:
         schema["help"] = help_text
-    for key, value in _passthrough_extensions(info, _CONSUMED_CMD_KEYS).items():
+    for key, value in _passthrough_extensions(info, _CONSUMED_CMD_KEYS, markup_mode=markup_mode).items():
         schema.setdefault(key, value)
     return schema
 
 
-def _subcommand_index_full(
-    cmd: click.Command, ctx: click.Context, child_infos: dict[str, Any], display: bool = False
-) -> dict[str, Any]:
-    """
-    Recursively expand every descendant to its full schema (params, usage, nested subcommands).
-
-    Iterates ``child_infos`` -- the same ``to_info_dict()``-derived source the lean index uses -- so the
-    full walk lists exactly the same subcommands as ``--help json`` (a child that can't be entered gets a
-    degraded node rather than vanishing), and the ordering stays stable.
-    """
-    if display:  # a text rendering must not show what the rendered help screen hides
-        child_infos = {name: info for name, info in child_infos.items() if not _hidden(info)}
-    full = {
-        name: command_schema(child, child_ctx, recursive=True, info=child_infos.get(name), display=display)
-        for name, child, child_ctx in _iter_child_contexts(cmd, ctx)
-        if name in child_infos
-    }
-    return {
-        name: full[name] if name in full else _degraded_schema(name, info, ctx) for name, info in child_infos.items()
-    }
-
-
-def command_schema(
-    cmd: click.Command,
-    ctx: click.Context,
+def _schema_from_node(
+    node: _CommandNode,
     recursive: bool = False,
-    info: dict[str, Any] | None = None,
     display: bool = False,
+    info_override: dict[str, Any] | None = None,
+    respect_default_visibility: bool = False,
 ) -> dict[str, Any]:
-    """
-    Build the machine-readable JSON for a single command level.
+    """Project one already-collected command node into the public schema."""
+    with node.ctx.scope(cleanup=False):
+        return _schema_from_current_node(node, recursive, display, info_override, respect_default_visibility)
 
-    Includes the command's own help, usage and full parameter detail -- including the ``--help``
-    option, just as the rendered help screen lists it, enriched with the machine-readable formats it
-    accepts (its ``choices``). For groups, a ``subcommands`` key holds either a name-only index of
-    descendants (the default internal mode) or -- when ``recursive`` is set -- the full schema
-    of every descendant (powering ``--help json``).
 
-    The command's ``to_info_dict()`` is the single source of truth, so subclass overrides and
-    custom fields flow through: unrecognized command-level keys are merged onto the top-level object
-    and unrecognized parameter-level keys onto the parameter (never overwriting a derived key).
-
-    ``info`` carries a precomputed ``to_info_dict()`` for ``cmd``. Click's ``Group.to_info_dict()``
-    already serializes the whole subtree, so the recursive walk reuses those child entries instead of
-    re-serializing each subtree -- one ``to_info_dict()`` call for the tree rather than one per node.
-
-    ``display`` adds the fields the *text* renderings need and the JSON formats deliberately omit: each
-    parameter's rendered ``metavar``, an ``is_help_option`` marker on the ``--help`` option, and the
-    command's one-line ``short_help``. All are computed by Click itself here, where the live command and
-    parameter objects are in hand, so the Markdown and compact renderers do not have to reconstruct them
-    from the serialized type name further downstream.
-    """
-    if info is None:
-        info = cmd.to_info_dict(ctx)
-
+def _schema_from_current_node(
+    node: _CommandNode,
+    recursive: bool,
+    display: bool,
+    info_override: dict[str, Any] | None,
+    respect_default_visibility: bool,
+) -> dict[str, Any]:
+    """Project a node while its context is current."""
+    cmd, ctx = node.command, node.ctx
+    info = node.info if info_override is None else info_override
+    markup_mode = _markup_mode(ctx)
     help_ids = _help_option_ids(cmd, ctx)
 
     params = []
-    for param in cmd.get_params(ctx):
-        param_dict = _param_to_dict(param.to_info_dict())
+    for param, param_info in node.params:
+        param_dict = _param_to_dict(param_info, markup_mode=markup_mode)
+        explicit_default_policy = getattr(param, "_rich_click_show_default_explicit", None)
+        if explicit_default_policy is None:
+            show_default = getattr(param, "show_default", None)
+            # Click 8.0 stores False both when it is omitted and when it is explicit. RichParameter
+            # records that distinction; for unmarked third-party parameters, prefer hiding a possibly
+            # sensitive default over exposing one that the author may have deliberately suppressed.
+            explicit_default_policy = show_default is not None
+        if respect_default_visibility or (display and (explicit_default_policy or ctx.show_default is not None)):
+            from rich_click.rich_help_rendering import _get_parameter_default_text
+
+            visible_default = _get_parameter_default_text(param, ctx)
+            if visible_default is None:
+                param_dict.pop("default", None)
+            else:
+                param_dict["default"] = visible_default
         # Surface the formats ``--help`` accepts as its choices, so an agent discovers them in the data.
         if id(param) in help_ids and not param_dict.get("choices"):
             formats = _help_format_names(cmd, ctx)
@@ -414,26 +545,98 @@ def command_schema(
         params.append(param_dict)
 
     schema: dict[str, Any] = {"name": info.get("name"), "path": ctx.command_path}
-    help_text = _strip_markup(info.get("help"))
+    help_text = _strip_markup(info.get("help"), markup_mode=markup_mode)
     if help_text:  # omit rather than emit a null help for undocumented commands
         schema["help"] = help_text
     if display:
-        schema["short_help"] = _strip_markup(cmd.get_short_help_str(limit=120)) or ""
-    schema["usage"] = " ".join([ctx.command_path, *cmd.collect_usage_pieces(ctx)])
+        schema["short_help"] = _strip_markup(cmd.get_short_help_str(limit=120), markup_mode=markup_mode) or ""
+    schema["usage"] = " ".join([ctx.command_path, *node.usage_pieces])
+    if display and node.custom_usage:
+        schema["_custom_usage"] = True
     schema["params"] = params
     examples = _coerce_examples(info.get("examples"))
     if examples:
         schema["examples"] = examples
     if "commands" in info:
-        if recursive:
-            schema["subcommands"] = _subcommand_index_full(cmd, ctx, info["commands"], display=display)
-        else:
-            schema["subcommands"] = _subcommand_index(info["commands"], cmd, display)
+        subcommands: dict[str, Any] = {}
+        for name, child_info in info["commands"].items():
+            if display and _hidden(child_info):
+                continue
+            child = node.children.get(name)
+            if child is None:
+                child_schema = _degraded_schema(name, child_info, ctx, markup_mode=markup_mode)
+            else:
+                child_schema = _schema_from_node(
+                    child,
+                    recursive=recursive,
+                    display=display,
+                    info_override=child_info,
+                    respect_default_visibility=respect_default_visibility,
+                )
+            if recursive:
+                subcommands[name] = child_schema
+                continue
+
+            entry: dict[str, Any] = {}
+            if child is not None:
+                help_text = _strip_markup(child.command.get_short_help_str(limit=120), markup_mode=markup_mode)
+            else:
+                full_help = _strip_markup(child_info.get("help"), markup_mode=markup_mode)
+                help_text = full_help.split("\n", 1)[0].strip() if full_help else None
+            if help_text:
+                entry["help"] = help_text
+            aliases = child_info.get("aliases")
+            if aliases:
+                entry["aliases"] = list(aliases)
+            if child_schema.get("subcommands"):
+                entry["subcommands"] = child_schema["subcommands"]
+            subcommands[name] = entry
+        schema["subcommands"] = subcommands
 
     # Passthrough: rich-click extras (aliases) + any developer-supplied command metadata.
-    for key, value in _passthrough_extensions(info, _CONSUMED_CMD_KEYS).items():
+    for key, value in _passthrough_extensions(info, _CONSUMED_CMD_KEYS, markup_mode=markup_mode).items():
         schema.setdefault(key, value)
     return schema
+
+
+def command_schema(
+    cmd: click.Command,
+    ctx: click.Context,
+    recursive: bool = False,
+    info: dict[str, Any] | None = None,
+    display: bool = False,
+    *,
+    tolerate_load_errors: bool = False,
+    respect_default_visibility: bool = False,
+) -> dict[str, Any]:
+    """
+    Build machine-readable help from one collection of the command tree.
+
+    Each child command is resolved once. Descendant contexts are constructed without parsing arguments
+    and are always closed. Custom ``RichCommand.to_info_dict()`` overrides remain the metadata extension
+    point. As in Click's normal help path, custom introspection hooks must return stable parameters when
+    called more than once. ``tolerate_load_errors`` is reserved for adaptive agent help, where an
+    unavailable optional command must not prevent the root help from rendering.
+    """
+    owned_contexts: list[click.Context] = []
+    try:
+        root = _collect_node(
+            cmd,
+            ctx,
+            owned_contexts,
+            supplied_info=info,
+            tolerate_load_errors=tolerate_load_errors,
+            display=display,
+        )
+        return _schema_from_node(
+            root,
+            recursive=recursive,
+            display=display,
+            respect_default_visibility=respect_default_visibility,
+        )
+    finally:
+        for child_ctx in reversed(owned_contexts):
+            child_ctx.close()
 
 
 # --------------------------------------------------------------------------------------------------
@@ -925,6 +1128,8 @@ def _compact_usage(schema: dict[str, Any]) -> str | None:
     directly underneath -- and a command with no positionals is fully described by its anchor line and
     its option lines, so a usage line would be pure repetition.
     """
+    if schema.get("_custom_usage"):
+        return f"usage: {schema['usage']}"
     arguments = _visible(schema.get("params", []), "argument")
     if not arguments:
         return None
@@ -1242,7 +1447,17 @@ def _adaptive_help(cmd: click.Command, ctx: click.Context, max_chars: int, style
     abbreviated further: a ceiling below that floor is overshot rather than dropping the command that
     was asked about, or hiding a command's existence entirely.
     """
-    root = _HelpNode(command_schema(cmd, ctx, recursive=True, display=True), style)
+    root = _HelpNode(
+        command_schema(
+            cmd,
+            ctx,
+            recursive=True,
+            display=True,
+            tolerate_load_errors=True,
+            respect_default_visibility=True,
+        ),
+        style,
+    )
     order = _breadth_first(root)
 
     for node in order:

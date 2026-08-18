@@ -564,10 +564,8 @@ def _get_parameter_help_opt(
     return primary_final, secondary_final, long_final, short_final, all_final
 
 
-def _get_parameter_default(
-    param: click.Argument | click.Option | RichParameter, ctx: RichContext, formatter: RichHelpFormatter
-) -> Text | None:
-
+def _get_parameter_default_text(param: click.Parameter, ctx: click.Context) -> str | None:
+    """Return the effective default exactly as human help spells it, without its surrounding label."""
     if not hasattr(param, "show_default"):
         return None
 
@@ -601,37 +599,39 @@ def _get_parameter_default(
     elif ctx.show_default is not None:
         show_default = ctx.show_default
 
-    default_string: str | None = None
-
     if show_default_is_str or (show_default and (default_value not in notset)):
         if show_default_is_str:
-            default_string = f"({param.show_default})"
+            return f"({param.show_default})"
         elif isinstance(default_value, (list, tuple)):
-            default_string = ", ".join(str(d) for d in default_value)
+            return ", ".join(str(d) for d in default_value)
         elif isinstance(default_value, Enum):
-            default_string = str(default_value.value)
+            return str(default_value.value)
         elif inspect.isfunction(default_value):
-            default_string = gettext("(dynamic)")
+            return gettext("(dynamic)")
         elif hasattr(param, "is_bool_flag") and param.is_bool_flag and param.secondary_opts:
             # For boolean flags that have distinct True/False opts,
             # use the opt without prefix instead of the value.
             opt = (param.opts if default_value else param.secondary_opts)[0]
             first = opt[:1]
+            default_string = opt
             if first.isalnum():
-                default_string = opt
-            if opt[1:2] == first:
-                default_string = opt[2:]
-            else:
-                default_string = opt[1:]
+                return default_string
+            default_string = opt[2:] if opt[1:2] == first else opt[1:]
+            return default_string
         elif hasattr(param, "is_bool_flag") and param.is_bool_flag and not param.secondary_opts and not default_value:
             if CLICK_IS_VERSION_80:
-                default_string = str(param.default)
-            else:
-                default_string = ""
+                return str(param.default)
+            return ""
         elif default_value == "":
-            default_string = '""'
-        else:
-            default_string = str(default_value)
+            return '""'
+        return str(default_value)
+    return None
+
+
+def _get_parameter_default(
+    param: click.Argument | click.Option | RichParameter, ctx: RichContext, formatter: RichHelpFormatter
+) -> Text | None:
+    default_string = _get_parameter_default_text(param, ctx)
 
     if default_string:
         return Text.from_markup(
@@ -1210,10 +1210,13 @@ def agent_format_error(self: click.UsageError, formatter: RichHelpFormatter) -> 
     """
     from rich_click.error_diagnosis import diagnose, format_diagnosis_for_agent
 
-    block = format_diagnosis_for_agent(self, diagnose(self), formatter.error_argv)
+    block = format_diagnosis_for_agent(self, diagnose(self))
     # ``soft_wrap`` keeps the corrected invocation on one line: a command line broken across a terminal
     # width is no longer copyable, which defeats the point of offering it.
     formatter.write(Text(block), soft_wrap=True)
+    for extra in (formatter.config.errors_suggestion, formatter.config.errors_epilogue):
+        if extra:
+            formatter.write(Text(extra.plain if isinstance(extra, Text) else str(extra)), soft_wrap=True)
 
 
 def rich_format_error(

@@ -58,12 +58,24 @@ def test_plugin_renderer_loads_only_when_selected(monkeypatch: pytest.MonkeyPatc
     assert help_formats.get_help_format_plugin_names() == ("html",)
 
 
-def test_duplicate_plugin_names_raise_a_clear_error(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_duplicate_plugin_names_only_break_the_conflicting_format(monkeypatch: pytest.MonkeyPatch) -> None:
     plugins = [
         EntryPoint(name="html", value="package_a:render", group=help_formats.HELP_FORMAT_ENTRY_POINT_GROUP),
         EntryPoint(name="HTML", value="package_b:render", group=help_formats.HELP_FORMAT_ENTRY_POINT_GROUP),
     ]
     monkeypatch.setattr(help_formats, "entry_points", lambda **kwargs: plugins)
 
-    with pytest.raises(RuntimeError, match="Multiple installed packages.*'html'.*package_a.*package_b"):
-        help_formats.get_help_format_plugin_names()
+    @command()
+    def cli() -> None:
+        """A command."""
+
+    runner = CliRunner()
+    assert help_formats.get_help_format_plugin_names() == ("html",)
+    assert runner.invoke(cli, ["--help"]).exit_code == 0
+    assert runner.invoke(cli, ["--help", "json"]).exit_code == 0
+    result = runner.invoke(cli, ["--help", "html"])
+    assert result.exit_code == 1
+    assert isinstance(result.exception, RuntimeError)
+    assert "Multiple installed packages" in str(result.exception)
+    assert "package_a" in str(result.exception)
+    assert "package_b" in str(result.exception)

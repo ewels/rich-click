@@ -18,21 +18,15 @@ HelpFormatRenderer = Callable[[click.Command, click.Context], str]
 
 
 @cache
-def _help_format_plugins() -> dict[str, EntryPoint]:
-    """Return installed help format entry points, indexed by normalized name."""
-    plugins: dict[str, EntryPoint] = {}
+def _help_format_plugins() -> dict[str, tuple[EntryPoint, ...]]:
+    """Return installed help format entry points, grouped by normalized name."""
+    plugins: dict[str, list[EntryPoint]] = {}
     for entry_point in entry_points(group=HELP_FORMAT_ENTRY_POINT_GROUP):
         name = entry_point.name.strip().lower()
         if not name:
             continue
-        existing = plugins.get(name)
-        if existing is not None:
-            raise RuntimeError(
-                f"Multiple installed packages provide the rich-click help format {name!r}: "
-                f"{existing.value!r} and {entry_point.value!r}."
-            )
-        plugins[name] = entry_point
-    return plugins
+        plugins.setdefault(name, []).append(entry_point)
+    return {name: tuple(providers) for name, providers in plugins.items()}
 
 
 def get_help_format_plugin_names() -> tuple[str, ...]:
@@ -43,9 +37,15 @@ def get_help_format_plugin_names() -> tuple[str, ...]:
 @cache
 def load_help_format_plugin(name: str) -> HelpFormatRenderer | None:
     """Load one installed help format renderer, or return ``None`` if it does not exist."""
-    entry_point = _help_format_plugins().get(name.strip().lower())
-    if entry_point is None:
+    providers = _help_format_plugins().get(name.strip().lower())
+    if providers is None:
         return None
+    if len(providers) > 1:
+        values = ", ".join(repr(provider.value) for provider in providers)
+        raise RuntimeError(
+            f"Multiple installed packages provide the rich-click help format {name.strip().lower()!r}: {values}."
+        )
+    entry_point = providers[0]
     renderer = entry_point.load()
     if not callable(renderer):
         raise TypeError(

@@ -282,19 +282,17 @@ def diagnose(error: click.UsageError) -> Diagnosis | None:
     return diagnosis or None
 
 
-def format_diagnosis_for_agent(error: click.UsageError, diagnosis: Diagnosis | None, argv: list[str] | None) -> str:
+def format_diagnosis_for_agent(error: click.UsageError, diagnosis: Diagnosis | None) -> str:
     """
     Render an error for an AI agent: plain text, no ANSI, one fact per line.
 
     Deliberately fuller than the human rendering. A human has the terminal scrollback and knows what
-    they just typed; an agent gets only this block, so it restates the attempted invocation, the rule,
-    the alternatives and the corrected command as separate ``Key: value`` lines that survive being
-    grepped, split or pasted. Click's own message stays the first line, unchanged, so anything matching
-    on it keeps working.
+    they just typed; an agent gets only this block, so it states the rule, alternatives and corrected
+    command as separate ``Key: value`` lines that survive being grepped, split or pasted. It does not
+    repeat argv because option values can contain credentials. Click's own message stays the first line,
+    unchanged, so anything matching on it keeps working.
     """
     lines = [f"Error: {error.format_message()}", ""]
-    if argv:
-        lines.append(f"Attempted: {' '.join(argv)}")
     if diagnosis is not None:
         if diagnosis.rule:
             lines.append(f"Rule: {diagnosis.rule}")

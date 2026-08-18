@@ -13,11 +13,17 @@ from click.testing import CliRunner, Result
 
 import rich_click as click
 from rich_click import RichHelpConfiguration, rich_config
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_821
 from rich_click.error_diagnosis import diagnose
 
 
 #: The `agent_env` fixture from conftest; see there for what it does.
 ConfigureEnv = Callable[..., None]
+
+pytestmark = pytest.mark.skipif(
+    CLICK_IS_BEFORE_VERSION_821,
+    reason="CliRunner's stderr capture doesn't work before Click 8.2.1.",
+)
 
 
 @pytest.fixture
@@ -168,11 +174,10 @@ def test_agent_rendering_is_a_plain_text_block(
     result = cli_runner.invoke(cli, ["build", "--repo", "x", "thing"])
     output = errors(result)
 
-    # No panel, no ANSI, one fact per line -- and the attempted invocation restated, since an agent has
-    # no scrollback to look at.
+    # No panel, no ANSI, and one fact per line.
     assert "─ Error ─" not in output
     assert "\x1b[" not in output
-    assert "Attempted: tool build --repo x thing" in output
+    assert "Attempted:" not in output
     assert "Rule: '--repo' is an option of the parent group" in output
     # The placeholder is Click's own metavar for the option, so it matches what the help shows.
     assert "Try: tool --repo TEXT build ..." in output
@@ -182,6 +187,31 @@ def test_agent_rendering_is_a_plain_text_block(
     # Strictly additive: Click's own message is still the first line, and the exit code is untouched.
     assert output.splitlines()[0].startswith("Error: No such option")
     assert result.exit_code == 2
+
+
+def test_agent_rendering_does_not_echo_secrets(cli_runner: CliRunner, agent_env: ConfigureEnv) -> None:
+    agent_env(marker=True)
+
+    @click.command()
+    @click.password_option("--password")
+    def cli(password: str) -> None:
+        """A command."""
+
+    output = errors(cli_runner.invoke(cli, ["--password", "SUPERSECRET", "--bogus"]))
+    assert "SUPERSECRET" not in output
+    assert "No such option" in output
+
+
+def test_agent_rendering_keeps_configured_error_epilogue(cli_runner: CliRunner, agent_env: ConfigureEnv) -> None:
+    agent_env(marker=True)
+
+    @click.command()
+    @rich_config(help_config=RichHelpConfiguration(errors_epilogue="CONTACT SUPPORT"))
+    def cli() -> None:
+        """A command."""
+
+    output = errors(cli_runner.invoke(cli, ["--bogus"]))
+    assert "CONTACT SUPPORT" in output
 
 
 def test_agent_rendering_still_reports_undiagnosable_errors(

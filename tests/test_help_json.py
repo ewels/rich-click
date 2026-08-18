@@ -7,7 +7,18 @@ from click.testing import CliRunner
 from inline_snapshot import snapshot
 
 import rich_click.rich_click as rc
-from rich_click import RichCommand, RichHelpConfiguration, argument, command, group, option, rich_config
+from rich_click import (
+    RichCommand,
+    RichGroup,
+    RichHelpConfiguration,
+    argument,
+    command,
+    group,
+    help_option,
+    option,
+    rich_config,
+)
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_821
 from rich_click.help_json import command_markdown, compact_command
 from rich_click.rich_context import RichContext
 
@@ -103,6 +114,10 @@ def test_bare_help_is_unchanged_and_eager(cli_runner: CliRunner) -> None:
     assert json.loads(eager.output)["name"] == "hello"
 
 
+@pytest.mark.skipif(
+    CLICK_IS_BEFORE_VERSION_821,
+    reason="CliRunner's stderr capture doesn't work before Click 8.2.1.",
+)
 def test_help_to_stderr_covers_the_machine_readable_formats(cli_runner: CliRunner) -> None:
     # `help_to_stderr` exists to keep stdout clean for piping. It has to hold for every help document,
     # not just the human one -- otherwise a machine-readable help leaks into the pipe it was set to
@@ -461,6 +476,517 @@ def test_help_format_registry_is_extensible(cli_runner: CliRunner) -> None:
 
     assert cli_runner.invoke(cli, ["--help=upper"]).output.strip() == "UPPER-HELP"
     assert json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["name"] == "cli"
+
+
+def test_help_format_registry_advertises_aliases(cli_runner: CliRunner) -> None:
+    class MyCommand(RichCommand):
+        help_formats = {**RichCommand.help_formats, "md": "get_help_markdown"}
+
+    @command(cls=MyCommand)
+    def cli() -> None:
+        """Hi."""
+
+    result = cli_runner.invoke(cli, ["--help=md"])
+    assert result.exit_code == 0
+    assert result.output.startswith("# `cli`")
+    choices = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["params"][-1]["choices"]
+    assert choices == ["markdown", "json", "compact", "md"]
+
+
+def test_configured_help_format_names_are_normalized(cli_runner: CliRunner) -> None:
+    @command()
+    @rich_config(help_config=RichHelpConfiguration(help_formats={" YAML ": lambda command, ctx: "YAML"}))
+    def cli() -> None:
+        """Hi."""
+
+    assert cli_runner.invoke(cli, ["--help", "YAML"]).output.strip() == "YAML"
+    assert "yaml" in json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["params"][-1]["choices"]
+
+
+def test_plain_click_command_does_not_advertise_unavailable_formats(cli_runner: CliRunner) -> None:
+    @click.command()
+    @help_option()
+    def cli() -> None:
+        """Hi."""
+
+    result = cli_runner.invoke(cli, ["--help"])
+    assert result.exit_code == 0
+    assert "--help FORMAT" not in result.output
+
+
+@pytest.mark.parametrize("fmt", ["json", "markdown", "compact"])
+def test_structured_help_does_not_run_descendant_callbacks(cli_runner: CliRunner, fmt: str) -> None:
+    calls: list[tuple[bool, str]] = []
+
+    def record(ctx: click.Context, param: click.Parameter, value: str) -> str:
+        calls.append((ctx.resilient_parsing, value))
+        return value
+
+    @group()
+    def cli() -> None:
+        """Root."""
+
+    @cli.command()
+    @option("--value", default="default", callback=record)
+    def child(value: str) -> None:
+        """Child."""
+
+    result = cli_runner.invoke(cli, ["--help", fmt])
+    assert result.exit_code == 0
+    assert calls == []
+
+
+def test_recursive_help_closes_synthetic_child_contexts(cli_runner: CliRunner) -> None:
+    closed: list[str] = []
+
+    class ClosingContext(RichContext):
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            super().__init__(*args, **kwargs)
+            if self.parent is not None:
+                self.call_on_close(lambda: closed.append(self.command_path))
+
+    class ClosingCommand(RichCommand):
+        context_class = ClosingContext
+
+    class ClosingGroup(RichGroup):
+        context_class = ClosingContext
+
+    @group(cls=ClosingGroup)
+    def cli() -> None:
+        """Root."""
+
+    @cli.command(cls=ClosingCommand)
+    def child() -> None:
+        """Child."""
+
+    result = cli_runner.invoke(cli, ["--help", "json"])
+    assert result.exit_code == 0
+    assert closed == ["cli child"]
+
+
+def test_recursive_help_loads_each_dynamic_command_once(cli_runner: CliRunner) -> None:
+    calls = 0
+
+    class DynamicGroup(RichGroup):
+        def list_commands(self, ctx: click.Context) -> list[str]:
+            return ["child"]
+
+        def get_command(self, ctx: click.Context, name: str) -> RichCommand:
+            nonlocal calls
+            calls += 1
+            command_number = calls
+            return RichCommand(
+                name=name,
+                help=f"Child {command_number}.",
+                params=[click.Option([f"--option-{command_number}"])],
+            )
+
+    @group(cls=DynamicGroup)
+    def cli() -> None:
+        """Root."""
+
+    result = cli_runner.invoke(cli, ["--help=json"])
+    assert result.exit_code == 0
+    child = json.loads(result.output)["subcommands"]["child"]
+    assert calls == 1
+    assert child["help"] == "Child 1."
+    assert child["params"][0]["opts"] == ["--option-1"]
+
+
+def test_recursive_help_uses_the_child_context_class(cli_runner: CliRunner) -> None:
+    contexts: list[str] = []
+
+    class TenantContext(RichContext):
+        def __init__(self, *args: Any, tenant: str, **kwargs: Any) -> None:
+            super().__init__(*args, **kwargs)
+            contexts.append(tenant)
+
+    class TenantCommand(RichCommand):
+        context_class = TenantContext
+
+    @group()
+    def cli() -> None:
+        """Root."""
+
+    @cli.command(cls=TenantCommand, context_settings={"tenant": "acme"})
+    def child() -> None:
+        """Child."""
+
+    result = cli_runner.invoke(cli, ["--help=json"])
+    assert result.exit_code == 0
+    assert contexts == ["acme"]
+
+
+def test_recursive_help_uses_custom_no_parse_context_setup(cli_runner: CliRunner) -> None:
+    class TenantCommand(RichCommand):
+        def make_context_without_parsing(
+            self,
+            info_name: str,
+            parent: click.Context | None = None,
+            **extra: Any,
+        ) -> click.Context:
+            extra["obj"] = {"tenant": "acme"}
+            return super().make_context_without_parsing(info_name, parent, **extra)
+
+        def get_params(self, ctx: click.Context) -> list[click.Parameter]:
+            assert ctx.obj == {"tenant": "acme"}
+            return super().get_params(ctx)
+
+    @group()
+    def cli() -> None:
+        """Root."""
+
+    cli.add_command(TenantCommand(name="child", help="Child."))
+
+    result = cli_runner.invoke(cli, ["--help=json"])
+    assert result.exit_code == 0
+    assert json.loads(result.output)["subcommands"]["child"]["help"] == "Child."
+
+
+def test_recursive_help_rejects_parse_only_context_setup(cli_runner: CliRunner) -> None:
+    class ParseOnlyCommand(RichCommand):
+        def make_context(
+            self,
+            info_name: str | None,
+            args: list[str],
+            parent: click.Context | None = None,
+            **extra: Any,
+        ) -> click.Context:
+            extra["obj"] = {"tenant": "acme"}
+            return super().make_context(info_name, args, parent, **extra)
+
+    @group()
+    def cli() -> None:
+        """Root."""
+
+    cli.add_command(ParseOnlyCommand(name="child", help="Child."))
+
+    result = cli_runner.invoke(cli, ["--help=json"])
+    assert result.exit_code != 0
+    assert isinstance(result.exception, TypeError)
+    assert "make_context_without_parsing" in str(result.exception)
+
+
+def test_recursive_help_collects_dynamic_parameters_once(cli_runner: CliRunner) -> None:
+    calls = 0
+
+    class DynamicCommand(RichCommand):
+        def get_params(self, ctx: click.Context) -> list[click.Parameter]:
+            nonlocal calls
+            calls += 1
+            return [click.Option([f"--parameter-{calls}"])]
+
+        def to_info_dict(self, ctx: click.Context) -> dict[str, Any]:
+            info = super().to_info_dict(ctx)
+            info["observed_parameter"] = info["params"][0]["name"]
+            return info
+
+    @group()
+    def cli() -> None:
+        """Root."""
+
+    cli.add_command(DynamicCommand(name="child", help="Child."))
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["subcommands"]["child"]
+
+    assert calls == 1
+    assert schema["observed_parameter"] == "parameter_1"
+    assert schema["params"][0]["opts"] == ["--parameter-1"]
+
+
+def test_structured_help_preserves_custom_usage_pieces(cli_runner: CliRunner) -> None:
+    class CustomUsage(RichCommand):
+        def collect_usage_pieces(self, ctx: click.Context) -> list[str]:
+            return ["SPECIAL", "TARGET"]
+
+    @command(cls=CustomUsage)
+    def cli() -> None:
+        """Root."""
+
+    assert "Usage: cli SPECIAL TARGET" in cli_runner.invoke(cli, ["--help"]).output
+    assert json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["usage"] == "cli SPECIAL TARGET"
+    assert "**Usage:** `cli SPECIAL TARGET`" in cli_runner.invoke(cli, ["--help=markdown"]).output
+    assert "usage: cli SPECIAL TARGET" in cli_runner.invoke(cli, ["--help=compact"]).output
+
+
+def test_custom_usage_receives_the_real_command(cli_runner: CliRunner) -> None:
+    class IdentityUsage(RichCommand):
+        def collect_usage_pieces(self, ctx: click.Context) -> list[str]:
+            assert self is ctx.command
+            return ["IDENTITY"]
+
+    @group()
+    def cli() -> None:
+        """Root."""
+
+    cli.add_command(IdentityUsage(name="child"))
+    child = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["subcommands"]["child"]
+
+    assert child["usage"] == "cli child IDENTITY"
+
+
+def test_custom_group_info_override_is_preserved(cli_runner: CliRunner) -> None:
+    class DocumentedGroup(RichGroup):
+        def to_info_dict(self, ctx: click.Context) -> dict[str, Any]:
+            info = super().to_info_dict(ctx)
+            info["owner"] = "platform"
+            return info
+
+    @group(cls=DocumentedGroup)
+    def cli() -> None:
+        """Root."""
+
+    @cli.command()
+    def child() -> None:
+        """Child."""
+
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
+    assert schema["owner"] == "platform"
+    assert schema["subcommands"]["child"]["name"] == "child"
+
+
+def test_prebuilt_info_is_bound_to_its_command(cli_runner: CliRunner) -> None:
+    other = RichCommand(name="other", help="Other.")
+
+    class IntrospectingCommand(RichCommand):
+        def to_info_dict(self, ctx: click.Context) -> dict[str, Any]:
+            info = super().to_info_dict(ctx)
+            info["other_name"] = other.to_info_dict(ctx)["name"]
+            return info
+
+    @command(cls=IntrospectingCommand)
+    def cli() -> None:
+        """Root."""
+
+    schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
+    assert schema["name"] == "cli"
+    assert schema["other_name"] == "other"
+
+
+def test_plain_click_command_info_override_is_preserved(cli_runner: CliRunner) -> None:
+    class DocumentedCommand(click.Command):
+        def to_info_dict(self, ctx: click.Context) -> dict[str, Any]:
+            info = super().to_info_dict(ctx)
+            info["owner"] = "release-team"
+            return info
+
+    @group()
+    def cli() -> None:
+        """Root."""
+
+    cli.add_command(DocumentedCommand(name="child", help="Child."))
+    child = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["subcommands"]["child"]
+    assert child["owner"] == "release-team"
+
+
+def test_plain_click_info_override_receives_the_real_command(cli_runner: CliRunner) -> None:
+    owners: dict[click.Command, str] = {}
+
+    class IdentityCommand(click.Command):
+        def to_info_dict(self, ctx: click.Context) -> dict[str, Any]:
+            assert self is ctx.command
+            info = super().to_info_dict(ctx)
+            info["owner"] = owners[self]
+            return info
+
+    @group()
+    def cli() -> None:
+        """Root."""
+
+    child_command = IdentityCommand(name="child")
+    owners[child_command] = "release-team"
+    cli.add_command(child_command)
+    child = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["subcommands"]["child"]
+
+    assert child["owner"] == "release-team"
+
+
+def test_explicit_help_reports_child_introspection_errors(cli_runner: CliRunner) -> None:
+    class BrokenCommand(RichCommand):
+        def to_info_dict(self, ctx: click.Context) -> dict[str, Any]:
+            raise click.UsageError("introspection failed")
+
+    @group()
+    def cli() -> None:
+        """Root."""
+
+    cli.add_command(BrokenCommand(name="broken"))
+    result = cli_runner.invoke(cli, ["--help=json"])
+
+    assert result.exit_code != 0
+    if not CLICK_IS_BEFORE_VERSION_821:
+        assert "introspection failed" in (result.stderr or result.output)
+
+
+def test_adaptive_help_degrades_an_unavailable_lazy_command() -> None:
+    class LazyGroup(RichGroup):
+        def list_commands(self, ctx: click.Context) -> list[str]:
+            return ["available", "unavailable"]
+
+        def get_command(self, ctx: click.Context, name: str) -> RichCommand:
+            if name == "unavailable":
+                raise RuntimeError("optional package is missing")
+            return RichCommand(name=name, help="Available command.")
+
+    cli = LazyGroup(name="cli", help="Root.")
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        output = compact_command(cli, ctx, max_chars=1_000)
+
+    assert output.startswith("# cli — Root.")
+    assert "available" in output
+    assert "unavailable" in output
+
+
+def test_agent_help_does_not_reveal_a_hidden_default(cli_runner: CliRunner, agent_env: Any) -> None:
+    secret = "TOPSECRET"
+
+    @command()
+    @option("--token", default=secret, show_default=False, help="Authentication token.")
+    def cli(token: str) -> None:
+        """Root."""
+
+    agent_env(override="false")
+    assert secret not in cli_runner.invoke(cli, ["--help"]).output
+
+    agent_env(override="true")
+    result = cli_runner.invoke(cli, ["--help"])
+    assert result.exit_code == 0
+    assert secret not in result.output
+    for fmt in ("markdown", "compact"):
+        explicit = cli_runner.invoke(cli, ["--help", fmt])
+        assert explicit.exit_code == 0
+        assert secret not in explicit.output
+
+
+def test_text_help_hides_a_plain_click_options_default(cli_runner: CliRunner) -> None:
+    secret = "TOPSECRET"
+    cli = RichCommand(
+        name="cli",
+        help="Root.",
+        params=[click.Option(["--token"], default=secret, show_default=False)],
+    )
+
+    for fmt in ("markdown", "compact"):
+        result = cli_runner.invoke(cli, ["--help", fmt])
+        assert result.exit_code == 0
+        assert secret not in result.output
+
+
+def test_agent_help_does_not_reveal_an_unshown_default(cli_runner: CliRunner, agent_env: Any) -> None:
+    secret = "TOPSECRET"
+
+    @command()
+    @option("--token", default=secret, help="Authentication token.")
+    def cli(token: str) -> None:
+        """Root."""
+
+    agent_env(override="true")
+    result = cli_runner.invoke(cli, ["--help"])
+    assert result.exit_code == 0
+    assert secret not in result.output
+
+
+def test_agent_help_uses_clicks_effective_default(cli_runner: CliRunner, agent_env: Any) -> None:
+    def dynamic() -> str:
+        return "DYNAMIC-SECRET"
+
+    @command(context_settings={"default_map": {"value": "MAPPED"}})
+    @option("--dynamic", default=dynamic, show_default=True)
+    @option("--value", default="STATIC", show_default=True)
+    def cli(dynamic: str, value: str) -> None:
+        """Root."""
+
+    agent_env(override="true")
+    output = cli_runner.invoke(cli, ["--help"]).output
+
+    assert "[default: (dynamic)]" in output
+    assert "[default: MAPPED]" in output
+    assert "DYNAMIC-SECRET" not in output
+    assert "STATIC" not in output
+    assert "0x" not in output
+
+
+def test_agent_help_handles_parameters_without_defaults(cli_runner: CliRunner, agent_env: Any) -> None:
+    @command()
+    @option("--mode", type=click.Choice(["a", "b"]), show_choices=False)
+    def cli(mode: str) -> None:
+        """Root."""
+
+    agent_env(override="true")
+    result = cli_runner.invoke(cli, ["--help"])
+    assert result.exit_code == 0
+    assert "--mode" in result.output
+
+
+@pytest.mark.parametrize("fmt", ["json", "markdown", "compact"])
+def test_explicit_help_reports_lazy_load_errors(cli_runner: CliRunner, fmt: str) -> None:
+    class BrokenLazyGroup(RichGroup):
+        def list_commands(self, ctx: click.Context) -> list[str]:
+            return ["broken"]
+
+        def get_command(self, ctx: click.Context, name: str) -> RichCommand:
+            raise click.UsageError("lazy load failed")
+
+    cli = BrokenLazyGroup(name="cli", help="Root.")
+    result = cli_runner.invoke(cli, ["--help", fmt])
+
+    assert result.exit_code != 0
+    if not CLICK_IS_BEFORE_VERSION_821:
+        assert "lazy load failed" in (result.stderr or result.output)
+
+
+@pytest.mark.parametrize("fmt", ["markdown", "compact"])
+def test_text_help_does_not_load_hidden_subtrees(cli_runner: CliRunner, fmt: str) -> None:
+    class BrokenHiddenGroup(RichGroup):
+        def list_commands(self, ctx: click.Context) -> list[str]:
+            raise RuntimeError("optional package is missing")
+
+    @group()
+    def cli() -> None:
+        """Root."""
+
+    cli.add_command(BrokenHiddenGroup(name="internal", hidden=True))
+    result = cli_runner.invoke(cli, ["--help", fmt])
+
+    assert result.exit_code == 0
+    assert "internal" not in result.output
+
+
+@pytest.mark.parametrize("fmt", ["json", "markdown", "compact"])
+def test_plain_bracketed_help_text_is_preserved(cli_runner: CliRunner, fmt: str) -> None:
+    @command()
+    @option("--name", help="Use literal [red] and [blue] names.")
+    def cli(name: str) -> None:
+        """Choose [one] name."""
+
+    output = cli_runner.invoke(cli, ["--help", fmt]).output
+    assert "Choose [one] name." in output
+    assert "Use literal [red] and [blue] names." in output
+
+
+@pytest.mark.parametrize("fmt", ["json", "markdown", "compact"])
+def test_ansi_help_text_is_plain_in_structured_formats(cli_runner: CliRunner, fmt: str) -> None:
+    @command()
+    @option("--name", help="Use \x1b[31mred\x1b[0m text.")
+    def cli(name: str) -> None:
+        """Choose a \x1b[1mname\x1b[0m."""
+
+    output = cli_runner.invoke(cli, ["--help", fmt]).output
+    assert "\x1b" not in output
+    assert "Choose a name." in output
+    assert "Use red text." in output
+
+
+def test_rich_markup_is_removed_from_structured_help(cli_runner: CliRunner) -> None:
+    @command()
+    @rich_config(help_config=RichHelpConfiguration(text_markup="rich"))
+    @option("--name", help="Use [bold]this[/bold] name.")
+    def cli(name: str) -> None:
+        """Choose a [bold]good[/bold] name."""
+
+    output = cli_runner.invoke(cli, ["--help", "json"]).output
+    assert "[bold]" not in output
+    assert "Choose a good name." in output
+    assert "Use this name." in output
 
 
 def test_help_space_form_works_like_the_attached_form(cli_runner: CliRunner) -> None:
@@ -1273,12 +1799,16 @@ def test_examples_non_dict_shape_via_to_info_dict_does_not_crash(cli_runner: Cli
     assert "`tool raw`" in md and "Greet: `tool hello`" in md
 
 
-def test_json_lists_uncontextualizable_subcommand(cli_runner: CliRunner) -> None:
-    # A child that raises a ClickException even under resilient parsing can't be entered, but the
-    # recursive dump still lists it as a degraded node rather than silently dropping it.
-    class Eager(RichCommand):
-        def make_context(self, *args: Any, **kwargs: Any) -> Any:
-            raise click.UsageError("cannot enter")
+def test_explicit_help_reports_child_context_errors(cli_runner: CliRunner) -> None:
+    # Explicit full-tree help must not claim completeness when a child cannot be contextualized.
+    class RejectingContext(RichContext):
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            if kwargs.get("parent") is not None:
+                raise click.UsageError("cannot enter")
+            super().__init__(*args, **kwargs)
+
+    class EagerCommand(RichCommand):
+        context_class = RejectingContext
 
     @group()
     def cli() -> None:
@@ -1288,14 +1818,12 @@ def test_json_lists_uncontextualizable_subcommand(cli_runner: CliRunner) -> None
     def normal() -> None:
         """Normal."""
 
-    cli.add_command(Eager(name="eager", help="Eager command."))
+    cli.add_command(EagerCommand(name="eager", help="Eager command."))
 
-    full = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["subcommands"]
-    assert set(full) == {"normal", "eager"}
-    # The degraded node carries name/path/help but not the params/usage of a fully-walked command.
-    assert full["eager"] == {"name": "eager", "path": "cli eager", "help": "Eager command."}
-    # Markdown renders the degraded node as a section rather than breaking on a missing path.
-    assert "# `cli eager`" in cli_runner.invoke(cli, ["--help=markdown"]).output
+    result = cli_runner.invoke(cli, ["--help=json"])
+    assert result.exit_code != 0
+    if not CLICK_IS_BEFORE_VERSION_821:
+        assert "cannot enter" in (result.stderr or result.output)
 
 
 def test_examples_recursive_json(cli_runner: CliRunner) -> None:
