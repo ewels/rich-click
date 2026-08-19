@@ -27,7 +27,7 @@ def test_wildcard_groups_help(cli_runner: CliRunner, cli: rich_click.RichCommand
 │ *  --type  TEXT  Type of file to sync [default: files] [required]                                │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced options ───────────────────────────────────────────────────────────────────────────────╮
-│ --help              -h     [markdown|json|compact]  Show this message and exit.                  │
+│ --help              -h     [compact|markdown|json]  Show this message and exit.                  │
 │ --version                                           Show the version and exit.                   │
 │ --debug/--no-debug  -d/-n                           Show the debug log messages [default:        │
 │                                                     no-debug]                                    │
@@ -57,7 +57,7 @@ Debug mode is off
 ╭─ Advanced usage ─────────────────────────────────────────────────────────────────────────────────╮
 │ --overwrite                               Overwrite local files                                  │
 │ --all                                     Sync all the things?                                   │
-│ --help       -h  [markdown|json|compact]  Show this message and exit.                            │
+│ --help       -h  [compact|markdown|json]  Show this message and exit.                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Inputs and outputs ─────────────────────────────────────────────────────────────────────────────╮
 │ *  --input   -i  TEXT  Input path [required]                                                     │

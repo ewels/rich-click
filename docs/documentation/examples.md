@@ -29,7 +29,7 @@ $ mytool deploy --help
 
 ╭─ Options ────────────────────────────────────────────────────────────────────╮
 │ --dry-run                           Preview only.                            │
-│ --help     [markdown|json|compact]  Show this message and exit.              │
+│ --help     [compact|markdown|json]  Show this message and exit.              │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ╭─ Examples ───────────────────────────────────────────────────────────────────╮
 │ - Deploy to production:                                                      │

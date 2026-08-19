@@ -64,6 +64,6 @@ def test_help_to_stderr(cli_runner: CliRunner) -> None:
  CLI help text                                                                                      \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  [markdown|json|compact]  Show this message and exit.                                     │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)

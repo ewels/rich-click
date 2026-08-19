@@ -25,7 +25,7 @@ def test_flag_values_help(cli_runner: CliRunner, cli: rich_click.RichCommand) ->
 │ --a                              A flag.                                                         │
 │ --b                              B flag.                                                         │
 │ --c                              C flag.                                                         │
-│ --help  [markdown|json|compact]  Show this message and exit.                                     │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

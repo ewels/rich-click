@@ -34,7 +34,7 @@ def test_arguments_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> N
 │ --debug        -d                           Enable debug mode                                    │
 │ --environment  -e  [dev|staging|prod]       Sync to what environment [env var: MY_ENV] [default: │
 │                                             (current)]                                           │
-│ --help             [markdown|json|compact]  Show this message and exit.                          │
+│ --help             [compact|markdown|json]  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -57,7 +57,7 @@ def test_arguments_help_with_no_show_arguments(cli_runner: CliRunner, cli: rich_
 │ --debug        -d                           Enable debug mode                                    │
 │ --environment  -e  [dev|staging|prod]       Sync to what environment [env var: MY_ENV] [default: │
 │                                             (current)]                                           │
-│ --help             [markdown|json|compact]  Show this message and exit.                          │
+│ --help             [compact|markdown|json]  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -84,7 +84,7 @@ def test_arguments_help_with_help_panel_title(cli_runner: CliRunner, cli: rich_c
 │ --debug        -d                           Enable debug mode                                    │
 │ --environment  -e  [dev|staging|prod]       Sync to what environment [env var: MY_ENV] [default: │
 │                                             (current)]                                           │
-│ --help             [markdown|json|compact]  Show this message and exit.                          │
+│ --help             [compact|markdown|json]  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -112,7 +112,7 @@ def test_arguments_help_with_help_panel_config(cli_runner: CliRunner, cli: rich_
 │ --debug        -d                           Enable debug mode                                    │
 │ --environment  -e  [dev|staging|prod]       Sync to what environment [env var: MY_ENV] [default: │
 │                                             (current)]                                           │
-│ --help             [markdown|json|compact]  Show this message and exit.                          │
+│ --help             [compact|markdown|json]  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -137,7 +137,7 @@ def test_arguments_help_grouped_with_options(cli_runner: CliRunner, cli: rich_cl
 │    --debug        -d                           Enable debug mode                                 │
 │    --environment  -e  [dev|staging|prod]       Sync to what environment [env var: MY_ENV]        │
 │                                                [default: (current)]                              │
-│    --help             [markdown|json|compact]  Show this message and exit.                       │
+│    --help             [compact|markdown|json]  Show this message and exit.                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

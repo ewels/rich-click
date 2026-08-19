@@ -47,7 +47,7 @@ def test_markdown_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> No
 │ --debug                           ╔════════════════════════════════════════════════════════════╗ │
 │                                   ║                     Enable debug mode                      ║ │
 │                                   ╚════════════════════════════════════════════════════════════╝ │
-│ --help   [markdown|json|compact]  Show this message and exit.                                    │
+│ --help   [compact|markdown|json]  Show this message and exit.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -74,7 +74,7 @@ def test_markdown_help_turn_off_markdown(cli_runner: CliRunner, cli: rich_click.
 │ --type   TEXT                     Type of file to sync [default: files]                          │
 │ --all                             Sync 1. all 2. the 3. things?                                  │
 │ --debug                           # Enable `debug mode`                                          │
-│ --help   [markdown|json|compact]  Show this message and exit.                                    │
+│ --help   [compact|markdown|json]  Show this message and exit.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -117,7 +117,7 @@ def test_markdown_help_text_markup_field(cli_runner: CliRunner, cli: rich_click.
 │ --debug                           ╔════════════════════════════════════════════════════════════╗ │
 │                                   ║                     Enable debug mode                      ║ │
 │                                   ╚════════════════════════════════════════════════════════════╝ │
-│ --help   [markdown|json|compact]  Show this message and exit.                                    │
+│ --help   [compact|markdown|json]  Show this message and exit.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -152,7 +152,7 @@ def test_markdown_help_rich_13(cli_runner: CliRunner, cli: rich_click.RichComman
 │ --debug                           ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ │
 │                                   ┃                     Enable debug mode                      ┃ │
 │                                   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ │
-│ --help   [markdown|json|compact]  Show this message and exit.                                    │
+│ --help   [compact|markdown|json]  Show this message and exit.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -196,7 +196,7 @@ def test_markdown_help_text_markup_field_rich_13(cli_runner: CliRunner, cli: ric
 │ --debug                           ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓ │
 │                                   ┃                     Enable debug mode                      ┃ │
 │                                   ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛ │
-│ --help   [markdown|json|compact]  Show this message and exit.                                    │
+│ --help   [compact|markdown|json]  Show this message and exit.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -229,7 +229,7 @@ def test_markdown_help_rich_14_3(cli_runner: CliRunner, cli: rich_click.RichComm
 │                                    2 the                                                         │
 │                                    3 things?                                                     │
 │ --debug                                                 Enable debug mode                        │
-│ --help   [markdown|json|compact]  Show this message and exit.                                    │
+│ --help   [compact|markdown|json]  Show this message and exit.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )
@@ -272,7 +272,7 @@ def test_markdown_help_text_markup_field_rich_14_3(cli_runner: CliRunner, cli: r
 │                                    2 the                                                         │
 │                                    3 things?                                                     │
 │ --debug                                                 Enable debug mode                        │
-│ --help   [markdown|json|compact]  Show this message and exit.                                    │
+│ --help   [compact|markdown|json]  Show this message and exit.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """
     )

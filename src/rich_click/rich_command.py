@@ -96,6 +96,7 @@ class RichCommand(Command):
         self.examples: list[dict[str, str]] = _normalize_examples(examples)
         if not hasattr(self, "_help_option"):
             self._help_option = None
+        self._help_option_uses_formats: bool | None = None
 
     @property
     def console(self) -> Console | None:
@@ -312,6 +313,20 @@ class RichCommand(Command):
     # Mypy complains about Liskov substitution principle violations.
     # We opt to ignore mypy here.
 
+    def get_params(self, ctx: click.Context) -> list[click.Parameter]:
+        """Return parameters with the legacy help flag when structured formats are disabled."""
+        params = super().get_params(ctx)
+
+        from rich_click.help_json import _uses_help_formats
+
+        if _uses_help_formats(self, ctx):
+            return params
+
+        from rich_click.decorators import _legacy_help_option_from
+        from rich_click.rich_parameter import RichHelpOption
+
+        return [_legacy_help_option_from(param) if isinstance(param, RichHelpOption) else param for param in params]
+
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         if OVERRIDES_GUARD:
             prevent_incompatible_overrides(self, "RichCommand", ctx, formatter)
@@ -369,23 +384,26 @@ class RichCommand(Command):
         if not help_option_names or not self.add_help_option:
             return None
 
-        # Cache the help option object in private _help_option attribute to
-        # avoid creating it multiple times. Not doing this will break the
-        # callback ordering by iter_params_for_processing(), which relies on
-        # object comparison.
-        if self._help_option is None:
-            # Avoid circular import.
-            from rich_click.decorators import help_option
+        from rich_click.help_json import _uses_help_formats
 
-            # Apply help_option decorator and pop resulting option
-            help_option(*help_option_names)(self)
+        uses_formats = _uses_help_formats(self, ctx)
+
+        # Cache one option for the active mode. A context can override the global configuration, so a
+        # command can use the legacy flag in one context and the format-aware option in another.
+        if self._help_option is None or getattr(self, "_help_option_uses_formats", None) != uses_formats:
+            # Avoid circular import.
+            from rich_click.decorators import _legacy_help_option, help_option
+
+            option_factory = help_option if uses_formats else _legacy_help_option
+            option_factory(*help_option_names)(self)
             self._help_option = self.params.pop()  # type: ignore[assignment]
+            self._help_option_uses_formats = uses_formats
 
         return self._help_option
 
-    #: Maps a ``--help <format>`` value to the name of the method that renders it. Extend in a subclass
-    #: to add a custom format, e.g. ``help_formats = {**RichCommand.help_formats, "yaml": "get_help_yaml"}``.
-    help_formats: ClassVar[dict[str, str]] = {
+    #: Maps a ``--help <format>`` value to the name of the method that renders it. Extend in a subclass,
+    #: then add the format name to the ``help_formats`` configuration list.
+    help_format_methods: ClassVar[dict[str, str]] = {
         "markdown": "get_help_markdown",
         "json": "get_help_json",
         "compact": "get_help_compact",
@@ -402,22 +420,25 @@ class RichCommand(Command):
         never changes what bare ``--help`` does. Resolving via method name (not a bound method) means a
         subclass overriding e.g. ``get_help_json`` is honoured.
         """
-        fmt = (fmt or "").strip().lower()
+        from rich_click.help_formats import _normalize_format_name, load_help_format_plugin
+        from rich_click.help_json import _help_format_names
+
+        fmt = _normalize_format_name(fmt or "")
+        if fmt not in _help_format_names(self, ctx):
+            return None
         method_name = next(
-            (target for name, target in self.help_formats.items() if name.strip().lower() == fmt),
+            (target for name, target in self.help_format_methods.items() if _normalize_format_name(name) == fmt),
             None,
         )
         if method_name is not None:
             return cast("str | None", getattr(self, method_name)(ctx))
-        configured_formats = getattr(getattr(ctx, "help_config", None), "help_formats", {})
+        configured_formats = getattr(getattr(ctx, "help_config", None), "help_format_renderers", {})
         renderer = next(
-            (renderer for name, renderer in configured_formats.items() if name.strip().lower() == fmt),
+            (renderer for name, renderer in configured_formats.items() if _normalize_format_name(name) == fmt),
             None,
         )
         if renderer is not None:
             return cast("str | None", renderer(self, ctx))
-        from rich_click.help_formats import load_help_format_plugin
-
         renderer = load_help_format_plugin(fmt)
         if renderer is not None:
             return cast("str | None", renderer(self, ctx))

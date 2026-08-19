@@ -30,7 +30,7 @@ def test_rich_markup_help(cli_runner: CliRunner, cli: rich_click.RichCommand) ->
 │ --type   TEXT                     Type of file to sync [default: files]                          │
 │ --all                             Sync all the things?                                           │
 │ --debug                           Enable 👉 debug mode 👈                                        │
-│ --help   [markdown|json|compact]  Show this message and exit.                                    │
+│ --help   [compact|markdown|json]  Show this message and exit.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -56,7 +56,7 @@ def test_rich_markup_help_turn_off_rich_markup(cli_runner: CliRunner, cli: rich_
 │ --type   TEXT                     Type of file to sync [default: files]                          │
 │ --all                             Sync all the things?                                           │
 │ --debug                           Enable :point_right: [yellow]debug mode[/] :point_left:        │
-│ --help   [markdown|json|compact]  Show this message and exit.                                    │
+│ --help   [compact|markdown|json]  Show this message and exit.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -88,7 +88,7 @@ def test_markdown_help_text_markup_field(cli_runner: CliRunner, cli: rich_click.
 │ --type   TEXT                     Type of file to sync [default: files]                          │
 │ --all                             Sync all the things?                                           │
 │ --debug                           Enable 👉 debug mode 👈                                        │
-│ --help   [markdown|json|compact]  Show this message and exit.                                    │
+│ --help   [compact|markdown|json]  Show this message and exit.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

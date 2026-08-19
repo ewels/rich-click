@@ -252,26 +252,23 @@ def _help_format_names(cmd: click.Command, ctx: click.Context | None = None) -> 
     """
     Return the machine-readable format values ``--help`` accepts (``markdown``, ``json``, ...).
 
-    Built-ins come from the command's ``help_formats`` registry. Process-wide config formats and
-    installed plugin formats follow them. The result appears in the ``--help`` option's choices and
-    metavar so that humans and agents can discover each available format.
+    ``help_formats`` selects and orders the built-in and in-process (``help_format_renderers``) formats.
+    Installed plugin formats are appended automatically -- installing a plugin package is enough to add
+    it to any rich-click CLI, with no change to that CLI's source -- unless ``help_formats`` is ``False``,
+    which disables machine-readable help entirely, plugins included.
     """
-    names: list[str] = []
-    for name in getattr(cmd, "help_formats", None) or {}:
-        normalized = name.strip().lower()
-        if normalized and normalized not in names:
-            names.append(normalized)
     config = getattr(ctx, "help_config", None)
-    for name in getattr(config, "help_formats", None) or {}:
-        normalized = name.strip().lower()
-        if normalized and normalized not in names:
-            names.append(normalized)
-    from rich_click.help_formats import get_help_format_plugin_names
+    from rich_click.help_formats import DEFAULT_HELP_FORMATS, get_help_format_plugin_names, normalize_help_formats
 
-    for name in get_help_format_plugin_names():
-        if name not in names:
-            names.append(name)
-    return names
+    selected = getattr(config, "help_formats", DEFAULT_HELP_FORMATS)
+    if selected is False:
+        return []
+    return list(dict.fromkeys((*normalize_help_formats(selected), *get_help_format_plugin_names())))
+
+
+def _uses_help_formats(cmd: click.Command, ctx: click.Context | None = None) -> bool:
+    """Return whether ``--help`` should use the format-aware option rather than the legacy Boolean flag."""
+    return bool(_help_format_names(cmd, ctx))
 
 
 @dataclass
@@ -881,7 +878,9 @@ def _render_examples(schema: dict[str, Any], lines: list[str]) -> None:
         return
     lines += ["## Examples", ""]
     for example in schema["examples"]:
-        lines.append(f"- {_md_escape(example['description'])}: `{example['command']}`")
+        description = _md_escape(example["description"])
+        prefix = f"{description}: " if description else ""
+        lines.append(f"- {prefix}`{example['command']}`")
     lines.append("")
 
 
@@ -1130,7 +1129,11 @@ def _compact_usage(schema: dict[str, Any]) -> str | None:
     """
     if schema.get("_custom_usage"):
         return f"usage: {schema['usage']}"
-    arguments = _visible(schema.get("params", []), "argument")
+    # Unlike the option/argument detail tables, the usage line keeps every positional regardless of
+    # ``hidden`` -- exactly like Click's own ``collect_usage_pieces()`` -- because dropping one would
+    # shift every later positional's apparent slot, which is the same failure the empty-metavar fallback
+    # below already guards against.
+    arguments = [param for param in schema.get("params", []) if param.get("kind") == "argument"]
     if not arguments:
         return None
     # An explicit ``metavar=""`` leaves an argument with nothing to show, and dropping it would silently

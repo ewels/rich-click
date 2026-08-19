@@ -29,7 +29,7 @@ Debug mode is off
 │ --email         TEXT                     This can be set via env var EMAIL or EMAIL_ADDRESS [env │
 │                                          var: EMAIL, EMAIL_ADDRESS] [default: foo@bar.com]       │
 │ --token     -t  TEXT                     [env var: GREETER_GREET_TOKEN]                          │
-│ --help          [markdown|json|compact]  Show this message and exit.                             │
+│ --help          [compact|markdown|json]  Show this message and exit.                             │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -51,7 +51,7 @@ Debug mode is off
 │ --email         TEXT                     This can be set via env var EMAIL or EMAIL_ADDRESS      │
 │                                          (ENV: EMAIL, EMAIL_ADDRESS) [default: foo@bar.com]      │
 │ --token     -t  TEXT                     (ENV: GREETER_GREET_TOKEN)                              │
-│ --help          [markdown|json|compact]  Show this message and exit.                             │
+│ --help          [compact|markdown|json]  Show this message and exit.                             │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

@@ -256,6 +256,7 @@ class RichHelpConfigurationDict(TypedDict):
     agent_help_max_chars: NotRequired[int | None]
     error_diagnosis: NotRequired[bool]
     help_json_transform: NotRequired[HelpJSONTransform | None]
-    help_formats: NotRequired[dict[str, HelpFormatRenderer]]
+    help_formats: NotRequired[list[str] | Literal[False]]
+    help_format_renderers: NotRequired[dict[str, HelpFormatRenderer]]
     highlighter_patterns: NotRequired[list[str]]
     legacy_windows: NotRequired[bool | None]

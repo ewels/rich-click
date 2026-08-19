@@ -21,6 +21,7 @@ from rich_click import (
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_821
 from rich_click.help_json import command_markdown, compact_command
 from rich_click.rich_context import RichContext
+from rich_click.rich_parameter import RichHelpOption
 
 
 def _build_cli() -> RichCommand:
@@ -390,9 +391,9 @@ def test_help_json_transform_hook(cli_runner: CliRunner) -> None:
 
 
 def test_custom_help_format_registered_via_config(cli_runner: CliRunner) -> None:
-    # A new `--help <name>` format can be added process-wide via the `help_formats` config option,
-    # without subclassing RichCommand. The renderer is `(command, ctx) -> str`.
-    rc.HELP_FORMATS = {"yaml": lambda cmd, ctx: f"yaml-for: {cmd.name}"}
+    # A new `--help <name>` format needs a renderer and an entry in the enabled format list.
+    rc.HELP_FORMATS = ["compact", "markdown", "json", "yaml"]
+    rc.HELP_FORMAT_RENDERERS = {"yaml": lambda cmd, ctx: f"yaml-for: {cmd.name}"}
 
     @command()
     @option("--name", help="A name.")
@@ -407,7 +408,7 @@ def test_custom_help_format_registered_via_config(cli_runner: CliRunner) -> None
     schema = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)
     help_param = next(param for param in schema["params"] if param["name"] == "help")
     assert "yaml" in help_param["choices"]
-    assert "[markdown|json|compact|yaml]" in cli_runner.invoke(cli, ["--help"]).output
+    assert "[compact|markdown|json|yaml]" in cli_runner.invoke(cli, ["--help"]).output
     # 3. An unknown format still falls back to the normal human-readable help.
     fallback = cli_runner.invoke(cli, ["--help=bogus"])
     assert fallback.exit_code == 0
@@ -461,16 +462,33 @@ def test_help_equals_empty_value_shows_plain_help(cli_runner: CliRunner) -> None
         assert result.output.lstrip().startswith("Usage:"), args
 
 
+def test_help_equals_empty_value_is_redirected_like_bare_help_in_agent_mode(
+    cli_runner: CliRunner, agent_env: Any
+) -> None:
+    # `--help=` must be treated like a bare `--help`, including the agent-format redirection -- not
+    # just as a fallback to plain help once the (nonexistent) empty-string format fails to resolve.
+    @command()
+    def cli() -> None:
+        """Hi."""
+
+    agent_env(override="true")
+    bare = cli_runner.invoke(cli, ["--help"])
+    equals_empty = cli_runner.invoke(cli, ["--help="])
+    assert equals_empty.output == bare.output
+    assert equals_empty.output.startswith("# cli")  # the agent default (compact), not plain help
+
+
 def test_help_format_registry_is_extensible(cli_runner: CliRunner) -> None:
-    # A subclass can add a format by extending `help_formats` and supplying the rendering method, without
-    # overriding the dispatch. Built-in formats keep working.
+    # A subclass can add a method-backed format without overriding the dispatch. The config list enables
+    # it for this command. Built-in formats keep working.
     class MyCommand(RichCommand):
-        help_formats = {**RichCommand.help_formats, "upper": "get_help_upper"}
+        help_format_methods = {**RichCommand.help_format_methods, "upper": "get_help_upper"}
 
         def get_help_upper(self, ctx: Any) -> str:
             return "UPPER-HELP"
 
     @command(cls=MyCommand)
+    @rich_config(help_config=RichHelpConfiguration(help_formats=["compact", "markdown", "json", "upper"]))
     def cli() -> None:
         """Hi."""
 
@@ -480,9 +498,10 @@ def test_help_format_registry_is_extensible(cli_runner: CliRunner) -> None:
 
 def test_help_format_registry_advertises_aliases(cli_runner: CliRunner) -> None:
     class MyCommand(RichCommand):
-        help_formats = {**RichCommand.help_formats, "md": "get_help_markdown"}
+        help_format_methods = {**RichCommand.help_format_methods, "md": "get_help_markdown"}
 
     @command(cls=MyCommand)
+    @rich_config(help_config=RichHelpConfiguration(help_formats=["compact", "markdown", "json", "md"]))
     def cli() -> None:
         """Hi."""
 
@@ -490,17 +509,99 @@ def test_help_format_registry_advertises_aliases(cli_runner: CliRunner) -> None:
     assert result.exit_code == 0
     assert result.output.startswith("# `cli`")
     choices = json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["params"][-1]["choices"]
-    assert choices == ["markdown", "json", "compact", "md"]
+    assert choices == ["compact", "markdown", "json", "md"]
 
 
 def test_configured_help_format_names_are_normalized(cli_runner: CliRunner) -> None:
     @command()
-    @rich_config(help_config=RichHelpConfiguration(help_formats={" YAML ": lambda command, ctx: "YAML"}))
+    @rich_config(
+        help_config=RichHelpConfiguration(
+            help_formats=[" JSON ", " YAML "],
+            help_format_renderers={" YAML ": lambda command, ctx: "YAML"},
+        )
+    )
     def cli() -> None:
         """Hi."""
 
     assert cli_runner.invoke(cli, ["--help", "YAML"]).output.strip() == "YAML"
     assert "yaml" in json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["params"][-1]["choices"]
+
+
+def test_help_formats_select_one_format(cli_runner: CliRunner) -> None:
+    @command()
+    @rich_config(help_config=RichHelpConfiguration(help_formats=["markdown"]))
+    def cli() -> None:
+        """Hi."""
+
+    regular = cli_runner.invoke(cli, ["--help"])
+    assert regular.exit_code == 0
+    assert "[markdown]" in regular.output
+    assert "compact" not in regular.output
+    assert cli_runner.invoke(cli, ["--help", "markdown"]).output.startswith("# `cli`")
+
+    unavailable = cli_runner.invoke(cli, ["--help=json"])
+    assert unavailable.exit_code == 0
+    assert unavailable.output.lstrip().startswith("Usage:")
+
+
+@pytest.mark.parametrize("help_formats", [False, []])
+def test_help_formats_can_restore_the_legacy_help_flag(
+    cli_runner: CliRunner,
+    agent_env: Any,
+    help_formats: Any,
+) -> None:
+    @command()
+    @rich_config(help_config=RichHelpConfiguration(help_formats=help_formats))
+    def cli() -> None:
+        """Hi."""
+
+    with cli.make_context("cli", [], resilient_parsing=True) as ctx:
+        help_option = cli.get_help_option(ctx)
+        assert help_option is not None
+        assert not isinstance(help_option, RichHelpOption)
+        assert help_option.is_flag
+
+    agent_env(override="true")
+    regular = cli_runner.invoke(cli, ["--help"])
+    assert regular.exit_code == 0
+    assert regular.output.lstrip().startswith("Usage:")
+    assert "markdown" not in regular.output
+    assert "json" not in regular.output
+    assert "compact" not in regular.output
+
+    attached = cli_runner.invoke(cli, ["--help=json"])
+    assert attached.exit_code == 2
+    if not CLICK_IS_BEFORE_VERSION_821:
+        assert "does not take a value" in attached.output
+
+    spaced = cli_runner.invoke(cli, ["--help", "json"])
+    assert spaced.exit_code == 0
+    assert spaced.output == regular.output
+
+
+def test_disabled_formats_restore_an_explicit_help_option(cli_runner: CliRunner) -> None:
+    @command()
+    @rich_config(help_config=RichHelpConfiguration(help_formats=False))
+    @help_option("--help", "-h", panel="Extra")
+    def cli() -> None:
+        """Hi."""
+
+    regular = cli_runner.invoke(cli, ["-h"])
+    assert regular.exit_code == 0
+    assert "Extra" in regular.output
+    assert "compact" not in regular.output
+    assert cli_runner.invoke(cli, ["--help=json"]).exit_code == 2
+
+
+def test_global_help_formats_can_restore_the_legacy_help_flag(cli_runner: CliRunner) -> None:
+    rc.HELP_FORMATS = False
+
+    @command()
+    def cli() -> None:
+        """Hi."""
+
+    assert cli_runner.invoke(cli, ["--help"]).exit_code == 0
+    assert cli_runner.invoke(cli, ["--help=json"]).exit_code == 2
 
 
 def test_plain_click_command_does_not_advertise_unavailable_formats(cli_runner: CliRunner) -> None:
@@ -1042,7 +1143,7 @@ def test_help_markdown_nonrecursive_helper(cli_runner: CliRunner) -> None:
 
 def test_removed_formats_fall_back_to_plain_help(cli_runner: CliRunner) -> None:
     cli = _build_cli()
-    assert list(RichCommand.help_formats) == ["markdown", "json", "compact"]
+    assert list(RichCommand.help_format_methods) == ["markdown", "json", "compact"]
     for removed in ("md", "md-full", "markdown-full", "json-full", "carapace"):
         output = cli_runner.invoke(cli, [f"--help={removed}"]).output
         assert output.lstrip().startswith("Usage:")
@@ -1105,7 +1206,7 @@ Root help text.
 | Option | Type | Description |
 | --- | --- | --- |
 | `-v`, `--verbose` | flag | Be loud. |
-| `--help` | choice: markdown / json / compact | Show this message and exit. |
+| `--help` | choice: compact / markdown / json | Show this message and exit. |
 
 # `cli hello`
 
@@ -1124,7 +1225,7 @@ Say hello.
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
 | `--count` | Int | `3` | How many times. |
-| `--help` | choice: markdown / json / compact |  | Show this message and exit. |
+| `--help` | choice: compact / markdown / json |  | Show this message and exit. |
 
 # `cli things`
 
@@ -1138,7 +1239,7 @@ Manage things.
 
 | Option | Type | Description |
 | --- | --- | --- |
-| `--help` | choice: markdown / json / compact | Show this message and exit. |
+| `--help` | choice: compact / markdown / json | Show this message and exit. |
 
 # `cli things list`
 
@@ -1150,7 +1251,7 @@ List things.
 
 | Option | Type | Description |
 | --- | --- | --- |
-| `--help` | choice: markdown / json / compact | Show this message and exit. |
+| `--help` | choice: compact / markdown / json | Show this message and exit. |
 
 """
     )
@@ -1498,6 +1599,30 @@ def test_compact_usage_keeps_every_positional_slot(cli_runner: CliRunner) -> Non
     assert "usage: cli WHAT DEST" in cli_runner.invoke(cli, ["--help=compact"]).output
 
 
+def test_compact_usage_keeps_hidden_positional_slots(cli_runner: CliRunner) -> None:
+    # A hidden argument must stay in the usage line for the same reason an empty metavar does: dropping
+    # it would shift every later positional one slot left. Click's own usage line does not hide it
+    # either -- collect_usage_pieces() does not filter by `hidden` -- so this stays consistent with that.
+    # Click's Argument has no `hidden` constructor kwarg, so this arrives via the to_info_dict()
+    # extension point, the same as the other custom-field tests in this file.
+    from rich_click import RichArgument
+
+    class HiddenArgument(RichArgument):
+        def to_info_dict(self) -> "dict[str, Any]":
+            info = super().to_info_dict()
+            info["hidden"] = True
+            return info
+
+    @command()
+    @argument("src")
+    @argument("legacy_mode", cls=HiddenArgument)
+    @argument("dest")
+    def cli(src: str, legacy_mode: str, dest: str) -> None:
+        """Do a thing."""
+
+    assert "usage: cli SRC LEGACY_MODE DEST" in cli_runner.invoke(cli, ["--help=compact"]).output
+
+
 def test_compact_documents_arguments_that_carry_their_own_help(cli_runner: CliRunner) -> None:
     # A bare positional is fully described by the usage line, so it gets no line of its own; one with
     # help text or a default does, keyed by the same metavar the usage line uses.
@@ -1796,7 +1921,8 @@ def test_examples_non_dict_shape_via_to_info_dict_does_not_crash(cli_runner: Cli
     expected = [{"description": "", "command": "tool raw"}, {"description": "Greet", "command": "tool hello"}]
     assert json.loads(cli_runner.invoke(cli, ["--help=json"]).output)["examples"] == expected
     md = cli_runner.invoke(cli, ["--help=markdown"]).output
-    assert "`tool raw`" in md and "Greet: `tool hello`" in md
+    # A bare-string example (no description) must not render a dangling "- : `...`" bullet.
+    assert "- `tool raw`" in md and "- Greet: `tool hello`" in md
 
 
 def test_explicit_help_reports_child_context_errors(cli_runner: CliRunner) -> None:

@@ -32,7 +32,7 @@ def test_metavars_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> No
 │           twenty|twenty-one|twenty-two|twenty-three|                                             │
 │           twenty-four|twenty-five|twenty-six|twenty-                                             │
 │           seven|twenty-eight|twenty-nine|thirty]                                                 │
-│ --help    [markdown|json|compact]                     Show this message and exit.                │
+│ --help    [compact|markdown|json]                     Show this message and exit.                │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -60,7 +60,7 @@ def test_metavars_help_flipped(cli_runner: CliRunner, cli: rich_click.RichComman
 │           (one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fift │
 │           een|sixteen|seventeen|eighteen|nineteen|twenty|twenty-one|twenty-two|twenty-three|twen │
 │           ty-four|twenty-five|twenty-six|twenty-seven|twenty-eight|twenty-nine|thirty)           │
-│ --help    Show this message and exit. (markdown|json|compact)                                    │
+│ --help    Show this message and exit. (compact|markdown|json)                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -90,7 +90,7 @@ def test_metavars_help_flipped_help_string(cli_runner: CliRunner, cli: rich_clic
 │           one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifte │
 │           en|sixteen|seventeen|eighteen|nineteen|twenty|twenty-one|twenty-two|twenty-three|twent │
 │           y-four|twenty-five|twenty-six|twenty-seven|twenty-eight|twenty-nine|thirty]            │
-│ --help    Show this message and exit. [choices: markdown|json|compact]                           │
+│ --help    Show this message and exit. [choices: compact|markdown|json]                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

@@ -33,7 +33,7 @@ def test_context_settings_help_for_click_8_1_plus(cli_runner: CliRunner, cli: ri
 │ --d        TEXT                     Show 'default: (show me in c8+)' in click>=8.0. In click 7,  │
 │                                     no default is shown. [default: (show me in c8+)]             │
 │ --version                           Show the version and exit.                                   │
-│ --help     [markdown|json|compact]  Show this message and exit.                                  │
+│ --help     [compact|markdown|json]  Show this message and exit.                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -60,7 +60,7 @@ def test_context_settings_help_for_click_8_0(cli_runner: CliRunner, cli: rich_cl
 │ --d        TEXT                     Show 'default: (show me in c8+)' in click>=8.0. In click 7,  │
 │                                     no default is shown. [default: (show me in c8+)]             │
 │ --version                           Show the version and exit. [default: False]                  │
-│ --help     [markdown|json|compact]  Show this message and exit.                                  │
+│ --help     [compact|markdown|json]  Show this message and exit.                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

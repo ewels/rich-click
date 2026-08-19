@@ -27,7 +27,7 @@ def test_defaults_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> No
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --debug        -d                           Enable debug mode                                    │
 │ --environment  -e  [dev|staging|prod]       Sync to what environment [env var: MY_ENV]           │
-│ --help             [markdown|json|compact]  Show this message and exit.                          │
+│ --help             [compact|markdown|json]  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ download                             Download files                                              │
@@ -49,7 +49,7 @@ Debug mode is off
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --files  TEXT                     What files to download [default: (All files)]                  │
-│ --help   [markdown|json|compact]  Show this message and exit.                                    │
+│ --help   [compact|markdown|json]  Show this message and exit.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -72,7 +72,7 @@ Debug mode is off
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --files  TEXT                     What files to download                                         │
 │                                   [default: (All files)]                                         │
-│ --help   [markdown|json|compact]  Show this message and exit.                                    │
+│ --help   [compact|markdown|json]  Show this message and exit.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

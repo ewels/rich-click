@@ -98,13 +98,17 @@ def detect_agent() -> str | None:
         if env_var in os.environ and truthy(os.environ[env_var]) is not False:
             return None
 
+    explicit_false = False
     for env_var in ("AI_AGENT", "AGENT"):
         if env_var not in os.environ:
             continue
         value = os.environ[env_var]
         if not value or truthy(value) is False:
-            return None
+            explicit_false = True
+            continue
         return _normalize_agent_name(value)
+    if explicit_false:
+        return None
 
     if any(env_var in os.environ for env_var in _AGENT_ENV_VARS):
         return "agent"

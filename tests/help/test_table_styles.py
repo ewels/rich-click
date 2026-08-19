@@ -71,7 +71,7 @@ def test_table_styles_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -
 │                                                                                                  │
 │  --version                                              Show the version and exit.               │
 │                                                                                                  │
-│  --help                       [markdown|json|compact]   Show this message and exit.              │
+│  --help                       [compact|markdown|json]   Show this message and exit.              │
 │                                                                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮

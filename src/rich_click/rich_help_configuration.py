@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Literal, TypeVar
 
+from rich_click.help_formats import DEFAULT_HELP_FORMATS
 from rich_click.rich_click_theme import RichClickTheme, get_theme
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
 
@@ -300,12 +301,21 @@ class RichHelpConfiguration:
     ``RICH_CLICK_ERROR_DIAGNOSIS`` environment variable overrides this in both directions."""
     help_json_transform: HelpJSONTransform | None = field(default=None, repr=False, compare=False)
     """Optional hook to post-process the machine-readable JSON schema: ``(schema, command, ctx) -> schema``."""
-    help_formats: dict[str, HelpFormatRenderer] = field(default_factory=lambda: {}, repr=False, compare=False)
-    """Custom ``--help <name>`` formats, mapping a format name to a ``(command, ctx) -> str`` renderer.
+    help_formats: list[str] | Literal[False] = field(default_factory=lambda: list(DEFAULT_HELP_FORMATS))
+    """Built-in and in-process machine-readable formats enabled on ``--help``, in display order.
+
+    Set this to a list such as ``["markdown"]`` to enable only those names. Installed plugin formats
+    (see :mod:`rich_click.help_formats`) are appended automatically regardless of this list, so end users
+    can add a format to any rich-click CLI just by installing a plugin package. Set this to ``[]`` to
+    disable the built-in formats while still allowing installed plugins. Set it to ``False`` to restore
+    the legacy Boolean ``--help`` flag instead, disabling machine-readable help entirely -- plugins
+    included."""
+    help_format_renderers: dict[str, HelpFormatRenderer] = field(default_factory=dict, repr=False, compare=False)
+    """Custom format renderers, mapping a format name to a ``(command, ctx) -> str`` callable.
 
     A process-wide way to add a machine-readable format without subclassing ``RichCommand`` -- the
-    counterpart to the built-in :attr:`RichCommand.help_formats` registry (which maps to methods). Names
-    registered here are dispatched by ``--help`` and listed in its metavar/choices like the built-ins."""
+    counterpart to the built-in :attr:`RichCommand.help_format_methods` registry. Add each renderer name to
+    :attr:`help_formats` to expose it on ``--help``."""
     highlighter: Highlighter | None = field(default=None, repr=False, compare=False)
     """(Deprecated) Rich regex highlighter for help highlighting"""
 
@@ -322,6 +332,11 @@ class RichHelpConfiguration:
     legacy_windows: bool | None = field(default=None)
 
     def __post_init__(self) -> None:  # noqa: D105
+        from rich_click.help_formats import normalize_help_formats
+
+        if self.help_formats is not False:
+            self.help_formats = list(normalize_help_formats(self.help_formats))
+
         if self.highlighter is not None:
             import warnings
 

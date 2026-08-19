@@ -76,6 +76,20 @@ def test_global_config_equal_config_defaults() -> None:
         assert v1 == v2, f"{k}: {v1} != {v2}"
 
 
+def test_help_formats_config_defaults_and_validation() -> None:
+    first = RichHelpConfiguration()
+    second = RichHelpConfiguration()
+    assert first.help_formats == ["compact", "markdown", "json"]
+
+    first.help_formats.append("yaml")
+    assert second.help_formats == ["compact", "markdown", "json"]
+
+    with pytest.raises(TypeError, match="list of format names or False"):
+        RichHelpConfiguration(help_formats=True)  # type: ignore[arg-type]
+    with pytest.raises(TypeError, match="Each help_formats item must be a string"):
+        RichHelpConfiguration(help_formats=["markdown", 1])  # type: ignore[list-item]
+
+
 def test_config_from_globals_behavior() -> None:
     original_style_option_value = rc.STYLE_OPTION
     rc.STYLE_OPTION = "new-value"
@@ -193,6 +207,6 @@ def test_custom_console(cli_runner: CliRunner) -> None:
  My CLI help text                                                                                   \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  [markdown|json|compact]  Show this message and exit.                                     │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)

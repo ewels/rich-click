@@ -187,6 +187,14 @@ def test_falsy_agent_value_stops_detection(monkeypatch: pytest.MonkeyPatch) -> N
     assert detect_agent() is None
 
 
+def test_falsy_ai_agent_does_not_hide_a_truthy_agent(monkeypatch: pytest.MonkeyPatch) -> None:
+    # A falsy AI_AGENT (checked first) must not short-circuit past a truthy AGENT.
+    monkeypatch.setenv("AI_AGENT", "")
+    monkeypatch.setenv("AGENT", "claude")
+
+    assert detect_agent() == "claude"
+
+
 def test_detection_is_cached_until_reset(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("CLAUDECODE", "1")
     assert detect_agent() == "agent"

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from rich_click.help_formats import DEFAULT_HELP_FORMATS
 from rich_click.rich_help_configuration import (
     FROM_THEME,
     CommandColumnType,
@@ -194,8 +195,11 @@ ERROR_DIAGNOSIS: bool = True
 # Machine-readable help (`--help markdown`, `--help json`, and plugin formats) is available on
 # the `--help` flag. Optional hook to post-process the JSON schema: (schema, command, ctx) -> schema
 HELP_JSON_TRANSFORM: HelpJSONTransform | None = None
-# Register custom `--help <name>` formats without subclassing: {name: (command, ctx) -> str}.
-HELP_FORMATS: dict[str, HelpFormatRenderer] = {}
+# Enabled `--help <format>` names, in display order. Installed plugin formats are always appended.
+# [] disables these built-ins but keeps plugins; False restores the legacy help flag entirely.
+HELP_FORMATS: list[str] | Literal[False] = list(DEFAULT_HELP_FORMATS)
+# Register custom format renderers without subclassing: {name: (command, ctx) -> str}.
+HELP_FORMAT_RENDERERS: dict[str, HelpFormatRenderer] = {}
 
 #!ENDCONFIG
 

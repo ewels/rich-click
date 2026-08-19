@@ -9,7 +9,7 @@ import pytest
 from click.testing import CliRunner
 
 import rich_click.help_formats as help_formats
-from rich_click import command
+from rich_click import RichHelpConfiguration, command, rich_config
 
 
 def render_html(command: Any, ctx: Any) -> str:
@@ -20,9 +20,11 @@ def render_html(command: Any, ctx: Any) -> str:
 @pytest.fixture(autouse=True)
 def clear_plugin_caches() -> Iterator[None]:
     help_formats._help_format_plugins.cache_clear()
+    help_formats.get_help_format_plugin_names.cache_clear()
     help_formats.load_help_format_plugin.cache_clear()
     yield
     help_formats._help_format_plugins.cache_clear()
+    help_formats.get_help_format_plugin_names.cache_clear()
     help_formats.load_help_format_plugin.cache_clear()
 
 
@@ -34,6 +36,8 @@ def test_installed_help_format_is_discovered_and_dispatched(monkeypatch: pytest.
     )
     monkeypatch.setattr(help_formats, "entry_points", lambda **kwargs: [plugin])
 
+    # No `help_formats` override: a CLI author who never heard of this plugin still exposes it, because
+    # rich-click appends installed plugin formats automatically.
     @command()
     def cli() -> None:
         """A command."""
@@ -42,8 +46,47 @@ def test_installed_help_format_is_discovered_and_dispatched(monkeypatch: pytest.
     assert runner.invoke(cli, ["--help", "html"]).output.strip() == "<h1>cli</h1>"
     schema = json.loads(runner.invoke(cli, ["--help", "json"]).output)
     help_param = next(param for param in schema["params"] if param["name"] == "help")
-    assert help_param["choices"] == ["markdown", "json", "compact", "html"]
-    assert "[markdown|json|compact|html]" in runner.invoke(cli, ["--help"], terminal_width=120).output
+    assert help_param["choices"] == ["compact", "markdown", "json", "html"]
+    assert "[compact|markdown|json|html]" in runner.invoke(cli, ["--help"], terminal_width=120).output
+
+
+def test_empty_help_formats_still_exposes_plugins(monkeypatch: pytest.MonkeyPatch) -> None:
+    plugin = EntryPoint(
+        name="html",
+        value="tests.test_help_format_plugins:render_html",
+        group=help_formats.HELP_FORMAT_ENTRY_POINT_GROUP,
+    )
+    monkeypatch.setattr(help_formats, "entry_points", lambda **kwargs: [plugin])
+
+    # `[]` turns off the built-in formats but is not a full opt-out: installed plugins still apply.
+    @command()
+    @rich_config(help_config=RichHelpConfiguration(help_formats=[]))
+    def cli() -> None:
+        """A command."""
+
+    runner = CliRunner()
+    assert runner.invoke(cli, ["--help", "html"]).output.strip() == "<h1>cli</h1>"
+    assert "[html]" in runner.invoke(cli, ["--help"], terminal_width=120).output
+
+
+def test_help_formats_false_disables_plugins_too(monkeypatch: pytest.MonkeyPatch) -> None:
+    plugin = EntryPoint(
+        name="html",
+        value="tests.test_help_format_plugins:render_html",
+        group=help_formats.HELP_FORMAT_ENTRY_POINT_GROUP,
+    )
+    monkeypatch.setattr(help_formats, "entry_points", lambda **kwargs: [plugin])
+
+    # `False` is the real full opt-out: it restores the legacy Boolean `--help` flag, plugins included.
+    @command()
+    @rich_config(help_config=RichHelpConfiguration(help_formats=False))
+    def cli() -> None:
+        """A command."""
+
+    runner = CliRunner()
+    result = runner.invoke(cli, ["--help"])
+    assert "html" not in result.output
+    assert runner.invoke(cli, ["--help", "html"]).output.lstrip().startswith("Usage:")
 
 
 def test_plugin_renderer_loads_only_when_selected(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -66,6 +109,7 @@ def test_duplicate_plugin_names_only_break_the_conflicting_format(monkeypatch: p
     monkeypatch.setattr(help_formats, "entry_points", lambda **kwargs: plugins)
 
     @command()
+    @rich_config(help_config=RichHelpConfiguration(help_formats=["compact", "markdown", "json", "html"]))
     def cli() -> None:
         """A command."""
 

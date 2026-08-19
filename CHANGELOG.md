@@ -3,13 +3,14 @@
 ## Unreleased
 
 - Added structured help on the existing `--help` option. The built-in formats are `markdown`, `json`, and `compact`.
+  - The `help_formats` configuration selects and orders the built-in/in-process formats. Its default is `["compact", "markdown", "json"]`. Set it to `[]` to disable the built-ins while still allowing installed plugins, or to `False` to restore the previous Boolean `--help` flag entirely.
   - `--help markdown` and `--help json` return the complete command tree.
   - `--help compact` returns the complete tree in a concise text format. A bare `--help` uses adaptive compact output in detected coding-agent environments.
   - `help_to_stderr` applies to structured help as well as normal terminal help.
   - Hidden commands stay out of Markdown and compact output. JSON retains them for introspection.
   - The `--help` parameter lists all available formats in normal help and in its JSON `choices` field.
-  - Installed packages can add formats with the `rich_click.help_formats` entry-point group. A renderer has the signature `(command, ctx) -> str`. rich-click discovers these formats without changes to the CLI source.
-  - Custom `to_info_dict()` fields from `RichCommand` subclasses, plain Click leaf commands, and parameter subclasses pass through to the schema. Plain Click group subclasses use Click's standard fields so lazy command trees are loaded only once. Use `help_json_transform`, a `RichCommand` subclass, or the `help_formats` configuration for in-process customization.
+  - Installed packages can add formats with the `rich_click.help_formats` entry-point group. A renderer has the signature `(command, ctx) -> str`. rich-click discovers and appends these formats to every command automatically, without changes to the CLI source, unless `help_formats` is `False`.
+  - Custom `to_info_dict()` fields from `RichCommand` subclasses, plain Click leaf commands, and parameter subclasses pass through to the schema. Plain Click group subclasses use Click's standard fields so lazy command trees are loaded only once. Use `help_json_transform`, a `RichCommand` subclass, or `help_format_renderers` for in-process customization.
   - Recursive help does not parse descendant arguments, so option callbacks do not run. Custom commands that need extra context setup during help can override `make_context_without_parsing()`.
   - The space form (`--help json`) and attached form (`--help=json`) both work. An unknown format shows normal terminal help.
 - Added **error diagnosis** for usage errors: instead of only reporting the symptom (`No such option: --repo`), rich-click works out the rule that was broken and says so. It derives the violated rule — including the parent-group case (`'--repo' is an option of the parent group 'tool', not of 'tool build'`) — near matches by edit distance over the command's real option and subcommand names, the valid values of a `Choice`, and a copyable corrected invocation where one can be built confidently.

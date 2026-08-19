@@ -16,7 +16,46 @@ mytool --help json
 mytool --help=json
 ```
 
-An unknown value shows the normal terminal help. It does not cause an error.
+When structured help is enabled, an unknown format value shows normal terminal help. It does not cause
+an error.
+
+## Select or disable formats
+
+The `help_formats` configuration controls which built-in and in-process format names `--help` accepts.
+The default value is `["compact", "markdown", "json"]`. The list order controls the order in the help
+metavar. Formats from installed plugins (see below) are appended automatically and are not affected by
+this list.
+
+Enable only Markdown for one command:
+
+```python
+import rich_click as click
+
+
+@click.command()
+@click.rich_config(
+    help_config=click.RichHelpConfiguration(help_formats=["markdown"])
+)
+def cli():
+    pass
+```
+
+Set `help_formats=[]` to turn off the built-in formats while still allowing any installed plugin to add
+its own:
+
+```python
+click.rich_click.HELP_FORMATS = []
+```
+
+Set `help_formats=False` to disable structured help entirely, plugins included:
+
+```python
+click.rich_click.HELP_FORMATS = False
+```
+
+This setting restores the help option used before structured formats were added. `--help` becomes a
+Boolean flag again. It does not show a format metavar. It does not use agent-specific help. A command
+such as `--help=json` returns the old “does not take a value” error.
 
 ## Markdown
 
@@ -154,18 +193,29 @@ click.rich_click.AGENT_HELP_FORMAT = "json"
 click.rich_click.AGENT_HELP_MAX_CHARS = 40_000
 ```
 
-Set `AGENT_HELP_FORMAT` to `None` to keep the normal terminal help in agent environments. Set `RICH_CLICK_AGENT_MODE=true` or `false` to override environment detection for one process.
+Set `AGENT_HELP_FORMAT` to `None` to keep the normal terminal help in agent environments. Set
+`RICH_CLICK_AGENT_MODE=true` or `false` to override environment detection for one process. The selected
+agent format must also appear in `HELP_FORMATS`.
 
-An explicit `--help <format>` always uses the requested format.
+An explicit `--help <format>` always uses the requested format when its name is enabled.
 
 ## Install help format plugins
 
-Python packages can add formats through the `rich_click.help_formats` entry-point group. rich-click discovers these packages automatically. A CLI that already uses rich-click does not need a source change.
+Python packages can add renderers through the `rich_click.help_formats` entry-point group. rich-click
+discovers these packages automatically and appends them to every command's format list -- an end user
+gets the new format on any rich-click CLI just by installing the plugin, with no change to that CLI's
+source. This only stops working if the CLI has set `help_formats=False` (see above), which disables
+machine-readable help, plugins included.
 
 For example, [`rich-click-help-formats`](https://github.com/ewels/rich-click-help-formats) adds YAML, HTML, and Carapace:
 
 ```console
 pip install rich-click-help-formats
+```
+
+The CLI now accepts:
+
+```console
 mytool --help yaml
 mytool --help html
 mytool --help carapace
@@ -198,14 +248,15 @@ Register the renderer in the plugin package's `pyproject.toml`:
 yaml = "my_help_formats.yaml:render"
 ```
 
-Install the package in the same Python environment as the target CLI. The CLI then accepts `--help yaml` without any code change.
+Installing the package in the same Python environment as the target CLI is enough -- rich-click appends
+the plugin's format name to every command automatically.
 
 Use one entry point for each format. Use a short, lowercase entry-point name. Keep each renderer in a separate module when a package provides multiple formats.
 
 rich-click checks format sources in this order:
 
 1. Formats on the command class.
-2. Formats in the active rich-click configuration.
+2. Formats in the active `help_format_renderers` registry.
 3. Installed plugin entry points.
 
 The earlier source wins when two sources use the same name. If two installed plugins use the same normalized name, rich-click raises an error that identifies both entry points.
@@ -214,7 +265,8 @@ The public renderer type is `rich_click.help_formats.HelpFormatRenderer`. The en
 
 ## Register an in-process format
 
-Use the `help_formats` configuration when the renderer is part of the CLI application instead of a separately installed package:
+Use `help_format_renderers` when the renderer is part of the CLI application. Add the same name to
+`help_formats`:
 
 ```python
 import rich_click as click
@@ -226,12 +278,14 @@ def render_yaml(command, ctx):
     return yaml.safe_dump(command.format_help_json(ctx, ctx.make_formatter()), sort_keys=False)
 
 
-click.rich_click.HELP_FORMATS = {"yaml": render_yaml}
+click.rich_click.HELP_FORMATS.append("yaml")
+click.rich_click.HELP_FORMAT_RENDERERS = {"yaml": render_yaml}
 ```
 
 This changes only the current application process. Use a package entry point when the format must work for unrelated rich-click CLIs.
 
-You can also add a method name to `RichCommand.help_formats` in a command subclass. This option is useful when the output depends on a custom command class.
+You can also add a method name to `RichCommand.help_format_methods` in a command subclass. Add the same
+name to the `help_formats` configuration list.
 
 ## Command examples
 

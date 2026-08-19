@@ -32,7 +32,7 @@ def test_deprecated_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> 
 │ --debug        -d                           Enable debug mode [deprecated]                       │
 │ --environment  -e  [dev|staging|prod]       Sync to what environment [env var: MY_ENV] [default: │
 │                                             (current)]                                           │
-│ --help             [markdown|json|compact]  Show this message and exit.                          │
+│ --help             [compact|markdown|json]  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ download  Pretend to download some files from _somewhere_. [deprecated]                          │
@@ -56,7 +56,7 @@ def test_deprecated_help_subcommand_bool(cli_runner: CliRunner, cli: rich_click.
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --all                            Get everything                                                  │
-│ --help  [markdown|json|compact]  Show this message and exit.                                     │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -76,7 +76,7 @@ def test_deprecated_help_subcommand_string(cli_runner: CliRunner, cli: rich_clic
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --all                                                                                            │
-│ --help  [markdown|json|compact]  Show this message and exit.                                     │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -105,7 +105,7 @@ def test_deprecated_help_with_markdown(cli_runner: CliRunner, cli: rich_click.Ri
 │ --environment  -e  [dev|staging|prod]       Sync to what environment                             │
 │                                             [env var: MY_ENV]                                    │
 │                                             [default: (current)]                                 │
-│ --help             [markdown|json|compact]  Show this message and exit.                          │
+│ --help             [compact|markdown|json]  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ download  Pretend to download some files from somewhere.                                         │
@@ -132,7 +132,7 @@ def test_deprecated_help_subcommand_bool_with_markdown(cli_runner: CliRunner, cl
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --all                            Get everything                                                  │
-│ --help  [markdown|json|compact]  Show this message and exit.                                     │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -153,7 +153,7 @@ def test_deprecated_help_subcommand_string_with_markdown(cli_runner: CliRunner, 
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --all                                                                                            │
-│ --help  [markdown|json|compact]  Show this message and exit.                                     │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
