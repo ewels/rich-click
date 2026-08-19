@@ -490,10 +490,14 @@ class RichCommand(Command):
         """
         Build the ``--help markdown`` Markdown for this command. Override for full control of the output.
 
-        This returns the finished string because Markdown has no separate serialization step.
+        This returns the finished string because Markdown has no separate serialization step. Mirrors
+        :meth:`format_help_compact`: asked for explicitly, it renders the whole tree with no ceiling; as
+        the agent default, it adapts to ``agent_help_max_chars`` instead.
         """
         from rich_click.help_json import command_markdown
 
+        if getattr(ctx, "agent_help_default", False):
+            return command_markdown(self, ctx, max_chars=_agent_help_max_chars(ctx))
         return command_markdown(self, ctx, recursive=True)
 
     def get_help_compact(self, ctx: RichContext) -> str:

@@ -1355,6 +1355,20 @@ def test_explicit_markdown_does_not_apply_the_agent_character_limit(cli_runner: 
     assert "# `cli grp14 cmd19`" in out
 
 
+def test_agent_default_markdown_applies_the_character_limit(cli_runner: CliRunner, agent_env: Any) -> None:
+    # Unlike an explicit `--help=markdown` (see the previous test), a bare `--help` picked up as the
+    # *agent default* must adapt to `agent_help_max_chars`, exactly like format_help_compact() already
+    # does -- format_help_markdown() previously ignored `ctx.agent_help_default` entirely and always
+    # rendered the whole tree (109,133 characters for this same CLI, unbounded).
+    cli = _big_cli()
+    rich_config(help_config=RichHelpConfiguration(agent_help_format="markdown", agent_help_max_chars=15_000))(cli)
+
+    agent_env(override="true")
+    out = cli_runner.invoke(cli, ["--help"]).output
+    assert len(out) <= 15_000
+    assert "# `cli`" in out
+
+
 @pytest.mark.parametrize("fmt", ["markdown", "compact"])
 def test_adaptive_output_is_deterministic(cli_runner: CliRunner, fmt: str) -> None:
     cli = _big_cli()
