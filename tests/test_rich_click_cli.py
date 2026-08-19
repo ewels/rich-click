@@ -47,7 +47,7 @@ def test_simple_rich_click_cli(simple_script: Path, command: list[str]) -> None:
  My help text                                                                                       \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
 
@@ -171,7 +171,7 @@ def test_custom_config_rich_click_cli(simple_script: Path) -> None:
  My help text                                                                                       \n\
                                                                                                     \n\
 ╭─ Custom Name ────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
 
@@ -210,7 +210,7 @@ def test_override_click_command(mock_script_writer: Callable[[str], Path]) -> No
  My help text                                                                                       \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
 
@@ -257,7 +257,7 @@ def test_override_click_group(mock_script_writer: Callable[[str], Path]) -> None
  My help text                                                                                       \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ subcommand                        Subcommand help text                                           │
@@ -416,7 +416,7 @@ def test_override_guard_click_command(mock_script_writer: Callable[[str], Path])
  My help text                                                                                       \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
 
@@ -460,7 +460,7 @@ def test_override_guard_click_group(mock_script_writer: Callable[[str], Path]) -
  My help text                                                                                       \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
 
@@ -541,7 +541,7 @@ def test_override_guard_enabled_click_from_rich_click(mock_script_writer: Callab
  My help text                                                                                       \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
 
@@ -688,7 +688,7 @@ body {
  My help text                                                                                       \n\
                                                                                                     \n\
 <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮</span>
-<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--help</span>  Show this message and exit.                                                              <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
+<span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span> <span style="color: #008080; text-decoration-color: #008080; font-weight: bold">--help</span>  <span style="color: #bfbf7f; text-decoration-color: #bfbf7f; font-weight: bold">[</span><span style="color: #808000; text-decoration-color: #808000; font-weight: bold">compact</span><span style="color: #bfbf7f; text-decoration-color: #bfbf7f; font-weight: bold">|</span><span style="color: #808000; text-decoration-color: #808000; font-weight: bold">markdown</span><span style="color: #bfbf7f; text-decoration-color: #bfbf7f; font-weight: bold">|</span><span style="color: #808000; text-decoration-color: #808000; font-weight: bold">json</span><span style="color: #bfbf7f; text-decoration-color: #bfbf7f; font-weight: bold">]</span>  Show this message and exit.                                     <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">│</span>
 <span style="color: #7f7f7f; text-decoration-color: #7f7f7f">╰──────────────────────────────────────────────────────────────────────────────────────────────────╯</span>
 </code></pre>
 </body>
@@ -734,71 +734,73 @@ def test_cli_output_svg(mock_script_writer: Callable[[str], Path]) -> None:
         font-weight: 700;
     }
 
-    .terminal-237638219-matrix {
+    .terminal-2268328258-matrix {
         font-family: Fira Code, monospace;
         font-size: 20px;
         line-height: 24.4px;
         font-variant-east-asian: full-width;
     }
 
-    .terminal-237638219-title {
+    .terminal-2268328258-title {
         font-size: 18px;
         font-weight: bold;
         font-family: arial;
     }
 
-    .terminal-237638219-r1 { fill: #c5c8c6 }
-.terminal-237638219-r2 { fill: #d0b344 }
-.terminal-237638219-r3 { fill: #c5c8c6;font-weight: bold }
-.terminal-237638219-r4 { fill: #68a0b3;font-weight: bold }
-.terminal-237638219-r5 { fill: #868887 }
+    .terminal-2268328258-r1 { fill: #c5c8c6 }
+.terminal-2268328258-r2 { fill: #d0b344 }
+.terminal-2268328258-r3 { fill: #c5c8c6;font-weight: bold }
+.terminal-2268328258-r4 { fill: #68a0b3;font-weight: bold }
+.terminal-2268328258-r5 { fill: #868887 }
+.terminal-2268328258-r6 { fill: #8d7b39;font-weight: bold }
+.terminal-2268328258-r7 { fill: #d0b344;font-weight: bold }
     </style>
 
     <defs>
-    <clipPath id="terminal-237638219-clip-terminal">
+    <clipPath id="terminal-2268328258-clip-terminal">
       <rect x="0" y="0" width="1219.0" height="194.2" />
     </clipPath>
-    <clipPath id="terminal-237638219-line-0">
+    <clipPath id="terminal-2268328258-line-0">
     <rect x="0" y="1.5" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-237638219-line-1">
+<clipPath id="terminal-2268328258-line-1">
     <rect x="0" y="25.9" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-237638219-line-2">
+<clipPath id="terminal-2268328258-line-2">
     <rect x="0" y="50.3" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-237638219-line-3">
+<clipPath id="terminal-2268328258-line-3">
     <rect x="0" y="74.7" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-237638219-line-4">
+<clipPath id="terminal-2268328258-line-4">
     <rect x="0" y="99.1" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-237638219-line-5">
+<clipPath id="terminal-2268328258-line-5">
     <rect x="0" y="123.5" width="1220" height="24.65"/>
             </clipPath>
-<clipPath id="terminal-237638219-line-6">
+<clipPath id="terminal-2268328258-line-6">
     <rect x="0" y="147.9" width="1220" height="24.65"/>
             </clipPath>
     </defs>
 
-    <rect fill="#292929" stroke="rgba(255,255,255,0.35)" stroke-width="1" x="1" y="1" width="1236" height="243.2" rx="8"/><text class="terminal-237638219-title" fill="#c5c8c6" text-anchor="middle" x="618" y="27">mymodule&#160;--help</text>
+    <rect fill="#292929" stroke="rgba(255,255,255,0.35)" stroke-width="1" x="1" y="1" width="1236" height="243.2" rx="8"/><text class="terminal-2268328258-title" fill="#c5c8c6" text-anchor="middle" x="618" y="27">mymodule&#160;--help</text>
             <g transform="translate(26,22)">
             <circle cx="0" cy="0" r="7" fill="#ff5f57"/>
             <circle cx="22" cy="0" r="7" fill="#febc2e"/>
             <circle cx="44" cy="0" r="7" fill="#28c840"/>
             </g>
         \n\
-    <g transform="translate(9, 41)" clip-path="url(#terminal-237638219-clip-terminal)">
+    <g transform="translate(9, 41)" clip-path="url(#terminal-2268328258-clip-terminal)">
     \n\
-    <g class="terminal-237638219-matrix">
-    <text class="terminal-237638219-r1" x="1220" y="20" textLength="12.2" clip-path="url(#terminal-237638219-line-0)">
-</text><text class="terminal-237638219-r2" x="12.2" y="44.4" textLength="73.2" clip-path="url(#terminal-237638219-line-1)">Usage:</text><text class="terminal-237638219-r3" x="97.6" y="44.4" textLength="402.6" clip-path="url(#terminal-237638219-line-1)">python&#160;-m&#160;src.rich_click.mymodule</text><text class="terminal-237638219-r1" x="512.4" y="44.4" textLength="12.2" clip-path="url(#terminal-237638219-line-1)">[</text><text class="terminal-237638219-r4" x="524.6" y="44.4" textLength="85.4" clip-path="url(#terminal-237638219-line-1)">OPTIONS</text><text class="terminal-237638219-r1" x="610" y="44.4" textLength="12.2" clip-path="url(#terminal-237638219-line-1)">]</text><text class="terminal-237638219-r1" x="1220" y="44.4" textLength="12.2" clip-path="url(#terminal-237638219-line-1)">
-</text><text class="terminal-237638219-r1" x="1220" y="68.8" textLength="12.2" clip-path="url(#terminal-237638219-line-2)">
-</text><text class="terminal-237638219-r1" x="12.2" y="93.2" textLength="146.4" clip-path="url(#terminal-237638219-line-3)">My&#160;help&#160;text</text><text class="terminal-237638219-r1" x="1220" y="93.2" textLength="12.2" clip-path="url(#terminal-237638219-line-3)">
-</text><text class="terminal-237638219-r1" x="1220" y="117.6" textLength="12.2" clip-path="url(#terminal-237638219-line-4)">
-</text><text class="terminal-237638219-r5" x="0" y="142" textLength="24.4" clip-path="url(#terminal-237638219-line-5)">╭─</text><text class="terminal-237638219-r5" x="24.4" y="142" textLength="109.8" clip-path="url(#terminal-237638219-line-5)">&#160;Options&#160;</text><text class="terminal-237638219-r5" x="134.2" y="142" textLength="1061.4" clip-path="url(#terminal-237638219-line-5)">───────────────────────────────────────────────────────────────────────────────────────</text><text class="terminal-237638219-r5" x="1195.6" y="142" textLength="24.4" clip-path="url(#terminal-237638219-line-5)">─╮</text><text class="terminal-237638219-r1" x="1220" y="142" textLength="12.2" clip-path="url(#terminal-237638219-line-5)">
-</text><text class="terminal-237638219-r5" x="0" y="166.4" textLength="12.2" clip-path="url(#terminal-237638219-line-6)">│</text><text class="terminal-237638219-r4" x="24.4" y="166.4" textLength="73.2" clip-path="url(#terminal-237638219-line-6)">--help</text><text class="terminal-237638219-r1" x="122" y="166.4" textLength="329.4" clip-path="url(#terminal-237638219-line-6)">Show&#160;this&#160;message&#160;and&#160;exit.</text><text class="terminal-237638219-r5" x="1207.8" y="166.4" textLength="12.2" clip-path="url(#terminal-237638219-line-6)">│</text><text class="terminal-237638219-r1" x="1220" y="166.4" textLength="12.2" clip-path="url(#terminal-237638219-line-6)">
-</text><text class="terminal-237638219-r5" x="0" y="190.8" textLength="1220" clip-path="url(#terminal-237638219-line-7)">╰──────────────────────────────────────────────────────────────────────────────────────────────────╯</text><text class="terminal-237638219-r1" x="1220" y="190.8" textLength="12.2" clip-path="url(#terminal-237638219-line-7)">
+    <g class="terminal-2268328258-matrix">
+    <text class="terminal-2268328258-r1" x="1220" y="20" textLength="12.2" clip-path="url(#terminal-2268328258-line-0)">
+</text><text class="terminal-2268328258-r2" x="12.2" y="44.4" textLength="73.2" clip-path="url(#terminal-2268328258-line-1)">Usage:</text><text class="terminal-2268328258-r3" x="97.6" y="44.4" textLength="402.6" clip-path="url(#terminal-2268328258-line-1)">python&#160;-m&#160;src.rich_click.mymodule</text><text class="terminal-2268328258-r1" x="512.4" y="44.4" textLength="12.2" clip-path="url(#terminal-2268328258-line-1)">[</text><text class="terminal-2268328258-r4" x="524.6" y="44.4" textLength="85.4" clip-path="url(#terminal-2268328258-line-1)">OPTIONS</text><text class="terminal-2268328258-r1" x="610" y="44.4" textLength="12.2" clip-path="url(#terminal-2268328258-line-1)">]</text><text class="terminal-2268328258-r1" x="1220" y="44.4" textLength="12.2" clip-path="url(#terminal-2268328258-line-1)">
+</text><text class="terminal-2268328258-r1" x="1220" y="68.8" textLength="12.2" clip-path="url(#terminal-2268328258-line-2)">
+</text><text class="terminal-2268328258-r1" x="12.2" y="93.2" textLength="146.4" clip-path="url(#terminal-2268328258-line-3)">My&#160;help&#160;text</text><text class="terminal-2268328258-r1" x="1220" y="93.2" textLength="12.2" clip-path="url(#terminal-2268328258-line-3)">
+</text><text class="terminal-2268328258-r1" x="1220" y="117.6" textLength="12.2" clip-path="url(#terminal-2268328258-line-4)">
+</text><text class="terminal-2268328258-r5" x="0" y="142" textLength="24.4" clip-path="url(#terminal-2268328258-line-5)">╭─</text><text class="terminal-2268328258-r5" x="24.4" y="142" textLength="109.8" clip-path="url(#terminal-2268328258-line-5)">&#160;Options&#160;</text><text class="terminal-2268328258-r5" x="134.2" y="142" textLength="1061.4" clip-path="url(#terminal-2268328258-line-5)">───────────────────────────────────────────────────────────────────────────────────────</text><text class="terminal-2268328258-r5" x="1195.6" y="142" textLength="24.4" clip-path="url(#terminal-2268328258-line-5)">─╮</text><text class="terminal-2268328258-r1" x="1220" y="142" textLength="12.2" clip-path="url(#terminal-2268328258-line-5)">
+</text><text class="terminal-2268328258-r5" x="0" y="166.4" textLength="12.2" clip-path="url(#terminal-2268328258-line-6)">│</text><text class="terminal-2268328258-r4" x="24.4" y="166.4" textLength="73.2" clip-path="url(#terminal-2268328258-line-6)">--help</text><text class="terminal-2268328258-r6" x="122" y="166.4" textLength="12.2" clip-path="url(#terminal-2268328258-line-6)">[</text><text class="terminal-2268328258-r7" x="134.2" y="166.4" textLength="85.4" clip-path="url(#terminal-2268328258-line-6)">compact</text><text class="terminal-2268328258-r6" x="219.6" y="166.4" textLength="12.2" clip-path="url(#terminal-2268328258-line-6)">|</text><text class="terminal-2268328258-r7" x="231.8" y="166.4" textLength="97.6" clip-path="url(#terminal-2268328258-line-6)">markdown</text><text class="terminal-2268328258-r6" x="329.4" y="166.4" textLength="12.2" clip-path="url(#terminal-2268328258-line-6)">|</text><text class="terminal-2268328258-r7" x="341.6" y="166.4" textLength="48.8" clip-path="url(#terminal-2268328258-line-6)">json</text><text class="terminal-2268328258-r6" x="390.4" y="166.4" textLength="12.2" clip-path="url(#terminal-2268328258-line-6)">]</text><text class="terminal-2268328258-r1" x="427" y="166.4" textLength="329.4" clip-path="url(#terminal-2268328258-line-6)">Show&#160;this&#160;message&#160;and&#160;exit.</text><text class="terminal-2268328258-r5" x="1207.8" y="166.4" textLength="12.2" clip-path="url(#terminal-2268328258-line-6)">│</text><text class="terminal-2268328258-r1" x="1220" y="166.4" textLength="12.2" clip-path="url(#terminal-2268328258-line-6)">
+</text><text class="terminal-2268328258-r5" x="0" y="190.8" textLength="1220" clip-path="url(#terminal-2268328258-line-7)">╰──────────────────────────────────────────────────────────────────────────────────────────────────╯</text><text class="terminal-2268328258-r1" x="1220" y="190.8" textLength="12.2" clip-path="url(#terminal-2268328258-line-7)">
 </text>
     </g>
     </g>
@@ -831,6 +833,6 @@ def test_cli_output_text(mock_script_writer: Callable[[str], Path]) -> None:
  My help text                                                                                       \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)

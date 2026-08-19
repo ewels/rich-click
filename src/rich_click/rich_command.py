@@ -8,6 +8,7 @@ from collections.abc import Callable, Iterable, Mapping, Sequence
 from typing import (
     TYPE_CHECKING,
     Any,
+    ClassVar,
     Literal,
     NoReturn,
     TextIO,
@@ -40,6 +41,31 @@ if TYPE_CHECKING:  # pragma: no cover
 OVERRIDES_GUARD: bool = False
 
 
+def _normalize_examples(examples: Iterable[tuple[str, str]] | None) -> list[dict[str, str]]:
+    """
+    Normalize the ``examples=`` developer input to a list of ``{"description", "command"}`` dicts.
+
+    Every example is a ``(description, command)`` tuple -- the description is required, so an example is
+    never shown without an explanation of what it does. This canonical shape is what every output (the
+    rendered ``--help`` panel and each structured help format) consumes.
+    """
+    normalized: list[dict[str, str]] = []
+    for example in examples or []:
+        if isinstance(example, str):
+            raise TypeError(f"Each example must be a (description, command) tuple, not a string: {example!r}")
+        try:
+            description, command = example
+        except (TypeError, ValueError):
+            raise TypeError(f"Each example must be a (description, command) tuple; got {example!r}") from None
+        normalized.append({"description": str(description), "command": str(command)})
+    return normalized
+
+
+def _agent_help_max_chars(ctx: RichContext) -> int | None:
+    """Return the character ceiling the adaptive agent-facing help renders under, if one is configured."""
+    return cast("int | None", getattr(getattr(ctx, "help_config", None), "agent_help_max_chars", None))
+
+
 class RichCommand(Command):
     """
     Richly formatted click Command.
@@ -59,6 +85,7 @@ class RichCommand(Command):
         aliases: Iterable[str] | None = None,
         panels: list[RichPanel[Any, Any]] | None = None,
         panel: str | list[str] | None = None,
+        examples: Iterable[tuple[str, str]] | None = None,
         **kwargs: Any,
     ) -> None:
         """Create Rich Command instance."""
@@ -66,8 +93,10 @@ class RichCommand(Command):
         self.panel = panel
         self.panels: list[RichPanel[Any, Any]] = panels or []
         self.aliases: Iterable[str] = aliases or []
+        self.examples: list[dict[str, str]] = _normalize_examples(examples)
         if not hasattr(self, "_help_option"):
             self._help_option = None
+        self._help_option_uses_formats: bool | None = None
 
     @property
     def console(self) -> Console | None:
@@ -87,10 +116,33 @@ class RichCommand(Command):
         return self.context_settings.get("rich_console")
 
     def to_info_dict(self, ctx: click.Context) -> dict[str, Any]:
-        info = super().to_info_dict(ctx)
+        # Structured help collects the command tree itself so that lazy commands are loaded once and
+        # descendant contexts never parse arguments. During that collection, the context carries the
+        # already-built Click portion of this node. Calling this method still lets subclass overrides
+        # compose through ``super()`` without asking Click's Group implementation to walk the tree again.
+        prebuilt = getattr(ctx, "_rich_click_prebuilt_info", None)
+        info = dict(prebuilt[1]) if prebuilt is not None and prebuilt[0] is self else super().to_info_dict(ctx)
         info["panels"] = [p.to_info_dict(ctx) for p in self.panels]
         info["aliases"] = list(self.aliases) if self.aliases is not None else None
+        info["examples"] = self.examples
         return info
+
+    def make_context_without_parsing(
+        self,
+        info_name: str,
+        parent: click.Context | None = None,
+        **extra: Any,
+    ) -> click.Context:
+        """
+        Create a context for recursive help without running argument parsing or callbacks.
+
+        Override this method when structured help needs the same custom context setup that an
+        overridden :meth:`make_context` normally provides. The override must not parse arguments.
+        """
+        for key, value in self.context_settings.items():
+            extra.setdefault(key, value)
+        extra.setdefault("resilient_parsing", True)
+        return self.context_class(self, info_name=info_name, parent=parent, **extra)
 
     @property
     def help_config(self) -> RichHelpConfiguration | None:
@@ -261,6 +313,20 @@ class RichCommand(Command):
     # Mypy complains about Liskov substitution principle violations.
     # We opt to ignore mypy here.
 
+    def get_params(self, ctx: click.Context) -> list[click.Parameter]:
+        """Return parameters with the legacy help flag when structured formats are disabled."""
+        params = super().get_params(ctx)
+
+        from rich_click.help_json import _uses_help_formats
+
+        if _uses_help_formats(self, ctx):
+            return params
+
+        from rich_click.decorators import _legacy_help_option_from
+        from rich_click.rich_parameter import RichHelpOption
+
+        return [_legacy_help_option_from(param) if isinstance(param, RichHelpOption) else param for param in params]
+
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         if OVERRIDES_GUARD:
             prevent_incompatible_overrides(self, "RichCommand", ctx, formatter)
@@ -268,6 +334,7 @@ class RichCommand(Command):
             self.format_usage(ctx, formatter)
             self.format_help_text(ctx, formatter)
             self.format_options(ctx, formatter)
+            self.format_examples(ctx, formatter)
             self.format_epilog(ctx, formatter)
 
     def format_help_text(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
@@ -292,6 +359,12 @@ class RichCommand(Command):
             if not isinstance(p.renderable, Table) or len(p.renderable.rows) > 0:
                 formatter.write(p)  # type: ignore[arg-type]
 
+    def format_examples(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:
+        """Render the command's ``examples`` (if any) as a panel, after the options/commands."""
+        from rich_click.rich_help_rendering import get_rich_examples
+
+        get_rich_examples(self, ctx, formatter)
+
     def format_epilog(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         from rich_click.rich_help_rendering import get_rich_epilog
 
@@ -311,19 +384,141 @@ class RichCommand(Command):
         if not help_option_names or not self.add_help_option:
             return None
 
-        # Cache the help option object in private _help_option attribute to
-        # avoid creating it multiple times. Not doing this will break the
-        # callback ordering by iter_params_for_processing(), which relies on
-        # object comparison.
-        if self._help_option is None:
-            # Avoid circular import.
-            from rich_click.decorators import help_option
+        from rich_click.help_json import _uses_help_formats
 
-            # Apply help_option decorator and pop resulting option
-            help_option(*help_option_names)(self)
+        uses_formats = _uses_help_formats(self, ctx)
+
+        # Cache one option for the active mode. A context can override the global configuration, so a
+        # command can use the legacy flag in one context and the format-aware option in another.
+        if self._help_option is None or getattr(self, "_help_option_uses_formats", None) != uses_formats:
+            # Avoid circular import.
+            from rich_click.decorators import _legacy_help_option, help_option
+
+            option_factory = help_option if uses_formats else _legacy_help_option
+            option_factory(*help_option_names)(self)
             self._help_option = self.params.pop()  # type: ignore[assignment]
+            self._help_option_uses_formats = uses_formats
 
         return self._help_option
+
+    #: Maps a ``--help <format>`` value to the name of the method that renders it. Extend in a subclass,
+    #: then add the format name to the ``help_formats`` configuration list.
+    help_format_methods: ClassVar[dict[str, str]] = {
+        "markdown": "get_help_markdown",
+        "json": "get_help_json",
+        "compact": "get_help_compact",
+    }
+
+    def get_help_for_format(self, ctx: RichContext, fmt: str) -> str | None:
+        """
+        Return this command's help rendered in a machine-readable format, or ``None`` if unrecognized.
+
+        This is the dispatch behind the optional value on ``--help``. It checks built-ins, explicit
+        config renderers, and installed plugin entry points in that order. An unknown format returns
+        ``None`` so the caller can fall back to the normal
+        human-readable help rather than erroring -- the format machinery only ever *adds* behaviour; it
+        never changes what bare ``--help`` does. Resolving via method name (not a bound method) means a
+        subclass overriding e.g. ``get_help_json`` is honoured.
+        """
+        from rich_click.help_formats import _normalize_format_name, load_help_format_plugin
+        from rich_click.help_json import _help_format_names
+
+        fmt = _normalize_format_name(fmt or "")
+        if fmt not in _help_format_names(self, ctx):
+            return None
+        method_name = next(
+            (target for name, target in self.help_format_methods.items() if _normalize_format_name(name) == fmt),
+            None,
+        )
+        if method_name is not None:
+            return cast("str | None", getattr(self, method_name)(ctx))
+        configured_formats = getattr(getattr(ctx, "help_config", None), "help_format_renderers", {})
+        renderer = next(
+            (renderer for name, renderer in configured_formats.items() if _normalize_format_name(name) == fmt),
+            None,
+        )
+        if renderer is not None:
+            return cast("str | None", renderer(self, ctx))
+        renderer = load_help_format_plugin(fmt)
+        if renderer is not None:
+            return cast("str | None", renderer(self, ctx))
+        return None
+
+    def _serialize_help(self, data: dict[str, Any]) -> str:
+        import json
+
+        return json.dumps(data, indent=2, default=str)
+
+    def _build_help_json(self, ctx: RichContext, formatter: RichHelpFormatter, recursive: bool) -> dict[str, Any]:
+        """Build the JSON schema and apply the ``help_json_transform`` hook."""
+        from rich_click.help_json import command_schema
+
+        schema = command_schema(self, ctx, recursive=recursive)
+
+        transform = getattr(formatter.config, "help_json_transform", None)
+        if transform is not None:
+            schema = transform(schema, self, ctx)
+        return schema
+
+    def get_help_json(self, ctx: RichContext) -> str:
+        """
+        Return this command's full command tree as a machine-readable JSON string.
+
+        Mirrors click's :meth:`get_help`: the data is built by :meth:`format_help_json`
+        and then serialized. Override :meth:`format_help_json` to change the structure
+        of the output.
+        """
+        formatter = ctx.make_formatter()
+        return self._serialize_help(self.format_help_json(ctx, formatter))
+
+    def format_help_json(self, ctx: RichContext, formatter: RichHelpFormatter) -> dict[str, Any]:
+        """
+        Build the machine-readable ``--help json`` schema for this command.
+
+        Reports this command and every descendant in full. Mirrors click's :meth:`format_help`, but
+        returns the data statelessly instead of writing to the formatter's buffer. The formatter carries
+        the configuration and keeps parity with the regular help path. Subclass ``RichCommand`` and
+        override this method for full control. The ``help_json_transform`` config hook is a lighter option.
+        """
+        return self._build_help_json(ctx, formatter, recursive=True)
+
+    def get_help_markdown(self, ctx: RichContext) -> str:
+        """Return this command's full command tree as LLM-friendly Markdown."""
+        return self.format_help_markdown(ctx)
+
+    def format_help_markdown(self, ctx: RichContext) -> str:
+        """
+        Build the ``--help markdown`` Markdown for this command. Override for full control of the output.
+
+        This returns the finished string because Markdown has no separate serialization step. Mirrors
+        :meth:`format_help_compact`: asked for explicitly, it renders the whole tree with no ceiling; as
+        the agent default, it adapts to ``agent_help_max_chars`` instead.
+        """
+        from rich_click.help_json import command_markdown
+
+        if getattr(ctx, "agent_help_default", False):
+            return command_markdown(self, ctx, max_chars=_agent_help_max_chars(ctx))
+        return command_markdown(self, ctx, recursive=True)
+
+    def get_help_compact(self, ctx: RichContext) -> str:
+        """Return this command's help in the character-lean ``--help compact`` form."""
+        return self.format_help_compact(ctx)
+
+    def format_help_compact(self, ctx: RichContext) -> str:
+        """
+        Build the ``--help compact`` rendering: one line per record, no tables, no Markdown scaffolding.
+
+        Asked for explicitly (``--help compact``), this renders the **whole** command tree with no
+        ceiling -- the format is lean enough that a mid-size CLI still fits one agent tool response, and
+        a caller who names the format is asking for everything. As the *agent default* (a bare ``--help``
+        with ``agent_help_format="compact"``) it instead adapts to ``agent_help_max_chars``. A very
+        large tree degrades rather than being truncated by the harness. Override for full control.
+        """
+        from rich_click.help_json import compact_command
+
+        if getattr(ctx, "agent_help_default", False):
+            return compact_command(self, ctx, max_chars=_agent_help_max_chars(ctx))
+        return compact_command(self, ctx, recursive=True)
 
     def get_rich_table_row(
         self,
@@ -384,6 +579,7 @@ class RichGroup(RichCommand, Group):
             self.format_usage(ctx, formatter)
             self.format_help_text(ctx, formatter)
             self.format_options(ctx, formatter)
+            self.format_examples(ctx, formatter)
             self.format_epilog(ctx, formatter)
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
@@ -432,6 +628,7 @@ class RichGroup(RichCommand, Group):
             if cls and not issubclass(cls, RichCommand):
                 panel = kwargs.pop("panel", None)
                 aliases = kwargs.pop("aliases", None)
+                kwargs.pop("examples", None)  # rich-click-only; a non-RichCommand can't accept it
             else:
                 panel = kwargs.get("panel")
                 aliases = kwargs.get("aliases")
@@ -487,6 +684,7 @@ class RichGroup(RichCommand, Group):
             if cls and not issubclass(cls, RichCommand):
                 panel = kwargs.pop("panel", None)
                 aliases = kwargs.pop("aliases", None)
+                kwargs.pop("examples", None)  # rich-click-only; a non-RichCommand can't accept it
             else:
                 panel = kwargs.get("panel")
                 aliases = kwargs.get("aliases")
@@ -581,6 +779,7 @@ class RichCommandCollection(CommandCollection, RichGroup):
             self.format_usage(ctx, formatter)
             self.format_help_text(ctx, formatter)
             self.format_options(ctx, formatter)
+            self.format_examples(ctx, formatter)
             self.format_epilog(ctx, formatter)
 
 
@@ -593,7 +792,7 @@ def prevent_incompatible_overrides(
 
     cls: type[RichCommand] = getattr(rich_click.patch, f"_Patched{class_name}")
 
-    for method_name in ["format_usage", "format_help_text", "format_options", "format_epilog"]:
+    for method_name in ["format_usage", "format_help_text", "format_options", "format_examples", "format_epilog"]:
         if method_is_from_subclass_of(cmd.__class__, cls, method_name):
             getattr(RichCommand, method_name)(cmd, ctx, formatter)
         else:

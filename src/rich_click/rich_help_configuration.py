@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Literal, TypeVar
 
+from rich_click.help_formats import DEFAULT_HELP_FORMATS
 from rich_click.rich_click_theme import RichClickTheme, get_theme
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
 
@@ -17,6 +18,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.padding import PaddingDimensions
     from rich.style import StyleType
     from rich.text import Text
+
+    from rich_click.help_formats import HelpFormatRenderer
+    from rich_click.help_json import HelpJSONTransform
 
 T = TypeVar("T", bound="RichHelpConfiguration")
 
@@ -125,6 +129,13 @@ class RichHelpConfiguration:
     style_usage: StyleType = field(default=FROM_THEME)
     style_usage_command: StyleType = field(default=FROM_THEME)
     style_usage_separator: StyleType = field(default=FROM_THEME)
+    # Styles for the command lines rendered in the Examples panel (independent of the rest of the help).
+    # Command/flag defaults mirror the main help styles; placeholders stand out in blue.
+    style_examples_command: StyleType = field(default="bold")
+    style_examples_flag_long: StyleType = field(default="bold cyan")
+    style_examples_flag_short: StyleType = field(default="bold green")
+    style_examples_placeholder: StyleType = field(default="blue")
+    style_examples_operator: StyleType = field(default="bold yellow")  # shell operators: | > && ; ...
     style_deprecated: StyleType = field(default=FROM_THEME)
     style_helptext_first_line: StyleType = field(default=FROM_THEME)
     style_helptext: StyleType = field(default=FROM_THEME)
@@ -209,6 +220,7 @@ class RichHelpConfiguration:
     arguments_panel_title: str = field(default="Arguments")
     options_panel_title: str = field(default="Options")
     commands_panel_title: str = field(default="Commands")
+    examples_panel_title: str = field(default="Examples")
     errors_panel_title: str = field(default="Error")
     delimiter_comma: str = field(default=FROM_THEME)
     delimiter_slash: str = field(default=FROM_THEME)
@@ -263,6 +275,47 @@ class RichHelpConfiguration:
     use_click_short_help: bool = field(default=False)
     """Use click's default function to truncate help text"""
     helptext_show_aliases: bool = field(default=True)
+    agent_help_format: str | None = field(default="compact")
+    """Format that a bare ``--help`` renders in a detected AI agent environment.
+
+    Any registered ``--help <format>`` name (built-in or from :attr:`help_formats`). Set to ``None`` to
+    disable the switch, so a bare ``--help`` always renders the normal human-readable help. An explicit
+    ``--help <format>`` is unaffected either way."""
+    agent_help_max_chars: int | None = field(default=25_000)
+    """Size ceiling, in characters, for the adaptive agent-facing help output.
+
+    A bare ``--help`` in an agent environment discloses as much of the command tree as fits this ceiling.
+    It promotes commands nearest the invoked one first. Characters, not tokens,
+    because the failure this prevents is an agent harness truncating the output, and harness caps are
+    measured in characters (Claude Code cuts a tool result at ~30,000); ``len()`` also makes the ceiling
+    exact rather than estimated. The default is comfortably above what a small or mid-size CLI needs, so
+    most CLIs emit their whole tree in full detail and never touch this setting; only a very large tree
+    degrades. Set to ``None`` to disable adaptive disclosure, rendering just the invoked command plus a
+    name index of its descendants. Does not affect explicit help formats, which return the whole tree."""
+    error_diagnosis: bool = field(default=True)
+    """Diagnose usage errors, stating the rule that was broken instead of only the symptom.
+
+    Adds a terse note to the rich error panel (the violated rule, near matches, a corrected
+    invocation), and in a detected AI agent environment renders the error as a plain-text block
+    instead. Exit codes and Click's own error message are unchanged either way. The
+    ``RICH_CLICK_ERROR_DIAGNOSIS`` environment variable overrides this in both directions."""
+    help_json_transform: HelpJSONTransform | None = field(default=None, repr=False, compare=False)
+    """Optional hook to post-process the machine-readable JSON schema: ``(schema, command, ctx) -> schema``."""
+    help_formats: list[str] | Literal[False] = field(default_factory=lambda: list(DEFAULT_HELP_FORMATS))
+    """Built-in and in-process machine-readable formats enabled on ``--help``, in display order.
+
+    Set this to a list such as ``["markdown"]`` to enable only those names. Installed plugin formats
+    (see :mod:`rich_click.help_formats`) are appended automatically regardless of this list, so end users
+    can add a format to any rich-click CLI just by installing a plugin package. Set this to ``[]`` to
+    disable the built-in formats while still allowing installed plugins. Set it to ``False`` to restore
+    the legacy Boolean ``--help`` flag instead, disabling machine-readable help entirely -- plugins
+    included."""
+    help_format_renderers: dict[str, HelpFormatRenderer] = field(default_factory=dict, repr=False, compare=False)
+    """Custom format renderers, mapping a format name to a ``(command, ctx) -> str`` callable.
+
+    A process-wide way to add a machine-readable format without subclassing ``RichCommand`` -- the
+    counterpart to the built-in :attr:`RichCommand.help_format_methods` registry. Add each renderer name to
+    :attr:`help_formats` to expose it on ``--help``."""
     highlighter: Highlighter | None = field(default=None, repr=False, compare=False)
     """(Deprecated) Rich regex highlighter for help highlighting"""
 
@@ -279,6 +332,11 @@ class RichHelpConfiguration:
     legacy_windows: bool | None = field(default=None)
 
     def __post_init__(self) -> None:  # noqa: D105
+        from rich_click.help_formats import normalize_help_formats
+
+        if self.help_formats is not False:
+            self.help_formats = list(normalize_help_formats(self.help_formats))
+
         if self.highlighter is not None:
             import warnings
 

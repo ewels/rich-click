@@ -24,7 +24,7 @@ from rich_click._compat_click import (
 )
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_formatter import RichHelpFormatter
-from rich_click.rich_parameter import RichParameter
+from rich_click.rich_parameter import RichHelpOption, RichParameter
 
 
 if TYPE_CHECKING:
@@ -338,6 +338,22 @@ def _get_parameter_range(
     return None
 
 
+def _make_param_metavar(param: click.Argument | click.Option | RichParameter, ctx: RichContext) -> str:
+    """
+    Render a parameter's metavar, passing ``ctx`` whenever the parameter can accept it.
+
+    Click < 8.2 calls ``Parameter.make_metavar()`` without a ctx, and a plain option's signature there
+    can't take one -- hence the version gate. ``RichHelpOption.make_metavar()`` accepts a ctx on every
+    Click version, though, and it *needs* one to resolve the command's ``--help`` formats into the
+    full ``[compact|markdown|json]`` list. So we always hand it the ctx, regardless of Click version;
+    otherwise the
+    metavar degrades to a bare ``FORMAT`` on Click < 8.2 (e.g. for an explicit ``@click.help_option()``).
+    """
+    if CLICK_IS_BEFORE_VERSION_82 and not isinstance(param, RichHelpOption):
+        return param.make_metavar()  # type: ignore[call-arg]
+    return param.make_metavar(ctx)
+
+
 def _get_parameter_metavar(
     param: click.Argument | click.Option | RichParameter,
     ctx: RichContext,
@@ -345,12 +361,16 @@ def _get_parameter_metavar(
     append: bool = True,
     show_range: bool = False,
 ) -> Text | None:
-    metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
+    metavar_str = _make_param_metavar(param, ctx)
     # Do it ourselves if this is a positional argument
     if isinstance(param, Argument) and param.name is not None and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
         metavar_str = param.type.name.upper()
-    # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option
-    if isinstance(param, Argument) or (metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag):
+    # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option.
+    # An empty metavar (e.g. the optional-value ``--help`` option, which renders like a flag) attaches
+    # nothing -- otherwise the append string would render as stray empty brackets.
+    if metavar_str and (
+        isinstance(param, Argument) or (metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag)
+    ):
         metavar_str = metavar_str.replace("[", "").replace("]", "")
 
         if show_range:
@@ -374,7 +394,7 @@ def _get_parameter_help_metavar_col(
 ) -> Text | None:
     # Column for a metavar, if we have one
     metavar = Text(style=formatter.config.style_metavar, overflow="fold")
-    metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
+    metavar_str = _make_param_metavar(param, ctx)
 
     if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(param.name, str)
@@ -544,10 +564,8 @@ def _get_parameter_help_opt(
     return primary_final, secondary_final, long_final, short_final, all_final
 
 
-def _get_parameter_default(
-    param: click.Argument | click.Option | RichParameter, ctx: RichContext, formatter: RichHelpFormatter
-) -> Text | None:
-
+def _get_parameter_default_text(param: click.Parameter, ctx: click.Context) -> str | None:
+    """Return the effective default exactly as human help spells it, without its surrounding label."""
     if not hasattr(param, "show_default"):
         return None
 
@@ -581,37 +599,39 @@ def _get_parameter_default(
     elif ctx.show_default is not None:
         show_default = ctx.show_default
 
-    default_string: str | None = None
-
     if show_default_is_str or (show_default and (default_value not in notset)):
         if show_default_is_str:
-            default_string = f"({param.show_default})"
+            return f"({param.show_default})"
         elif isinstance(default_value, (list, tuple)):
-            default_string = ", ".join(str(d) for d in default_value)
+            return ", ".join(str(d) for d in default_value)
         elif isinstance(default_value, Enum):
-            default_string = str(default_value.value)
+            return str(default_value.value)
         elif inspect.isfunction(default_value):
-            default_string = gettext("(dynamic)")
+            return gettext("(dynamic)")
         elif hasattr(param, "is_bool_flag") and param.is_bool_flag and param.secondary_opts:
             # For boolean flags that have distinct True/False opts,
             # use the opt without prefix instead of the value.
             opt = (param.opts if default_value else param.secondary_opts)[0]
             first = opt[:1]
+            default_string = opt
             if first.isalnum():
-                default_string = opt
-            if opt[1:2] == first:
-                default_string = opt[2:]
-            else:
-                default_string = opt[1:]
+                return default_string
+            default_string = opt[2:] if opt[1:2] == first else opt[1:]
+            return default_string
         elif hasattr(param, "is_bool_flag") and param.is_bool_flag and not param.secondary_opts and not default_value:
             if CLICK_IS_VERSION_80:
-                default_string = str(param.default)
-            else:
-                default_string = ""
+                return str(param.default)
+            return ""
         elif default_value == "":
-            default_string = '""'
-        else:
-            default_string = str(default_value)
+            return '""'
+        return str(default_value)
+    return None
+
+
+def _get_parameter_default(
+    param: click.Argument | click.Option | RichParameter, ctx: RichContext, formatter: RichHelpFormatter
+) -> Text | None:
+    default_string = _get_parameter_default_text(param, ctx)
 
     if default_string:
         return Text.from_markup(
@@ -990,6 +1010,130 @@ def get_rich_help_text(self: Command, ctx: RichContext, formatter: RichHelpForma
         )
 
 
+# Shell syntax tokens in an example command line that are never placeholders. (``...`` is treated as a
+# placeholder, since it stands in for "more arguments like the previous one".)
+_EXAMPLE_LITERAL_TOKENS = frozenset({"|", "||", "&&", ";", "&", ">", ">>", "<", "<<", "2>", "2>&1"})
+
+
+def _styled_example_command(command: str, cmd: Command, ctx: RichContext, formatter: RichHelpFormatter) -> Text:
+    """
+    Style an example command line, colouring placeholders inferred from the command's own structure.
+
+    We know the invocation path and every flag (and whether each takes a value), so any token that
+    follows a value-taking flag -- and any bare positional -- must be a value the user fills in, i.e. a
+    placeholder. Those are coloured as metavars; the command path and flags are coloured like the rest
+    of the help screen; shell operators are left plain.
+    """
+    import shlex
+
+    config = formatter.config
+    takes_value: dict[str, bool] = {}
+    for param in cmd.get_params(ctx):
+        if isinstance(param, click.Option):
+            consumes = not param.is_flag and not param.count
+            for opt in (*param.opts, *param.secondary_opts):
+                takes_value[opt] = consumes
+
+    try:
+        tokens = shlex.split(command, posix=False)
+    except ValueError:
+        tokens = command.split()
+
+    # The leading tokens that name the command (its invocation path) are not placeholders. Accept the
+    # canonical name OR any alias at each level -- and any program name in first position -- so an example
+    # written with an alias, or a different prog name, than the one help was invoked with still has its
+    # command path recognised rather than mis-coloured as a placeholder.
+    level_names: list[set[str]] = []
+    node: click.Context | None = ctx
+    while node is not None:
+        names = {node.info_name, getattr(node.command, "name", None)}
+        names.update(getattr(node.command, "aliases", None) or [])
+        level_names.append({name for name in names if name})
+        node = node.parent
+    level_names.reverse()  # root first
+
+    prefix_len = 0
+    for idx in range(min(len(tokens), len(level_names))):
+        token = tokens[idx]
+        if token in level_names[idx] or (idx == 0 and not token.startswith("-")):
+            prefix_len = idx + 1
+        else:
+            break
+
+    placeholder_style = config.style_examples_placeholder
+    out = Text()
+    expect_value = False
+    for idx, token in enumerate(tokens):
+        if idx:
+            out.append(" ")
+        if idx < prefix_len:
+            out.append(token, style=config.style_examples_command)
+        elif expect_value:
+            out.append(token, style=placeholder_style)
+            expect_value = False
+        elif token.startswith("-") and token != "-":
+            flag, sep, value = token.partition("=")
+            out.append(
+                flag,
+                style=config.style_examples_flag_long if flag.startswith("--") else config.style_examples_flag_short,
+            )
+            if sep:  # attached value, e.g. --dir=foo/
+                out.append(sep)
+                out.append(value, style=placeholder_style)
+            elif takes_value.get(token):
+                expect_value = True
+        elif token in _EXAMPLE_LITERAL_TOKENS:
+            out.append(token, style=config.style_examples_operator)
+        else:  # a bare positional argument
+            out.append(token, style=placeholder_style)
+    return out
+
+
+def get_rich_examples(
+    self: Command,
+    ctx: RichContext,
+    formatter: RichHelpFormatter,
+) -> None:
+    """Render a command's ``examples`` as a panel, styled like the options/commands panels."""
+    examples = getattr(self, "examples", None)
+    if not examples:
+        return
+    from rich.console import Group as RenderGroup
+
+    # `tldr`-style layout: a description line, then the command indented beneath it, with placeholders
+    # in the command coloured (see _styled_example_command).
+    renderables: list[RenderableType] = []
+    for i, example in enumerate(examples):
+        if i:
+            renderables.append(Text(""))  # blank line between examples
+        # Strip any trailing "." / ":" the author added so we don't end up with ".:" or "::".
+        description = example["description"].rstrip(" .:")
+        renderables.append(formatter.rich_text(f"- {description}:", "dim"))
+        command = _styled_example_command(example["command"], self, ctx, formatter)
+        renderables.append(Padding(command, (0, 0, 0, 4)))
+
+    from rich_click.rich_box import get_box
+
+    title = Text(
+        formatter.config.panel_title_string.format(formatter.config.examples_panel_title),
+        style=formatter.config.style_options_panel_title_style,
+    )
+    # Reuse the options-panel styling so the panel looks native; the box name resolves to a rich Box.
+    box = formatter.config.style_options_panel_box
+    formatter.write(
+        RichClickRichPanel(
+            RenderGroup(*renderables),
+            title=title,
+            title_align=formatter.config.align_options_panel,
+            border_style=formatter.config.style_options_panel_border,
+            box=get_box(box if box is not None else "SIMPLE"),
+            padding=formatter.config.style_options_panel_padding,
+            style=formatter.config.style_options_panel_style,
+            title_padding=formatter.config.panel_title_padding,
+        )
+    )
+
+
 def get_rich_epilog(
     self: Command,
     ctx: RichContext,
@@ -1021,6 +1165,60 @@ def get_rich_epilog(
         )
 
 
+def _error_panel_body(self: click.ClickException, formatter: RichHelpFormatter) -> RenderableType:
+    """
+    Build the contents of the error panel: Click's message, plus a terse diagnosis where one exists.
+
+    The addition is deliberately short -- the rule that was broken, the nearest alternatives, and a
+    corrected invocation. A human reading a terminal does not need the attempted command line restated
+    back at them (they can see it); that fuller treatment is the agent renderer's job.
+    """
+    from rich.console import Group as RichRenderGroup
+
+    from rich_click.error_diagnosis import diagnose, diagnosis_enabled
+
+    message = formatter.highlighter(self.format_message())
+    if not isinstance(self, click.UsageError) or not diagnosis_enabled(formatter.config):
+        return message
+
+    diagnosis = diagnose(self)
+    if diagnosis is None:
+        return message
+
+    config = formatter.config
+    style = config.style_errors_suggestion if config.style_errors_suggestion is not None else config.style_helptext
+    lines = []
+    if diagnosis.rule:
+        lines.append(diagnosis.rule)
+    if diagnosis.suggestions:
+        lines.append(f"Did you mean: {', '.join(diagnosis.suggestions)}")
+    if diagnosis.correction:
+        lines.append(f"Try: {diagnosis.correction}")
+    if diagnosis.help_command:
+        lines.append(f"See '{diagnosis.help_command}' for help")
+
+    return RichRenderGroup(message, Text(""), *(formatter.highlighter(Text(line, style=style)) for line in lines))
+
+
+def agent_format_error(self: click.UsageError, formatter: RichHelpFormatter) -> None:
+    """
+    Print a usage error as plain text for an AI agent: no panel, no ANSI, one fact per line.
+
+    The peer of :func:`rich_format_error`, chosen by the same agent detection that drives agent help,
+    and dispatched from it so that every caller of either agrees on which rendering an environment
+    gets. Override or monkeypatch this to change the agent block, exactly as with the rich renderer.
+    """
+    from rich_click.error_diagnosis import diagnose, format_diagnosis_for_agent
+
+    block = format_diagnosis_for_agent(self, diagnose(self))
+    # ``soft_wrap`` keeps the corrected invocation on one line: a command line broken across a terminal
+    # width is no longer copyable, which defeats the point of offering it.
+    formatter.write(Text(block), soft_wrap=True)
+    for extra in (formatter.config.errors_suggestion, formatter.config.errors_epilogue):
+        if extra:
+            formatter.write(Text(extra.plain if isinstance(extra, Text) else str(extra)), soft_wrap=True)
+
+
 def rich_format_error(
     self: click.ClickException, formatter: RichHelpFormatter, export_console_as: Literal[None, "html", "svg"] = None
 ) -> None:
@@ -1030,6 +1228,11 @@ def rich_format_error(
     Called by custom exception handler to print richly formatted click errors.
     Mimics original click.ClickException.echo() function but with rich formatting.
 
+    In a detected AI agent environment a usage error is handed to :func:`agent_format_error` instead,
+    which renders it as plain text. The dispatch lives here rather than in the caller so that every
+    entry point -- ``RichHelpFormatter.write_error``, a subclass overriding it, or a direct call to this
+    function -- agrees on which rendering the environment gets.
+
     Args:
     ----
         self (click.ClickException): Click exception to format.
@@ -1037,6 +1240,13 @@ def rich_format_error(
         export_console_as: If set, outputs error message as HTML or SVG.
 
     """
+    from rich_click._agent_detection import is_agent_mode
+    from rich_click.error_diagnosis import diagnosis_enabled
+
+    if isinstance(self, click.UsageError) and diagnosis_enabled(formatter.config) and is_agent_mode():
+        agent_format_error(self, formatter)
+        return
+
     config = formatter.config
     # Print usage
     if getattr(self, "ctx", None) is not None:
@@ -1092,7 +1302,7 @@ def rich_format_error(
         formatter.write(
             Padding(
                 Panel(
-                    formatter.highlighter(self.format_message()),
+                    _error_panel_body(self, formatter),
                     border_style=config.style_errors_panel_border,
                     title=config.errors_panel_title,
                     title_align=config.align_errors_panel,

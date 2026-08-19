@@ -22,11 +22,12 @@ from click import pass_context as click_pass_context
 from click import password_option as click_password_option
 from click import version_option as click_version_option
 
+from rich_click._agent_detection import is_agent_mode
 from rich_click.rich_command import RichCommand, RichGroup
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_panel import RichCommandPanel, RichOptionPanel, RichPanel
-from rich_click.rich_parameter import RichArgument, RichOption
+from rich_click.rich_parameter import RichArgument, RichHelpOption, RichOption
 
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -306,38 +307,171 @@ def pass_context(f: Callable[Concatenate[RichContext, P], R]) -> Callable[P, R]:
     return click_pass_context(f)  # type: ignore[arg-type,unused-ignore]
 
 
+#: Sentinel ``flag_value`` for a bare ``--help`` (no attached format). Distinct from any real format
+#: name and from ``True`` (a plain boolean flag), so the callback can tell "show normal help" apart from
+#: "render format X". The null bytes make an accidental collision with a real CLI value impossible.
+HELP_PLAIN_VALUE = "\x00__rich_click_plain_help__\x00"
+
+
+def _emit_help_text(ctx: Context, text: str) -> None:
+    # Avoid click.echo(), which ignores console settings like force_terminal. Every help
+    # document goes through here -- human and machine-readable alike -- so ``help_to_stderr``
+    # keeps stdout clean whichever one is rendered.
+    if getattr(ctx, "help_to_stderr", False):
+        print(text, file=sys.stderr)
+    else:
+        print(text)
+
+
+def _show_legacy_help(ctx: Context, param: Parameter, value: bool) -> None:
+    """Print normal help for the legacy Boolean flag."""
+    if value and not ctx.resilient_parsing:
+        _emit_help_text(ctx, ctx.get_help())
+        ctx.exit()
+
+
+def _base_help_option_defaults() -> dict[str, Any]:
+    """Defaults shared by the legacy Boolean flag and the format-aware ``--help`` option."""
+    return {
+        "expose_value": False,
+        "is_eager": True,
+        "help": gettext("Show this message and exit."),
+    }
+
+
+def _legacy_help_option_attrs(kwargs: dict[str, Any]) -> dict[str, Any]:
+    """Apply the defaults from the help option used before structured formats."""
+    attrs = dict(kwargs)
+    for key, value in _base_help_option_defaults().items():
+        attrs.setdefault(key, value)
+    attrs.setdefault("is_flag", True)
+    attrs.setdefault("callback", _show_legacy_help)
+    attrs.setdefault("cls", RichOption)
+    return attrs
+
+
+def _legacy_help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
+    """Build the Boolean help flag used before machine-readable formats were added."""
+    if not param_decls:
+        param_decls = ("--help",)
+    return click_option(*param_decls, **_legacy_help_option_attrs(kwargs))
+
+
+def _legacy_help_option_from(option: RichHelpOption) -> RichOption:
+    """Return the cached legacy form of an explicitly declared format-aware help option."""
+    cached = getattr(option, "_rich_click_legacy_option", None)
+    if cached is not None:
+        return cast(RichOption, cached)
+
+    metadata = getattr(option, "_rich_click_legacy_declaration", None)
+    if metadata is None:
+        param_decls = (*option.opts, *option.secondary_opts)
+        kwargs = {
+            "help": option.help,
+            "hidden": option.hidden,
+            "panel": option.panel,
+            "help_style": option.help_style,
+        }
+    else:
+        param_decls, kwargs = metadata
+
+    attrs = _legacy_help_option_attrs(kwargs)
+    option_class = attrs.pop("cls")
+    legacy = option_class(param_decls, **attrs)
+    option._rich_click_legacy_option = legacy  # type: ignore[attr-defined]
+    return cast(RichOption, legacy)
+
+
 def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     """
     Pre-configured ``--help`` option which immediately prints the help page
     and exits the program.
 
+    Accepts an optional format value so the same flag can also emit machine-readable help:
+    ``--help compact`` (character-lean, whole tree), ``--help markdown`` (LLM-friendly), and
+    ``--help json`` (structured data). Installed plugins can add more values. The space
+    form is the documented one, though the attached form (``--help=json``) works too. An unrecognized
+    value falls back to the normal help rather than erroring (just as the plain ``--help`` always ignored
+    anything that followed it).
+
+    A bare ``--help`` renders the normal human-readable help, except in a detected AI agent environment,
+    where it renders the ``agent_help_format`` config option's format (``compact`` by default; ``None``
+    disables the switch).
+
     :param param_decls: One or more option names. Defaults to the single
         value ``"--help"``.
     :param kwargs: Extra arguments are passed to :func:`option`.
     """
+    legacy_kwargs = dict(kwargs)
 
-    def show_help(ctx: Context, param: Parameter, value: bool) -> None:
-        """Callback that print the help page on ``<stdout>`` and exits."""
-        if value and not ctx.resilient_parsing:
-            # Avoid click.echo() because it ignores console settings like force_terminal.
-            # Also, do not print() if empty string; assume console was record=False.
-            if getattr(ctx, "help_to_stderr", False):
-                print(ctx.get_help(), file=sys.stderr)
-            else:
-                print(ctx.get_help())
-            ctx.exit()
+    def show_help(ctx: Context, param: Parameter, value: Any) -> None:
+        """Callback that prints the help page (human or machine-readable) and exits."""
+        # ``None`` / ``False`` mean the flag was not given; an empty string (``--help=``) is still a
+        # request for help -- it falls through to the normal help below, like a bare ``--help``.
+        if value is None or value is False or ctx.resilient_parsing:
+            return
+        # A real format was given (e.g. ``--help json``); the sentinel / ``True`` / empty string (``--help=``)
+        # all mean a bare ``--help``.
+        if value and value is not True and value != HELP_PLAIN_VALUE:
+            get_help_for_format = getattr(ctx.command, "get_help_for_format", None)
+            if get_help_for_format is not None:
+                rendered = get_help_for_format(ctx, value)
+                if rendered is not None:
+                    _emit_help_text(ctx, rendered)
+                    ctx.exit()
+            # Unknown format (or a non-rich command): fall through to normal help.
+        else:
+            # Bare ``--help`` in a detected AI agent environment: render the configured machine-readable
+            # format instead, so an agent gets help it can parse without having to know the format exists.
+            # Only a bare ``--help`` is redirected -- an explicit ``--help <format>`` above is always
+            # honoured verbatim, in any environment.
+            agent_help_format = getattr(getattr(ctx, "help_config", None), "agent_help_format", None)
+            if agent_help_format is not None and is_agent_mode():
+                get_help_for_format = getattr(ctx.command, "get_help_for_format", None)
+                if get_help_for_format is not None:
+                    # Flagged for the duration of the render, so a format can tell "the agent default"
+                    # apart from "asked for by name" -- `--help compact` renders the whole tree, while
+                    # the same format as the agent default adapts to `agent_help_max_chars`.
+                    agent_ctx = ctx if isinstance(ctx, RichContext) else None
+                    if agent_ctx is not None:
+                        agent_ctx.agent_help_default = True
+                    try:
+                        rendered = get_help_for_format(ctx, agent_help_format)
+                    finally:
+                        if agent_ctx is not None:
+                            agent_ctx.agent_help_default = False
+                    if rendered is not None:
+                        _emit_help_text(ctx, rendered)
+                        ctx.exit()
+                # Unregistered format name: fall through to the normal help rather than erroring.
+        # Do not print() if empty string; assume console was record=False.
+        _emit_help_text(ctx, ctx.get_help())
+        ctx.exit()
 
     if not param_decls:
         param_decls = ("--help",)
 
-    kwargs.setdefault("is_flag", True)
-    kwargs.setdefault("expose_value", False)
-    kwargs.setdefault("is_eager", True)
-    kwargs.setdefault("help", gettext("Show this message and exit."))
+    # Optional-value flag: ``flag_value`` is what a bare ``--help`` yields; a format given after it
+    # (``--help json``) is passed through verbatim. ``RichHelpOption`` shows a ``FORMAT`` metavar, so the
+    # optional value is conveyed the same way as any other value-taking option rather than via help text.
+    for key, value in _base_help_option_defaults().items():
+        kwargs.setdefault(key, value)
+    kwargs.setdefault("is_flag", False)
+    kwargs.setdefault("flag_value", HELP_PLAIN_VALUE)
     kwargs.setdefault("callback", show_help)
-    kwargs.setdefault("cls", RichOption)
+    kwargs.setdefault("cls", RichHelpOption)
 
-    return click_option(*param_decls, **kwargs)
+    option_decorator = click_option(*param_decls, **kwargs)
+
+    def decorator(obj: FC) -> FC:
+        result = option_decorator(obj)
+        # click.option() always appends the new parameter to the end of the target's params list.
+        params = getattr(result, "params", getattr(result, "__click_params__", []))
+        added = params[-1]
+        added._rich_click_legacy_declaration = (param_decls, legacy_kwargs)
+        return result
+
+    return decorator
 
 
 def argument(*param_decls: str, cls: type[Argument] | None = None, **attrs: Any) -> Callable[[FC], FC]:

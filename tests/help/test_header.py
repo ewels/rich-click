@@ -25,7 +25,7 @@ def test_header_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --debug/--no-debug                                                                               │
-│ --help              Show this message and exit.                                                  │
+│ --help              [compact|markdown|json]  Show this message and exit.                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ subcommand                        Subcommand help text                                           │
@@ -47,7 +47,7 @@ Debug mode is off
  Subcommand help text                                                                               \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -67,7 +67,7 @@ def test_header_help_turn_off_rich_markup(cli_runner: CliRunner, cli: rich_click
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --debug/--no-debug                                                                               │
-│ --help              Show this message and exit.                                                  │
+│ --help              [compact|markdown|json]  Show this message and exit.                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ subcommand                        Subcommand help text                                           │

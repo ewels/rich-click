@@ -21,9 +21,7 @@ def test_abort(cli_runner: CliRunner) -> None:
     res = cli_runner.invoke(cli)
 
     assert res.stdout == snapshot("")
-    assert res.stderr == snapshot("""\
-\x1b[31mAborted.\x1b[0m
-""")
+    assert res.stderr == snapshot("Aborted.\n")
 
 
 def test_child_context_inherits_errors_in_output_format() -> None:
@@ -66,6 +64,6 @@ def test_help_to_stderr(cli_runner: CliRunner) -> None:
  CLI help text                                                                                      \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)

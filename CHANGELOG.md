@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+- Added structured help on the existing `--help` option. The built-in formats are `markdown`, `json`, and `compact`.
+  - The `help_formats` configuration selects and orders the built-in/in-process formats. Its default is `["compact", "markdown", "json"]`. Set it to `[]` to disable the built-ins while still allowing installed plugins, or to `False` to restore the previous Boolean `--help` flag entirely.
+  - `--help markdown` and `--help json` return the complete command tree.
+  - `--help compact` returns the complete tree in a concise text format. A bare `--help` uses adaptive compact output in detected coding-agent environments.
+  - `help_to_stderr` applies to structured help as well as normal terminal help.
+  - Hidden commands stay out of Markdown and compact output. JSON retains them for introspection.
+  - The `--help` parameter lists all available formats in normal help and in its JSON `choices` field.
+  - Installed packages can add formats with the `rich_click.help_formats` entry-point group. A renderer has the signature `(command, ctx) -> str`. rich-click discovers and appends these formats to every command automatically, without changes to the CLI source, unless `help_formats` is `False`.
+  - Custom `to_info_dict()` fields from `RichCommand` subclasses, plain Click leaf commands, and parameter subclasses pass through to the schema. Plain Click group subclasses use Click's standard fields so lazy command trees are loaded only once. Use `help_json_transform`, a `RichCommand` subclass, or `help_format_renderers` for in-process customization.
+  - Recursive help does not parse descendant arguments, so option callbacks do not run. Custom commands that need extra context setup during help can override `make_context_without_parsing()`.
+  - The space form (`--help json`) and attached form (`--help=json`) both work. An unknown format shows normal terminal help.
+- Added **error diagnosis** for usage errors: instead of only reporting the symptom (`No such option: --repo`), rich-click works out the rule that was broken and says so. It derives the violated rule — including the parent-group case (`'--repo' is an option of the parent group 'tool', not of 'tool build'`) — near matches by edit distance over the command's real option and subcommand names, the valid values of a `Choice`, and a copyable corrected invocation where one can be built confidently.
+  - Humans get a terse addition inside the existing error panel; in a detected AI agent environment the error is rendered as a plain-text block instead — no ANSI and one fact per line. Same detection machinery as agent help.
+  - Strictly additive: exit codes are unchanged, Click's own message is still the first line, and an error that already states its own rule (a `ctx.fail()` from your callback) is left untouched. Switch it off with the `error_diagnosis` config option / `ERROR_DIAGNOSIS` global, or per-run with `RICH_CLICK_ERROR_DIAGNOSIS=0`.
+- Added an `examples=` argument to commands and groups: a list of `(description, command)` tuples (description first, and required). Examples render in the human help, Markdown, JSON, and plugin formats that use the shared schema. The panel title is configurable via `examples_panel_title`.
+  - In Markdown, the `## Examples` section sits immediately after the usage line, before the parameter tables. The rendered human help keeps its Examples panel after the options.
+  - In the rendered `--help`, **placeholders are detected and highlighted automatically** — using the command's known path and flags (matched by name or alias), a value after a value-taking flag (or a bare positional) is recognised as a placeholder the user fills in. The command/flag/placeholder colours are independently configurable via `style_examples_*` options (commands/flags default to the main help styles; placeholders stand out in blue).
 - Dropped support for Python 3.8 and 3.9; the minimum supported version is now Python 3.10.
 - Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python <3.10.
 - Dev and docs requirements moved from optional dependencies to [dependency groups](https://peps.python.org/pep-0735/), so they are no longer published as package metadata. Install them with `uv sync --all-groups`.
@@ -73,8 +90,8 @@
 - **Themes!** Check them out with `rich-click --themes`.
 - **Typer support:** `rich-click typer_app --help`.
 - **RichPanels** API introduced. This replaces the "groups" feature going forward (although groups will continue to be supported).
-    - `@click.option_panel()`
-    - `@click.command_panel()`
+  - `@click.option_panel()`
+  - `@click.command_panel()`
 - **IDE tab completion support for decorators**. Now you should no longer need to guess what goes in `@click.option()` or `@click.command(context_settings=...)` etc.
 - **Help for arguments:** `help=` is now a valid kwarg for `@click.argument()` decorator. See docs for more information.
 
@@ -96,7 +113,7 @@
 - Improved test coverage and CI.
 - `typing_extensions` now only required for < Python 3.11.
 - `RichHelpFormatter` now defers printing by default if a user does not specify a Console. [[#231](https://github.com/ewels/rich-click/pull/231)] (With contributions from [@ofek](https://github.com/ofek))
-    - This more closely aligns the `RichHelpFormatter` with how base Click works.
+  - This more closely aligns the `RichHelpFormatter` with how base Click works.
 - Significant refactors to help text rendering.
 - Reintroduced deprecation warnings for a couple of features deprecated in 1.8.
 - There was an issue where the `rich.highlighter` module could load during CLI execution. We now assert in unit-tests that no `rich` modules are loaded during code execution, so going forward, `rich` imports should no longer ever be a side-effect of CLI execution.
@@ -152,29 +169,29 @@ Click 8.2 support:
 - Add `--rich-config` and `--output` options to the `rich-click` CLI.
 - Lazy load Rich to reduce overhead when not rendering help text. [[#154](https://github.com/ewels/rich-click/pull/154)]
 - Some internal refactors. These refactors are aimed at making the abstractions more maintainable over time, more consistent, and more adept for advanced used cases.
-    - `rich_click.py` is exclusively the global config; all formatting has been moved to `rich_help_rendering.py`.
-    - `RichCommand` now makes use of methods in the super class: `format_usage`, `format_help_text`, `format_options`, and `format_epilog`.
-    - Global `formatter` object has been removed from the code.
-    - `highlighter` is now constructed by the `RichHelpFormatter` rather than being inside the config object.
+  - `rich_click.py` is exclusively the global config; all formatting has been moved to `rich_help_rendering.py`.
+  - `RichCommand` now makes use of methods in the super class: `format_usage`, `format_help_text`, `format_options`, and `format_epilog`.
+  - Global `formatter` object has been removed from the code.
+  - `highlighter` is now constructed by the `RichHelpFormatter` rather than being inside the config object.
 - Added `RichHelpConfiguration.load_from_globals()` classmethod, which pulls all configuration from `rich_click.py`.
 - Fix bug with regex highlighter for options and switches.
 - `RichHelpConfiguration()` is now asserted to be JSON serializable, as an option for porting configurations. That said, serialization is not a fully supported feature of the high-level API, so serialize the config at your own risk.
-    - Related: `highlighter` is now deprecated in `RichHelpConfiguration`; please use `highlighter_patterns` instead.
+  - Related: `highlighter` is now deprecated in `RichHelpConfiguration`; please use `highlighter_patterns` instead.
 - Moved exclusively to `pyproject.toml` and removed `setup.py` / `setup.cfg`; thank you [@Stealthii](https://github.com/Stealthii)!
 - Moved to `text_markup: Literal["markdown", "rich", "ansi", None]` instead of booleans.
-    - The default is now `ansi` instead of `None` to help support usage of `click.style()`. `None` is still supported.
+  - The default is now `ansi` instead of `None` to help support usage of `click.style()`. `None` is still supported.
 - Fixed issue where error messages would not print to `stderr` by default.
 - New configuration options: [[#178](https://github.com/ewels/rich-click/pull/178)]
-    - `STYLE_OPTIONS_PANEL_BOX`
-    - `STYLE_COMMANDS_PANEL_BOX`
-    - `STYLE_ERRORS_PANEL_BOX`
+  - `STYLE_OPTIONS_PANEL_BOX`
+  - `STYLE_COMMANDS_PANEL_BOX`
+  - `STYLE_ERRORS_PANEL_BOX`
 - Many quality of life improvements for command and option groups:
-    - Support both `command_path` and `command.name`.
-    - Added wildcard (`*`) option for command groups and option groups, with thanks to [@ITProKyle](https://github.com/ITProKyle)!
-    - Resolve duplicates.
-    - Better typing for option groups and command groups with `TypedDict` [[#156](https://github.com/ewels/rich-click/pull/156)]
-    - Added `panel_styles` support to groups. [[#178](https://github.com/ewels/rich-click/pull/178)]
-    - Allow `table_styles` and `panel_styles` to be defined for the positional arguments group.
+  - Support both `command_path` and `command.name`.
+  - Added wildcard (`*`) option for command groups and option groups, with thanks to [@ITProKyle](https://github.com/ITProKyle)!
+  - Resolve duplicates.
+  - Better typing for option groups and command groups with `TypedDict` [[#156](https://github.com/ewels/rich-click/pull/156)]
+  - Added `panel_styles` support to groups. [[#178](https://github.com/ewels/rich-click/pull/178)]
+  - Allow `table_styles` and `panel_styles` to be defined for the positional arguments group.
 
 ## Version 1.7.4 (2024-03-12)
 
@@ -236,7 +253,7 @@ In addition:
 ## Version 1.6.0 (2022-12-05)
 
 - ⚠️ Removed support for Typer ⚠️
-    - Please use the [native Typer functionality](https://typer.tiangolo.com/tutorial/options/help/#cli-options-help-panels) instead.
+  - Please use the [native Typer functionality](https://typer.tiangolo.com/tutorial/options/help/#cli-options-help-panels) instead.
 - Added self-updating automated readme screengrabs using [rich-codex](https://github.com/ewels/rich-codex)
 - Fix `AssertionError` when using click command call [[#94](https://github.com/ewels/rich-click/issues/94)]
 
@@ -249,8 +266,8 @@ In addition:
 
 - Pin Typer version to `<0.6`
 - Improve support for arguments [[#82](https://github.com/ewels/rich-click/pull/82)]
-    - Fixes error with Typer arguments [[#59](https://github.com/ewels/rich-click/issues/59)]
-    - Adds new style option `STYLE_ARGUMENT`
+  - Fixes error with Typer arguments [[#59](https://github.com/ewels/rich-click/issues/59)]
+  - Adds new style option `STYLE_ARGUMENT`
 - Don't show env vars if `None` [[#84](https://github.com/ewels/rich-click/issues/84)]
 - Specify `__all__` for type checkers [[#83](https://github.com/ewels/rich-click/pull/83)]
 
@@ -262,10 +279,10 @@ In addition:
 ## Version 1.5.0 (2022-06-21)
 
 - Add new `FORCE_TERMINAL` config flag to force colours even when help output is piped
-    - Can also be enabled by setting environment variables `GITHUB_ACTIONS`, `FORCE_COLOR` or `PY_COLORS`
+  - Can also be enabled by setting environment variables `GITHUB_ACTIONS`, `FORCE_COLOR` or `PY_COLORS`
 - Add new `OPTION_ENVVAR_FIRST` config flag to print environment variables before option help texts instead of after (nice for alignment if all options have an env var).
 - Refactor config flag `MAX_WIDTH` to set the console `width` and not individual panels
-    - Can now also be set with environment variable `TERMINAL_WIDTH`
+  - Can now also be set with environment variable `TERMINAL_WIDTH`
 - Fix package syntax in `setup.py` for `py.typed` [[#75](https://github.com/ewels/rich-click/pull/75)]
 - Fix printing of return values when `standalone_mode` set [[#76](https://github.com/ewels/rich-click/pull/76)]
 
@@ -338,7 +355,7 @@ Many thanks to [@ashb](httpsd://github.com/ashb) for spotting.
 ## Version 1.0.0 (2022-02-18)
 
 - _**Major change:**_ New usage, so that we can avoid having to do monkey patching [[#10](https://github.com/ewels/rich-click/pull/10).]
-    - Now use with `import rich_click as click`
+  - Now use with `import rich_click as click`
 - Add ability to create groups of options with separate panels
 - Show positional arguments in their own panel by default
 - Add config `GROUP_ARGUMENTS_OPTIONS` option to group with options
@@ -363,8 +380,8 @@ Many thanks to [@ashb](httpsd://github.com/ashb) for spotting.
 
 - Made most styling decisions configurable
 - Added support for more click parameters
-    - Showing default values, showing if required, showing if deprecated, epilog
-    - Option now hidden if set in click
+  - Showing default values, showing if required, showing if deprecated, epilog
+  - Option now hidden if set in click
 
 ## Version 0.1.2 (2022-02-10)
 

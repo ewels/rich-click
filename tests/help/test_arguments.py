@@ -30,11 +30,11 @@ def test_arguments_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> N
 │ *  OUTPUT  PATH  Output file [required]                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --type             TEXT                Type of file to sync [default: files]                     │
-│ --debug        -d                      Enable debug mode                                         │
-│ --environment  -e  [dev|staging|prod]  Sync to what environment [env var: MY_ENV] [default:      │
-│                                        (current)]                                                │
-│ --help                                 Show this message and exit.                               │
+│ --type             TEXT                     Type of file to sync [default: files]                │
+│ --debug        -d                           Enable debug mode                                    │
+│ --environment  -e  [dev|staging|prod]       Sync to what environment [env var: MY_ENV] [default: │
+│                                             (current)]                                           │
+│ --help             [compact|markdown|json]  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -53,11 +53,11 @@ def test_arguments_help_with_no_show_arguments(cli_runner: CliRunner, cli: rich_
  You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --type             TEXT                Type of file to sync [default: files]                     │
-│ --debug        -d                      Enable debug mode                                         │
-│ --environment  -e  [dev|staging|prod]  Sync to what environment [env var: MY_ENV] [default:      │
-│                                        (current)]                                                │
-│ --help                                 Show this message and exit.                               │
+│ --type             TEXT                     Type of file to sync [default: files]                │
+│ --debug        -d                           Enable debug mode                                    │
+│ --environment  -e  [dev|staging|prod]       Sync to what environment [env var: MY_ENV] [default: │
+│                                             (current)]                                           │
+│ --help             [compact|markdown|json]  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -80,11 +80,11 @@ def test_arguments_help_with_help_panel_title(cli_runner: CliRunner, cli: rich_c
 │ *  OUTPUT  PATH  Output file [required]                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --type             TEXT                Type of file to sync [default: files]                     │
-│ --debug        -d                      Enable debug mode                                         │
-│ --environment  -e  [dev|staging|prod]  Sync to what environment [env var: MY_ENV] [default:      │
-│                                        (current)]                                                │
-│ --help                                 Show this message and exit.                               │
+│ --type             TEXT                     Type of file to sync [default: files]                │
+│ --debug        -d                           Enable debug mode                                    │
+│ --environment  -e  [dev|staging|prod]       Sync to what environment [env var: MY_ENV] [default: │
+│                                             (current)]                                           │
+│ --help             [compact|markdown|json]  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -108,11 +108,11 @@ def test_arguments_help_with_help_panel_config(cli_runner: CliRunner, cli: rich_
 ║ *  OUTPUT  PATH  Output file [required]                                                          ║
 ╚══════════════════════════════════════════════════════════════════════════════════════════════════╝
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --type             TEXT                Type of file to sync [default: files]                     │
-│ --debug        -d                      Enable debug mode                                         │
-│ --environment  -e  [dev|staging|prod]  Sync to what environment [env var: MY_ENV] [default:      │
-│                                        (current)]                                                │
-│ --help                                 Show this message and exit.                               │
+│ --type             TEXT                     Type of file to sync [default: files]                │
+│ --debug        -d                           Enable debug mode                                    │
+│ --environment  -e  [dev|staging|prod]       Sync to what environment [env var: MY_ENV] [default: │
+│                                             (current)]                                           │
+│ --help             [compact|markdown|json]  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -131,13 +131,13 @@ def test_arguments_help_grouped_with_options(cli_runner: CliRunner, cli: rich_cl
  You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ *  INPUT              PATH                Input file [required]                                  │
-│ *  OUTPUT             PATH                Output file [required]                                 │
-│    --type             TEXT                Type of file to sync [default: files]                  │
-│    --debug        -d                      Enable debug mode                                      │
-│    --environment  -e  [dev|staging|prod]  Sync to what environment [env var: MY_ENV] [default:   │
-│                                           (current)]                                             │
-│    --help                                 Show this message and exit.                            │
+│ *  INPUT              PATH                     Input file [required]                             │
+│ *  OUTPUT             PATH                     Output file [required]                            │
+│    --type             TEXT                     Type of file to sync [default: files]             │
+│    --debug        -d                           Enable debug mode                                 │
+│    --environment  -e  [dev|staging|prod]       Sync to what environment [env var: MY_ENV]        │
+│                                                [default: (current)]                              │
+│    --help             [compact|markdown|json]  Show this message and exit.                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

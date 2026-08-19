@@ -27,9 +27,10 @@ def test_wildcard_groups_help(cli_runner: CliRunner, cli: rich_click.RichCommand
 │ *  --type  TEXT  Type of file to sync [default: files] [required]                                │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced options ───────────────────────────────────────────────────────────────────────────────╮
-│ --help              -h     Show this message and exit.                                           │
-│ --version                  Show the version and exit.                                            │
-│ --debug/--no-debug  -d/-n  Show the debug log messages [default: no-debug]                       │
+│ --help              -h     [compact|markdown|json]  Show this message and exit.                  │
+│ --version                                           Show the version and exit.                   │
+│ --debug/--no-debug  -d/-n                           Show the debug log messages [default:        │
+│                                                     no-debug]                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Main usage ─────────────────────────────────────────────────────────────────────────────────────╮
 │ sync             Synchronise all your files between two places.                                  │
@@ -54,9 +55,9 @@ Debug mode is off
  Synchronise all your files between two places.                                                     \n\
                                                                                                     \n\
 ╭─ Advanced usage ─────────────────────────────────────────────────────────────────────────────────╮
-│ --overwrite      Overwrite local files                                                           │
-│ --all            Sync all the things?                                                            │
-│ --help       -h  Show this message and exit.                                                     │
+│ --overwrite                               Overwrite local files                                  │
+│ --all                                     Sync all the things?                                   │
+│ --help       -h  [compact|markdown|json]  Show this message and exit.                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Inputs and outputs ─────────────────────────────────────────────────────────────────────────────╮
 │ *  --input   -i  TEXT  Input path [required]                                                     │

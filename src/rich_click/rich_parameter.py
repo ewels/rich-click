@@ -33,6 +33,10 @@ class RichParameter(click.Parameter):
         **kwargs: Any,
     ):
         """Create RichParameter instance."""
+        # Click 8.0 stores ``False`` both when this setting is omitted and when the caller supplies it.
+        # Structured text help needs the distinction so it can preserve ordinary introspection defaults
+        # while honoring an explicit request to hide one.
+        self._rich_click_show_default_explicit = "show_default" in kwargs
         super().__init__(*args, **kwargs)
         self.panel = panel
 
@@ -95,3 +99,34 @@ class RichOption(RichParameter, click.Option):
 
     All other parameters are passed onwards to the parameter constructor.
     """
+
+
+class RichHelpOption(RichOption):
+    """
+    The ``--help`` option.
+
+    Built as an optional-value option (``is_flag=False`` with a ``flag_value`` sentinel) so it can
+    accept an optional format -- ``--help markdown``, ``--help json``, ... -- while a bare ``--help``
+    still shows the normal human-readable help. It renders like any other option whose value is a fixed
+    set: all available formats are shown as the metavar, rather than appended to the help text.
+    """
+
+    def make_metavar(self, *args: Any, **kwargs: Any) -> str:
+        """
+        Show all available formats as the metavar, like a ``Choice`` option.
+
+        Resolving the registry needs the ctx, which rich-click's renderer always passes (see
+        ``_make_param_metavar`` in ``rich_help_rendering`` -- it threads the ctx through even on Click
+        versions whose ``make_metavar()`` is normally called without one). Without a ctx -- or on a plain
+        ``click.Command`` that can't actually serve the formats -- the metavar degrades to ``FORMAT``.
+        """
+        ctx = args[0] if args else kwargs.get("ctx")
+        cmd = getattr(ctx, "command", None)
+        if cmd is None or not callable(getattr(cmd, "get_help_for_format", None)):
+            return ""
+        from rich_click.help_json import _help_format_names
+
+        names = _help_format_names(cmd, ctx)  # built-ins, config renderers, and installed plugins
+        if not names:
+            return ""
+        return "[" + "|".join(names) + "]"

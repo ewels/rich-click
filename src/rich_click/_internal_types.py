@@ -26,6 +26,8 @@ if TYPE_CHECKING:
     from rich.style import StyleType
     from rich.text import Text, TextType
 
+    from rich_click.help_formats import HelpFormatRenderer
+    from rich_click.help_json import HelpJSONTransform
     from rich_click.rich_click_theme import RichClickTheme
     from rich_click.rich_help_configuration import (
         CommandColumnType,
@@ -128,6 +130,11 @@ class RichHelpConfigurationDict(TypedDict):
     style_usage: NotRequired[StyleType]
     style_usage_command: NotRequired[StyleType]
     style_usage_separator: NotRequired[StyleType]
+    style_examples_command: NotRequired[StyleType]
+    style_examples_flag_long: NotRequired[StyleType]
+    style_examples_flag_short: NotRequired[StyleType]
+    style_examples_placeholder: NotRequired[StyleType]
+    style_examples_operator: NotRequired[StyleType]
     style_deprecated: NotRequired[StyleType]
     style_helptext_first_line: NotRequired[StyleType]
     style_helptext: NotRequired[StyleType]
@@ -208,6 +215,7 @@ class RichHelpConfigurationDict(TypedDict):
     arguments_panel_title: NotRequired[str]
     options_panel_title: NotRequired[str]
     commands_panel_title: NotRequired[str]
+    examples_panel_title: NotRequired[str]
     errors_panel_title: NotRequired[str]
     delimiter_comma: NotRequired[str]
     delimiter_slash: NotRequired[str]
@@ -244,5 +252,11 @@ class RichHelpConfigurationDict(TypedDict):
     option_groups: NotRequired[dict[str, list[OptionGroupDict]]]
     use_click_short_help: NotRequired[bool]
     helptext_show_aliases: NotRequired[bool]
+    agent_help_format: NotRequired[str | None]
+    agent_help_max_chars: NotRequired[int | None]
+    error_diagnosis: NotRequired[bool]
+    help_json_transform: NotRequired[HelpJSONTransform | None]
+    help_formats: NotRequired[list[str] | Literal[False]]
+    help_format_renderers: NotRequired[dict[str, HelpFormatRenderer]]
     highlighter_patterns: NotRequired[list[str]]
     legacy_windows: NotRequired[bool | None]

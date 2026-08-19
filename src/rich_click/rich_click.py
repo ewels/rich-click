@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from rich_click.help_formats import DEFAULT_HELP_FORMATS
 from rich_click.rich_help_configuration import (
     FROM_THEME,
     CommandColumnType,
@@ -21,6 +22,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.style import StyleType
     from rich.text import Text
 
+    from rich_click.help_formats import HelpFormatRenderer
+    from rich_click.help_json import HelpJSONTransform
     from rich_click.rich_click_theme import RichClickTheme
 
 #!STARTCONFIG
@@ -43,6 +46,12 @@ STYLE_RANGE_APPEND: StyleType = FROM_THEME
 STYLE_USAGE: StyleType = FROM_THEME
 STYLE_USAGE_COMMAND: StyleType = FROM_THEME
 STYLE_USAGE_SEPARATOR: StyleType = FROM_THEME
+# Styles for the command lines rendered in the Examples panel
+STYLE_EXAMPLES_COMMAND: StyleType = "bold"
+STYLE_EXAMPLES_FLAG_LONG: StyleType = "bold cyan"
+STYLE_EXAMPLES_FLAG_SHORT: StyleType = "bold green"
+STYLE_EXAMPLES_PLACEHOLDER: StyleType = "blue"
+STYLE_EXAMPLES_OPERATOR: StyleType = "bold yellow"  # shell operators: | > && ; etc.
 STYLE_DEPRECATED: StyleType = FROM_THEME
 STYLE_HELPTEXT_FIRST_LINE: StyleType = FROM_THEME
 STYLE_HELPTEXT: StyleType = FROM_THEME
@@ -131,6 +140,7 @@ HELPTEXT_ALIASES_STRING: str = "Aliases: {}"
 ARGUMENTS_PANEL_TITLE: str = "Arguments"
 OPTIONS_PANEL_TITLE: str = "Options"
 COMMANDS_PANEL_TITLE: str = "Commands"
+EXAMPLES_PANEL_TITLE: str = "Examples"
 ERRORS_PANEL_TITLE: str = "Error"
 DELIMITER_COMMA: str = FROM_THEME
 DELIMITER_SLASH: str = FROM_THEME
@@ -171,6 +181,25 @@ COMMAND_GROUPS: dict[str, list[CommandGroupDict]] = {}
 OPTION_GROUPS: dict[str, list[OptionGroupDict]] = {}
 USE_CLICK_SHORT_HELP: bool = False  # Use click's default function to truncate help text
 HELPTEXT_SHOW_ALIASES: bool = True
+# Format that a bare `--help` renders when an AI agent environment is detected (see `_agent_detection`).
+# Any registered `--help <format>` name; None disables the switch, leaving bare `--help` always human-readable.
+AGENT_HELP_FORMAT: str | None = "compact"
+# Character ceiling for the adaptive agent-facing help output: as much of the command tree as fits is
+# disclosed, nearest commands first. Characters because agent harnesses truncate output by characters.
+# None disables adaptation (current command + name index).
+AGENT_HELP_MAX_CHARS: int | None = 25_000
+# Diagnose usage errors: state the rule that was broken, not just the symptom. Rendered as a terse
+# addition to the error panel, or as a plain-text block when an AI agent is detected.
+# `RICH_CLICK_ERROR_DIAGNOSIS` overrides this in both directions.
+ERROR_DIAGNOSIS: bool = True
+# Machine-readable help (`--help markdown`, `--help json`, and plugin formats) is available on
+# the `--help` flag. Optional hook to post-process the JSON schema: (schema, command, ctx) -> schema
+HELP_JSON_TRANSFORM: HelpJSONTransform | None = None
+# Enabled `--help <format>` names, in display order. Installed plugin formats are always appended.
+# [] disables these built-ins but keeps plugins; False restores the legacy help flag entirely.
+HELP_FORMATS: list[str] | Literal[False] = list(DEFAULT_HELP_FORMATS)
+# Register custom format renderers without subclassing: {name: (command, ctx) -> str}.
+HELP_FORMAT_RENDERERS: dict[str, HelpFormatRenderer] = {}
 
 #!ENDCONFIG
 

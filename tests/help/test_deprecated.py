@@ -27,12 +27,12 @@ def test_deprecated_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> 
  You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --type             TEXT                Type of file to sync [deprecated: All files will be       │
-│                                        synced] [default: files]                                  │
-│ --debug        -d                      Enable debug mode [deprecated]                            │
-│ --environment  -e  [dev|staging|prod]  Sync to what environment [env var: MY_ENV] [default:      │
-│                                        (current)]                                                │
-│ --help                                 Show this message and exit.                               │
+│ --type             TEXT                     Type of file to sync [deprecated: All files will be  │
+│                                             synced] [default: files]                             │
+│ --debug        -d                           Enable debug mode [deprecated]                       │
+│ --environment  -e  [dev|staging|prod]       Sync to what environment [env var: MY_ENV] [default: │
+│                                             (current)]                                           │
+│ --help             [compact|markdown|json]  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ download  Pretend to download some files from _somewhere_. [deprecated]                          │
@@ -55,8 +55,8 @@ def test_deprecated_help_subcommand_bool(cli_runner: CliRunner, cli: rich_click.
  Pretend to download some files from _somewhere_.                                                   \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --all   Get everything                                                                           │
-│ --help  Show this message and exit.                                                              │
+│ --all                            Get everything                                                  │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -76,7 +76,7 @@ def test_deprecated_help_subcommand_string(cli_runner: CliRunner, cli: rich_clic
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --all                                                                                            │
-│ --help  Show this message and exit.                                                              │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -97,15 +97,15 @@ def test_deprecated_help_with_markdown(cli_runner: CliRunner, cli: rich_click.Ri
  You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --type             TEXT                Type of file to sync                                      │
-│                                        [deprecated: All files will be synced]                    │
-│                                        [default: files]                                          │
-│ --debug        -d                      Enable debug mode                                         │
-│                                        [deprecated]                                              │
-│ --environment  -e  [dev|staging|prod]  Sync to what environment                                  │
-│                                        [env var: MY_ENV]                                         │
-│                                        [default: (current)]                                      │
-│ --help                                 Show this message and exit.                               │
+│ --type             TEXT                     Type of file to sync                                 │
+│                                             [deprecated: All files will be synced]               │
+│                                             [default: files]                                     │
+│ --debug        -d                           Enable debug mode                                    │
+│                                             [deprecated]                                         │
+│ --environment  -e  [dev|staging|prod]       Sync to what environment                             │
+│                                             [env var: MY_ENV]                                    │
+│                                             [default: (current)]                                 │
+│ --help             [compact|markdown|json]  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ download  Pretend to download some files from somewhere.                                         │
@@ -131,8 +131,8 @@ def test_deprecated_help_subcommand_bool_with_markdown(cli_runner: CliRunner, cl
  Pretend to download some files from somewhere.                                                     \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --all   Get everything                                                                           │
-│ --help  Show this message and exit.                                                              │
+│ --all                            Get everything                                                  │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -153,7 +153,7 @@ def test_deprecated_help_subcommand_string_with_markdown(cli_runner: CliRunner, 
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --all                                                                                            │
-│ --help  Show this message and exit.                                                              │
+│ --help  [compact|markdown|json]  Show this message and exit.                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

@@ -22,6 +22,12 @@ class RichContext(click.Context):
     export_console_as: Literal["html", "svg", "text"] | None = None
     errors_in_output_format: bool = False
     help_to_stderr: bool = False
+    agent_help_default: bool = False
+    """True only while rendering the format a *bare* ``--help`` chose because an agent was detected.
+
+    A format that behaves differently when it was asked for by name reads this: ``--help compact``
+    renders the whole tree, while the same format reached through agent detection adapts to
+    ``agent_help_max_chars`` instead. Set by the ``--help`` callback for the duration of that render."""
 
     def __init__(
         self,

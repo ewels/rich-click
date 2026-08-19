@@ -25,9 +25,9 @@ def test_defaults_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> No
  You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --debug        -d                      Enable debug mode                                         │
-│ --environment  -e  [dev|staging|prod]  Sync to what environment [env var: MY_ENV]                │
-│ --help                                 Show this message and exit.                               │
+│ --debug        -d                           Enable debug mode                                    │
+│ --environment  -e  [dev|staging|prod]       Sync to what environment [env var: MY_ENV]           │
+│ --help             [compact|markdown|json]  Show this message and exit.                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ download                             Download files                                              │
@@ -48,8 +48,8 @@ Debug mode is off
  Download files                                                                                     \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --files  TEXT  What files to download [default: (All files)]                                     │
-│ --help         Show this message and exit.                                                       │
+│ --files  TEXT                     What files to download [default: (All files)]                  │
+│ --help   [compact|markdown|json]  Show this message and exit.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -70,9 +70,9 @@ Debug mode is off
  Download files                                                                                     \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --files  TEXT  What files to download                                                            │
-│                [default: (All files)]                                                            │
-│ --help         Show this message and exit.                                                       │
+│ --files  TEXT                     What files to download                                         │
+│                                   [default: (All files)]                                         │
+│ --help   [compact|markdown|json]  Show this message and exit.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

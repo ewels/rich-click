@@ -22,6 +22,7 @@ from rich_click.rich_command import RichCommand, RichGroup
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import CommandColumnType, OptionColumnType, RichHelpConfiguration
 from rich_click.rich_panel import RichOptionPanel, RichPanel
+from rich_click.rich_parameter import RichHelpOption, RichOption
 
 _AnyCallable = Callable[..., Any]
 
@@ -388,6 +389,15 @@ def version_option(
     help_style: StyleType | None = None,
     **attrs: Any,
 ) -> Callable[[FC], FC]: ...
+
+HELP_PLAIN_VALUE: str
+
+def _emit_help_text(ctx: click.Context, text: str) -> None: ...
+def _show_legacy_help(ctx: click.Context, param: click.Parameter, value: bool) -> None: ...
+def _base_help_option_defaults() -> dict[str, Any]: ...
+def _legacy_help_option_attrs(kwargs: dict[str, Any]) -> dict[str, Any]: ...
+def _legacy_help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]: ...
+def _legacy_help_option_from(option: RichHelpOption) -> RichOption: ...
 def help_option(
     *param_decls: str,
     cls: type[click.Option] | None = None,

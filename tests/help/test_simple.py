@@ -31,9 +31,10 @@ def test_simple_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None
  ... and more!                                                                                      \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --debug/--no-debug  -d/-n  Enable debug mode. Newlines are removed by default.                   │
-│                            Double newlines are preserved.                                        │
-│ --help                     Show this message and exit.                                           │
+│ --debug/--no-debug  -d/-n                           Enable debug mode. Newlines are removed by   │
+│                                                     default.                                     │
+│                                                     Double newlines are preserved.               │
+│ --help                     [compact|markdown|json]  Show this message and exit.                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ download  Optionally use short-help for the group help text                                      │
@@ -68,9 +69,10 @@ def test_simple_help_no_args_is_help(cli_runner: CliRunner, cli: rich_click.Rich
  ... and more!                                                                                      \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --debug/--no-debug  -d/-n  Enable debug mode. Newlines are removed by default.                   │
-│                            Double newlines are preserved.                                        │
-│ --help                     Show this message and exit.                                           │
+│ --debug/--no-debug  -d/-n                           Enable debug mode. Newlines are removed by   │
+│                                                     default.                                     │
+│                                                     Double newlines are preserved.               │
+│ --help                     [compact|markdown|json]  Show this message and exit.                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ download  Optionally use short-help for the group help text                                      │
@@ -108,9 +110,10 @@ def test_simple_help_commands_before_options(cli_runner: CliRunner, cli: rich_cl
 │           except print to the terminal.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --debug/--no-debug  -d/-n  Enable debug mode. Newlines are removed by default.                   │
-│                            Double newlines are preserved.                                        │
-│ --help                     Show this message and exit.                                           │
+│ --debug/--no-debug  -d/-n                           Enable debug mode. Newlines are removed by   │
+│                                                     default.                                     │
+│                                                     Double newlines are preserved.               │
+│ --help                     [compact|markdown|json]  Show this message and exit.                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -152,7 +155,7 @@ def test_simple_help_nu_theme(cli_runner: CliRunner, cli: rich_click.RichCommand
  ═ Options ════════════════════════════════════════════════════════════════════════════════════════ \n\
  --debug/--no-debug  -d/-n  Enable debug mode. Newlines are removed by default.                     \n\
                             Double newlines are preserved.                                          \n\
- --help                     Show this message and exit.                                             \n\
+ --help                     Show this message and exit. [compact|markdown|json]                     \n\
                                                                                                     \n\
  ═ Commands ═══════════════════════════════════════════════════════════════════════════════════════ \n\
  download  Optionally use short-help for the group help text                                        \n\
@@ -180,9 +183,9 @@ Here are things you can do:                                                     
 ... and more!                                                                                       \n\
                                                                                                     \n\
 Options:                                                                                            \n\
-  -d/-n  --debug/--no-debug  Enable debug mode. Newlines are removed by default.                    \n\
-                             Double newlines are preserved.                                         \n\
-         --help              Show this message and exit.                                            \n\
+  -d/-n  --debug/--no-debug              Enable debug mode. Newlines are removed by default.        \n\
+                                         Double newlines are preserved.                             \n\
+         --help <compact|markdown|json>  Show this message and exit.                                \n\
                                                                                                     \n\
 Commands:                                                                                           \n\
   download  Optionally use short-help for the group help text                                       \n\
@@ -212,9 +215,10 @@ def test_simple_help_modern_theme(cli_runner: CliRunner, cli: rich_click.RichCom
                                                                                                     \n\
   Options                                                                                           \n\
   ────────────────────────────────────────────────────────────────────────────────────────────────  \n\
-  -d / -n   --debug / --no-debug   Enable debug mode. Newlines are removed by default.              \n\
-                                   Double newlines are preserved.                                   \n\
-            --help                 Show this message and exit.                                      \n\
+  -d / -n   --debug / --no-debug                             Enable debug mode. Newlines are        \n\
+                                                             removed by default.                    \n\
+                                                             Double newlines are preserved.         \n\
+            --help                 [compact|markdown|json]   Show this message and exit.            \n\
                                                                                                     \n\
                                                                                                     \n\
   Commands                                                                                          \n\
@@ -246,9 +250,10 @@ Here are things you can do:                                                     
                                                                                                     \n\
 ┌─  Options  ──────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│  -d, --debug  -n, --no-debug  Enable debug mode. Newlines are removed by default.                │
-│                               Double newlines are preserved.                                     │
-│  --help                       Show this message and exit.                                        │
+│  -d, --debug  -n, --no-debug                           Enable debug mode. Newlines are removed   │
+│                                                        by default.                               │
+│                                                        Double newlines are preserved.            │
+│  --help                       [compact|markdown|json]  Show this message and exit.               │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ┌─  Commands  ─────────────────────────────────────────────────────────────────────────────────────┐

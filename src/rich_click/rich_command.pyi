@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable, MutableMapping, Sequence
 from typing import (
     Any,
+    ClassVar,
     Literal,
     NoReturn,
     TypeVar,
@@ -38,6 +39,7 @@ class RichCommand(click.Command):
     panels: list[RichPanel[Any, Any]]
     panel: str | None
     aliases: Iterable[str]
+    examples: list[dict[str, str]]
 
     def __init__(
         self,
@@ -45,6 +47,7 @@ class RichCommand(click.Command):
         aliases: Iterable[str] | None = None,
         panels: list[RichPanel[Any, Any]] | None = None,
         panel: str | None = None,
+        examples: Iterable[tuple[str, str]] | None = None,
         name: str | None,
         context_settings: MutableMapping[str, Any] | None = None,
         callback: Callable[..., Any] | None = None,
@@ -62,6 +65,12 @@ class RichCommand(click.Command):
     def console(self) -> Console | None: ...
     @property
     def help_config(self) -> RichHelpConfiguration | None: ...
+    def make_context_without_parsing(
+        self,
+        info_name: str,
+        parent: click.Context | None = None,
+        **extra: Any,
+    ) -> click.Context: ...
     def _generate_rich_help_config(self) -> RichHelpConfiguration: ...
     def _error_formatter(self) -> RichHelpFormatter: ...
     @overload
@@ -94,8 +103,20 @@ class RichCommand(click.Command):
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None: ...
     def format_help_text(self, ctx: RichContext, formatter: RichHelpFormatter) -> None: ...
     def format_options(self, ctx: RichContext, formatter: RichHelpFormatter) -> None: ...
+    def format_examples(self, ctx: RichContext, formatter: RichHelpFormatter) -> None: ...
     def format_epilog(self, ctx: RichContext, formatter: RichHelpFormatter) -> None: ...
     def get_help_option(self, ctx: RichContext) -> click.Option | None: ...
+    help_format_methods: ClassVar[dict[str, str]] = ...
+    def get_help_for_format(self, ctx: RichContext, fmt: str) -> str | None: ...
+    def _serialize_help(self, data: dict[str, Any]) -> str: ...
+    def _build_help_json(self, ctx: RichContext, formatter: RichHelpFormatter, recursive: bool) -> dict[str, Any]: ...
+    def get_help_json(self, ctx: RichContext) -> str: ...
+    def format_help_json(self, ctx: RichContext, formatter: RichHelpFormatter) -> dict[str, Any]: ...
+    def get_help_markdown(self, ctx: RichContext) -> str: ...
+    def format_help_markdown(self, ctx: RichContext) -> str: ...
+    def get_help_compact(self, ctx: RichContext) -> str: ...
+    def format_help_compact(self, ctx: RichContext) -> str: ...
+    def get_params(self, ctx: click.Context) -> list[click.Parameter]: ...
     def get_rich_table_row(
         self,
         ctx: RichContext,
@@ -126,6 +147,7 @@ class RichGroup(RichCommand, click.Group):
         self,
         panels: list[RichPanel[Any, Any]] | None = None,
         aliases: Iterable[str] | None = None,
+        examples: Iterable[tuple[str, str]] | None = None,
         name: str | None = None,
         commands: MutableMapping[str, click.Command] | Sequence[click.Command] | None = None,
         invoke_without_command: bool = False,
@@ -171,6 +193,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Iterable[str] | None = ...,
         panels: list[RichPanel[Any, Any]] | None = ...,
         panel: str | None = ...,
+        examples: Iterable[tuple[str, str]] | None = ...,
     ) -> Callable[[_AnyCallable], C]: ...
     @overload
     def command(
@@ -192,6 +215,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Iterable[str] | None = ...,
         panels: list[RichPanel[Any, Any]] | None = ...,
         panel: str | None = ...,
+        examples: Iterable[tuple[str, str]] | None = ...,
     ) -> Callable[[_AnyCallable], RichCommand]: ...
     @overload
     def command(
@@ -213,6 +237,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Iterable[str] | None = ...,
         panels: list[RichPanel[Any, Any]] | None = ...,
         panel: str | None = ...,
+        examples: Iterable[tuple[str, str]] | None = ...,
     ) -> Callable[[_AnyCallable], C]: ...
     @overload
     def command(
@@ -234,6 +259,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Iterable[str] | None = ...,
         panels: list[RichPanel[Any, Any]] | None = ...,
         panel: str | None = ...,
+        examples: Iterable[tuple[str, str]] | None = ...,
         **attrs: Any,
     ) -> Callable[[_AnyCallable], RichCommand]: ...
 
@@ -292,6 +318,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Iterable[str] | None = ...,
         panels: list[RichPanel[Any, Any]] | None = ...,
         panel: str | None = ...,
+        examples: Iterable[tuple[str, str]] | None = ...,
     ) -> Callable[[_AnyCallable], G]: ...
     @overload
     def group(
@@ -318,6 +345,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Iterable[str] | None = ...,
         panels: list[RichPanel[Any, Any]] | None = ...,
         panel: str | None = ...,
+        examples: Iterable[tuple[str, str]] | None = ...,
     ) -> Callable[[_AnyCallable], RichGroup]: ...
     @overload
     def group(
@@ -344,6 +372,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Iterable[str] | None = ...,
         panels: list[RichPanel[Any, Any]] | None = ...,
         panel: str | None = ...,
+        examples: Iterable[tuple[str, str]] | None = ...,
     ) -> Callable[[_AnyCallable], G]: ...
     @overload
     def group(
@@ -370,6 +399,7 @@ class RichGroup(RichCommand, click.Group):
         aliases: Iterable[str] | None = ...,
         panels: list[RichPanel[Any, Any]] | None = ...,
         panel: str | None = ...,
+        examples: Iterable[tuple[str, str]] | None = ...,
     ) -> Callable[[_AnyCallable], RichGroup]: ...
 
     # variant: with positional name and with positional or keyword cls argument:

@@ -24,7 +24,7 @@ def test_typer_rich_panels(typer_cli_runner: CliRunner, cli: typer.Typer) -> Non
  --install-completion  Install completion for the current shell.                                    \n\
  --show-completion     Show completion for the current shell, to copy it or customize the           \n\
                        installation.                                                                \n\
- --help                Show this message and exit.                                                  \n\
+ --help                Show this message and exit. [compact|markdown|json]                          \n\
                                                                                                     \n\
  ═ Commands ═══════════════════════════════════════════════════════════════════════════════════════ \n\
  create  Create a new user. ✨                                                                      \n\
@@ -56,7 +56,7 @@ def test_typer_rich_panels_subcommand(typer_cli_runner: CliRunner, cli: typer.Ty
                                                                                                     \n\
  ═ Options ════════════════════════════════════════════════════════════════════════════════════════ \n\
  --force/--no-force  (Default: no-force)                                                            \n\
- --help              Show this message and exit.                                                    \n\
+ --help              Show this message and exit. [compact|markdown|json]                            \n\
                                                                                                     \n\
  ═ Logging ════════════════════════════════════════════════════════════════════════════════════════ \n\
  --verbose/--no-verbose  (Default: no-verbose)                                                      \n\
