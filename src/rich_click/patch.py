@@ -336,6 +336,9 @@ def patch(
         rich_config.dump_to_globals()
 
 
+_TYPER_SUPPORT_DOCS_URL = "https://ewels.github.io/rich-click/latest/documentation/typer_support/"
+
+
 def patch_typer(rich_config: RichHelpConfiguration | None = None) -> None:
     import typer.core
     import typer.main
@@ -346,11 +349,7 @@ def patch_typer(rich_config: RichHelpConfiguration | None = None) -> None:
         import warnings
 
         warnings.warn(
-            "rich-click's patching is incompatible with Typer >= 0.26,"
-            " which vendors its own internal fork of Click."
-            " We'll try to patch it anyway, but if that fails, Typer will continue to work as normal,"
-            " just without rich-click's patching applied."
-            " Please downgrade Typer to <0.26 if you need rich-click's Typer patching support.",
+            f"rich-click's Typer patching may not work with Typer>=0.26. See {_TYPER_SUPPORT_DOCS_URL}",
             RuntimeWarning,
             stacklevel=2,
         )
@@ -398,8 +397,7 @@ def patch_typer(rich_config: RichHelpConfiguration | None = None) -> None:
         import warnings
 
         warnings.warn(
-            f"Failed to patch Typer ({exc.__class__.__name__}: {exc})."
-            " Typer will continue to work as normal, but without rich-click's patching applied.",
+            f"Failed to patch Typer ({exc.__class__.__name__}), continuing unpatched. See {_TYPER_SUPPORT_DOCS_URL}",
             RuntimeWarning,
             stacklevel=2,
         )
