@@ -397,7 +397,7 @@ def patch_typer(rich_config: RichHelpConfiguration | None = None) -> None:
         import warnings
 
         warnings.warn(
-            f"Failed to patch Typer ({exc.__class__.__name__}), continuing unpatched. See {_TYPER_SUPPORT_DOCS_URL}",
+            f"Failed to patch Typer ({exc.__class__.__name__}), continuing unpatched.",
             RuntimeWarning,
             stacklevel=2,
         )
