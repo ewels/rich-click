@@ -336,7 +336,7 @@ def patch(
         rich_config.dump_to_globals()
 
 
-_TYPER_SUPPORT_DOCS_URL = "https://ewels.github.io/rich-click/latest/documentation/typer_support/"
+_TYPER_SUPPORT_DOCS_URL = "https://ewels.github.io/rich-click/latest/documentation/typer_support/#typer-026-support"
 
 
 def patch_typer(rich_config: RichHelpConfiguration | None = None) -> None:
@@ -349,7 +349,7 @@ def patch_typer(rich_config: RichHelpConfiguration | None = None) -> None:
         import warnings
 
         warnings.warn(
-            f"rich-click's Typer patching may not work with Typer>=0.26. See {_TYPER_SUPPORT_DOCS_URL}",
+            f"Typer>=0.26 may not support rich-click patching, see {_TYPER_SUPPORT_DOCS_URL}",
             RuntimeWarning,
             stacklevel=2,
         )

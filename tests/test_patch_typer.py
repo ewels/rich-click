@@ -20,14 +20,14 @@ def test_patch_typer_does_not_warn_when_typer_supports_patching(monkeypatch: Mon
         warnings.simplefilter("always")
         patch_module.patch_typer()
 
-    assert not any("Typer patching may not work" in str(w.message) for w in caught)
+    assert not any("may not support rich-click patching" in str(w.message) for w in caught)
 
 
 def test_patch_typer_warns_when_typer_is_incompatible(monkeypatch: MonkeyPatch) -> None:
     """When Typer's version is flagged as incompatible, patch_typer() should warn about it."""
     monkeypatch.setattr(compat_typer, "TYPER_IS_BEFORE_VERSION_026", False)
 
-    with pytest.warns(RuntimeWarning, match="Typer patching may not work"):
+    with pytest.warns(RuntimeWarning, match="may not support rich-click patching"):
         patch_module.patch_typer()
 
 
