@@ -11,6 +11,7 @@
 - Upgraded Material for MkDocs from 9.5 to 9.7, the final feature release, which folds in the former Insiders features.
 - Fixed some broken docs links, and enabled `strict` mode so that broken links and anchors fail the docs build.
 - Fixed docs versioning, so that a released version no longer keeps the `prerelease` alias alongside `latest`. [[#343](https://github.com/ewels/rich-click/pull/343)] ([@dwreeves](https://github.com/dwreeves))
+- Fixed `patch_typer()` crashing with a `TypeError: metaclass conflict` on `typer>=0.26.0`, which vendors its own internal fork of Click. The incompatible-version warning now correctly fires for `typer>=0.26.0` (it was previously inverted), and if patching fails for any reason, `patch_typer()` now warns and leaves Typer unpatched instead of raising, so CLIs keep working, just without rich-click's theming applied. [[#330](https://github.com/ewels/rich-click/issues/330)]
 
 ## Version 1.9.8 (2026-05-28)
 

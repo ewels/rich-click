@@ -1,8 +1,11 @@
 # Typer Support
 
-!!! error "Experimental"
-    For now, Typer patching support does not work with `typer>=0.26.0`.
-    Please use an older version of Typer if you'd like to use `patch_typer()`.
+!!! warning "Experimental"
+    `typer>=0.26.0` vendors its own internal fork of Click, which is incompatible with
+    **rich-click**'s patching mechanism. If `patch_typer()` detects an incompatible Typer
+    version, it will emit a `RuntimeWarning` and leave Typer unpatched, so your CLI keeps
+    working normally, just without **rich-click**'s theming applied.
+    Please use an older version of Typer (`<0.26.0`) if you'd like `patch_typer()` to work.
 
 !!! example "Experimental"
     This feature is still experimental.
