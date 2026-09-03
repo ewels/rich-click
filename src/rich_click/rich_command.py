@@ -20,8 +20,8 @@ import click
 # Group, Command, and CommandCollection need to be imported directly,
 # or else rich_click.cli.patch() causes a recursion error.
 from click import Command, CommandCollection, Group
-from click.utils import PacifyFlushWrapper
 
+from rich_click._compat_click import PacifyFlushWrapper
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter

@@ -1,12 +1,15 @@
+import sys
 from importlib import reload
 from unittest.mock import patch
 
+import click.utils
 import pytest
 from click.testing import CliRunner
 from rich.console import Console
 
 import rich_click
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X
+from tests.conftest import run_as_subprocess
 
 
 @pytest.mark.skipif(not CLICK_IS_BEFORE_VERSION_9X, reason="Click 9 removes MultiCommand")
@@ -107,3 +110,15 @@ def test_not_implemented_warnings_for_help_formatter() -> None:
     with pytest.warns(RuntimeWarning):
         with formatter.indentation():
             pass
+
+
+def test_no_deprecation_warning_on_import() -> None:
+    res = run_as_subprocess([sys.executable, "-W", "error::DeprecationWarning", "-c", "import rich_click"])
+    assert res.returncode == 0, res.stderr.decode()
+
+
+def test_lazy_click_reexports_still_resolve() -> None:
+    # These two names are no longer imported at the top of rich_click/__init__.py,
+    # so check that the module __getattr__ still hands out click's own objects.
+    assert rich_click.get_binary_stream is click.utils.get_binary_stream
+    assert rich_click.get_text_stream is click.utils.get_text_stream

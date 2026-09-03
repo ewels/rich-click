@@ -11,6 +11,8 @@
 - Upgraded Material for MkDocs from 9.5 to 9.7, the final feature release, which folds in the former Insiders features.
 - Fixed some broken docs links, and enabled `strict` mode so that broken links and anchors fail the docs build.
 - Fixed docs versioning, so that a released version no longer keeps the `prerelease` alias alongside `latest`. [[#343](https://github.com/ewels/rich-click/pull/343)] ([@dwreeves](https://github.com/dwreeves))
+- Added support for Click 8.5
+- Importing `rich_click` no longer raises `DeprecationWarning`s under Click 8.5. `get_binary_stream` and `get_text_stream` are now looked up only when they are used, instead of on import. Note that `from rich_click import *` no longer re-exports these two names.
 
 ## Version 1.9.8 (2026-05-28)
 
