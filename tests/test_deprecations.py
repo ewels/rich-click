@@ -8,7 +8,7 @@ from click.testing import CliRunner
 from rich.console import Console
 
 import rich_click
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_BEFORE_VERSION_85
 from tests.conftest import run_as_subprocess
 
 
@@ -118,7 +118,12 @@ def test_no_deprecation_warning_on_import() -> None:
 
 
 def test_lazy_click_reexports_still_resolve() -> None:
-    # These two names are no longer imported at the top of rich_click/__init__.py,
-    # so check that the module __getattr__ still hands out click's own objects.
-    assert rich_click.get_binary_stream is click.utils.get_binary_stream
-    assert rich_click.get_text_stream is click.utils.get_text_stream
+    if CLICK_IS_BEFORE_VERSION_85:
+        assert rich_click.get_binary_stream is click.utils.get_binary_stream
+        assert rich_click.get_text_stream is click.utils.get_text_stream
+    else:
+        # Click 8.5 warns on these, and we pass that warning through.
+        with pytest.warns(DeprecationWarning):
+            assert callable(rich_click.get_binary_stream)
+        with pytest.warns(DeprecationWarning):
+            assert callable(rich_click.get_text_stream)
