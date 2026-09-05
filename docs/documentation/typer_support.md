@@ -59,8 +59,10 @@ TypeError: metaclass conflict: the metaclass of a derived class must be a
 ```
 
 Rather than let that exception propagate and crash your CLI, `patch_typer()` builds all of its patched classes
-up front, inside a single `try`/`except` block, and only swaps them into Typer's internals if every one of them
-built successfully. If any of them fails -- which is currently always the case on `typer>=0.26` -- `patch_typer()`:
+up front, inside a single `try`/`except TypeError` block (the class this specific failure mode always raises --
+either a metaclass conflict, as above, or an unresolvable MRO), and only swaps them into Typer's internals if
+every one of them built successfully. If any of them fails -- which is currently always the case on `typer>=0.26`
+-- `patch_typer()`:
 
 1. Emits a short `RuntimeWarning` pointing back to this section.
 2. Leaves Typer's own classes completely untouched.

@@ -354,11 +354,11 @@ def patch_typer(rich_config: RichHelpConfiguration | None = None) -> None:
             stacklevel=2,
         )
 
-    # Building the patched classes can fail (e.g. a metaclass conflict) if Typer's internals
-    # have diverged too far from the Click internals rich-click's patching relies on
-    # (this is the case for Typer>=0.26, which vendors its own fork of Click).
-    # Build every patched class before assigning any of them, so that a failure never leaves
-    # Typer in a half-patched state, and fall back to leaving Typer completely unpatched.
+    # Building the patched classes can raise TypeError (a metaclass conflict, or an
+    # unresolvable MRO) if Typer's internals have diverged too far from the Click internals
+    # rich-click's patching relies on (this is the case for Typer>=0.26, which vendors its own
+    # fork of Click). Build every patched class before assigning any of them, so that a failure
+    # never leaves Typer in a half-patched state, and fall back to leaving Typer untouched.
     patched_command = patched_group = patched_option = patched_argument = None
 
     try:
@@ -393,7 +393,7 @@ def patch_typer(rich_config: RichHelpConfiguration | None = None) -> None:
                 pass
 
             patched_argument = _patch_typer_argument(_PatchedTyperArgument)
-    except Exception as exc:
+    except TypeError as exc:
         import warnings
 
         warnings.warn(
