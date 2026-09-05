@@ -53,4 +53,4 @@ def test_patch_typer_falls_back_gracefully_on_metaclass_conflict(monkeypatch: Mo
         patch_module.patch_typer()
 
     # Typer's class (the dummy, standing in for the real vendored one) must be left untouched.
-    assert typer.core.TyperCommand is _DummyTyperCommand
+    assert typer.core.TyperCommand is _DummyTyperCommand  # type: ignore[comparison-overlap]
