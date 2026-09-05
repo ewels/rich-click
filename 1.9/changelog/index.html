@@ -1022,6 +1022,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#version-199-2026-09-05" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version 1.9.9 (2026-09-05)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#version-198-2026-05-28" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1569,6 +1580,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#version-199-2026-09-05" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version 1.9.9 (2026-09-05)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#version-198-2026-05-28" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2068,13 +2090,20 @@
 <ul>
 <li>Dropped support for Python 3.8 and 3.9; the minimum supported version is now Python 3.10.</li>
 <li>Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python &lt;3.10.</li>
-<li>Dev and docs requirements moved from optional dependencies to <a href="https://peps.python.org/pep-0735/">dependency groups</a>, so they are no longer published as package metadata. Install them with <code>uv sync --all-groups</code>.</li>
-<li>Switched from <a href="https://pre-commit.com/">pre-commit</a> to <a href="https://github.com/j178/prek">prek</a>, and replaced <code>.pre-commit-config.yaml</code> with <code>prek.toml</code>. Contributors should re-run <code>prek install</code> to replace their old git hook.</li>
-<li>Replaced Black with <code>ruff format</code>, which resolves the formatting conflicts between the two.</li>
-<li>Docs are now built with <a href="https://properdocs.org/">ProperDocs</a>, a drop-in fork of MkDocs 1.x, as MkDocs itself is unmaintained. <code>mike</code> picks it up automatically, so the deploy flow is unchanged.</li>
-<li>Upgraded Material for MkDocs from 9.5 to 9.7, the final feature release, which folds in the former Insiders features.</li>
-<li>Fixed some broken docs links, and enabled <code>strict</code> mode so that broken links and anchors fail the docs build.</li>
 <li>Fixed docs versioning, so that a released version no longer keeps the <code>prerelease</code> alias alongside <code>latest</code>. [<a href="https://github.com/ewels/rich-click/pull/343">#343</a>] (<a href="https://github.com/dwreeves">@dwreeves</a>)</li>
+</ul>
+<h2 id="version-199-2026-09-05">Version 1.9.9 (2026-09-05)<a class="headerlink" href="#version-199-2026-09-05" title="Permanent link">¶</a></h2>
+<ul>
+<li>Fixed <code>ctx.forward()</code> not working with commands patched via <code>rich_click.patch()</code>. [<a href="https://github.com/ewels/rich-click/pull/351">#351</a>] (issue <a href="https://github.com/ewels/rich-click/issues/338">#338</a>)</li>
+<li>Added support for Click 8.5 (resolved <code>DeprecationWarning</code>s) [<a href="https://github.com/ewels/rich-click/pull/350">#350</a>] (<a href="https://github.com/happykust">@happykust</a>)</li>
+</ul>
+<p>Development tooling changes (no changes to the installed library):</p>
+<ul>
+<li>Removed optional dependencies (<code>dev</code> and <code>docs</code>); swapped to <a href="https://peps.python.org/pep-0735/">dependency groups</a> so they are no longer published as package metadata.</li>
+<li>Switched from <a href="https://pre-commit.com/">pre-commit</a> to <a href="https://github.com/j178/prek">prek</a>, and replaced <code>.pre-commit-config.yaml</code> with <code>prek.toml</code>.</li>
+<li>Contributors should re-run <code>prek install</code> to replace their old git hook.</li>
+<li>Replaced Black with <code>ruff format</code>.</li>
+<li>Docs are now built with <a href="https://properdocs.org/">ProperDocs</a> + other docs fixes.</li>
 </ul>
 <h2 id="version-198-2026-05-28">Version 1.9.8 (2026-05-28)<a class="headerlink" href="#version-198-2026-05-28" title="Permanent link">¶</a></h2>
 <ul>
