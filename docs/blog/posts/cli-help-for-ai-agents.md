@@ -10,27 +10,20 @@ categories:
 
 # Improving `--help` for AI agents
 
-As we move into the era of agentic-AI, the tools we build are no longer just for humans.
-Agents are now extremely capable of using CLI tools and more and more people are
-turning to them to run their workloads. This is great news, especially for anyone
-who has already spent time developing beautiful and well designed terminal tools using
-libraries such as, say, `rich-click` ;)
+More and more people are running their Python tools through Claude Code, Codex and other agentic AI harnesses.
+Just like humans, agents need to understand a CLI to know how to use it. Just like humans, they run `--help` to figure out how. On a deeply nested command tree they read it over and over, poking around one subcommand at a time trying to find what's available and how to use it.
+This takes time, turns, and tokens.
 
-However, there is room for improvement.
+Agents being this good at CLI tools is great news, especially for anyone who has already spent time developing beautiful and well designed terminal tools using libraries such as, say, `rich-click` ;) But there's still room for improvement.
 
-Just like humans, agents need to understand a CLI to know how to use it.
-Just like humans, they run `--help` to figure out how.
-If your CLI tool has a large surface
-area with many nested subcommands, you'll see your agent sessions running
-`--help` again and again as they explore the CLI structure, poking around trying
-to find what commands are available and how to use them. This takes time, and tokens.
+`rich-click` renders the help text for a lot of CLIs (around [46 million downloads a month](https://clickpy.clickhouse.com/dashboard/rich-click) at the time of writing) so I wanted to know: can I make agents better at using those CLIs, without any new flags, without changing the default behaviour for humans, and without breaking anyone's existing help-text tests?
 
-Version v1.10 of `rich-click` brings with it some new features to help both agents and people.
-I found this work quite interesting, so this blog post explains how I came to the final design.
+Version v1.10 is my answer. Most of the ideas I started with made no difference, and a couple made things actively worse, but in the end I found my way to something I think is useful.
+The process itself was quite interesting, so I wrote this blog post to explain how I came to the final design.
 
 !!! tip "TL;DR;"
 
-    Version v1.10 of `rich-click` brings with it some new features to help both agents and people:
+    Agents that call a `rich-click` CLI now get the whole command tree back in one compact response. On a deliberately nasty 132-command test CLI, that cut `--help` calls by around two thirds, and tokens + wall time by roughly a quarter. New features:
 
     - Auto-detection of when an agent is using your CLI, which triggers:
         - Return of help for _all subcommands_, in addition to the requested command
@@ -58,9 +51,9 @@ Ok, to be fair I actually started with JSON, but pretty quickly thought markdown
 I kept JSON in because I think it could be useful for folks building applications on top of CLIs.
 
 !!! note "JSON help output"
-    That's right - `rich-click` can now export your CLI's usage in a structured JSON format.
-    This means that you can now pretty easily build an MCP, a TUI, an interactive webpage, whatever,
-    on top of your rich-click CLI without worrying about keeping the usage specs aligned.
+    `rich-click` can now export your CLI's usage in a structured JSON format.
+    This means that you can now pretty easily build an MCP, a TUI, an interactive webpage, whatever, on top of your rich-click CLI without worrying about keeping the usage specs aligned.
+    The Markdown output is handy for the same reason: you can generate the command reference for your docs website instead of hand-maintaining it.
 
 ## How it works
 
@@ -80,17 +73,15 @@ Rather than hoping that agents will learn this pattern or notice it in the help 
 This will always work on the first attempt, helping with efficiency and token use from the off.
 
 Thankfully, pretty much all LLMs inject some kind of environment variable into their shell environments when running commands.
-Vercel maintains an excellent [`@vercel/detect-agent` package](https://www.npmjs.com/package/@vercel/detect-agent)
-on npm to do exactly this. I was able to effectively vendor the package, copying the names and logic into `rich-click`
-so that we know when an agent is using the CLI.
+Vercel maintains an excellent [`@vercel/detect-agent` package](https://www.npmjs.com/package/@vercel/detect-agent) on npm to do exactly this. I was able to effectively vendor the package, copying the names and logic into `rich-click` so that we know when an agent is using the CLI.
 (Side note: LLM providers / harness authors: _please_ standardise on `$AI_AGENT` and / or `$AGENT`!)
 
-The only exception to this rule is when running tests. People write tests for their help text, and we don't want
-tests to start failing if an agent runs them. So we also detect _those_ environment variables (eg. `PYTEST_CURRENT_TEST`)
-and disable the agent behaviour if found. Same thing for [`rich-codex` screenshots](https://github.com/ewels/rich-codex).
+The only exception to this rule is when running tests.
+People write tests for their help text, and we don't want tests to start failing if an agent runs them.
+So we also detect _those_ environment variables (eg. `PYTEST_CURRENT_TEST`) and disable the agent behaviour if found. Same thing for [`rich-codex` screenshots](https://github.com/ewels/rich-codex).
 Let us know if you want us to add any additional exceptions.
 
-So, with this we should get the best of both worlds:
+So, that covers the three constraints I set out with, and then some:
 
 - No change to default behaviour, no new CLI flags
 - Options for humans to choose the help format they want
@@ -100,20 +91,17 @@ So, with this we should get the best of both worlds:
 ## Benchmarking
 
 I ran this all past [Daniel](https://github.com/dwreeves), the other maintainer for `rich-click`.
-He had a healthy degree of skepticism (as all maintainers should!) and asked if it was possible
-to benchmark it to see if it really _did_ improve agent performance, and importantly if it made it worse.
+He had a healthy degree of skepticism (as all maintainers should!) and asked if it was possible to benchmark it to see if it really _did_ improve agent performance, and importantly if it made it worse.
 
 I got to work with Claude (Fable) and asked it to design and create a benchmarking framework for me.
-This ended up quite a fun project, proving several of my assumptions wrong and leading to what I
-hope is a better final product.
+This ended up quite a fun project, proving several of my assumptions wrong and leading to what I hope is a better final product.
 
 ### Building a CLI that no model had seen before
 
 I couldn't benchmark agent performance with an existing CLI.
 Models will have seen their documentation and source code during training.
-Instead, Claude built a synthetic CLI for me called `quorv`. All of its command names,
-options and values are invented words not found in the dictionary. The descriptions are
-plain English.
+Instead, Claude built a synthetic CLI for me called `quorv`. All of its command names, options and values are invented words not found in the dictionary.
+The descriptions are plain English.
 
 Then we gave different agents tasks to complete with this CLI. A task looks like this:
 
@@ -128,13 +116,9 @@ quorv plarv crell --crull "brindle count" --kolm crox --wover 12
 There should be no way to guess the mapping, thus forcing the agent to read `--help`.
 
 Agents are _really_ good at using CLI tools, so in order to get any differentiation
-to see if my changes had an effect, I needed to make the CLI very complex.
+to see if my changes had an effect, I had to turn `quorv` into a pure-evil nightmare.
 
-The final version of `quorv` has 132 commands in 28 groups, with some commands
-five levels deep. That works out to 160 help pages. It has required options,
-choice values, file inputs, interactive prompts, and commands with rules that
-span multiple options. It has enough horrible edge cases to look like a real
-CLI.
+The final version has 132 commands in 28 groups, with some commands five levels deep. That works out to 160 help pages. It has required options, choice values, file inputs, interactive prompts, and commands with rules that span multiple options. It has enough horrible edge cases to look like a real CLI.
 
 Some of the tasks ended up really nasty 😆
 
@@ -142,25 +126,14 @@ Some of the tasks ended up really nasty 😆
 
 > Temper the bundle named 'lantern' the sorv way, with the weave 'ember lattice'.
 
-As they get harder, the models start getting really creative on how to pass,
-so instructions had to be explicit about only using the CLI and even include
-features to detect if the model cheated.
-I saw multiple examples of agents escaping their workspaces and using the benchmark
-repository's shared store instead (the audit logs caught this). One Codex run also
-edited the activity journal directly. The hash chain caught that too.
-It's possible that other agents got away with it, but hopefully the replicates reduce
-the impact. I'll never know if any hacked HuggingFace to solve their tasks!
+As they get harder, the models start getting really creative on how to pass, so instructions had to be explicit about only using the CLI and even include features to detect if the model cheated.
+I saw multiple examples of agents escaping their workspaces and using the benchmark repository's shared store instead (the audit logs caught this). One Codex run also edited the activity journal directly. The hash chain caught that too.
+It's possible that other agents got away with it, but hopefully the replicates reduce the impact. I'll never know if any hacked HuggingFace to solve their tasks!
 
-Claude wrote 40 tasks for me and ran dispatched a load of agents in sandboxes
-(being careful to avoid bringing over any memory of the overarching project)
-with Claude Code using Haiku 4.5, plus Codex CLI using GPT-5.4-mini.
-The smallest models showed the most differentiation across conditions so
-gave the most interesting results.
+Claude wrote 40 tasks for me and dispatched a load of agents in sandboxes (being careful to avoid bringing over any memory of the overarching project) with Claude Code using Haiku 4.5, plus Codex CLI using GPT-5.4-mini.
+The smallest models showed the most differentiation across conditions so gave the most interesting results.
 
-Each run started with a fresh store. `quorv` logged every invocation and wrote a
-hash-chained journal for state changes. A deterministic grader checked the final
-state and the logs. There was no LLM judge involved. Each agent and task was
-run with multiple replicates to give a range of uncertainty.
+Each run started with a fresh store. `quorv` logged every invocation and wrote a hash-chained journal for state changes. A deterministic grader checked the final state and the logs. There was no LLM judge involved. Each agent and task was run with multiple replicates to give a range of uncertainty.
 
 Across four rounds of testing, I ended up with more than 2,400 graded runs.
 
@@ -171,7 +144,6 @@ The new `--help markdown` option returns help as markdown.
 Regular rich-click help looks like this:
 
 ```
-
  Usage: quorv plarv crell [OPTIONS]
 
  Create a record.
@@ -246,18 +218,14 @@ But again, they made basically no difference: success rates were the same.
 
 > _Success under regular rendered help, with vs without examples and v1.9.8 (no examples). 95% Wilson intervals (40 tasks × 1 repeat). Paired per-task bootstrap deltas: Haiku A−N 2.5 pts in examples' favour [-12.5, +7.5] — flat; GPT-5.4-mini A−N 5.0 pts [-12.5, +0.0] — the interval touches zero at its boundary._
 
-I'm not too put off by these results. I think examples will be useful for
-humans so they're worth keeping, and their utility will be very dependent
-on the specific tasks in question and how the examples were written.
+I'm not too put off by these results. I think examples will be useful for humans so they're worth keeping, and their utility will be very dependent on the specific tasks in question and how the examples were written.
 They didn't seem to do any harm to the agents so there's no reason not to keep them in.
 
 ### Better error messages helped a bit
 
-During the initial benchmark analysis, Claude saw a pattern in the errors that
-agents were seeing and how they were responding. As a result, the AI response gets
-a bit more guidance when certain errors are encountered: `rich-click` returns the
-exact command it attempted, a plain description of the broken rule, and the relevant
-CLI help path. For example:
+During the initial benchmark analysis, Claude saw a pattern in the errors that agents were seeing and how they were responding.
+As a result, the AI response gets a bit more guidance when certain errors are encountered:
+`rich-click` returns the exact command it attempted, a plain description of the broken rule, and the relevant CLI help path. For example:
 
 ```text
 Error: Invalid value for '--kolm': 'bogus' is not one of 'pelm', 'crox', 'zeff'.
@@ -268,33 +236,26 @@ Usage: quorv plarv crell [OPTIONS]
 Help: quorv plarv crell --help
 ```
 
-On certain really difficult tasks with the simplest models, this seems to help
-a tiny bit with efficiency and avoiding "doom loops" where the agent just keeps
-trying the bad command again and again.
+On certain really difficult tasks with the simplest models, this seems to help a tiny bit with efficiency and avoiding "doom loops" where the agent just keeps trying the bad command again and again.
 
 ![Successful runs with and without error diagnosis](../../images/blog/cli-help-for-ai-agents/diagnosis-per-task-success.svg)
 
 > _Haiku 4.5 on the seven option-rule tasks. Each dot is a replicate attempt: 3 reps for diagnosis-on, 9 for diagnosis-off. A filled dot is a passed run. T27, whose command demands one option pair for one mode and a different pair for the other, falls from 2/3 to 1/9 without diagnosis. GPT-5.4-mini passed 62/63 runs regardless._
 
-This improvement is likely highly model-specific and the differentiation
-only visible on super complex CLIs / tasks, plus models are only getting better.
-But as with the examples, it's purely additive so there seems no reason not to
-include it.
+This improvement is likely highly model-specific and the differentiation only visible on super complex CLIs / tasks, plus models are only getting better.
+But as with the examples, it's purely additive so there seems no reason not to include it.
 
 ## How much help should a `--help` flag return?
 
-As you can see, the first set of benchmarking results were a little depressing.
-However, there was one chink of light: I had also included the `--help markdown-full`
-option, and _that_ did show improved results.
+As you can see, the first set of benchmarking results were a little depressing. However, there was one glimmer of hope: I had also included the `--help markdown-full` option, and _that_ did show improved results.
 
 This option returns the full help for the command and all subcommands.
 It doesn't cut any "progressive-disclosure" corners, it just dumps the whole thing
-in one go. This means that the agent could can find the right command right away, without repeatedly calling `--help` as it moves through the hierarchy.
+in one go. This means that the agent can find the right command right away, without repeatedly calling `--help` as it moves through the hierarchy.
 
 This was good, but I was worried about token usage and bloating session context.
-I expanded the size of the CLI to make it truly massive.
-I was only poking around token efficiency, yet to my surprise the behaviour changed
-completely and suddenly the full markdown output was much _worse_ than regular help again.
+I expanded the test CLI from 36 commands to 132.
+I was only poking around token efficiency, yet to my surprise the behaviour changed completely and suddenly the full markdown output was much _worse_ than regular help again.
 
 ![Number of help lookups per task](../../images/blog/cli-help-for-ai-agents/help-reads-regular-vs-whole-tree-36-vs-132.svg)
 
@@ -348,7 +309,7 @@ takes less than a third of that, with 25,335.
 
 ### Made for monsters
 
-For really really big CLIs we might still hit the character limit, no matter how
+For CLIs even bigger than `quorv` we might still hit the character limit, no matter how
 much we compress the output format.
 To cater for this, I kept in an adaptive renderer, which works out how long the
 compact output will be - if it's too long, it trims a small amount of distant detail,
@@ -424,9 +385,11 @@ agent usage and efficiency in the hundreds of CLIs that use `rich-click` to rend
 their help texts.
 
 I hope that this blog post also inspires authors of other CLI frameworks to add
-functionality to make their help text agent-friendly. If we can work together and
-share findings, everyone can benefit.
+functionality to make their help text agent-friendly. None of it is Click-specific —
+in fact [`click-extra`](https://github.com/kdeldycke/click-extra) [adopted the idea](https://github.com/kdeldycke/click-extra/commit/0c04da10c775c87663585247d5a59325e727937b) before
+it had even been merged here. It'd be great if more followed suit. If we can work together
+and share findings, everyone can benefit.
 
 If you have ideas for improvements, or find that the new functionality has broken
 something, drop an issue on the [`rich-click` GitHub repo](https://github.com/ewels/rich-click).
-I hope that the new functionality and the read are useful.
+I hope the new functionality is useful, and that this was worth the read.
