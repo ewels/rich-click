@@ -45,33 +45,30 @@ More information about usage of the `rich-click` CLI is in [the **rich-click CLI
 ## Typer 0.26+ Support
 
 Starting with `typer==0.26.0`, Typer vendors its own internal fork of Click (`typer._click`) instead of subclassing
-the `click` package directly. As a result, `typer.core.TyperCommand`, `TyperGroup`, `TyperOption`, and
-`TyperArgument` no longer derive from `click.Command`, `click.Group`, `click.Option`, or `click.Argument` --
-they derive from Typer's own private copies of those classes, built with a different metaclass (`abc.ABCMeta`).
+the `click` package directly. `typer.core.TyperCommand`, `TyperGroup`, `TyperOption`, and `TyperArgument` no longer
+derive from `click.Command`, `click.Group`, `click.Option`, or `click.Argument`. They derive from Typer's own
+private copies of those classes, built with a different metaclass (`abc.ABCMeta`).
 
 `patch_typer()` works by building new classes that inherit from *both* Typer's classes and **rich-click**'s own
 `RichCommand` / `RichGroup` / etc. (which are built on the real `click` classes). Since `typer>=0.26`, those two
-class hierarchies are unrelated, and their metaclasses conflict, so building the patched subclass raises:
+class hierarchies are unrelated and their metaclasses conflict, so building the patched subclass raises:
 
 ```pycon
 TypeError: metaclass conflict: the metaclass of a derived class must be a
 (non-strict) subclass of the metaclasses of all its bases
 ```
 
-Rather than let that exception propagate and crash your CLI, `patch_typer()` builds all of its patched classes
-up front, inside a single `try`/`except TypeError` block (the class this specific failure mode always raises --
-either a metaclass conflict, as above, or an unresolvable MRO), and only swaps them into Typer's internals if
-every one of them built successfully. If any of them fails -- which is currently always the case on `typer>=0.26`
--- `patch_typer()`:
+`patch_typer()` catches this. It builds all four patched classes up front, inside a single `try`/`except TypeError`
+block (a metaclass conflict or an unresolvable MRO are the only ways this construction can fail), and only swaps
+them into Typer's internals once every one of them succeeds. When one fails, which is currently always the case on
+`typer>=0.26`, `patch_typer()` emits a short `RuntimeWarning` pointing back to this section, leaves Typer's own
+classes untouched, and returns without raising. Your program keeps running exactly as it would if `patch_typer()`
+had never been called.
 
-1. Emits a short `RuntimeWarning` pointing back to this section.
-2. Leaves Typer's own classes completely untouched.
-3. Returns without raising, so your program keeps running exactly as it would if `patch_typer()` had never been called.
-
-In practice, this means:
+This means:
 
 - Your Typer CLI keeps working normally on `typer>=0.26`.
-- You won't get **rich-click**'s themes or panels from `patch_typer()` -- Typer falls back to rendering help with
+- You won't get **rich-click**'s themes or panels from `patch_typer()`. Typer falls back to rendering help with
   its own (also Rich-based) formatter.
 - You'll see a `RuntimeWarning` at the point where `patch_typer()` is called, which you can silence with the
   standard [`warnings` filters](https://docs.python.org/3/library/warnings.html#warning-filter) if it's expected
