@@ -8,7 +8,7 @@ customization required.
 from __future__ import annotations
 
 
-__version__ = "1.9.8"
+__version__ = "1.9.9"
 
 # Import the entire click API here.
 # We need to manually import these instead of `from click import *` to force
@@ -62,8 +62,6 @@ from click.types import Tuple as Tuple
 from click.utils import echo as echo
 from click.utils import format_filename as format_filename
 from click.utils import get_app_dir as get_app_dir
-from click.utils import get_binary_stream as get_binary_stream
-from click.utils import get_text_stream as get_text_stream
 from click.utils import open_file as open_file
 
 from rich_click.decorators import argument as argument

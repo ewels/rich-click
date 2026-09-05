@@ -1,12 +1,15 @@
+import sys
 from importlib import reload
 from unittest.mock import patch
 
+import click.utils
 import pytest
 from click.testing import CliRunner
 from rich.console import Console
 
 import rich_click
-from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X
+from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_BEFORE_VERSION_85
+from tests.conftest import run_as_subprocess
 
 
 @pytest.mark.skipif(not CLICK_IS_BEFORE_VERSION_9X, reason="Click 9 removes MultiCommand")
@@ -30,7 +33,7 @@ def test_deprecation_warning_on_highlighter(cli_runner: CliRunner) -> None:
 
     # console should be allowed to be first argument,
     with pytest.warns(DeprecationWarning):
-        cli = rich_click.rich_config(c)(cli)  # type: ignore[arg-type]
+        cli = rich_click.rich_config(c)(cli)  # type: ignore[call-overload,arg-type,unused-ignore]
 
     cli = rich_click.command()(cli)
 
@@ -107,3 +110,20 @@ def test_not_implemented_warnings_for_help_formatter() -> None:
     with pytest.warns(RuntimeWarning):
         with formatter.indentation():
             pass
+
+
+def test_no_deprecation_warning_on_import() -> None:
+    res = run_as_subprocess([sys.executable, "-W", "error::DeprecationWarning", "-c", "import rich_click"])
+    assert res.returncode == 0, res.stderr.decode()
+
+
+def test_lazy_click_reexports_still_resolve() -> None:
+    if CLICK_IS_BEFORE_VERSION_85:
+        assert rich_click.get_binary_stream is click.utils.get_binary_stream
+        assert rich_click.get_text_stream is click.utils.get_text_stream
+    else:
+        # Click 8.5 warns on these, and we pass that warning through.
+        with pytest.warns(DeprecationWarning):
+            assert callable(rich_click.get_binary_stream)
+        with pytest.warns(DeprecationWarning):
+            assert callable(rich_click.get_text_stream)
