@@ -4,13 +4,20 @@
 
 - Dropped support for Python 3.8 and 3.9; the minimum supported version is now Python 3.10.
 - Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python <3.10.
-- Dev and docs requirements moved from optional dependencies to [dependency groups](https://peps.python.org/pep-0735/), so they are no longer published as package metadata. Install them with `uv sync --all-groups`.
-- Switched from [pre-commit](https://pre-commit.com/) to [prek](https://github.com/j178/prek), and replaced `.pre-commit-config.yaml` with `prek.toml`. Contributors should re-run `prek install` to replace their old git hook.
-- Replaced Black with `ruff format`, which resolves the formatting conflicts between the two.
-- Docs are now built with [ProperDocs](https://properdocs.org/), a drop-in fork of MkDocs 1.x, as MkDocs itself is unmaintained. `mike` picks it up automatically, so the deploy flow is unchanged.
-- Upgraded Material for MkDocs from 9.5 to 9.7, the final feature release, which folds in the former Insiders features.
-- Fixed some broken docs links, and enabled `strict` mode so that broken links and anchors fail the docs build.
 - Fixed docs versioning, so that a released version no longer keeps the `prerelease` alias alongside `latest`. [[#343](https://github.com/ewels/rich-click/pull/343)] ([@dwreeves](https://github.com/dwreeves))
+
+## Version 1.9.9 (2026-09-05)
+
+- Fixed `ctx.forward()` not working with commands patched via `rich_click.patch()`. [[#351](https://github.com/ewels/rich-click/pull/351)] (issue [#338](https://github.com/ewels/rich-click/issues/338))
+- Added support for Click 8.5 (resolved `DeprecationWarning`s) [[#350](https://github.com/ewels/rich-click/pull/350)] ([@happykust](https://github.com/happykust))
+
+Development tooling changes (no changes to the installed library):
+
+- Removed optional dependencies (`dev` and `docs`); swapped to [dependency groups](https://peps.python.org/pep-0735/) so they are no longer published as package metadata.
+- Switched from [pre-commit](https://pre-commit.com/) to [prek](https://github.com/j178/prek), and replaced `.pre-commit-config.yaml` with `prek.toml`.
+  - Contributors should re-run `prek install` to replace their old git hook.
+- Replaced Black with `ruff format`.
+- Docs are now built with [ProperDocs](https://properdocs.org/) + other docs fixes.
 
 ## Version 1.9.8 (2026-05-28)
 

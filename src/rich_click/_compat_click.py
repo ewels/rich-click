@@ -13,6 +13,7 @@ except Exception:
     # Click 9+ deprecated __version__, so all these checks must necessarily be False if __version__ doesn't exist.
     CLICK_IS_BEFORE_VERSION_821 = False
     CLICK_IS_BEFORE_VERSION_82 = False
+    CLICK_IS_BEFORE_VERSION_85 = False
     CLICK_IS_BEFORE_VERSION_9X = False
     CLICK_IS_VERSION_80 = False
 else:
@@ -23,5 +24,6 @@ else:
 
     CLICK_IS_BEFORE_VERSION_821 = (_major, _minor, _patch) < (8, 2, 1)
     CLICK_IS_BEFORE_VERSION_82 = (_major, _minor) < (8, 2)
+    CLICK_IS_BEFORE_VERSION_85 = (_major, _minor) < (8, 5)
     CLICK_IS_BEFORE_VERSION_9X = _major < 9
     CLICK_IS_VERSION_80 = (_major, _minor) == (8, 0)
