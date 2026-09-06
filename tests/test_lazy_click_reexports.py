@@ -51,13 +51,18 @@ def test_every_reexport_is_the_click_object(name: str) -> None:
 
 @pytest.mark.parametrize("name", EAGER_NAMES)
 def test_the_primary_click_api_is_eager(name: str) -> None:
-    assert name in rich_click.__dict__
+    # `vars(...)`, not `rich_click.__dict__`: the module defines
+    # `__getattr__(name) -> object`, so mypy resolves *any* attribute it cannot
+    # find statically through it -- `__dict__` included -- and then rejects
+    # `in` against an `object`. `vars()` is typed `dict[str, Any]` and is the
+    # same lookup at runtime.
+    assert name in vars(rich_click)
 
 
 @pytest.mark.parametrize("name", [n for n in _declared_click_reexports() if n not in EAGER_NAMES])
 def test_the_secondary_click_api_is_lazy(name: str) -> None:
     """Not in `__dict__` means `__getattr__` is what served it."""
-    assert name not in rich_click.__dict__
+    assert name not in vars(rich_click)
 
 
 def test_dir_lists_the_lazy_names() -> None:
