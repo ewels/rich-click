@@ -930,6 +930,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#typer-026-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typer 0.26+ Support
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1094,6 +1105,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#typer-026-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typer 0.26+ Support
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1115,10 +1137,9 @@
 
 
 <h1 id="typer-support">Typer Support<a class="headerlink" href="#typer-support" title="Permanent link">¶</a></h1>
-<div class="admonition error">
+<div class="admonition warning">
 <p class="admonition-title">Experimental</p>
-<p>For now, Typer patching support does not work with <code>typer&gt;=0.26.0</code>.
-Please use an older version of Typer if you'd like to use <code>patch_typer()</code>.</p>
+<p><code>patch_typer()</code> does not work with <code>typer&gt;=0.26.0</code>. See <a href="#typer-026-support">Typer 0.26+ Support</a> below.</p>
 </div>
 <div class="admonition example">
 <p class="admonition-title">Experimental</p>
@@ -1177,6 +1198,36 @@ working_dir: docs/code_snippets/typer_support
 <p>In addition to giving access to <strong>rich-click</strong>'s themes, another benefit of this is being able to generate HTML and SVG help text easily.
 Although, do note that Typer and <strong>rich-click</strong> have some minor differences in how they render help text.</p>
 <p>More information about usage of the <code>rich-click</code> CLI is in <a href="../rich_click_cli/">the <strong>rich-click CLI</strong> docs</a>, or you can run <strong><code>rich-click --help</code></strong> to view the CLI.</p>
+<h2 id="typer-026-support">Typer 0.26+ Support<a class="headerlink" href="#typer-026-support" title="Permanent link">¶</a></h2>
+<p>Starting with <code>typer==0.26.0</code>, Typer vendors its own internal fork of Click (<code>typer._click</code>) instead of subclassing
+the <code>click</code> package directly. <code>typer.core.TyperCommand</code>, <code>TyperGroup</code>, <code>TyperOption</code>, and <code>TyperArgument</code> no longer
+derive from <code>click.Command</code>, <code>click.Group</code>, <code>click.Option</code>, or <code>click.Argument</code>. They derive from Typer's own
+private copies of those classes, built with a different metaclass (<code>abc.ABCMeta</code>).</p>
+<p><code>patch_typer()</code> works by building new classes that inherit from <em>both</em> Typer's classes and <strong>rich-click</strong>'s own
+<code>RichCommand</code> / <code>RichGroup</code> / etc. (which are built on the real <code>click</code> classes). Since <code>typer&gt;=0.26</code>, those two
+class hierarchies are unrelated and their metaclasses conflict, so building the patched subclass raises:</p>
+<div class="highlight"><pre><span></span><code><span class="go">TypeError: metaclass conflict: the metaclass of a derived class must be a</span>
+<span class="go">(non-strict) subclass of the metaclasses of all its bases</span>
+</code></pre></div>
+<p><code>patch_typer()</code> catches this. It builds all four patched classes up front, inside a single <code>try</code>/<code>except TypeError</code>
+block (a metaclass conflict or an unresolvable MRO are the only ways this construction can fail), and only swaps
+them into Typer's internals once every one of them succeeds. When one fails, which is currently always the case on
+<code>typer&gt;=0.26</code>, <code>patch_typer()</code> emits a short <code>RuntimeWarning</code> pointing back to this section, leaves Typer's own
+classes untouched, and returns without raising. Your program keeps running exactly as it would if <code>patch_typer()</code>
+had never been called.</p>
+<p>This means:</p>
+<ul>
+<li>Your Typer CLI keeps working normally on <code>typer&gt;=0.26</code>.</li>
+<li>You won't get <strong>rich-click</strong>'s themes or panels from <code>patch_typer()</code>. Typer falls back to rendering help with
+  its own (also Rich-based) formatter.</li>
+<li>You'll see a <code>RuntimeWarning</code> at the point where <code>patch_typer()</code> is called, which you can silence with the
+  standard <a href="https://docs.python.org/3/library/warnings.html#warning-filter"><code>warnings</code> filters</a> if it's expected
+  in your environment.</li>
+</ul>
+<p>If you need <code>patch_typer()</code> to actually apply <strong>rich-click</strong>'s theming, pin <code>typer&lt;0.26</code> for now. Patching against
+Typer's private, vendored fork of Click would mean re-implementing this logic against internals that could change
+again with any future Typer release, so there is no fix planned at this time. Track
+<a href="https://github.com/ewels/rich-click/issues/330">issue #330</a> for updates.</p>
 
 
 

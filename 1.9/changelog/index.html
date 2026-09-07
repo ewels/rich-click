@@ -2091,6 +2091,7 @@
 <li>Dropped support for Python 3.8 and 3.9; the minimum supported version is now Python 3.10.</li>
 <li>Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python &lt;3.10.</li>
 <li>Fixed docs versioning, so that a released version no longer keeps the <code>prerelease</code> alias alongside <code>latest</code>. [<a href="https://github.com/ewels/rich-click/pull/343">#343</a>] (<a href="https://github.com/dwreeves">@dwreeves</a>)</li>
+<li>Fixed <code>patch_typer()</code> crashing on <code>typer&gt;=0.26.0</code>; it now warns and leaves Typer unpatched instead of raising. [<a href="https://github.com/ewels/rich-click/issues/330">#330</a>]</li>
 </ul>
 <h2 id="version-199-2026-09-05">Version 1.9.9 (2026-09-05)<a class="headerlink" href="#version-199-2026-09-05" title="Permanent link">¶</a></h2>
 <ul>
