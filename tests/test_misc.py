@@ -1,3 +1,6 @@
+import errno
+import io
+
 import pytest
 from click import Abort
 from click.testing import CliRunner
@@ -7,7 +10,7 @@ import rich_click
 import rich_click.rich_click as rc
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_821
 from rich_click.rich_context import RichContext
-from rich_click.utils import truthy
+from rich_click.utils import _PacifyFlushWrapper, truthy
 
 
 @pytest.mark.skipif(CLICK_IS_BEFORE_VERSION_821, reason="CliRunner's stderr capture doesn't work before 8.2.1.")
@@ -69,3 +72,23 @@ def test_help_to_stderr(cli_runner: CliRunner) -> None:
 │ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
+
+
+def test_pacify_flush_wrapper() -> None:
+    class Stream(io.StringIO):
+        def __init__(self, err: int) -> None:
+            super().__init__()
+            self.err = err
+
+        def flush(self) -> None:
+            raise OSError(self.err, "boom")
+
+    _PacifyFlushWrapper(Stream(errno.EPIPE)).flush()
+
+    with pytest.raises(OSError):
+        _PacifyFlushWrapper(Stream(errno.EACCES)).flush()
+
+    stream = io.StringIO()
+    wrapper = _PacifyFlushWrapper(stream)
+    wrapper.write("hello")
+    assert stream.getvalue() == "hello"

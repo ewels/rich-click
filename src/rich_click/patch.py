@@ -250,15 +250,15 @@ class _PatchedRichCommand(RichCommand, metaclass=PatchMeta):
     pass
 
 
-class _PatchedRichMultiCommand(RichMultiCommand, _PatchedRichCommand):
+class _PatchedRichMultiCommand(RichMultiCommand, _PatchedRichCommand):  # type: ignore[misc,unused-ignore]
     pass
 
 
-class _PatchedRichCommandCollection(RichCommandCollection, _PatchedRichCommand):
+class _PatchedRichCommandCollection(RichCommandCollection, _PatchedRichCommand):  # type: ignore[misc,unused-ignore]
     pass
 
 
-class _PatchedRichGroup(RichGroup, _PatchedRichCommand):
+class _PatchedRichGroup(RichGroup, _PatchedRichCommand):  # type: ignore[misc,unused-ignore]
     pass
 
 
@@ -343,7 +343,7 @@ def _patch_async_module(module: Any, rich_config: RichHelpConfiguration | None =
 def patch(
     rich_config: RichHelpConfiguration | None = None,
     *,
-    patch_rich_click: bool = False,
+    patch_rich_click: bool = True,
     patch_typer: bool = False,
     module: Any | None = None,
 ) -> None:
@@ -383,15 +383,15 @@ def patch(
         rich_click.rich_command.OVERRIDES_GUARD = True
         click.group = rich_group
         click.command = rich_command
-        click.Group = _PatchedRichGroup  # type: ignore[misc]
-        click.Command = _PatchedRichCommand  # type: ignore[misc]
-        click.CommandCollection = _PatchedRichCommandCollection  # type: ignore[misc]
+        click.Group = _PatchedRichGroup  # type: ignore[assignment,misc,unused-ignore]
+        click.Command = _PatchedRichCommand  # type: ignore[assignment,misc,unused-ignore]
+        click.CommandCollection = _PatchedRichCommandCollection  # type: ignore[assignment,misc,unused-ignore]
         click.Argument = _PatchedArgument  # type: ignore[misc]
         click.Option = _PatchedOption  # type: ignore[misc]
 
-        click.core.Group = _PatchedRichGroup  # type: ignore[misc]
-        click.core.Command = _PatchedRichCommand  # type: ignore[misc]
-        click.core.CommandCollection = _PatchedRichCommandCollection  # type: ignore[misc]
+        click.core.Group = _PatchedRichGroup  # type: ignore[assignment,misc,unused-ignore]
+        click.core.Command = _PatchedRichCommand  # type: ignore[assignment,misc,unused-ignore]
+        click.core.CommandCollection = _PatchedRichCommandCollection  # type: ignore[assignment,misc,unused-ignore]
         click.core.Argument = _PatchedArgument  # type: ignore[misc]
         click.core.Option = _PatchedOption  # type: ignore[misc]
 
@@ -400,9 +400,9 @@ def patch(
         if patch_rich_click:
             rich_click.group = rich_group
             rich_click.command = rich_command
-            rich_click.Group = _PatchedRichGroup  # type: ignore[misc]
-            rich_click.Command = _PatchedRichCommand  # type: ignore[misc]
-            rich_click.CommandCollection = _PatchedRichCommandCollection  # type: ignore[misc]
+            rich_click.Group = _PatchedRichGroup  # type: ignore[assignment,misc,unused-ignore]
+            rich_click.Command = _PatchedRichCommand  # type: ignore[assignment,misc,unused-ignore]
+            rich_click.CommandCollection = _PatchedRichCommandCollection  # type: ignore[assignment,misc,unused-ignore]
             if hasattr(click, "MultiCommand"):
                 rich_click.MultiCommand = _PatchedRichMultiCommand  # type: ignore[assignment,misc,unused-ignore]
 
@@ -413,54 +413,77 @@ def patch(
         rich_config.dump_to_globals()
 
 
+_TYPER_SUPPORT_DOCS_URL = "https://ewels.github.io/rich-click/latest/documentation/typer_support/#typer-026-support"
+
+
 def patch_typer(rich_config: RichHelpConfiguration | None = None) -> None:
     import typer.core
     import typer.main
 
     from rich_click._compat_typer import TYPER_IS_BEFORE_VERSION_026
 
-    if TYPER_IS_BEFORE_VERSION_026:
+    if not TYPER_IS_BEFORE_VERSION_026:
         import warnings
 
         warnings.warn(
-            "rich-click's patching is incompatible with Typer >= 0.26."
-            " Please downgrade Typer to <0.26, or remove patching (sorry)."
-            " We are working on a fix in the meantime.",
+            f"Typer>=0.26 may not support rich-click patching, see {_TYPER_SUPPORT_DOCS_URL}",
             RuntimeWarning,
             stacklevel=2,
         )
 
-    if not issubclass(typer.core.TyperCommand, _PatchedRichCommand):
-        globals().setdefault("__TyperCommand", typer.core.TyperCommand)
+    # Build every patched class before assigning any of them, so a TypeError never leaves Typer half-patched.
+    patched_command = patched_group = patched_option = patched_argument = None
 
-        class _PatchedTyperCommand(_PatchedRichCommand, typer.core.TyperCommand):  # type: ignore[misc,unused-ignore]
-            pass
+    try:
+        if not issubclass(typer.core.TyperCommand, _PatchedRichCommand):
+            globals().setdefault("__TyperCommand", typer.core.TyperCommand)
 
-        typer.core.TyperCommand = typer.main.TyperCommand = _patch_typer_command(_PatchedTyperCommand)  # type: ignore[assignment,attr-defined,misc]
+            class _PatchedTyperCommand(_PatchedRichCommand, typer.core.TyperCommand):  # type: ignore[misc,unused-ignore]
+                pass
 
-    if not issubclass(typer.core.TyperGroup, _PatchedRichGroup):
-        globals().setdefault("__TyperGroup", typer.core.TyperGroup)
+            patched_command = _patch_typer_command(_PatchedTyperCommand)
 
-        class _PatchedTyperGroup(_PatchedRichGroup, typer.core.TyperGroup):  # type: ignore[misc,unused-ignore]
-            pass
+        if not issubclass(typer.core.TyperGroup, _PatchedRichGroup):
+            globals().setdefault("__TyperGroup", typer.core.TyperGroup)
 
-        typer.core.TyperGroup = typer.main.TyperGroup = _patch_typer_group(_PatchedTyperGroup)  # type: ignore[assignment,attr-defined,misc]
+            class _PatchedTyperGroup(_PatchedRichGroup, typer.core.TyperGroup):  # type: ignore[misc,unused-ignore]
+                pass
 
-    if not issubclass(typer.core.TyperOption, _PatchedOption):
-        globals().setdefault("__TyperOption", typer.core.TyperOption)
+            patched_group = _patch_typer_group(_PatchedTyperGroup)
 
-        class _PatchedTyperOption(_PatchedOption, typer.core.TyperOption):  # type: ignore[misc,unused-ignore]
-            pass
+        if not issubclass(typer.core.TyperOption, _PatchedOption):
+            globals().setdefault("__TyperOption", typer.core.TyperOption)
 
-        typer.core.TyperOption = typer.main.TyperOption = _patch_typer_option(_PatchedTyperOption)  # type: ignore[assignment,attr-defined,misc]
+            class _PatchedTyperOption(_PatchedOption, typer.core.TyperOption):  # type: ignore[misc,unused-ignore]
+                pass
 
-    if not issubclass(typer.core.TyperArgument, _PatchedArgument):
-        globals().setdefault("__TyperArgument", typer.core.TyperArgument)
+            patched_option = _patch_typer_option(_PatchedTyperOption)
 
-        class _PatchedTyperArgument(_PatchedArgument, typer.core.TyperArgument):  # type: ignore[misc,unused-ignore]
-            pass
+        if not issubclass(typer.core.TyperArgument, _PatchedArgument):
+            globals().setdefault("__TyperArgument", typer.core.TyperArgument)
 
-        typer.core.TyperArgument = typer.main.TyperArgument = _patch_typer_argument(_PatchedTyperArgument)  # type: ignore[assignment,attr-defined,misc]
+            class _PatchedTyperArgument(_PatchedArgument, typer.core.TyperArgument):  # type: ignore[misc,unused-ignore]
+                pass
+
+            patched_argument = _patch_typer_argument(_PatchedTyperArgument)
+    except TypeError as exc:
+        import warnings
+
+        warnings.warn(
+            f"Failed to patch Typer ({exc.__class__.__name__}), continuing unpatched.",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+        return
+
+    if patched_command is not None:
+        typer.core.TyperCommand = typer.main.TyperCommand = patched_command  # type: ignore[assignment,attr-defined,misc]
+    if patched_group is not None:
+        typer.core.TyperGroup = typer.main.TyperGroup = patched_group  # type: ignore[assignment,attr-defined,misc]
+    if patched_option is not None:
+        typer.core.TyperOption = typer.main.TyperOption = patched_option  # type: ignore[assignment,attr-defined,misc]
+    if patched_argument is not None:
+        typer.core.TyperArgument = typer.main.TyperArgument = patched_argument  # type: ignore[assignment,attr-defined,misc]
 
     if rich_config is not None:
         rich_config.dump_to_globals()

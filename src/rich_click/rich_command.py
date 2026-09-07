@@ -20,11 +20,11 @@ import click
 # Group, Command, and CommandCollection need to be imported directly,
 # or else rich_click.cli.patch() causes a recursion error.
 from click import Command, CommandCollection, Group
-from click.utils import PacifyFlushWrapper
 
 from rich_click.rich_context import RichContext, RichContextMixin
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
+from rich_click.utils import _PacifyFlushWrapper
 
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -314,8 +314,8 @@ class RichCommand(RichCommandMixin, Command):
                 sys.exit(e.exit_code)
             except OSError as e:
                 if e.errno == errno.EPIPE:
-                    sys.stdout = cast(TextIO, PacifyFlushWrapper(sys.stdout))
-                    sys.stderr = cast(TextIO, PacifyFlushWrapper(sys.stderr))
+                    sys.stdout = cast(TextIO, _PacifyFlushWrapper(sys.stdout))
+                    sys.stderr = cast(TextIO, _PacifyFlushWrapper(sys.stderr))
                     sys.exit(1)
                 else:
                     raise
