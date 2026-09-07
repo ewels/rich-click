@@ -1058,6 +1058,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#use-of-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use of AI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#credits" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1127,6 +1138,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#use-of-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use of AI
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#credits" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1161,14 +1183,13 @@
 
 <h1 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">¶</a></h1>
 <p>Contributions and suggestions for new features are welcome, as are bug reports!
-Please create a new <a href="https://github.com/ewels/rich-click/issues">issue</a>
-or better still, dive right in with a pull-request.</p>
+Please open an <a href="https://github.com/ewels/rich-click/issues">issue</a> to discuss new features or to report bugs.</p>
 <h2 id="local-setup">Local setup<a class="headerlink" href="#local-setup" title="Permanent link">¶</a></h2>
 <p>Requirements:</p>
 <ul>
 <li><code>uv</code> https://docs.astral.sh/uv/getting-started/installation/</li>
 </ul>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>python<span class="w"> </span>pin<span class="w"> </span><span class="m">3</span>.13
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>python<span class="w"> </span>pin<span class="w"> </span><span class="m">3</span>.14
 uv<span class="w"> </span>venv<span class="w"> </span>.venv
 <span class="nb">source</span><span class="w"> </span>.venv/bin/activate
 uv<span class="w"> </span>sync<span class="w"> </span>--all-groups
@@ -1204,6 +1225,18 @@ manual changes to your code.</p>
 If this happens, it's ok to add a Ruff <code># noqa</code> or mypy <code># type: ignore</code> comment to skip that line.
 For details of how to do this, please see the <a href="https://docs.astral.sh/ruff/linter/#error-suppression">Ruff docs</a>
 and <a href="https://mypy.readthedocs.io/en/stable/common_issues.html#spurious-errors-and-locally-silencing-the-checker">mypy docs</a>.</p>
+<h2 id="use-of-ai">Use of AI<a class="headerlink" href="#use-of-ai" title="Permanent link">¶</a></h2>
+<p>We welcome contributions that use AI assistance.
+The maintainers of this code use AI coding assistance to varying degrees. Additionally, we have accepted and will continue to accept contributions from outside contributors which are AI written.</p>
+<p>All we ask is:</p>
+<ul>
+<li>Please disclose the use of AI coding in your pull request.</li>
+<li>Please communicate with us using your own words, not through an AI.</li>
+<li>Permission to use AI in contributions is not the same as permission to spam us with slop PRs.</li>
+</ul>
+<p>Please also consider the following: The maintainers of this code base have access to the same LLMs that you do.
+We have just as much of an ability as you do to copy+paste a simple issue description into an AI coding agent and get a pull request out of it.
+If you are scraping Github repos to find open issues and slinging slop at hundreds or thousands of projects you have no connection to, we are not interested.</p>
 <h2 id="credits">Credits<a class="headerlink" href="#credits" title="Permanent link">¶</a></h2>
 <p>This package was written by Phil Ewels (<a href="http://github.com/ewels/">@ewels</a>),
 based on initial code by Will McGugan (<a href="https://github.com/willmcgugan">@willmcgugan</a>).</p>
