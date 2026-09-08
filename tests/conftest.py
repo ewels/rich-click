@@ -34,11 +34,7 @@ def run_as_subprocess(args: list[str], env: dict[str, str] | None = None) -> "su
 
     _env = {**os.environ, "TERMINAL_WIDTH": "100", "FORCE_COLOR": "False"}
     _env.update(env or {})
-    res = subprocess.run(
-        args,
-        capture_output=True,
-        env=_env,
-    )
+    res = subprocess.run(args, env=_env, capture_output=True)
     return res
 
 

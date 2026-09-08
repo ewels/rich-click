@@ -1,10 +1,9 @@
 import importlib
 import sys
-from collections.abc import Callable
-from pathlib import Path
 from typing import Any
 
 from rich_click.rich_command import RichCommand
+from tests.conftest import WriteScript
 
 
 if sys.version_info < (3, 11):
@@ -22,7 +21,7 @@ def eval_type(t: Any, globalns: dict[str, Any], localns: dict[str, Any]) -> Any:
         return typing._eval_type(t, globalns, localns)  # type: ignore[attr-defined]
 
 
-def test_config_typed_dict_annotations(mock_script_writer: Callable[[str, str], Path]) -> None:
+def test_config_typed_dict_annotations(mock_script_writer: WriteScript) -> None:
     IGNORED_KEYS = {"highlighter"}
 
     with open("src/rich_click/_internal_types.py") as f:
@@ -64,7 +63,7 @@ def test_config_typed_dict_annotations(mock_script_writer: Callable[[str, str], 
     assert all(k in RichHelpConfiguration.__dataclass_fields__ for k in RichHelpConfigurationDict.__annotations__)
 
 
-def test_all_rich_group_attrs_in_annotation(mock_script_writer: Callable[[str, str], Path]) -> None:
+def test_all_rich_group_attrs_in_annotation(mock_script_writer: WriteScript) -> None:
     # This is a weak test.
     # It does not assert that annotations, function signatures, etc. are correct.
     # It only asserts that nothing is obviously missing.
@@ -80,7 +79,7 @@ def test_all_rich_group_attrs_in_annotation(mock_script_writer: Callable[[str, s
         assert i in dir(AnnotatedRichGroup)
 
 
-def test_all_rich_command_attrs_in_annotation(mock_script_writer: Callable[[str, str], Path]) -> None:
+def test_all_rich_command_attrs_in_annotation(mock_script_writer: WriteScript) -> None:
     # This is a weak test.
     # It does not assert that annotations, function signatures, etc. are correct.
     # It only asserts that nothing is obviously missing.
