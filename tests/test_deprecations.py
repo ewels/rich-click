@@ -1,5 +1,6 @@
 import sys
 from importlib import reload
+from pathlib import Path
 from unittest.mock import patch
 
 import click.utils
@@ -9,7 +10,7 @@ from rich.console import Console
 
 import rich_click
 from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X, CLICK_IS_BEFORE_VERSION_85
-from tests.conftest import run_as_subprocess
+from tests.conftest import WriteScript, run_as_subprocess
 
 
 @pytest.mark.skipif(not CLICK_IS_BEFORE_VERSION_9X, reason="Click 9 removes MultiCommand")
@@ -115,6 +116,31 @@ def test_not_implemented_warnings_for_help_formatter() -> None:
 def test_no_deprecation_warning_on_import() -> None:
     res = run_as_subprocess([sys.executable, "-W", "error::DeprecationWarning", "-c", "import rich_click"])
     assert res.returncode == 0, res.stderr.decode()
+
+
+def test_no_deprecation_warning_with_type_checking_true(tmp_path: Path, mock_script_writer: WriteScript) -> None:
+    # Because TYPE_CHECKING guard prevents DeprecationWarnings (that's the point, after all),
+    # it can be really hard to observe whether we are importing something that is disappearing.
+    # Ideally, we avoid importing things that are being deprecated. Anyone utilizing it
+    # will still find it reachable via __getattr__. So this is mostly a canary to figure out
+    # if Click deprecates something.
+    #
+    # Also, can't just 'import typing; typing.TYPE_CHECKING = True; import rich_click'
+    # due to circular imports. Hence this janky code below.
+    #
+    # This is a much stricter version of the above test.
+    # When prior test fails, this one does too.
+
+    with open("src/rich_click/__init__.py") as f:
+        mod_str = f.read()
+        mod_str = mod_str.replace("\nif _t.TYPE_CHECKING:", "\nif True:")
+        mod_str = mod_str.replace("\nfrom . import rich_click as rich_click", "\n")
+        mock_script_writer(mod_str)
+
+    res = run_as_subprocess([sys.executable, "-W", "error::DeprecationWarning", f"{tmp_path}/scripts/mymodule.py"])
+    assert res.returncode == 0, res.stderr
+    assert res.stdout == b"", res.stdout
+    assert res.stderr == b"", res.stderr
 
 
 def test_lazy_click_reexports_still_resolve() -> None:
