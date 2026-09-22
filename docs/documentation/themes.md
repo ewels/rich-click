@@ -182,7 +182,7 @@ For more advanced CLIs, with lots of other customization options, there are addi
 
 ### Formats
 
-There are currently 5 available **formats**.
+There are currently 6 available **formats**.
 
 === "`box`"
     **(Default)** Original rich-click format with boxes.
@@ -194,6 +194,17 @@ There are currently 5 available **formats**.
         RICH_CLICK_THEME: default-box
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_default_box.svg){.screenshot}
+
+=== "`square`"
+    Original rich-click format with square boxes.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/themes
+    extra_env:
+        TERMINAL_WIDTH: 120
+        RICH_CLICK_THEME: default-square
+    -->
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_default_square.svg){.screenshot}
 
 === "`slim`"
     Simple, classic, no-fuss CLI format.
