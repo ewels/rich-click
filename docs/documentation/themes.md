@@ -64,6 +64,21 @@ Themes are one of **rich-click**'s most powerful features.
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
 
+=== "`solarized-square`"
+
+    ```shell
+    export RICH_CLICK_THEME=solarized-square
+    python docs/code_snippets/themes/cli.py --help
+    ```
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/themes
+    extra_env:
+        TERMINAL_WIDTH: 120
+        RICH_CLICK_THEME: solarized-square
+    -->
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_ex5.svg){.screenshot}
+
 Themes consist of **Color Palettes** and **Formats**, which can be mixed and matched.
 The name of a full theme has the following schema: `{color_palette}-{format}`.
 
