@@ -283,10 +283,9 @@ class RichCommand(Command):
     def format_options(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         from rich.table import Table
 
-        from rich_click.rich_panel import align_panel_columns, construct_panels
+        from rich_click.rich_panel import construct_panels
 
         panels = construct_panels(self, ctx, formatter)  # type: ignore[arg-type]
-        align_panel_columns(panels, self, ctx, formatter)  # type: ignore[arg-type]
         for panel in panels:
             p = panel.render(self, ctx, formatter)  # type: ignore[arg-type]
             if not isinstance(p.renderable, Table) or len(p.renderable.rows) > 0:

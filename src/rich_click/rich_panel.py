@@ -72,6 +72,7 @@ class RichPanel(Generic[CT, ColT]):
         self.title_style = title_style
         # Set by align_panel_columns() for the duration of one render.
         self._alignment: tuple[list[ColT], list[int | None]] | None = None
+        self._rows: list[list[Any]] | None = None
 
     @property
     def objects(self) -> list[str]:
@@ -137,9 +138,17 @@ class RichPanel(Generic[CT, ColT]):
         """Build a row of cells for every object in the panel, one cell per column type."""
         raise NotImplementedError()
 
+    def _render_rows(self, command: RichCommand, ctx: RichContext, formatter: RichHelpFormatter) -> list[list[Any]]:
+        """Build the rows once per render: alignment measures them before rendering draws them."""
+        if self._rows is None:
+            self._rows = self.get_rows(command, ctx, formatter)
+        return self._rows
+
     def kept_column_types(self, rows: list[list[Any]], formatter: RichHelpFormatter) -> list[ColT]:
         """List the column types with something in them, dropping any empty for every row."""
-        return [t for t, cells in zip(self.get_column_types(formatter), zip(*rows)) if any(cells)]
+        return [
+            t for t, cells in zip(self.get_column_types(formatter), zip(*rows)) if any(map(self._has_content, cells))
+        ]
 
     def _table_padding_width(self, formatter: RichHelpFormatter) -> int:
         """How much horizontal padding a table column takes on top of its content."""
@@ -194,9 +203,14 @@ class RichPanel(Generic[CT, ColT]):
         help_index = next((i for i, t in enumerate(kept_types) if t == "help"), -1)
 
         threshold = formatter.config.wrap_long_options
+        # Taking a row out of the columns splits the panel into a stack of tables, and a box is
+        # drawn around each one, so a boxed table keeps every row inline whatever its width.
+        box = self.table_styles.get("box", getattr(formatter.config, f"style_{self._object_attr}_table_box"))
+        inner_width = _panel_inner_width(formatter)
         dropped: set[int] = set()
         spanned: set[int] = set()
-        if kept_rows and help_index >= 1 and threshold and threshold > 0:
+        measured: list[list[int]] | None = None
+        if kept_rows and help_index >= 1 and threshold and threshold > 0 and self.get_box(box) is None:
             measured = self._measure_rows(kept_rows, help_index, formatter)
             overflowing: dict[int, tuple[int, int]] = {}
             for i, row_widths in enumerate(measured):
@@ -211,7 +225,7 @@ class RichPanel(Generic[CT, ColT]):
                 if pinned:
                     allowed = max(allowed, sum(pinned[c] for c in filled) + gaps)
                 # An entry too wide for the panel itself has to wrap in its columns whatever we do.
-                if allowed < needed <= _panel_inner_width(formatter):
+                if allowed < needed <= inner_width:
                     overflowing[i] = (filled[0] if filled else 0, needed)
                     dropped.add(i)
 
@@ -225,13 +239,42 @@ class RichPanel(Generic[CT, ColT]):
                     dropped.discard(i)
                     spanned.add(i)
 
-        inline_rows = [row for i, row in enumerate(kept_rows) if i not in dropped and i not in spanned]
         widths: list[int | None] = []
         if help_index >= 1:
-            measured = self._measure_rows(inline_rows, help_index, formatter)
-            widths = [max((row[c] for row in measured), default=0) for c in range(help_index)]
+            if measured is None:
+                measured = self._measure_rows(kept_rows, help_index, formatter)
+            inline = [m for i, m in enumerate(measured) if i not in dropped and i not in spanned]
+            widths = [max((row[c] for row in inline), default=0) for c in range(help_index)]
             widths += [None] * (len(kept_types) - help_index)
         return kept_rows, dropped, spanned, widths
+
+    def _fold_empty_columns(
+        self,
+        keep: list[bool],
+        widths: list[int | None],
+        tracks: list[list[Any]],
+        formatter: RichHelpFormatter,
+    ) -> tuple[list[int | None], list[list[Any]]]:
+        """
+        Hand each unkept column's width to its left-hand neighbour, so a long entry can spill right.
+
+        The merged column is as wide as the ones it replaces, so the help text still starts where
+        it does in every other row. A leading unkept column is left alone: that one is what indents
+        the panel into line with its siblings. `tracks` are lists parallel to `widths` - cells,
+        headers, column types - filtered alongside it.
+        """
+        padding = self._table_padding_width(formatter)
+        merged_widths: list[int | None] = []
+        merged_tracks: list[list[Any]] = [[] for _ in tracks]
+        for kept, width, *values in zip(keep, widths, *tracks):
+            neighbour = merged_widths[-1] if merged_widths else None
+            if kept or width is None or neighbour is None:
+                merged_widths.append(width)
+                for merged, value in zip(merged_tracks, values):
+                    merged.append(value)
+            else:
+                merged_widths[-1] = neighbour + width + padding
+        return merged_widths, merged_tracks
 
     def _absorb_unused_columns(
         self, rows: list[list[Any]], kept_types: list[ColT], widths: list[int | None], formatter: RichHelpFormatter
@@ -241,23 +284,15 @@ class RichPanel(Generic[CT, ColT]):
 
         Aligning panels gives every panel in a group the same columns, including ones only its
         siblings fill. An empty column still takes up its width, which is then unreachable by the
-        entries that could have used it. A leading empty column is left alone: that one is what
-        indents the panel into line with its siblings.
+        entries that could have used it.
         """
         used = self.kept_column_types(rows, formatter)
         if all(t in used for t in kept_types):
             return kept_types, widths
 
-        padding = self._table_padding_width(formatter)
-        merged_types: list[ColT] = []
-        merged_widths: list[int | None] = []
-        for column_type, width in zip(kept_types, widths):
-            neighbour = merged_widths[-1] if merged_widths else None
-            if column_type in used or width is None or neighbour is None:
-                merged_types.append(column_type)
-                merged_widths.append(width)
-            else:
-                merged_widths[-1] = neighbour + width + padding
+        merged_widths, (merged_types,) = self._fold_empty_columns(
+            [t in used for t in kept_types], widths, [kept_types], formatter
+        )
         return merged_types, merged_widths
 
     def _style_columns(self, table: Table, headers: list[str], widths: list[int | None]) -> None:
@@ -274,25 +309,10 @@ class RichPanel(Generic[CT, ColT]):
     def _merge_empty_columns(
         self, row: list[Any], headers: list[str], widths: list[int | None], formatter: RichHelpFormatter
     ) -> tuple[list[Any], list[str], list[int | None]]:
-        """
-        Hand each of a row's empty columns to the cell on its left, so a long entry can spill right.
-
-        The merged column is as wide as the ones it replaces, so the help text still starts where
-        it does in every other row. A leading empty column is left alone: it is what indents the
-        row into line with its neighbours.
-        """
-        padding = self._table_padding_width(formatter)
-        cells: list[Any] = []
-        merged_headers: list[str] = []
-        merged_widths: list[int | None] = []
-        for cell, header, width in zip(row, headers, widths):
-            neighbour = merged_widths[-1] if merged_widths else None
-            if width is None or neighbour is None or self._has_content(cell):
-                cells.append(cell)
-                merged_headers.append(header)
-                merged_widths.append(width)
-            else:
-                merged_widths[-1] = neighbour + width + padding
+        """Hand each of a row's empty columns to the cell on its left, so a long entry spills right."""
+        merged_widths, (cells, merged_headers) = self._fold_empty_columns(
+            [self._has_content(cell) for cell in row], widths, [row, headers], formatter
+        )
         return cells, merged_headers, merged_widths
 
     def _next_line_head(self, table: Table, row: list[Any], help_index: int) -> Any:
@@ -474,7 +494,7 @@ class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
             "padding": formatter.config.style_options_table_padding,
             "expand": formatter.config.style_options_table_expand,
         }
-        rows = self.get_rows(command, ctx, formatter)
+        rows = self._render_rows(command, ctx, formatter)
         return self._build_table(rows, formatter, lambda: self._get_base_table(**t_styles))
 
     def render(
@@ -627,7 +647,7 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
         if not isinstance(command, Group):
             return new_table()
 
-        return self._build_table(self.get_rows(command, ctx, formatter), formatter, new_table)
+        return self._build_table(self._render_rows(command, ctx, formatter), formatter, new_table)
 
     def render(
         self,
@@ -702,17 +722,19 @@ def align_panel_columns(
     then padded to a common width, so that the final column - option help and command help alike -
     starts in the same place in every panel.
 
-    Panels live on the command, so any alignment from a previous render is cleared first, whether
-    or not this render aligns anything.
+    Panels live on the command, so the scratch state from a previous render is cleared first,
+    whether or not this render aligns anything.
     """
     for panel in panels:
         panel._alignment = None
-    if not formatter.config.align_columns_across_panels:
+        panel._rows = None
+    # A lone panel has nothing to line up against, and sizes itself the same way either way.
+    if not formatter.config.align_columns_across_panels or len(panels) < 2:
         return
 
     groups: dict[tuple[str, ...], list[tuple[RichPanel[Any, Any], list[Any], list[Any]]]] = {}
     for panel in panels:
-        rows = panel.get_rows(command, ctx, formatter)
+        rows = panel._render_rows(command, ctx, formatter)
         member = (panel, rows, panel.kept_column_types(rows, formatter))
         groups.setdefault((panel._object_attr, *panel.get_column_types(formatter)), []).append(member)
 
@@ -723,23 +745,28 @@ def align_panel_columns(
     for key, members in groups.items():
         shared = [t for t in key[1:] if any(t in kept for _, _, kept in members)]
         shared_types[key] = shared
+        paddings[key] = members[0][0]._table_padding_width(formatter)
         group_widths: list[int] = []
         # Widths and which rows keep their help inline depend on each other: a row too wide to sit
         # beside its help fits once the columns are pinned, and then has a say in how wide they
         # are. Widths only ever grow, so measuring again against them settles.
         while True:
             grown: list[int] = []
+            # Every row inline means every row had its say, so pinning these widths moves nothing.
+            settled = True
             for panel, rows, _ in members:
                 if not rows:
                     continue
-                paddings[key] = panel._table_padding_width(formatter)
-                *_, measured = panel.layout(rows, shared, formatter, group_widths or None)
+                _, dropped, spanned, measured = panel.layout(rows, shared, formatter, group_widths or None)
+                settled = settled and not dropped and not spanned
                 # layout() pads the flexible trailing columns with None; only the leading ones are pinned.
                 pinnable = [w for w in measured if w is not None]
                 grown = [max(pair) for pair in zip(grown, pinnable)] or pinnable
             if grown == group_widths:
                 break
             group_widths = grown
+            if settled:
+                break
         if group_widths:
             widths[key] = group_widths
 
@@ -1039,4 +1066,5 @@ def construct_panels(
     else:
         add_panels_from([pre_default_panels, defined_panels, new_panels, post_default_panels])
 
+    align_panel_columns(final_panels, command, ctx, formatter)
     return final_panels

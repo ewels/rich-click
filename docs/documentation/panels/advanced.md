@@ -190,8 +190,11 @@ Moving the help down is the shape that [clap](https://docs.rs/clap/latest/clap/s
     Rich tables cannot span columns, so a panel containing a wrapped entry is rendered as a stack of
     tables sharing one set of column widths. `RichPanel.get_table()` returns a `rich.console.Group`
     rather than a `Table` in that case. Subclasses that assume a `Table` comes back should either
-    turn this option off or handle both, and table decorations such as `style_options_table_box` and
-    `style_options_table_show_lines` restart at each block.
+    turn this option off or handle both.
+
+    A box is drawn around each table in such a stack, so a panel whose `style_options_table_box` or
+    `style_commands_table_box` is set keeps all of its entries inline instead, whatever the
+    threshold says.
 
 ## `RichPanel().to_info_dict()`
 

@@ -74,3 +74,14 @@ def test_wrap_long_options_off(cli_runner: CliRunner, cli: rich_click.RichComman
 def test_wrap_long_options_true_means_the_default() -> None:
     config = rich_click.RichHelpConfiguration
     assert config(wrap_long_options=True).wrap_long_options == config().wrap_long_options
+
+
+def test_wrap_long_options_off_for_boxed_tables(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    """A box is drawn around every table, and taking a row out of the columns makes more of them."""
+    box = {"style_options_table_box": "DOUBLE", "style_commands_table_box": "DOUBLE"}
+    cli.context_settings["rich_help_config"] = {**box, "wrap_long_options": 0}
+    baseline = cli_runner.invoke(cli, "--help").stdout
+    cli.context_settings["rich_help_config"] = box
+    result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    assert result.stdout == baseline
