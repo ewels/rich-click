@@ -109,7 +109,7 @@ COLOR_SYSTEM: Literal["auto", "standard", "256", "truecolor", "windows"] | None 
 FORCE_TERMINAL: bool | None = force_terminal_default()
 
 ALIGN_COLUMNS_ACROSS_PANELS: bool = True
-WRAP_LONG_OPTIONS: int | bool | None = 40
+WRAP_LONG_OPTIONS: int | bool | None = 48
 
 OPTIONS_TABLE_COLUMN_TYPES: list[OptionColumnType] = FROM_THEME
 COMMANDS_TABLE_COLUMN_TYPES: list[CommandColumnType] = FROM_THEME

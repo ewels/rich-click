@@ -44,13 +44,13 @@ def test_styles_options_panel(cli_runner: CliRunner, cli: rich_click.RichCommand
                                                                                                     \n\
    Custom Panel                                                                                     \n\
   This is help text for the option panel.                                                           \n\
-  --a     -a  TEXT  Help text for A                                                                 \n\
-  --b     -b  TEXT  Help text for B                                                                 \n\
-  --c     -c  TEXT  Help text for C                                                                 \n\
+  --a  -a  TEXT  Help text for A                                                                    \n\
+  --b  -b  TEXT  Help text for B                                                                    \n\
+  --c  -c  TEXT  Help text for C                                                                    \n\
                                          Additional Options                                         \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help            Show this message and exit.                                                    │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

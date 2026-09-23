@@ -121,8 +121,8 @@ Below is an example that does this, as well as doing some additional reordering 
 
 `align_columns_across_panels` sizes every panel's columns together, so that the help text starts in
 the same place throughout the help screen: a column is kept if any panel has something to put in it,
-and is then made wide enough for the widest entry anywhere. Turn it off to have each panel size its
-own table instead.
+and is then made wide enough for the widest entry that reaches past it. Turn it off to have each
+panel size its own table instead.
 
 ```python
 {% include "../../code_snippets/panels/panels_align_columns.py" %}
@@ -139,10 +139,11 @@ A panel that has nothing to put in one of the shared columns hands that column's
 its left, so the space is still usable by the entries that need it. The leading column is left alone,
 since that is what indents each panel's names into line with its siblings.
 
-The trade-off is that one very long option or command name pads out every panel, so this suits CLIs
-whose names are of a similar length. Where they are not, `wrap_long_options` keeps the worst offenders
-out of the columns. `align_columns_across_panels` takes precedence over
-`style_commands_table_column_width_ratio`.
+An entry whose own cells stop short of the help - an option with no short form, say - does the same
+row by row: it runs on under the columns it leaves empty rather than widening the one it is in, so
+the entries that do use those columns keep them narrow. `wrap_long_options` is the ceiling on how far
+the columns will stretch to keep such an entry beside its help. `align_columns_across_panels` takes
+precedence over `style_commands_table_column_width_ratio`.
 
 Where the aligned columns would take more than two thirds of the panel, there is too little left for
 the help text to be worth reading, and every panel sizes itself instead. A narrow terminal can
@@ -174,8 +175,8 @@ enough, its help moves to the line below instead - it still starts in the help c
 description in the panel lines up.
 
 Either way the entry no longer counts towards the column width, which is what buys the space back.
-Only entries over the threshold are affected, and it applies to command panels too, for subcommands
-with long names.
+The threshold also caps how wide the columns will grow to hold an entry that spills across them, and
+it applies to command panels too, for subcommands with long names.
 
 If *every* entry in a panel is over the threshold there is no column left to line up with, and that
 panel's help text is simply indented instead. An entry wider than the panel itself is left alone,
@@ -184,8 +185,10 @@ since no arrangement of columns fits it; rich truncates it with an ellipsis as i
 With `align_columns_across_panels` also on, an entry that fits the width its columns get from being
 aligned stays put whatever the threshold says - moving it would cost a line and reclaim nothing.
 
-The default is `40`. `0`, a negative number, `False` or `None` never wraps, and a number larger than
-the terminal has the same effect.
+The default is `48`, chosen to hold a flag and its negative form. `0`, a negative number, `False` or
+`None` turns the whole thing off, leaving every entry to set the width of its column as it did
+before. Where spilling would leave the help text less than a third of the panel, the columns are
+sized that way too.
 
 Moving the help down is the shape that [clap](https://docs.rs/clap/latest/clap/struct.Arg.html) calls
 `next_line_help` and that `argparse` arrives at through a low `max_help_position`.

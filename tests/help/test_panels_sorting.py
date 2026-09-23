@@ -61,19 +61,19 @@ def test_panel_order_in_panel_decorator(cli_runner: CliRunner, cli: rich_click.R
  Test order of panels is preserved via panel=...                                                    \n\
                                                                                                     \n\
 ╭─ Custom 2 ───────────────────────────────────────────────────────────────────────────────────────╮
-│ --a     -a  TEXT  Help text for A                                                                │
-│ --c     -c  TEXT  Help text for C                                                                │
+│ --a  -a  TEXT  Help text for A                                                                   │
+│ --c  -c  TEXT  Help text for C                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Custom 1 ───────────────────────────────────────────────────────────────────────────────────────╮
-│ --b     -b  TEXT  Help text for B                                                                │
-│ --e     -e  TEXT  Help text for E                                                                │
+│ --b  -b  TEXT  Help text for B                                                                   │
+│ --e  -e  TEXT  Help text for E                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Custom 3 ───────────────────────────────────────────────────────────────────────────────────────╮
-│ --f     -f  TEXT  Help text for F                                                                │
-│ --d     -d  TEXT  Help text for E                                                                │
+│ --f  -f  TEXT  Help text for F                                                                   │
+│ --d  -d  TEXT  Help text for E                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help            Show this message and exit.                                                    │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -89,19 +89,19 @@ def test_option_order_with_panel_decorator(cli_runner: CliRunner, cli: rich_clic
  Test order of options is preserved via panel...                                                    \n\
                                                                                                     \n\
 ╭─ Custom 1 ───────────────────────────────────────────────────────────────────────────────────────╮
-│ --a     -a  TEXT  Help text for A                                                                │
-│ --b     -b  TEXT  Help text for B                                                                │
+│ --a  -a  TEXT  Help text for A                                                                   │
+│ --b  -b  TEXT  Help text for B                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Custom 2 ───────────────────────────────────────────────────────────────────────────────────────╮
-│ --d     -d  TEXT  Help text for D                                                                │
-│ --c     -c  TEXT  Help text for C                                                                │
+│ --d  -d  TEXT  Help text for D                                                                   │
+│ --c  -c  TEXT  Help text for C                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Custom 3 ───────────────────────────────────────────────────────────────────────────────────────╮
-│ --f     -f  TEXT  Help text for F                                                                │
-│ --e     -e  TEXT  Help text for E                                                                │
+│ --f  -f  TEXT  Help text for F                                                                   │
+│ --e  -e  TEXT  Help text for E                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help            Show this message and exit.                                                    │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -117,19 +117,19 @@ def test_panel_order_with_panel_kwarg(cli_runner: CliRunner, cli: rich_click.Ric
  Test order of panels is preserved via option_panel()                                               \n\
                                                                                                     \n\
 ╭─ Panel 2 ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --a     -a  TEXT  Help text for A                                                                │
-│ --b     -b  TEXT  Help text for B                                                                │
+│ --a  -a  TEXT  Help text for A                                                                   │
+│ --b  -b  TEXT  Help text for B                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Panel 1 ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --c     -c  TEXT  Help text for C                                                                │
-│ --d     -d  TEXT  Help text for D                                                                │
+│ --c  -c  TEXT  Help text for C                                                                   │
+│ --d  -d  TEXT  Help text for D                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Panel 3 ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --e     -e  TEXT  Help text for E                                                                │
-│ --f     -f  TEXT  Help text for F                                                                │
+│ --e  -e  TEXT  Help text for E                                                                   │
+│ --f  -f  TEXT  Help text for F                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help            Show this message and exit.                                                    │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -145,19 +145,19 @@ def test_option_order_with_panel_kwarg(cli_runner: CliRunner, cli: rich_click.Ri
  Test order of options is preserved via option_panel()                                              \n\
                                                                                                     \n\
 ╭─ Panel 1 ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --a     -a  TEXT  Help text for A                                                                │
-│ --b     -b  TEXT  Help text for B                                                                │
+│ --a  -a  TEXT  Help text for A                                                                   │
+│ --b  -b  TEXT  Help text for B                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Panel 2 ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --d     -d  TEXT  Help text for C                                                                │
-│ --c     -c  TEXT  Help text for D                                                                │
+│ --d  -d  TEXT  Help text for C                                                                   │
+│ --c  -c  TEXT  Help text for D                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Panel 3 ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --f     -e  TEXT  Help text for E                                                                │
-│ --e     -f  TEXT  Help text for F                                                                │
+│ --f  -e  TEXT  Help text for E                                                                   │
+│ --e  -f  TEXT  Help text for F                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help            Show this message and exit.                                                    │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -176,8 +176,8 @@ def test_panel_order_commands_above_options(cli_runner: CliRunner, cli: rich_cli
 │ dummy                                                                                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --a     TEXT                                                                                     │
-│ --help        Show this message and exit.                                                        │
+│ --a  TEXT                                                                                        │
+│ --help     Show this message and exit.                                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -194,8 +194,8 @@ def test_panel_order_options_above_commands(cli_runner: CliRunner, cli: rich_cli
  `commands_before_options` config option.                                                           \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --a     TEXT                                                                                     │
-│ --help        Show this message and exit.                                                        │
+│ --a  TEXT                                                                                        │
+│ --help     Show this message and exit.                                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ dummy                                                                                            │
@@ -214,11 +214,11 @@ def test_panel_order_options_above_commands_with_arguments(cli_runner: CliRunner
  Test that default order is arguments -> options -> commands.                                       \n\
                                                                                                     \n\
 ╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────╮
-│ *  A       TEXT  [required]                                                                      │
+│ *  A    TEXT  [required]                                                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│    --b     TEXT                                                                                  │
-│    --help        Show this message and exit.                                                     │
+│    --b  TEXT                                                                                     │
+│    --help     Show this message and exit.                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ dummy                                                                                            │
@@ -240,11 +240,11 @@ def test_panel_order_arguments_options_commands(cli_runner: CliRunner, cli: rich
 │ dummy                                                                                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────╮
-│ *  A       TEXT  [required]                                                                      │
+│ *  A    TEXT  [required]                                                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│    --b     TEXT                                                                                  │
-│    --help        Show this message and exit.                                                     │
+│    --b  TEXT                                                                                     │
+│    --help     Show this message and exit.                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -284,14 +284,14 @@ def test_panel_different_type_panels_same_name(cli_runner: CliRunner, cli: rich_
  Test that command panel and option panel both having the same name doesn't cause any issues.       \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help        Show this message and exit.                                                        │
+│ --help       Show this message and exit.                                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Generic Panel ──────────────────────────────────────────────────────────────────────────────────╮
 │ dummy                                                                                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Generic Panel ──────────────────────────────────────────────────────────────────────────────────╮
-│ --foo   TEXT                                                                                     │
-│ --bar   TEXT                                                                                     │
+│ --foo  TEXT                                                                                      │
+│ --bar  TEXT                                                                                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

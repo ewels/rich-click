@@ -30,18 +30,18 @@ def test_aligned_panels_help(cli_runner: CliRunner, cli: rich_click.RichCommand)
  CLI help text                                                                                      \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ *  --config   -c  PATH  Config file. [required]                                                  │
-│    --help               Show this message and exit.                                              │
+│ *  --config  -c  PATH  Config file. [required]                                                   │
+│    --help              Show this message and exit.                                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Core ───────────────────────────────────────────────────────────────────────────────────────────╮
-│ run                     Run the thing.                                                           │
-│ a-much-longer-name      Do something else.                                                       │
+│ run                    Run the thing.                                                            │
+│ a-much-longer-name     Do something else.                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Extras ─────────────────────────────────────────────────────────────────────────────────────────╮
-│ tidy                    Tidy up.                                                                 │
+│ tidy                   Tidy up.                                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Logging ────────────────────────────────────────────────────────────────────────────────────────╮
-│    --verbose            Be loud.                                                                 │
+│    --verbose           Be loud.                                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
 
@@ -57,18 +57,19 @@ def test_aligned_panels_wide_entries(cli_runner: CliRunner, wrap_cli: rich_click
  CLI help text                                                                                      \n\
                                                                                                     \n\
 ╭─ Output ─────────────────────────────────────────────────────────────────────────────────────────╮
-│ --output                          [svg|html|png|gif|webp|webm]  Output format.                   │
+│ --output  [svg|html|png|gif|webp|webm]                                                           │
+│                                   Output format.                                                 │
 │ --reject-output-outside-source/--no-reject-output-outside-source                                 │
-│                                                                 Reject an output path outside    │
-│                                                                 the source repository.           │
+│                                   Reject an output path outside the source repository.           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Layout ─────────────────────────────────────────────────────────────────────────────────────────╮
-│ --center-ports/--no-center-ports                                Centre inter-section ports.      │
-│ --mode                            [light|dark|auto]             Palette to render with.          │
-│ --compact-offsets/--no-compact-offsets                          Size each station for its lines. │
+│ --center-ports/--no-center-ports  Centre inter-section ports.                                    │
+│ --mode  [light|dark|auto]         Palette to render with.                                        │
+│ --compact-offsets/--no-compact-offsets                                                           │
+│                                   Size each station for its lines.                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help                                                          Show this message and exit.      │
+│ --help                            Show this message and exit.                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
 
@@ -105,7 +106,7 @@ def test_aligned_panels_give_up_when_the_columns_would_crowd_out_the_help(
     cli_runner: CliRunner, wrap_cli: rich_click.RichCommand
 ) -> None:
     """Below the width alignment needs, panels size themselves exactly as if it were switched off."""
-    config = {"width": 90, "wrap_long_options": 32}
+    config = {"width": 54, "wrap_long_options": 40}
     wrap_cli.context_settings["rich_help_config"] = {**config, "align_columns_across_panels": False}
     unaligned = cli_runner.invoke(wrap_cli, "--help")
     wrap_cli.context_settings["rich_help_config"] = {**config, "align_columns_across_panels": True}
@@ -217,15 +218,34 @@ def test_aligned_panels_measure_against_the_panel_padding(cli_runner: CliRunner)
  CLI help text                                                                                      \n\
                                                                                                     \n\
 ╭─ Layout ─────────────────────────────────────────────────────────────────────────────────────────╮
-│                --mode                     [light|dark]  Palette.                                 │
-│                --center-ports/--no-cente                Centre ports.                            │
-│                r-ports                                                                           │
+│                --mode        [light|dark]        Palette.                                        │
+│                --center-ports/--no-center-ports  Centre ports.                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │                --reject-output-outside-source/--no-reject-output-outside-source                  │
-│                                         Refuse to write output outside the source                │
-│                                         tree.                                                    │
-│                --format  -f  [svg|png]  Output format.                                           │
-│                --help                   Show this message and exit.                              │
+│                                                  Refuse to write output outside                  │
+│                                                  the source tree.                                │
+│                --format  -f  [svg|png]           Output format.                                  │
+│                --help                            Show this message and exit.                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
+
+
+def test_aligned_panels_size_a_column_by_the_entries_that_reach_past_it(cli_runner: CliRunner) -> None:
+    """An entry with no short form runs on under that column instead of widening the one before."""
+
+    @rich_click.command()
+    @rich_click.option("--zeta", "-z", help="Z.")
+    @rich_click.option("--a-flag-with-a-long-name/--no-a-flag-with-a-long-name", help="A.")
+    @rich_click.option_panel("One", options=["zeta"])
+    @rich_click.option_panel("Two", options=["a_flag_with_a_long_name"])
+    def cli() -> None:
+        """CLI help text"""
+
+    result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    lines = result.stdout.splitlines()
+    zeta = next(line for line in lines if "--zeta" in line)
+    flag_help = next(line for line in lines if " A." in line)
+    assert zeta.index("-z ") == zeta.index("--zeta") + len("--zeta") + 2
+    assert zeta.index("Z.") == flag_help.index("A.")

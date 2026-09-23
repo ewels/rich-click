@@ -67,7 +67,7 @@ class FromTheme:
 
 FROM_THEME: Any = FromTheme(default="default-box")
 
-WRAP_LONG_OPTIONS_DEFAULT = 40
+WRAP_LONG_OPTIONS_DEFAULT = 48
 
 
 def force_terminal_default() -> bool | None:

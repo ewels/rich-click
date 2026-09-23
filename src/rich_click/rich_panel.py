@@ -194,14 +194,19 @@ class RichPanel(Generic[CT, ColT]):
         kept_types: list[ColT],
         formatter: RichHelpFormatter,
         pinned: list[int] | None = None,
-    ) -> tuple[list[list[Any]], set[int], set[int], list[int | None]]:
+    ) -> tuple[list[list[Any]], set[int], set[int], list[int | None], int]:
         """
         Work out the shape of the panel's table(s) from its rows.
 
         Returns the rows reduced to `kept_types`, the indices of those whose help text belongs on
-        its own line, the indices of those spilling into the empty columns to their right, and the
-        width to pin each column to (`None` for the flexible last one). Rows in either set are out
-        of the columns, so they have no say in how wide those get.
+        its own line, the indices of those spilling into the empty columns to their right, the
+        width to pin each column to (`None` for the flexible last one), and the least room the
+        columns before the help need between them.
+
+        A column is sized by the rows that reach past it. A row whose cells stop short of the help
+        can run on under the columns it leaves empty, so it has no say in how wide they get: it
+        asks instead for room enough across all of them, which is what `minimum` carries. The
+        column before the help has nothing on its right to run on under, so every row sizes it.
 
         `pinned` is the width each column is getting anyway, from aligning them across panels. A
         row that fits in the columns it occupies stays put however low `wrap_long_options` is,
@@ -210,52 +215,88 @@ class RichPanel(Generic[CT, ColT]):
         keep = [t in kept_types for t in self.get_column_types(formatter)]
         kept_rows = [[cell for cell, k in zip(row, keep) if k] for row in rows]
         help_index = next((i for i, t in enumerate(kept_types) if t == "help"), -1)
+        dropped: set[int] = set()
+        spanned: set[int] = set()
+        minimum = 0
+        if help_index < 1:
+            return kept_rows, dropped, spanned, [], minimum
 
-        threshold = formatter.config.wrap_long_options
+        threshold = int(formatter.config.wrap_long_options or 0)
         # Taking a row out of the columns splits the panel into a stack of tables, and a box is
         # drawn around each one, so a boxed table keeps every row inline whatever its width.
         box = self.table_styles.get("box", getattr(formatter.config, f"style_{self._object_attr}_table_box"))
-        inner_width = self._inner_width(formatter)
-        dropped: set[int] = set()
-        spanned: set[int] = set()
-        measured: list[list[int]] | None = None
-        if kept_rows and help_index >= 1 and threshold and threshold > 0 and self.get_box(box) is None:
-            measured = self._measure_rows(kept_rows, help_index, formatter)
-            overflowing: dict[int, tuple[int, int]] = {}
-            for i, row_widths in enumerate(measured):
-                # A row with no help text has nothing to move.
-                if not self._has_content(kept_rows[i][help_index]):
-                    continue
-                # Only the columns this row fills take up room in it, so only they need a gap.
-                filled = [c for c, width in enumerate(row_widths) if width]
-                gaps = max(len(filled) - 1, 0)
-                needed = sum(row_widths[c] for c in filled) + gaps
-                allowed = threshold
-                if pinned:
-                    allowed = max(allowed, sum(pinned[c] for c in filled) + gaps)
-                # An entry too wide for the panel itself has to wrap in its columns whatever we do.
-                if allowed < needed <= inner_width:
-                    overflowing[i] = (filled[0] if filled else 0, needed)
-                    dropped.add(i)
+        spilling = bool(kept_rows and threshold > 0 and self.get_box(box) is None)
+        measured = self._measure_rows(kept_rows, help_index, formatter)
+        padding = self._table_padding_width(formatter)
+        trailing: list[int | None] = [None] * (len(kept_types) - help_index)
 
-            # The columns past a row's last cell are empty, so a row too wide for the ones it fills
-            # can still stay on one line by spilling into them.
-            room = pinned or [
-                max((m[c] for i, m in enumerate(measured) if i not in dropped), default=0) for c in range(help_index)
+        def room(widths: list[int], columns: range | list[int]) -> int:
+            """Measure the room a cell has across `columns`, the padding between them included."""
+            return sum(widths[c] for c in columns) + padding * max(len(columns) - 1, 0)
+
+        def sized_by(skip: set[int], spill: bool) -> list[int]:
+            """Measure each column against the rows that have a say in how wide it is."""
+            return [
+                max(
+                    (
+                        m[c]
+                        for i, m in enumerate(measured)
+                        if i not in skip and (not spill or c == help_index - 1 or any(m[c + 1 : help_index]))
+                    ),
+                    default=0,
+                )
+                for c in range(help_index)
             ]
-            for i, (start, needed) in overflowing.items():
-                if needed <= sum(room[start:help_index]) + max(help_index - start - 1, 0):
-                    dropped.discard(i)
-                    spanned.add(i)
 
-        widths: list[int | None] = []
-        if help_index >= 1:
-            if measured is None:
-                measured = self._measure_rows(kept_rows, help_index, formatter)
-            inline = [m for i, m in enumerate(measured) if i not in dropped and i not in spanned]
-            widths = [max((row[c] for row in inline), default=0) for c in range(help_index)]
-            widths += [None] * (len(kept_types) - help_index)
-        return kept_rows, dropped, spanned, widths
+        if not spilling:
+            return kept_rows, dropped, spanned, [*sized_by(set(), False), *trailing], minimum
+
+        inner_width = self._inner_width(formatter)
+        filled_by: dict[int, list[int]] = {}
+        needed_by: dict[int, int] = {}
+        over: set[int] = set()
+        for i, row_widths in enumerate(measured):
+            # A row with no help text has nothing to move.
+            if not self._has_content(kept_rows[i][help_index]):
+                continue
+            # Only the columns this row fills take up room in it, so only they need a gap.
+            filled = [c for c, width in enumerate(row_widths) if width]
+            needed = room(row_widths, filled)
+            # An entry too wide for the panel itself has to wrap in its columns whatever we do.
+            if not filled or needed > inner_width:
+                continue
+            filled_by[i], needed_by[i] = filled, needed
+            allowed = max(threshold, room(pinned, filled)) if pinned else threshold
+            if allowed < needed:
+                over.add(i)
+
+        def plan(spill: bool) -> tuple[set[int], set[int], list[int], int]:
+            """Work out which rows leave the columns, and what the columns then have to measure."""
+            out: set[int] = set()
+            across: set[int] = set()
+            available = pinned or sized_by(over, spill)
+            for i, filled in filled_by.items():
+                if i not in over and needed_by[i] <= room(available, filled):
+                    continue
+                if needed_by[i] <= room(available, range(filled[0], help_index)) or (
+                    spill and needed_by[i] <= threshold
+                ):
+                    across.add(i)
+                else:
+                    out.add(i)
+            # Room for a spilling row is room for the columns on its left, and then for the row.
+            least = max(
+                (sum(available[: filled_by[i][0]]) + padding * (filled_by[i][0] + 1) + needed_by[i] for i in across),
+                default=0,
+            )
+            return out, across, sized_by(out | across, spill), least
+
+        widths: list[int]
+        dropped, spanned, widths, minimum = plan(True)
+        if minimum > inner_width * 2 // 3:
+            # Making room to spill would leave too little for the help text to be worth reading.
+            dropped, spanned, widths, minimum = plan(False)
+        return kept_rows, dropped, spanned, [*widths, *trailing], minimum
 
     def _fold_empty_columns(
         self,
@@ -366,9 +407,14 @@ class RichPanel(Generic[CT, ColT]):
         if aligned_widths:
             kept_types, aligned_widths = self._absorb_unused_columns(rows, kept_types, aligned_widths, formatter)
         already_pinned = [width for width in aligned_widths if width is not None]
-        kept_rows, dropped, spanned, widths = self.layout(rows, kept_types, formatter, already_pinned)
+        kept_rows, dropped, spanned, widths, minimum = self.layout(rows, kept_types, formatter, already_pinned)
         headers = [t.replace("_", " ").title() for t in kept_types]
         column_widths = aligned_widths or (widths if dropped or spanned else [])
+        if not aligned_widths and column_widths:
+            # Sizing itself, a panel has to find the room a spilling row asks for on its own.
+            fixed = [width for width in column_widths if width is not None]
+            padding = self._table_padding_width(formatter)
+            column_widths[len(fixed) - 1] = fixed[-1] + max(minimum - sum(fixed) - len(fixed) * padding, 0)
 
         def table_for(block: list[list[Any]]) -> Table:
             table = new_table()
@@ -733,9 +779,10 @@ def align_panel_columns(
     Give every panel the same columns at the same widths, so that they line up.
 
     Panels asking for the same columns form a group: the group keeps a column if any panel in it
-    has content there, and pins that column to the widest content across the group. Groups are
-    then padded to a common width, so that the final column - option help and command help alike -
-    starts in the same place in every panel.
+    has content there, and pins that column to the widest entry across the group that reaches past
+    it. Groups are then padded to a common width, so that the final column - option help and
+    command help alike - starts in the same place in every panel, and so that an entry running on
+    under the columns it leaves empty has room enough across them.
 
     Panels live on the command, so the scratch state from a previous render is cleared first,
     whether or not this render aligns anything.
@@ -757,24 +804,28 @@ def align_panel_columns(
     shared_types: dict[tuple[str, ...], list[Any]] = {}
     widths: dict[tuple[str, ...], list[int]] = {}
     paddings: dict[tuple[str, ...], int] = {}
+    minimums: dict[tuple[str, ...], int] = {}
 
     for key, members in groups.items():
         shared = [t for t in key[1:] if any(t in kept for _, _, kept in members)]
         shared_types[key] = shared
         paddings[key] = members[0][0]._table_padding_width(formatter)
         group_widths: list[int] = []
+        minimum = 0
         # Widths and which rows keep their help inline depend on each other: a row too wide to sit
         # beside its help fits once the columns are pinned, and then has a say in how wide they
-        # are. Widths only ever grow, so measuring again against them settles.
-        while True:
+        # are. A few passes settle that, and the last one stands if they trade places instead.
+        for _ in range(len(shared) + 3):
             grown: list[int] = []
+            minimum = 0
             # Every row inline means every row had its say, so pinning these widths moves nothing.
             settled = True
             for panel, rows, _ in members:
                 if not rows:
                     continue
-                _, dropped, spanned, measured = panel.layout(rows, shared, formatter, group_widths or None)
+                _, dropped, spanned, measured, needed = panel.layout(rows, shared, formatter, group_widths or None)
                 settled = settled and not dropped and not spanned
+                minimum = max(minimum, needed)
                 # layout() pads the flexible trailing columns with None; only the leading ones are pinned.
                 pinnable = [w for w in measured if w is not None]
                 grown = [max(pair) for pair in zip(grown, pinnable)] or pinnable
@@ -785,13 +836,14 @@ def align_panel_columns(
                 break
         if group_widths:
             widths[key] = group_widths
+            minimums[key] = minimum
 
     if not widths:
         return
 
     # The budget has to fit the narrowest panel, since they all line up with each other.
     available = min(panel._inner_width(formatter) for panel in panels)
-    target = max(sum(w) + len(w) * paddings[key] for key, w in widths.items())
+    target = max(max(sum(w) + len(w) * paddings[key] for key, w in widths.items()), *minimums.values())
     if target > available * 2 // 3:
         # Lining everything up would squeeze the help text out. Let each panel size itself instead.
         return
