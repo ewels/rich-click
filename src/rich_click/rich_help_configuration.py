@@ -170,6 +170,18 @@ class RichHelpConfiguration:
     style_commands_table_column_width_ratio: tuple[None, None] | tuple[int, int] | None = field(
         default_factory=lambda: (None, None)
     )
+    align_columns_across_panels: bool = field(default=True)
+    """Line up the columns of every panel with each other. Overrides column width ratios."""
+    wrap_long_options: int | bool | None = field(default=40)
+    """
+    Wrap an entry whose columns before the help are wider than this many characters.
+
+    Such an entry first spills into the columns it leaves empty to its right; where that is not
+    room enough, its help text moves to the line below instead.
+
+    `0`, a negative number, `False` or `None` never wraps; a number larger than the terminal has
+    the same effect. `True` means the default.
+    """
     style_errors_panel_border: StyleType = field(default=FROM_THEME)
     style_errors_panel_box: str | Box | None = field(default=FROM_THEME)
     align_errors_panel: AlignMethod = field(default="left")
@@ -279,6 +291,9 @@ class RichHelpConfiguration:
     legacy_windows: bool | None = field(default=None)
 
     def __post_init__(self) -> None:  # noqa: D105
+        if self.wrap_long_options is True:
+            self.wrap_long_options = 40
+
         if self.highlighter is not None:
             import warnings
 

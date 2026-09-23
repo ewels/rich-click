@@ -30,7 +30,7 @@ def test_defaults_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> No
 │ --help                                 Show this message and exit.                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ download                             Download files                                              │
+│ download                               Download files                                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

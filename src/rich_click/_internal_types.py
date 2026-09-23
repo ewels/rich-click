@@ -187,6 +187,8 @@ class RichHelpConfigurationDict(TypedDict):
     max_width: NotRequired[int | None]
     color_system: NotRequired[Literal["auto", "standard", "256", "truecolor", "windows"] | None]
     force_terminal: NotRequired[bool | None]
+    align_columns_across_panels: NotRequired[bool]
+    wrap_long_options: NotRequired[int | bool | None]
     options_table_column_types: NotRequired[list[OptionColumnType]]
     commands_table_column_types: NotRequired[list[CommandColumnType]]
     options_table_help_sections: NotRequired[list[OptionHelpSectionType]]

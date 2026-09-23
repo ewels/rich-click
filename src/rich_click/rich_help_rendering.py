@@ -701,63 +701,11 @@ def get_parameter_rich_table_row(
     panel: RichOptionPanel | None,
 ) -> RichPanelRow:
     """Create a row for the rich table corresponding with this parameter."""
-    # Short and long form
     column_types: list[OptionColumnType]
     if panel is None:
         column_types = formatter.config.options_table_column_types
     else:
-        column_types = panel.column_types or formatter.config.options_table_column_types
-
-    opt_long_strs = []
-    opt_short_strs = []
-    for idx, opt in enumerate(param.opts):
-        opt_str = opt
-        secondary = None
-        try:
-            secondary = param.secondary_opts[idx]
-        except IndexError:
-            pass
-
-        if isinstance(param, Argument):
-            opt_long_strs.append(Text.from_markup(opt_str.upper(), style=formatter.config.style_option))
-        elif "--" in opt:
-            if secondary:
-                opt_long_strs.append(
-                    Text("/", style=formatter.config.style_option_help).join(
-                        [
-                            Text(opt_str, style=formatter.config.style_option),
-                            Text(
-                                secondary,
-                                style=(
-                                    formatter.config.style_option_negative
-                                    if formatter.config.style_option_negative is not None
-                                    else formatter.config.style_option
-                                ),
-                            ),
-                        ]
-                    )
-                )
-            else:
-                opt_long_strs.append(Text.from_markup(opt_str, style=formatter.config.style_option))
-        else:
-            if secondary:
-                opt_short_strs.append(
-                    Text("/", style=formatter.config.style_option_help).join(
-                        [
-                            Text(opt_str, style=formatter.config.style_option),
-                            Text(
-                                secondary,
-                                style=(
-                                    formatter.config.style_option_negative
-                                    if formatter.config.style_option_negative is not None
-                                    else formatter.config.style_option
-                                ),
-                            ),
-                        ]
-                    )
-                )
-            else:
-                opt_short_strs.append(Text.from_markup(opt_str, style=formatter.config.style_option))
+        column_types = panel.get_column_types(formatter)
 
     if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(param.name, str)
@@ -871,7 +819,7 @@ def get_command_rich_table_row(
     if panel is None:
         column_types = formatter.config.commands_table_column_types
     else:
-        column_types = panel.column_types or formatter.config.commands_table_column_types
+        column_types = panel.get_column_types(formatter)
 
     column_callbacks: dict[CommandColumnType, Callable[..., Any]] = {
         "name": _get_command_name_help,

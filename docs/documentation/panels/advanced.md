@@ -117,6 +117,82 @@ Below is an example that does this, as well as doing some additional reordering 
     -->
     ![`python panels_help_section_types.py --help`](../../images/code_snippets/panels/panels_help_section_types.svg){.screenshot}
 
+## Aligning columns across panels
+
+`align_columns_across_panels` sizes every panel's columns together, so that the help text starts in
+the same place throughout the help screen: a column is kept if any panel has something to put in it,
+and is then made wide enough for the widest entry anywhere. Turn it off to have each panel size its
+own table instead.
+
+```python
+{% include "../../code_snippets/panels/panels_align_columns.py" %}
+```
+
+???+ example "Output"
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/panels
+    -->
+    ![`python panels_align_columns.py --help`](../../images/code_snippets/panels/panels_align_columns.svg){.screenshot}
+
+A panel that has nothing to put in one of the shared columns hands that column's width to the one on
+its left, so the space is still usable by the entries that need it. The leading column is left alone,
+since that is what indents each panel's names into line with its siblings.
+
+The trade-off is that one very long option or command name pads out every panel, so this suits CLIs
+whose names are of a similar length. Where they are not, `wrap_long_options` keeps the worst offenders
+out of the columns. It takes precedence over `style_commands_table_column_width_ratio`.
+
+## Wrapping long entries
+
+One very long option name sets the width of the whole column, and every other entry's help text pays
+for it - a boolean flag and its negative form share a cell, so a pair like
+`--reject-output-outside-source/--no-reject-output-outside-source` can stretch the option column
+across half the screen on its own. `wrap_long_options` puts a ceiling on that: an entry whose columns
+before the help are wider than the given number of characters is wrapped instead of widening the
+column.
+
+```python hl_lines="11"
+{% include "../../code_snippets/panels/panels_wrap_long_options.py" %}
+```
+
+???+ example "Output"
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/panels
+    -->
+    ![`python panels_wrap_long_options.py --help`](../../images/code_snippets/panels/panels_wrap_long_options.svg){.screenshot}
+
+An over-wide entry first spills into the columns it leaves empty to its right: an option with no
+metavar can run on under the metavar column and keep its help beside it. Where that is not room
+enough, its help moves to the line below instead - it still starts in the help column, so every
+description in the panel lines up.
+
+Either way the entry no longer counts towards the column width, which is what buys the space back.
+Only entries over the threshold are affected, and it applies to command panels too, for subcommands
+with long names.
+
+If *every* entry in a panel is over the threshold there is no column left to line up with, and that
+panel's help text is simply indented instead. An entry too wide for the panel itself is left alone,
+since wrapping it in its columns is the only thing that fits.
+
+With `align_columns_across_panels` also on, an entry that fits the width its columns get from being
+aligned stays put whatever the threshold says - moving it would cost a line and reclaim nothing.
+
+The default is `40`. `0`, a negative number, `False` or `None` never wraps, and a number larger than
+the terminal has the same effect.
+
+Moving the help down is the shape that [clap](https://docs.rs/clap/latest/clap/struct.Arg.html) calls
+`next_line_help` and that `argparse` arrives at through a low `max_help_position`.
+
+!!! note
+
+    Rich tables cannot span columns, so a panel containing a wrapped entry is rendered as a stack of
+    tables sharing one set of column widths. `RichPanel.get_table()` returns a `rich.console.Group`
+    rather than a `Table` in that case. Subclasses that assume a `Table` comes back should either
+    turn this option off or handle both, and table decorations such as `style_options_table_box` and
+    `style_options_table_show_lines` restart at each block.
+
 ## `RichPanel().to_info_dict()`
 
 RichPanel objects support the `.to_info_dict()` method added in Click 8.0.

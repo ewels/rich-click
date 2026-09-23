@@ -23,13 +23,13 @@ def test_epilog_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --debug/--no-debug                                                                               │
-│ --help              Show this message and exit.                                                  │
+│ --help               Show this message and exit.                                                 │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ epilog-is-rich-text                    epilog_is_rich_text help text.                            │
-│ footer-is-rich-text                    footer_is_rich_text help text.                            │
-│ no-epilog                              no_epilog help text.                                      │
-│ no-footer                              no_footer help text.                                      │
+│ epilog-is-rich-text  epilog_is_rich_text help text.                                              │
+│ footer-is-rich-text  footer_is_rich_text help text.                                              │
+│ no-epilog            no_epilog help text.                                                        │
+│ no-footer            no_footer help text.                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     \n\
  For more information, visit our website.                                                           \n\
@@ -136,13 +136,13 @@ def test_epilog_help_turn_off_rich_markup(cli_runner: CliRunner, cli: rich_click
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --debug/--no-debug                                                                               │
-│ --help              Show this message and exit.                                                  │
+│ --help               Show this message and exit.                                                 │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ epilog-is-rich-text                    epilog_is_rich_text help text.                            │
-│ footer-is-rich-text                    footer_is_rich_text help text.                            │
-│ no-epilog                              no_epilog help text.                                      │
-│ no-footer                              no_footer help text.                                      │
+│ epilog-is-rich-text  epilog_is_rich_text help text.                                              │
+│ footer-is-rich-text  footer_is_rich_text help text.                                              │
+│ no-epilog            no_epilog help text.                                                        │
+│ no-footer            no_footer help text.                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
                                                                                                     \n\
  [bold green]For more information, visit our website.[/]                                            \n\
