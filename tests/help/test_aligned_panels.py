@@ -1,3 +1,5 @@
+from typing import cast
+
 import pytest
 from click.testing import CliRunner
 from inline_snapshot import snapshot
@@ -67,5 +69,124 @@ def test_aligned_panels_wide_entries(cli_runner: CliRunner, wrap_cli: rich_click
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --help                                                          Show this message and exit.      │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+""")
+
+
+def test_aligned_panels_off(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    """Each panel sizes its own columns, so the help text starts in a different place in each."""
+    cli.context_settings["rich_help_config"] = {"align_columns_across_panels": False}
+    result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot("""\
+                                                                                                    \n\
+ Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
+                                                                                                    \n\
+ CLI help text                                                                                      \n\
+                                                                                                    \n\
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│ *  --config  -c  PATH  Config file. [required]                                                   │
+│    --help              Show this message and exit.                                               │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Core ───────────────────────────────────────────────────────────────────────────────────────────╮
+│ run                                              Run the thing.                                  │
+│ a-much-longer-name                               Do something else.                              │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Extras ─────────────────────────────────────────────────────────────────────────────────────────╮
+│ tidy                                Tidy up.                                                     │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Logging ────────────────────────────────────────────────────────────────────────────────────────╮
+│ --verbose  Be loud.                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+""")
+
+
+def test_aligned_panels_give_up_when_the_columns_would_crowd_out_the_help(
+    cli_runner: CliRunner, wrap_cli: rich_click.RichCommand
+) -> None:
+    """Below the width alignment needs, panels size themselves exactly as if it were switched off."""
+    config = {"width": 90, "wrap_long_options": 32}
+    wrap_cli.context_settings["rich_help_config"] = {**config, "align_columns_across_panels": False}
+    unaligned = cli_runner.invoke(wrap_cli, "--help")
+    wrap_cli.context_settings["rich_help_config"] = {**config, "align_columns_across_panels": True}
+    result = cli_runner.invoke(wrap_cli, "--help")
+    assert result.exit_code == 0
+    assert result.stdout == unaligned.stdout
+
+
+def test_get_table_does_not_reuse_another_renders_rows(cli: rich_click.RichCommand) -> None:
+    """The rows the alignment pass keeps belong to that render's formatter, not to the panel."""
+    from rich_click.rich_context import RichContext
+    from rich_click.rich_panel import construct_panels
+
+    ctx = cast(RichContext, cli.make_context("cli", [], resilient_parsing=True))
+    panels = construct_panels(cli, ctx, ctx.make_formatter())
+    panel = next(p for p in panels if p.name == "Options")
+
+    cast(rich_click.Option, cli.params[0]).help = "Changed help."
+    formatter = ctx.make_formatter()
+    with formatter.console.capture() as capture:
+        formatter.console.print(panel.get_table(cli, ctx, formatter))
+    assert "Changed help." in capture.get()
+
+
+def test_aligned_panels_with_the_help_column_in_the_middle(cli_runner: CliRunner) -> None:
+    """Every column after the help is flexible, so the ones past it must survive the alignment."""
+
+    @rich_click.command()
+    @rich_click.option("--alpha", type=rich_click.Choice(["x", "yyyy"]), help="A.")
+    @rich_click.option("--beta-with-a-longer-name", type=rich_click.Path(), help="B.")
+    @rich_click.option_panel("One", options=["alpha"], table_styles={"show_header": True})
+    @rich_click.option_panel("Two", options=["beta_with_a_longer_name", "help"], table_styles={"show_header": True})
+    @rich_click.rich_config({"options_table_column_types": ["opt_long", "help", "metavar"]})
+    def cli() -> None:
+        """CLI help text"""
+
+    result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot("""\
+                                                                                                    \n\
+ Usage: cli [OPTIONS]                                                                               \n\
+                                                                                                    \n\
+ CLI help text                                                                                      \n\
+                                                                                                    \n\
+╭─ One ────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Opt Long                   Help                               Metavar                            │
+│ --alpha                    A.                                 [x|yyyy]                           │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Two ────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Opt Long                   Help                               Metavar                            │
+│ --beta-with-a-longer-name  B.                                 PATH                               │
+│ --help                     Show this message and exit.                                           │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+""")
+
+
+def test_aligned_panels_without_a_help_column(cli_runner: CliRunner) -> None:
+    """With no help column there is nothing to line up, and the panels still render."""
+
+    @rich_click.command()
+    @rich_click.option("--alpha", help="A.")
+    @rich_click.option("--beta", help="B.")
+    @rich_click.option_panel("One", options=["alpha"])
+    @rich_click.option_panel("Two", options=["beta", "help"])
+    @rich_click.rich_config({"options_table_column_types": ["opt_long"]})
+    def cli() -> None:
+        """CLI help text"""
+
+    result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot("""\
+                                                                                                    \n\
+ Usage: cli [OPTIONS]                                                                               \n\
+                                                                                                    \n\
+ CLI help text                                                                                      \n\
+                                                                                                    \n\
+╭─ One ────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --alpha                                                                                          │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Two ────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --beta                                                                                           │
+│ --help                                                                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)

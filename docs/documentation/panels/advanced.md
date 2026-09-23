@@ -141,7 +141,12 @@ since that is what indents each panel's names into line with its siblings.
 
 The trade-off is that one very long option or command name pads out every panel, so this suits CLIs
 whose names are of a similar length. Where they are not, `wrap_long_options` keeps the worst offenders
-out of the columns. It takes precedence over `style_commands_table_column_width_ratio`.
+out of the columns. `align_columns_across_panels` takes precedence over
+`style_commands_table_column_width_ratio`.
+
+Where the aligned columns would take more than two thirds of the panel, there is too little left for
+the help text to be worth reading, and every panel sizes itself instead. A narrow terminal can
+therefore show the same CLI unaligned.
 
 ## Wrapping long entries
 
@@ -173,8 +178,8 @@ Only entries over the threshold are affected, and it applies to command panels t
 with long names.
 
 If *every* entry in a panel is over the threshold there is no column left to line up with, and that
-panel's help text is simply indented instead. An entry too wide for the panel itself is left alone,
-since wrapping it in its columns is the only thing that fits.
+panel's help text is simply indented instead. An entry wider than the panel itself is left alone,
+since no arrangement of columns fits it; rich truncates it with an ellipsis as it did before.
 
 With `align_columns_across_panels` also on, an entry that fits the width its columns get from being
 aligned stays put whatever the threshold says - moving it would cost a line and reclaim nothing.

@@ -36,7 +36,7 @@ GroupType = TypeVar("GroupType", OptionGroupDict, CommandGroupDict)
 
 
 def _panel_inner_width(formatter: RichHelpFormatter) -> int:
-    """Roughly the room a panel leaves its table: two border characters and two of padding."""
+    """Measure the room a panel leaves its table, at the default border and padding of one each."""
     return max(formatter.width - 4, 1)
 
 
@@ -72,7 +72,7 @@ class RichPanel(Generic[CT, ColT]):
         self.title_style = title_style
         # Set by align_panel_columns() for the duration of one render.
         self._alignment: tuple[list[ColT], list[int | None]] | None = None
-        self._rows: list[list[Any]] | None = None
+        self._rows: tuple[RichHelpFormatter, list[list[Any]]] | None = None
 
     @property
     def objects(self) -> list[str]:
@@ -139,10 +139,10 @@ class RichPanel(Generic[CT, ColT]):
         raise NotImplementedError()
 
     def _render_rows(self, command: RichCommand, ctx: RichContext, formatter: RichHelpFormatter) -> list[list[Any]]:
-        """Build the rows once per render: alignment measures them before rendering draws them."""
-        if self._rows is None:
-            self._rows = self.get_rows(command, ctx, formatter)
-        return self._rows
+        """Take the rows the alignment pass measured, rather than building them a second time."""
+        if self._rows is not None and self._rows[0] is formatter:
+            return self._rows[1]
+        return self.get_rows(command, ctx, formatter)
 
     def kept_column_types(self, rows: list[list[Any]], formatter: RichHelpFormatter) -> list[ColT]:
         """List the column types with something in them, dropping any empty for every row."""
@@ -734,7 +734,8 @@ def align_panel_columns(
 
     groups: dict[tuple[str, ...], list[tuple[RichPanel[Any, Any], list[Any], list[Any]]]] = {}
     for panel in panels:
-        rows = panel._render_rows(command, ctx, formatter)
+        rows = panel.get_rows(command, ctx, formatter)
+        panel._rows = (formatter, rows)
         member = (panel, rows, panel.kept_column_types(rows, formatter))
         groups.setdefault((panel._object_attr, *panel.get_column_types(formatter)), []).append(member)
 
@@ -781,8 +782,10 @@ def align_panel_columns(
 
     for key, group_widths in widths.items():
         group_widths[-1] += target - sum(group_widths) - len(group_widths) * paddings[key]
+        # Only the columns before the help are pinned; layout() reads the rest as flexible.
+        flexible = [None] * (len(shared_types[key]) - len(group_widths))
         for panel, _, _ in groups[key]:
-            panel._alignment = (shared_types[key], [*group_widths, None])
+            panel._alignment = (shared_types[key], [*group_widths, *flexible])
 
 
 # Using config to define panels is silently deprecated.

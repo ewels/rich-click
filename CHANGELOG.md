@@ -6,8 +6,9 @@
 - Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python <3.10.
 - Fixed docs versioning, so that a released version no longer keeps the `prerelease` alias alongside `latest`. [[#343](https://github.com/ewels/rich-click/pull/343)] ([@dwreeves](https://github.com/dwreeves))
 - Redesigned `__init__.py` to avoid surfacing click's `DeprecationWarning` going forward.
-- Added `align_columns_across_panels` config option, on by default, which lines up the columns of every panel with each other instead of sizing each panel's table on its own. [[#111](https://github.com/ewels/rich-click/issues/111)]
+- Added `align_columns_across_panels` config option, on by default, which lines up the columns of every panel with each other instead of sizing each panel's table on its own. Set it to `False` for the previous layout. [[#111](https://github.com/ewels/rich-click/issues/111)]
 - Added `wrap_long_options` config option, defaulting to `40`, which keeps an entry whose columns before the help are wider than that many characters from setting the column width for a whole panel. Such an entry first spills into the columns it leaves empty to its right, and moves its help text to the line below when that is not room enough. Set it to `0`, a negative number, `False` or `None` to turn it off.
+- Both of the above change the default help output of every CLI, so snapshot tests of help screens will need updating.
 - Fixed per-panel column types being ignored when picking table headers.
 - Removed dead option-string formatting left over in `get_parameter_rich_table_row()`.
 - Fixed `patch_typer()` crashing on `typer>=0.26.0`; it now warns and leaves Typer unpatched instead of raising. [[#330](https://github.com/ewels/rich-click/issues/330)]

@@ -85,3 +85,45 @@ def test_wrap_long_options_off_for_boxed_tables(cli_runner: CliRunner, cli: rich
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
     assert result.stdout == baseline
+
+
+def test_wrap_long_options_true_from_the_theme_env_var(
+    cli_runner: CliRunner, cli: rich_click.RichCommand, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A theme assigns fields directly, so `True` has to be read as the default there too."""
+    cli.context_settings["rich_help_config"] = {"wrap_long_options": 40}
+    baseline = cli_runner.invoke(cli, "--help").stdout
+    cli.context_settings["rich_help_config"] = {}
+    monkeypatch.setenv("RICH_CLICK_THEME", '{"wrap_long_options": true}')
+    result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    assert result.stdout == baseline
+
+
+def test_wrap_long_options_off_for_a_box_set_on_the_panel(cli_runner: CliRunner) -> None:
+    """A panel's own `table_styles` carry the box just as the config does."""
+    long_option = "--reject-output-outside-source/--no-reject-output-outside-source"
+
+    @rich_click.command()
+    @rich_click.option(long_option, default=True, help="Refuse to write output outside the source tree.")
+    @rich_click.option("--format", "-f", type=rich_click.Choice(["svg", "png"]), help="Output format.")
+    @rich_click.option_panel(
+        "Options", options=["reject_output_outside_source", "format"], table_styles={"box": "DOUBLE"}
+    )
+    def cli() -> None:
+        """CLI help text"""
+
+    result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    assert result.stdout.count("╔") == 1
+
+
+def test_wrap_long_options_indents_the_next_line_head_like_the_rows(
+    cli_runner: CliRunner, cli: rich_click.RichCommand
+) -> None:
+    """The entry sits above the table, so it has to carry the table's own edge padding itself."""
+    cli.context_settings["rich_help_config"] = {"style_options_table_pad_edge": True}
+    result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    head, below = (line for line in result.stdout.splitlines() if "--reject-output" in line or "--format" in line)
+    assert head.index("--reject-output") == below.index("--format")

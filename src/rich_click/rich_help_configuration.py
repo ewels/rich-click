@@ -67,6 +67,8 @@ class FromTheme:
 
 FROM_THEME: Any = FromTheme(default="default-box")
 
+WRAP_LONG_OPTIONS_DEFAULT = 40
+
 
 def force_terminal_default() -> bool | None:
     """Use as the default factory for `force_terminal`."""
@@ -172,7 +174,7 @@ class RichHelpConfiguration:
     )
     align_columns_across_panels: bool = field(default=True)
     """Line up the columns of every panel with each other. Overrides column width ratios."""
-    wrap_long_options: int | bool | None = field(default=40)
+    wrap_long_options: int | bool | None = field(default=WRAP_LONG_OPTIONS_DEFAULT)
     """
     Wrap an entry whose columns before the help are wider than this many characters.
 
@@ -292,7 +294,7 @@ class RichHelpConfiguration:
 
     def __post_init__(self) -> None:  # noqa: D105
         if self.wrap_long_options is True:
-            self.wrap_long_options = 40
+            self.wrap_long_options = WRAP_LONG_OPTIONS_DEFAULT
 
         if self.highlighter is not None:
             import warnings
@@ -464,6 +466,10 @@ class RichHelpConfiguration:
                     setattr(self, k, v.get_default(k))
 
         if force_default:
+            # A theme or RICH_CLICK_THEME= assigns fields directly, past __post_init__.
+            if self.wrap_long_options is True:
+                self.wrap_long_options = WRAP_LONG_OPTIONS_DEFAULT
+
             # Handle deprecated fields here
             # must create new copy of these lists; don't modify in-place
             if self.text_markup is notset:
