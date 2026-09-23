@@ -21,6 +21,7 @@ from rich_click.utils import CommandGroupDict, OptionGroupDict
 if TYPE_CHECKING:
     from rich.box import Box
     from rich.console import Group as RenderGroup
+    from rich.padding import PaddingDimensions
     from rich.panel import Panel
     from rich.style import StyleType
     from rich.table import Table
@@ -35,9 +36,12 @@ CT = TypeVar("CT", Command, Parameter)
 GroupType = TypeVar("GroupType", OptionGroupDict, CommandGroupDict)
 
 
-def _panel_inner_width(formatter: RichHelpFormatter) -> int:
-    """Measure the room a panel leaves its table, at the default border and padding of one each."""
-    return max(formatter.width - 4, 1)
+def _panel_inner_width(formatter: RichHelpFormatter, padding: PaddingDimensions) -> int:
+    """Measure the room a panel leaves its table: its own padding, inside two border characters."""
+    from rich.padding import Padding
+
+    _, right, _, left = Padding.unpack(padding)
+    return max(formatter.width - 2 - left - right, 1)
 
 
 class RichPanel(Generic[CT, ColT]):
@@ -150,6 +154,11 @@ class RichPanel(Generic[CT, ColT]):
             t for t, cells in zip(self.get_column_types(formatter), zip(*rows)) if any(map(self._has_content, cells))
         ]
 
+    def _inner_width(self, formatter: RichHelpFormatter) -> int:
+        """Measure the room this panel leaves its table, at whatever padding the panel is given."""
+        config_default = getattr(formatter.config, f"style_{self._object_attr}_panel_padding")
+        return _panel_inner_width(formatter, self.panel_styles.get("padding", config_default))
+
     def _table_padding_width(self, formatter: RichHelpFormatter) -> int:
         """How much horizontal padding a table column takes on top of its content."""
         from rich.padding import Padding
@@ -173,7 +182,7 @@ class RichPanel(Generic[CT, ColT]):
         from rich.measure import Measurement
 
         console = formatter.console
-        options = console.options.update_width(_panel_inner_width(formatter))
+        options = console.options.update_width(self._inner_width(formatter))
         return [
             [0 if cell is None else Measurement.get(console, options, cell).maximum for cell in row[:columns]]
             for row in rows
@@ -206,7 +215,7 @@ class RichPanel(Generic[CT, ColT]):
         # Taking a row out of the columns splits the panel into a stack of tables, and a box is
         # drawn around each one, so a boxed table keeps every row inline whatever its width.
         box = self.table_styles.get("box", getattr(formatter.config, f"style_{self._object_attr}_table_box"))
-        inner_width = _panel_inner_width(formatter)
+        inner_width = self._inner_width(formatter)
         dropped: set[int] = set()
         spanned: set[int] = set()
         measured: list[list[int]] | None = None
@@ -285,6 +294,8 @@ class RichPanel(Generic[CT, ColT]):
         Aligning panels gives every panel in a group the same columns, including ones only its
         siblings fill. An empty column still takes up its width, which is then unreachable by the
         entries that could have used it.
+
+        The same fold as `_merge_empty_columns`, decided for the panel rather than row by row.
         """
         used = self.kept_column_types(rows, formatter)
         if all(t in used for t in kept_types):
@@ -309,7 +320,11 @@ class RichPanel(Generic[CT, ColT]):
     def _merge_empty_columns(
         self, row: list[Any], headers: list[str], widths: list[int | None], formatter: RichHelpFormatter
     ) -> tuple[list[Any], list[str], list[int | None]]:
-        """Hand each of a row's empty columns to the cell on its left, so a long entry spills right."""
+        """
+        Hand each of a row's empty columns to the cell on its left, so a long entry spills right.
+
+        The same fold as `_absorb_unused_columns`, decided row by row rather than for the panel.
+        """
         merged_widths, (cells, merged_headers) = self._fold_empty_columns(
             [self._has_content(cell) for cell in row], widths, [row, headers], formatter
         )
@@ -328,7 +343,7 @@ class RichPanel(Generic[CT, ColT]):
             from rich.columns import Columns
 
             head = Columns(cells, padding=(0, gap))
-        indent = (1 if table.box is not None and table.show_edge else 0) + (table.padding[3] if table.pad_edge else 0)
+        indent = table.padding[3] if table.pad_edge else 0
         if not indent:
             return head
 
@@ -774,7 +789,8 @@ def align_panel_columns(
     if not widths:
         return
 
-    available = _panel_inner_width(formatter)
+    # The budget has to fit the narrowest panel, since they all line up with each other.
+    available = min(panel._inner_width(formatter) for panel in panels)
     target = max(sum(w) + len(w) * paddings[key] for key, w in widths.items())
     if target > available * 2 // 3:
         # Lining everything up would squeeze the help text out. Let each panel size itself instead.

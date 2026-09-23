@@ -190,3 +190,42 @@ def test_aligned_panels_without_a_help_column(cli_runner: CliRunner) -> None:
 │ --help                                                                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
+
+
+def test_aligned_panels_measure_against_the_panel_padding(cli_runner: CliRunner) -> None:
+    """Wide panel padding leaves the table less room, so the columns have to be pinned narrower."""
+
+    @rich_click.command()
+    @rich_click.option(
+        "--reject-output-outside-source/--no-reject-output-outside-source",
+        default=True,
+        help="Refuse to write output outside the source tree.",
+    )
+    @rich_click.option("--format", "-f", type=rich_click.Choice(["svg", "png"]), help="Output format.")
+    @rich_click.option("--mode", type=rich_click.Choice(["light", "dark"]), help="Palette.", panel="Layout")
+    @rich_click.option("--center-ports/--no-center-ports", help="Centre ports.", panel="Layout")
+    @rich_click.rich_config({"style_options_panel_padding": (0, 16)})
+    def cli() -> None:
+        """CLI help text"""
+
+    result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot("""\
+                                                                                                    \n\
+ Usage: cli [OPTIONS]                                                                               \n\
+                                                                                                    \n\
+ CLI help text                                                                                      \n\
+                                                                                                    \n\
+╭─ Layout ─────────────────────────────────────────────────────────────────────────────────────────╮
+│                --mode                     [light|dark]  Palette.                                 │
+│                --center-ports/--no-cente                Centre ports.                            │
+│                r-ports                                                                           │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+│                --reject-output-outside-source/--no-reject-output-outside-source                  │
+│                                         Refuse to write output outside the source                │
+│                                         tree.                                                    │
+│                --format  -f  [svg|png]  Output format.                                           │
+│                --help                   Show this message and exit.                              │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+""")
