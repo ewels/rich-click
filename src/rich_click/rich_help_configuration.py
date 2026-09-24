@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Literal, TypeVar
@@ -67,7 +68,12 @@ class FromTheme:
 
 FROM_THEME: Any = FromTheme(default="default-box")
 
-WRAP_LONG_OPTIONS_DEFAULT = 48
+WRAP_LONG_OPTIONS_DEFAULT = 40
+
+
+def has_command_width_ratio(ratio: tuple[None, None] | tuple[int, int] | None) -> bool:
+    """Whether `style_commands_table_column_width_ratio` sizes the commands table itself."""
+    return ratio is not None and any(r is not None for r in ratio)
 
 
 def force_terminal_default() -> bool | None:
@@ -172,17 +178,35 @@ class RichHelpConfiguration:
     style_commands_table_column_width_ratio: tuple[None, None] | tuple[int, int] | None = field(
         default_factory=lambda: (None, None)
     )
-    align_columns_across_panels: bool = field(default=True)
-    """Line up the columns of every panel with each other. Overrides column width ratios."""
-    wrap_long_options: int | bool | None = field(default=WRAP_LONG_OPTIONS_DEFAULT)
     """
-    Wrap an entry whose columns before the help are wider than this many characters.
+    Size the first two columns of the commands table by a fixed proportion.
+
+    Deprecated: it truncates a long command name to hold the proportion. Use `wrap_long_options`,
+    which takes such a name out of the column width without losing it, and
+    `align_columns_across_panels`. Setting this holds command panels out of that alignment.
+    """
+    align_columns_across_panels: bool = field(default=True)
+    """
+    Line up the columns of every panel with each other.
+
+    A panel whose column widths the user has set themselves is left out: setting the deprecated
+    `style_commands_table_column_width_ratio` keeps command panels sizing as they did before.
+    """
+    wrap_long_options: float | int | bool | None | Callable[[int], float | int] = field(
+        default=WRAP_LONG_OPTIONS_DEFAULT
+    )
+    """
+    Wrap an entry whose columns before the help are wider than this.
 
     Such an entry first spills into the columns it leaves empty to its right; where that is not
     room enough, its help text moves to the line below instead.
 
-    `0`, a negative number, `False` or `None` never wraps; a number larger than the terminal has
-    the same effect. `True` means the default.
+    An `int` is that many characters whatever the terminal, which is the default and what you
+    usually want. A `float` is a fraction of the room the panel has instead, and a callable is
+    passed the panel's width and returns either.
+
+    `0`, a negative number, `False` or `None` never wraps; a number at or above the panel's width
+    has the same effect. `True` means the default.
     """
     style_errors_panel_border: StyleType = field(default=FROM_THEME)
     style_errors_panel_box: str | Box | None = field(default=FROM_THEME)
@@ -295,6 +319,20 @@ class RichHelpConfiguration:
     def __post_init__(self) -> None:  # noqa: D105
         if self.wrap_long_options is True:
             self.wrap_long_options = WRAP_LONG_OPTIONS_DEFAULT
+
+        if has_command_width_ratio(self.style_commands_table_column_width_ratio):
+            import warnings
+
+            warnings.warn(
+                "`style_commands_table_column_width_ratio=` is deprecated and will be removed in a future version."
+                " It sizes the first two columns of the commands table by a fixed proportion, which truncates a"
+                " long command name to fit. Please use `wrap_long_options=` instead, which takes such a name out"
+                " of the column width without losing it, and `align_columns_across_panels=`, which lines the"
+                " columns up with the other panels. Setting a ratio holds command panels out of that alignment,"
+                " so remove it to opt in.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
 
         if self.highlighter is not None:
             import warnings

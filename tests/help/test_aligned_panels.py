@@ -249,3 +249,21 @@ def test_aligned_panels_size_a_column_by_the_entries_that_reach_past_it(cli_runn
     flag_help = next(line for line in lines if " A." in line)
     assert zeta.index("-z ") == zeta.index("--zeta") + len("--zeta") + 2
     assert zeta.index("Z.") == flag_help.index("A.")
+
+
+def test_aligned_panels_leave_command_panels_alone_when_a_ratio_is_set(
+    cli_runner: CliRunner, cli: rich_click.RichCommand
+) -> None:
+    """An explicit ratio is the user sizing those columns, so alignment has nothing left to decide."""
+    baseline = cli_runner.invoke(cli, "--help").stdout
+    cli.context_settings["rich_help_config"] = {"style_commands_table_column_width_ratio": (1, 2)}
+    with pytest.warns(DeprecationWarning, match="style_commands_table_column_width_ratio"):
+        result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+
+    def column_of(stdout: str, text: str) -> int:
+        return next(line for line in stdout.splitlines() if text in line).index(text)
+
+    assert column_of(result.stdout, "Run the thing.") != column_of(baseline, "Run the thing.")
+    # Only command panels opt out; the option panels still line up with each other.
+    assert column_of(result.stdout, "Show this message") == column_of(baseline, "Show this message")

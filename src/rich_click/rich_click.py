@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, Literal
 
 from rich_click.rich_help_configuration import (
     FROM_THEME,
+    WRAP_LONG_OPTIONS_DEFAULT,
     CommandColumnType,
     CommandHelpSectionType,
     OptionColumnType,
@@ -109,7 +111,7 @@ COLOR_SYSTEM: Literal["auto", "standard", "256", "truecolor", "windows"] | None 
 FORCE_TERMINAL: bool | None = force_terminal_default()
 
 ALIGN_COLUMNS_ACROSS_PANELS: bool = True
-WRAP_LONG_OPTIONS: int | bool | None = 48
+WRAP_LONG_OPTIONS: float | int | bool | None | Callable[[int], float | int] = WRAP_LONG_OPTIONS_DEFAULT
 
 OPTIONS_TABLE_COLUMN_TYPES: list[OptionColumnType] = FROM_THEME
 COMMANDS_TABLE_COLUMN_TYPES: list[CommandColumnType] = FROM_THEME
