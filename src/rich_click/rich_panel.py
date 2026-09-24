@@ -373,6 +373,12 @@ class RichPanel(Generic[CT, ColT]):
         return merged_types, merged_widths
 
     def _style_columns(self, table: Table, headers: list[str], widths: list[int | None]) -> None:
+        if any(width is not None for width in widths) and not table.pad_edge:
+            # Rich before 14.3 counts the padding `pad_edge` drops at the table's two edges, so a
+            # column sized here comes out a cell wider than it asks for. Moving the left padding
+            # into the right leaves the gaps between columns as they were, and nothing at an edge.
+            top, right, bottom, left = table.padding
+            table.padding = (top, right + left, bottom, 0)
         for col, header in zip(table.columns, headers):
             col.header = header
         for col, width in zip(table.columns, widths):
