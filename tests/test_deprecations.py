@@ -153,3 +153,22 @@ def test_lazy_click_reexports_still_resolve() -> None:
             assert callable(rich_click.get_binary_stream)
         with pytest.warns(DeprecationWarning):
             assert callable(rich_click.get_text_stream)
+
+
+def test_deprecation_warning_on_commands_table_column_width_ratio() -> None:
+    from rich_click.rich_help_configuration import RichHelpConfiguration
+
+    with pytest.warns(DeprecationWarning, match="wrap_long_options"):
+        RichHelpConfiguration(style_commands_table_column_width_ratio=(1, 2))
+
+
+def test_no_warning_when_the_commands_table_column_width_ratio_is_unset() -> None:
+    import warnings
+
+    from rich_click.rich_help_configuration import RichHelpConfiguration
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", DeprecationWarning)
+        RichHelpConfiguration()
+        RichHelpConfiguration(style_commands_table_column_width_ratio=(None, None))
+        RichHelpConfiguration(style_commands_table_column_width_ratio=None)

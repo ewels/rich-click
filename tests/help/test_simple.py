@@ -36,9 +36,9 @@ def test_simple_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None
 │ --help                     Show this message and exit.                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ download  Optionally use short-help for the group help text                                      │
-│ sync      Synchronise all your files between two places. Example command that doesn't do much    │
-│           except print to the terminal.                                                          │
+│ download                   Optionally use short-help for the group help text                     │
+│ sync                       Synchronise all your files between two places. Example command that   │
+│                            doesn't do much except print to the terminal.                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -73,9 +73,9 @@ def test_simple_help_no_args_is_help(cli_runner: CliRunner, cli: rich_click.Rich
 │ --help                     Show this message and exit.                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ download  Optionally use short-help for the group help text                                      │
-│ sync      Synchronise all your files between two places. Example command that doesn't do much    │
-│           except print to the terminal.                                                          │
+│ download                   Optionally use short-help for the group help text                     │
+│ sync                       Synchronise all your files between two places. Example command that   │
+│                            doesn't do much except print to the terminal.                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -103,9 +103,9 @@ def test_simple_help_commands_before_options(cli_runner: CliRunner, cli: rich_cl
  ... and more!                                                                                      \n\
                                                                                                     \n\
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ download  Optionally use short-help for the group help text                                      │
-│ sync      Synchronise all your files between two places. Example command that doesn't do much    │
-│           except print to the terminal.                                                          │
+│ download                   Optionally use short-help for the group help text                     │
+│ sync                       Synchronise all your files between two places. Example command that   │
+│                            doesn't do much except print to the terminal.                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
 │ --debug/--no-debug  -d/-n  Enable debug mode. Newlines are removed by default.                   │
@@ -155,9 +155,9 @@ def test_simple_help_nu_theme(cli_runner: CliRunner, cli: rich_click.RichCommand
  --help                     Show this message and exit.                                             \n\
                                                                                                     \n\
  ═ Commands ═══════════════════════════════════════════════════════════════════════════════════════ \n\
- download  Optionally use short-help for the group help text                                        \n\
- sync      Synchronise all your files between two places. Example command that doesn't do much      \n\
-           except print to the terminal.                                                            \n\
+ download                   Optionally use short-help for the group help text                       \n\
+ sync                       Synchronise all your files between two places. Example command that     \n\
+                            doesn't do much except print to the terminal.                           \n\
                                                                                                     \n\
 """)
     assert result.stderr == snapshot("")
@@ -185,9 +185,9 @@ Options:                                                                        
          --help              Show this message and exit.                                            \n\
                                                                                                     \n\
 Commands:                                                                                           \n\
-  download  Optionally use short-help for the group help text                                       \n\
-  sync      Synchronise all your files between two places. Example command that doesn't do much     \n\
-            except print to the terminal.                                                           \n\
+  download                   Optionally use short-help for the group help text                      \n\
+  sync                       Synchronise all your files between two places. Example command that    \n\
+                             doesn't do much except print to the terminal.                          \n\
                                                                                                     \n\
 """)
     assert result.stderr == snapshot("")
@@ -219,9 +219,9 @@ def test_simple_help_modern_theme(cli_runner: CliRunner, cli: rich_click.RichCom
                                                                                                     \n\
   Commands                                                                                          \n\
   ────────────────────────────────────────────────────────────────────────────────────────────────  \n\
-  download   Optionally use short-help for the group help text                                      \n\
-  sync       Synchronise all your files between two places. Example command that doesn't do much    \n\
-             except print to the terminal.                                                          \n\
+  download                        Optionally use short-help for the group help text                 \n\
+  sync                            Synchronise all your files between two places. Example command    \n\
+                                  that doesn't do much except print to the terminal.                \n\
                                                                                                     \n\
                                                                                                     \n\
 """)
@@ -253,9 +253,9 @@ Here are things you can do:                                                     
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ┌─  Commands  ─────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                                  │
-│  download  Optionally use short-help for the group help text                                     │
-│  sync      Synchronise all your files between two places. Example command that doesn't do much   │
-│            except print to the terminal.                                                         │
+│  download                     Optionally use short-help for the group help text                  │
+│  sync                         Synchronise all your files between two places. Example command     │
+│                               that doesn't do much except print to the terminal.                 │
 │                                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 """)

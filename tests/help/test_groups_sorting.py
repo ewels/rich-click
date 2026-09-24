@@ -24,22 +24,22 @@ def test_groups_sorting_help(cli_runner: CliRunner, cli: rich_click.RichCommand)
  You can try using --help at the top level and also for specific subcommands.                       \n\
                                                                                                     \n\
 ╭─ Basic usage ────────────────────────────────────────────────────────────────────────────────────╮
-│ *  --type  TEXT  Type of file to sync [default: files] [required]                                │
+│ *  --type    TEXT             Type of file to sync [default: files] [required]                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Advanced options ───────────────────────────────────────────────────────────────────────────────╮
-│ --version                  Show the version and exit.                                            │
-│ --debug/--no-debug  -d/-n  Show the debug log messages [default: no-debug]                       │
+│    --version                  Show the version and exit.                                         │
+│    --debug/--no-debug  -d/-n              Show the debug log messages [default: no-debug]        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Help ───────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  -h  Show this message and exit.                                                          │
+│    --help  -h                 Show this message and exit.                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Main usage ─────────────────────────────────────────────────────────────────────────────────────╮
-│ sync             Synchronise all your files between two places.                                  │
-│ download         Pretend to download some files from somewhere.                                  │
+│ sync                          Synchronise all your files between two places.                     │
+│ download                      Pretend to download some files from somewhere.                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Configuration ──────────────────────────────────────────────────────────────────────────────────╮
-│ config                Set up the configuration.                                                  │
-│ auth                  Authenticate the app.                                                      │
+│ config                        Set up the configuration.                                          │
+│ auth                          Authenticate the app.                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -60,11 +60,11 @@ Debug mode is off
 │    --output  -o  TEXT  Output path                                                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Subcommand help ────────────────────────────────────────────────────────────────────────────────╮
-│ --help  -h  Show this message and exit.                                                          │
+│    --help    -h        Show this message and exit.                                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --all        Sync all the things?                                                                │
-│ --overwrite  Overwrite local files                                                               │
+│    --all               Sync all the things?                                                      │
+│    --overwrite         Overwrite local files                                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -84,7 +84,7 @@ Debug mode is off
 │ --help  -h  Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --all  Get everything                                                                            │
+│ --all       Get everything                                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -122,11 +122,11 @@ Debug mode is off
 │ *  --password  -p  TEXT  Password [required]                                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Misc. ──────────────────────────────────────────────────────────────────────────────────────────╮
-│ --email  -e  TEXT  Email                                                                         │
-│ --role   -r  TEXT  Role                                                                          │
+│    --email     -e  TEXT  Email                                                                   │
+│    --role      -r  TEXT  Role                                                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Auth help ──────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  -h  Show this message and exit.                                                          │
+│    --help      -h        Show this message and exit.                                             │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

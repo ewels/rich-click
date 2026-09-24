@@ -35,9 +35,11 @@ def test_deprecated_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> 
 │ --help                                 Show this message and exit.                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ download  Pretend to download some files from _somewhere_. [deprecated]                          │
-│ sync      Synchronise all your files between two places. Example command that doesn't do much    │
-│           except print to the terminal. [deprecated: Removing in later version]                  │
+│ download                               Pretend to download some files from _somewhere_.          │
+│                                        [deprecated]                                              │
+│ sync                                   Synchronise all your files between two places. Example    │
+│                                        command that doesn't do much except print to the          │
+│                                        terminal. [deprecated: Removing in later version]         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -108,11 +110,12 @@ def test_deprecated_help_with_markdown(cli_runner: CliRunner, cli: rich_click.Ri
 │ --help                                 Show this message and exit.                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ download  Pretend to download some files from somewhere.                                         │
-│           [deprecated]                                                                           │
-│ sync      Synchronise all your files between two places. Example command that doesn't do much    │
-│           except print to the terminal.                                                          │
-│           [deprecated: Removing in later version]                                                │
+│ download                               Pretend to download some files from somewhere.            │
+│                                        [deprecated]                                              │
+│ sync                                   Synchronise all your files between two places. Example    │
+│                                        command that doesn't do much except print to the          │
+│                                        terminal.                                                 │
+│                                        [deprecated: Removing in later version]                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

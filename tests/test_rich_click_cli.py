@@ -107,32 +107,33 @@ def test_rich_click_cli_help_with_rich_config_from_file(tmp_path: Path) -> None:
  >>> rich-click my_package cmd --foo 3                                                              \n\
                                                                                                     \n\
 ╭─ Advanced Options ───────────────────────────────────────────────────────────────────────────────╮
-│ --errors-in-output-format                       If set, forces the CLI to render CLI error       │
-│                                                 messages in the format specified by the --output │
-│                                                 option. By default, error messages render        │
-│                                                 normally, i.e. they are not converted to html or │
-│                                                 svg.                                             │
-│ --suppress-warnings/--do-not-suppress-warnings  Suppress warnings when there are conflicting     │
-│                                                 entry_points. This situation is extremely rare.  │
-│                                                 [env var: RICH_CLICK_CLI_SUPPRESS_WARNINGS]      │
-│ --patch-rich-click/--no-patch-rich-click        If set, patch rich_click.Command, not just       │
-│                                                 click.Command.                                   │
+│ --errors-in-output-format                 If set, forces the CLI to render CLI error messages in │
+│                                           the format specified by the --output option. By        │
+│                                           default, error messages render normally, i.e. they are │
+│                                           not converted to html or svg.                          │
+│ --suppress-warnings/--do-not-suppress-warnings                                                   │
+│                                           Suppress warnings when there are conflicting           │
+│                                           entry_points. This situation is extremely rare. [env   │
+│                                           var: RICH_CLICK_CLI_SUPPRESS_WARNINGS]                 │
+│ --patch-rich-click/--no-patch-rich-click  If set, patch rich_click.Command, not just             │
+│                                           click.Command.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Extra ──────────────────────────────────────────────────────────────────────────────────────────╮
-│ --themes       List all available themes and exit.                                               │
-│ --version      Show the version and exit.                                                        │
-│ --help     -h  Show this message and exit.                                                       │
+│ --themes                                  List all available themes and exit.                    │
+│ --version                                 Show the version and exit.                             │
+│ --help         -h                         Show this message and exit.                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Custom Name ────────────────────────────────────────────────────────────────────────────────────╮
-│ --theme        -t  THEME            Set the theme to render the CLI with.                        │
-│ --rich-config  -c  JSON             Keyword arguments to pass into the RichHelpConfiguration()   │
-│                                     used to render the help text of the command. You can pass    │
-│                                     either a JSON directly, or a file prefixed with `@` (for     │
-│                                     example: '@rich_config.json'). Note that the --rich-config   │
-│                                     option is also used to render this help text you're reading  │
-│                                     right now!                                                   │
-│ --output       -o  [html|svg|text]  Optionally render help text as HTML or SVG or plain text. By │
-│                                     default, help text is rendered normally.                     │
+│ --theme        -t  THEME                  Set the theme to render the CLI with.                  │
+│ --rich-config  -c  JSON                   Keyword arguments to pass into the                     │
+│                                           RichHelpConfiguration() used to render the help text   │
+│                                           of the command. You can pass either a JSON directly,   │
+│                                           or a file prefixed with `@` (for example:              │
+│                                           '@rich_config.json'). Note that the --rich-config      │
+│                                           option is also used to render this help text you're    │
+│                                           reading right now!                                     │
+│ --output       -o  [html|svg|text]        Optionally render help text as HTML or SVG or plain    │
+│                                           text. By default, help text is rendered normally.      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
 
@@ -257,10 +258,10 @@ def test_override_click_group(mock_script_writer: Callable[[str], Path]) -> None
  My help text                                                                                       \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ subcommand                        Subcommand help text                                           │
+│ subcommand  Subcommand help text                                                                 │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
 

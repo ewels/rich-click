@@ -25,27 +25,27 @@ def test_command_panel_order(cli_runner: CliRunner, cli: rich_click.RichCommand)
 │ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Custom Command Panel 2 ─────────────────────────────────────────────────────────────────────────╮
-│ cmd2       Test order of options is preserved via panel...                                       │
-│ cmd1       Test order of panels is preserved via panel=...                                       │
+│ cmd2    Test order of options is preserved via panel...                                          │
+│ cmd1    Test order of panels is preserved via panel=...                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Custom Command Panel 1 ─────────────────────────────────────────────────────────────────────────╮
-│ cmd3      Test order of panels is preserved via option_panel()                                   │
-│ cmd4      Test order of options is preserved via option_panel()                                  │
+│ cmd3    Test order of panels is preserved via option_panel()                                     │
+│ cmd4    Test order of options is preserved via option_panel()                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Custom Command Panel 3 ─────────────────────────────────────────────────────────────────────────╮
-│ cmd5   Test that commands appear above options when explicitly set.                              │
-│ cmd6   Test that options appear above commands when explicitly set, ignoring the                 │
-│        `commands_before_options` config option.                                                  │
-│ cmd7   Test that default order is arguments -> options -> commands.                              │
-│ cmd8   Test that default order is commands -> arguments -> options, when commands show above     │
-│        options.                                                                                  │
-│ cmd9   Test that command and option both having the same name doesn't cause any issues. Also     │
-│        test that commands render by assigned name in dict, not by the cmd.name.                  │
-│ cmd10  Test that command panel and option panel both having the same name doesn't cause any      │
-│        issues.                                                                                   │
-│ cmd11  Test add_command(..., panel=...)                                                          │
-│ cmd12  Test all three methods of assigning a panel don't cause duplication.                      │
-│ cmd13  Test that command_panel.commands takes priority.                                          │
+│ cmd5    Test that commands appear above options when explicitly set.                             │
+│ cmd6    Test that options appear above commands when explicitly set, ignoring the                │
+│         `commands_before_options` config option.                                                 │
+│ cmd7    Test that default order is arguments -> options -> commands.                             │
+│ cmd8    Test that default order is commands -> arguments -> options, when commands show above    │
+│         options.                                                                                 │
+│ cmd9    Test that command and option both having the same name doesn't cause any issues. Also    │
+│         test that commands render by assigned name in dict, not by the cmd.name.                 │
+│ cmd10   Test that command panel and option panel both having the same name doesn't cause any     │
+│         issues.                                                                                  │
+│ cmd11   Test add_command(..., panel=...)                                                         │
+│ cmd12   Test all three methods of assigning a panel don't cause duplication.                     │
+│ cmd13   Test that command_panel.commands takes priority.                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -73,7 +73,7 @@ def test_panel_order_in_panel_decorator(cli_runner: CliRunner, cli: rich_click.R
 │ --d  -d  TEXT  Help text for E                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -101,7 +101,7 @@ def test_option_order_with_panel_decorator(cli_runner: CliRunner, cli: rich_clic
 │ --e  -e  TEXT  Help text for E                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -129,7 +129,7 @@ def test_panel_order_with_panel_kwarg(cli_runner: CliRunner, cli: rich_click.Ric
 │ --f  -f  TEXT  Help text for F                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -157,7 +157,7 @@ def test_option_order_with_panel_kwarg(cli_runner: CliRunner, cli: rich_click.Ri
 │ --e  -f  TEXT  Help text for F                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -176,8 +176,8 @@ def test_panel_order_commands_above_options(cli_runner: CliRunner, cli: rich_cli
 │ dummy                                                                                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --a     TEXT                                                                                     │
-│ --help        Show this message and exit.                                                        │
+│ --a  TEXT                                                                                        │
+│ --help     Show this message and exit.                                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -194,8 +194,8 @@ def test_panel_order_options_above_commands(cli_runner: CliRunner, cli: rich_cli
  `commands_before_options` config option.                                                           \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --a     TEXT                                                                                     │
-│ --help        Show this message and exit.                                                        │
+│ --a  TEXT                                                                                        │
+│ --help     Show this message and exit.                                                           │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ dummy                                                                                            │
@@ -214,11 +214,11 @@ def test_panel_order_options_above_commands_with_arguments(cli_runner: CliRunner
  Test that default order is arguments -> options -> commands.                                       \n\
                                                                                                     \n\
 ╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────╮
-│ *  A  TEXT  [required]                                                                           │
+│ *  A    TEXT  [required]                                                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --b     TEXT                                                                                     │
-│ --help        Show this message and exit.                                                        │
+│    --b  TEXT                                                                                     │
+│    --help     Show this message and exit.                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ dummy                                                                                            │
@@ -240,11 +240,11 @@ def test_panel_order_arguments_options_commands(cli_runner: CliRunner, cli: rich
 │ dummy                                                                                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────╮
-│ *  A  TEXT  [required]                                                                           │
+│ *  A    TEXT  [required]                                                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --b     TEXT                                                                                     │
-│ --help        Show this message and exit.                                                        │
+│    --b  TEXT                                                                                     │
+│    --help     Show this message and exit.                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -265,7 +265,7 @@ def test_panel_option_and_command_same_name(cli_runner: CliRunner, cli: rich_cli
 │ --dummy     TEXT                                                                                 │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help            Show this message and exit.                                                    │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
 │ samename                                                                                         │
@@ -284,7 +284,7 @@ def test_panel_different_type_panels_same_name(cli_runner: CliRunner, cli: rich_
  Test that command panel and option panel both having the same name doesn't cause any issues.       \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help       Show this message and exit.                                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Generic Panel ──────────────────────────────────────────────────────────────────────────────────╮
 │ dummy                                                                                            │
