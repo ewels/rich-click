@@ -120,9 +120,21 @@ Below is an example that does this, as well as doing some additional reordering 
 ## Aligning columns across panels
 
 `align_columns_across_panels` sizes every panel's columns together, so that the help text starts in
-the same place throughout the help screen: a column is kept if any panel has something to put in it,
-and is then made wide enough for the widest entry that reaches past it. Turn it off to have each
-panel size its own table instead.
+the same place throughout the help screen.
+
+![Panel column layout](../../images/panel_column_layout.svg){.screenshot}
+
+Panels asking for the same columns form a group. A column is kept if any panel in the group has
+something to put in it, and every panel in the group is then given the same widths. The leading
+column is what indents each panel's names into line with its siblings, which is why the names line
+up even when only one panel has a required option in it.
+
+An entry whose own cells stop short of the help text runs on underneath the columns it leaves empty,
+rather than widening the one it sits in. An option with no short form and no metavar therefore costs
+those columns nothing, and the entries that do fill them keep them narrow.
+
+A panel with nothing at all to put in one of the shared columns hands that column's width to the one
+on its left, so the space stays usable by the entries that need it.
 
 ```python
 {% include "../../code_snippets/panels/panels_align_columns.py" %}
@@ -135,35 +147,30 @@ panel size its own table instead.
     -->
     ![`python panels_align_columns.py --help`](../../images/code_snippets/panels/panels_align_columns.svg){.screenshot}
 
-A panel that has nothing to put in one of the shared columns hands that column's width to the one on
-its left, so the space is still usable by the entries that need it. The leading column is left alone,
-since that is what indents each panel's names into line with its siblings.
-
-An entry whose own cells stop short of the help - an option with no short form, say - does the same
-row by row: it runs on under the columns it leaves empty rather than widening the one it is in, so
-the entries that do use those columns keep them narrow. `wrap_long_options` is the ceiling on how far
-the columns will stretch to keep such an entry beside its help.
+Where the aligned columns would take more than two thirds of the panel, too little is left for the
+help text, and each panel sizes its own table instead. A narrow terminal can therefore show the same
+CLI unaligned. Set `align_columns_across_panels=False` to size every panel on its own.
 
 ???+ warning "rich-click ≥2.0.0 deprecation"
     `style_commands_table_column_width_ratio` sizes the first two columns of the commands table by a
     fixed proportion, which truncates a long command name to fit. `wrap_long_options` does that job
     without losing the name, and `align_columns_across_panels` lines the columns up with the rest of
-    the help screen, so the ratio is no longer needed and will be removed in a future version.
+    the help screen, so the ratio will be removed in a future version.
 
-    Setting it holds command panels out of the alignment pass altogether, so that an explicit ratio
-    still decides their column widths. Remove it to opt in to the new layout.
-
-Where the aligned columns would take more than two thirds of the panel, there is too little left for
-the help text to be worth reading, and every panel sizes itself instead. A narrow terminal can
-therefore show the same CLI unaligned.
+    Setting it holds command panels out of the alignment pass, so that an explicit ratio still
+    decides their column widths. Remove it to opt in to the new layout.
 
 ## Wrapping long entries
 
-One very long option name sets the width of the whole column, and every other entry's help text pays
-for it - a boolean flag and its negative form share a cell, so a pair like
+`wrap_long_options` keeps one very wide entry from setting the column width for its whole panel. A
+boolean flag and its negative form share a cell, so a pair like
 `--reject-output-outside-source/--no-reject-output-outside-source` can stretch the option column
-across half the screen on its own. `wrap_long_options` puts a ceiling on that: an entry whose columns
-before the help are wider than the given threshold is wrapped instead of widening the column.
+across half the screen on its own.
+
+Past the threshold, an entry stops counting towards the column width. It first spills into the
+columns it leaves empty to its right, keeping its help beside it. Where that is not room enough, its
+help moves to the line below instead, still starting in the help column so that every description in
+the panel lines up.
 
 ```python hl_lines="11"
 {% include "../../code_snippets/panels/panels_wrap_long_options.py" %}
@@ -176,39 +183,28 @@ before the help are wider than the given threshold is wrapped instead of widenin
     -->
     ![`python panels_wrap_long_options.py --help`](../../images/code_snippets/panels/panels_wrap_long_options.svg){.screenshot}
 
-An over-wide entry first spills into the columns it leaves empty to its right: an option with no
-metavar can run on under the metavar column and keep its help beside it. Where that is not room
-enough, its help moves to the line below instead - it still starts in the help column, so every
-description in the panel lines up.
+The threshold also caps how wide the columns grow to hold an entry that spills across them, and it
+applies to command panels, for subcommands with long names.
 
-Either way the entry no longer counts towards the column width, which is what buys the space back.
-The threshold also caps how wide the columns will grow to hold an entry that spills across them, and
-it applies to command panels too, for subcommands with long names.
-
-If *every* entry in a panel is over the threshold there is no column left to line up with, and that
-panel's help text is simply indented instead. An entry wider than the panel itself is left alone,
-since no arrangement of columns fits it; rich truncates it with an ellipsis as it did before.
-
-With `align_columns_across_panels` also on, an entry that fits the width its columns get from being
-aligned stays put whatever the threshold says - moving it would cost a line and reclaim nothing.
-
-The threshold can be given three ways:
+It can be given three ways:
 
 | Value | Meaning |
 | --- | --- |
-| `float` | A fraction of the room the panel has, so a wide terminal keeps more entries inline than a narrow one. |
 | `int` | That many characters, whatever the terminal is doing. |
+| `float` | A fraction of the room the panel has, so a wide terminal keeps more entries inline than a narrow one. |
 | callable | Passed the panel's width in characters, returns either of the above. |
 
 The default is `40` characters. A fixed number holds the help text in the same place at every
-terminal width, which is what you usually want: a fraction of a 300-column terminal is a threshold so
-high that nothing trips it, and the panel goes back to letting one long entry set the column width
-for everything. Reach for a `float` or a callable when you want to be gentler on a narrow terminal,
-for instance `lambda width: min(width // 2, 40)`.
+terminal width, which is usually what you want: half of a 300-column terminal is a threshold so high
+that nothing trips it. Reach for a `float` or a callable to be gentler on a narrow terminal, for
+instance `lambda width: min(width // 2, 40)`. `0`, a negative number, `False` or `None` turns it
+off, and every entry then sizes its own column.
 
-`0`, a negative number, `False` or `None` turns the whole thing off, leaving every entry to set the
-width of its column as it did before. Where spilling would leave the help text less than a third of
-the panel, the columns are sized that way too.
+Two cases fall outside all of this. If *every* entry in a panel is over the threshold there is no
+column left to line up with, and that panel's help text is indented instead. With
+`align_columns_across_panels` also on, an entry that fits the width its columns get from being
+aligned stays inline whatever the threshold says, since moving it would cost a line and reclaim
+nothing.
 
 Moving the help down is the shape that [clap](https://docs.rs/clap/latest/clap/struct.Arg.html) calls
 `next_line_help` and that `argparse` arrives at through a low `max_help_position`.
