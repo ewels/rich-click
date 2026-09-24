@@ -25,14 +25,13 @@ def test_metavars_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> No
  You can try using --help at the top level and also for specific group subcommands.                 \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --debug                                               Enable debug mode.                         │
-│ --number  [one|two|three|four|five|six|seven|eight|n  This click choice has loads of options.    │
-│           ine|ten|eleven|twelve|thirteen|fourteen|fi                                             │
-│           fteen|sixteen|seventeen|eighteen|nineteen|                                             │
-│           twenty|twenty-one|twenty-two|twenty-three|                                             │
-│           twenty-four|twenty-five|twenty-six|twenty-                                             │
-│           seven|twenty-eight|twenty-nine|thirty]                                                 │
-│ --help                                                Show this message and exit.                │
+│ --debug  Enable debug mode.                                                                      │
+│ --number                                                                                         │
+│ [one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixtee │
+│ n|seventeen|eighteen|nineteen|twenty|twenty-one|twenty-two|twenty-three|twenty-four|twenty-five| │
+│ twenty-six|twenty-seven|twenty-eight|twenty-nine|thirty]                                         │
+│          This click choice has loads of options.                                                 │
+│ --help   Show this message and exit.                                                             │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

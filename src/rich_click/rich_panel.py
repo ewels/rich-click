@@ -287,8 +287,7 @@ class RichPanel(Generic[CT, ColT]):
             # Only the columns this row fills take up room in it, so only they need a gap.
             filled = [c for c, width in enumerate(row_widths) if width]
             needed = room(row_widths, filled)
-            # An entry too wide for the panel itself has to wrap in its columns whatever we do.
-            if not filled or needed > inner_width:
+            if not filled:
                 continue
             filled_by[i], needed_by[i] = filled, needed
             allowed = max(threshold, room(pinned, filled)) if pinned else threshold

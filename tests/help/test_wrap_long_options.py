@@ -250,3 +250,27 @@ def test_wrap_long_options_keeps_the_next_line_head_in_its_columns(cli_runner: C
     assert "A choice metavar" not in template
     assert template.index("--template") == comment.index("--comment")
     assert short_at(template, "--template", "-t") == short_at(comment, "--comment", "-b")
+
+
+def test_wrap_long_options_when_an_entry_outgrows_the_panel(cli_runner: CliRunner) -> None:
+    """An entry wider than the panel itself must not size the columns, or the help has no room."""
+
+    @rich_click.command()
+    @rich_click.option("--debug", is_flag=True, help="Enable debug mode.")
+    @rich_click.option(
+        "--number",
+        type=rich_click.Choice([f"choice-number-{n}" for n in range(12)]),
+        help="A choice metavar wider than the whole panel.",
+    )
+    def cli() -> None:
+        """CLI help text"""
+
+    cli.context_settings["rich_help_config"] = {"width": 60, "max_width": 60}
+    result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    assert "A choice metavar wider than the whole panel." in result.stdout
+    # The giant metavar must not push the other option's help off to the right either.
+    debug = next(line for line in result.stdout.splitlines() if "--debug" in line)
+    assert debug.index("Enable debug mode.") < 20
+    # A help column collapsed to nothing wraps a character to a line, running to hundreds of them.
+    assert len(result.stdout.splitlines()) < 40
