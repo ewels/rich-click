@@ -71,6 +71,13 @@ if _t.TYPE_CHECKING:
     from click.utils import get_app_dir as get_app_dir
     from click.utils import open_file as open_file
 
+    from rich_click.rich_async_command import RichAsyncCommand as RichAsyncCommand  # pragma: no cover
+    from rich_click.rich_async_command import (  # pragma: no cover
+        RichAsyncCommandCollection as RichAsyncCommandCollection,
+    )
+    from rich_click.rich_async_command import RichAsyncContext as RichAsyncContext  # pragma: no cover
+    from rich_click.rich_async_command import RichAsyncGroup as RichAsyncGroup  # pragma: no cover
+
 from rich_click.decorators import argument as argument
 from rich_click.decorators import command as command
 from rich_click.decorators import command_panel as command_panel
@@ -103,7 +110,11 @@ from . import rich_click as rich_click
 def __getattr__(name: str) -> object:
     from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X
 
-    if name == "RichMultiCommand" and CLICK_IS_BEFORE_VERSION_9X:
+    if name in {"RichAsyncCommand", "RichAsyncCommandCollection", "RichAsyncContext", "RichAsyncGroup"}:
+        from rich_click import rich_async_command
+
+        return getattr(rich_async_command, name)
+    elif name == "RichMultiCommand" and CLICK_IS_BEFORE_VERSION_9X:
         import warnings
 
         warnings.warn(
@@ -169,5 +180,9 @@ def __dir__() -> list[str]:
             "format_filename",
             "get_app_dir",
             "open_file",
+            "RichAsyncCommand",
+            "RichAsyncCommandCollection",
+            "RichAsyncContext",
+            "RichAsyncGroup",
         }
     )

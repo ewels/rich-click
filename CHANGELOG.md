@@ -7,6 +7,7 @@
 - Fixed docs versioning, so that a released version no longer keeps the `prerelease` alias alongside `latest`. [[#343](https://github.com/ewels/rich-click/pull/343)] ([@dwreeves](https://github.com/dwreeves))
 - Redesigned `__init__.py` to avoid surfacing click's `DeprecationWarning` going forward.
 - Fixed `patch_typer()` crashing on `typer>=0.26.0`; it now warns and leaves Typer unpatched instead of raising. [[#330](https://github.com/ewels/rich-click/issues/330)]
+- Added optional support for asyncclick 8.2.2.2 and newer on Python 3.11+, and 8.3.0.3 and newer on Python 3.10, including rich help, errors, panels, aliases, and configuration decorators. [[#336](https://github.com/ewels/rich-click/pull/336)] ([@gabloe](https://github.com/gabloe))
 
 ## Version 1.9.9 (2026-09-05)
 

@@ -60,10 +60,10 @@ class RichCommandMixin(_CommandMixinBase):
     ``asyncclick.Command``) without dragging click's synchronous execution methods
     (``main``, ``make_context``, ``scope``, etc.) into the MRO.
 
-    Execution-flow methods (``main``, ``get_help_option`` and ``to_info_dict``)
-    deliberately live on the concrete :class:`RichCommand` instead of here, so that
-    async forks can inherit their own async equivalents. Help and error formatting,
-    including :meth:`_error_formatter`, is shared here.
+    Execution-flow methods (``main`` and ``to_info_dict``) deliberately live on the
+    concrete :class:`RichCommand` instead of here, so that async forks can inherit
+    their own async equivalents. Help and error formatting, including
+    :meth:`get_help_option` and :meth:`_error_formatter`, is shared here.
     """
 
     _formatter: RichHelpFormatter | None = None
@@ -209,6 +209,35 @@ class RichCommandMixin(_CommandMixinBase):
         """Add a RichPanel to the RichCommand."""
         self.panels.append(panel)
 
+    def _make_help_option(self, *help_option_names: str) -> click.Option:
+        from rich_click.decorators import help_option
+
+        help_option(*help_option_names)(self)
+        return self.params.pop()  # type: ignore[return-value]
+
+    def get_help_option(self, ctx: click.Context) -> click.Option | None:
+        """
+        Return the help option object.
+
+        Skipped if :attr:`add_help_option` is ``False``.
+
+        .. versionchanged:: 8.1.8
+            The help option is now cached to avoid creating it multiple times.
+        """
+        help_option_names = self.get_help_option_names(ctx)
+
+        if not help_option_names or not self.add_help_option:
+            return None
+
+        # Cache the help option object in private _help_option attribute to
+        # avoid creating it multiple times. Not doing this will break the
+        # callback ordering by iter_params_for_processing(), which relies on
+        # object comparison.
+        if self._help_option is None:
+            self._help_option = self._make_help_option(*help_option_names)
+
+        return self._help_option
+
 
 class RichCommand(RichCommandMixin, Command):
     """
@@ -337,34 +366,6 @@ class RichCommand(RichCommandMixin, Command):
             finally:
                 sys.exit(1)
 
-    def get_help_option(self, ctx: click.Context) -> click.Option | None:
-        """
-        Return the help option object.
-
-        Skipped if :attr:`add_help_option` is ``False``.
-
-        .. versionchanged:: 8.1.8
-            The help option is now cached to avoid creating it multiple times.
-        """
-        help_option_names = self.get_help_option_names(ctx)
-
-        if not help_option_names or not self.add_help_option:
-            return None
-
-        # Cache the help option object in private _help_option attribute to
-        # avoid creating it multiple times. Not doing this will break the
-        # callback ordering by iter_params_for_processing(), which relies on
-        # object comparison.
-        if self._help_option is None:
-            # Avoid circular import.
-            from rich_click.decorators import help_option
-
-            # Apply help_option decorator and pop resulting option
-            help_option(*help_option_names)(self)
-            self._help_option = self.params.pop()  # type: ignore[assignment]
-
-        return self._help_option
-
 
 class RichGroupMixin(RichCommandMixin, _GroupMixinBase):
     """
@@ -451,7 +452,7 @@ class RichGroupMixin(RichCommandMixin, _GroupMixinBase):
             kwargs["cls"] = cls = self.command_class
 
         def decorator(f: Callable[..., Any]) -> RichCommand:
-            if cls and not issubclass(cls, RichCommand):
+            if cls and not issubclass(cls, RichCommandMixin):
                 panel = kwargs.pop("panel", None)
                 aliases = kwargs.pop("aliases", None)
             else:
@@ -506,7 +507,7 @@ class RichGroupMixin(RichCommandMixin, _GroupMixinBase):
                 kwargs["cls"] = cls = self.group_class
 
         def decorator(f: Callable[..., Any]) -> RichGroup:
-            if cls and not issubclass(cls, RichCommand):
+            if cls and not issubclass(cls, RichCommandMixin):
                 panel = kwargs.pop("panel", None)
                 aliases = kwargs.pop("aliases", None)
             else:

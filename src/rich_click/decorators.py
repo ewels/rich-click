@@ -22,7 +22,7 @@ from click import pass_context as click_pass_context
 from click import password_option as click_password_option
 from click import version_option as click_version_option
 
-from rich_click.rich_command import RichCommand, RichGroup
+from rich_click.rich_command import RichCommand, RichCommandMixin, RichGroup
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_panel import RichCommandPanel, RichOptionPanel, RichPanel
@@ -174,7 +174,7 @@ def command(
 
 
 def _context_settings_memo(f: Callable[..., Any], extra: dict[str, Any]) -> None:
-    if isinstance(f, RichCommand):
+    if isinstance(f, RichCommandMixin):
         f.context_settings.update(extra)
     else:
         if not hasattr(f, "__rich_context_settings__"):
@@ -184,7 +184,7 @@ def _context_settings_memo(f: Callable[..., Any], extra: dict[str, Any]) -> None
 
 
 def _rich_panel_memo(f: Callable[..., Any], panel: RichPanel[Any, Any]) -> None:
-    if isinstance(f, RichCommand):
+    if isinstance(f, RichCommandMixin):
         f.add_panel(panel)
     else:
         if not hasattr(f, "__rich_panels__"):

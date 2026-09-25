@@ -32,7 +32,69 @@ G = TypeVar("G", bound=click.Group)
 # and to instead force everything to use RichCommand's methods.
 OVERRIDES_GUARD: bool = False
 
-class RichCommand(click.Command):
+class RichCommandMixin(click.Command):
+    context_class: type[Any]
+    _formatter: RichHelpFormatter | None
+    panels: list[RichPanel[Any, Any]]
+    panel: str | list[str] | None
+    aliases: Iterable[str]
+    def __init__(
+        self,
+        *args: Any,
+        aliases: Iterable[str] | None = None,
+        panels: list[RichPanel[Any, Any]] | None = None,
+        panel: str | list[str] | None = None,
+        **kwargs: Any,
+    ) -> None: ...
+    @property
+    def console(self) -> Console | None: ...
+    @property
+    def help_config(self) -> RichHelpConfiguration | None: ...
+    def _generate_rich_help_config(self) -> RichHelpConfiguration: ...
+    def _error_formatter(self) -> RichHelpFormatter: ...
+    def format_help(self, ctx: click.Context, formatter: click.HelpFormatter) -> None: ...
+    def format_help_text(self, ctx: click.Context, formatter: click.HelpFormatter) -> None: ...
+    def format_options(self, ctx: click.Context, formatter: click.HelpFormatter) -> None: ...
+    def format_epilog(self, ctx: click.Context, formatter: click.HelpFormatter) -> None: ...
+    def _make_help_option(self, *help_option_names: str) -> Any: ...
+    def get_help_option(self, ctx: click.Context) -> click.Option | None: ...
+    def get_rich_table_row(
+        self,
+        ctx: RichContext,
+        formatter: RichHelpFormatter,
+        panel: RichCommandPanel | None = None,
+    ) -> RichPanelRow: ...
+    def add_panel(self, panel: RichPanel[Any, Any]) -> None: ...
+
+class RichGroupMixin(RichCommandMixin, click.Group):
+    command_class: type[click.Command] | None
+    group_class: type[click.Group] | type[type] | None
+    _alias_mapping: dict[str, str]
+    _panel_command_mapping: dict[str, list[str]]
+    def command(self, *args: Any, **kwargs: Any) -> Any: ...
+    def group(self, *args: Any, **kwargs: Any) -> Any: ...
+    def get_command(self, ctx: click.Context, cmd_name: str) -> click.Command | None: ...
+    def add_command(
+        self,
+        cmd: click.Command,
+        name: str | None = None,
+        aliases: Iterable[str] | None = None,
+        panel: str | list[str] | None = None,
+    ) -> None: ...
+    def _handle_extras_add_command(
+        self,
+        cmd: click.Command,
+        name: str | None = None,
+        aliases: Iterable[str] | None = None,
+        panel: str | list[str] | None = None,
+    ) -> None: ...
+    def add_command_to_panel(
+        self,
+        command: click.Command,
+        panel_name: str | Iterable[str],
+    ) -> None: ...
+
+class RichCommand(RichCommandMixin, click.Command):
     context_class: type[RichContext] = RichContext
     _formatter: RichHelpFormatter | None = None
     panels: list[RichPanel[Any, Any]]
@@ -109,7 +171,7 @@ class RichCommand(click.Command):
         panel_name: str | Iterable[str],
     ) -> None: ...
 
-class RichGroup(RichCommand, click.Group):
+class RichGroup(RichGroupMixin, RichCommand, click.Group):
     """
     Richly formatted click Group.
 
