@@ -21,7 +21,7 @@ from rich_click._internal_types import PanelKwargs, RichContextSettingsDict, Ric
 from rich_click.rich_command import RichCommand, RichGroup
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import CommandColumnType, OptionColumnType, RichHelpConfiguration
-from rich_click.rich_panel import RichOptionPanel, RichPanel
+from rich_click.rich_panel import RichPanel
 
 _AnyCallable = Callable[..., Any]
 
@@ -141,9 +141,6 @@ def command(
 # variant: with optional string name, no cls argument provided.
 @overload
 def command(name: str | None = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichCommand]: ...
-def command(
-    name: str | None = None, *, cls: type[C] | None = None, **kwargs: Any
-) -> Callable[[_AnyCallable], click.Command | C]: ...
 
 # variant: no call, directly as decorator for a function.
 @overload
@@ -266,15 +263,10 @@ def group(
 # variant: with optional string name, no cls argument provided.
 @overload
 def group(name: str | None = ..., cls: None = None, **attrs: Any) -> Callable[[_AnyCallable], RichGroup]: ...
-def group(
-    name: str | _AnyCallable | None = None,
-    cls: type[G] | None = None,
-    **attrs: Any,
-) -> click.Group | Callable[[_AnyCallable], RichGroup | G]: ...
 def argument(
     *param_decls: str,
     cls: type[click.Argument] | None = None,
-    type: ParamType | Any | None = None,
+    type: ParamType | Any | None = None,  # type: ignore[type-arg]
     required: bool = False,
     default: Any | Callable[[], Any] | None = None,
     callback: Callable[[click.Context, click.Parameter, Any], Any] | None = None,
@@ -294,7 +286,7 @@ def argument(
 def option(
     *param_decls: str,
     cls: type[click.Option] | None = None,
-    type: ParamType | Any | None = None,
+    type: ParamType | Any | None = None,  # type: ignore[type-arg]
     required: bool = False,
     default: Any | Callable[[], Any] | None = None,
     callback: Callable[[click.Context, click.Parameter, Any], Any] | None = None,
@@ -325,7 +317,7 @@ def option(
 def password_option(
     *param_decls: str,
     cls: type[click.Option] | None = None,
-    type: ParamType | Any | None = None,
+    type: ParamType | Any | None = None,  # type: ignore[type-arg]
     required: bool = False,
     default: Any | Callable[[], Any] | None = None,
     callback: Callable[[click.Context, click.Parameter, Any], Any] | None = None,
@@ -360,7 +352,7 @@ def version_option(
     prog_name: str | None = None,
     message: str | None = None,
     cls: type[click.Option] | None = None,
-    type: ParamType | Any | None = None,
+    type: ParamType | Any | None = None,  # type: ignore[type-arg]
     required: bool = False,
     default: Any | Callable[[], Any] | None = None,
     callback: Callable[[click.Context, click.Parameter, Any], Any] | None = None,
@@ -391,7 +383,7 @@ def version_option(
 def help_option(
     *param_decls: str,
     cls: type[click.Option] | None = None,
-    type: ParamType | Any | None = None,
+    type: ParamType | Any | None = None,  # type: ignore[type-arg]
     required: bool = False,
     default: Any | Callable[[], Any] | None = None,
     callback: Callable[[click.Context, click.Parameter, Any], Any] | None = None,
@@ -422,7 +414,7 @@ def help_option(
 def confirmation_option(
     *param_decls: str,
     cls: type[click.Option] | None = None,
-    type: ParamType | Any | None = None,
+    type: ParamType | Any | None = None,  # type: ignore[type-arg]
     required: bool = False,
     default: Any | Callable[[], Any] | None = None,
     callback: Callable[[click.Context, click.Parameter, Any], Any] | None = None,
@@ -465,15 +457,10 @@ def rich_config(
     *,
     console: Console | None = ...,
 ) -> Callable[[FC], FC]: ...
-def rich_config(
-    help_config: dict[str, Any] | RichHelpConfigurationDict | RichHelpConfiguration | None = None,
-    *,
-    console: Console | None = None,
-) -> Callable[[FC], FC]: ...
 @overload
 def option_panel(
     name: str,
-    cls: type[RichPanel[click.Parameter]] = ...,
+    cls: type[RichPanel[click.Parameter, Any]] = ...,
     *,
     options: list[str] | None = ...,
     help: str | None = ...,
@@ -487,7 +474,7 @@ def option_panel(
 @overload
 def option_panel(
     name: str,
-    cls: type[RichPanel[click.Parameter]] = ...,
+    cls: type[RichPanel[click.Parameter, Any]] = ...,
     *,
     options: list[str] | None = ...,
     help: str | None = ...,
@@ -498,23 +485,10 @@ def option_panel(
     inline_help_in_title: bool | None = ...,
     title_style: StyleType | None = ...,
 ) -> Callable[[FC], FC]: ...
-def option_panel(
-    name: str,
-    cls: type[RichPanel[click.Parameter]] = RichOptionPanel,
-    *,
-    options: list[str] | None = None,
-    help: str | None = None,
-    help_style: StyleType | None = None,
-    table_styles: TableKwargs | dict[str, Any] | None = None,
-    panel_styles: PanelKwargs | dict[str, Any] | None = None,
-    column_types: list[OptionColumnType] | None = None,
-    inline_help_in_title: bool | None = None,
-    title_style: StyleType | None = None,
-) -> Callable[[FC], FC]: ...
 @overload
 def command_panel(
     name: str,
-    cls: type[RichPanel[click.Parameter]] = RichOptionPanel,
+    cls: type[RichPanel[click.Command, Any]] = ...,
     *,
     commands: list[str] | None = ...,
     help: str | None = ...,
@@ -528,7 +502,7 @@ def command_panel(
 @overload
 def command_panel(
     name: str,
-    cls: type[RichPanel[click.Parameter]] = RichOptionPanel,
+    cls: type[RichPanel[click.Command, Any]] = ...,
     *,
     commands: list[str] | None = ...,
     help: str | None = ...,
@@ -538,33 +512,6 @@ def command_panel(
     column_types: list[CommandColumnType] | None = ...,
     inline_help_in_title: bool | None = ...,
     title_style: StyleType | None = ...,
-) -> Callable[[FC], FC]: ...
-@overload
-def command_panel(
-    name: str,
-    cls: type[RichPanel[click.Parameter]] = RichOptionPanel,
-    *,
-    commands: list[str] | None = ...,
-    help: str | None = ...,
-    help_style: StyleType | None = ...,
-    table_styles: None,
-    panel_styles: None,
-    column_types: list[CommandColumnType] | None = ...,
-    inline_help_in_title: bool | None = ...,
-    title_style: StyleType | None = ...,
-) -> Callable[[FC], FC]: ...
-def command_panel(
-    name: str,
-    cls: type[RichPanel[click.Parameter]] = RichOptionPanel,
-    *,
-    commands: list[str] | None = None,
-    help: str | None = None,
-    help_style: StyleType | None = None,
-    table_styles: dict[str, Any] | None = None,
-    panel_styles: dict[str, Any] | None = None,
-    column_types: list[CommandColumnType] | None = None,
-    inline_help_in_title: bool | None = None,
-    title_style: StyleType | None = None,
 ) -> Callable[[FC], FC]: ...
 
 PSpec = ParamSpec("PSpec")
