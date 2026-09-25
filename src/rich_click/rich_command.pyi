@@ -156,11 +156,6 @@ class RichCommand(RichCommandMixin, click.Command):
         panel: RichCommandPanel | None = None,
     ) -> RichPanelRow: ...
     def add_panel(self, panel: RichPanel[Any, Any]) -> None: ...
-    def add_command_to_panel(
-        self,
-        command_name: str,
-        panel_name: str | Iterable[str],
-    ) -> None: ...
 
 class RichGroup(RichGroupMixin, RichCommand, click.Group):
     """
@@ -451,7 +446,7 @@ class RichGroup(RichGroupMixin, RichCommand, click.Group):
         cmd: click.Command,
         name: str | None = None,
         aliases: Iterable[str] | None = None,
-        panel: str | None = None,
+        panel: str | list[str] | None = None,
     ) -> None: ...
     def _handle_extras_add_command(
         self,
