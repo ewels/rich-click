@@ -372,12 +372,12 @@ class RichCommandPanel(RichPanel[Command, CommandColumnType]):
         rows = []
 
         for cmd in self.get_objects(command, ctx):
-            from rich_click.rich_command import RichCommand
+            from rich_click.rich_command import RichCommandMixin
             from rich_click.rich_help_rendering import get_command_rich_table_row
 
             cols = (
                 cmd.get_rich_table_row(ctx, formatter, self)
-                if isinstance(cmd, RichCommand)
+                if isinstance(cmd, RichCommandMixin)
                 else get_command_rich_table_row(cmd, ctx, formatter, self)
             )
 
@@ -626,7 +626,7 @@ def construct_panels(
     if is_group(command):
         objs.extend([("commands", name, o) for name, o in formatter.command_panel_class.list_all_objects(ctx)])
 
-    from rich_click.rich_command import RichGroup
+    from rich_click.rich_command import RichGroupMixin
 
     # Here we are interested in:
     # 1. assigning objs based on panel=...
@@ -657,7 +657,7 @@ def construct_panels(
                     continue
             else:
                 panel_list = obj.panel
-        elif typ == "commands" and isinstance(command, RichGroup):
+        elif typ == "commands" and isinstance(command, RichGroupMixin):
             _p = command._panel_command_mapping.get(name)
             if _p:
                 panel_list.extend(_p)

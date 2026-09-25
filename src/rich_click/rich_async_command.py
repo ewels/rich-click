@@ -21,7 +21,8 @@ import errno
 import os
 import sys
 from collections.abc import Sequence
-from typing import Any
+from gettext import gettext
+from typing import Any, cast
 
 import asyncclick
 
@@ -48,6 +49,25 @@ class RichAsyncCommand(RichCommandMixin, asyncclick.Command):
     """
 
     context_class: type[RichAsyncContext] = RichAsyncContext
+
+    def _make_help_option(self, *help_option_names: str) -> asyncclick.Option:
+        async def show_help(ctx: asyncclick.Context, param: asyncclick.Parameter, value: bool) -> None:
+            if value and not ctx.resilient_parsing:
+                if getattr(ctx, "help_to_stderr", False):
+                    print(ctx.get_help(), file=sys.stderr)
+                else:
+                    print(ctx.get_help())
+                await ctx.aexit()
+
+        asyncclick.option(
+            *help_option_names,
+            is_flag=True,
+            expose_value=False,
+            is_eager=True,
+            help=gettext("Show this message and exit."),
+            callback=show_help,
+        )(self)
+        return cast(asyncclick.Option, self.params.pop())
 
     async def to_info_dict(self, ctx: asyncclick.Context) -> dict[str, Any]:
         info: dict[str, Any] = await super().to_info_dict(ctx)
@@ -91,7 +111,7 @@ class RichAsyncCommand(RichCommandMixin, asyncclick.Command):
                 raise asyncclick.exceptions.Abort() from e
             except asyncclick.exceptions.ClickException as e:
                 if isinstance(e, asyncclick.exceptions.NoArgsIsHelpError):
-                    print(e.format_message())
+                    print(e.message)
                     sys.exit(e.exit_code)
                 if not standalone_mode:
                     raise
@@ -133,14 +153,7 @@ class RichAsyncGroup(RichGroupMixin, RichAsyncCommand, asyncclick.Group):
 
     context_class: type[RichAsyncContext] = RichAsyncContext
     command_class: type[RichAsyncCommand] | None = RichAsyncCommand
-    group_class: Any | None = None
-
-
-# Self-reference must be set after the class body so subgroups reuse the async group.
-RichAsyncGroup.group_class = RichAsyncGroup
-
-
-RichAsyncMultiCommand = RichAsyncGroup
+    group_class: Any | None = type
 
 
 class RichAsyncCommandCollection(asyncclick.CommandCollection, RichAsyncGroup):
@@ -152,5 +165,4 @@ __all__ = [
     "RichAsyncCommandCollection",
     "RichAsyncContext",
     "RichAsyncGroup",
-    "RichAsyncMultiCommand",
 ]
