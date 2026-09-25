@@ -286,16 +286,95 @@ def rich_group(*args, **kwargs):  # type: ignore[no-untyped-def]
     return _rich_group(*args, **kwargs)
 
 
+def _patch_async_module(module: Any, rich_config: RichHelpConfiguration | None = None) -> None:
+    """
+    Install rich-click's async command classes into an async click fork's namespace.
+
+    This is the asyncclick counterpart of :func:`patch`. After it runs, plain
+    ``@module.command`` / ``@module.group`` decorators produce rich-formatted commands,
+    so an existing asyncclick CLI renders richly with no other changes.
+    """
+    import inspect
+
+    from rich_click._click_types_cache import register_click_impl
+
+    register_click_impl(module)
+
+    if not inspect.iscoroutinefunction(module.Command.main):
+        raise TypeError(
+            f"patch(module={module.__name__!r}) only supports asynchronous click forks "
+            "such as asyncclick. For synchronous click, call patch() with no module argument."
+        )
+
+    from rich_click.decorators import command as rich_command
+    from rich_click.decorators import group as rich_group
+    from rich_click.rich_async_command import (
+        RichAsyncCommand,
+        RichAsyncCommandCollection,
+        RichAsyncGroup,
+    )
+
+    module.Command = RichAsyncCommand
+    module.Group = RichAsyncGroup
+    module.CommandCollection = RichAsyncCommandCollection
+    module.core.Command = RichAsyncCommand
+    module.core.Group = RichAsyncGroup
+    module.core.CommandCollection = RichAsyncCommandCollection
+
+    def _command(*args: Any, **kwargs: Any) -> Any:
+        kwargs.setdefault("cls", RichAsyncCommand)
+        kwargs["__rich_click_cli_patch"] = True
+        return rich_command(*args, **kwargs)
+
+    def _group(*args: Any, **kwargs: Any) -> Any:
+        kwargs.setdefault("cls", RichAsyncGroup)
+        kwargs["__rich_click_cli_patch"] = True
+        return rich_group(*args, **kwargs)
+
+    module.command = _command
+    module.group = _group
+
+    if rich_config is not None:
+        rich_config.dump_to_globals()
+
+
 def patch(
     rich_config: RichHelpConfiguration | None = None,
     *,
     patch_rich_click: bool = True,
     patch_typer: bool = False,
+    module: Any | None = None,
 ) -> None:
-    """Patch Click internals to use rich-click types."""
+    """
+    Patch Click internals to use rich-click types.
+
+    Args:
+    ----
+        rich_config: Rich help configuration to apply globally. Defaults to None.
+        patch_rich_click: Also patch the ``rich_click`` namespace. Defaults to True.
+        patch_typer: Also patch Typer. Defaults to False.
+        module: An async click fork (e.g. ``asyncclick``) to patch instead of ``click``.
+            When provided, rich-click's async command classes are installed into that
+            module's namespace. Requires ``rich-click[async]``. Defaults to None (click).
+
+    """
     import warnings
 
     import rich_click._click_types_cache  # noqa: F401
+
+    if module is not None:
+        import inspect
+
+        command_cls = getattr(module, "Command", None)
+        main = getattr(command_cls, "main", None)
+        if command_cls is None or not inspect.iscoroutinefunction(main):
+            module_name = getattr(module, "__name__", repr(module))
+            raise TypeError(
+                f"patch(module={module_name!r}) only supports asynchronous click forks "
+                "such as asyncclick. For synchronous click, call patch() with no module argument."
+            )
+        _patch_async_module(module, rich_config)
+        return
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=DeprecationWarning)

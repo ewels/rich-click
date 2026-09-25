@@ -50,3 +50,69 @@ jobs:
           CLICK_VERSION: ${{ matrix.click }}
           RICH_VERSION: ${{ matrix.rich }}
           TYPER_VERSION: ${{ matrix.typer }}
+
+  test-asyncclick:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        include:
+          - python: "3.10"
+            asyncclick: "asyncclick==8.3.0.3"
+            click: "click>=8"
+          - python: "3.11"
+            asyncclick: "asyncclick==8.2.2.2"
+            click: "click>=8"
+          - python: "3.13"
+            asyncclick: "asyncclick>=8.2.2.2"
+            click: "click>=8"
+          - python: "3.13"
+            asyncclick: "asyncclick>=8.2.2.2"
+            click: "click==8.1.*"
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          python-version: ${{ matrix.python }}
+          activate-environment: true
+
+      - name: Install asyncclick test environment
+        run: |
+          uv pip install --editable ".[async]" "$ASYNCCLICK_REQUIREMENT" "$CLICK_REQUIREMENT" \
+            inline-snapshot pytest pytest-cov typer
+        env:
+          ASYNCCLICK_REQUIREMENT: ${{ matrix.asyncclick }}
+          CLICK_REQUIREMENT: ${{ matrix.click }}
+
+      - name: Run asyncclick tests
+        run: |
+          python -c "import asyncclick"
+          pytest tests/test_asyncclick.py
+
+      - name: Run async example
+        run: python examples/13_async.py --help | grep -q "Usage:"
+
+  test-no-asyncclick:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          python-version: "3.13"
+          activate-environment: true
+
+      - name: Run introspection tests without asyncclick
+        run: uv run --no-dev --with pytest --with pytest-cov --with typer pytest tests/test_no_asyncclick.py
