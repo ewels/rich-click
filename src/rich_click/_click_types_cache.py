@@ -3,6 +3,7 @@
 # However, this file needs to be instantiated _before_ patching occurs.
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from click import Argument as Argument
@@ -35,6 +36,7 @@ _COMMAND_TYPES: tuple[type, ...] = (Command,)
 _GROUP_TYPES: tuple[type, ...] = (Group,)
 _OPTION_TYPES: tuple[type, ...] = (Option,)
 _PARAMETER_TYPES: tuple[type, ...] = (Parameter,)
+_COMMAND_DECORATORS: tuple[tuple[type, Callable[..., Any]], ...] = ()
 
 
 def register_click_impl(module: Any) -> None:
@@ -51,7 +53,11 @@ def register_click_impl(module: Any) -> None:
             ``Option`` and ``Parameter`` (e.g. ``asyncclick``).
 
     """
-    global _ARGUMENT_TYPES, _COMMAND_TYPES, _GROUP_TYPES, _OPTION_TYPES, _PARAMETER_TYPES
+    global _ARGUMENT_TYPES, _COMMAND_TYPES, _GROUP_TYPES, _OPTION_TYPES, _PARAMETER_TYPES, _COMMAND_DECORATORS
+
+    command_cls = module.Command
+    if not any(registered_cls is command_cls for registered_cls, _ in _COMMAND_DECORATORS):
+        _COMMAND_DECORATORS += ((command_cls, module.command),)
 
     for tuple_name, attr in (
         ("_ARGUMENT_TYPES", "Argument"),
@@ -64,6 +70,14 @@ def register_click_impl(module: Any) -> None:
         existing: tuple[type, ...] = globals()[tuple_name]
         if cls not in existing:
             globals()[tuple_name] = existing + (cls,)
+
+
+def get_command_decorator(cls: type[Any]) -> Callable[..., Any] | None:
+    """Return the native command decorator for a registered click-compatible fork."""
+    for command_cls, decorator in reversed(_COMMAND_DECORATORS):
+        if issubclass(cls, command_cls):
+            return decorator
+    return None
 
 
 def is_argument(obj: Any) -> TypeIs[Argument]:

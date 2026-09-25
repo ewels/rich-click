@@ -34,7 +34,7 @@ from inline_snapshot import snapshot
 asyncclick = pytest.importorskip("asyncclick")
 asyncclick_testing = pytest.importorskip("asyncclick.testing")
 
-from rich_click._click_types_cache import is_argument, is_group, is_option  # noqa: E402
+from rich_click._click_types_cache import get_command_decorator, is_argument, is_group, is_option  # noqa: E402
 from rich_click.patch import _patch_async_module, patch  # noqa: E402
 from rich_click.rich_async_command import (  # noqa: E402
     RichAsyncCommand,
@@ -42,6 +42,9 @@ from rich_click.rich_async_command import (  # noqa: E402
     RichAsyncContext,
     RichAsyncGroup,
 )
+
+
+_ORIGINAL_ASYNCCLICK_COMMAND = asyncclick.command
 
 
 def _build_cli() -> tuple[Any, Any, dict[str, Any]]:
@@ -121,6 +124,11 @@ def test_async_classes_are_available_from_top_level_package() -> None:
     assert rich_click.RichAsyncCommandCollection is RichAsyncCommandCollection
     assert rich_click.RichAsyncContext is RichAsyncContext
     assert rich_click.RichAsyncGroup is RichAsyncGroup
+
+
+def test_async_classes_use_asyncclick_command_decorator() -> None:
+    assert get_command_decorator(RichAsyncCommand) is _ORIGINAL_ASYNCCLICK_COMMAND
+    assert get_command_decorator(RichAsyncGroup) is _ORIGINAL_ASYNCCLICK_COMMAND
 
 
 def test_top_level_package_does_not_eagerly_import_asyncclick() -> None:
@@ -691,3 +699,36 @@ def test_patch_async_module_in_process() -> None:
     assert isinstance(group, RichAsyncGroup)
     assert rich_click.rich_command.OVERRIDES_GUARD is original_overrides_guard
     rich_config.dump_to_globals.assert_called_once_with()
+
+
+def test_patched_async_decorators_match_asyncclick_naming_and_params() -> None:
+    module = _module_proxy()
+    patch(module=module)
+
+    @module.group
+    async def cli() -> None:
+        pass
+
+    @cli.command
+    async def status_cmd() -> None:
+        pass
+
+    @cli.group
+    async def data_group() -> None:
+        pass
+
+    @data_group.command
+    async def init_data_command() -> None:
+        pass
+
+    @cli.command(params=[asyncclick.Option(["--flag"], is_flag=True)])
+    async def explicit_params() -> None:
+        pass
+
+    @module.command
+    async def solo_cmd() -> None:
+        pass
+
+    assert sorted(cli.commands) == ["data", "explicit-params", "status"]
+    assert sorted(data_group.commands) == ["init-data"]
+    assert solo_cmd.name == "solo"

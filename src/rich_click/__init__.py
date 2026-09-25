@@ -11,6 +11,7 @@ from __future__ import annotations
 __version__ = "1.9.9"
 
 import typing as _t
+from importlib.util import find_spec as _find_spec
 
 # Import click API here.
 # We need to manually import these instead of `from click import *` to force
@@ -111,7 +112,10 @@ def __getattr__(name: str) -> object:
     from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X
 
     if name in {"RichAsyncCommand", "RichAsyncCommandCollection", "RichAsyncContext", "RichAsyncGroup"}:
-        from rich_click import rich_async_command
+        try:
+            from rich_click import rich_async_command
+        except ImportError as e:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from e
 
         return getattr(rich_async_command, name)
     elif name == "RichMultiCommand" and CLICK_IS_BEFORE_VERSION_9X:
@@ -133,56 +137,60 @@ def __getattr__(name: str) -> object:
 
 
 def __dir__() -> list[str]:
-    return sorted(
-        {
-            *globals(),
-            "CommandCollection",
-            "make_pass_decorator",
-            "pass_obj",
-            "Abort",
-            "BadArgumentUsage",
-            "BadOptionUsage",
-            "BadParameter",
-            "ClickException",
-            "FileError",
-            "MissingParameter",
-            "NoSuchOption",
-            "UsageError",
-            "HelpFormatter",
-            "wrap_text",
-            "clear",
-            "confirm",
-            "echo_via_pager",
-            "edit",
-            "getchar",
-            "launch",
-            "pause",
-            "progressbar",
-            "prompt",
-            "secho",
-            "style",
-            "unstyle",
-            "BOOL",
-            "FLOAT",
-            "INT",
-            "STRING",
-            "UNPROCESSED",
-            "UUID",
-            "Choice",
-            "DateTime",
-            "File",
-            "FloatRange",
-            "IntRange",
-            "ParamType",
-            "Path",
-            "Tuple",
-            "echo",
-            "format_filename",
-            "get_app_dir",
-            "open_file",
-            "RichAsyncCommand",
-            "RichAsyncCommandCollection",
-            "RichAsyncContext",
-            "RichAsyncGroup",
-        }
-    )
+    names = {
+        *globals(),
+        "CommandCollection",
+        "make_pass_decorator",
+        "pass_obj",
+        "Abort",
+        "BadArgumentUsage",
+        "BadOptionUsage",
+        "BadParameter",
+        "ClickException",
+        "FileError",
+        "MissingParameter",
+        "NoSuchOption",
+        "UsageError",
+        "HelpFormatter",
+        "wrap_text",
+        "clear",
+        "confirm",
+        "echo_via_pager",
+        "edit",
+        "getchar",
+        "launch",
+        "pause",
+        "progressbar",
+        "prompt",
+        "secho",
+        "style",
+        "unstyle",
+        "BOOL",
+        "FLOAT",
+        "INT",
+        "STRING",
+        "UNPROCESSED",
+        "UUID",
+        "Choice",
+        "DateTime",
+        "File",
+        "FloatRange",
+        "IntRange",
+        "ParamType",
+        "Path",
+        "Tuple",
+        "echo",
+        "format_filename",
+        "get_app_dir",
+        "open_file",
+    }
+    if _find_spec("asyncclick") is not None:
+        names.update(
+            {
+                "RichAsyncCommand",
+                "RichAsyncCommandCollection",
+                "RichAsyncContext",
+                "RichAsyncGroup",
+            }
+        )
+    return sorted(names)

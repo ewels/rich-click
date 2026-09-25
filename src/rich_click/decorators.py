@@ -22,6 +22,7 @@ from click import pass_context as click_pass_context
 from click import password_option as click_password_option
 from click import version_option as click_version_option
 
+from rich_click._click_types_cache import get_command_decorator
 from rich_click.rich_command import RichCommand, RichCommandMixin, RichGroup
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
@@ -165,7 +166,8 @@ def command(
             attrs["panels"] = attr_panels
             del f.__rich_panels__  # type: ignore[attr-defined]
 
-        return click_command(name, cls, **attrs)(f)
+        command_decorator = get_command_decorator(cls) or click_command
+        return command_decorator(name, cls, **attrs)(f)
 
     if func is not None:
         return decorator(func)
