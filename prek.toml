@@ -62,6 +62,18 @@ hooks = [
     types = ["python"],
     exclude = "^examples|^docs/",
     require_serial = true
+  },
+  {
+    # Passing .py paths makes mypy check them instead of their .pyi stubs, so check
+    # the package as a whole, where the stubs take precedence.
+    id = "mypy-stubs",
+    name = "mypy - Type stubs",
+    entry = "mypy src",
+    language = "system",
+    types_or = ["python", "pyi"],
+    files = "^src/",
+    pass_filenames = false,
+    require_serial = true
   }
 ]
 
