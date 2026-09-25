@@ -11,7 +11,6 @@ from __future__ import annotations
 __version__ = "1.9.9"
 
 import typing as _t
-from importlib.util import find_spec as _find_spec
 
 # Import click API here.
 # We need to manually import these instead of `from click import *` to force
@@ -137,6 +136,8 @@ def __getattr__(name: str) -> object:
 
 
 def __dir__() -> list[str]:
+    from importlib.util import find_spec
+
     names = {
         *globals(),
         "CommandCollection",
@@ -184,7 +185,7 @@ def __dir__() -> list[str]:
         "get_app_dir",
         "open_file",
     }
-    if _find_spec("asyncclick") is not None:
+    if find_spec("asyncclick") is not None:
         names.update(
             {
                 "RichAsyncCommand",
