@@ -106,7 +106,9 @@ def _set_make_context_error(
     async def make_context(*args: Any, **kwargs: Any) -> Any:
         raise error
 
-    monkeypatch.setattr(command, "make_context", make_context)
+    # Patch asyncclick's own make_context so the error passes through RichAsyncCommand's.
+    base = next(c for c in type(command).__mro__ if c.__module__.startswith("asyncclick"))
+    monkeypatch.setattr(base, "make_context", make_context)
 
 
 def test_async_classes_have_expected_mro() -> None:
@@ -265,21 +267,25 @@ def test_async_execution_shares_ctx_obj_under_one_loop() -> None:
     assert seen["obj"]["loop"] == seen["loop"]
 
 
-def test_async_main_expands_windows_args_and_returns_value(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_async_main_returns_value_when_not_standalone() -> None:
     async def callback() -> int:
         return 7
 
     command = RichAsyncCommand("cli", callback=callback)
-    expand_args = Mock(return_value=[])
-    detect_program_name = Mock(return_value="detected-cli")
-    monkeypatch.setattr(os, "name", "nt")
-    monkeypatch.setattr(sys, "argv", ["cli", "*.txt"])
-    monkeypatch.setattr(asyncclick.utils, "_expand_args", expand_args)
-    monkeypatch.setattr(asyncclick.utils, "_detect_program_name", detect_program_name)
 
-    assert asyncio.run(command.main(standalone_mode=False)) == 7
-    expand_args.assert_called_once_with(["*.txt"])
-    detect_program_name.assert_called_once_with()
+    assert asyncio.run(command.main([], prog_name="cli", standalone_mode=False)) == 7
+
+
+def test_async_main_return_value_is_not_exit_code() -> None:
+    async def callback() -> int:
+        return 3
+
+    command = RichAsyncCommand("cli", callback=callback)
+
+    with pytest.raises(SystemExit) as exc_info:
+        asyncio.run(command.main([], prog_name="cli"))
+
+    assert exc_info.value.code == 0
 
 
 def test_async_main_success_exits_in_standalone_mode() -> None:
@@ -327,17 +333,6 @@ def test_async_no_args_help_uses_plain_message(capsys: pytest.CaptureFixture[str
     assert "Usage: cli [OPTIONS] COMMAND [ARGS]..." in capsys.readouterr().out
 
 
-def test_async_main_handles_broken_pipe(monkeypatch: pytest.MonkeyPatch) -> None:
-    command = RichAsyncCommand("cli")
-    _set_make_context_error(monkeypatch, command, OSError(errno.EPIPE, "broken pipe"))
-    monkeypatch.setattr(asyncclick.utils, "PacifyFlushWrapper", lambda stream: stream)
-
-    with pytest.raises(SystemExit) as exc_info:
-        asyncio.run(command.main([], prog_name="cli"))
-
-    assert exc_info.value.code == 1
-
-
 def test_async_main_reraises_other_os_errors(monkeypatch: pytest.MonkeyPatch) -> None:
     command = RichAsyncCommand("cli")
     _set_make_context_error(monkeypatch, command, OSError(errno.EACCES, "denied"))
@@ -377,7 +372,7 @@ def test_async_main_abort_falls_back_to_echo(monkeypatch: pytest.MonkeyPatch) ->
     _set_make_context_error(monkeypatch, command, asyncclick.Abort())
     echo = Mock()
     monkeypatch.setattr(command, "_error_formatter", Mock(side_effect=RuntimeError))
-    monkeypatch.setattr(asyncclick, "echo", echo)
+    monkeypatch.setattr("click.echo", echo)
 
     with pytest.raises(SystemExit) as exc_info:
         asyncio.run(command.main([], prog_name="cli"))

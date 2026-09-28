@@ -155,6 +155,20 @@ class RichCommandMixin(_CommandMixinBase):
                 formatter = ctx.make_formatter(error_mode=True)
         return formatter
 
+    def _print_error(self, e: click.ClickException) -> None:
+        formatter = self._error_formatter()
+        formatter.write_error(e)
+        print(formatter.getvalue(), file=sys.stderr, end="")
+
+    def _print_abort(self) -> None:
+        try:
+            formatter = self._error_formatter()
+        except Exception:
+            click.echo("Aborted!", file=sys.stderr)
+        else:
+            formatter.write_abort()
+            print(formatter.getvalue(), file=sys.stderr, end="")
+
     # Mypy complains about Liskov substitution principle violations.
     # We opt to ignore mypy here.
 
@@ -337,9 +351,7 @@ class RichCommand(RichCommandMixin, Command):
                         sys.exit(e.exit_code)
                 if not standalone_mode:
                     raise
-                formatter = self._error_formatter()
-                formatter.write_error(e)
-                print(formatter.getvalue(), file=sys.stderr, end="")
+                self._print_error(e)
                 sys.exit(e.exit_code)
             except OSError as e:
                 if e.errno == errno.EPIPE:
@@ -356,15 +368,8 @@ class RichCommand(RichCommandMixin, Command):
         except click.exceptions.Abort:
             if not standalone_mode:
                 raise
-            try:
-                formatter = self._error_formatter()
-            except Exception:
-                click.echo("Aborted!", file=sys.stderr)
-            else:
-                formatter.write_abort()
-                print(formatter.getvalue(), file=sys.stderr, end="")
-            finally:
-                sys.exit(1)
+            self._print_abort()
+            sys.exit(1)
 
 
 class RichGroupMixin(RichCommandMixin, _GroupMixinBase):

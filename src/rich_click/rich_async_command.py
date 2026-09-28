@@ -17,10 +17,9 @@ CLIs render richly with no further changes.
 
 from __future__ import annotations
 
-import errno
-import os
 import sys
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
+from contextlib import contextmanager
 from gettext import gettext
 from typing import Any, cast
 
@@ -75,72 +74,50 @@ class RichAsyncCommand(RichCommandMixin, asyncclick.Command):
         info["aliases"] = list(self.aliases) if self.aliases is not None else None
         return info
 
+    _rich_standalone: bool = False
+
     async def main(
         self,
         args: Sequence[str] | None = None,
         prog_name: str | None = None,
         complete_var: str | None = None,
         standalone_mode: bool = True,
-        windows_expand_args: bool = True,
         **extra: Any,
     ) -> Any:
-        # Async counterpart of RichCommand.main. It mirrors asyncclick.Command.main
-        # (awaiting make_context/invoke/aexit) but renders ClickException and Abort
-        # through rich-click's formatter instead of asyncclick's plain output.
-        if args is None:
-            args = sys.argv[1:]
-            if os.name == "nt" and windows_expand_args:
-                args = asyncclick.utils._expand_args(args)
-        else:
-            args = list(args)
-
-        if prog_name is None:
-            prog_name = asyncclick.utils._detect_program_name()
-
-        await self._main_shell_completion(extra, prog_name, complete_var)
-
+        self._rich_standalone = standalone_mode
         try:
-            try:
-                async with await self.make_context(prog_name, args, **extra) as ctx:
-                    rv = await self.invoke(ctx)
-                    if not standalone_mode:
-                        return rv
-                    await ctx.aexit()
-            except (EOFError, KeyboardInterrupt) as e:
+            return await super().main(args, prog_name, complete_var, standalone_mode, **extra)
+        finally:
+            self._rich_standalone = False
+
+    # asyncclick's standalone main prints errors in plain text. Errors surface through the
+    # top-level make_context/invoke first, so render them there and hand main an Exit.
+    async def make_context(self, *args: Any, **kwargs: Any) -> Any:
+        with self._render_errors():
+            return await super().make_context(*args, **kwargs)
+
+    async def invoke(self, ctx: asyncclick.Context) -> Any:
+        with self._render_errors():
+            return await super().invoke(ctx)
+
+    @contextmanager
+    def _render_errors(self) -> Iterator[None]:
+        if not self._rich_standalone:
+            yield
+            return
+        try:
+            yield
+        except asyncclick.exceptions.NoArgsIsHelpError as e:
+            print(e.message)
+            raise asyncclick.exceptions.Exit(e.exit_code) from None
+        except asyncclick.ClickException as e:
+            self._print_error(e)
+            raise asyncclick.exceptions.Exit(e.exit_code) from None
+        except (asyncclick.Abort, EOFError, KeyboardInterrupt) as e:
+            if not isinstance(e, asyncclick.Abort):
                 asyncclick.echo(file=sys.stderr)
-                raise asyncclick.exceptions.Abort() from e
-            except asyncclick.exceptions.ClickException as e:
-                if isinstance(e, asyncclick.exceptions.NoArgsIsHelpError):
-                    print(e.message)
-                    sys.exit(e.exit_code)
-                if not standalone_mode:
-                    raise
-                formatter = self._error_formatter()
-                formatter.write_error(e)
-                print(formatter.getvalue(), file=sys.stderr, end="")
-                sys.exit(e.exit_code)
-            except OSError as e:
-                if e.errno == errno.EPIPE:
-                    sys.stdout = asyncclick.utils.PacifyFlushWrapper(sys.stdout)
-                    sys.stderr = asyncclick.utils.PacifyFlushWrapper(sys.stderr)
-                    sys.exit(1)
-                raise
-        except asyncclick.exceptions.Exit as e:
-            if standalone_mode:
-                sys.exit(e.exit_code)
-            return e.exit_code
-        except asyncclick.exceptions.Abort:
-            if not standalone_mode:
-                raise
-            try:
-                formatter = self._error_formatter()
-            except Exception:
-                asyncclick.echo("Aborted!", file=sys.stderr)
-            else:
-                formatter.write_abort()
-                print(formatter.getvalue(), file=sys.stderr, end="")
-            finally:
-                sys.exit(1)
+            self._print_abort()
+            raise asyncclick.exceptions.Exit(1) from None
 
 
 class RichAsyncGroup(RichGroupMixin, RichAsyncCommand, asyncclick.Group):
