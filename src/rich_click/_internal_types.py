@@ -233,7 +233,7 @@ class RichHelpConfigurationDict(TypedDict):
     append_metavars_help: NotRequired[bool | None]
     group_arguments_options: NotRequired[bool]
     option_envvar_first: NotRequired[bool | None]
-    text_markup: NotRequired[Literal["ansi", "rich", "markdown", None]]
+    text_markup: NotRequired[Literal["ansi", "rich", "markdown", "rst", None]]
     text_kwargs: NotRequired[dict[str, Any] | None]
     text_emojis: NotRequired[bool]
     text_paragraph_linebreaks: NotRequired[Literal["\n", "\n\n"] | None]

@@ -41,6 +41,9 @@ optional-dependencies.async = [
     "asyncclick>=8.2.2.2; python_version>='3.11'",
     "asyncclick>=8.3.0.3; python_version<'3.11'",
 ]
+optional-dependencies.rst = [
+    "rich-rst>=2",
+]
 urls.Documentation = "https://github.com/ewels/rich-click"
 urls.Homepage = "https://github.com/ewels/rich-click"
 urls.Issues = "https://github.com/ewels/rich-click/issues"
@@ -61,6 +64,7 @@ dev = [
     "pytest>=8.3.5",
     "pytest-cov>=5",
     "rich-codex>=1.2.11",
+    "rich-rst>=2",                                 # text_markup="rst" tests
     "ruff>=0.16.2",
     "ty>=0.0.69",
     "typer>=0.15,<0.26",
@@ -84,6 +88,7 @@ docs = [
     "mkdocstrings[python]>=0.26.1",
     "properdocs>=1.6.7",
     "rich-codex>=1.2.11",
+    "rich-rst>=2",
     "typer>=0.15,<0.26",
 ]
 
@@ -145,7 +150,7 @@ strict = true
 scripts_are_modules = true
 
 [[tool.mypy.overrides]]
-module = [ "asyncclick.*" ]
+module = [ "asyncclick.*", "rich_rst.*" ]
 ignore_missing_imports = true
 
 # rich_click.rich_async_command composes rich-click's click-typed mixins onto

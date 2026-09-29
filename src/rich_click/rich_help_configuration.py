@@ -243,7 +243,7 @@ class RichHelpConfiguration:
     """Show arguments with options instead of in own panel"""
     option_envvar_first: bool | None = field(default=None)
     """Show env vars before option help text instead of after"""
-    text_markup: Literal["ansi", "rich", "markdown", None] = field(default=notset)
+    text_markup: Literal["ansi", "rich", "markdown", "rst", None] = field(default=notset)
     """What engine to use to render the text. Default is 'ansi'."""
     text_kwargs: dict[str, Any] | None = field(default=None)
     """Additional kwargs to pass to Rich text rendering. Kwargs differ by text_markup chosen."""

@@ -26,6 +26,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich.style import StyleType
     from rich.text import Text
 
+    from rich_click._rst import RichClickRST
+
 
 RP = TypeVar("RP", bound=RichPanel[Any, Any])
 
@@ -215,7 +217,7 @@ class RichHelpFormatter(click.HelpFormatter):
         self,
         text: str | Text | Markdown,
         style: StyleType = "",
-    ) -> Text | Markdown:
+    ) -> Text | Markdown | RichClickRST:
         """
         Take a string, remove indentations, and return styled text.
         By default, return the text as a Rich Text with the request style.
@@ -230,7 +232,7 @@ class RichHelpFormatter(click.HelpFormatter):
 
         Returns:
         -------
-            MarkdownElement or Text: Styled text object
+            Text, Markdown, or RichClickRST: Styled text object
 
         """
         import inspect
@@ -253,6 +255,12 @@ class RichHelpFormatter(click.HelpFormatter):
                 text = Emoji.replace(text)
         else:
             kw = {"style": style, "emoji": self.config.text_emojis}
+
+        if self.config.text_markup == "rst":
+            # Lazy load rich-rst because it slows down rendering
+            from rich_click._rst import RichClickRST
+
+            return RichClickRST(text, style, **(self.config.text_kwargs or {}))
 
         kw.update(self.config.text_kwargs or {})
 
