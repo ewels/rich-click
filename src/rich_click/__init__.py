@@ -71,6 +71,13 @@ if _t.TYPE_CHECKING:
     from click.utils import get_app_dir as get_app_dir
     from click.utils import open_file as open_file
 
+    from rich_click.rich_async_command import RichAsyncCommand as RichAsyncCommand  # pragma: no cover
+    from rich_click.rich_async_command import (  # pragma: no cover
+        RichAsyncCommandCollection as RichAsyncCommandCollection,
+    )
+    from rich_click.rich_async_command import RichAsyncContext as RichAsyncContext  # pragma: no cover
+    from rich_click.rich_async_command import RichAsyncGroup as RichAsyncGroup  # pragma: no cover
+
 from rich_click.decorators import argument as argument
 from rich_click.decorators import command as command
 from rich_click.decorators import command_panel as command_panel
@@ -103,7 +110,14 @@ from . import rich_click as rich_click
 def __getattr__(name: str) -> object:
     from rich_click._compat_click import CLICK_IS_BEFORE_VERSION_9X
 
-    if name == "RichMultiCommand" and CLICK_IS_BEFORE_VERSION_9X:
+    if name in {"RichAsyncCommand", "RichAsyncCommandCollection", "RichAsyncContext", "RichAsyncGroup"}:
+        try:
+            from rich_click import rich_async_command
+        except ImportError as e:
+            raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from e
+
+        return getattr(rich_async_command, name)
+    elif name == "RichMultiCommand" and CLICK_IS_BEFORE_VERSION_9X:
         import warnings
 
         warnings.warn(
@@ -122,52 +136,62 @@ def __getattr__(name: str) -> object:
 
 
 def __dir__() -> list[str]:
-    return sorted(
-        {
-            *globals(),
-            "CommandCollection",
-            "make_pass_decorator",
-            "pass_obj",
-            "Abort",
-            "BadArgumentUsage",
-            "BadOptionUsage",
-            "BadParameter",
-            "ClickException",
-            "FileError",
-            "MissingParameter",
-            "NoSuchOption",
-            "UsageError",
-            "HelpFormatter",
-            "wrap_text",
-            "clear",
-            "confirm",
-            "echo_via_pager",
-            "edit",
-            "getchar",
-            "launch",
-            "pause",
-            "progressbar",
-            "prompt",
-            "secho",
-            "style",
-            "unstyle",
-            "BOOL",
-            "FLOAT",
-            "INT",
-            "STRING",
-            "UNPROCESSED",
-            "UUID",
-            "Choice",
-            "DateTime",
-            "File",
-            "FloatRange",
-            "IntRange",
-            "ParamType",
-            "Path",
-            "Tuple",
-            "echo",
-            "format_filename",
-            "get_app_dir",
-            "open_file",
-        }
-    )
+    from importlib.util import find_spec
+
+    names = {
+        *globals(),
+        "CommandCollection",
+        "make_pass_decorator",
+        "pass_obj",
+        "Abort",
+        "BadArgumentUsage",
+        "BadOptionUsage",
+        "BadParameter",
+        "ClickException",
+        "FileError",
+        "MissingParameter",
+        "NoSuchOption",
+        "UsageError",
+        "HelpFormatter",
+        "wrap_text",
+        "clear",
+        "confirm",
+        "echo_via_pager",
+        "edit",
+        "getchar",
+        "launch",
+        "pause",
+        "progressbar",
+        "prompt",
+        "secho",
+        "style",
+        "unstyle",
+        "BOOL",
+        "FLOAT",
+        "INT",
+        "STRING",
+        "UNPROCESSED",
+        "UUID",
+        "Choice",
+        "DateTime",
+        "File",
+        "FloatRange",
+        "IntRange",
+        "ParamType",
+        "Path",
+        "Tuple",
+        "echo",
+        "format_filename",
+        "get_app_dir",
+        "open_file",
+    }
+    if find_spec("asyncclick") is not None:
+        names.update(
+            {
+                "RichAsyncCommand",
+                "RichAsyncCommandCollection",
+                "RichAsyncContext",
+                "RichAsyncGroup",
+            }
+        )
+    return sorted(names)
