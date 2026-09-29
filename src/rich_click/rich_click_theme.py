@@ -1102,6 +1102,48 @@ class RichClickThemeNotFound(KeyError):
     """Raise when a theme is not found."""
 
 
+def parse_background_theme(theme: str) -> dict[str, str] | None:
+    """
+    Parse a light/dark theme pair such as ``"dark:nord-modern,light:solarized-modern"``.
+
+    Returns None if the string is not a theme pair.
+    """
+    if ":" not in theme:
+        return None
+    pair: dict[str, str] = {}
+    for part in theme.split(","):
+        key, sep, value = part.partition(":")
+        key, value = key.strip(), value.strip()
+        if not sep or key not in ("dark", "light") or not value or key in pair:
+            raise RichClickThemeNotFound(
+                f"RichClickTheme '{theme}' not found."
+                " Light/dark theme pairs must look like 'dark:<theme>,light:<theme>'"
+            )
+        pair[key] = value
+    if len(pair) != 2:
+        raise RichClickThemeNotFound(
+            f"RichClickTheme '{theme}' not found. Light/dark theme pairs must set both 'dark:' and 'light:'"
+        )
+    return pair
+
+
+def resolve_background_theme(theme: str) -> str:
+    """
+    Pick one theme name from a light/dark theme pair, based on the terminal background.
+
+    If the background cannot be detected, the first theme listed is used.
+    Theme names that are not pairs are returned unchanged.
+    """
+    pair = parse_background_theme(theme)
+    if pair is None:
+        return theme
+    # Imported here so that the detection code is only loaded when a theme pair is used.
+    from rich_click.terminal_background import detect_background
+
+    background = detect_background()
+    return pair[background] if background else next(iter(pair.values()))
+
+
 def get_theme(theme: str, raise_key_error: bool = True) -> RichClickTheme:
     """Get the theme based on the string name."""
     clr: str | None = None
@@ -1118,6 +1160,8 @@ def get_theme(theme: str, raise_key_error: bool = True) -> RichClickTheme:
     if theme in _THEME_CACHE:
         return _THEME_CACHE[theme]
     try:
+        if ":" in theme:
+            return get_theme(resolve_background_theme(theme), raise_key_error=raise_key_error)
         if "-" not in theme:
             if theme in COLORS:
                 rich_click_theme = _THEME_CACHE[theme] = COLORS[theme] + FORMATS["box"]

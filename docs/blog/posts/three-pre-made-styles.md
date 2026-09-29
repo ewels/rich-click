@@ -105,6 +105,12 @@ Here is an example of such a tool you can use:
     rye sync
     ```
 
+!!! warning
+
+    `term-background` might not work as expected. It never asks the terminal for its color, so it reports "dark" in most terminals, and it gets the `COLORFGBG` env var backwards when that is set.
+    **rich-click** now has built-in detection: use `click.detect_background()`, or a theme pair like `dark:nord-modern,light:solarized-modern`.
+    See [Light and dark terminals](../../documentation/themes.md#light-and-dark-terminals).
+
 The following example looks great in both dark and light terminals!
 
 ??? success "Code for `2. Dark mode / light mode aware with three colors`"

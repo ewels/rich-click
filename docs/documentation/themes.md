@@ -193,6 +193,47 @@ You can set a theme for your CLI by setting it in the config:
 
 For more advanced CLIs, with lots of other customization options, there are additional considerations with themes and how they interact with your config that you may want to consider, especially in relation to end users being able to override the theme. For more information on this, read [the **Configuration** docs](configuration.md).
 
+## Light and dark terminals
+
+Instead of a single theme name, you can give a pair of themes: one for dark terminal backgrounds and one for light ones.
+This works everywhere a theme name does: `RICH_CLICK_THEME`, `rich-click --theme`, and your CLI's config.
+
+=== "End-user"
+    ```shell
+    export RICH_CLICK_THEME="dark:nord-modern,light:solarized-modern"
+    ```
+
+=== "Developer"
+    ```python
+    import rich_click as click
+
+    @click.group("cli")
+    @click.rich_config({"theme": "dark:nord-modern,light:solarized-modern"})
+    def cli():
+        """My CLI help text"""
+    ```
+
+The background is only detected when help text or an error is shown, so running your CLI normally is not slowed down.
+Detection checks, in order:
+
+1. The `RICH_CLICK_BACKGROUND` env var (`dark` or `light`). Set this to override detection.
+2. The `COLORFGBG` env var, which some terminals set.
+3. Asking the terminal for its background color. This only happens on macOS/Linux, when input and output are both an interactive terminal.
+   Most modern terminals answer (iTerm2, Terminal.app, kitty, WezTerm, Alacritty, GNOME Terminal, Ghostty, xterm); rich-click waits at most 0.1 seconds.
+
+If the background can't be detected (e.g. on Windows, or when output is piped), the first theme in the pair is used.
+
+You can also use the detection yourself, for example to pick custom colors:
+
+```python
+import rich_click as click
+
+if click.detect_background() == "light":
+    primary_color = "#2b569c"
+else:  # "dark" or None (unknown)
+    primary_color = "#99bbf2"
+```
+
 ## All themes
 
 ### Formats
