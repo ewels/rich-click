@@ -64,6 +64,21 @@ Themes are one of **rich-click**'s most powerful features.
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_ex4.svg){.screenshot}
 
+=== "`solarized-square`"
+
+    ```shell
+    export RICH_CLICK_THEME=solarized-square
+    python docs/code_snippets/themes/cli.py --help
+    ```
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/themes
+    extra_env:
+        TERMINAL_WIDTH: 120
+        RICH_CLICK_THEME: solarized-square
+    -->
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_ex5.svg){.screenshot}
+
 Themes consist of **Color Palettes** and **Formats**, which can be mixed and matched.
 The name of a full theme has the following schema: `{color_palette}-{format}`.
 
@@ -182,7 +197,7 @@ For more advanced CLIs, with lots of other customization options, there are addi
 
 ### Formats
 
-There are currently 5 available **formats**.
+There are currently 6 available **formats**.
 
 === "`box`"
     **(Default)** Original rich-click format with boxes.
@@ -194,6 +209,17 @@ There are currently 5 available **formats**.
         RICH_CLICK_THEME: default-box
     -->
     ![`python cli.py --help`](../images/code_snippets/themes/themes_default_box.svg){.screenshot}
+
+=== "`square`"
+    Original rich-click format with square boxes.
+
+    <!-- RICH-CODEX
+    working_dir: docs/code_snippets/themes
+    extra_env:
+        TERMINAL_WIDTH: 120
+        RICH_CLICK_THEME: default-square
+    -->
+    ![`python cli.py --help`](../images/code_snippets/themes/themes_default_square.svg){.screenshot}
 
 === "`slim`"
     Simple, classic, no-fuss CLI format.

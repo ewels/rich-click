@@ -260,3 +260,34 @@ Here are things you can do:                                                     
 └──────────────────────────────────────────────────────────────────────────────────────────────────┘
 """)
     assert result.stderr == snapshot("")
+
+
+def test_simple_help_square_theme(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    rc.THEME = "square"
+    result = cli_runner.invoke(cli, "--help")
+    assert result.exit_code == 0
+    assert result.stdout == snapshot("""\
+                                                                                                    \n\
+ Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
+                                                                                                    \n\
+ My amazing tool does all the things.                                                               \n\
+ This is a minimal example based on documentation from the 'click' package.                         \n\
+ You can try using --help at the top level and also for specific subcommands.                       \n\
+ Here are things you can do:                                                                        \n\
+ - sync files                                                                                       \n\
+ - download files                                                                                   \n\
+ - print help text!                                                                                 \n\
+ ... and more!                                                                                      \n\
+                                                                                                    \n\
+┌─ Options ────────────────────────────────────────────────────────────────────────────────────────┐
+│ --debug/--no-debug  -d/-n  Enable debug mode. Newlines are removed by default.                   │
+│                            Double newlines are preserved.                                        │
+│ --help                     Show this message and exit.                                           │
+└──────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌─ Commands ───────────────────────────────────────────────────────────────────────────────────────┐
+│ download  Optionally use short-help for the group help text                                      │
+│ sync      Synchronise all your files between two places. Example command that doesn't do much    │
+│           except print to the terminal.                                                          │
+└──────────────────────────────────────────────────────────────────────────────────────────────────┘
+""")
+    assert result.stderr == snapshot("")
