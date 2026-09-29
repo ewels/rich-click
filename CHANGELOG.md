@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added reStructuredText support with `text_markup="rst"`, via the optional `rich-click[rst]` extra ([rich-rst](https://github.com/wasi-master/rich-rst)). [[#172](https://github.com/ewels/rich-click/issues/172)]
 - Added a new `square` theme format: the default `box` format with square corners instead of rounded ones.
 - Dropped support for Python 3.8 and 3.9; the minimum supported version is now Python 3.10.
 - Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python <3.10.

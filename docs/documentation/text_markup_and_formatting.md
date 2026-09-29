@@ -2,11 +2,12 @@
 
 ## Markup
 
-**rich-click** supports 4 different values for `text_markup`, which determines how text is rendered:
+**rich-click** supports 5 different values for `text_markup`, which determines how text is rendered:
 
 - `'ansi'`: **(Default)** Rendered as plain text with ANSI escape codes handled.
 - `'rich'`: Rendered using Rich's markup syntax.
 - `'markdown'`: Rendered with markdown.
+- `'rst'`: Rendered as reStructuredText (requires the `rst` extra).
 - `None`: Rendered as plain text, ANSI escape codes are not handled.
 
 ???+ warning "rich-click ≥1.8.0 deprecation"
@@ -74,6 +75,42 @@ working_dir: .
 
 > See [`examples/05_markdown.py`](https://github.com/ewels/rich-click/blob/main/examples/05_markdown.py) for an example.
 
+### reStructuredText
+
+You can also write help text in [reStructuredText](https://docutils.sourceforge.io/rst.html),
+which is handy if your docstrings are also used by Sphinx.
+Rendering is done by [rich-rst](https://github.com/wasi-master/rich-rst), which is an optional dependency:
+
+```shell
+pip install 'rich-click[rst]'
+```
+
+=== "`{}`"
+    ```python
+    help_config = {"text_markup": "rst"}
+    ```
+
+=== "`RichHelpConfiguration()`"
+    ```python
+    help_config = click.RichHelpConfiguration(text_markup="rst")
+    ```
+
+=== "Global config"
+    ```python
+    click.rich_click.TEXT_MARKUP = "rst"
+    ```
+
+Admonitions (`.. note::`, `.. warning::`, etc.) are rendered compactly by default to suit help text.
+Any `text_kwargs` are passed to `rich_rst.RestructuredText()`, for example
+`text_kwargs={"admonition_style": "panel", "code_theme": "github-dark"}`.
+
+<!-- RICH-CODEX
+working_dir: .
+-->
+![`python examples/14_rst.py --help`](../images/rst.svg "reStructuredText example"){.screenshot}
+
+> See [`examples/14_rst.py`](https://github.com/ewels/rich-click/blob/main/examples/14_rst.py) for an example.
+
 ## Markup in text
 
 The selected `text_markup` is used to render all text in your CLI help that can be set in the high-level API:
@@ -137,7 +174,8 @@ uvx --from rich -- python3 -m rich.emoji
 
 Handling newlines on **rich-click**'s end involves discretion because in a docstring, newlines can represent a softwrap; they are not necessarily genuine new lines.
 
-For `'markdown'` mode, we send all newline handling directly to `rich.markdown.Markdown()`
+For `'markdown'` mode, we send all newline handling directly to `rich.markdown.Markdown()`.
+Likewise, `'rst'` mode sends newline handling to `rich_rst.RestructuredText()`.
 
 For other modes, we implement the following rules:
 
@@ -188,5 +226,5 @@ However, you can override this behavior by setting the config option `text_parag
 
 
 ???+ info
-    This default behavior of collapsing newlines is not true when `text_markup='markdown'`.
-    For markdown, we do not do any newline manipulation.
+    This default behavior of collapsing newlines is not true when `text_markup='markdown'` or `text_markup='rst'`.
+    For these modes, we do not do any newline manipulation.

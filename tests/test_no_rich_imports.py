@@ -17,6 +17,7 @@ from tests.conftest import WriteScript
 #
 # - Importing anything from `rich` during execution is unnecessary and should not occur.
 # - Importing `markdown_it` except when necessary significantly slows down help text rendering.
+# - Likewise for `rich_rst` (which vendors docutils).
 # - Calling `importlib.metadata.version()` is slow. Click has made a decision to deprecate `__version__`,
 #   and so the latest versions of click call `importlib.metadata.version()` when you access
 #   `click.__version__`, which slows things down. During execution, we want to avoid accessing
@@ -70,6 +71,7 @@ def test_imports_during_execution(recorded_imports: list[str], cli_runner: CliRu
     assert any(m.startswith("click.") or m == "click" for m in recorded_imports)
     assert not any(m.startswith("rich.") or m == "rich" for m in recorded_imports)
     assert not any(m.startswith("markdown_it.") or m == "markdown_it" for m in recorded_imports)
+    assert not any(m.startswith("rich_rst") for m in recorded_imports)
     assert not any(m.startswith("importlib.") or m == "importlib" for m in recorded_imports)
 
 
@@ -94,6 +96,7 @@ def test_imports_during_help(recorded_imports: list[str], cli_runner: CliRunner)
     assert any(m.startswith("click.") or m == "click" for m in recorded_imports)
     assert any(m.startswith("rich.") or m == "rich" for m in recorded_imports)
     assert not any(m.startswith("markdown_it.") or m == "markdown_it" for m in recorded_imports)
+    assert not any(m.startswith("rich_rst") for m in recorded_imports)
 
 
 def test_imports_during_execution_rich_click_cli(
@@ -111,6 +114,7 @@ def test_imports_during_execution_rich_click_cli(
     assert any(m.startswith("click.") or m == "click" for m in recorded_imports)
     assert not any(m.startswith("rich.") or m == "rich" for m in recorded_imports)
     assert not any(m.startswith("markdown_it.") or m == "markdown_it" for m in recorded_imports)
+    assert not any(m.startswith("rich_rst") for m in recorded_imports)
 
 
 def test_imports_during_help_rich_click_cli(
@@ -135,3 +139,4 @@ def test_imports_during_help_rich_click_cli(
     assert any(m.startswith("click.") or m == "click" for m in recorded_imports)
     assert any(m.startswith("rich.") or m == "rich" for m in recorded_imports)
     assert not any(m.startswith("markdown_it.") or m == "markdown_it" for m in recorded_imports)
+    assert not any(m.startswith("rich_rst") for m in recorded_imports)
