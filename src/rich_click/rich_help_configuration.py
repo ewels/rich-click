@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Literal, TypeVar
 
-from rich_click.rich_click_theme import RichClickTheme, get_theme
+from rich_click.rich_click_theme import RichClickTheme, get_theme, parse_background_theme, theme_needs_background
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
 
 
@@ -433,6 +433,12 @@ class RichHelpConfiguration:
 
         if isinstance(theme, RichClickTheme):
             theme_styles = theme.styles
+        elif theme is not None and not force_default and theme_needs_background(theme):
+            # These themes may need to query the terminal, so only resolve them
+            # when help text is actually rendered (i.e. when force_default=True).
+            # Pair syntax is still validated now, so that bad theme names fail early.
+            if raise_key_error:
+                parse_background_theme(theme)
         elif theme is not None:
             theme_styles = get_theme(theme, raise_key_error=raise_key_error).styles
 

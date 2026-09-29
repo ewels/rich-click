@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added light/dark terminal background detection. Themes can now be given as a pair, e.g. `RICH_CLICK_THEME="dark:nord-modern,light:solarized-modern"`, and `rich_click.detect_background()` is available for custom styles. Detection only runs when help or errors are rendered; set `RICH_CLICK_BACKGROUND=dark|light` to override it.
+- Added `nord_light` and `dracula_light` color palettes. The `nord` and `dracula` palettes switch to these automatically on light terminal backgrounds.
 - Added a new `square` theme format: the default `box` format with square corners instead of rounded ones.
 - Dropped support for Python 3.8 and 3.9; the minimum supported version is now Python 3.10.
 - Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python <3.10.
