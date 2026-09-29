@@ -1345,7 +1345,7 @@
 <h1 id="themes">Themes<a class="headerlink" href="#themes" title="Permanent link">¶</a></h1>
 <p><strong>Themes</strong> are a simple way to customize the style of CLI help text as both an end-user and as a developer.
 Themes are one of <strong>rich-click</strong>'s most powerful features.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><input id="__tabbed_1_3" name="__tabbed_1" type="radio"><input id="__tabbed_1_4" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1"><code>nord-nu</code></label><label for="__tabbed_1_2"><code>dracula-modern</code></label><label for="__tabbed_1_3"><code>cargo-slim</code></label><label for="__tabbed_1_4"><code>forest-robo</code></label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:5"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio"><input id="__tabbed_1_2" name="__tabbed_1" type="radio"><input id="__tabbed_1_3" name="__tabbed_1" type="radio"><input id="__tabbed_1_4" name="__tabbed_1" type="radio"><input id="__tabbed_1_5" name="__tabbed_1" type="radio"><div class="tabbed-labels"><label for="__tabbed_1_1"><code>nord-nu</code></label><label for="__tabbed_1_2"><code>dracula-modern</code></label><label for="__tabbed_1_3"><code>cargo-slim</code></label><label for="__tabbed_1_4"><code>forest-robo</code></label><label for="__tabbed_1_5"><code>solarized-square</code></label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>nord-nu
@@ -1394,6 +1394,18 @@ extra_env:
     RICH_CLICK_THEME: forest-robo
 -->
 <a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/themes/themes_ex4.svg" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_ex4.svg"></a></p>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">RICH_CLICK_THEME</span><span class="o">=</span>solarized-square
+python<span class="w"> </span>docs/code_snippets/themes/cli.py<span class="w"> </span>--help
+</code></pre></div>
+<p><!-- RICH-CODEX
+working_dir: docs/code_snippets/themes
+extra_env:
+    TERMINAL_WIDTH: 120
+    RICH_CLICK_THEME: solarized-square
+-->
+<a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/themes/themes_ex5.svg" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_ex5.svg"></a></p>
 </div>
 </div>
 </div>
@@ -1594,8 +1606,8 @@ uv<span class="w"> </span>run<span class="w"> </span>--with<span class="o">=</sp
 <p>For more advanced CLIs, with lots of other customization options, there are additional considerations with themes and how they interact with your config that you may want to consider, especially in relation to end users being able to override the theme. For more information on this, read <a href="../configuration/">the <strong>Configuration</strong> docs</a>.</p>
 <h2 id="all-themes">All themes<a class="headerlink" href="#all-themes" title="Permanent link">¶</a></h2>
 <h3 id="formats">Formats<a class="headerlink" href="#formats" title="Permanent link">¶</a></h3>
-<p>There are currently 5 available <strong>formats</strong>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="7:5"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio"><input id="__tabbed_7_2" name="__tabbed_7" type="radio"><input id="__tabbed_7_3" name="__tabbed_7" type="radio"><input id="__tabbed_7_4" name="__tabbed_7" type="radio"><input id="__tabbed_7_5" name="__tabbed_7" type="radio"><div class="tabbed-labels"><label for="__tabbed_7_1"><code>box</code></label><label for="__tabbed_7_2"><code>slim</code></label><label for="__tabbed_7_3"><code>modern</code></label><label for="__tabbed_7_4"><code>robo</code></label><label for="__tabbed_7_5"><code>nu</code></label></div>
+<p>There are currently 6 available <strong>formats</strong>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:6"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio"><input id="__tabbed_7_2" name="__tabbed_7" type="radio"><input id="__tabbed_7_3" name="__tabbed_7" type="radio"><input id="__tabbed_7_4" name="__tabbed_7" type="radio"><input id="__tabbed_7_5" name="__tabbed_7" type="radio"><input id="__tabbed_7_6" name="__tabbed_7" type="radio"><div class="tabbed-labels"><label for="__tabbed_7_1"><code>box</code></label><label for="__tabbed_7_2"><code>square</code></label><label for="__tabbed_7_3"><code>slim</code></label><label for="__tabbed_7_4"><code>modern</code></label><label for="__tabbed_7_5"><code>robo</code></label><label for="__tabbed_7_6"><code>nu</code></label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p><strong>(Default)</strong> Original rich-click format with boxes.</p>
@@ -1606,6 +1618,16 @@ extra_env:
     RICH_CLICK_THEME: default-box
 -->
 <a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/themes/themes_default_box.svg" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_default_box.svg"></a></p>
+</div>
+<div class="tabbed-block">
+<p>Original rich-click format with square boxes.</p>
+<p><!-- RICH-CODEX
+working_dir: docs/code_snippets/themes
+extra_env:
+    TERMINAL_WIDTH: 120
+    RICH_CLICK_THEME: default-square
+-->
+<a class="glightbox" data-type="image" data-width="100em" data-height="auto" href="../../images/code_snippets/themes/themes_default_square.svg" data-desc-position="bottom"><img alt="python cli.py --help" class="screenshot" src="../../images/code_snippets/themes/themes_default_square.svg"></a></p>
 </div>
 <div class="tabbed-block">
 <p>Simple, classic, no-fuss CLI format.</p>
