@@ -24,7 +24,14 @@ from rich_click.decorators import option as _rich_option
 from rich_click.decorators import option_panel, pass_context
 from rich_click.decorators import version_option as _rich_version_option
 from rich_click.patch import patch as _patch
-from rich_click.rich_click_theme import COLORS, FORMATS, RichClickThemeNotFound, get_theme, resolve_background_theme
+from rich_click.rich_click_theme import (
+    COLORS,
+    FORMATS,
+    RichClickThemeNotFound,
+    get_theme,
+    resolve_background_theme,
+    theme_needs_background,
+)
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 
@@ -168,7 +175,7 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None:
                     _theme = None
             else:
                 _theme = selected
-            if _theme and ":" in _theme:
+            if _theme and theme_needs_background(_theme):
                 try:
                     _theme = resolve_background_theme(_theme)
                 except RichClickThemeNotFound:

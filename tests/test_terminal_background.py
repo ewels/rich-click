@@ -1,5 +1,6 @@
 import builtins
 import os
+import re
 import select
 import subprocess
 import sys
@@ -18,6 +19,7 @@ from rich_click.rich_click_theme import (
     get_theme,
     parse_background_theme,
     resolve_background_theme,
+    theme_needs_background,
 )
 from rich_click.rich_help_configuration import FromTheme, RichHelpConfiguration
 
@@ -190,8 +192,11 @@ def test_theme_pair_from_env_var(monkeypatch: pytest.MonkeyPatch, cli_runner: Cl
     assert "Options" in res.stdout
 
 
-def test_detection_not_imported_during_execution(monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner) -> None:
-    monkeypatch.setenv("RICH_CLICK_THEME", "dark:nord-modern,light:solarized-slim")
+@pytest.mark.parametrize("theme", ["dark:nord-modern,light:solarized-slim", "nord-modern"])
+def test_detection_not_imported_during_execution(
+    monkeypatch: pytest.MonkeyPatch, cli_runner: CliRunner, theme: str
+) -> None:
+    monkeypatch.setenv("RICH_CLICK_THEME", theme)
     modules: list[str] = []
     _import = builtins.__import__
 
@@ -202,7 +207,7 @@ def test_detection_not_imported_during_execution(monkeypatch: pytest.MonkeyPatch
     monkeypatch.setattr(builtins, "__import__", noisy_import)
 
     @click.command()
-    @click.rich_config({"theme": "dark:nord-modern,light:solarized-slim"})
+    @click.rich_config({"theme": theme})
     def cli() -> None:
         print("Hello, world!")
 
@@ -226,3 +231,80 @@ def test_lazy_public_export() -> None:
 def test_invalid_theme_pair_fails_early() -> None:
     with pytest.raises(RichClickThemeNotFound):
         RichHelpConfiguration(theme="dark:nord")
+
+
+@pytest.mark.parametrize(
+    ("theme", "background", "expected"),
+    [
+        ("nord", "light", "nord_light-box"),
+        ("nord-modern", "light", "nord_light-modern"),
+        ("dracula-nu", "light", "dracula_light-nu"),
+        ("nord-modern", "dark", "nord-modern"),
+        ("nord-modern", None, "nord-modern"),
+        # Themes picked from a pair are used exactly as given.
+        ("dark:nord,light:nord-slim", "light", "nord-slim"),
+    ],
+)
+def test_auto_light_variant(monkeypatch: pytest.MonkeyPatch, theme: str, background: str | None, expected: str) -> None:
+    monkeypatch.setattr(tb, "detect_background", lambda: background)
+    clr, fmt = expected.split("-")
+    assert get_theme(theme).styles == (COLORS[clr] + FORMATS[fmt]).styles
+
+
+@pytest.mark.parametrize(
+    ("theme", "expected"),
+    [
+        ("nord", True),
+        ("dracula-modern", True),
+        ("dark:forest,light:cargo", True),
+        ("nord-not_a_format", False),
+        ("nord_light-modern", False),
+        ("solarized", False),
+        ("forest-modern", False),
+        ("default", False),
+        ("modern", False),
+    ],
+)
+def test_theme_needs_background(theme: str, expected: bool) -> None:
+    assert theme_needs_background(theme) is expected
+
+
+def test_auto_light_variant_resolved_only_when_rendering(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[None] = []
+
+    def fake_detect() -> str:
+        calls.append(None)
+        return "light"
+
+    monkeypatch.setattr(tb, "detect_background", fake_detect)
+    cfg = RichHelpConfiguration(theme="nord-modern")
+    assert calls == []
+
+    cfg.apply_theme(force_default=True)
+    assert calls == [None]
+    assert cfg.style_option == COLORS["nord_light"].styles["style_option"]
+
+
+def test_bad_format_with_auto_palette_fails_early() -> None:
+    with pytest.raises(RichClickThemeNotFound):
+        RichHelpConfiguration(theme="nord-not_a_format")
+
+
+def _contrast(a: str, b: str) -> float:
+    def luminance(h: str) -> float:
+        rgb = [int(h[i : i + 2], 16) / 255 for i in (1, 3, 5)]
+        r, g, b = (c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4 for c in rgb)
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+    hi, lo = sorted([luminance(a), luminance(b)], reverse=True)
+    return (hi + 0.05) / (lo + 0.05)
+
+
+@pytest.mark.parametrize("name", [n for n, t in COLORS.items() if t.light_variant])
+def test_light_variants_are_legible_on_white(name: str) -> None:
+    light = COLORS[COLORS[name].light_variant]  # type: ignore[index]
+    for key, value in light.styles.items():
+        if not isinstance(value, str) or "border" in key:
+            continue
+        for color in re.findall(r"#[0-9a-fA-F]{6}", value):
+            assert _contrast(color, "#ffffff") >= 4.5, f"{light.name}.{key}={color}"

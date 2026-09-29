@@ -195,6 +195,11 @@ For more advanced CLIs, with lots of other customization options, there are addi
 
 ## Light and dark terminals
 
+Most color palettes use your terminal's own colors, so they work on both dark and light backgrounds.
+The `nord` and `dracula` palettes use fixed colors designed for dark backgrounds, so they each have a light version: `nord_light` and `dracula_light` (Dracula's official light palette, Alucard).
+**rich-click** switches to these automatically when it detects a light background, e.g. `nord-modern` becomes `nord_light-modern`.
+You can also use the light versions directly, like any other palette.
+
 Instead of a single theme name, you can give a pair of themes: one for dark terminal backgrounds and one for light ones.
 This works everywhere a theme name does: `RICH_CLICK_THEME`, `rich-click --theme`, and your CLI's config.
 
@@ -221,7 +226,8 @@ Detection checks, in order:
 3. Asking the terminal for its background color. This only happens on macOS/Linux, when input and output are both an interactive terminal.
    Most modern terminals answer (iTerm2, Terminal.app, kitty, WezTerm, Alacritty, GNOME Terminal, Ghostty, xterm); rich-click waits at most 0.1 seconds.
 
-If the background can't be detected (e.g. on Windows, or when output is piped), the first theme in the pair is used.
+If the background can't be detected (e.g. on Windows, or when output is piped), the first theme in a pair is used, and `nord` and `dracula` keep their dark colors.
+Themes picked from a pair are used exactly as given, so `dark:nord-modern,light:nord-modern` always uses the dark `nord` colors.
 
 You can also use the detection yourself, for example to pick custom colors:
 
