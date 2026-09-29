@@ -2116,6 +2116,7 @@
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">¶</a></h1>
 <h2 id="unreleased">Unreleased<a class="headerlink" href="#unreleased" title="Permanent link">¶</a></h2>
 <ul>
+<li>Fixed <code>rich_config()</code> eagerly importing <code>rich</code> during normal (non-help) execution, slowing CLI startup.</li>
 <li>Added a new <code>square</code> theme format: the default <code>box</code> format with square corners instead of rounded ones.</li>
 <li>Dropped support for Python 3.8 and 3.9; the minimum supported version is now Python 3.10.</li>
 <li>Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python &lt;3.10.</li>
