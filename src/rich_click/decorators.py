@@ -27,7 +27,13 @@ from rich_click.rich_command import RichCommand, RichGroup
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_panel import RichCommandPanel, RichOptionPanel, RichPanel
-from rich_click.rich_parameter import RichArgument, RichHelpOption, RichLegacyHelpOption, RichOption
+from rich_click.rich_parameter import (
+    RichArgument,
+    RichHelpOption,
+    RichLegacyHelpOption,
+    RichOption,
+    RichSearchHelpOption,
+)
 
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -593,6 +599,22 @@ def version_option(
     )
 
 
+def search_help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
+    """
+    Add a ``--search-help QUERY`` option which prints the subcommands that best match ``QUERY`` and exits.
+
+    Matches against command names, aliases, help text, option names and help, choice values and
+    examples, below the command it is attached to. The output format follows ``--help``
+    (``--search-help QUERY --help compact``), and a detected AI agent gets ``agent_help_format``.
+
+    :param param_decls: One or more option names. Defaults to the single
+        value ``"--search-help"``.
+    :param kwargs: Extra arguments are passed to :func:`option`.
+    """
+    kwargs.setdefault("cls", RichSearchHelpOption)
+    return click_option(*(param_decls or ("--search-help",)), **kwargs)
+
+
 __all__ = [
     "command",
     "group",
@@ -601,6 +623,7 @@ __all__ = [
     "password_option",
     "confirmation_option",
     "version_option",
+    "search_help_option",
     "help_option",
     "rich_config",
     "option_panel",

@@ -429,6 +429,7 @@ def help_option(
     help_style: StyleType | None = None,
     **attrs: Any,
 ) -> Callable[[FC], FC]: ...
+def search_help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]: ...
 def confirmation_option(
     *param_decls: str,
     cls: type[click.Option] | None = None,
@@ -590,6 +591,7 @@ __all__ = [
     "password_option",
     "confirmation_option",
     "version_option",
+    "search_help_option",
     "help_option",
     "rich_config",
     "option_panel",

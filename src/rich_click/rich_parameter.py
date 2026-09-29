@@ -104,9 +104,7 @@ class RichOption(RichParameter, click.Option):
 
 def _search_help_pending(ctx: click.Context, opts: Mapping[str, Any]) -> bool:
     """Report whether this invocation also passed ``--search-help``, which then takes over ``--help``."""
-    get_option = getattr(ctx.command, "get_search_help_option", None)
-    option = get_option(ctx) if get_option is not None else None
-    return option is not None and option.name in opts
+    return any(isinstance(param, RichSearchHelpOption) and param.name in opts for param in ctx.command.params)
 
 
 class _DefersToSearchHelp(click.Option):
@@ -163,7 +161,7 @@ class RichHelpOption(_DefersToSearchHelp, RichOption):
 
 class RichSearchHelpOption(RichOption):
     """
-    The ``--search-help QUERY`` option, added to every group when the ``help_search`` config is on.
+    The ``--search-help QUERY`` option added by :func:`rich_click.search_help_option`.
 
     Prints the subcommands that best match ``QUERY`` and exits. The output format follows ``--help``:
     ``--search-help QUERY --help json`` renders the matches as JSON, in either order.
@@ -196,7 +194,10 @@ def _show_search_help(ctx: click.Context, param: click.Parameter, value: str | N
     if value is None or ctx.resilient_parsing:
         return
     from rich_click.decorators import _emit_help_text
+    from rich_click.help_search import get_search_help
 
     fmt = ctx.meta.pop(_SEARCH_HELP_FORMAT_KEY, None)
-    _emit_help_text(ctx, ctx.command.get_search_help(ctx, value, fmt))  # type: ignore[attr-defined]
+    render = getattr(ctx.command, "get_search_help", None)
+    text = render(ctx, value, fmt) if render is not None else get_search_help(ctx.command, ctx, value, fmt)
+    _emit_help_text(ctx, text)
     ctx.exit()

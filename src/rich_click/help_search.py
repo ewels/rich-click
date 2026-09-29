@@ -1,7 +1,7 @@
 """
 Search a command tree for the commands that match a free-text query (``--search-help``).
 
-Opt-in with the ``help_search`` config option. The search runs over the same display schema the
+Opt-in with :func:`rich_click.search_help_option`. The search runs over the same display schema the
 compact and Markdown formats render from, so it sees exactly what an agent reading the whole tree
 would: command names, aliases, help text, option names, option help, choice values and examples.
 Scoring is plain token overlap weighted by field and by rarity, with no dependencies, so the same
@@ -240,3 +240,31 @@ def rich_search_results(ctx: RichContext, query: str, results: list[dict[str, An
         )
     )
     return formatter.getvalue()
+
+
+def get_search_help(cmd: click.Command, ctx: click.Context, query: str, fmt: str | bool | None = None) -> str:
+    """
+    Search below ``cmd`` and render the results. ``fmt`` is the value given to ``--help``, if any.
+
+    A named format renders in that format when search supports it (compact, Markdown or JSON) and it is
+    enabled; anything else renders for the terminal, as an unknown ``--help`` format does. With no
+    format, a detected AI agent gets ``agent_help_format``, as a bare ``--help`` would.
+    """
+    from rich_click._agent_detection import is_agent_mode
+    from rich_click.decorators import HELP_PLAIN_VALUE
+    from rich_click.help_formats import _normalize_format_name
+    from rich_click.help_json import _help_format_names
+    from rich_click.rich_context import RichContext
+
+    if not isinstance(fmt, str) or not fmt or fmt == HELP_PLAIN_VALUE:
+        fmt = getattr(getattr(ctx, "help_config", None), "agent_help_format", None) if is_agent_mode() else None
+    fmt = _normalize_format_name(fmt) if fmt else None
+
+    search = getattr(cmd, "search_commands", None)
+    results = search(ctx, query) if search is not None else search_command_tree(cmd, ctx, query)
+    if fmt in SEARCH_FORMATS and fmt in _help_format_names(cmd, ctx):
+        return render_search_results(ctx, query, results, fmt)
+    if not isinstance(ctx, RichContext):
+        # A plain Click context has no rich formatter to draw the panel with.
+        return render_search_results(ctx, query, results, "compact")
+    return rich_search_results(ctx, query, results)

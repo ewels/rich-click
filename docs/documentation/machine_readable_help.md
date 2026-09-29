@@ -201,22 +201,25 @@ An explicit `--help <format>` always uses the requested format when its name is 
 
 ## Search commands
 
-Large CLIs can add a `--search-help QUERY` option to every group. It lists the subcommands that best match
-the query, so a user or agent can find the right command without reading the whole tree. It is off by
-default:
+Large CLIs can add a `--search-help QUERY` option, the same way as `--version`. It lists the subcommands
+that best match the query, so a user or agent can find the right command without reading the whole tree:
 
 ```python
 import rich_click as click
 
-click.rich_click.HELP_SEARCH = True
+
+@click.group()
+@click.search_help_option()
+def mytool():
+    """Manage projects."""
 ```
 
-Or per command, with `help_config=click.RichHelpConfiguration(help_search=True)`.
+Pass option names to change the flag, e.g. `@click.search_help_option("--find", "-f")`. Other keyword
+arguments go to `click.option()`.
 
-The option shows up in the help like any other option. Matching uses command names, aliases, help
-text, option names and help, choice values, and examples. Words that appear in the command name count
-for most, and words shared by many commands count for little. At most five commands are returned, best
-first. Searching from a subgroup only searches that subgroup.
+Matching uses command names, aliases, help text, option names and help, choice values, and examples,
+for every command below the decorated one. Words in a command's name count for most, and words shared
+by many commands count for little. At most five commands are returned, best first.
 
 ```console
 $ mytool --search-help "new project from a template"
