@@ -31,6 +31,7 @@ from rich_click.rich_help_formatter import RichHelpFormatter
 if TYPE_CHECKING:  # pragma: no cover
     from rich.console import Console
 
+    from rich_click.help_search import SearchSettings
     from rich_click.rich_help_rendering import RichPanelRow
     from rich_click.rich_panel import RichCommandPanel, RichPanel
 
@@ -528,17 +529,21 @@ class RichCommand(Command):
             return compact_command(self, ctx, max_chars=_agent_help_max_chars(ctx))
         return compact_command(self, ctx, recursive=True)
 
-    def search_commands(self, ctx: click.Context, query: str) -> list[dict[str, Any]]:
-        """Return display schemas for the subcommands that best match ``query``. Override to change ranking."""
+    def search_commands(
+        self, ctx: click.Context, query: str, settings: SearchSettings | None = None
+    ) -> list[dict[str, Any]]:
+        """Return display schemas for the commands that best match ``query``. Override to change ranking."""
         from rich_click.help_search import search_command_tree
 
-        return search_command_tree(self, ctx, query)
+        return search_command_tree(self, ctx, query, settings)
 
-    def get_search_help(self, ctx: RichContext, query: str, fmt: str | bool | None = None) -> str:
+    def get_search_help(
+        self, ctx: RichContext, query: str, fmt: str | bool | None = None, settings: SearchSettings | None = None
+    ) -> str:
         """Render :func:`~rich_click.decorators.search_help_option` results. ``fmt`` is ``--help``'s value, if any."""
         from rich_click.help_search import get_search_help
 
-        return get_search_help(self, ctx, query, fmt)
+        return get_search_help(self, ctx, query, fmt, settings)
 
     def get_rich_table_row(
         self,

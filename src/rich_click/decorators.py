@@ -599,19 +599,54 @@ def version_option(
     )
 
 
-def search_help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
+def search_help_option(
+    *param_decls: str,
+    max_results: int = 5,
+    search_own_options: bool = True,
+    rank_options: bool = True,
+    options_per_result: int = 3,
+    matching_options: int = 10,
+    single_match_help: bool = True,
+    highlight: bool = True,
+    **kwargs: Any,
+) -> Callable[[FC], FC]:
     """
-    Add a ``--search-help QUERY`` option which prints the subcommands that best match ``QUERY`` and exits.
+    Add a ``--search-help QUERY`` option which prints the commands and options that best match ``QUERY``.
 
     Matches against command names, aliases, help text, option names and help, choice values and
-    examples, below the command it is attached to. The output format follows ``--help``
+    examples, in the tree of the command it is attached to. The output format follows ``--help``
     (``--search-help QUERY --help compact``), and a detected AI agent gets ``agent_help_format``.
 
     :param param_decls: One or more option names. Defaults to the single
         value ``"--search-help"``.
+    :param max_results: How many matching commands to return, best first.
+    :param search_own_options: Also match the decorated group's own options. A single command is
+        always searched.
+    :param rank_options: Rank each result's options against the query: listed first in compact and
+        Markdown, ``match_rank`` in JSON. ``False`` keeps the declared order and turns off the two
+        option displays below.
+    :param options_per_result: How many best-matching options to list under each command in the
+        results panel. ``0`` for none.
+    :param matching_options: How many options the "Matching options" panel lists above a single
+        match's help. ``0`` for no panel.
+    :param single_match_help: Show a single clear match as its full help, rather than as one row of
+        the results panel.
+    :param highlight: Highlight the matched words in terminal output, with the ``style_search_match``
+        style.
     :param kwargs: Extra arguments are passed to :func:`option`.
     """
+    from rich_click.help_search import SearchSettings
+
     kwargs.setdefault("cls", RichSearchHelpOption)
+    kwargs["settings"] = SearchSettings(
+        max_results=max_results,
+        search_own_options=search_own_options,
+        rank_options=rank_options,
+        options_per_result=options_per_result,
+        matching_options=matching_options,
+        single_match_help=single_match_help,
+        highlight=highlight,
+    )
     return click_option(*(param_decls or ("--search-help",)), **kwargs)
 
 

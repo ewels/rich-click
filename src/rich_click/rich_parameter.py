@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from rich.columns import Columns
     from rich.style import StyleType
 
+    from rich_click.help_search import SearchSettings
     from rich_click.rich_context import RichContext
     from rich_click.rich_help_formatter import RichHelpFormatter
     from rich_click.rich_help_rendering import RichPanelRow
@@ -167,8 +168,13 @@ class RichSearchHelpOption(RichOption):
     ``--search-help QUERY --help json`` renders the matches as JSON, in either order.
     """
 
-    def __init__(self, param_decls: Sequence[str] | None = None, **kwargs: Any) -> None:
+    def __init__(
+        self, param_decls: Sequence[str] | None = None, *, settings: SearchSettings | None = None, **kwargs: Any
+    ) -> None:
         """Create the option, defaulting to ``--search-help QUERY``."""
+        from rich_click.help_search import SearchSettings
+
+        self.search_settings = settings or SearchSettings()
         kwargs.setdefault("metavar", "QUERY")
         kwargs.setdefault("expose_value", False)
         kwargs.setdefault("is_eager", True)
@@ -197,7 +203,11 @@ def _show_search_help(ctx: click.Context, param: click.Parameter, value: str | N
     from rich_click.help_search import get_search_help
 
     fmt = ctx.meta.pop(_SEARCH_HELP_FORMAT_KEY, None)
+    settings = getattr(param, "search_settings", None)
     render = getattr(ctx.command, "get_search_help", None)
-    text = render(ctx, value, fmt) if render is not None else get_search_help(ctx.command, ctx, value, fmt)
+    if render is not None:
+        text = render(ctx, value, fmt, settings)
+    else:
+        text = get_search_help(ctx.command, ctx, value, fmt, settings)
     _emit_help_text(ctx, text)
     ctx.exit()

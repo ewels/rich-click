@@ -429,7 +429,17 @@ def help_option(
     help_style: StyleType | None = None,
     **attrs: Any,
 ) -> Callable[[FC], FC]: ...
-def search_help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]: ...
+def search_help_option(
+    *param_decls: str,
+    max_results: int = 5,
+    search_own_options: bool = True,
+    rank_options: bool = True,
+    options_per_result: int = 3,
+    matching_options: int = 10,
+    single_match_help: bool = True,
+    highlight: bool = True,
+    **kwargs: Any,
+) -> Callable[[FC], FC]: ...
 def confirmation_option(
     *param_decls: str,
     cls: type[click.Option] | None = None,

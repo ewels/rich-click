@@ -8,7 +8,7 @@ import pytest
 from click.testing import CliRunner
 
 from rich_click import RichHelpConfiguration, argument, command, group, option, rich_config, search_help_option
-from rich_click.help_search import MAX_RESULTS, search_schemas
+from rich_click.help_search import SearchSettings, search_schemas
 from tests.conftest import ConfigureAgentEnv
 
 
@@ -243,6 +243,87 @@ def test_search_schemas_limits_and_filters_results() -> None:
         f"cmd{i}": {"name": f"cmd{i}", "path": f"cli cmd{i}", "help": "Shared words.", "params": []} for i in range(8)
     }
     root = {"name": "cli", "path": "cli", "params": [], "subcommands": leaves}
-    assert len(search_schemas(root, "shared")) == MAX_RESULTS
+    assert len(search_schemas(root, "shared")) == SearchSettings().max_results
+    assert len(search_schemas(root, "shared", SearchSettings(max_results=2))) == 2
     assert search_schemas(root, "the and of") == []
     assert search_schemas(root, "nothing") == []
+
+
+def make_single_command(**settings: Any) -> Any:
+    @command()
+    @search_help_option(**settings)
+    @option("--alpha", help="First letter.")
+    @option("--zulu", help="Last letter of the alphabet.")
+    def cli(alpha: str, zulu: str) -> None:
+        """One command, many options."""
+
+    return cli
+
+
+def test_rank_options_off_keeps_declared_order() -> None:
+    runner = CliRunner()
+    cli = make_single_command(rank_options=False)
+    output = runner.invoke(cli, ["--search-help", "last letter", "--help", "compact"]).output
+    assert output.index("--alpha") < output.index("--zulu")
+    assert "Matching options" not in runner.invoke(cli, ["--search-help", "last letter"]).output
+    data = json.loads(runner.invoke(cli, ["--search-help", "last letter", "--help", "json"]).output)
+    assert not any("match_rank" in param for param in data["results"][0]["params"])
+
+
+def test_matching_options_zero_drops_the_panel() -> None:
+    output = CliRunner().invoke(make_single_command(matching_options=0), ["--search-help", "last letter"]).output
+    assert "Usage: cli" in output
+    assert "Matching options" not in output
+
+
+def test_single_match_help_off_always_uses_the_results_panel() -> None:
+    output = CliRunner().invoke(make_single_command(single_match_help=False), ["--search-help", "zulu"]).output
+    assert "Commands matching 'zulu'" in output
+    assert "--zulu" in output
+
+
+def test_options_per_result_zero_lists_commands_only() -> None:
+    output = (
+        CliRunner()
+        .invoke(make_single_command(single_match_help=False, options_per_result=0), ["--search-help", "zulu"])
+        .output
+    )
+    assert "Commands matching 'zulu'" in output
+    assert "--zulu" not in output
+
+
+def test_highlight_off() -> None:
+    from rich_click.rich_help_formatter import RichHelpFormatter
+
+    seen: list[object] = []
+    original = RichHelpFormatter.write
+
+    def spy(self: RichHelpFormatter, *objects: Any, **kwargs: Any) -> None:
+        seen.append(self.search_highlight)
+        original(self, *objects, **kwargs)
+
+    RichHelpFormatter.write = spy  # type: ignore[method-assign]
+    try:
+        runner = CliRunner()
+        runner.invoke(make_single_command(), ["--search-help", "zulu"])
+        assert any(pattern is not None for pattern in seen)
+        seen.clear()
+        runner.invoke(make_single_command(highlight=False), ["--search-help", "zulu"])
+        assert seen and all(pattern is None for pattern in seen)
+    finally:
+        RichHelpFormatter.write = original  # type: ignore[method-assign]
+
+
+def test_search_own_options_off() -> None:
+    @group()
+    @search_help_option(search_own_options=False)
+    @option("--verbose", is_flag=True, help="Chatty logging.")
+    def cli(verbose: bool) -> None:
+        """Root."""
+
+    @cli.command()
+    def weigh() -> None:
+        """Weigh something."""
+
+    output = CliRunner().invoke(cli, ["--search-help", "chatty logging", "--help", "compact"]).output
+    assert output.strip() == "No commands under 'cli' match 'chatty logging'."

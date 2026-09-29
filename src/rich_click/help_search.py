@@ -16,6 +16,7 @@ from __future__ import annotations
 import math
 import re
 from collections.abc import Iterator
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 import click
@@ -30,14 +31,26 @@ if TYPE_CHECKING:
     from rich_click.rich_context import RichContext
 
 
-#: How many matching commands to return, best first.
-MAX_RESULTS = 5
+@dataclass(frozen=True)
+class SearchSettings:
+    """What ``--search-help`` does. Set through :func:`rich_click.search_help_option`'s keyword arguments."""
 
-#: How many of a command's best-matching options the multi-command results panel lists under it.
-MAX_OPTIONS_PER_RESULT = 3
+    max_results: int = 5
+    """How many matching commands to return, best first."""
+    search_own_options: bool = True
+    """Also match the decorated group's own options. A single command is always searched."""
+    rank_options: bool = True
+    """Rank each result's options: listed first in compact/Markdown, ``match_rank`` in JSON. ``False``
+    keeps the declared order and turns off both option displays below."""
+    options_per_result: int = 3
+    """How many best-matching options to list under each command in the results panel. ``0`` for none."""
+    matching_options: int = 10
+    """How many options the "Matching options" panel lists above a single match's help. ``0`` for no panel."""
+    single_match_help: bool = True
+    """Show a single clear match as its full help, rather than as one row of the results panel."""
+    highlight: bool = True
+    """Highlight the matched words in terminal output, with the ``style_search_match`` style."""
 
-#: How many options the "Matching options" panel lists at the top of a single command's help.
-MAX_MATCHING_OPTIONS = 10
 
 #: A command is dropped when it scores below this fraction of the best match, so a query that matches
 #: one command well is not padded out with commands that only share a common word.
@@ -173,7 +186,7 @@ def _rank_params(schema: dict[str, Any], rarity: dict[str, float]) -> list[str]:
     return [name for _, _, name in sorted(scored)]
 
 
-def search_schemas(root: dict[str, Any], query: str) -> list[dict[str, Any]]:
+def search_schemas(root: dict[str, Any], query: str, settings: SearchSettings | None = None) -> list[dict[str, Any]]:
     """
     Rank the commands in ``root``'s tree against ``query`` and return the best matches, best first.
 
@@ -181,19 +194,20 @@ def search_schemas(root: dict[str, Any], query: str) -> list[dict[str, Any]]:
     tree, so a word every command shares ("record" in a CLI of record commands) counts for little and a
     word only one command uses decides the result. Ties keep declaration order.
 
-    ``root`` is a candidate too: on its own parameters for a group, and in full for a single command, so
-    a CLI with one command and hundreds of options can still be searched. Each returned schema carries
-    ``_score`` and ``_matched_params`` (the names of its matching parameters, best first).
+    ``root`` is a candidate too: on its own parameters for a group (unless ``search_own_options`` is off),
+    and in full for a single command, so a CLI with one command and hundreds of options can still be
+    searched. Each returned schema carries ``_score`` and ``_matched_params`` (the names of its matching
+    parameters, best first, or empty when ``rank_options`` is off).
     """
+    settings = settings or SearchSettings()
     query_tokens = _tokens(query)
     if not query_tokens:
         return []
 
     root_path = str(root.get("path") or "")
     descendants = _descendants(root)
-    candidates = [root, *descendants]
-    fields = [_fields(root, root_path, params_only=bool(descendants))]
-    fields += [_fields(schema, root_path) for schema in descendants]
+    candidates = [*([root] if settings.search_own_options or not descendants else []), *descendants]
+    fields = [_fields(schema, root_path, params_only=schema is root and bool(descendants)) for schema in candidates]
 
     rarity = {}
     for token in query_tokens:
@@ -212,21 +226,24 @@ def search_schemas(root: dict[str, Any], query: str) -> list[dict[str, Any]]:
     scored.sort(key=lambda item: (-item[0], item[1]))
     threshold = scored[0][0] * _MIN_RELATIVE_SCORE
     results = []
-    for score, _, schema in scored[:MAX_RESULTS]:
+    for score, _, schema in scored[: settings.max_results]:
         if score < threshold:
             break
-        results.append({**schema, "_score": score, "_matched_params": _rank_params(schema, rarity)})
+        matched = _rank_params(schema, rarity) if settings.rank_options else []
+        results.append({**schema, "_score": score, "_matched_params": matched})
     return results
 
 
-def search_command_tree(cmd: click.Command, ctx: click.Context, query: str) -> list[dict[str, Any]]:
+def search_command_tree(
+    cmd: click.Command, ctx: click.Context, query: str, settings: SearchSettings | None = None
+) -> list[dict[str, Any]]:
     """Return display schemas for the commands in ``cmd``'s tree that best match ``query``, best first."""
     from rich_click.help_json import command_schema
 
     root = command_schema(
         cmd, ctx, recursive=True, display=True, tolerate_load_errors=True, respect_default_visibility=True
     )
-    return search_schemas(root, query)
+    return search_schemas(root, query, settings)
 
 
 # --------------------------------------------------------------------------------------------------
@@ -384,7 +401,9 @@ def _clear_winner(results: list[dict[str, Any]]) -> dict[str, Any] | None:
     return None
 
 
-def _command_help(cmd: click.Command, ctx: click.Context, query: str, schema: dict[str, Any]) -> str | None:
+def _command_help(
+    cmd: click.Command, ctx: click.Context, query: str, schema: dict[str, Any], settings: SearchSettings
+) -> str | None:
     """
     Render one result's normal help, with its matching options pulled into a panel at the top.
 
@@ -406,8 +425,8 @@ def _command_help(cmd: click.Command, ctx: click.Context, query: str, schema: di
             command = child
         if not isinstance(command, RichCommand) or not isinstance(command_ctx, RichContext):
             return None
-        command_ctx.search_query = query
-        command_ctx.search_matched_params = (schema.get("_matched_params") or [])[:MAX_MATCHING_OPTIONS]
+        command_ctx.search_query = query if settings.highlight else None
+        command_ctx.search_matched_params = (schema.get("_matched_params") or [])[: settings.matching_options]
         command_ctx.search_total_params = sum(1 for param in _visible_params(schema) if param.get("kind") == "option")
         try:
             return command.get_help(command_ctx)
@@ -419,7 +438,7 @@ def _command_help(cmd: click.Command, ctx: click.Context, query: str, schema: di
             child_ctx.close()
 
 
-def _results_panel(ctx: RichContext, query: str, results: list[dict[str, Any]]) -> str:
+def _results_panel(ctx: RichContext, query: str, results: list[dict[str, Any]], settings: SearchSettings) -> str:
     """Render several results as a panel: each command, with its best-matching options underneath."""
     from rich.table import Table
     from rich.text import Text
@@ -430,7 +449,8 @@ def _results_panel(ctx: RichContext, query: str, results: list[dict[str, Any]]) 
 
     formatter = ctx.make_formatter()
     config = formatter.config
-    formatter.search_highlight = highlight_pattern(query)
+    if settings.highlight:
+        formatter.search_highlight = highlight_pattern(query)
 
     table = Table.grid(padding=(0, 2))
     for schema in results:
@@ -439,7 +459,7 @@ def _results_panel(ctx: RichContext, query: str, results: list[dict[str, Any]]) 
             formatter.rich_text(_summary(schema), config.style_commands_panel_help_style),
         )
         params = {str(param.get("name") or ""): param for param in schema.get("params", [])}
-        for name in (schema.get("_matched_params") or [])[:MAX_OPTIONS_PER_RESULT]:
+        for name in (schema.get("_matched_params") or [])[: settings.options_per_result]:
             param = params[name]
             opts = [*(param.get("opts") or []), *(param.get("secondary_opts") or [])]
             signature = Text("  ")
@@ -467,7 +487,13 @@ def _results_panel(ctx: RichContext, query: str, results: list[dict[str, Any]]) 
     return formatter.getvalue()
 
 
-def rich_search_results(cmd: click.Command, ctx: RichContext, query: str, results: list[dict[str, Any]]) -> str:
+def rich_search_results(
+    cmd: click.Command,
+    ctx: RichContext,
+    query: str,
+    results: list[dict[str, Any]],
+    settings: SearchSettings | None = None,
+) -> str:
     """
     Render search results for a terminal, with every matched word highlighted.
 
@@ -476,19 +502,26 @@ def rich_search_results(cmd: click.Command, ctx: RichContext, query: str, result
     """
     from rich.text import Text
 
+    settings = settings or SearchSettings()
     if not results:
         formatter = ctx.make_formatter()
         formatter.write(Text(_no_matches(ctx, query)))
         return formatter.getvalue()
-    winner = _clear_winner(results)
+    winner = _clear_winner(results) if settings.single_match_help else None
     if winner is not None:
-        rendered = _command_help(cmd, ctx, query, winner)
+        rendered = _command_help(cmd, ctx, query, winner, settings)
         if rendered is not None:
             return rendered
-    return _results_panel(ctx, query, results)
+    return _results_panel(ctx, query, results, settings)
 
 
-def get_search_help(cmd: click.Command, ctx: click.Context, query: str, fmt: str | bool | None = None) -> str:
+def get_search_help(
+    cmd: click.Command,
+    ctx: click.Context,
+    query: str,
+    fmt: str | bool | None = None,
+    settings: SearchSettings | None = None,
+) -> str:
     """
     Search ``cmd``'s tree and render the results. ``fmt`` is the value given to ``--help``, if any.
 
@@ -506,11 +539,12 @@ def get_search_help(cmd: click.Command, ctx: click.Context, query: str, fmt: str
         fmt = getattr(getattr(ctx, "help_config", None), "agent_help_format", None) if is_agent_mode() else None
     fmt = _normalize_format_name(fmt) if fmt else None
 
+    settings = settings or SearchSettings()
     search = getattr(cmd, "search_commands", None)
-    results = search(ctx, query) if search is not None else search_command_tree(cmd, ctx, query)
+    results = search(ctx, query, settings) if search is not None else search_command_tree(cmd, ctx, query, settings)
     if fmt in SEARCH_FORMATS and fmt in _help_format_names(cmd, ctx):
         return render_search_results(ctx, query, results, fmt)
     if not isinstance(ctx, RichContext):
         # A plain Click context has no rich formatter to draw the panel with.
         return render_search_results(ctx, query, results, "compact")
-    return rich_search_results(cmd, ctx, query, results)
+    return rich_search_results(cmd, ctx, query, results, settings)
