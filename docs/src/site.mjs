@@ -44,6 +44,7 @@ export const sidebar = [
       },
       { label: 'Custom Styles', slug: 'documentation/custom_styles' },
       { label: 'rich-click CLI tool', slug: 'documentation/rich_click_cli' },
+      { label: 'Asyncclick Support', slug: 'documentation/asyncclick_support' },
       { label: 'Typer Support', slug: 'documentation/typer_support' },
       { label: 'Accessibility', slug: 'documentation/accessibility' },
     ],

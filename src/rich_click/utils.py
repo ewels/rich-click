@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import errno
 import sys
-from typing import TYPE_CHECKING, Any, TypedDict
+from typing import IO, TYPE_CHECKING, Any, TypedDict
 
 
 if sys.version_info < (3, 11):
@@ -16,6 +17,23 @@ if TYPE_CHECKING:
 
 
 notset: Any = object()
+
+
+class _PacifyFlushWrapper:
+    """Proxy a stream but swallow the BrokenPipeError that flush() raises on a closed pipe."""
+
+    def __init__(self, wrapped: IO[Any]) -> None:
+        self.wrapped = wrapped
+
+    def flush(self) -> None:
+        try:
+            self.wrapped.flush()
+        except OSError as e:
+            if e.errno != errno.EPIPE:
+                raise
+
+    def __getattr__(self, attr: str) -> Any:
+        return getattr(self.wrapped, attr)
 
 
 def truthy(o: Any) -> bool | None:
