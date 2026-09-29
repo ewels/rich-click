@@ -509,6 +509,7 @@ def _schema_from_current_node(
     info = node.info if info_override is None else info_override
     markup_mode = _markup_mode(ctx)
     help_ids = _help_option_ids(cmd, ctx)
+    from rich_click.rich_parameter import RichSearchHelpOption
 
     params = []
     for param, param_info in node.params:
@@ -539,6 +540,9 @@ def _schema_from_current_node(
                 # Flagged (in the display schema only) so a rendering can drop the ``--help`` row, which
                 # is the same boilerplate on every command in the tree. See :func:`compact_command`.
                 param_dict["is_help_option"] = True
+            if isinstance(param, RichSearchHelpOption):
+                # Flagged (display schema only) so ``--search-help`` does not match its own option.
+                param_dict["is_search_help_option"] = True
         params.append(param_dict)
 
     schema: dict[str, Any] = {"name": info.get("name"), "path": ctx.command_path}

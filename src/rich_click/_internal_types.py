@@ -135,6 +135,7 @@ class RichHelpConfigurationDict(TypedDict):
     style_examples_flag_short: NotRequired[StyleType]
     style_examples_placeholder: NotRequired[StyleType]
     style_examples_operator: NotRequired[StyleType]
+    style_search_match: NotRequired[StyleType]
     style_deprecated: NotRequired[StyleType]
     style_helptext_first_line: NotRequired[StyleType]
     style_helptext: NotRequired[StyleType]

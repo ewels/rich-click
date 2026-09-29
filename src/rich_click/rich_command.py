@@ -354,6 +354,14 @@ class RichCommand(Command):
         from rich_click.rich_panel import construct_panels
 
         panels = construct_panels(self, ctx, formatter)  # type: ignore[arg-type]
+        matched = getattr(ctx, "search_matched_params", None)
+        if matched:
+            # ``--search-help`` found this command: list its best-matching options first. The author's
+            # panels still follow in full, so nothing is hidden.
+            from rich_click.help_search import matching_options_title
+
+            title = matching_options_title(ctx)  # type: ignore[arg-type]
+            panels = [formatter.option_panel_class(name=title, options=list(matched)), *panels]  # type: ignore[attr-defined]
         for panel in panels:
             p = panel.render(self, ctx, formatter)  # type: ignore[arg-type]
             if not isinstance(p.renderable, Table) or len(p.renderable.rows) > 0:

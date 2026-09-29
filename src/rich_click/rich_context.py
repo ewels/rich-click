@@ -23,6 +23,11 @@ class RichContext(click.Context):
     errors_in_output_format: bool = False
     help_to_stderr: bool = False
     agent_help_default: bool = False
+    #: Set while ``--search-help`` renders this command's help: the query, whose words get highlighted,
+    #: and the matching parameters, listed first in a "Matching options" panel.
+    search_query: str | None = None
+    search_matched_params: list[str] | None = None
+    search_total_params: int = 0
     """True only while rendering the format a *bare* ``--help`` chose because an agent was detected.
 
     A format that behaves differently when it was asked for by name reads this: ``--help compact``
@@ -103,6 +108,10 @@ class RichContext(click.Context):
             console=self.console,
             export_console_as=(self.export_console_as if not error_mode or self.errors_in_output_format else None),
         )
+        if self.search_query and not error_mode:
+            from rich_click.help_search import highlight_pattern
+
+            formatter.search_highlight = highlight_pattern(self.search_query)
         return formatter
 
 

@@ -7,7 +7,7 @@ import click
 import pytest
 from click.testing import CliRunner
 
-from rich_click import RichHelpConfiguration, argument, group, option, rich_config, search_help_option
+from rich_click import RichHelpConfiguration, argument, command, group, option, rich_config, search_help_option
 from rich_click.help_search import MAX_RESULTS, search_schemas
 from tests.conftest import ConfigureAgentEnv
 
@@ -108,8 +108,11 @@ def test_search_help_ranks_the_best_match_first() -> None:
 
 def test_search_help_matches_option_help() -> None:
     result = CliRunner().invoke(make_cli(), ["--search-help", "weight", "--help", "compact"])
-    assert result.output.startswith("# plarv crell [aliases: cl] — Create a record.")
-    assert "--wover INTEGER  Weight of the record." in result.output
+    lines = result.output.splitlines()
+    assert lines[0] == "# plarv crell [aliases: cl] — Create a record."
+    # The matching option comes first; the rest follow in their declared order.
+    assert lines[1] == "--wover INTEGER  Weight of the record."
+    assert lines[2] == "*--crull TEXT  Annotation text for the record."
 
 
 @pytest.mark.parametrize(
@@ -138,30 +141,95 @@ def test_search_help_is_scoped_to_the_group() -> None:
     assert result.output.strip() == "No commands under 'cli stores' match 'record'."
 
 
-def test_search_help_renders_a_panel_for_humans() -> None:
-    result = CliRunner().invoke(make_cli(), ["--search-help", "weight"])
+def test_several_matches_render_a_results_panel() -> None:
+    result = CliRunner().invoke(make_cli(), ["--search-help", "record"])
     assert result.exit_code == 0
-    assert "Commands matching 'weight'" in result.output
+    assert "Commands matching 'record'" in result.output
     assert "cli plarv crell" in result.output
     assert "Create a record." in result.output
+    # The best-matching options are listed under their command.
+    assert "--crull" in result.output
 
 
-def test_unsupported_format_falls_back_to_the_panel() -> None:
+def test_one_clear_match_renders_its_help_with_matching_options_first() -> None:
+    result = CliRunner().invoke(make_cli(), ["--search-help", "weight"])
+    assert result.exit_code == 0
+    output = result.output
+    assert "Usage: cli plarv crell" in output
+    assert "Matching options (1 of 2)" in output
+    # Nothing is hidden: the author's own panel still lists every option, --wover included.
+    assert output.index("Matching options") < output.index("Options ─")
+    assert output.count("--wover") == 2
+    assert "--crull" in output
+
+
+def test_single_command_cli_can_be_searched() -> None:
+    @command()
+    @search_help_option()
+    @option("--alpha", help="First letter.")
+    @option("--zulu", help="Last letter of the alphabet.")
+    def cli(alpha: str, zulu: str) -> None:
+        """One command, many options."""
+
+    runner = CliRunner()
+    compact = runner.invoke(cli, ["--search-help", "last letter", "--help", "compact"]).output
+    lines = compact.splitlines()
+    assert lines[0].startswith("# cli")
+    # Ranked, not filtered: --zulu matched best so it comes first, and --alpha is still listed.
+    assert lines[1].startswith("--zulu") and lines[2].startswith("--alpha")
+    assert "Matching options (2 of 2)" in runner.invoke(cli, ["--search-help", "last letter"]).output
+
+
+def test_search_help_does_not_match_itself() -> None:
+    result = CliRunner().invoke(make_cli(), ["--search-help", "search query", "--help", "compact"])
+    assert result.output.strip() == "No commands under 'cli' match 'search query'."
+
+
+def test_json_marks_matching_params_with_their_rank() -> None:
+    result = CliRunner().invoke(make_cli(), ["--search-help", "weight", "--help", "json"])
+    crell = json.loads(result.output)["results"][0]
+    ranks = {param["name"]: param.get("match_rank") for param in crell["params"]}
+    assert ranks["wover"] == 1
+    assert ranks["crull"] is None
+
+
+def test_matched_words_are_highlighted() -> None:
+    from rich.console import Console
+    from rich.text import Text
+
+    from rich_click.help_search import SearchHighlight, highlight_pattern
+
+    pattern = highlight_pattern("output formats")
+    assert pattern is not None
+    assert pattern.findall("--output-format sets the Output FORMAT; outputs too, but not reformat") == [
+        "output",
+        "format",
+        "Output",
+        "FORMAT",
+        "outputs",
+    ]
+    console = Console(width=60, color_system="truecolor", force_terminal=True)
+    segments = list(console.render(SearchHighlight(Text("write output here"), pattern, "underline")))
+    underlined = [segment.text for segment in segments if segment.style and segment.style.underline]
+    assert underlined == ["output"]
+
+
+def test_unsupported_format_falls_back_to_terminal_output() -> None:
     result = CliRunner().invoke(make_cli(), ["--search-help", "weight", "--help", "nope"])
-    assert "Commands matching 'weight'" in result.output
+    assert "Matching options (1 of 2)" in result.output
 
 
-def test_disabled_format_falls_back_to_the_panel() -> None:
+def test_disabled_format_falls_back_to_terminal_output() -> None:
     cli = make_cli(help_formats=["compact"])
     result = CliRunner().invoke(cli, ["--search-help", "weight", "--help", "json"])
-    assert "Commands matching 'weight'" in result.output
+    assert "Matching options (1 of 2)" in result.output
 
 
 def test_search_help_with_legacy_help_flag() -> None:
     cli = make_cli(help_formats=False)
     result = CliRunner().invoke(cli, ["--help", "--search-help", "weight"])
     assert result.exit_code == 0
-    assert "Commands matching 'weight'" in result.output
+    assert "Matching options (1 of 2)" in result.output
 
 
 def test_agent_gets_the_agent_help_format(agent_env: ConfigureAgentEnv) -> None:

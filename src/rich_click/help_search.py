@@ -1,32 +1,51 @@
 """
-Search a command tree for the commands that match a free-text query (``--search-help``).
+Search a command tree for the commands and options that match a free-text query (``--search-help``).
 
 Opt-in with :func:`rich_click.search_help_option`. The search runs over the same display schema the
 compact and Markdown formats render from, so it sees exactly what an agent reading the whole tree
 would: command names, aliases, help text, option names, option help, choice values and examples.
 Scoring is plain token overlap weighted by field and by rarity, with no dependencies, so the same
-query always returns the same commands.
+query always returns the same results.
+
+Nothing is filtered out of a result. Matching options are ranked first and, for people, highlighted:
+a filtered list invites an agent to guess at what it cannot see, so every option is still listed.
 """
 
 from __future__ import annotations
 
 import math
 import re
+from collections.abc import Iterator
 from typing import TYPE_CHECKING, Any
 
 import click
 
 
 if TYPE_CHECKING:
+    from rich.console import Console, ConsoleOptions, RenderableType
+    from rich.measure import Measurement
+    from rich.segment import Segment
+    from rich.style import StyleType
+
     from rich_click.rich_context import RichContext
 
 
 #: How many matching commands to return, best first.
 MAX_RESULTS = 5
 
+#: How many of a command's best-matching options the multi-command results panel lists under it.
+MAX_OPTIONS_PER_RESULT = 3
+
+#: How many options the "Matching options" panel lists at the top of a single command's help.
+MAX_MATCHING_OPTIONS = 10
+
 #: A command is dropped when it scores below this fraction of the best match, so a query that matches
 #: one command well is not padded out with commands that only share a common word.
 _MIN_RELATIVE_SCORE = 0.3
+
+#: The top result is shown as its full help, rather than as one row of a results panel, when it
+#: scores at least this many times the runner-up.
+_CLEAR_WINNER = 2.0
 
 #: The formats search results can be rendered in. Plugin formats render a single command, so a search
 #: that asks for one falls back to the human-readable results, as an unknown ``--help`` format does.
@@ -45,10 +64,17 @@ _WEIGHT_HELP = 2.0
 _WEIGHT_OPTION = 1.5
 _WEIGHT_DETAIL = 1.0
 
+# The same idea one level down, for ranking a command's options against each other.
+_WEIGHT_OPTION_NAME = 4.0
+_WEIGHT_OPTION_HELP = 2.0
+_WEIGHT_OPTION_CHOICES = 1.5
+
+_SUFFIXES = ("ing", "ed", "es", "s")
+
 
 def _stem(word: str) -> str:
     """Strip a common English suffix so ``records`` / ``recorded`` / ``recording`` meet ``record``."""
-    for suffix in ("ing", "ed", "es", "s"):
+    for suffix in _SUFFIXES:
         if word.endswith(suffix) and len(word) - len(suffix) >= 3:
             return word[: -len(suffix)]
     return word
@@ -69,22 +95,48 @@ def _matches(query_token: str, tokens: set[str]) -> bool:
     return any(len(token) >= 4 and (token.startswith(query_token) or query_token.startswith(token)) for token in tokens)
 
 
-def _fields(schema: dict[str, Any], root_path: str) -> list[tuple[float, set[str]]]:
-    """Return a command's searchable text as ``(weight, tokens)`` pairs."""
-    path = str(schema.get("path") or "")
-    parents = path[len(root_path) :].split()[:-1] if path.startswith(root_path) else []
+def _visible_params(schema: dict[str, Any]) -> list[dict[str, Any]]:
+    """Return the parameters a search looks at: every visible one except ``--help`` and ``--search-help``."""
+    return [
+        param
+        for param in schema.get("params", [])
+        if not param.get("hidden") and not param.get("is_help_option") and not param.get("is_search_help_option")
+    ]
+
+
+def _param_fields(param: dict[str, Any]) -> list[tuple[float, set[str]]]:
+    """Return one parameter's searchable text as ``(weight, tokens)`` pairs."""
+    names: set[str] = set()
+    for opt in (*(param.get("opts") or []), *(param.get("secondary_opts") or [])):
+        names |= _tokens(opt.replace("-", " "))
+    names |= _tokens(str(param.get("name") or "").replace("_", " "))
+    return [
+        (_WEIGHT_OPTION_NAME, names),
+        (_WEIGHT_OPTION_HELP, _tokens(param.get("help"))),
+        (_WEIGHT_OPTION_CHOICES, _tokens(" ".join(str(choice) for choice in param.get("choices") or []))),
+    ]
+
+
+def _fields(schema: dict[str, Any], root_path: str, *, params_only: bool = False) -> list[tuple[float, set[str]]]:
+    """
+    Return a command's searchable text as ``(weight, tokens)`` pairs.
+
+    ``params_only`` limits it to the command's parameters, for the group a search starts from: its own
+    name and help describe the whole tree, so matching them would put it at the top of every search.
+    """
     options: set[str] = set()
     details: set[str] = set()
-    for param in schema.get("params", []):
-        if param.get("hidden") or param.get("is_help_option"):
-            continue
-        for opt in (*(param.get("opts") or []), *(param.get("secondary_opts") or [])):
-            options |= _tokens(opt.replace("-", " "))
-        options |= _tokens(" ".join(str(choice) for choice in param.get("choices") or []))
-        details |= _tokens(param.get("help"))
+    for param in _visible_params(schema):
+        names, help_tokens, choices = (tokens for _, tokens in _param_fields(param))
+        options |= names | choices
+        details |= help_tokens
+    if params_only:
+        return [(_WEIGHT_OPTION, options), (_WEIGHT_DETAIL, details)]
     for example in schema.get("examples") or []:
         details |= _tokens(example.get("description"))
         details |= _tokens(example.get("command"))
+    path = str(schema.get("path") or "")
+    parents = path[len(root_path) :].split()[:-1] if path.startswith(root_path) else []
     return [
         (_WEIGHT_NAME, _tokens(schema.get("name")) | _tokens(" ".join(schema.get("aliases") or []))),
         (_WEIGHT_PARENT, _tokens(" ".join(parents))),
@@ -92,6 +144,14 @@ def _fields(schema: dict[str, Any], root_path: str) -> list[tuple[float, set[str
         (_WEIGHT_OPTION, options),
         (_WEIGHT_DETAIL, details),
     ]
+
+
+def _score(fields: list[tuple[float, set[str]]], rarity: dict[str, float]) -> float:
+    """Score one record: each query word counts once, at the heaviest field it matches, scaled by rarity."""
+    score = 0.0
+    for token, weight in rarity.items():
+        score += weight * max((field_weight for field_weight, tokens in fields if _matches(token, tokens)), default=0.0)
+    return score
 
 
 def _descendants(schema: dict[str, Any]) -> list[dict[str, Any]]:
@@ -103,21 +163,38 @@ def _descendants(schema: dict[str, Any]) -> list[dict[str, Any]]:
     return found
 
 
+def _rank_params(schema: dict[str, Any], rarity: dict[str, float]) -> list[str]:
+    """Return the names of a command's parameters that match the query, best first."""
+    scored = []
+    for index, param in enumerate(_visible_params(schema)):
+        score = _score(_param_fields(param), rarity)
+        if score:
+            scored.append((-score, index, str(param.get("name") or "")))
+    return [name for _, _, name in sorted(scored)]
+
+
 def search_schemas(root: dict[str, Any], query: str) -> list[dict[str, Any]]:
     """
-    Rank the commands below ``root`` against ``query`` and return the best matches, best first.
+    Rank the commands in ``root``'s tree against ``query`` and return the best matches, best first.
 
     Each query word scores the heaviest field it appears in, scaled by how rare the word is across the
     tree, so a word every command shares ("record" in a CLI of record commands) counts for little and a
     word only one command uses decides the result. Ties keep declaration order.
+
+    ``root`` is a candidate too: on its own parameters for a group, and in full for a single command, so
+    a CLI with one command and hundreds of options can still be searched. Each returned schema carries
+    ``_score`` and ``_matched_params`` (the names of its matching parameters, best first).
     """
     query_tokens = _tokens(query)
-    candidates = _descendants(root)
-    if not query_tokens or not candidates:
+    if not query_tokens:
         return []
 
     root_path = str(root.get("path") or "")
-    fields = [_fields(schema, root_path) for schema in candidates]
+    descendants = _descendants(root)
+    candidates = [root, *descendants]
+    fields = [_fields(root, root_path, params_only=bool(descendants))]
+    fields += [_fields(schema, root_path) for schema in descendants]
+
     rarity = {}
     for token in query_tokens:
         count = sum(1 for command in fields if any(_matches(token, tokens) for _, tokens in command))
@@ -126,10 +203,7 @@ def search_schemas(root: dict[str, Any], query: str) -> list[dict[str, Any]]:
 
     scored = []
     for index, (schema, command) in enumerate(zip(candidates, fields)):
-        score = 0.0
-        for token, weight in rarity.items():
-            best = max((field_weight for field_weight, tokens in command if _matches(token, tokens)), default=0.0)
-            score += best * weight
+        score = _score(command, rarity)
         if score:
             scored.append((score, index, schema))
     if not scored:
@@ -137,17 +211,41 @@ def search_schemas(root: dict[str, Any], query: str) -> list[dict[str, Any]]:
 
     scored.sort(key=lambda item: (-item[0], item[1]))
     threshold = scored[0][0] * _MIN_RELATIVE_SCORE
-    return [schema for score, _, schema in scored[:MAX_RESULTS] if score >= threshold]
+    results = []
+    for score, _, schema in scored[:MAX_RESULTS]:
+        if score < threshold:
+            break
+        results.append({**schema, "_score": score, "_matched_params": _rank_params(schema, rarity)})
+    return results
 
 
 def search_command_tree(cmd: click.Command, ctx: click.Context, query: str) -> list[dict[str, Any]]:
-    """Return display schemas for the commands below ``cmd`` that best match ``query``, best first."""
+    """Return display schemas for the commands in ``cmd``'s tree that best match ``query``, best first."""
     from rich_click.help_json import command_schema
 
     root = command_schema(
         cmd, ctx, recursive=True, display=True, tolerate_load_errors=True, respect_default_visibility=True
     )
     return search_schemas(root, query)
+
+
+# --------------------------------------------------------------------------------------------------
+# Text formats (compact, Markdown, JSON).
+# --------------------------------------------------------------------------------------------------
+
+
+def _ranked(schema: dict[str, Any]) -> dict[str, Any]:
+    """
+    Return ``schema`` with its matching options moved to the front, best first, and nothing removed.
+
+    Only options move. Arguments keep their order, because the usage line is built from it.
+    """
+    order = {name: rank for rank, name in enumerate(schema.get("_matched_params") or [])}
+    params = schema.get("params", [])
+    arguments = [param for param in params if param.get("kind") != "option"]
+    options = [param for param in params if param.get("kind") == "option"]
+    options.sort(key=lambda param: order.get(str(param.get("name") or ""), len(order)))
+    return {**schema, "params": arguments + options}
 
 
 def _no_matches(ctx: click.Context, query: str) -> str:
@@ -160,7 +258,7 @@ def _render_markdown(results: list[dict[str, Any]]) -> str:
 
     lines: list[str] = []
     for schema in results:
-        _render_command_body(schema, lines)
+        _render_command_body(_ranked(schema), lines)
         children = (schema.get("subcommands") or {}).values()
         if children:
             lines += ["## Subcommands", "", *(_md_index_entry(*_pointer_entry(child)) for child in children), ""]
@@ -173,18 +271,28 @@ def _render_compact(results: list[dict[str, Any]]) -> str:
 
     lines: list[str] = []
     for schema in results:
-        _render_compact_body(schema, lines)
+        _render_compact_body(_ranked(schema), lines)
         lines += [_compact_index_entry(*_pointer_entry(child)) for child in (schema.get("subcommands") or {}).values()]
         lines.append("")
     return "\n".join(lines).strip()
 
 
 def _json_result(schema: dict[str, Any]) -> dict[str, Any]:
-    """Strip a display schema back to the public JSON shape, listing subcommands by name only."""
+    """
+    Strip a display schema back to the public JSON shape, listing subcommands by name only.
+
+    Parameters keep their declared order; the ones that matched carry ``match_rank`` (1 is best).
+    """
+    ranks = {name: rank for rank, name in enumerate(schema.get("_matched_params") or [], start=1)}
     result = {key: value for key, value in schema.items() if not key.startswith("_") and key != "subcommands"}
-    result["params"] = [
-        {key: value for key, value in param.items() if key != "is_help_option"} for param in schema.get("params", [])
-    ]
+    params = []
+    for param in schema.get("params", []):
+        entry = {key: value for key, value in param.items() if key not in ("is_help_option", "is_search_help_option")}
+        rank = ranks.get(str(param.get("name") or ""))
+        if rank is not None:
+            entry["match_rank"] = rank
+        params.append(entry)
+    result["params"] = params
     if schema.get("subcommands"):
         result["subcommands"] = list(schema["subcommands"])
     return result
@@ -202,8 +310,117 @@ def render_search_results(ctx: click.Context, query: str, results: list[dict[str
     return _render_markdown(results) if fmt == "markdown" else _render_compact(results)
 
 
-def rich_search_results(ctx: RichContext, query: str, results: list[dict[str, Any]]) -> str:
-    """Render search results for a terminal: a panel of matching commands, styled like the commands panel."""
+# --------------------------------------------------------------------------------------------------
+# Terminal output.
+# --------------------------------------------------------------------------------------------------
+
+
+def highlight_pattern(query: str) -> re.Pattern[str] | None:
+    """
+    Return a regex matching the words ``query`` would match, for highlighting them in rendered help.
+
+    Mirrors :func:`_matches`: a long query word also highlights longer words it starts (``format`` in
+    ``formats`` and ``--output-format``), a short one only itself plus a common suffix.
+    """
+    parts = []
+    for token in sorted(_tokens(query), key=len, reverse=True):
+        suffix = r"[a-z0-9]*" if len(token) >= 4 else r"(?:{})?".format("|".join(_SUFFIXES))
+        parts.append(re.escape(token) + suffix)
+    if not parts:
+        return None
+    return re.compile(r"(?<![a-z0-9])(?:{})(?![a-z0-9])".format("|".join(parts)), re.IGNORECASE)
+
+
+class SearchHighlight:
+    """
+    Wrap a renderable, adding a style to every word a search matched.
+
+    Works on the rendered segments, so it highlights inside any renderable -- panels, tables, the usage
+    line -- without the rendering code knowing a search is going on.
+    """
+
+    def __init__(self, renderable: RenderableType, pattern: re.Pattern[str], style: StyleType) -> None:
+        """Wrap ``renderable``, highlighting ``pattern``'s matches with ``style``."""
+        self.renderable = renderable
+        self.pattern = pattern
+        self.style = style
+
+    def __rich_console__(self, console: Console, options: ConsoleOptions) -> Iterator[Segment]:
+        from rich.segment import Segment
+
+        match_style = console.get_style(self.style)
+        for segment in console.render(self.renderable, options):
+            text, style, control = segment
+            if control or not text:
+                yield segment
+                continue
+            position = 0
+            for match in self.pattern.finditer(text):
+                if match.start() > position:
+                    yield Segment(text[position : match.start()], style)
+                yield Segment(match.group(), style + match_style if style else match_style)
+                position = match.end()
+            if position == 0:
+                yield segment
+            elif position < len(text):
+                yield Segment(text[position:], style)
+
+    def __rich_measure__(self, console: Console, options: ConsoleOptions) -> Measurement:
+        from rich.measure import Measurement
+
+        return Measurement.get(console, options, self.renderable)
+
+
+def matching_options_title(ctx: RichContext) -> str:
+    """Title for the panel that lists a command's best-matching options at the top of its help."""
+    shown = len(ctx.search_matched_params or [])
+    return f"Matching options ({shown} of {ctx.search_total_params})"
+
+
+def _clear_winner(results: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """Return the top result when it should be shown as its full help rather than as a list."""
+    if len(results) == 1 or (results and results[0]["_score"] >= _CLEAR_WINNER * results[1]["_score"]):
+        return results[0]
+    return None
+
+
+def _command_help(cmd: click.Command, ctx: click.Context, query: str, schema: dict[str, Any]) -> str | None:
+    """
+    Render one result's normal help, with its matching options pulled into a panel at the top.
+
+    Returns ``None`` when the command cannot render rich help (a plain Click command in the tree).
+    """
+    from rich_click.help_json import _make_child_context
+    from rich_click.rich_command import RichCommand
+    from rich_click.rich_context import RichContext
+
+    owned: list[click.Context] = []
+    try:
+        command, command_ctx = cmd, ctx
+        for name in str(schema.get("path") or "")[len(ctx.command_path) :].split():
+            child = command.get_command(command_ctx, name) if isinstance(command, click.Group) else None
+            if child is None:
+                return None
+            command_ctx = _make_child_context(child, name, command_ctx)
+            owned.append(command_ctx)
+            command = child
+        if not isinstance(command, RichCommand) or not isinstance(command_ctx, RichContext):
+            return None
+        command_ctx.search_query = query
+        command_ctx.search_matched_params = (schema.get("_matched_params") or [])[:MAX_MATCHING_OPTIONS]
+        command_ctx.search_total_params = sum(1 for param in _visible_params(schema) if param.get("kind") == "option")
+        try:
+            return command.get_help(command_ctx)
+        finally:
+            command_ctx.search_query = None
+            command_ctx.search_matched_params = None
+    finally:
+        for child_ctx in reversed(owned):
+            child_ctx.close()
+
+
+def _results_panel(ctx: RichContext, query: str, results: list[dict[str, Any]]) -> str:
+    """Render several results as a panel: each command, with its best-matching options underneath."""
     from rich.table import Table
     from rich.text import Text
 
@@ -213,9 +430,7 @@ def rich_search_results(ctx: RichContext, query: str, results: list[dict[str, An
 
     formatter = ctx.make_formatter()
     config = formatter.config
-    if not results:
-        formatter.write(Text(_no_matches(ctx, query)))
-        return formatter.getvalue()
+    formatter.search_highlight = highlight_pattern(query)
 
     table = Table.grid(padding=(0, 2))
     for schema in results:
@@ -223,6 +438,16 @@ def rich_search_results(ctx: RichContext, query: str, results: list[dict[str, An
             Text(str(schema.get("path") or ""), style=config.style_command),
             formatter.rich_text(_summary(schema), config.style_commands_panel_help_style),
         )
+        params = {str(param.get("name") or ""): param for param in schema.get("params", [])}
+        for name in (schema.get("_matched_params") or [])[:MAX_OPTIONS_PER_RESULT]:
+            param = params[name]
+            opts = [*(param.get("opts") or []), *(param.get("secondary_opts") or [])]
+            signature = Text("  ")
+            signature.append(", ".join(opts) or name.upper(), style=config.style_option)
+            if param.get("metavar") and param.get("kind") == "option":
+                signature.append(" ")
+                signature.append(str(param["metavar"]), style=config.style_metavar)
+            table.add_row(signature, formatter.rich_text(param.get("help") or "", config.style_option_help))
     box = config.style_commands_panel_box
     formatter.write(
         RichClickRichPanel(
@@ -242,9 +467,30 @@ def rich_search_results(ctx: RichContext, query: str, results: list[dict[str, An
     return formatter.getvalue()
 
 
+def rich_search_results(cmd: click.Command, ctx: RichContext, query: str, results: list[dict[str, Any]]) -> str:
+    """
+    Render search results for a terminal, with every matched word highlighted.
+
+    A single clear match is shown as that command's normal help, with a "Matching options" panel
+    first; several matches as a panel listing each command and its best-matching options.
+    """
+    from rich.text import Text
+
+    if not results:
+        formatter = ctx.make_formatter()
+        formatter.write(Text(_no_matches(ctx, query)))
+        return formatter.getvalue()
+    winner = _clear_winner(results)
+    if winner is not None:
+        rendered = _command_help(cmd, ctx, query, winner)
+        if rendered is not None:
+            return rendered
+    return _results_panel(ctx, query, results)
+
+
 def get_search_help(cmd: click.Command, ctx: click.Context, query: str, fmt: str | bool | None = None) -> str:
     """
-    Search below ``cmd`` and render the results. ``fmt`` is the value given to ``--help``, if any.
+    Search ``cmd``'s tree and render the results. ``fmt`` is the value given to ``--help``, if any.
 
     A named format renders in that format when search supports it (compact, Markdown or JSON) and it is
     enabled; anything else renders for the terminal, as an unknown ``--help`` format does. With no
@@ -267,4 +513,4 @@ def get_search_help(cmd: click.Command, ctx: click.Context, query: str, fmt: str
     if not isinstance(ctx, RichContext):
         # A plain Click context has no rich formatter to draw the panel with.
         return render_search_results(ctx, query, results, "compact")
-    return rich_search_results(ctx, query, results)
+    return rich_search_results(cmd, ctx, query, results)

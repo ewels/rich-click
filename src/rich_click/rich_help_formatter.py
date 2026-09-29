@@ -20,6 +20,8 @@ from rich_click.rich_panel import RichCommandPanel, RichOptionPanel, RichPanel
 
 
 if TYPE_CHECKING:  # pragma: no cover
+    import re
+
     from rich.console import Console
     from rich.highlighter import Highlighter
     from rich.markdown import Markdown
@@ -194,7 +196,15 @@ class RichHelpFormatter(click.HelpFormatter):
 
             return HighlighterClass()
 
+    #: Words to highlight in everything written, set when rendering ``--search-help`` results.
+    search_highlight: re.Pattern[str] | None = None
+
     def write(self, *objects: Any, **kwargs: Any) -> None:
+        if self.search_highlight is not None:
+            from rich_click.help_search import SearchHighlight
+
+            style = self.config.style_search_match
+            objects = tuple(SearchHighlight(obj, self.search_highlight, style) for obj in objects)
         self.console.print(*objects, **kwargs)
 
     def write_usage(self, prog: str, args: str = "", prefix: str | None = None) -> None:

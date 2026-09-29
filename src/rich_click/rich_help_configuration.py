@@ -136,6 +136,8 @@ class RichHelpConfiguration:
     style_examples_flag_short: StyleType = field(default="bold green")
     style_examples_placeholder: StyleType = field(default="blue")
     style_examples_operator: StyleType = field(default="bold yellow")  # shell operators: | > && ; ...
+    style_search_match: StyleType = field(default="bold underline")
+    """Style added to the words a ``--search-help`` query matched."""
     style_deprecated: StyleType = field(default=FROM_THEME)
     style_helptext_first_line: StyleType = field(default=FROM_THEME)
     style_helptext: StyleType = field(default=FROM_THEME)
