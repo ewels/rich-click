@@ -292,6 +292,11 @@ class RichHelpConfiguration:
     most CLIs emit their whole tree in full detail and never touch this setting; only a very large tree
     degrades. Set to ``None`` to disable adaptive disclosure, rendering just the invoked command plus a
     name index of its descendants. Does not affect explicit help formats, which return the whole tree."""
+    help_search: bool = field(default=False)
+    """Add a ``--search-help QUERY`` option to every group, listing the subcommands that best match QUERY.
+
+    Off by default. The results follow ``--help``'s format (``--search-help QUERY --help json``), and a
+    detected AI agent gets ``agent_help_format``, as with a bare ``--help``."""
     error_diagnosis: bool = field(default=True)
     """Diagnose usage errors, stating the rule that was broken instead of only the symptom.
 

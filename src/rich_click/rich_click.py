@@ -188,6 +188,8 @@ AGENT_HELP_FORMAT: str | None = "compact"
 # disclosed, nearest commands first. Characters because agent harnesses truncate output by characters.
 # None disables adaptation (current command + name index).
 AGENT_HELP_MAX_CHARS: int | None = 25_000
+# Add a `--search-help QUERY` option to every group, listing the subcommands that best match QUERY.
+HELP_SEARCH: bool = False
 # Diagnose usage errors: state the rule that was broken, not just the symptom. Rendered as a terse
 # addition to the error panel, or as a plain-text block when an AI agent is detected.
 # `RICH_CLICK_ERROR_DIAGNOSIS` overrides this in both directions.

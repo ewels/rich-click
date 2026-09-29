@@ -27,7 +27,7 @@ from rich_click.rich_command import RichCommand, RichGroup
 from rich_click.rich_context import RichContext
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_panel import RichCommandPanel, RichOptionPanel, RichPanel
-from rich_click.rich_parameter import RichArgument, RichHelpOption, RichOption
+from rich_click.rich_parameter import RichArgument, RichHelpOption, RichLegacyHelpOption, RichOption
 
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -346,7 +346,7 @@ def _legacy_help_option_attrs(kwargs: dict[str, Any]) -> dict[str, Any]:
         attrs.setdefault(key, value)
     attrs.setdefault("is_flag", True)
     attrs.setdefault("callback", _show_legacy_help)
-    attrs.setdefault("cls", RichOption)
+    attrs.setdefault("cls", RichLegacyHelpOption)
     return attrs
 
 

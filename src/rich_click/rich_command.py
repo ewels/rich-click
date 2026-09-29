@@ -568,6 +568,63 @@ class RichGroup(RichCommand, Group):
             if cmd.name and panel:
                 self.add_command_to_panel(cmd, panel)
 
+    def get_params(self, ctx: click.Context) -> list[click.Parameter]:
+        """Return parameters with ``--search-help`` placed just before ``--help`` when it is enabled."""
+        params = super().get_params(ctx)
+        search_option = self.get_search_help_option(ctx)
+        if search_option is None:
+            return params
+        help_names = set(self.get_help_option_names(ctx)) if self.add_help_option else set()
+        index = next((i for i, param in enumerate(params) if help_names & set(param.opts)), len(params))
+        return [*params[:index], search_option, *params[index:]]
+
+    def get_search_help_option(self, ctx: click.Context) -> click.Option | None:
+        """
+        Return the ``--search-help`` option, or ``None`` unless the ``help_search`` config is on.
+
+        Also ``None`` when the command already declares its own ``--search-help``, which wins.
+        """
+        if not getattr(getattr(ctx, "help_config", None), "help_search", False):
+            return None
+        if any("--search-help" in getattr(param, "opts", ()) for param in self.params):
+            return None
+        if getattr(self, "_search_help_option", None) is None:
+            from rich_click.rich_parameter import RichSearchHelpOption
+
+            self._search_help_option = RichSearchHelpOption()
+        return self._search_help_option
+
+    def search_commands(self, ctx: click.Context, query: str) -> list[dict[str, Any]]:
+        """Return display schemas for the subcommands that best match ``query``. Override to change ranking."""
+        from rich_click.help_search import search_command_tree
+
+        return search_command_tree(self, ctx, query)
+
+    def get_search_help(self, ctx: RichContext, query: str, fmt: str | bool | None = None) -> str:
+        """
+        Render ``--search-help`` results. ``fmt`` is the value given to ``--help``, if any.
+
+        A named format renders in that format when search supports it (compact, Markdown or JSON) and
+        it is enabled; anything else renders for the terminal, as an unknown ``--help`` format does. With
+        no format, a detected AI agent gets ``agent_help_format``, as a bare ``--help`` would.
+        """
+        from rich_click._agent_detection import is_agent_mode
+        from rich_click.decorators import HELP_PLAIN_VALUE
+        from rich_click.help_formats import _normalize_format_name
+        from rich_click.help_json import _help_format_names
+        from rich_click.help_search import SEARCH_FORMATS, render_search_results, rich_search_results
+
+        if not isinstance(fmt, str) or fmt == HELP_PLAIN_VALUE or not fmt:
+            fmt = None
+            if is_agent_mode():
+                fmt = getattr(getattr(ctx, "help_config", None), "agent_help_format", None)
+        fmt = _normalize_format_name(fmt) if fmt else None
+
+        results = self.search_commands(ctx, query)
+        if fmt in SEARCH_FORMATS and fmt in _help_format_names(self, ctx):
+            return render_search_results(ctx, query, results, fmt)
+        return rich_search_results(ctx, query, results)
+
     def format_commands(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
         # Not used
         pass

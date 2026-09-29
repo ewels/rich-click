@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import inspect
+from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING, Any
 
 import click
@@ -101,7 +102,35 @@ class RichOption(RichParameter, click.Option):
     """
 
 
-class RichHelpOption(RichOption):
+def _search_help_pending(ctx: click.Context, opts: Mapping[str, Any]) -> bool:
+    """Report whether this invocation also passed ``--search-help``, which then takes over ``--help``."""
+    get_option = getattr(ctx.command, "get_search_help_option", None)
+    option = get_option(ctx) if get_option is not None else None
+    return option is not None and option.name in opts
+
+
+class _DefersToSearchHelp(click.Option):
+    """
+    A help option that stands aside when ``--search-help`` is also given.
+
+    ``--help`` then only picks the output format, which :class:`RichSearchHelpOption` reads for itself.
+    Both options are eager and Click processes eager options in command-line order, so without this
+    ``--help json --search-help QUERY`` would print the whole help before the search ever ran.
+    """
+
+    def handle_parse_result(
+        self, ctx: click.Context, opts: Mapping[str, Any], args: list[str]
+    ) -> tuple[Any, list[str]]:
+        if _search_help_pending(ctx, opts):
+            return None, args
+        return super().handle_parse_result(ctx, opts, args)
+
+
+class RichLegacyHelpOption(_DefersToSearchHelp, RichOption):
+    """The Boolean ``--help`` flag, used when machine-readable help formats are disabled."""
+
+
+class RichHelpOption(_DefersToSearchHelp, RichOption):
     """
     The ``--help`` option.
 
@@ -130,3 +159,44 @@ class RichHelpOption(RichOption):
         if not names:
             return ""
         return "[" + "|".join(names) + "]"
+
+
+class RichSearchHelpOption(RichOption):
+    """
+    The ``--search-help QUERY`` option, added to every group when the ``help_search`` config is on.
+
+    Prints the subcommands that best match ``QUERY`` and exits. The output format follows ``--help``:
+    ``--search-help QUERY --help json`` renders the matches as JSON, in either order.
+    """
+
+    def __init__(self, param_decls: Sequence[str] | None = None, **kwargs: Any) -> None:
+        """Create the option, defaulting to ``--search-help QUERY``."""
+        kwargs.setdefault("metavar", "QUERY")
+        kwargs.setdefault("expose_value", False)
+        kwargs.setdefault("is_eager", True)
+        kwargs.setdefault("help", "Search all subcommands and show the ones that best match QUERY.")
+        kwargs.setdefault("callback", _show_search_help)
+        super().__init__(param_decls or ["--search-help"], **kwargs)
+
+    def handle_parse_result(
+        self, ctx: click.Context, opts: Mapping[str, Any], args: list[str]
+    ) -> tuple[Any, list[str]]:
+        if self.name in opts:
+            # ``--help`` stands aside (see ``_DefersToSearchHelp``), so read its value here to pick the format.
+            help_option = ctx.command.get_help_option(ctx)
+            ctx.meta[_SEARCH_HELP_FORMAT_KEY] = opts.get(help_option.name) if help_option is not None else None
+        return super().handle_parse_result(ctx, opts, args)
+
+
+_SEARCH_HELP_FORMAT_KEY = "rich_click.search_help_format"
+
+
+def _show_search_help(ctx: click.Context, param: click.Parameter, value: str | None) -> None:
+    """Print the search results and exit."""
+    if value is None or ctx.resilient_parsing:
+        return
+    from rich_click.decorators import _emit_help_text
+
+    fmt = ctx.meta.pop(_SEARCH_HELP_FORMAT_KEY, None)
+    _emit_help_text(ctx, ctx.command.get_search_help(ctx, value, fmt))  # type: ignore[attr-defined]
+    ctx.exit()

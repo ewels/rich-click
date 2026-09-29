@@ -254,6 +254,7 @@ class RichHelpConfigurationDict(TypedDict):
     helptext_show_aliases: NotRequired[bool]
     agent_help_format: NotRequired[str | None]
     agent_help_max_chars: NotRequired[int | None]
+    help_search: NotRequired[bool]
     error_diagnosis: NotRequired[bool]
     help_json_transform: NotRequired[HelpJSONTransform | None]
     help_formats: NotRequired[list[str] | Literal[False]]

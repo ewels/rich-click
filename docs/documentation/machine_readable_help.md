@@ -199,6 +199,36 @@ agent format must also appear in `HELP_FORMATS`.
 
 An explicit `--help <format>` always uses the requested format when its name is enabled.
 
+## Search commands
+
+Large CLIs can add a `--search-help QUERY` option to every group. It lists the subcommands that best match
+the query, so a user or agent can find the right command without reading the whole tree. It is off by
+default:
+
+```python
+import rich_click as click
+
+click.rich_click.HELP_SEARCH = True
+```
+
+Or per command, with `help_config=click.RichHelpConfiguration(help_search=True)`.
+
+The option shows up in the help like any other option. Matching uses command names, aliases, help
+text, option names and help, choice values, and examples. Words that appear in the command name count
+for most, and words shared by many commands count for little. At most five commands are returned, best
+first. Searching from a subgroup only searches that subgroup.
+
+```console
+$ mytool --search-help "new project from a template"
+╭─ Commands matching 'new project from a template' ──────────────────────────╮
+│ mytool create  Create a project.                                            │
+╰─────────────────────────────────────────────────────────────────────────────╯
+```
+
+`--help` sets the output format, in either order: `--search-help QUERY --help compact` prints each match
+as a full compact block, and `markdown` and `json` work the same way. Other formats print the terminal
+view. In a detected agent environment, a search without `--help` uses `agent_help_format`.
+
 ## Install help format plugins
 
 Python packages can add renderers through the `rich_click.help_formats` entry-point group. rich-click
