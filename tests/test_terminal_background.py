@@ -226,4 +226,3 @@ def test_lazy_public_export() -> None:
 def test_invalid_theme_pair_fails_early() -> None:
     with pytest.raises(RichClickThemeNotFound):
         RichHelpConfiguration(theme="dark:nord")
-
