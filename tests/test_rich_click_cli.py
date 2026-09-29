@@ -834,3 +834,12 @@ def test_cli_output_text(mock_script_writer: Callable[[str], Path]) -> None:
 │ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
+
+
+@pytest.mark.parametrize("theme", ["nope", "dark:nord"])
+def test_invalid_theme_error_is_clean(theme: str) -> None:
+    res = run_as_subprocess([sys.executable, "-m", "src.rich_click", "-t", theme, "--help"])
+    stderr = res.stderr.decode()
+    assert res.returncode == 1
+    assert "Traceback" not in stderr
+    assert f"RichClickTheme '{theme}' not found" in stderr

@@ -412,6 +412,10 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
         else:
             cfg = RichHelpConfiguration.load_from_globals()
     except RichClickThemeNotFound as e:
+        import rich_click.rich_click as rc
+
+        # Reset the invalid theme, otherwise the error printer re-raises when building its own config.
+        rc._THEME_FROM_CLI = None
         raise click.ClickException(e.args[0] if e.args else "Theme not found")
 
     if (show_help or not script_and_args) and not ctx.resilient_parsing:
