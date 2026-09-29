@@ -1,0 +1,27 @@
+---
+// Starlight's footer, plus a line pointing at the machine-readable copies of
+// these docs. Generating llms.txt without linking to it is the usual way the
+// file goes unused, and a link is the only discovery signal a static host on a
+// GitHub project page can offer (no HTTP `Link:` headers, and a robots.txt at
+// /rich-click/latest/ is never fetched by a crawler).
+import Default from '@astrojs/starlight/components/Footer.astro';
+import { base } from '../base';
+---
+
+<Default><slot /></Default>
+
+<p class="rc-llms-note">
+  Reading these docs with an AI assistant? Every page is also served as Markdown at{' '}
+  <code>&lt;page-url&gt;.md</code>, and the whole site is indexed in{' '}
+  <a href={`${base}/llms.txt`}>llms.txt</a>.
+</p>
+
+<style>
+  .rc-llms-note {
+    margin-top: 1.5rem;
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+    text-align: center;
+    text-wrap: balance;
+  }
+</style>

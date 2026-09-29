@@ -1,0 +1,255 @@
+/*
+ * Theme port of the previous mkdocs-material configuration:
+ * black header, indigo accent, Noto Sans body font, slate dark scheme, and the
+ * pixelmix display font (with offset text shadow) for the site title and h1s.
+ */
+
+@font-face {
+  font-family: 'pixelmix';
+  src:
+    local('pixelmix'),
+    url('../fonts/pixelmix.ttf') format('truetype');
+  font-display: swap;
+}
+
+:root {
+  --sl-font: 'Noto Sans';
+  --sl-font-mono: 'Roboto Mono';
+  --rc-pixel-font: 'pixelmix', 'Noto Sans', sans-serif;
+  --rc-pixel-shadow: -4px 4px rgba(128, 128, 128, 0.1);
+
+  /* Indigo accent (Material's link colour with a black primary palette). */
+  --sl-color-accent-low: #1c2456;
+  --sl-color-accent: #4051b5;
+  --sl-color-accent-high: #aab4f1;
+
+  /* Material "slate" scheme background. */
+  --sl-color-bg: hsl(232, 15%, 15%);
+  --sl-color-bg-sidebar: var(--sl-color-bg);
+
+  /* Black header, as with Material's `primary: black`. */
+  --sl-color-bg-nav: #000;
+}
+
+:root[data-theme='light'] {
+  --sl-color-accent-low: #dee3fb;
+  --sl-color-accent: #4051b5;
+  --sl-color-accent-high: #2c387e;
+  --sl-color-bg: #fff;
+}
+
+/* The header is black in both colour schemes: force light-on-dark colours for
+   everything inside it (site title, search, icons, selects). */
+header.header {
+  /* Explicit white: Starlight inverts --sl-color-white in light mode. */
+  --sl-color-header-text: #fff;
+  --sl-color-text-accent: #fff;
+  --sl-color-text: #eee;
+  --sl-color-gray-1: #eee;
+  --sl-color-gray-2: #ccc;
+  --sl-color-gray-3: #aaa;
+  --sl-color-gray-5: #444;
+  --sl-color-black: #000;
+  border-bottom: 1px solid #222;
+}
+
+/* Make room for the section tabs row on large screens (see Header.astro).
+   72rem matches Starlight's `lg:` breakpoint; 4rem is its nav height there. */
+:root {
+  --rc-tabs-height: 2.4rem;
+}
+
+@media (min-width: 72rem) {
+  :root {
+    --sl-nav-height: calc(4rem + var(--rc-tabs-height));
+  }
+}
+
+/* Keep the square logo at header size (the taller two-row header would
+   otherwise scale it up). */
+.site-title img {
+  height: 2.25rem;
+  width: auto;
+}
+
+/* Badge rows on the landing page stay inline. */
+.sl-markdown-content p[align='center'] img {
+  display: inline-block;
+  cursor: default;
+  margin: 0;
+}
+
+/* Pixel display font for the site title and page headings. */
+.site-title,
+.site-title span,
+main h1,
+main h1 code,
+.hero h1 {
+  font-family: var(--rc-pixel-font);
+  text-shadow: var(--rc-pixel-shadow);
+}
+
+/* ...except on the generated API reference pages (marked by .pyd-module), where
+   the titles are long dotted module paths that the pixel font makes unreadable. */
+main:has(.pyd-module) h1 {
+  font-family: var(--sl-font), sans-serif;
+  text-shadow: none;
+}
+
+/* Square list bullets with accent hover, as on the old site. */
+.sl-markdown-content ul:not([class]) {
+  list-style: none;
+  padding-inline-start: 0;
+}
+
+.sl-markdown-content ul:not([class]) > li {
+  position: relative;
+  padding-left: 20px;
+}
+
+.sl-markdown-content ul:not([class]) > li::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--sl-color-text);
+  opacity: 90%;
+  position: absolute;
+  left: 0;
+  top: 0.8em;
+  transform: translateY(-50%);
+  transition: background-color 0.2s ease;
+}
+
+.sl-markdown-content ul:not([class]) > li:hover::before {
+  background-color: var(--sl-color-text-accent);
+  opacity: 100%;
+}
+
+/* Content images are mostly terminal screenshots: centre them and cap their
+   width, as the old site's `.screenshot` styling did. */
+.sl-markdown-content img {
+  max-width: min(700px, 100%);
+  margin: 2em auto 0.8em;
+  display: block;
+}
+
+/* Material-style buttons (`{ .md-button }` links). */
+.sl-markdown-content a.md-button {
+  display: inline-block;
+  padding: 0.625em 2em;
+  border: 0.1rem solid var(--sl-color-text-accent);
+  border-radius: 0.1rem;
+  color: var(--sl-color-text-accent);
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background-color 0.25s,
+    color 0.25s;
+}
+
+.sl-markdown-content a.md-button:hover {
+  background-color: var(--sl-color-text-accent);
+  color: var(--sl-color-bg);
+}
+
+/* Landing page hero: the logo is the wordmark, so hide the text title and
+   centre everything in a single column. */
+[data-has-hero] .hero {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
+  padding-block: 1rem;
+  gap: 1rem;
+}
+
+[data-has-hero] .hero > img,
+[data-has-hero] .hero .hero-html {
+  order: -1;
+  margin-inline: auto;
+}
+
+[data-has-hero] .hero .rc-hero-logo img {
+  width: min(100%, 40rem);
+  height: auto;
+}
+
+[data-has-hero] .hero h1 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+[data-has-hero] .hero .tagline {
+  font-style: italic;
+  color: var(--sl-color-text);
+}
+
+[data-has-hero] .hero .copy {
+  align-items: center;
+}
+
+/* Click-to-zoom images (medium-zoom, initialised in components/Header.astro).
+   The backdrop colour is read from this variable by the init script. */
+:root {
+  --rc-zoom-backdrop: rgba(24, 24, 27, 0.9);
+}
+
+:root[data-theme='light'] {
+  --rc-zoom-backdrop: rgba(255, 255, 255, 0.95);
+}
+
+.sl-markdown-content img:not(a img):not(p[align='center'] img) {
+  cursor: zoom-in;
+}
+
+.medium-zoom-overlay,
+.medium-zoom-image--opened {
+  z-index: 100;
+}
+
+/* Inline code highlighted via the `#!lang` prefix (see
+   plugins/satteri-inline-code.mjs): Shiki emits per-theme CSS variables. */
+.sl-markdown-content code span[style*='--shiki'] {
+  color: var(--shiki-light);
+}
+
+[data-theme='dark'] .sl-markdown-content code span[style*='--shiki'] {
+  color: var(--shiki-dark);
+}
+
+/* Mermaid diagrams are rendered client-side into `pre.mermaid` blocks. */
+pre.mermaid {
+  display: flex;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+pre.mermaid:not([data-processed]) {
+  visibility: hidden;
+  min-height: 4rem;
+}
+
+/* Collapsible sections (plain <details> HTML in the Markdown). These rules are
+   unlayered, so they beat any cascade layer: exclude the API reference's own
+   folds, which bring their own chrome. */
+.sl-markdown-content details:not(:where(.pyd-fold)) {
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.sl-markdown-content details:not(:where(.pyd-fold)) > summary {
+  cursor: pointer;
+  font-weight: 600;
+  user-select: none;
+}
+
+.sl-markdown-content details:not(:where(.pyd-fold))[open] > summary {
+  margin-bottom: 0.5rem;
+}

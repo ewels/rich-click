@@ -4,6 +4,8 @@
 
 - Dropped support for Python 3.8 and 3.9; the minimum supported version is now Python 3.10.
 - Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python <3.10.
+- Docs are now built with [Astro Starlight](https://starlight.astro.build/) instead of ProperDocs, using Astro's Rust-based Sätteri Markdown processor for faster builds. The site keeps the same URLs, versioned deploys, styling and features as before.
+- Fixed some broken docs links; broken links and anchors now fail the docs build (via `starlight-links-validator`).
 - Fixed docs versioning, so that a released version no longer keeps the `prerelease` alias alongside `latest`. [[#343](https://github.com/ewels/rich-click/pull/343)] ([@dwreeves](https://github.com/dwreeves))
 - Redesigned `__init__.py` to avoid surfacing click's `DeprecationWarning` going forward.
 - Fixed `patch_typer()` crashing on `typer>=0.26.0`; it now warns and leaves Typer unpatched instead of raising. [[#330](https://github.com/ewels/rich-click/issues/330)]
