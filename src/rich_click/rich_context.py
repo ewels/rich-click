@@ -24,10 +24,10 @@ class RichContext(click.Context):
     help_to_stderr: bool = False
     agent_help_default: bool = False
     #: Set while ``--search-help`` renders this command's help: the query, whose words get highlighted,
-    #: and the matching parameters, listed first in a "Matching options" panel.
+    #: the matching parameters, best first, and whether to show only those rather than rank them first.
     search_query: str | None = None
     search_matched_params: list[str] | None = None
-    search_total_params: int = 0
+    search_filter: bool = False
     """True only while rendering the format a *bare* ``--help`` chose because an agent was detected.
 
     A format that behaves differently when it was asked for by name reads this: ``--help compact``

@@ -156,11 +156,9 @@ def test_one_clear_match_renders_its_help_with_matching_options_first() -> None:
     assert result.exit_code == 0
     output = result.output
     assert "Usage: cli plarv crell" in output
-    assert "Matching options (1 of 2)" in output
-    # Nothing is hidden: the author's own panel still lists every option, --wover included.
-    assert output.index("Matching options") < output.index("Options ─")
-    assert output.count("--wover") == 2
-    assert "--crull" in output
+    # Ranked inside the author's panel: --wover matched, so it moves above --crull. Nothing is hidden.
+    assert output.index("--wover") < output.index("--crull")
+    assert "not shown" not in output
 
 
 def test_single_command_cli_can_be_searched() -> None:
@@ -177,7 +175,8 @@ def test_single_command_cli_can_be_searched() -> None:
     assert lines[0].startswith("# cli")
     # Ranked, not filtered: --zulu matched best so it comes first, and --alpha is still listed.
     assert lines[1].startswith("--zulu") and lines[2].startswith("--alpha")
-    assert "Matching options (2 of 2)" in runner.invoke(cli, ["--search-help", "last letter"]).output
+    output = runner.invoke(cli, ["--search-help", "last letter"]).output
+    assert output.index("--zulu") < output.index("--alpha")
 
 
 def test_search_help_does_not_match_itself() -> None:
@@ -216,20 +215,20 @@ def test_matched_words_are_highlighted() -> None:
 
 def test_unsupported_format_falls_back_to_terminal_output() -> None:
     result = CliRunner().invoke(make_cli(), ["--search-help", "weight", "--help", "nope"])
-    assert "Matching options (1 of 2)" in result.output
+    assert result.output.index("--wover") < result.output.index("--crull")
 
 
 def test_disabled_format_falls_back_to_terminal_output() -> None:
     cli = make_cli(help_formats=["compact"])
     result = CliRunner().invoke(cli, ["--search-help", "weight", "--help", "json"])
-    assert "Matching options (1 of 2)" in result.output
+    assert result.output.index("--wover") < result.output.index("--crull")
 
 
 def test_search_help_with_legacy_help_flag() -> None:
     cli = make_cli(help_formats=False)
     result = CliRunner().invoke(cli, ["--help", "--search-help", "weight"])
     assert result.exit_code == 0
-    assert "Matching options (1 of 2)" in result.output
+    assert result.output.index("--wover") < result.output.index("--crull")
 
 
 def test_agent_gets_the_agent_help_format(agent_env: ConfigureAgentEnv) -> None:
@@ -260,36 +259,61 @@ def make_single_command(**settings: Any) -> Any:
     return cli
 
 
-def test_rank_options_off_keeps_declared_order() -> None:
+def test_options_none_keeps_declared_order() -> None:
     runner = CliRunner()
-    cli = make_single_command(rank_options=False)
+    cli = make_single_command(options=None)
     output = runner.invoke(cli, ["--search-help", "last letter", "--help", "compact"]).output
     assert output.index("--alpha") < output.index("--zulu")
-    assert "Matching options" not in runner.invoke(cli, ["--search-help", "last letter"]).output
+    terminal = runner.invoke(cli, ["--search-help", "zulu"]).output
+    assert terminal.index("--alpha") < terminal.index("--zulu")
     data = json.loads(runner.invoke(cli, ["--search-help", "last letter", "--help", "json"]).output)
     assert not any("match_rank" in param for param in data["results"][0]["params"])
 
 
-def test_matching_options_zero_drops_the_panel() -> None:
-    output = CliRunner().invoke(make_single_command(matching_options=0), ["--search-help", "last letter"]).output
-    assert "Usage: cli" in output
-    assert "Matching options" not in output
+def make_filter_cli() -> Any:
+    @command()
+    @search_help_option(options="filter")
+    @option("--alpha", help="First letter.")
+    @option("--zulu", help="Last letter.")
+    @option("--must", required=True, help="Always needed.")
+    def cli(alpha: str, zulu: str, must: str) -> None:
+        """One command, many options."""
+
+    return cli
+
+
+def test_filter_shows_matching_and_required_options_only() -> None:
+    output = CliRunner().invoke(make_filter_cli(), ["--search-help", "zulu"]).output
+    assert "--zulu" in output
+    assert "--must" in output
+    assert "--alpha" not in output
+    assert "1 more option not shown. Run 'cli --help' to see them all." in output
+
+
+def test_filter_in_text_formats() -> None:
+    runner = CliRunner()
+    compact = runner.invoke(make_filter_cli(), ["--search-help", "zulu", "--help", "compact"]).output
+    assert "--zulu TEXT  Last letter." in compact
+    assert "*--must TEXT  Always needed." in compact
+    assert "--alpha" not in compact
+    assert "... 1 more option: cli --help" in compact
+    data = json.loads(runner.invoke(make_filter_cli(), ["--search-help", "zulu", "--help", "json"]).output)
+    result = data["results"][0]
+    assert [param["name"] for param in result["params"]] == ["zulu", "must"]
+    assert result["omitted_params"] == 1
+
+
+def test_filter_keeps_every_option_when_none_matched() -> None:
+    # Found by its help text, not by an option: filtering would leave nothing to show.
+    compact = CliRunner().invoke(make_filter_cli(), ["--search-help", "many", "--help", "compact"]).output
+    assert "--alpha" in compact and "--zulu" in compact
+    assert "more option" not in compact
 
 
 def test_single_match_help_off_always_uses_the_results_panel() -> None:
     output = CliRunner().invoke(make_single_command(single_match_help=False), ["--search-help", "zulu"]).output
     assert "Commands matching 'zulu'" in output
     assert "--zulu" in output
-
-
-def test_options_per_result_zero_lists_commands_only() -> None:
-    output = (
-        CliRunner()
-        .invoke(make_single_command(single_match_help=False, options_per_result=0), ["--search-help", "zulu"])
-        .output
-    )
-    assert "Commands matching 'zulu'" in output
-    assert "--zulu" not in output
 
 
 def test_highlight_off() -> None:
@@ -312,18 +336,3 @@ def test_highlight_off() -> None:
         assert seen and all(pattern is None for pattern in seen)
     finally:
         RichHelpFormatter.write = original  # type: ignore[method-assign]
-
-
-def test_search_own_options_off() -> None:
-    @group()
-    @search_help_option(search_own_options=False)
-    @option("--verbose", is_flag=True, help="Chatty logging.")
-    def cli(verbose: bool) -> None:
-        """Root."""
-
-    @cli.command()
-    def weigh() -> None:
-        """Weigh something."""
-
-    output = CliRunner().invoke(cli, ["--search-help", "chatty logging", "--help", "compact"]).output
-    assert output.strip() == "No commands under 'cli' match 'chatty logging'."

@@ -222,9 +222,9 @@ The decorated command is searched too, so a single command with hundreds of opti
 large command tree. Words in a command's or option's name count for most, and words shared by many
 commands count for little. At most five commands are returned, best first.
 
-Results are ranked, never filtered: every option is still shown, with the matching ones first. In the
-terminal, the matched words are highlighted (the `style_search_match` config option, `bold underline` by
-default).
+Each result's options are ranked against the query too: the matching ones come first and the rest
+follow, so nothing is hidden. In the terminal, the matched words are highlighted (the `style_search_match`
+config option, `bold underline` by default).
 
 Several matching commands are listed in a panel, each with its best-matching options:
 
@@ -239,29 +239,28 @@ $ mytool --search-help "output format"
 ╰─────────────────────────────────────────────────────────────────────────────╯
 ```
 
-When one command is a clear match, its normal help is shown, with a "Matching options" panel first. The
-command's own panels follow unchanged:
-
-```console
-$ mytool export --search-help "gzip"
-
- Usage: mytool export [OPTIONS] SOURCE
-
- Export records to a file.
-
-╭─ Matching options (1 of 7) ─────────────────────────────────────────────────╮
-│ --compress  Gzip each output file.                                          │
-╰─────────────────────────────────────────────────────────────────────────────╯
-╭─ Options ───────────────────────────────────────────────────────────────────╮
-│ ...every option, as usual...                                                │
-╰─────────────────────────────────────────────────────────────────────────────╯
-```
+When one command is a clear match, its normal help is shown, with the matching options moved to the top
+of each panel.
 
 `--help` sets the output format, in either order: `--search-help QUERY --help compact` prints each match
 as a full compact block with its matching options first, and `markdown` works the same way. In `json`,
 the parameters keep their declared order and the matching ones carry a `match_rank` (1 is best). Other
 formats print the terminal view. In a detected agent environment, a search without `--help` uses
 `agent_help_format`.
+
+### Search settings
+
+`search_help_option()` takes these keyword arguments:
+
+| Argument            | Default  | Description                                                                                                                                                    |
+| ------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `max_results`       | `5`      | How many matching commands to return.                                                                                                                          |
+| `options`           | `"rank"` | `"rank"` lists matching options first. `"filter"` lists only matching and required options, and says how many were left out. `None` keeps the declared order. |
+| `single_match_help` | `True`   | Show a single clear match as its full help. `False` always shows the results panel.                                                                            |
+| `highlight`         | `True`   | Highlight matched words in the terminal.                                                                                                                       |
+
+With `options="filter"`, a result whose options don't match the query (a command found by its name) still
+shows all of its options.
 
 ## Install help format plugins
 

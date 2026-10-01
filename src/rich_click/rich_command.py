@@ -355,18 +355,23 @@ class RichCommand(Command):
         from rich_click.rich_panel import construct_panels
 
         panels = construct_panels(self, ctx, formatter)  # type: ignore[arg-type]
-        matched = getattr(ctx, "search_matched_params", None)
-        if matched:
-            # ``--search-help`` found this command: list its best-matching options first. The author's
-            # panels still follow in full, so nothing is hidden.
-            from rich_click.help_search import matching_options_title
+        omitted = 0
+        if getattr(ctx, "search_matched_params", None):
+            # ``--search-help`` found this command: rank or filter the options inside each panel.
+            from rich_click.help_search import arrange_panels
 
-            title = matching_options_title(ctx)  # type: ignore[arg-type]
-            panels = [formatter.option_panel_class(name=title, options=list(matched)), *panels]  # type: ignore[attr-defined]
+            panels, omitted = arrange_panels(self, ctx, panels)  # type: ignore[arg-type]
         for panel in panels:
             p = panel.render(self, ctx, formatter)  # type: ignore[arg-type]
             if not isinstance(p.renderable, Table) or len(p.renderable.rows) > 0:
                 formatter.write(p)  # type: ignore[arg-type]
+        if omitted:
+            from rich.padding import Padding
+
+            from rich_click.help_search import omitted_options_note
+
+            note = omitted_options_note(ctx, omitted)  # type: ignore[arg-type]
+            formatter.write(Padding(formatter.rich_text(note, "dim"), (0, 1)))  # type: ignore[attr-defined,arg-type]
 
     def format_examples(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:
         """Render the command's ``examples`` (if any) as a panel, after the options/commands."""

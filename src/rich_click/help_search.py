@@ -17,7 +17,7 @@ import math
 import re
 from collections.abc import Iterator
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 import click
 
@@ -29,6 +29,7 @@ if TYPE_CHECKING:
     from rich.style import StyleType
 
     from rich_click.rich_context import RichContext
+    from rich_click.rich_panel import RichPanel
 
 
 @dataclass(frozen=True)
@@ -37,20 +38,18 @@ class SearchSettings:
 
     max_results: int = 5
     """How many matching commands to return, best first."""
-    search_own_options: bool = True
-    """Also match the decorated group's own options. A single command is always searched."""
-    rank_options: bool = True
-    """Rank each result's options: listed first in compact/Markdown, ``match_rank`` in JSON. ``False``
-    keeps the declared order and turns off both option displays below."""
-    options_per_result: int = 3
-    """How many best-matching options to list under each command in the results panel. ``0`` for none."""
-    matching_options: int = 10
-    """How many options the "Matching options" panel lists above a single match's help. ``0`` for no panel."""
+    options: Literal["rank", "filter"] | None = "rank"
+    """What to do with each result's options. ``"rank"`` lists the matching ones first, keeping the rest;
+    ``"filter"`` lists only the matching ones (plus required ones and arguments), with a count of the
+    rest; ``None`` leaves options in their declared order."""
     single_match_help: bool = True
     """Show a single clear match as its full help, rather than as one row of the results panel."""
     highlight: bool = True
     """Highlight the matched words in terminal output, with the ``style_search_match`` style."""
 
+
+#: How many of a command's best-matching options the multi-command results panel lists under it.
+_OPTIONS_PER_RESULT = 3
 
 #: A command is dropped when it scores below this fraction of the best match, so a query that matches
 #: one command well is not padded out with commands that only share a common word.
@@ -110,11 +109,7 @@ def _matches(query_token: str, tokens: set[str]) -> bool:
 
 def _visible_params(schema: dict[str, Any]) -> list[dict[str, Any]]:
     """Return the parameters a search looks at: every visible one except ``--help`` and ``--search-help``."""
-    return [
-        param
-        for param in schema.get("params", [])
-        if not param.get("hidden") and not param.get("is_help_option") and not param.get("is_search_help_option")
-    ]
+    return [param for param in schema.get("params", []) if _is_searchable(param)]
 
 
 def _param_fields(param: dict[str, Any]) -> list[tuple[float, set[str]]]:
@@ -194,10 +189,10 @@ def search_schemas(root: dict[str, Any], query: str, settings: SearchSettings | 
     tree, so a word every command shares ("record" in a CLI of record commands) counts for little and a
     word only one command uses decides the result. Ties keep declaration order.
 
-    ``root`` is a candidate too: on its own parameters for a group (unless ``search_own_options`` is off),
-    and in full for a single command, so a CLI with one command and hundreds of options can still be
-    searched. Each returned schema carries ``_score`` and ``_matched_params`` (the names of its matching
-    parameters, best first, or empty when ``rank_options`` is off).
+    ``root`` is a candidate too: on its own parameters for a group, and in full for a single command, so
+    a CLI with one command and hundreds of options can still be searched. Each returned schema carries
+    ``_score`` and ``_matched_params`` (the names of its matching parameters, best first, or empty when
+    the ``options`` setting is ``None``).
     """
     settings = settings or SearchSettings()
     query_tokens = _tokens(query)
@@ -206,7 +201,7 @@ def search_schemas(root: dict[str, Any], query: str, settings: SearchSettings | 
 
     root_path = str(root.get("path") or "")
     descendants = _descendants(root)
-    candidates = [*([root] if settings.search_own_options or not descendants else []), *descendants]
+    candidates = [root, *descendants]
     fields = [_fields(schema, root_path, params_only=schema is root and bool(descendants)) for schema in candidates]
 
     rarity = {}
@@ -229,7 +224,7 @@ def search_schemas(root: dict[str, Any], query: str, settings: SearchSettings | 
     for score, _, schema in scored[: settings.max_results]:
         if score < threshold:
             break
-        matched = _rank_params(schema, rarity) if settings.rank_options else []
+        matched = _rank_params(schema, rarity) if settings.options else []
         results.append({**schema, "_score": score, "_matched_params": matched})
     return results
 
@@ -251,80 +246,132 @@ def search_command_tree(
 # --------------------------------------------------------------------------------------------------
 
 
-def _ranked(schema: dict[str, Any]) -> dict[str, Any]:
-    """
-    Return ``schema`` with its matching options moved to the front, best first, and nothing removed.
+def _is_searchable(param: dict[str, Any]) -> bool:
+    """Report whether a parameter counts towards a search: visible, and not ``--help``/``--search-help``."""
+    return not param.get("hidden") and not param.get("is_help_option") and not param.get("is_search_help_option")
 
-    Only options move. Arguments keep their order, because the usage line is built from it.
+
+def _arranged(schema: dict[str, Any], settings: SearchSettings) -> tuple[dict[str, Any], int]:
+    """
+    Return ``schema`` with its options ranked or filtered, and how many options filtering left out.
+
+    Ranking moves the matching options to the front, best first, and keeps the rest. Filtering keeps the
+    matching and required options only, unless nothing matched (a command found by its name), when every
+    option is kept. Arguments are never moved or dropped: the usage line is built from their order.
     """
     order = {name: rank for rank, name in enumerate(schema.get("_matched_params") or [])}
+    if not order:
+        return schema, 0
     params = schema.get("params", [])
     arguments = [param for param in params if param.get("kind") != "option"]
     options = [param for param in params if param.get("kind") == "option"]
-    options.sort(key=lambda param: order.get(str(param.get("name") or ""), len(order)))
-    return {**schema, "params": arguments + options}
+    matched = sorted(
+        (param for param in options if str(param.get("name") or "") in order),
+        key=lambda param: order[str(param.get("name") or "")],
+    )
+    rest = [param for param in options if str(param.get("name") or "") not in order]
+    omitted = 0
+    if settings.options == "filter":
+        omitted = sum(1 for param in rest if _is_searchable(param) and not param.get("required"))
+        rest = [param for param in rest if param.get("required")]
+    return {**schema, "params": arguments + matched + rest}, omitted
+
+
+def _omitted_note(schema: dict[str, Any], omitted: int) -> str:
+    noun = "option" if omitted == 1 else "options"
+    return f"{omitted} more {noun}: {_schema_path(schema)} --help"
+
+
+def _schema_path(schema: dict[str, Any]) -> str:
+    return str(schema.get("path") or schema.get("name") or "")
 
 
 def _no_matches(ctx: click.Context, query: str) -> str:
     return f"No commands under '{ctx.command_path}' match '{query}'."
 
 
-def _render_markdown(results: list[dict[str, Any]]) -> str:
+def _render_markdown(results: list[dict[str, Any]], settings: SearchSettings) -> str:
     """Render each match as its own Markdown section, with a name index for a group's subcommands."""
     from rich_click.help_json import _md_index_entry, _pointer_entry, _render_command_body
 
     lines: list[str] = []
     for schema in results:
-        _render_command_body(_ranked(schema), lines)
+        arranged, omitted = _arranged(schema, settings)
+        _render_command_body(arranged, lines)
+        if omitted:
+            lines += [f"_{_omitted_note(schema, omitted)}_", ""]
         children = (schema.get("subcommands") or {}).values()
         if children:
             lines += ["## Subcommands", "", *(_md_index_entry(*_pointer_entry(child)) for child in children), ""]
     return "\n".join(lines).strip()
 
 
-def _render_compact(results: list[dict[str, Any]]) -> str:
+def _render_compact(results: list[dict[str, Any]], settings: SearchSettings) -> str:
     """Render each match as a full compact block, with a name listing for a group's subcommands."""
     from rich_click.help_json import _compact_index_entry, _pointer_entry, _render_compact_body
 
     lines: list[str] = []
     for schema in results:
-        _render_compact_body(_ranked(schema), lines)
+        arranged, omitted = _arranged(schema, settings)
+        _render_compact_body(arranged, lines)
+        if omitted:
+            lines.append(f"... {_omitted_note(schema, omitted)}")
         lines += [_compact_index_entry(*_pointer_entry(child)) for child in (schema.get("subcommands") or {}).values()]
         lines.append("")
     return "\n".join(lines).strip()
 
 
-def _json_result(schema: dict[str, Any]) -> dict[str, Any]:
+def _json_result(schema: dict[str, Any], settings: SearchSettings) -> dict[str, Any]:
     """
     Strip a display schema back to the public JSON shape, listing subcommands by name only.
 
-    Parameters keep their declared order; the ones that matched carry ``match_rank`` (1 is best).
+    Ranked parameters keep their declared order and the matching ones carry ``match_rank`` (1 is best).
+    Filtered ones are only those that matched or are required, with ``omitted_params`` counting the rest.
     """
     ranks = {name: rank for rank, name in enumerate(schema.get("_matched_params") or [], start=1)}
     result = {key: value for key, value in schema.items() if not key.startswith("_") and key != "subcommands"}
     params = []
+    omitted = 0
     for param in schema.get("params", []):
-        entry = {key: value for key, value in param.items() if key not in ("is_help_option", "is_search_help_option")}
         rank = ranks.get(str(param.get("name") or ""))
+        keep = rank is not None or not ranks or settings.options != "filter"
+        keep = keep or param.get("kind") != "option" or bool(param.get("required"))
+        if not keep:
+            omitted += _is_searchable(param)
+            continue
+        entry = {key: value for key, value in param.items() if key not in ("is_help_option", "is_search_help_option")}
         if rank is not None:
             entry["match_rank"] = rank
         params.append(entry)
     result["params"] = params
+    if omitted:
+        result["omitted_params"] = omitted
     if schema.get("subcommands"):
         result["subcommands"] = list(schema["subcommands"])
     return result
 
 
-def render_search_results(ctx: click.Context, query: str, results: list[dict[str, Any]], fmt: str) -> str:
+def render_search_results(
+    ctx: click.Context,
+    query: str,
+    results: list[dict[str, Any]],
+    fmt: str,
+    settings: SearchSettings | None = None,
+) -> str:
     """Render search results in one of :data:`SEARCH_FORMATS`."""
+    settings = settings or SearchSettings()
     if fmt == "json":
         import json
 
-        data = {"query": query, "path": ctx.command_path, "results": [_json_result(schema) for schema in results]}
+        data = {
+            "query": query,
+            "path": ctx.command_path,
+            "results": [_json_result(schema, settings) for schema in results],
+        }
         return json.dumps(data, indent=2, default=str)
     if not results:
         return _no_matches(ctx, query)
-    return _render_markdown(results) if fmt == "markdown" else _render_compact(results)
+    return _render_markdown(results, settings) if fmt == "markdown" else _render_compact(results, settings)
 
 
 # --------------------------------------------------------------------------------------------------
@@ -388,10 +435,56 @@ class SearchHighlight:
         return Measurement.get(console, options, self.renderable)
 
 
-def matching_options_title(ctx: RichContext) -> str:
-    """Title for the panel that lists a command's best-matching options at the top of its help."""
-    shown = len(ctx.search_matched_params or [])
-    return f"Matching options ({shown} of {ctx.search_total_params})"
+def arrange_panels(
+    command: click.Command, ctx: RichContext, panels: list[RichPanel[Any, Any]]
+) -> tuple[list[RichPanel[Any, Any]], int]:
+    """
+    Rank or filter the options inside each option panel of a ``--search-help`` result's help.
+
+    The author's panels are kept, in their order: within each, matching options move to the front, best
+    first, or with filtering only matching, required and positional parameters stay. Returns the new
+    panels (copies -- the command's own panels are never changed) and how many options were left out.
+    """
+    import copy
+
+    from rich_click.rich_panel import RichOptionPanel
+    from rich_click.rich_parameter import RichSearchHelpOption
+
+    order = {name: rank for rank, name in enumerate(ctx.search_matched_params or [])}
+    params = command.get_params(ctx)
+    help_option = command.get_help_option(ctx)
+
+    def lookup(entry: str) -> click.Parameter | None:
+        return next((param for param in params if entry in (*param.opts, param.name)), None)
+
+    def keep(param: click.Parameter | None) -> bool:
+        if param is None or param.name in order:
+            return True
+        return isinstance(param, click.Argument) or bool(param.required)
+
+    arranged: list[RichPanel[Any, Any]] = []
+    omitted: set[int] = set()
+    for panel in panels:
+        if not isinstance(panel, RichOptionPanel):
+            arranged.append(panel)
+            continue
+        entries = [(entry, lookup(entry)) for entry in panel.options]
+        if ctx.search_filter:
+            for _, param in entries:
+                if not keep(param) and param is not help_option and not isinstance(param, RichSearchHelpOption):
+                    omitted.add(id(param))
+            entries = [(entry, param) for entry, param in entries if keep(param)]
+        entries.sort(key=lambda item: order.get(getattr(item[1], "name", None) or "", len(order)))
+        new_panel = copy.copy(panel)
+        new_panel.options = [entry for entry, _ in entries]
+        arranged.append(new_panel)
+    return arranged, len(omitted)
+
+
+def omitted_options_note(ctx: RichContext, omitted: int) -> str:
+    """Return the line that follows a filtered result's panels, so the reader knows options were left out."""
+    noun = "option" if omitted == 1 else "options"
+    return f"{omitted} more {noun} not shown. Run '{ctx.command_path} --help' to see them all."
 
 
 def _clear_winner(results: list[dict[str, Any]]) -> dict[str, Any] | None:
@@ -405,7 +498,7 @@ def _command_help(
     cmd: click.Command, ctx: click.Context, query: str, schema: dict[str, Any], settings: SearchSettings
 ) -> str | None:
     """
-    Render one result's normal help, with its matching options pulled into a panel at the top.
+    Render one result's normal help, with its options ranked or filtered inside their panels.
 
     Returns ``None`` when the command cannot render rich help (a plain Click command in the tree).
     """
@@ -426,13 +519,14 @@ def _command_help(
         if not isinstance(command, RichCommand) or not isinstance(command_ctx, RichContext):
             return None
         command_ctx.search_query = query if settings.highlight else None
-        command_ctx.search_matched_params = (schema.get("_matched_params") or [])[: settings.matching_options]
-        command_ctx.search_total_params = sum(1 for param in _visible_params(schema) if param.get("kind") == "option")
+        command_ctx.search_matched_params = schema.get("_matched_params") or []
+        command_ctx.search_filter = settings.options == "filter"
         try:
             return command.get_help(command_ctx)
         finally:
             command_ctx.search_query = None
             command_ctx.search_matched_params = None
+            command_ctx.search_filter = False
     finally:
         for child_ctx in reversed(owned):
             child_ctx.close()
@@ -459,7 +553,7 @@ def _results_panel(ctx: RichContext, query: str, results: list[dict[str, Any]], 
             formatter.rich_text(_summary(schema), config.style_commands_panel_help_style),
         )
         params = {str(param.get("name") or ""): param for param in schema.get("params", [])}
-        for name in (schema.get("_matched_params") or [])[: settings.options_per_result]:
+        for name in (schema.get("_matched_params") or [])[:_OPTIONS_PER_RESULT]:
             param = params[name]
             opts = [*(param.get("opts") or []), *(param.get("secondary_opts") or [])]
             signature = Text("  ")
@@ -497,8 +591,8 @@ def rich_search_results(
     """
     Render search results for a terminal, with every matched word highlighted.
 
-    A single clear match is shown as that command's normal help, with a "Matching options" panel
-    first; several matches as a panel listing each command and its best-matching options.
+    A single clear match is shown as that command's normal help, with its options ranked or filtered;
+    several matches as a panel listing each command and its best-matching options.
     """
     from rich.text import Text
 
@@ -543,8 +637,8 @@ def get_search_help(
     search = getattr(cmd, "search_commands", None)
     results = search(ctx, query, settings) if search is not None else search_command_tree(cmd, ctx, query, settings)
     if fmt in SEARCH_FORMATS and fmt in _help_format_names(cmd, ctx):
-        return render_search_results(ctx, query, results, fmt)
+        return render_search_results(ctx, query, results, fmt, settings)
     if not isinstance(ctx, RichContext):
         # A plain Click context has no rich formatter to draw the panel with.
-        return render_search_results(ctx, query, results, "compact")
+        return render_search_results(ctx, query, results, "compact", settings)
     return rich_search_results(cmd, ctx, query, results, settings)

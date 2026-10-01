@@ -7,6 +7,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     Concatenate,
+    Literal,
     ParamSpec,
     TypeVar,
     cast,
@@ -602,10 +603,7 @@ def version_option(
 def search_help_option(
     *param_decls: str,
     max_results: int = 5,
-    search_own_options: bool = True,
-    rank_options: bool = True,
-    options_per_result: int = 3,
-    matching_options: int = 10,
+    options: Literal["rank", "filter"] | None = "rank",
     single_match_help: bool = True,
     highlight: bool = True,
     **kwargs: Any,
@@ -620,15 +618,9 @@ def search_help_option(
     :param param_decls: One or more option names. Defaults to the single
         value ``"--search-help"``.
     :param max_results: How many matching commands to return, best first.
-    :param search_own_options: Also match the decorated group's own options. A single command is
-        always searched.
-    :param rank_options: Rank each result's options against the query: listed first in compact and
-        Markdown, ``match_rank`` in JSON. ``False`` keeps the declared order and turns off the two
-        option displays below.
-    :param options_per_result: How many best-matching options to list under each command in the
-        results panel. ``0`` for none.
-    :param matching_options: How many options the "Matching options" panel lists above a single
-        match's help. ``0`` for no panel.
+    :param options: What to do with each result's options. ``"rank"`` lists the matching ones first and
+        keeps the rest. ``"filter"`` lists only the matching ones (plus required ones and arguments),
+        with a count of the rest. ``None`` leaves options in their declared order.
     :param single_match_help: Show a single clear match as its full help, rather than as one row of
         the results panel.
     :param highlight: Highlight the matched words in terminal output, with the ``style_search_match``
@@ -639,13 +631,7 @@ def search_help_option(
 
     kwargs.setdefault("cls", RichSearchHelpOption)
     kwargs["settings"] = SearchSettings(
-        max_results=max_results,
-        search_own_options=search_own_options,
-        rank_options=rank_options,
-        options_per_result=options_per_result,
-        matching_options=matching_options,
-        single_match_help=single_match_help,
-        highlight=highlight,
+        max_results=max_results, options=options, single_match_help=single_match_help, highlight=highlight
     )
     return click_option(*(param_decls or ("--search-help",)), **kwargs)
 

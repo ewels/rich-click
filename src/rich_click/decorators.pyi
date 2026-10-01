@@ -7,6 +7,7 @@ from collections.abc import Callable, Iterable, MutableMapping, Sequence
 from typing import (
     Any,
     Concatenate,
+    Literal,
     ParamSpec,
     TypeVar,
     overload,
@@ -432,10 +433,7 @@ def help_option(
 def search_help_option(
     *param_decls: str,
     max_results: int = 5,
-    search_own_options: bool = True,
-    rank_options: bool = True,
-    options_per_result: int = 3,
-    matching_options: int = 10,
+    options: Literal["rank", "filter"] | None = "rank",
     single_match_help: bool = True,
     highlight: bool = True,
     **kwargs: Any,
