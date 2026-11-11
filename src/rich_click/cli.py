@@ -69,8 +69,13 @@ class _RichHelpConfigurationParamType(click.ParamType):  # type: ignore[type-arg
                 import json
 
                 if value.startswith("@"):
-                    with open(value[1:]) as f:
-                        data = json.load(f)
+                    try:
+                        with open(value[1:]) as f:
+                            data = json.load(f)
+                    except OSError as e:
+                        raise click.BadParameter(f"could not open file {value[1:]!r}.") from e
+                    except ValueError as e:
+                        raise click.BadParameter(f"could not parse file {value[1:]!r} as JSON.") from e
                 else:
                     data = json.loads(value)
                 if not isinstance(data, dict):
