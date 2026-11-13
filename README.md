@@ -1,7 +1,7 @@
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich-click-logo-darkmode.png">
-        <img alt="rich-click logo" src="https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich-click-logo.png">
+        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ewels/rich-click/main/docs/public/images/rich-click-dark.svg">
+        <img alt="rich-click logo" src="https://raw.githubusercontent.com/ewels/rich-click/main/docs/public/images/rich-click-light.svg">
     </picture>
 </p>
 <p align="center">
@@ -57,6 +57,7 @@ To use rich-click in your code, replace `import click` with `import rich_click a
 ```python
 import rich_click as click
 
+
 @click.command()
 @click.option("--count", default=1, help="Number of greetings.")
 @click.option("--name", prompt="Your name", help="The person to greet.")
@@ -65,11 +66,12 @@ def hello(count, name):
     for _ in range(count):
         click.echo(f"Hello, {name}!")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     hello()
 ```
 
-![`python examples/11_hello.py --help`](docs/images/hello.svg)
+![`python examples/11_hello.py --help`](docs/src/content/docs/images/hello.svg)
 
 _Screenshot from [`examples/11_hello.py`](https://github.com/ewels/rich-click/blob/main/examples/11_hello.py)_
 
@@ -79,7 +81,7 @@ _Screenshot from [`examples/11_hello.py`](https://github.com/ewels/rich-click/bl
 
 Below is a more complex example of what **rich-click** is capable of, utilizing **themes** and **panels**:
 
-![`python examples/03_groups_sorting.py --help`](docs/images/command_groups.svg)
+![`python examples/03_groups_sorting.py --help`](docs/src/content/docs/images/command_groups.svg)
 
 _Screenshot from [`examples/03_groups_sorting.py`](https://github.com/ewels/rich-click/blob/main/examples/03_groups_sorting.py)_
 
@@ -109,6 +111,7 @@ This means that you can continue to use the unmodified `click` package in parall
 ```python
 import click
 from rich_click import RichCommand
+
 
 @click.command(cls=RichCommand)
 def main():
