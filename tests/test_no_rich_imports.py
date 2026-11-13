@@ -73,6 +73,33 @@ def test_imports_during_execution(recorded_imports: list[str], cli_runner: CliRu
     assert not any(m.startswith("importlib.") or m == "importlib" for m in recorded_imports)
 
 
+@pytest.mark.parametrize(
+    "make_config",
+    [
+        pytest.param(lambda: {"theme": "nord-modern"}, id="dict"),
+        pytest.param(lambda: rich_click.RichHelpConfiguration(theme="nord-modern"), id="RichHelpConfiguration"),
+    ],
+)
+def test_imports_during_execution_with_rich_config(
+    recorded_imports: list[str], cli_runner: CliRunner, make_config: Any
+) -> None:
+    importlib.reload(rich_click)
+
+    @rich_click.command()
+    @rich_click.rich_config(make_config())
+    def cli() -> None:
+        print("Hello, world!")
+
+    res = cli_runner.invoke(cli)
+    assert res.exit_code == 0
+    assert res.stdout == "Hello, world!\n"
+
+    assert any(m.startswith("click.") or m == "click" for m in recorded_imports)
+    assert not any(m.startswith("rich.") or m == "rich" for m in recorded_imports)
+    assert not any(m.startswith("markdown_it.") or m == "markdown_it" for m in recorded_imports)
+    assert not any(m.startswith("importlib.") or m == "importlib" for m in recorded_imports)
+
+
 def test_imports_during_help(recorded_imports: list[str], cli_runner: CliRunner) -> None:
     importlib.reload(rich_click)
 

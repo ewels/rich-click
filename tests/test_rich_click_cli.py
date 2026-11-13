@@ -834,3 +834,26 @@ def test_cli_output_text(mock_script_writer: Callable[[str], Path]) -> None:
 │ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
+
+
+@pytest.mark.parametrize("theme", ["nope", "dark:nord"])
+def test_invalid_theme_error_is_clean(theme: str) -> None:
+    res = run_as_subprocess([sys.executable, "-m", "src.rich_click", "-t", theme, "--help"])
+    stderr = res.stderr.decode()
+    assert res.returncode == 1
+    assert "Traceback" not in stderr
+    assert f"RichClickTheme '{theme}' not found" in stderr
+
+
+def test_rich_config_missing_file(cli_runner: "CliRunner") -> None:
+    res = cli_runner.invoke(main, ["--rich-config", "@/no/such/file.json", "mymodule:cli"])
+    assert res.exit_code == 2
+    assert isinstance(res.exception, SystemExit)
+
+
+def test_rich_config_malformed_file(cli_runner: "CliRunner", tmp_path: "Path") -> None:
+    bad = tmp_path / "bad.json"
+    bad.write_text("{not valid json", encoding="utf-8")
+    res = cli_runner.invoke(main, ["--rich-config", f"@{bad}", "mymodule:cli"])
+    assert res.exit_code == 2
+    assert isinstance(res.exception, SystemExit)

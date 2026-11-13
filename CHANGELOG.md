@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fixed `rich_config()` eagerly importing `rich` during normal (non-help) execution, slowing CLI startup.
+- Added a new `square` theme format: the default `box` format with square corners instead of rounded ones.
 - Dropped support for Python 3.8 and 3.9; the minimum supported version is now Python 3.10.
 - Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python <3.10.
 - Docs are now built with [Astro Starlight](https://starlight.astro.build/) instead of ProperDocs, using Astro's Rust-based Sätteri Markdown processor for faster builds. The site keeps the same URLs, versioned deploys, styling and features as before.

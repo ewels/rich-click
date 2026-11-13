@@ -211,9 +211,9 @@ def rich_config(
             Defaults to None.
 
     """
-    from rich.console import Console
-
-    if isinstance(help_config, Console) and console is None:
+    # Avoid importing rich eagerly: a Console instance can only exist if rich.console is already imported.
+    rich_console_module = sys.modules.get("rich.console")
+    if console is None and rich_console_module is not None and isinstance(help_config, rich_console_module.Console):
         import warnings
 
         warnings.warn(
