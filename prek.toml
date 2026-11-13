@@ -57,7 +57,7 @@ hooks = [
     id = "mypy",
     name = "mypy - Static type checking",
     description = "Mypy helps ensure that we use our functions and variables correctly by checking the types.",
-    entry = "mypy",
+    entry = "uv run mypy",
     language = "system",
     types = ["python"],
     exclude = "^examples|^docs/",
@@ -68,7 +68,7 @@ hooks = [
     # the package as a whole, where the stubs take precedence.
     id = "mypy-stubs",
     name = "mypy - Type stubs",
-    entry = "mypy src",
+    entry = "uv run mypy src",
     language = "system",
     types_or = ["python", "pyi"],
     files = "^src/",
