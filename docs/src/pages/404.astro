@@ -1,0 +1,36 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+import { base } from '../base';
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'Page not found',
+    description: "This page doesn't exist.",
+    template: 'splash',
+    tableOfContents: false,
+    editUrl: false,
+    pagefind: false,
+  }}
+>
+  <p>
+    This page doesn't exist. Try the search bar,
+    or jump to one of these:
+  </p>
+
+  <CardGrid>
+    <LinkCard title="Home" href={`${base}/`} description="Get started with rich-click" />
+    <LinkCard
+      title="Documentation"
+      href={`${base}/documentation/introduction_to_click/`}
+      description="Guides to configuration, panels, styles and more"
+    />
+    <LinkCard
+      title="API Reference"
+      href={`${base}/api/rich_click/`}
+      description="Every public class and function"
+    />
+    <LinkCard title="Changelog" href={`${base}/changelog/`} description="What changed in each release" />
+  </CardGrid>
+</StarlightPage>

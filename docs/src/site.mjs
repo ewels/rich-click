@@ -12,6 +12,10 @@ export const EDITOR_PAGE = {
   description: 'A live editor for rich-click styles.',
 };
 
+// Base path when ASTRO_BASE isn't set. Keep in sync with BASE_PREFIX/DEFAULT_ALIAS
+// in docs/_deploy.py.
+export const DEFAULT_BASE = '/rich-click/latest';
+
 // Root of the generated API reference pages (starlight-pydocs `base` default).
 export const API_PATH = '/api/rich_click/';
 

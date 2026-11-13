@@ -66,7 +66,11 @@ const currentLabel = versionLinks.find((v) => v.current)?.label ?? currentVersio
     {
       tabs.map((tab) => (
         <li>
-          <a href={tab.href} aria-current={tab.match.test(currentPath) ? 'true' : undefined}>
+          <a
+            href={tab.href}
+            data-label={tab.label}
+            aria-current={tab.match.test(currentPath) ? 'true' : undefined}
+          >
             {tab.label}
           </a>
         </li>
@@ -112,7 +116,6 @@ const currentLabel = versionLinks.find((v) => v.current)?.label ?? currentVersio
   }
 
   .rc-header-tabs a {
-    display: block;
     color: var(--sl-color-header-text, var(--sl-color-white));
     opacity: 0.7;
     text-decoration: none;
@@ -120,6 +123,21 @@ const currentLabel = versionLinks.find((v) => v.current)?.label ?? currentVersio
     padding: 0.35rem 0;
     border-bottom: 2px solid transparent;
     white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Invisible bold copy of the label, so every tab is as wide as its active
+     (bold) state and the row doesn't shift when the active tab changes. */
+  .rc-header-tabs a::after {
+    content: attr(data-label);
+    content: attr(data-label) / '';
+    font-weight: 600;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
   }
 
   .rc-header-tabs a:hover {

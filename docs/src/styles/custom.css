@@ -65,6 +65,18 @@ header.header {
   }
 }
 
+/* Starlight widens the title column on sidebar pages so search lines up with
+   the content; right-align it on every page instead. */
+@media (min-width: 50rem) {
+  .rc-header-default .header {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .rc-header-default .header > :has(> site-search) {
+    justify-content: flex-end;
+  }
+}
+
 /* Keep the square logo at header size (the taller two-row header would
    otherwise scale it up). */
 .site-title img {
@@ -169,8 +181,20 @@ main:has(.pyd-module) h1 {
   margin-inline: auto;
 }
 
+/* Starlight caps .hero-html at 25rem; the logo SVGs have no built-in padding. */
+[data-has-hero] .hero > .hero-html {
+  width: min(100%, 36rem);
+  padding: 2.5rem 1rem 1rem;
+}
+
+/* Block-level so the image can reserve its height before the SVG loads. */
+[data-has-hero] .hero .rc-hero-logo {
+  display: block;
+  width: 100%;
+}
+
 [data-has-hero] .hero .rc-hero-logo img {
-  width: min(100%, 40rem);
+  width: 100%;
   height: auto;
 }
 

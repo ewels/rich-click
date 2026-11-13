@@ -7,7 +7,7 @@
 //
 // ...and the trimmed logotype the social cards are drawn with:
 //
-//   src/generated/og-logo.png        <- public/images/rich-click-logo-darkmode.png
+//   src/generated/og-logo.png        <- public/images/rich-click-dark.svg
 //
 // The generated files are gitignored and rebuilt on every `npm run dev` /
 // `npm run build` (see the predev/prebuild scripts in package.json).
@@ -15,11 +15,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
-import { SITE_TAGLINE, SITE_TITLE } from '../src/site.mjs';
+import { DEFAULT_BASE, SITE_TAGLINE, SITE_TITLE } from '../src/site.mjs';
 
 const docsRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const repoRoot = path.resolve(docsRoot, '..');
 const contentRoot = path.join(docsRoot, 'src/content/docs');
+const base = process.env.ASTRO_BASE ?? DEFAULT_BASE;
 
 const GENERATED_NOTICE =
   '<!-- GENERATED FILE — built by docs/scripts/prepare-content.mjs; edit the source file instead. -->';
@@ -98,8 +99,8 @@ hero:
   image:
     html: |
       <span class="rc-hero-logo">
-        <img src="images/rich-click-logo.png" alt="rich-click" class="dark:sl-hidden" width="960" height="360">
-        <img src="images/rich-click-logo-darkmode.png" alt="rich-click" class="light:sl-hidden" width="960" height="360">
+        <img src="${base}/images/rich-click-light-animated.svg" alt="rich-click" class="dark:sl-hidden" width="525" height="118">
+        <img src="${base}/images/rich-click-dark-animated.svg" alt="rich-click" class="light:sl-hidden" width="525" height="118">
       </span>
 editUrl: false
 tableOfContents: false
@@ -174,13 +175,14 @@ const TRANSPARENT = { r: 0, g: 0, b: 0, alpha: 0 };
 
 const contentWidth = CARD_WIDTH - CARD_PADDING * 2;
 const wordmarkWidth = Math.round(CARD_WIDTH * WORDMARK_SHARE);
-const ogLogoSource = path.join(docsRoot, 'public/images/rich-click-logo-darkmode.png');
+const ogLogoSource = path.join(docsRoot, 'public/images/rich-click-dark.svg');
 const ogLogoOut = path.join(docsRoot, 'src/generated/og-logo.png');
 fs.mkdirSync(path.dirname(ogLogoOut), { recursive: true });
 // Unconditional: the output depends on the constants above as well as on the
 // source file, and it costs tens of milliseconds. astro-og-canvas keys its own
 // cache on the logo's contents, so an unchanged result still costs nothing.
-const wordmark = await sharp(ogLogoSource)
+// Rasterised well above the target size so the downscale stays sharp.
+const wordmark = await sharp(ogLogoSource, { density: 72 * 4 })
   .trim({ threshold: 0 })
   .resize({ width: wordmarkWidth })
   .toBuffer();

@@ -10,6 +10,18 @@
 import { defineRouteMiddleware } from '@astrojs/starlight/route-data';
 import { base } from './base';
 import { ogPages } from './og';
+import notoSans400 from '@fontsource/noto-sans/files/noto-sans-latin-400-normal.woff2?url';
+import notoSans700 from '@fontsource/noto-sans/files/noto-sans-latin-700-normal.woff2?url';
+import pixelmix from './fonts/pixelmix.ttf?url';
+
+// Fetched from <head> rather than once the CSS asks for them, so even cached
+// fonts are ready for the first paint and text (e.g. the header tabs) doesn't
+// reflow when they swap in.
+const preloadFonts = [
+  [notoSans400, 'font/woff2'],
+  [notoSans700, 'font/woff2'],
+  [pixelmix, 'font/ttf'],
+] as const;
 
 const canonicalBase = base.replace(/\/[^/]+$/, '/latest');
 
@@ -17,6 +29,9 @@ export const onRequest = defineRouteMiddleware((context) => {
   const { head, entry } = context.locals.starlightRoute;
   const id = entry?.id && entry.id in ogPages ? entry.id : 'index';
   const imageUrl = new URL(`${base}/og/${id}.png`, context.site).href;
+  for (const [href, type] of preloadFonts) {
+    head.push({ tag: 'link', attrs: { rel: 'preload', as: 'font', type, href, crossorigin: '' } });
+  }
   head.push(
     { tag: 'meta', attrs: { property: 'og:image', content: imageUrl } },
     { tag: 'meta', attrs: { name: 'twitter:image', content: imageUrl } },

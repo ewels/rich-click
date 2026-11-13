@@ -5,7 +5,8 @@
 #     "packaging"
 # ]
 # ///
-"""Build and deploy the Astro docs site to GitHub Pages.
+"""
+Build and deploy the Astro docs site to GitHub Pages.
 
 Replaces the previous mike-based deploy while keeping the same gh-pages layout:
 each X.Y version lives in its own directory, with `latest` (and `prerelease`)
@@ -25,8 +26,9 @@ from pathlib import Path
 
 import packaging.version
 
+
 DOCS_DIR = Path(__file__).parent.resolve()
-# Must stay in sync with the default `base` in astro.config.mjs
+# Must stay in sync with DEFAULT_BASE in docs/src/site.mjs
 # (BASE_PREFIX/DEFAULT_ALIAS compose the ASTRO_BASE passed to each build).
 BASE_PREFIX = "/rich-click"
 DEFAULT_ALIAS = "latest"
@@ -136,6 +138,10 @@ def deploy() -> None:
 
             versions_file.write_text(json.dumps(versions, indent=2) + "\n")
 
+            # GitHub Pages only serves the root 404.html, for every missing path.
+            if DEFAULT_ALIAS in aliases:
+                shutil.copyfile(worktree / DEFAULT_ALIAS / "404.html", worktree / "404.html")
+
             index = worktree / "index.html"
             # Only point the site root at `latest` once such a build exists.
             if not index.exists() and (latest is not None or DEFAULT_ALIAS in aliases):
@@ -152,7 +158,8 @@ def deploy() -> None:
             if not status.stdout.strip():
                 print("No changes to deploy.")
                 return
-            run(["git", "commit", "-m", f"Deploy docs for {v} ({', '.join(sorted(aliases)) or version_id})"], cwd=worktree)
+            message = f"Deploy docs for {v} ({', '.join(sorted(aliases)) or version_id})"
+            run(["git", "commit", "-m", message], cwd=worktree)
             run(["git", "push", "origin", "gh-pages"], cwd=worktree)
         finally:
             # Best-effort cleanup: never mask an exception from the deploy itself.

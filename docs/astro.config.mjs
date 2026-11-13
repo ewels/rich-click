@@ -13,14 +13,13 @@ import starlightPydocs, { pydocsSidebarGroup } from 'starlight-pydocs';
 
 import { satteriInlineCode } from './plugins/satteri-inline-code.mjs';
 import { satteriMermaid } from './plugins/satteri-mermaid.mjs';
-import { API_PATH, sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
+import { API_PATH, DEFAULT_BASE, sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
 
 // The site is deployed to versioned directories on GitHub Pages, mirroring the
 // layout previously managed by `mike` (e.g. /rich-click/latest/, /rich-click/1.9/).
-// docs/_deploy.py builds once per deployed alias, overriding the base path; the
-// default here must stay in sync with BASE_PREFIX/DEFAULT_ALIAS in that script.
+// docs/_deploy.py builds once per deployed alias, overriding the base path.
 const site = 'https://ewels.github.io';
-const base = process.env.ASTRO_BASE ?? '/rich-click/latest';
+const base = process.env.ASTRO_BASE ?? DEFAULT_BASE;
 
 // Every 1.x release tag, oldest first: starlight-pydocs extracts each one and
 // badges each API object with the release it first appeared in. Features land in
@@ -98,10 +97,13 @@ export default defineConfig({
       title: SITE_TITLE,
       description: SITE_TAGLINE,
       logo: {
-        src: './src/content/docs/images/logo-square-large.png',
+        src: './src/content/docs/images/logo-square-large.svg',
         alt: 'rich-click logo',
       },
-      favicon: '/images/favicon.png',
+      favicon: '/images/favicon.svg',
+      // Replaced by src/pages/404.astro, which isn't a content entry so it stays
+      // out of llms.txt and the [...slug] route.
+      disable404Route: true,
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/ewels/rich-click' }],
       editLink: {
         baseUrl: 'https://github.com/ewels/rich-click/edit/main/docs/',
