@@ -57,6 +57,7 @@ To use rich-click in your code, replace `import click` with `import rich_click a
 ```python
 import rich_click as click
 
+
 @click.command()
 @click.option("--count", default=1, help="Number of greetings.")
 @click.option("--name", prompt="Your name", help="The person to greet.")
@@ -65,7 +66,8 @@ def hello(count, name):
     for _ in range(count):
         click.echo(f"Hello, {name}!")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     hello()
 ```
 
@@ -109,6 +111,7 @@ This means that you can continue to use the unmodified `click` package in parall
 ```python
 import click
 from rich_click import RichCommand
+
 
 @click.command(cls=RichCommand)
 def main():

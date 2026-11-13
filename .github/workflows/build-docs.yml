@@ -26,7 +26,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
         with:
           python-version: "3.13"
           activate-environment: true
@@ -36,7 +36,7 @@ jobs:
 
       - name: Generate terminal images with rich-codex
         if: github.repository_owner == 'ewels' || github.event_name == 'workflow_dispatch'
-        uses: ewels/rich-codex@74d8432695de542da2f2acdbc5681cdf306791ec # v1.3.0
+        uses: ewels/rich-codex@f6d8165f6ab813603db81a49def997104f4fcd5a # v1.4.0
         with:
           skip_python_setup: "true"
           commit_changes: "true"
@@ -46,7 +46,7 @@ jobs:
           working_dir: "."
 
       - name: Set up Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
           cache: npm
