@@ -13,9 +13,11 @@ else:
 
 
 def eval_type(t: Any, globalns: dict[str, Any], localns: dict[str, Any]) -> Any:
+    import inspect
     import typing
 
-    if sys.version_info >= (3, 12):
+    # type_params arrived in 3.12.4, not 3.12.0
+    if "type_params" in inspect.signature(typing._eval_type).parameters:  # type: ignore[attr-defined]
         return typing._eval_type(t, globalns, localns, type_params=None)  # type: ignore[attr-defined]
     else:
         return typing._eval_type(t, globalns, localns)  # type: ignore[attr-defined]
