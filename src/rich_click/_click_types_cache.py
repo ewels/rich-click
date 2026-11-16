@@ -74,6 +74,7 @@ def register_click_impl(module: Any) -> None:
 
 def get_command_decorator(cls: type[Any]) -> Callable[..., Any] | None:
     """Return the native command decorator for a registered click-compatible fork."""
+    decorator: Callable[..., Any]
     for command_cls, decorator in reversed(_COMMAND_DECORATORS):
         if issubclass(cls, command_cls):
             return decorator

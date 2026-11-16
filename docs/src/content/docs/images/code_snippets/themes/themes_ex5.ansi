@@ -1,0 +1,33 @@
+
+ [33mUsage:[0m cli.py [[91mOPTIONS[0m] [91mCOMMAND[0m [[91mARGS[0m]...
+
+ CLI for app
+ [2mThis is a production-ready application.[0m
+
+[2;36m┌─[0m[2;36m [0m[36mRuntime options[0m[2;36m [0m[2;36m───────────────────────────────────────────────────────────────────────────────────────────────────[0m[2;36m─┐[0m
+[2;36m│[0m [2mOptions specifying the runtime[0m                                                                                       [2;36m│[0m
+[2;36m│[0m [91m*[0m  [36m--environment[0m  [33m-e[0m  [33m[[0m[33mdev[0m[33m|[0m[33mstaging[0m[33m|[0m[33mprod[0m[33m][0m[33m      [0m  Environment to run in [91m[env var: APP_ENV][0m [91m[required][0m                  [2;36m│[0m
+[2;36m│[0m    [36m--env-file   [0m      [33mPATH                    [0m  .env file                                                            [2;36m│[0m
+[2;36m│[0m    [36m--retries    [0m  [33m-r[0m  [33mINTEGER RANGE [0m[33m[[0m[33m0<=x<=10[0m[33m][0m  Num retries for failed tasks                                         [2;36m│[0m
+[2;36m│[0m    [36m--vcpu       [0m  [33m-c[0m  [33mINTEGER RANGE [0m[33m[[0m[33m1<=x<=32[0m[33m][0m  Num vCPUs [91m[default: 4][0m                                               [2;36m│[0m
+[2;36m└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘[0m
+[2;36m┌─[0m[2;36m [0m[36mLogging options[0m[2;36m [0m[2;36m───────────────────────────────────────────────────────────────────────────────────────────────────[0m[2;36m─┐[0m
+[2;36m│[0m [2mLogging config options[0m                                                                                               [2;36m│[0m
+[2;36m│[0m [36m--log-level         [0m  [33m-l   [0m  [33m[[0m[33mdebug[0m[33m|[0m[33minfo[0m[33m|[0m[33mwarning[0m[33m|[0m[33merror[0m[33m][0m  Log level [91m[env var: APP_LOG_LEVEL][0m [91m[default: info][0m          [2;36m│[0m
+[2;36m│[0m [36m--colors[0m/[36m--no-colors[0m  [33m-C[0m/[33m-n[0m                              Whether to show colors in logs [91m[default: colors][0m            [2;36m│[0m
+[2;36m│[0m [36m--log-format        [0m         [33m[[0m[33mTEXT[0m[33m][0m[33m                    [0m  Log format [94m[deprecated][0m                                     [2;36m│[0m
+[2;36m│[0m [36m--quiet[0m/[36m--no-quiet[0m    [33m-q   [0m                              Print text [94m[deprecated: use --log-level instead][0m            [2;36m│[0m
+[2;36m└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘[0m
+[2;36m┌─[0m[2;36m [0m[36mMisc. options[0m[2;36m [0m[2;36m─────────────────────────────────────────────────────────────────────────────────────────────────────[0m[2;36m─┐[0m
+[2;36m│[0m [36m--version[0m  [33m-v[0m  Show the version and exit.                                                                            [2;36m│[0m
+[2;36m│[0m [36m--help   [0m  [33m-h[0m  Show this message and exit.                                                                           [2;36m│[0m
+[2;36m└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘[0m
+[2;36m┌─[0m[2;36m [0m[36mCommands[0m[2;36m [0m[2;36m──────────────────────────────────────────────────────────────────────────────────────────────────────────[0m[2;36m─┐[0m
+[2;36m│[0m [2mAll subcommands[0m                                                                                                      [2;36m│[0m
+[2;36m│[0m [36madmin          [0m[36m [0m Administrative commands                                                                             [2;36m│[0m
+[2;36m│[0m [36mdb             [0m[36m [0m Database commands for app                                                                           [2;36m│[0m
+[2;36m│[0m [36mdeploy         [0m[36m [0m Deploy app                                                                                          [2;36m│[0m
+[2;36m│[0m [36mself           [0m[36m [0m Manage app [94m[deprecated: Use admin commands][0m                                                         [2;36m│[0m
+[2;36m└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘[0m
+
+ For more assistance, visit https://example.com/

@@ -1,0 +1,14 @@
+
+ [39mUsage:[0m [39mpanels_defaults_override_config.py[0m [39m[[0m[39mOPTIONS[0m[39m] [0m[39mSRC[0m[39m [0m[39mDEST[0m
+
+ [39mMove an item from a src location to a dest location[0m
+
+[39m╭─[0m[39m [0m[91mMain[0m[39m [0m[39m──────────────────────────────────────────────────────────────────────[0m[39m─╮[0m
+[39m│[0m [39m*[0m  [39mSRC [0m  [39mTEXT[0m  [39mSource[0m[39m [0m[39m[required][0m                                             [39m│[0m
+[39m│[0m [39m*[0m  [39mDEST[0m  [39mTEXT[0m  [39mDestination[0m[39m [0m[39m[required][0m                                        [39m│[0m
+[39m╰──────────────────────────────────────────────────────────────────────────────╯[0m
+[39m╭─[0m[39m [0m[34mExtra[0m[39m [0m[39m─────────────────────────────────────────────────────────────────────[0m[39m─╮[0m
+[39m│[0m [39m--env      [0m  [39mTEXT[0m  [39mEnvironment[0m                                               [39m│[0m
+[39m│[0m [39m--log-level[0m  [39mTEXT[0m  [39mLog level[0m                                                 [39m│[0m
+[39m│[0m [39m--help     [0m        [39mShow this message and exit.[0m                               [39m│[0m
+[39m╰──────────────────────────────────────────────────────────────────────────────╯[0m

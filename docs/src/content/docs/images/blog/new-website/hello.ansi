@@ -1,0 +1,11 @@
+
+ [33mUsage:[0m [1m11_hello.py[0m [[1;36mOPTIONS[0m]
+
+ Simple program that greets [1;36;40mNAME[0m for a total of [1;36;40mCOUNT[0m
+ times.
+
+[2m╭─[0m[2m Options [0m[2m───────────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m [1;36m--count[0m  [1;33mINTEGER[0m  Number of greetings.                   [2m│[0m
+[2m│[0m [1;36m--name [0m  [1;33mTEXT   [0m  The person to greet.                   [2m│[0m
+[2m│[0m [1;36m--help [0m           Show this message and exit.            [2m│[0m
+[2m╰──────────────────────────────────────────────────────────╯[0m

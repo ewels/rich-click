@@ -1,0 +1,20 @@
+
+ [33mUsage:[0m [1m08_metavars_default.py[0m [[1;36mOPTIONS[0m]
+
+ My amazing tool does all the things.
+ [2mThis is a minimal example based on documentation from the 'click' package.[0m
+ [2mYou can try using [0m[1;2;36m--help[0m[2m at the top level and also for specific group [0m
+ [2msubcommands.[0m
+
+[2m╭─[0m[2m Options [0m[2m───────────────────────────────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m [1;36m--debug [0m                                    Enable debug mode.               [2m│[0m
+[2m│[0m [1;36m--number[0m  [1;2;33m[[0m[1;33mone[0m[1;2;33m|[0m[1;33mtwo[0m[1;2;33m|[0m[1;33mthree[0m[1;2;33m|[0m[1;33mfour[0m[1;2;33m|[0m[1;33mfive[0m[1;2;33m|[0m[1;33msix[0m[1;2;33m|[0m[1;33msev[0m  This click choice has loads of   [2m│[0m
+[2m│[0m           [1;33men[0m[1;2;33m|[0m[1;33meight[0m[1;2;33m|[0m[1;33mnine[0m[1;2;33m|[0m[1;33mten[0m[1;2;33m|[0m[1;33meleven[0m[1;2;33m|[0m[1;33mtwelve[0m[1;2;33m|[0m  options.                         [2m│[0m
+[2m│[0m           [1;33mthirteen[0m[1;2;33m|[0m[1;33mfourteen[0m[1;2;33m|[0m[1;33mfifteen[0m[1;2;33m|[0m[1;33msixtee[0m                                   [2m│[0m
+[2m│[0m           [1;33mn[0m[1;2;33m|[0m[1;33mseventeen[0m[1;2;33m|[0m[1;33meighteen[0m[1;2;33m|[0m[1;33mnineteen[0m[1;2;33m|[0m[1;33mtw[0m                                   [2m│[0m
+[2m│[0m           [1;33menty[0m[1;2;33m|[0m[1;33mtwenty-one[0m[1;2;33m|[0m[1;33mtwenty-two[0m[1;2;33m|[0m[1;33mtwent[0m                                   [2m│[0m
+[2m│[0m           [1;33my-three[0m[1;2;33m|[0m[1;33mtwenty-four[0m[1;2;33m|[0m[1;33mtwenty-five[0m[1;2;33m|[0m                                   [2m│[0m
+[2m│[0m           [1;33mtwenty-six[0m[1;2;33m|[0m[1;33mtwenty-seven[0m[1;2;33m|[0m[1;33mtwenty-e[0m                                   [2m│[0m
+[2m│[0m           [1;33might[0m[1;2;33m|[0m[1;33mtwenty-nine[0m[1;2;33m|[0m[1;33mthirty[0m[1;2;33m][0m[1;33m        [0m                                   [2m│[0m
+[2m│[0m [1;36m--help  [0m                                    Show this message and exit.      [2m│[0m
+[2m╰──────────────────────────────────────────────────────────────────────────────╯[0m

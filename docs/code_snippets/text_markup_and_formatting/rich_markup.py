@@ -13,7 +13,7 @@ def cli():
     """CLI for my [red]app[/red].
 
     This is a demonstration of
-    [#FF6B6B bold]r[/][#FF8E53 bold]i[/][#FFB347 bold]c[/][#4ECDC4 bold]h[/]
+    [bright_red bold]r[/][bright_yellow bold]i[/][bright_green bold]c[/][bright_cyan bold]h[/]
     markup in CLI help text.
     """
 

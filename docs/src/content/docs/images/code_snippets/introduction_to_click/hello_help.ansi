@@ -1,0 +1,6 @@
+Usage: hello.py [OPTIONS]
+
+  Prints 'hello, world!' into the terminal.
+
+Options:
+  --help  Show this message and exit.
