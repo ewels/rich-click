@@ -103,7 +103,7 @@ const currentPath = sitePath(Astro.url);
   // Click-to-zoom for content images; linked images keep their link.
   // starlight-image-zoom needs rehype, which the Sätteri Markdown processor
   // doesn't run (https://github.com/HiDeoo/starlight-image-zoom/issues/63).
-  const images = document.querySelectorAll<HTMLImageElement>('.sl-markdown-content img:not(a img)');
+  const images = document.querySelectorAll<HTMLImageElement>('.sl-markdown-content img:not(a img, .not-content img)');
   if (images.length > 0) {
     import('medium-zoom').then(({ default: mediumZoom }) =>
       mediumZoom(images, {

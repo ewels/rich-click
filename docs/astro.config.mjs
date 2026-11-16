@@ -1,6 +1,5 @@
 // @ts-check
 import { execFileSync } from 'node:child_process';
-import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
@@ -13,8 +12,9 @@ import starlightLlmsTxt from 'starlight-llms-txt';
 import starlightPageActions from 'starlight-page-actions';
 import starlightPydocs, { pydocsSidebarGroup } from 'starlight-pydocs';
 
+import { markdownCopies } from './plugins/markdown-copies.mjs';
 import { satteriMermaid } from './plugins/satteri-mermaid.mjs';
-import { API_PATH, DEFAULT_BASE, REPO, REPO_URL, sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
+import { API_PATH, BLOG_AUTHORS, DEFAULT_BASE, REPO, REPO_URL, sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
 
 // Each docs version is deployed to its own directory (e.g. /rich-click/1.9/,
 // /rich-click/latest/): docs/_deploy.py builds once per directory, setting the base.
@@ -45,31 +45,6 @@ const inventories = [
   { url: 'https://maxludden.github.io/rich-gradient/objects.inv' },
 ];
 
-// starlight-page-actions publishes each page's source verbatim as `.md`. Strip
-// the `{/* RICH-CODEX ... */}` image-generation blocks from those copies, where
-// they are noise to whoever reads the Markdown, but not from code examples.
-// Closing fences may be followed by text: tidymd renders inline `<Code>` that way.
-const FENCE_OR_MDX_COMMENT = /^ {0,3}(`{3,}|~{3,})[^\n]*\n[\s\S]*?^ {0,3}\1|\{\/\*[\s\S]*?\*\/\}\n?/gm;
-/** @param {string} markdown */
-const stripMdxComments = (markdown) =>
-  markdown.replace(FENCE_OR_MDX_COMMENT, (match, fence) => (fence ? match : ''));
-
-/** @type {import('astro').AstroIntegration} */
-const stripMarkdownCopyComments = {
-  name: 'rich-click:strip-mdx-comments',
-  hooks: {
-    'astro:build:done': async ({ dir }) => {
-      const entries = await readdir(fileURLToPath(dir), { recursive: true });
-      for (const entry of entries.filter((name) => name.endsWith('.md'))) {
-        const path = fileURLToPath(new URL(entry, dir));
-        const original = await readFile(path, 'utf8');
-        const stripped = stripMdxComments(original);
-        if (stripped !== original) await writeFile(path, stripped);
-      }
-    },
-  },
-};
-
 // Starlight's default PageTitle shows `backticks` in titles literally. It can't
 // be overridden through `components` without losing starlight-page-actions' own
 // PageTitle override, which imports the default by path, so swap that path.
@@ -84,11 +59,27 @@ const pageTitleWithCode = {
   },
 };
 
+// starlight-blog has no overrides for its post lists (blog index, tag and author
+// pages) or a post's cover image, so swap the components that render them.
+/** @type {import('vite').Plugin} */
+const blogComponents = {
+  name: 'rich-click:blog-components',
+  enforce: 'pre',
+  resolveId(source, importer) {
+    if (source === '../components/Posts.astro' && importer?.includes('/starlight-blog/routes/')) {
+      return fileURLToPath(new URL('./src/components/BlogPosts.astro', import.meta.url));
+    }
+    if (source === '../Cover.astro' && importer?.includes('/starlight-blog/components/starlight/')) {
+      return fileURLToPath(new URL('./src/components/PostCover.astro', import.meta.url));
+    }
+  },
+};
+
 export default defineConfig({
   site,
   base,
   vite: {
-    plugins: [pageTitleWithCode],
+    plugins: [pageTitleWithCode, blogComponents],
     resolve: {
       // Only matters when starlight-pydocs is symlinked in from a local
       // checkout: without this its own copies of these get loaded too.
@@ -120,7 +111,7 @@ export default defineConfig({
     '/blog/archive/2025': `${base}/blog/`,
   },
   integrations: [
-    stripMarkdownCopyComments,
+    markdownCopies,
     starlight({
       title: SITE_TITLE,
       description: SITE_TAGLINE,
@@ -177,20 +168,9 @@ export default defineConfig({
         starlightBlog({
           // The header link is handled by the custom Header component tabs.
           navigation: 'none',
-          authors: {
-            ewels: {
-              name: 'Phil Ewels',
-              title: 'rich-click creator',
-              picture: 'https://github.com/ewels.png',
-              url: 'https://github.com/ewels',
-            },
-            dwreeves: {
-              name: 'Daniel Reeves',
-              title: 'Co-maintainer',
-              picture: 'https://github.com/dwreeves.png',
-              url: 'https://github.com/dwreeves',
-            },
-          },
+          // The index groups every post by year (components/BlogPosts.astro).
+          postCount: Infinity,
+          authors: BLOG_AUTHORS,
         }),
         starlightLinksValidator({
           errorOnRelativeLinks: false,

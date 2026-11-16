@@ -15,6 +15,20 @@ export const EDITOR_PAGE = {
   description: 'A live editor for rich-click styles.',
 };
 
+// Avatars are self-hosted, named by key: src/assets/authors/<key>.jpg (src/avatars.ts).
+export const BLOG_AUTHORS = {
+  ewels: {
+    name: 'Phil Ewels',
+    title: 'rich-click creator',
+    url: 'https://github.com/ewels',
+  },
+  dwreeves: {
+    name: 'Daniel Reeves',
+    title: 'Co-maintainer',
+    url: 'https://github.com/dwreeves',
+  },
+};
+
 // Keep in sync with BASE_PREFIX/DEFAULT_ALIAS in docs/_deploy.py.
 export const BASE_PREFIX = '/rich-click';
 export const DEFAULT_ALIAS = 'latest';

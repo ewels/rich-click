@@ -1,6 +1,5 @@
 ---
 // Overrides Starlight's Hero, which only renders on pages with `hero` frontmatter (the homepage).
-import { LinkButton } from '@astrojs/starlight/components';
 import { base } from '../base';
 import { ansiToHtmlLines } from '../ansi';
 import { EDITOR_PAGE, SITE_TAGLINE } from '../site.mjs';
@@ -50,12 +49,12 @@ const installCommand = 'pip install rich-click';
       </button>
     </div>
     <div class="rc-hero-actions">
-      <LinkButton class="rc-link-button" href={`${base}/documentation/quickstart/`} icon="right-arrow">
-        Get started
-      </LinkButton>
-      <LinkButton class="rc-link-button" href={`${base}${EDITOR_PAGE.link}`} variant="secondary">
+      <a class="rc-link-button primary" href={`${base}/documentation/quickstart/`}>
+        Get started <span aria-hidden="true">→</span>
+      </a>
+      <a class="rc-link-button secondary" href={`${base}${EDITOR_PAGE.link}`}>
         Try the Live Style Editor
-      </LinkButton>
+      </a>
     </div>
   </div>
 
