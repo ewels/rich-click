@@ -24,7 +24,7 @@ jobs:
         run: uv sync --active --no-default-groups --group docs
 
       - name: Generate terminal images with rich-codex
-        uses: ewels/rich-codex@f6d8165f6ab813603db81a49def997104f4fcd5a # v1.4.0
+        uses: ewels/rich-codex@d5c72474b055aa19ab2e869547a61c874670614d # v1.5.0
         with:
           use_uv: "true"
           skip_python_setup: "true"
