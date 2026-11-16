@@ -54,6 +54,40 @@ header.header {
   border-bottom: 1px solid #222;
 }
 
+/* The search dialog sits inside the header but has the page's colours: give
+   it back the page values of the colours overridden above. */
+:root {
+  --rc-page-color-text-accent: var(--sl-color-text-accent);
+  --rc-page-color-text: var(--sl-color-text);
+  --rc-page-color-gray-1: var(--sl-color-gray-1);
+  --rc-page-color-gray-2: var(--sl-color-gray-2);
+  --rc-page-color-gray-3: var(--sl-color-gray-3);
+  --rc-page-color-gray-5: var(--sl-color-gray-5);
+  --rc-page-color-black: var(--sl-color-black);
+}
+
+header.header dialog {
+  --sl-color-text-accent: var(--rc-page-color-text-accent);
+  --sl-color-text: var(--rc-page-color-text);
+  --sl-color-gray-1: var(--rc-page-color-gray-1);
+  --sl-color-gray-2: var(--rc-page-color-gray-2);
+  --sl-color-gray-3: var(--rc-page-color-gray-3);
+  --sl-color-gray-5: var(--rc-page-color-gray-5);
+  --sl-color-black: var(--rc-page-color-black);
+}
+
+/* Hover colour of the header controls. Not set on the whole header: the search
+   dialog lives inside it and uses this variable on its light background. */
+header.header :is(starlight-theme-select, .social-icons, button[data-open-modal]) {
+  --sl-color-white: #fff;
+}
+
+/* The "On this page" bar under the header also uses --sl-color-bg-nav, but its
+   contents follow the colour scheme. */
+:root[data-theme='light'] mobile-starlight-toc nav {
+  background-color: var(--sl-color-bg);
+}
+
 /* Make room for the section tabs row on large screens (see Header.astro).
    72rem matches Starlight's `lg:` breakpoint; 4rem is its nav height there. */
 :root {

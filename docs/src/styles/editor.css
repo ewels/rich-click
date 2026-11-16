@@ -13,6 +13,12 @@
   font-size: inherit;
 }
 
+/* The terminal has no background of its own, so its text follows the theme. */
+:root[data-theme='light'] [data-termynal] {
+  --color-text: #24292e;
+  --color-text-subtle: #6a737d;
+}
+
 [data-termynal] {
   width: 100%;
   padding: 75px 25px 25px;

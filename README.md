@@ -1,7 +1,7 @@
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ewels/rich-click/main/docs/public/images/rich-click-dark.svg">
-        <img alt="rich-click logo" src="https://raw.githubusercontent.com/ewels/rich-click/main/docs/public/images/rich-click-light.svg">
+        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ewels/rich-click/main/docs/public/images/rich-click-dark-animated.svg">
+        <img alt="rich-click logo" src="https://raw.githubusercontent.com/ewels/rich-click/main/docs/public/images/rich-click-light-animated.svg">
     </picture>
 </p>
 <p align="center">
