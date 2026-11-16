@@ -64,10 +64,9 @@ export const onRequest = defineRouteMiddleware((context) => {
   // advertise their own (starlight-pydocs does emit it), and the injected blog
   // listing pages have no Markdown to point at.
   const pathname = context.url.pathname.replace(/\/$/, '');
-  if (/\.mdx?$/.test(entry?.filePath ?? '')) {
-    // The landing page is copied out as `index.md`, not `<base>.md`.
-    const href = pathname === base ? `${base}/index.md` : `${pathname}.md`;
-    head.push({ tag: 'link', attrs: { rel: 'alternate', type: 'text/markdown', href } });
+  // Custom pages (StarlightPage) get a made-up `.md` filePath but an empty body.
+  if (entry?.body && /\.mdx?$/.test(entry.filePath ?? '')) {
+    head.push({ tag: 'link', attrs: { rel: 'alternate', type: 'text/markdown', href: `${pathname}.md` } });
   }
 
   if (canonicalBase !== base) {

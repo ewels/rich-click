@@ -1,0 +1,18 @@
+
+ [33mUsage:[0m [1msync-tool[0m [[1;36mOPTIONS[0m] [1;36mCOMMAND[0m [[1;36mARGS[0m]...
+
+ Synchronise all your files between two places.
+
+[2m╭─[0m[2m Options [0m[2m─────────────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m [31m*[0m  [1;36m--type [0m  [1;33mTEXT[0m  Type of file to sync [2;31m[required][0m          [2m│[0m
+[2m│[0m    [1;36m--debug[0m        Show the debug log messages              [2m│[0m
+[2m│[0m    [1;36m--help [0m        Show this message and exit.              [2m│[0m
+[2m╰────────────────────────────────────────────────────────────╯[0m
+[2m╭─[0m[2m Main usage [0m[2m──────────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m [1;36msync        [0m[1;36m [0m Synchronise all your files.                  [2m│[0m
+[2m│[0m [1;36mdownload    [0m[1;36m [0m Pretend to download some files.              [2m│[0m
+[2m╰────────────────────────────────────────────────────────────╯[0m
+[2m╭─[0m[2m Configuration [0m[2m───────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m [1;36mconfig      [0m[1;36m [0m Set up the configuration.                    [2m│[0m
+[2m│[0m [1;36mauth        [0m[1;36m [0m Authenticate the app.                        [2m│[0m
+[2m╰────────────────────────────────────────────────────────────╯[0m

@@ -3,7 +3,8 @@
 // (scripts/prepare-content.mjs) and TypeScript/Astro modules alike.
 
 export const SITE_TITLE = 'rich-click';
-export const SITE_TAGLINE = 'Richly rendered command line interfaces in click.';
+export const SITE_TAGLINE = 'Richly rendered command line interfaces in Click.';
+export const REPO_URL = 'https://github.com/ewels/rich-click';
 
 // The Live Style Editor is a custom page (src/pages/editor.astro) outside the
 // content collection, so pieces like social cards need its metadata here.
@@ -27,6 +28,7 @@ export const sidebar = [
   {
     label: 'Documentation',
     items: [
+      { label: 'Quickstart', slug: 'documentation/quickstart' },
       { label: 'Introduction to Click', slug: 'documentation/introduction_to_click' },
       {
         label: 'Comparison of Click & rich-click',

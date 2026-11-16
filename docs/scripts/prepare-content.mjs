@@ -1,7 +1,6 @@
 // Generates the docs pages that mirror repo-root Markdown files, replacing the
 // mkdocs include-markdown plugin:
 //
-//   src/content/docs/index.md        <- landing page header + README.md tail
 //   src/content/docs/changelog.md    <- CHANGELOG.md
 //   src/content/docs/contributing.md <- CONTRIBUTING.md
 //
@@ -9,18 +8,21 @@
 //
 //   src/generated/og-logo.png        <- public/images/rich-click-dark.svg
 //
+// ...and the theme counts the homepage quotes:
+//
+//   src/generated/theme-counts.json  <- src/rich_click/rich_click_theme.py
+//
 // The generated files are gitignored and rebuilt on every `npm run dev` /
 // `npm run build` (see the predev/prebuild scripts in package.json).
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
-import { DEFAULT_BASE, SITE_TAGLINE, SITE_TITLE } from '../src/site.mjs';
 
 const docsRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const repoRoot = path.resolve(docsRoot, '..');
 const contentRoot = path.join(docsRoot, 'src/content/docs');
-const base = process.env.ASTRO_BASE ?? DEFAULT_BASE;
 
 const GENERATED_NOTICE =
   '<!-- GENERATED FILE — built by docs/scripts/prepare-content.mjs; edit the source file instead. -->';
@@ -56,18 +58,6 @@ function rewriteGithubAlerts(markdown) {
   return out.join('\n');
 }
 
-/**
- * The README's screenshots as terminal blocks. The README keeps SVGs for GitHub and PyPI, and rich-codex saves the
- * same output as text next to each SVG.
- */
-function screenshotsAsText(markdown) {
-  return markdown.replace(/^!\[`([^`]+)`\]\((images\/[^)\s]+)\.svg\)[ \t\r]*$/gm, (image, command, file) =>
-    fs.existsSync(path.join(contentRoot, `${file}.ansi`))
-      ? `\`\`\`sh runnable.outputFile="./${file}.ansi"\n$ ${command}\n\`\`\``
-      : image,
-  );
-}
-
 function write(relPath, content) {
   const target = path.join(contentRoot, relPath);
   // Skip identical rewrites so mtimes (and Astro's content cache) stay stable.
@@ -75,63 +65,6 @@ function write(relPath, content) {
   fs.writeFileSync(target, content);
   console.log(`generated ${path.relative(repoRoot, target)}`);
 }
-
-// --- Landing page (README.md) ------------------------------------------------
-
-const readme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
-const marker = '<!--include-start-->';
-const markerIndex = readme.indexOf(marker);
-if (markerIndex === -1) throw new Error(`marker ${marker} not found in README.md`);
-const readmeTail = screenshotsAsText(
-  readme
-    .slice(markerIndex + marker.length)
-    // Image paths in the README are relative to the repository root; the landing
-    // page lives at the content root, next to the images directory.
-    .replaceAll('docs/src/content/docs/images/', 'images/'),
-)
-  .replaceAll('_Screenshot from ', '_Output of ')
-  .trim();
-
-// The links validator doesn't cover images, so fail loudly here if a relative
-// image referenced by the landing page doesn't exist (e.g. a README image path
-// that the rewrite above didn't catch).
-for (const [, src] of readmeTail.matchAll(/!\[[^\]]*\]\(([^)\s]+)\)/g)) {
-  if (/^[a-z]+:/.test(src)) continue;
-  const target = path.join(contentRoot, src);
-  if (!fs.existsSync(target)) {
-    throw new Error(`Landing page references missing image: ${src} (from README.md)`);
-  }
-}
-
-write(
-  'index.md',
-  `---
-title: ${SITE_TITLE}
-description: ${SITE_TAGLINE}
-template: splash
-hero:
-  tagline: ${SITE_TAGLINE}
-  image:
-    html: |
-      <span class="rc-hero-logo">
-        <img src="${base}/images/rich-click-light-animated.svg" alt="rich-click" class="dark:sl-hidden" width="525" height="118">
-        <img src="${base}/images/rich-click-dark-animated.svg" alt="rich-click" class="light:sl-hidden" width="525" height="118">
-      </span>
-editUrl: false
-tableOfContents: false
----
-
-${GENERATED_NOTICE}
-
-<p align="center">
-    <a href="documentation/introduction_to_click/">Documentation</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://github.com/ewels/rich-click">Source Code</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="changelog/">Changelog</a>
-</p>
-
----
-
-${readmeTail}
-`
-);
 
 // --- Changelog / Contributing ------------------------------------------------
 
@@ -167,6 +100,27 @@ rootPage(
   'How to set up a rich-click development environment, run the tests and open a pull request.',
   'contributing.md'
 );
+
+// --- Theme counts --------------------------------------------------------------
+
+// Python counts them because COLORS builds some schemes in a loop. The theme
+// module only imports the standard library, so it loads without dependencies.
+const themeCountsScript = `
+import importlib.util, json, sys
+spec = importlib.util.spec_from_file_location("theme", sys.argv[1])
+theme = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(theme)
+print(json.dumps({"colours": len(theme.COLORS), "formats": len(theme.FORMATS)}))
+`;
+const themeCounts = execFileSync(
+  'uv',
+  ['run', '--no-project', '--quiet', 'python', '-c', themeCountsScript, path.join(repoRoot, 'src/rich_click/rich_click_theme.py')],
+  { encoding: 'utf8' }
+);
+const themeCountsOut = path.join(docsRoot, 'src/generated/theme-counts.json');
+fs.mkdirSync(path.dirname(themeCountsOut), { recursive: true });
+fs.writeFileSync(themeCountsOut, themeCounts);
+console.log(`generated ${path.relative(repoRoot, themeCountsOut)}`);
 
 // --- Social card logotype -----------------------------------------------------
 

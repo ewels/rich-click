@@ -17,6 +17,7 @@
   --sl-font: 'Noto Sans';
   --sl-font-mono: 'Roboto Mono';
   --rc-pixel-font: 'pixelmix', 'Noto Sans', sans-serif;
+  --rc-mono-font: 'Fira Code', var(--sl-font-mono);
   --rc-pixel-shadow: -4px 4px rgba(128, 128, 128, 0.1);
 
   /* Indigo accent (Material's link colour with a black primary palette). */
@@ -27,9 +28,17 @@
   /* Material "slate" scheme background. */
   --sl-color-bg: hsl(232, 15%, 15%);
   --sl-color-bg-sidebar: var(--sl-color-bg);
+  /* Panels set off from the page; Starlight's gray-6 is too close to the dark background. */
+  --rc-color-surface: hsl(232, 15%, 11%);
+  /* Homepage terminal, and its cards. */
+  --rc-color-panel: #0f1017;
+  --rc-color-card: var(--sl-color-gray-6);
 
   /* Black header, as with Material's `primary: black`. */
   --sl-color-bg-nav: #000;
+
+  /* Footer.astro's band sits on the bottom of the page instead. */
+  --sl-main-pad: 0;
 }
 
 :root[data-theme='light'] {
@@ -37,6 +46,9 @@
   --sl-color-accent: #4051b5;
   --sl-color-accent-high: #2c387e;
   --sl-color-bg: #fff;
+  --rc-color-surface: var(--sl-color-gray-6);
+  --rc-color-panel: #f7f8fa;
+  --rc-color-card: var(--rc-color-panel);
 }
 
 /* The header is black in both colour schemes: force light-on-dark colours for
@@ -80,6 +92,12 @@ header.header dialog {
    dialog lives inside it and uses this variable on its light background. */
 header.header :is(starlight-theme-select, .social-icons, button[data-open-modal]) {
   --sl-color-white: #fff;
+}
+
+/* The search shortcut's background is gray-6, which flips to a light grey in
+   light mode; keep the dark-mode value. */
+header.header button[data-open-modal] > kbd {
+  background-color: #23262f;
 }
 
 /* The "On this page" bar under the header also uses --sl-color-bg-nav, but its
@@ -160,8 +178,7 @@ header.header :is(starlight-theme-select, .social-icons, button[data-open-modal]
 .site-title,
 .site-title span,
 main h1,
-main h1 code,
-.hero h1 {
+main h1 code {
   font-family: var(--rc-pixel-font);
   text-shadow: var(--rc-pixel-shadow);
 }
@@ -230,55 +247,78 @@ main:has(.pyd-module) h1 {
   color: var(--sl-color-bg);
 }
 
-/* Landing page hero: the logo is the wordmark, so hide the text title and
-   centre everything in a single column. */
-[data-has-hero] .hero {
-  grid-template-columns: 1fr;
-  justify-items: center;
-  text-align: center;
-  padding-block: 1rem;
-  gap: 1rem;
+/* Homepage buttons (Hero.astro, pages/index.astro): Starlight's LinkButton,
+   squarer and bolder. */
+.sl-link-button.rc-link-button {
+  height: 2.875rem;
+  padding: 0 1.375rem;
+  border-radius: 0.625rem;
+  font-size: var(--sl-text-base);
+  font-weight: 600;
 }
 
-[data-has-hero] .hero > img,
-[data-has-hero] .hero .hero-html {
-  order: -1;
-  margin-inline: auto;
+.rc-link-button svg {
+  font-size: 1.125rem;
 }
 
-/* Starlight caps .hero-html at 25rem; the logo SVGs have no built-in padding. */
-[data-has-hero] .hero > .hero-html {
-  width: min(100%, 36rem);
-  padding: 2.5rem 1rem 1rem;
+.rc-link-button.primary {
+  border-color: var(--sl-color-accent);
+  background: var(--sl-color-accent);
+  color: #fff;
 }
 
-/* Block-level so the image can reserve its height before the SVG loads. */
-[data-has-hero] .hero .rc-hero-logo {
-  display: block;
-  width: 100%;
+.rc-link-button.primary:hover {
+  border-color: var(--sl-color-accent-high);
+  background: var(--sl-color-accent-high);
+  color: var(--sl-color-black);
 }
 
-[data-has-hero] .hero .rc-hero-logo img {
-  width: 100%;
-  height: auto;
+.rc-link-button.secondary {
+  border-color: var(--sl-color-gray-4);
 }
 
-[data-has-hero] .hero h1 {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+.rc-link-button.secondary:hover {
+  border-color: var(--sl-color-gray-2);
 }
 
-[data-has-hero] .hero .tagline {
-  font-style: italic;
-  color: var(--sl-color-text);
+/* On the accent-coloured call-to-action band, in both site themes. */
+.rc-link-button.rc-link-button-inverse {
+  border-color: #fff;
+  background: #fff;
+  color: #1c2456;
 }
 
-[data-has-hero] .hero .copy {
-  align-items: center;
+.rc-link-button.rc-link-button-inverse:hover {
+  border-color: #dee3fb;
+  background: #dee3fb;
+  color: #1c2456;
+}
+
+/* The homepage has no sidebar and lays out wider than a docs page. */
+:root[data-has-hero][data-has-sidebar] {
+  --sl-content-width: 75rem;
+}
+
+/* Splash pages keep the sidebar until the header tabs appear at 72rem (see
+   starlight-route-data.ts). The homepage drops it from 50rem, where the mobile
+   menu button goes, and shows the tabs from there instead. */
+@media (min-width: 50rem) {
+  :root[data-has-hero] {
+    --sl-nav-height: calc(4rem + var(--rc-tabs-height));
+    --sl-content-inline-start: 0;
+  }
+
+  :root[data-has-hero] .sidebar-pane {
+    display: none;
+  }
+
+  :root[data-has-hero] .rc-header-tabs {
+    display: flex;
+  }
+
+  :root[data-has-hero] .rc-header-main {
+    height: calc(100% - var(--rc-tabs-height));
+  }
 }
 
 /* Click-to-zoom images (medium-zoom, initialised in components/Header.astro).

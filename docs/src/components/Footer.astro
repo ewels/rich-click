@@ -1,27 +1,74 @@
 ---
-// Starlight's footer, plus a line pointing at the machine-readable copies of
+// Starlight's footer, plus a band pointing at the machine-readable copies of
 // these docs. Generating llms.txt without linking to it is the usual way the
 // file goes unused, and a link is the only discovery signal a static host on a
 // GitHub project page can offer (no HTTP `Link:` headers, and a robots.txt at
 // /rich-click/latest/ is never fetched by a crawler).
 import Default from '@astrojs/starlight/components/Footer.astro';
+import { Icon } from '@astrojs/starlight/components';
 import { base } from '../base';
+// @ts-expect-error -- untyped project-local JavaScript module.
+import { REPO_URL } from '../site.mjs';
+
+const { entry } = Astro.locals.starlightRoute;
+// Custom pages (StarlightPage) have an empty body and no Markdown copy.
+const repoName = new URL(REPO_URL).pathname.slice(1);
+const markdownUrl = entry.body ? `${Astro.url.pathname.replace(/\/$/, '')}.md` : undefined;
 ---
 
 <Default><slot /></Default>
 
-<p class="rc-llms-note">
-  Reading these docs with an AI assistant? Every page is also served as Markdown at{' '}
-  <code>&lt;page-url&gt;.md</code>, and the whole site is indexed in{' '}
-  <a href={`${base}/llms.txt`}>llms.txt</a>.
-</p>
+<footer class="rc-footer">
+  <p>
+    For AI assistants:{' '}
+    {markdownUrl && (
+      <>
+        <a href={markdownUrl}>this page as Markdown</a>,{' '}
+      </>
+    )}
+    <a href={`${base}/llms.txt`}>llms.txt</a>
+  </p>
+  <a class="rc-footer-github" href={REPO_URL}>
+    <Icon name="github" size="1.25rem" />
+    {repoName}
+  </a>
+</footer>
 
 <style>
-  .rc-llms-note {
-    margin-top: 1.5rem;
+  /* The shadow and clip-path stretch the background to the viewport edges
+     without overflowing it; the negative margin cancels the content panel's
+     bottom padding so the band sits on the bottom of the page. */
+  .rc-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 2rem;
+    margin: 3rem 0 -1.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--sl-color-hairline);
+    background: var(--rc-color-surface);
+    box-shadow: 0 0 0 100vmax var(--rc-color-surface);
+    clip-path: inset(0 -100vmax -100vmax);
     font-size: var(--sl-text-xs);
     color: var(--sl-color-gray-3);
-    text-align: center;
-    text-wrap: balance;
+  }
+
+  .rc-footer p {
+    margin: 0;
+    max-width: 40rem;
+  }
+
+  .rc-footer-github {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--sl-color-gray-2);
+    font-size: var(--sl-text-sm);
+    text-decoration: none;
+  }
+
+  .rc-footer-github:hover {
+    color: var(--sl-color-white);
   }
 </style>

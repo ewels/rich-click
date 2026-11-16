@@ -75,9 +75,12 @@ asides, plain `<details>` blocks, `<Tabs>`/`<TabItem>` for content tabs, and
 `@rich_click`). Inline code with a language suffix, such as
 `` `import click{:py}` ``, gets syntax highlighting.
 
-The landing page, changelog and
-contributing pages are generated from the repo-root `README.md`, `CHANGELOG.md`
-and `CONTRIBUTING.md` files by `docs/scripts/prepare-content.mjs`.
+The changelog and contributing pages are generated from the repo-root
+`CHANGELOG.md` and `CONTRIBUTING.md` files by `docs/scripts/prepare-content.mjs`.
+The landing page is `docs/src/pages/index.astro`, with its hero in
+`docs/src/components/Hero.astro`. The hero's terminal shows
+the output of `docs/code_snippets/homepage/sync_tool.py` in each format, which
+rich-codex captures from the `outputs` in `.rich-codex.yml`.
 
 The docs show terminal output as text, in code blocks that
 [rich-codex](https://github.com/ewels/rich-codex) (1.5+) fills in. A RICH-CODEX
@@ -98,8 +101,7 @@ $ python colors.py
 
 `command` in the comment runs a different command from the one the block shows,
 for example to install another tool's CLI with `uv run --with`. The README keeps
-SVG screenshots for GitHub and PyPI; its RICH-CODEX comments also save a `.ansi`
-file, which the landing page shows as text.
+SVG screenshots for GitHub and PyPI.
 
 The docs workflow runs rich-codex on every push to `main` and commits the files
 it updates. To run it yourself:

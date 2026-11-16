@@ -14,7 +14,7 @@ import starlightPageActions from 'starlight-page-actions';
 import starlightPydocs, { pydocsSidebarGroup } from 'starlight-pydocs';
 
 import { satteriMermaid } from './plugins/satteri-mermaid.mjs';
-import { API_PATH, DEFAULT_BASE, sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
+import { API_PATH, DEFAULT_BASE, REPO_URL, sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
 
 // The site is deployed to versioned directories on GitHub Pages, mirroring the
 // layout previously managed by `mike` (e.g. /rich-click/latest/, /rich-click/1.9/).
@@ -138,9 +138,9 @@ export default defineConfig({
       // Replaced by src/pages/404.astro, which isn't a content entry so it stays
       // out of llms.txt and the [...slug] route.
       disable404Route: true,
-      social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/ewels/rich-click' }],
+      social: [{ icon: 'github', label: 'GitHub', href: REPO_URL }],
       editLink: {
-        baseUrl: 'https://github.com/ewels/rich-click/edit/main/docs/',
+        baseUrl: `${REPO_URL}/edit/main/docs/`,
       },
       customCss: [
         '@fontsource/noto-sans/400.css',
@@ -154,6 +154,7 @@ export default defineConfig({
       ],
       components: {
         Header: './src/components/Header.astro',
+        Hero: './src/components/Hero.astro',
         SocialIcons: './src/components/SocialIcons.astro',
         Footer: './src/components/Footer.astro',
       },
