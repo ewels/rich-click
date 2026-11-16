@@ -34,6 +34,17 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
     // body has loaded.
     const [allPosts] = route.sidebar;
     if (allPosts?.type === 'link') allPosts.attrs = { ...allPosts.attrs, class: 'rc-blog-sidebar' };
+
+    // starlight-blog clears Starlight's pagination for its own link cards (hidden
+    // in custom.css): use Starlight's, as on docs pages. Posts are newest first,
+    // so Previous is the newer post and Next the older, as in starlight-blog.
+    const posts = context.locals.starlightBlog.posts;
+    const i = posts.findIndex((post) => post.entry.id === route.id);
+    if (i !== -1) {
+      const link = (post: (typeof posts)[number] | undefined) =>
+        post && { type: 'link' as const, label: post.title, href: post.href, isCurrent: false, badge: undefined, attrs: {} };
+      route.pagination = { prev: link(posts[i - 1]), next: link(posts[i + 1]) };
+    }
   }
   if (path === '/blog/') {
     route.sidebar = siteSidebar;

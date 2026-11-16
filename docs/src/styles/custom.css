@@ -394,6 +394,12 @@ pre.mermaid:not([data-processed]) {
   display: none;
 }
 
+/* Replaced by Starlight's own pagination in the page footer, as on docs pages
+   (starlight-route-data.ts). */
+.sl-markdown-content .sl-blog-pagination {
+  display: none;
+}
+
 /* Blog post header (components/PageTitle.astro). The page actions render after
    the whole PageTitle; put them under the title, as on every other page. */
 .content-panel:has(.rc-post-meta) > .sl-container {
