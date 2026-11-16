@@ -2,7 +2,7 @@
  [33mUsage:[0m [1mrich_markup.py[0m [[1;36mOPTIONS[0m]
 
  CLI for my [31mapp[0m.
- [2mThis is a demonstration of [0m[1;2;38;2;255;107;107mr[0m[1;2;38;2;255;142;83mi[0m[1;2;38;2;255;179;71mc[0m[1;2;38;2;78;205;196mh[0m[2m markup in CLI help text.[0m
+ [2mThis is a demonstration of [0m[1;2;91mr[0m[1;2;91mi[0m[1;2;93mc[0m[1;2;96mh[0m[2m markup in CLI help text.[0m
 
 [2m╭─[0m[2m Options [0m[2m───────────────────────────────────────────────────────────────────[0m[2m─╮[0m
 [2m│[0m [35mThese are [0m[1;35mall[0m[35m the options available.[0m                                         [2m│[0m
