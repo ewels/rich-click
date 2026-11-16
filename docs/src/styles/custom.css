@@ -211,6 +211,15 @@ main:has(.pyd-module) h1 {
   display: block;
 }
 
+/* :not(.frame) skips Expressive Code, which uses figcaption for code block title bars. */
+.sl-markdown-content figure:not(.frame) > figcaption {
+  max-width: min(700px, 100%);
+  margin: 0 auto;
+  font-size: var(--sl-text-sm);
+  color: var(--sl-color-gray-3);
+  text-align: center;
+}
+
 /* Outlined button links (`<a class="md-button">` in blog posts). */
 .sl-markdown-content a.md-button {
   display: inline-block;
