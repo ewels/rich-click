@@ -72,8 +72,8 @@ Most pages live in `docs/src/content/docs/` and use standard
 asides, plain `<details>` blocks, `<Tabs>`/`<TabItem>` for content tabs, and
 `<Code code={...} />` with `?raw` imports to embed the runnable snippets from
 `docs/code_snippets/` (aliased as `@code_snippets`; the library source is
-`@rich_click`). One small local extension (see `docs/plugins/`) renders
-inline code prefixed with `` `#!python ...` `` with syntax highlighting.
+`@rich_click`). Inline code with a language suffix, such as
+`` `import click{:py}` ``, gets syntax highlighting.
 
 The landing page, changelog and
 contributing pages are generated from the repo-root `README.md`, `CHANGELOG.md`

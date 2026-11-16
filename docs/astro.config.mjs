@@ -13,7 +13,6 @@ import starlightLlmsTxt from 'starlight-llms-txt';
 import starlightPageActions from 'starlight-page-actions';
 import starlightPydocs, { pydocsSidebarGroup } from 'starlight-pydocs';
 
-import { satteriInlineCode } from './plugins/satteri-inline-code.mjs';
 import { satteriMermaid } from './plugins/satteri-mermaid.mjs';
 import { API_PATH, DEFAULT_BASE, sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
 
@@ -102,7 +101,7 @@ export default defineConfig({
   },
   markdown: {
     processor: satteri({
-      mdastPlugins: [satteriInlineCode(), satteriMermaid()],
+      mdastPlugins: [satteriMermaid()],
     }),
   },
   redirects: {
