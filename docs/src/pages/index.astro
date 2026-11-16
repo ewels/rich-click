@@ -1,0 +1,434 @@
+---
+// The homepage. The `hero` frontmatter makes Starlight render components/Hero.astro above the content.
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { Code, LinkButton } from '@astrojs/starlight/components';
+import { base } from '../base';
+import { API_PATH, EDITOR_PAGE, SITE_TAGLINE, SITE_TITLE } from '../site.mjs';
+import themeCounts from '../generated/theme-counts.json';
+
+const features = [
+  {
+    colour: '#56b6c2',
+    title: 'Rich formatting',
+    text: 'Click help and error messages rendered with colour, panels and tables.',
+    href: '/documentation/introduction_to_click/',
+  },
+  {
+    colour: '#98c379',
+    title: 'Same API as Click',
+    text: 'Usage is simply <code>import rich_click as click</code>.',
+    href: '/documentation/comparison_of_click_and_rich_click/',
+  },
+  {
+    colour: '#e5c07b',
+    title: `${themeCounts.colours} colour schemes, ${themeCounts.formats} formats`,
+    text: 'Mix any scheme with any format. Set it in code, or let users pick with <code>RICH_CLICK_THEME</code>.',
+    href: '/documentation/themes/',
+  },
+  {
+    colour: '#c678dd',
+    title: 'Panels',
+    text: 'Group commands and options into named panels.',
+    href: '/documentation/panels/overview/',
+  },
+  {
+    colour: '#e06c75',
+    title: 'Clear errors',
+    text: 'Well formatted error messages that point users to the fix.',
+    href: '/documentation/custom_styles/#error-messages',
+  },
+  {
+    colour: '#61afef',
+    title: 'rich-click CLI tool',
+    text: 'Prefix any Click or Typer command to richify someone else’s CLI.',
+    href: '/documentation/rich_click_cli/',
+  },
+  {
+    colour: '#abb2bf',
+    title: 'Export HTML and SVG',
+    text: 'Drop real help output straight into your docs.',
+    href: '/documentation/rich_click_cli/#render-help-text-as-html-or-svg',
+  },
+  {
+    colour: '#56b6c2',
+    title: 'Extensive customisation',
+    text: 'Styles, text, layout and box formats are all configurable.',
+    href: '/documentation/configuration/',
+  },
+  {
+    colour: '#98c379',
+    title: 'IDE autocomplete',
+    text: 'Typed Click decorators for a smooth developer experience.',
+    href: API_PATH,
+  },
+];
+
+const helloCode = `import click
+import rich_click as click
+
+@click.command()
+@click.option("--count", default=1, help="Number of greetings.")
+@click.option("--name", prompt="Your name", help="The person to greet.")
+def hello(count, name):
+    """Simple program that greets NAME for a total of COUNT times."""
+    for _ in range(count):
+        click.echo(f"Hello, {name}!")`;
+---
+
+
+<StarlightPage
+  frontmatter={{
+    title: SITE_TITLE,
+    description: SITE_TAGLINE,
+    template: 'splash',
+    hero: {},
+    editUrl: false,
+    tableOfContents: false,
+    prev: false,
+    next: false,
+  }}
+>
+<div class="rc-home not-content">
+  <p class="rc-built-on">
+    Built on <a href="https://click.palletsprojects.com/">Click</a>, the Python package for creating beautiful
+    command line interfaces, and <a href="https://github.com/Textualize/rich">Rich</a>, the Python library for
+    rich text in the terminal.
+  </p>
+
+  <section class="rc-section rc-features-section">
+    <div class="rc-section-intro">
+      <h2>Features</h2>
+      <p>Attractive help output with minimal customisation required, and plenty of room to go further.</p>
+    </div>
+    <div class="rc-features">
+      {
+        features.map(({ colour, title, text, href }) => (
+          <a class="rc-feature" href={`${base}${href}`}>
+            <h3>
+              <span class="rc-feature-swatch" style={`background: ${colour}`} aria-hidden="true" />
+              {title}
+            </h3>
+            <p set:html={text} />
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="rc-section">
+    <div class="rc-section-intro">
+      <h2>One line change</h2>
+      <p>
+        Swap your Click import and keep writing Click as normal. You can also opt in one command at a time, or
+        run rich-click on a CLI you didn’t write.
+      </p>
+    </div>
+    <div class="rc-one-line">
+      <div class="rc-one-line-code">
+        <Code code={helloCode} lang="python" title="hello.py" del={1} ins={2} />
+      </div>
+      <div class="rc-ways">
+        <div class="rc-way">
+          <h3>Import as click</h3>
+          <p>Change one line in your own CLI: <code>import rich_click as click</code></p>
+        </div>
+        <span class="rc-or" aria-hidden="true">or</span>
+        <div class="rc-way">
+          <h3>Declarative</h3>
+          <p>Keep importing Click and opt in per command: <code>@click.command(cls=RichCommand)</code></p>
+        </div>
+        <span class="rc-or" aria-hidden="true">or</span>
+        <div class="rc-way">
+          <h3>Someone else’s CLI</h3>
+          <p>Put rich-click in front of any Click or Typer command.</p>
+          <Code code="rich-click awesometool --help" lang="sh" frame="none" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rc-cta">
+    <div>
+      <h2>Design your own theme</h2>
+      <p>Tweak colours and box styles in the browser, then copy the config straight into your CLI.</p>
+    </div>
+    <LinkButton class="rc-link-button rc-link-button-inverse" href={`${base}${EDITOR_PAGE.link}`} icon="right-arrow">
+      Open the Live Style Editor
+    </LinkButton>
+  </section>
+</div>
+</StarlightPage>
+
+<style>
+  .rc-home {
+    display: flex;
+    flex-direction: column;
+    gap: 5rem;
+    padding-bottom: 2rem;
+  }
+
+  /* The shadow and clip-path stretch the background to the viewport edges without overflowing it. */
+  .rc-built-on {
+    margin: 0;
+    padding: 1.375rem 1rem;
+    background: var(--rc-color-surface);
+    box-shadow: 0 0 0 100vmax var(--rc-color-surface);
+    clip-path: inset(0 -100vmax);
+    text-align: center;
+    text-wrap: balance;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+
+  .rc-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+  }
+
+  .rc-section-intro {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-width: 40rem;
+  }
+
+  h2 {
+    margin: 0;
+    font-family: var(--rc-pixel-font);
+    font-weight: 400;
+    font-size: var(--sl-text-3xl);
+    color: var(--sl-color-white);
+  }
+
+  .rc-section-intro p {
+    margin: 0;
+    font-size: var(--sl-text-lg);
+    line-height: 1.6;
+    color: var(--sl-color-gray-2);
+  }
+
+  /* Explicit column counts, so the dividers and rounded corners can be placed
+     per layout. The selectors assume nine cards: full rows at three columns. */
+  .rc-features-section {
+    container-type: inline-size;
+  }
+
+  .rc-features {
+    display: grid;
+    --rc-line: 1px solid var(--sl-color-gray-5);
+    --rc-radius: 0.75rem;
+    border: var(--rc-line);
+    border-radius: var(--rc-radius);
+    background: var(--rc-color-card);
+  }
+
+  .rc-feature {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    padding: 1.75rem;
+    color: inherit;
+    text-decoration: none;
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+
+  .rc-feature:not(:last-child) {
+    border-bottom: var(--rc-line);
+  }
+
+  .rc-feature:first-child {
+    border-radius: var(--rc-radius) var(--rc-radius) 0 0;
+  }
+
+  .rc-feature:last-child {
+    border-radius: 0 0 var(--rc-radius) var(--rc-radius);
+  }
+
+  @container (min-width: 40rem) {
+    .rc-features {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .rc-feature:nth-child(odd) {
+      border-right: var(--rc-line);
+    }
+
+    .rc-feature:first-child {
+      border-radius: var(--rc-radius) 0 0 0;
+    }
+
+    .rc-feature:nth-child(2) {
+      border-radius: 0 var(--rc-radius) 0 0;
+    }
+
+    .rc-feature:last-child {
+      border-radius: 0 0 0 var(--rc-radius);
+    }
+  }
+
+  @container (min-width: 60rem) {
+    .rc-features {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .rc-feature:nth-child(odd) {
+      border-right: none;
+    }
+
+    .rc-feature:not(:nth-child(3n)) {
+      border-right: var(--rc-line);
+    }
+
+    .rc-feature:nth-last-child(-n + 3) {
+      border-bottom: none;
+    }
+
+    .rc-feature:nth-child(2) {
+      border-radius: 0;
+    }
+
+    .rc-feature:nth-child(3) {
+      border-radius: 0 var(--rc-radius) 0 0;
+    }
+
+    .rc-feature:nth-last-child(3) {
+      border-radius: 0 0 0 var(--rc-radius);
+    }
+
+    .rc-feature:last-child {
+      border-radius: 0 0 var(--rc-radius) 0;
+    }
+  }
+
+  /* Lifts above its neighbours, with a ring over the dividers and the outer border. */
+  .rc-feature:hover,
+  .rc-feature:focus-visible {
+    position: relative;
+    z-index: 1;
+    transform: translateY(-3px) scale(1.015);
+    background: var(--rc-color-card);
+    box-shadow:
+      0 0 0 1px var(--sl-color-gray-4),
+      0 0.75rem 1.5rem rgba(0, 0, 0, 0.3);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rc-feature:hover,
+    .rc-feature:focus-visible {
+      transform: none;
+    }
+  }
+
+  .rc-feature h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  .rc-feature-swatch {
+    flex-shrink: 0;
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
+  .rc-feature h3,
+  .rc-way h3 {
+    margin: 0;
+    font-size: var(--sl-text-lg);
+    font-weight: 600;
+    color: var(--sl-color-white);
+  }
+
+  .rc-feature p {
+    margin: 0;
+    line-height: 1.55;
+    color: var(--sl-color-gray-2);
+  }
+
+  .rc-feature p :global(code),
+  .rc-way p code {
+    font-size: 0.875em;
+    padding: 0.1em 0.35em;
+    border-radius: 0.25rem;
+    background: var(--sl-color-gray-5);
+    color: var(--sl-color-white);
+  }
+
+  .rc-one-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  .rc-one-line-code {
+    flex: 1 1 32rem;
+    min-width: 0;
+  }
+
+  .rc-ways {
+    flex: 1 1 21rem;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .rc-way {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    padding: 1.25rem 1.375rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.875rem;
+    background: var(--rc-color-card);
+  }
+
+  .rc-way p {
+    margin: 0 0 0.375rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+
+  .rc-or {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--rc-mono-font);
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+  }
+
+  .rc-or::before,
+  .rc-or::after {
+    content: '';
+    flex-grow: 1;
+    height: 1px;
+    background: var(--sl-color-gray-5);
+  }
+
+  .rc-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2.5rem;
+    border-radius: 1.125rem;
+    background: var(--sl-color-accent);
+  }
+
+  .rc-cta h2 {
+    font-size: var(--sl-text-2xl);
+    color: #fff;
+  }
+
+  .rc-cta p {
+    margin: 0.625rem 0 0;
+    max-width: 35rem;
+    line-height: 1.6;
+    color: #e3e7ff;
+  }
+</style>

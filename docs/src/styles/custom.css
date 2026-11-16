@@ -1,0 +1,357 @@
+@font-face {
+  font-family: 'pixelmix';
+  src:
+    local('pixelmix'),
+    url('../fonts/pixelmix.ttf') format('truetype');
+  font-display: swap;
+}
+
+:root {
+  --sl-content-width: 55rem;
+  --sl-font: 'Noto Sans';
+  --sl-font-mono: 'Roboto Mono';
+  --rc-pixel-font: 'pixelmix', 'Noto Sans', sans-serif;
+  --rc-mono-font: 'Fira Code', var(--sl-font-mono);
+  --rc-pixel-shadow: -4px 4px rgba(128, 128, 128, 0.1);
+
+  --sl-color-accent-low: #1c2456;
+  --sl-color-accent: #4051b5;
+  --sl-color-accent-high: #aab4f1;
+
+  --sl-color-bg: hsl(232, 15%, 15%);
+  --sl-color-bg-sidebar: var(--sl-color-bg);
+  /* Panels set off from the page; Starlight's gray-6 is too close to the dark background. */
+  --rc-color-surface: hsl(232, 15%, 11%);
+  /* Homepage terminal, and its cards. */
+  --rc-color-panel: #0f1017;
+  --rc-color-card: var(--sl-color-gray-6);
+
+  --sl-color-bg-nav: #000;
+
+  /* Footer.astro's band sits on the bottom of the page instead. */
+  --sl-main-pad: 0;
+}
+
+:root[data-theme='light'] {
+  --sl-color-accent-low: #dee3fb;
+  --sl-color-accent: #4051b5;
+  --sl-color-accent-high: #2c387e;
+  --sl-color-bg: #fff;
+  --rc-color-surface: var(--sl-color-gray-6);
+  --rc-color-panel: #f7f8fa;
+  --rc-color-card: var(--rc-color-panel);
+}
+
+/* The header is black in both colour schemes: force light-on-dark colours for
+   everything inside it (site title, search, icons, selects). */
+header.header {
+  /* Explicit white: Starlight inverts --sl-color-white in light mode. */
+  --sl-color-header-text: #fff;
+  --sl-color-text-accent: #fff;
+  --sl-color-text: #eee;
+  --sl-color-gray-1: #eee;
+  --sl-color-gray-2: #ccc;
+  --sl-color-gray-3: #aaa;
+  --sl-color-gray-5: #444;
+  --sl-color-black: #000;
+  border-bottom: 1px solid #222;
+}
+
+/* The search dialog sits inside the header but has the page's colours: give
+   it back the page values of the colours overridden above. */
+:root {
+  --rc-page-color-text-accent: var(--sl-color-text-accent);
+  --rc-page-color-text: var(--sl-color-text);
+  --rc-page-color-gray-1: var(--sl-color-gray-1);
+  --rc-page-color-gray-2: var(--sl-color-gray-2);
+  --rc-page-color-gray-3: var(--sl-color-gray-3);
+  --rc-page-color-gray-5: var(--sl-color-gray-5);
+  --rc-page-color-black: var(--sl-color-black);
+}
+
+header.header dialog {
+  --sl-color-text-accent: var(--rc-page-color-text-accent);
+  --sl-color-text: var(--rc-page-color-text);
+  --sl-color-gray-1: var(--rc-page-color-gray-1);
+  --sl-color-gray-2: var(--rc-page-color-gray-2);
+  --sl-color-gray-3: var(--rc-page-color-gray-3);
+  --sl-color-gray-5: var(--rc-page-color-gray-5);
+  --sl-color-black: var(--rc-page-color-black);
+}
+
+/* Hover colour of the header controls. Not set on the whole header: the search
+   dialog lives inside it and uses this variable on its light background. */
+header.header :is(starlight-theme-select, .social-icons, button[data-open-modal]) {
+  --sl-color-white: #fff;
+}
+
+/* The search shortcut's background is gray-6, which flips to a light grey in
+   light mode; keep the dark-mode value. */
+header.header button[data-open-modal] > kbd {
+  background-color: #23262f;
+}
+
+/* The "On this page" bar under the header also uses --sl-color-bg-nav, but its
+   contents follow the colour scheme. */
+:root[data-theme='light'] mobile-starlight-toc nav {
+  background-color: var(--sl-color-bg);
+}
+
+/* Make room for the section tabs row on large screens (see Header.astro).
+   72rem matches Starlight's `lg:` breakpoint; 4rem is its nav height there. */
+:root {
+  --rc-tabs-height: 2.4rem;
+}
+
+@media (min-width: 72rem) {
+  :root {
+    --sl-nav-height: calc(4rem + var(--rc-tabs-height));
+  }
+}
+
+/* Starlight widens the title column on sidebar pages so search lines up with
+   the content; right-align it on every page instead. */
+@media (min-width: 50rem) {
+  .rc-header-main .header {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .rc-header-main .header > :has(> site-search) {
+    justify-content: flex-end;
+  }
+}
+
+/* Starlight shows the "On this page" column from 72rem, but the content column
+   only reaches full --sl-content-width from 98.5rem (two 18.75rem sidebars plus
+   55rem of content and its padding, laid out by Starlight's TwoColumnContent).
+   In between, keep the content full width and show no table of contents; the
+   small-screen dropdown is only for widths below 72rem.
+   Must be updated if --sl-content-width or --sl-sidebar-width change. */
+@media (72rem <= width < 98.5rem) {
+  .right-sidebar-container {
+    width: auto;
+    margin: 0;
+  }
+
+  .right-sidebar {
+    position: static;
+    height: auto;
+    padding: 0;
+    border: 0;
+  }
+
+  .right-sidebar-panel {
+    display: none;
+  }
+
+  [data-has-sidebar][data-has-toc] .main-pane {
+    /* Left-aligned, so the text doesn't move when the column appears. */
+    --sl-content-margin-inline: 0;
+    width: 100%;
+  }
+}
+
+/* Keep the square logo at header size (the taller two-row header would
+   otherwise scale it up). */
+.site-title img {
+  height: 2.25rem;
+  width: auto;
+}
+
+/* Pixel display font for the site title and page headings. */
+.site-title,
+.site-title span,
+main h1,
+main h1 code {
+  font-family: var(--rc-pixel-font);
+  text-shadow: var(--rc-pixel-shadow);
+}
+
+/* ...except on the generated API reference pages (marked by .pyd-module), where
+   the titles are long dotted module paths that the pixel font makes unreadable. */
+main:has(.pyd-module) h1 {
+  font-family: var(--sl-font), sans-serif;
+  text-shadow: none;
+}
+
+/* Square list bullets with accent hover. */
+.sl-markdown-content ul:not([class]) {
+  list-style: none;
+  padding-inline-start: 0;
+}
+
+.sl-markdown-content ul:not([class]) > li {
+  position: relative;
+  padding-left: 20px;
+}
+
+.sl-markdown-content ul:not([class]) > li::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--sl-color-text);
+  opacity: 90%;
+  position: absolute;
+  left: 0;
+  top: 0.8em;
+  transform: translateY(-50%);
+  transition: background-color 0.2s ease;
+}
+
+.sl-markdown-content ul:not([class]) > li:hover::before {
+  background-color: var(--sl-color-text-accent);
+  opacity: 100%;
+}
+
+/* Content images are mostly terminal screenshots: centre them and cap their width. */
+.sl-markdown-content img {
+  max-width: min(700px, 100%);
+  margin: 2em auto 0.8em;
+  display: block;
+}
+
+/* Outlined button links (`<a class="md-button">` in blog posts). */
+.sl-markdown-content a.md-button {
+  display: inline-block;
+  padding: 0.625em 2em;
+  border: 0.1rem solid var(--sl-color-text-accent);
+  border-radius: 0.1rem;
+  color: var(--sl-color-text-accent);
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background-color 0.25s,
+    color 0.25s;
+}
+
+.sl-markdown-content a.md-button:hover {
+  background-color: var(--sl-color-text-accent);
+  color: var(--sl-color-bg);
+}
+
+/* Homepage buttons (Hero.astro, pages/index.astro): Starlight's LinkButton,
+   squarer and bolder. */
+.sl-link-button.rc-link-button {
+  height: 2.875rem;
+  padding: 0 1.375rem;
+  border-radius: 0.625rem;
+  font-size: var(--sl-text-base);
+  font-weight: 600;
+}
+
+.rc-link-button svg {
+  font-size: 1.125rem;
+}
+
+.rc-link-button.primary {
+  border-color: var(--sl-color-accent);
+  background: var(--sl-color-accent);
+  color: #fff;
+}
+
+.rc-link-button.primary:hover {
+  border-color: var(--sl-color-accent-high);
+  background: var(--sl-color-accent-high);
+  color: var(--sl-color-black);
+}
+
+.rc-link-button.secondary {
+  border-color: var(--sl-color-gray-4);
+}
+
+.rc-link-button.secondary:hover {
+  border-color: var(--sl-color-gray-2);
+}
+
+/* On the accent-coloured call-to-action band, in both site themes. */
+.rc-link-button.rc-link-button-inverse {
+  border-color: #fff;
+  background: #fff;
+  color: #1c2456;
+}
+
+.rc-link-button.rc-link-button-inverse:hover {
+  border-color: #dee3fb;
+  background: #dee3fb;
+  color: #1c2456;
+}
+
+/* The homepage has no sidebar and lays out wider than a docs page. */
+:root[data-has-hero][data-has-sidebar] {
+  --sl-content-width: 75rem;
+}
+
+/* Splash pages keep the sidebar until the header tabs appear at 72rem (see
+   starlight-route-data.ts). The homepage drops it from 50rem, where the mobile
+   menu button goes, and shows the tabs from there instead. */
+@media (min-width: 50rem) {
+  :root[data-has-hero] {
+    --sl-nav-height: calc(4rem + var(--rc-tabs-height));
+    --sl-content-inline-start: 0;
+  }
+
+  :root[data-has-hero] .sidebar-pane {
+    display: none;
+  }
+
+  :root[data-has-hero] .rc-header-tabs {
+    display: flex;
+  }
+
+  :root[data-has-hero] .rc-header-main {
+    height: calc(100% - var(--rc-tabs-height));
+  }
+}
+
+/* Click-to-zoom images (medium-zoom, initialised in components/Header.astro).
+   The backdrop colour is read from this variable by the init script. */
+:root {
+  --rc-zoom-backdrop: rgba(24, 24, 27, 0.9);
+}
+
+:root[data-theme='light'] {
+  --rc-zoom-backdrop: rgba(255, 255, 255, 0.95);
+}
+
+.sl-markdown-content img:not(a img) {
+  cursor: zoom-in;
+}
+
+.medium-zoom-overlay,
+.medium-zoom-image--opened {
+  z-index: 100;
+}
+
+/* Mermaid diagrams are rendered client-side into `pre.mermaid` blocks. */
+pre.mermaid {
+  display: flex;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+pre.mermaid:not([data-processed]) {
+  visibility: hidden;
+  min-height: 4rem;
+}
+
+/* Collapsible sections (plain <details> HTML in the Markdown). These rules are
+   unlayered, so they beat any cascade layer: exclude the API reference's own
+   folds, which bring their own chrome. */
+.sl-markdown-content details:not(:where(.pyd-fold)) {
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.sl-markdown-content details:not(:where(.pyd-fold)) > summary {
+  cursor: pointer;
+  font-weight: 600;
+  user-select: none;
+}
+
+.sl-markdown-content details:not(:where(.pyd-fold))[open] > summary {
+  margin-bottom: 0.5rem;
+}

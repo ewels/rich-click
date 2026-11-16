@@ -1,0 +1,29 @@
+---
+// Starlight's PageTitle, but with `backticks` in the frontmatter title rendered
+// as inline code. Stands in for '@astrojs/starlight/components/PageTitle.astro'
+// via the resolver in astro.config.mjs, because starlight-page-actions'
+// PageTitle override imports that path directly.
+const PAGE_TITLE_ID = '_top';
+const parts = Astro.locals.starlightRoute.entry.data.title.split('`');
+---
+
+<h1 id={PAGE_TITLE_ID}>{parts.map((part, i) => (i % 2 === 1 ? <code>{part}</code> : part))}</h1>
+
+<style>
+  @layer starlight.core {
+    h1 {
+      margin-top: 1rem;
+      font-size: var(--sl-text-h1);
+      line-height: var(--sl-line-height-headings);
+      font-weight: 600;
+      color: var(--sl-color-white);
+    }
+
+    /* Matches inline code in content headings, which this h1 sits outside of. */
+    h1 code {
+      background-color: var(--sl-color-bg-inline-code);
+      margin-block: -0.125rem;
+      padding: 0.125rem 0.375rem;
+    }
+  }
+</style>

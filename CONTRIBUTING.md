@@ -53,6 +53,63 @@ If this happens, it's ok to add a Ruff `# noqa` or mypy `# type: ignore` comment
 For details of how to do this, please see the [Ruff docs](https://docs.astral.sh/ruff/linter/#error-suppression)
 and [mypy docs](https://mypy.readthedocs.io/en/stable/common_issues.html#spurious-errors-and-locally-silencing-the-checker).
 
+## Docs
+
+The documentation website is built with [Astro Starlight](https://starlight.astro.build) and lives in `docs/`.
+To work on the docs locally you need [Node.js](https://nodejs.org) (v22.12 or newer):
+
+```shell
+cd docs
+npm install
+npm run dev
+```
+
+This starts a local dev server with hot reload. `npm run build` builds the full
+static site (including link validation) into `docs/dist/`.
+
+Most pages live in `docs/src/content/docs/` and use standard
+[Starlight Markdown/MDX](https://starlight.astro.build/guides/authoring-content/):
+asides, plain `<details>` blocks, `<Tabs>`/`<TabItem>` for content tabs, and
+`<Code code={...} />` with `?raw` imports to embed the runnable snippets from
+`docs/code_snippets/` (aliased as `@code_snippets`; the library source is
+`@rich_click`). Inline code with a language suffix, such as
+`` `import click{:py}` ``, gets syntax highlighting.
+
+The changelog and contributing pages are generated from the repo-root
+`CHANGELOG.md` and `CONTRIBUTING.md` files by `docs/scripts/prepare-content.mjs`.
+The landing page is `docs/src/pages/index.astro`, with its hero in
+`docs/src/components/Hero.astro`. The hero's terminal shows
+the output of `docs/code_snippets/homepage/sync_tool.py` in each format, which
+rich-codex captures from the `outputs` in `.rich-codex.yml`.
+
+The docs show terminal output as text, in code blocks that
+[rich-codex](https://github.com/ewels/rich-codex) (1.5+) fills in. A RICH-CODEX
+comment directly above a code block runs the command in the block and saves
+its output, with its colours, to the `.ansi` file in the block's
+`runnable.outputFile`, which the block then shows. In `.mdx` pages the comment
+uses MDX comment syntax:
+
+````
+{/* RICH-CODEX
+working_dir: docs/code_snippets/accessibility
+terminal_width: 48
+*/}
+```sh runnable.outputFile="../images/code_snippets/accessibility/colors.ansi"
+$ python colors.py
+```
+````
+
+`command` in the comment runs a different command from the one the block shows,
+for example to install another tool's CLI with `uv run --with`. The README keeps
+SVG screenshots for GitHub and PyPI.
+
+The docs workflow runs rich-codex on every push to `main` and commits the files
+it updates. To run it yourself:
+
+```shell
+uv run rich-codex --skip-git-checks
+```
+
 ## Use of AI
 
 We welcome contributions that use AI assistance.
