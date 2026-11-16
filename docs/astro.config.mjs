@@ -70,10 +70,24 @@ const stripMdxComments = {
   },
 };
 
+// Starlight's default PageTitle shows `backticks` in titles literally. It can't
+// be overridden through `components` without losing starlight-page-actions' own
+// PageTitle override, which imports the default by path, so swap that path.
+const pageTitleWithCode = {
+  name: 'rich-click:page-title-with-code',
+  enforce: 'pre',
+  resolveId(source) {
+    if (source === '@astrojs/starlight/components/PageTitle.astro') {
+      return fileURLToPath(new URL('./src/components/PageTitle.astro', import.meta.url));
+    }
+  },
+};
+
 export default defineConfig({
   site,
   base,
   vite: {
+    plugins: [pageTitleWithCode],
     resolve: {
       // Only matters when starlight-pydocs is symlinked in from a local
       // checkout: without this its own copies of these get loaded too.

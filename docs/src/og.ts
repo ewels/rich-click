@@ -16,7 +16,7 @@ const entries = await getCollection('docs');
 export const ogPages: Record<string, OgPageData> = Object.fromEntries([
   ...entries.map((entry) => [
     entry.id,
-    { title: entry.data.title, description: entry.data.description ?? SITE_TAGLINE },
+    { title: entry.data.title.replaceAll('`', ''), description: entry.data.description ?? SITE_TAGLINE },
   ]),
   ['editor', { title: EDITOR_PAGE.label, description: EDITOR_PAGE.description }],
 ]);

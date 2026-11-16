@@ -32,6 +32,13 @@ export const onRequest = defineRouteMiddleware((context) => {
   for (const [href, type] of preloadFonts) {
     head.push({ tag: 'link', attrs: { rel: 'preload', as: 'font', type, href, crossorigin: '' } });
   }
+  // Titles may use `backticks` for inline code (see components/PageTitle.astro).
+  for (const tag of head) {
+    if (tag.tag === 'title' && tag.content) tag.content = tag.content.replaceAll('`', '');
+    if (tag.tag === 'meta' && tag.attrs?.property === 'og:title' && typeof tag.attrs.content === 'string') {
+      tag.attrs.content = tag.attrs.content.replaceAll('`', '');
+    }
+  }
   head.push(
     { tag: 'meta', attrs: { property: 'og:image', content: imageUrl } },
     { tag: 'meta', attrs: { name: 'twitter:image', content: imageUrl } },
