@@ -41,8 +41,7 @@ const installCommand = 'pip install rich-click';
     </h1>
     <p class="rc-hero-tagline">{SITE_TAGLINE}</p>
     <p class="rc-hero-lede">
-      Beautiful help text and error messages for your Click CLI, formatted with Rich. Change one import
-      and you’re done.
+      Beautiful help text and error messages for your Click CLI, formatted with Rich.
     </p>
     <div class="rc-install">
       <span class="rc-install-prompt" aria-hidden="true">$</span>
@@ -296,6 +295,37 @@ const installCommand = 'pip install rich-click';
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
+  }
+
+  /* Without the demo beside it, the hero copy fills the width, centred. */
+  @media (width < 74rem) {
+    .rc-hero-copy {
+      align-items: center;
+      text-align: center;
+    }
+
+    .rc-logo {
+      width: 100%;
+    }
+
+    .rc-logo :global(svg) {
+      margin-inline: auto;
+    }
+
+    .rc-hero-tagline,
+    .rc-hero-lede {
+      max-width: none;
+      text-wrap: balance;
+    }
+
+    .rc-install {
+      width: 100%;
+      text-align: start;
+    }
+
+    .rc-hero-actions {
+      justify-content: center;
+    }
   }
 
   /* Hidden until both columns get room for the 62-column terminal output. */

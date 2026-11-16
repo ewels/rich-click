@@ -133,13 +133,10 @@ header.header button[data-open-modal] > kbd {
 /* Starlight shows the "On this page" column from 72rem, but the content column
    only reaches full --sl-content-width from 98.5rem (two 18.75rem sidebars plus
    55rem of content and its padding, laid out by Starlight's TwoColumnContent).
-   In between, keep the content full width and use the small-screen dropdown.
+   In between, keep the content full width and show no table of contents; the
+   small-screen dropdown is only for widths below 72rem.
    Must be updated if --sl-content-width or --sl-sidebar-width change. */
 @media (72rem <= width < 98.5rem) {
-  :root[data-has-toc] {
-    --sl-mobile-toc-height: 3rem;
-  }
-
   .right-sidebar-container {
     width: auto;
     margin: 0;
@@ -154,10 +151,6 @@ header.header button[data-open-modal] > kbd {
 
   .right-sidebar-panel {
     display: none;
-  }
-
-  .right-sidebar div:has(> mobile-starlight-toc) {
-    display: block;
   }
 
   [data-has-sidebar][data-has-toc] .main-pane {
