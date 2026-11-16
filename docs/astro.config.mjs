@@ -154,6 +154,7 @@ export default defineConfig({
       ],
       components: {
         Header: './src/components/Header.astro',
+        SocialIcons: './src/components/SocialIcons.astro',
         Footer: './src/components/Footer.astro',
       },
       // Adds the auto-generated social card meta tags (see src/pages/og/).

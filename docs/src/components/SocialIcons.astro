@@ -1,0 +1,35 @@
+---
+// Starlight's social icons, preceded by the rich-click version, linked to its
+// GitHub release. Development versions have no release yet.
+import Default from '@astrojs/starlight/components/SocialIcons.astro';
+import initPy from '@rich_click/__init__.py?raw';
+
+const packageVersion = /^__version__ = "([^"]+)"/m.exec(initPy)?.[1];
+const releaseUrl =
+  packageVersion && /^\d+\.\d+\.\d+$/.test(packageVersion)
+    ? `https://github.com/ewels/rich-click/releases/tag/v${packageVersion}`
+    : 'https://github.com/ewels/rich-click/releases';
+---
+
+{
+  packageVersion && (
+    <a class="sl-flex" href={releaseUrl} title="rich-click release notes on GitHub">
+      v{packageVersion}
+    </a>
+  )
+}
+<Default />
+
+<style>
+  a {
+    align-items: center;
+    color: var(--sl-color-gray-2);
+    font-size: var(--sl-text-xs);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  a:hover {
+    color: var(--sl-color-white);
+  }
+</style>
