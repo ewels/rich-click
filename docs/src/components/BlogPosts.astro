@@ -137,8 +137,15 @@ for (const post of allPosts) {
               </span>
             </div>
             <span class="rc-avatars">
-              {post.authors.map((author) => (
-                <img src={avatars.get(author.name)} alt={author.name} title={author.name} width="30" height="30" />
+              {post.authors.map((author, i) => (
+                <img
+                  src={avatars.get(author.name)}
+                  alt={author.name}
+                  title={author.name}
+                  width="30"
+                  height="30"
+                  style={`z-index: ${post.authors.length - i}`}
+                />
               ))}
             </span>
           </a>
@@ -474,10 +481,13 @@ for (const post of allPosts) {
 
   .rc-avatars {
     display: flex;
+    isolation: isolate;
     padding-top: 0.125rem;
   }
 
+  /* The first (primary) author on top: z-index set inline, highest first. */
   .rc-avatars img {
+    position: relative;
     width: 1.875rem;
     height: 1.875rem;
     border-radius: 50%;
