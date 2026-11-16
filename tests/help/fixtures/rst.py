@@ -21,7 +21,7 @@ See the `rich-click docs <https://ewels.github.io/rich-click/>`_ for more.
 @click.option("--debug", is_flag=True, help="Enable ``debug mode``")
 def cli(input: str, type: str, all: bool, debug: bool) -> None:
     """
-    My amazing tool does *all the things*.
+    My amazing tool does *all the things* [#f1]_.
 
     This is a ``minimal example`` based on documentation
     from the `click package <https://click.palletsprojects.com/>`_.
@@ -35,6 +35,12 @@ def cli(input: str, type: str, all: bool, debug: bool) -> None:
     Example::
 
         $ cli --all --debug
+
+    \b
+    Click no-rewrap
+    lines stay apart
+
+    .. [#f1] Footnotes resolve across paragraphs.
     """
     print(f"Debug mode is {'on' if debug else 'off'}")
 

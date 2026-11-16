@@ -37,6 +37,9 @@ if TYPE_CHECKING:
 
 RichPanelRow = list[RenderableType | None]
 
+# Markups that parse newlines themselves, so rich-click must not collapse them.
+_DOCUMENT_MARKUPS = ("markdown", "rst")
+
 
 class RichClickRichPanel(Panel):
     """
@@ -123,10 +126,35 @@ def _get_help_text(
     # Trim off anything that comes after \f on its own line
     help_text = help_text.partition("\f")[0]
 
+    if config.text_markup == "rst":
+        # One document, so references and literal blocks can span the first paragraph.
+        rst = formatter.rich_text(help_text, config.style_helptext)
+        if TYPE_CHECKING:  # pragma: no cover
+            assert isinstance(rst, RichClickRST)
+        rst.first_block_style = config.style_helptext_first_line
+        yield rst
+    else:
+        yield from _get_split_help_text(help_text, formatter)
+
+    if getattr(obj, "aliases", None) and formatter.config.helptext_show_aliases:
+        yield Text.from_markup(
+            formatter.config.helptext_aliases_string.format(", ".join(obj.aliases)),  # type: ignore[attr-defined]
+            style=(
+                formatter.config.style_helptext_aliases
+                if formatter.config.style_helptext_aliases is not None
+                else formatter.config.style_helptext
+            ),
+        )
+
+
+def _get_split_help_text(
+    help_text: str, formatter: RichHelpFormatter
+) -> Iterable[Padding | Markdown | RichClickRST | Text]:
+    config = formatter.config
     # Get the first paragraph
     first_line = help_text.split("\n\n")[0]
     # Remove single linebreaks
-    if config.text_markup not in ("markdown", "rst"):
+    if config.text_markup != "markdown":
         if not first_line.startswith("\b"):
             first_line = first_line.replace("\n", " ")
     yield Padding(
@@ -137,7 +165,7 @@ def _get_help_text(
     # Get remaining lines, remove single line breaks and format as dim
     remaining_paragraphs = help_text.split("\n\n")[1:]
 
-    use_markdown = formatter.config.text_markup in ("markdown", "rst")
+    use_markdown = formatter.config.text_markup == "markdown"
     if formatter.config.text_paragraph_linebreaks is None:
         if use_markdown:
             lb = "\n\n"
@@ -186,18 +214,8 @@ def _get_help_text(
             # Join back together
             remaining_lines = "".join(help_text_buf)
         else:
-            # Join with double linebreaks if markdown or rst
             remaining_lines = lb.join(remaining_paragraphs)
         yield formatter.rich_text(remaining_lines, formatter.config.style_helptext)
-    if getattr(obj, "aliases", None) and formatter.config.helptext_show_aliases:
-        yield Text.from_markup(
-            formatter.config.helptext_aliases_string.format(", ".join(obj.aliases)),  # type: ignore[attr-defined]
-            style=(
-                formatter.config.style_helptext_aliases
-                if formatter.config.style_helptext_aliases is not None
-                else formatter.config.style_helptext
-            ),
-        )
 
 
 def _get_deprecated_text(
@@ -263,16 +281,17 @@ def _get_parameter_help(
         assert hasattr(param, "help")
         assert isinstance(param.help, str)
 
-    paragraphs = base_help_txt.split("\n\n")
-
-    # Remove single linebreaks
-    if not formatter.config.use_markdown and formatter.config.text_markup not in ("markdown", "rst"):
-        paragraphs = [
-            x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
-            for x in paragraphs
-        ]
-    # reStructuredText needs blank lines between paragraphs (and before lists).
-    help_text = ("\n\n" if formatter.config.text_markup == "rst" else "\n").join(paragraphs).strip()
+    if formatter.config.text_markup == "rst":
+        help_text = base_help_txt.strip()
+    else:
+        paragraphs = base_help_txt.split("\n\n")
+        # Remove single linebreaks
+        if not formatter.config.use_markdown and formatter.config.text_markup != "markdown":
+            paragraphs = [
+                x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
+                for x in paragraphs
+            ]
+        help_text = "\n".join(paragraphs).strip()
 
     # `Deprecated` is included in base help text; remove it here.
     if getattr(param, "deprecated", None):
@@ -696,7 +715,7 @@ def get_help_parameter(
 
     # Use Columns - this allows us to group different renderable types
     # (Text, Markdown) onto a single line.
-    if formatter.config.text_markup in ("markdown", "rst") or not all(
+    if formatter.config.text_markup in _DOCUMENT_MARKUPS or not all(
         [isinstance(i, Text) or i is None for i in sections]
     ):
         return Columns([i for i in sections if i])
@@ -936,7 +955,7 @@ def _get_command_help(
 
     paragraphs = inspect.cleandoc(help_text).split("\n\n")
     # Remove single linebreaks
-    if formatter.config.text_markup not in ("markdown", "rst") and not paragraphs[0].startswith("\b"):
+    if formatter.config.text_markup not in _DOCUMENT_MARKUPS and not paragraphs[0].startswith("\b"):
         paragraphs[0] = paragraphs[0].replace("\n", " ")
     elif paragraphs[0].startswith("\b"):
         paragraphs[0] = paragraphs[0].replace("\b\n", "")
@@ -1018,14 +1037,13 @@ def get_rich_epilog(
 ) -> None:
     """Richly render a click Command's epilog if it exists."""
     if self.epilog:
-        # Remove single linebreaks, replace double with single
-        lines = self.epilog.split("\n\n")
         if isinstance(self.epilog, JupyterMixin):  # Handles Text and Markdown
             epilog = self.epilog
-        elif formatter.config.text_markup == "rst":
-            # reStructuredText is whitespace-sensitive; pass it through untouched.
+        elif formatter.config.text_markup in _DOCUMENT_MARKUPS:
             epilog = formatter.rich_text(self.epilog, formatter.config.style_epilog_text)  # type: ignore[assignment]
         else:
+            # Remove single linebreaks, replace double with single
+            lines = self.epilog.split("\n\n")
             epilog = "\n".join([x.replace("\n", " ").strip() for x in lines])  # type: ignore[assignment]
             epilog = formatter.rich_text(epilog, formatter.config.style_epilog_text)  # type: ignore[assignment]
         formatter.write(

@@ -8,22 +8,21 @@ import rich_click
 from tests.conftest import load_command_from_module
 
 
-pytest.importorskip("rich_rst")
-
-
 @pytest.fixture
 def cli() -> rich_click.RichCommand:
     return load_command_from_module("tests.help.fixtures.rst")
 
 
 def test_rst_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
+    pytest.importorskip("rich_rst")
     result = cli_runner.invoke(cli, "--help")
     assert result.exit_code == 0
     assert result.stdout == snapshot("""\
                                                                                                     \n\
  Usage: cli [OPTIONS]                                                                               \n\
                                                                                                     \n\
- My amazing tool does all the things.                                                               \n\
+ My amazing tool does all the things [1].                                                           \n\
+                                                                                                    \n\
  This is a minimal example based on documentation from the click package.                           \n\
                                                                                                     \n\
   • You can try using --help at the top level                                                       \n\
@@ -32,8 +31,13 @@ def test_rst_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None:
  Note: Admonitions are rendered compactly.                                                          \n\
                                                                                                     \n\
  Example:                                                                                           \n\
- ┌─────────────────────────────────────── python (default) ───────────────────────────────────────┐ \n\
+ ┌────────────────────────────────────── console (default) ───────────────────────────────────────┐ \n\
  │ $ cli --all --debug                                                                            │ \n\
+ └────────────────────────────────────────────────────────────────────────────────────────────────┘ \n\
+ Click no-rewrap                                                                                    \n\
+ lines stay apart                                                                                   \n\
+ ┌──────────────────────────────────────────── Footer ────────────────────────────────────────────┐ \n\
+ │ 1: Footnotes resolve across paragraphs.                                                        │ \n\
  └────────────────────────────────────────────────────────────────────────────────────────────────┘ \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
