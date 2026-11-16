@@ -1,0 +1,148 @@
+# Contributing
+
+<!-- GENERATED FILE — built by docs/scripts/prepare-content.mjs; edit the source file instead. -->
+
+Contributions and suggestions for new features are welcome, as are bug reports!
+Please open an [issue](https://github.com/ewels/rich-click/issues) to discuss new features or to report bugs.
+
+## Local setup
+
+Requirements:
+
+- `uv` https://docs.astral.sh/uv/getting-started/installation/
+
+```shell
+uv python pin 3.14
+uv venv .venv
+source .venv/bin/activate
+uv sync --all-groups
+prek install
+```
+
+## Prek
+
+We use [prek](https://github.com/j178/prek) to manage our git hooks.
+It is installed as part of `uv sync --all-groups`, and it is configured in
+[`prek.toml`](https://github.com/ewels/rich-click/blob/main/prek.toml).
+
+`prek install` sets up the git hook, so the checks run automatically whenever you commit.
+To run every hook against the whole repo without committing, use:
+
+```shell
+prek run -a
+```
+
+:::note[Note]
+We used to use [pre-commit](https://pre-commit.com/) with a `.pre-commit-config.yaml` file.
+If you set up your local checkout before that change, re-run `prek install` to replace the
+old hook — otherwise the stale `pre-commit` hook will no longer find a config it recognises.
+:::
+
+`prek.toml` contains the following hooks:
+
+- [actionlint](https://github.com/rhysd/actionlint): lints our GitHub Actions workflow files.
+- [pyproject-fmt](https://pyproject-fmt.readthedocs.io/): formats and normalizes `pyproject.toml`.
+- [Ruff](https://docs.astral.sh/ruff/): does linting checks (including import sorting) and automatically fixes what it can.
+- [Ruff format](https://docs.astral.sh/ruff/formatter/): automatically formats your code to a standardized Python format.
+- [mypy](http://mypy-lang.org/): static type checker which verifies you are not using objects incorrectly.
+- [codespell](https://github.com/codespell-project/codespell): catches common spelling mistakes in the docs.
+
+As mentioned, some of these tools automatically fix your code while other only highlight potential issues.
+Sometimes it will be enough to try to commit a second time and it will pass, while other times it may require
+manual changes to your code.
+
+In rare cases it may be difficult or undesirable to change to code to pass the linting rules.
+If this happens, it's ok to add a Ruff `# noqa` or mypy `# type: ignore` comment to skip that line.
+For details of how to do this, please see the [Ruff docs](https://docs.astral.sh/ruff/linter/#error-suppression)
+and [mypy docs](https://mypy.readthedocs.io/en/stable/common_issues.html#spurious-errors-and-locally-silencing-the-checker).
+
+## Docs
+
+The documentation website is built with [Astro Starlight](https://starlight.astro.build) and lives in `docs/`.
+To work on the docs locally you need [Node.js](https://nodejs.org) (v22.12 or newer):
+
+```shell
+cd docs
+npm install
+npm run dev
+```
+
+This starts a local dev server with hot reload. `npm run build` builds the full
+static site (including link validation) into `docs/dist/`.
+
+Most pages live in `docs/src/content/docs/` and use standard
+[Starlight Markdown/MDX](https://starlight.astro.build/guides/authoring-content/):
+asides, plain `<details>` blocks, ``/`` for content tabs, and
+````
+...
+```` with `?raw` imports to embed the runnable snippets from
+`docs/code_snippets/` (aliased as `@code_snippets`; the library source is
+`@rich_click`). Inline code with a language suffix, such as
+`` `import click{:py}` ``, gets syntax highlighting.
+
+The changelog and contributing pages are generated from the repo-root
+`CHANGELOG.md` and `CONTRIBUTING.md` files by `docs/scripts/prepare-content.mjs`.
+The landing page is `docs/src/pages/index.astro`, with its hero in
+`docs/src/components/Hero.astro`. The hero's terminal shows
+the output of `docs/code_snippets/homepage/sync_tool.py` in each format, which
+rich-codex captures from the `outputs` in `.rich-codex.yml`.
+
+The docs show terminal output as text, in code blocks that
+[rich-codex](https://github.com/ewels/rich-codex) (1.5+) fills in. A RICH-CODEX
+comment directly above a code block runs the command in the block and saves
+its output, with its colours, to the `.ansi` file in the block's
+`runnable.outputFile`, which the block then shows. In `.mdx` pages the comment
+uses MDX comment syntax:
+
+````
+{/* RICH-CODEX
+working_dir: docs/code_snippets/accessibility
+terminal_width: 48
+*/}
+```sh runnable.outputFile="../images/code_snippets/accessibility/colors.ansi"
+$ python colors.py
+```
+````
+
+`command` in the comment runs a different command from the one the block shows,
+for example to install another tool's CLI with `uv run --with`. The README keeps
+SVG screenshots for GitHub and PyPI.
+
+The docs workflow runs rich-codex on every push to `main` and commits the files
+it updates. To run it yourself:
+
+```shell
+uv run rich-codex --skip-git-checks
+```
+
+## Use of AI
+
+We welcome contributions that use AI assistance.
+The maintainers of this code use AI coding assistance to varying degrees. Additionally, we have accepted and will continue to accept contributions from outside contributors which are AI written.
+
+All we ask is:
+
+- Please disclose the use of AI coding in your pull request.
+- Please communicate with us using your own words, not through an AI.
+- Permission to use AI in contributions is not the same as permission to spam us with slop PRs.
+
+Please also consider the following: The maintainers of this code base have access to the same LLMs that you do.
+We have just as much of an ability as you do to copy+paste a simple issue description into an AI coding agent and get a pull request out of it.
+If you are scraping Github repos to find open issues and slinging slop at hundreds or thousands of projects you have no connection to, we are not interested.
+
+## Credits
+
+This package was written by Phil Ewels ([@ewels](http://github.com/ewels/)),
+based on initial code by Will McGugan ([@willmcgugan](https://github.com/willmcgugan)).
+
+rich-click is co-maintained by Daniel Reeves ([@dwreeves](http://github.com/dwreeves/)).
+
+Furthermore, these contributors helped make the package what it is today:
+
+- [@BrutalSimplicity](https://github.com/BrutalSimplicity)
+- [@harens](http://github.com/harens/)
+- [@fridex](http://github.com/fridex/)
+- [@pawamoy](http://github.com/pawamoy/)
+- [@jorrick](http://github.com/harens/)
+
+See the full list of contributors [here](https://github.com/ewels/rich-click/graphs/contributors).

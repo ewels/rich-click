@@ -1,0 +1,314 @@
+<SYSTEM>Blog: release announcements and articles</SYSTEM>
+
+# PyCon Sweden 2024
+
+> Slides and notes from presenting rich-click at PyCon Sweden 2024.
+
+I had the great pleasure of presenting **rich-click** at [PyCon Sweden 2024](https://www.pycon.se/) today. It was my first time attending and a lot of fun! You can find my slides below: ## YouTube video [Watch on YouTube](https://youtu.be/vGSYj_5tGmY) [YouTube video player](https://www.youtube.com/embed/vGSYj_5tGmY?si=BJIj4Yx7FjZI5zA3) ## Slides [Open in new tab](../../images/blog/pycon-sweden-2024/Ewels-PyCon-Sweden-2024.pdf) [PyCon Sweden 2024 Slides - Phil Ewels](../../images/blog/pycon-sweden-2024/Ewels-PyCon-Sweden-2024.pdf) ## Thanks! Many thanks to the conference organisers for the opportunity! And as mentioned in the talk - many thanks to the contributors who made this project possible.
+
+# Three cool pre-made styles for your CLI
+
+> Three copy-and-paste rich-click style configurations, with generated example output for each.
+
+**rich-click**’s default style is nice, and naturally it’s what most of our users end up using. But we won’t be offended if you want to change things up! **rich-click** is flexible in terms of the custimisation options it gives you. In this blog post, we want to highlight a few neat design ideas for your CLI that you can do with **rich-click**. ## 1. Simple boxless one-color CLI You may associate **rich-click** with boxes, but did you know you can strip the box away? Here is an example of a **rich-click** style that does just that, and produces a nice and clean one-color format: ![](/rich-click/1.9/_astro/example-1.DDvCex7n_Z1NfemY.svg) ## 2. Dark mode / light mode aware with three colors For now, neither Rich nor **rich-click** has a concept of dark mode or light mode. However, there are third party packages that can detect the background color of most terminals. Checking the terminal bg makes using RGB hex values much easier. Here is an example of such a tool you can use: * pip 
+  ```shell
+  pip install term-background
+  ```
+ * uv 
+  ```shell
+  uv add term-background
+  ```
+ * Rye 
+  ```shell
+  rye add term-background
+  rye sync
+  ```
+ The following example looks great in both dark and light terminals! * Dark mode ![](/rich-click/1.9/_astro/example-2-dark.C_T82-FZ_rqxiJ.webp) * Light mode ![](/rich-click/1.9/_astro/example-2-light.DxSlBRBo_ew20I.webp) ## 3. Gradient art header The following example combines ideas from the first two examples, and then adds in `text2art` from the `art` package with `Gradient` from the `rich-gradient` package. The below example requires `rich-click>=1.8.4`, as previous versions do not support `Gradient()` objects for the `header_text`. * pip 
+  ```shell
+  pip install term-background art rich-gradient
+  ```
+ * uv 
+  ```shell
+  uv add term-background art rich-gradient
+  ```
+ * Rye 
+  ```shell
+  rye add term-background
+  rye add art
+  rye add rich-gradient
+  rye sync
+  ```
+ ![](/rich-click/1.9/_astro/example-3.WnCOYT_k_1G63yV.svg) ## Parting notes Thank you for reading, and I hope you find this blog helpful and inspiring. Phil and I have been really busy on a bunch of other things, but we haven’t forgotten about our roadmap for **rich-click** 1.9. We hope to get `1.9.0` released by the middle of 2025. Stay tuned for more updates! Lastly, if you are attending [PyCon Sweden](https://www.pycon.se/) on November 14-15, 2024, be sure to check out [Phil Ewels’ talk about **rich-click**](https://pretalx.com/pyconse-2024/talk/XP7GWN/).
+
+# New blog + v1.8 released!
+
+> rich-click 1.8 lands alongside a new documentation site and Live Style Editor: SVG and HTML output from the CLI, an easier decorator API, more style options and better performance.
+
+Today we are very happy to release version 1.8 of rich-click, and along with it - this blog! ## New docs website and blog Until now, **rich-click** has just had a GitHub repo and all documentation has been in the README. Now, we have full docs! We’ve fleshed out the documentation from the README, and we’ll continue to add to it over time. ### Live Style Editor The coolest addition allowed by this change to full documentation is the [Live Style Editor](https://ewels.github.io/rich-click/latest/editor). We built this to address a problem we noticed, which is that the vast majority of users rely on the default **rich-click** styles. Although we do think **rich-click**’s defaults are pretty good, it pointed to a potential developer experience issue that so many CLIs relied on the defaults. We hope that the live style editor makes it easier for users to make style changes and to personalize their CLIs. 😁 Here is an example of a style that Phil made with the style editor: ![](/rich-click/1.9/_astro/phils_example.ClP8a0Nl_Z7P3B.svg) And here’s one that Daniel made: ![](/rich-click/1.9/_astro/daniels_example.BTRRF9wm_Z7P3B.svg) ## **rich-click** version 1.8 ### Generate HTML and SVG with the `rich-click` CLI The `rich-click` CLI now allows for `--output svg` and `--output html` to help easily generate outputs for READMEs and docs: 
+```shell
+rich-click --output svg path.to.my.cli:main --help
+```
+ ![](/rich-click/1.9/_astro/output_to_svg.d1cf5lQS_Z1kMKXF.svg) ### Easier decorator API The `rich_config()` decorator API is now easier to use: You can pass a `dict` into the `@click.rich_config()` decorator. E.g.: 
+```python
+@click.command
+@click.rich_config(help_config={"max_width": 100})
+def my_command():
+    ...
+```
+ Additionally, `dict`s behave a little differently than `RichHelpConfiguration` when dealing with parents, and this behavior can be useful in some contexts. Basically, the child command uses the parent’s help config as a baseline, and only updates the fields specified in the dict. So in the following example, `my_group` will have `style_option="red"`, and `my_subcommand` will have *both* `style_option="red"` and `style_argument="green"`. 
+```python
+@click.group
+@click.rich_config(help_config={"style_option": "red"})
+def my_group():
+    ...
+
+
+@my_group.command
+@click.rich_config(help_config={"style_argument": "green"})
+def my_subcommand():
+    ...
+```
+ This can be a little confusing, so we’ve defined explicit rules (and enforced them in unit tests) for how the config is resolved (these are also in our docs): 
+```
+flowchart TD
+A["Did you pass in a @rich_config(help_config=...)?"]
+A --> |Yes| Ayes
+A --> |No| Ano
+
+Ayes["Was it a dict or a RichHelpConfiguration?"]
+
+Ayes --> |dict| AyesBdict
+Ayes --> |RichHelpConfiguration| AyesBrhc
+
+AyesBdict["Is there a 'parent' config?"]
+
+AyesBdict --> |Yes| AyesBdictCyes
+AyesBdict --> |No| AyesBdictCno
+
+AyesBdictCyes:::StoppingPoint
+AyesBdictCyes["Merge into the parent config,\nand use that"]
+
+AyesBdictCno:::StoppingPoint
+AyesBdictCno["Merge into the global config,\nand use that"]
+
+AyesBrhc:::StoppingPoint
+AyesBrhc["Use the RichHelpConfiguration  object.\n\n(Note: RichHelpConfiguration's\ndefaults are independent of the\nglobal config.)"]
+
+Ano["Is there a 'parent' config?"]
+
+Ano --> |Yes| AnoByes
+Ano --> |No| AnoBno
+
+AnoByes:::StoppingPoint
+AnoByes["Use the parent config"]
+
+AnoBno:::StoppingPoint
+AnoBno["Use the global config"]
+
+classDef StoppingPoint font-weight: 600;
+```
+ ### More style options The biggest addition to **rich-click**’s styling options was control over panel styles: * `STYLE_OPTIONS_PANEL_BOX` * `STYLE_COMMANDS_PANEL_BOX` * `STYLE_ERRORS_PANEL_BOX` Here’s a silly example of what this can do: ![](/rich-click/1.9/_astro/boxes_silly.D6neGPuC_12rlaQ.svg) Here’s a simple, stylish, and sleek example that would look great in your app: ![](/rich-click/1.9/_astro/boxes_sleek.my2Qxpzx_ZVrudv.svg) ### Improvements to option and command group API The option groups and command groups are a very powerful and useful feature, but historically they’ve been tricky to work with. The changes we’ve made in 1.8 improve on the API in a few substantial ways. #### Better command path resolution First, group keys used to only read from the `ctx.command_path`. Now they read from the `ctx.command_path` and the `ctx.command.name` (or the `f"{ctx.parent.command.name} {ctx.command.name}"` for subcommands). This should cause fewer headaches for users! cli.py 
+```python
+import rich_click as click
+
+
+# Pick your poison 🧪 Both approaches now work!
+click.rich_click.COMMAND_GROUPS = {
+    "super-cool-tool": [...],  # `ctx.command.name`
+    "cli.py": [...]  # `ctx.command_path` when running "python cli.py".
+}
+
+
+@click.command("super-cool-tool")
+def main():
+    ...
+```
+ #### Wildcards Wildcards now also work, in case you want to globally define options or simply don’t want to bother spelling out the whole command path. 
+```python
+import rich_click as click
+
+
+click.rich_click.COMMAND_GROUPS = {
+    "*": [...],
+}
+
+
+@click.command("super-cool-tool")
+def main():
+    ...
+```
+ You can also stick wildcards in the front, middle, or end of a key, e.g.: * `cli sub-command *` * `cli * sub-sub-command` * `* sub-command *` #### `panel_styles` + Arguments panel styling The dicts for command+option groups now accept an optional `panel_styles` key, which passes kwargs to the `Panel()`. Another handy feature is that the “Arguments” panel (which is created when the config option `show_arguments` is `True`) can now be stylized through the API so long as the following is true: 1. `config.show_arguments` is `True`. 2. There is an option group with a `name` equal to the `config.arguments_panel_title` (default: `'Arguments'`) 3. The option group does not have any `options` (The list is empty, undefined, or `None`). Example: 
+```python
+import rich_click as click
+from rich import box
+
+
+help_config = click.RichHelpConfiguration(
+    show_arguments=True,
+    option_groups={
+        "my-command": [
+            {
+                "name": "Arguments",
+                "panel_styles": {"box": box.DOUBLE_EDGE, "border_style": "dim red"}
+            }
+        ]
+    }
+)
+
+
+@click.command("my-command")
+@click.argument("foo")
+@click.argument("bar")
+@click.option("--baz")
+@click.rich_config(help_config=help_config)
+def cli(foo, bar, baz):
+    ...
+
+
+if __name__ == "__main__":
+    cli()
+```
+ ![](/rich-click/1.9/_astro/arguments_box_and_panel_styles.BvnVrfSD_Z23PWeI.svg) ### Improved performance During command execution, **rich-click** now loads faster and takes up less memory than before: ![](/rich-click/1.9/_astro/execution_times.CMMRdAuz_Z1Rjt1h.webp "Execution times of different CLI frameworks") ![](/rich-click/1.9/_astro/memory_profiles.ChTE-U5O_ZE1ps.webp "Memory consumption of different CLI frameworks") We include the code we ran below. The metrics you see above were gathered by running the below script on an old Macbook. We include Typer in our profiling to show a reasonable baseline for a Click wrapper’s overhead. Typer is an ambitious and great project that’s doing quite a bit under the hood, and it’s reasonable to expect it to take a little more time and memory. Why is **rich-click** 1.8 more performant? 1.7 left a few free optimizations on the table: 1. Only import `rich` when rendering help text. 2. Use `click.__version__` instead of `importlib.metadata.version("click")` for Click 7 compat. For the first change, this meant replacing code like this…: 
+```python
+from typing import IO, Optional
+
+
+from rich.console import Console
+
+
+from rich_click.rich_help_configuration import RichHelpConfiguration
+
+
+def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> Console:
+    console = Console(
+        # ...
+    )
+    return console
+```
+ …with code like this…: 
+```python
+from typing import TYPE_CHECKING, IO, Optional
+
+
+from rich_click.rich_help_configuration import RichHelpConfiguration
+
+
+if TYPE_CHECKING:
+    from rich.console import Console
+
+
+def create_console(config: RichHelpConfiguration, file: Optional[IO[str]] = None) -> "Console":
+    from rich.console import Console
+    console = Console(
+        # ...
+    )
+    return console
+```
+ …so that Rich is only loaded when it is needed! Combined, these two changes account for the performance improvements you see. Performance isn’t everything; if it was, we’d all be using `argparse`, or we’d abandon Python altogether for Rust. This is also peanuts in the grand scheme of things. In all likelihood, you’ve spent more time reading this blog post than the cumulative amount of time you’ll save by `pip install --upgrade`-ing your **rich-click** 1.7 project. (There are other reasons to upgrade to 1.8 than performance, of course!) So why bother improving **rich-click**’s performance if it’s not a big deal? Because we’re honored every time someone chooses **rich-click** for their applications, and we want to pay it back by keeping things as efficient as we reasonably can. Your application is complex and special and all yours. We’re excited we get to be a very small part of what you’re doing, 🫶 and we’ll do our best to keep our end of things neat and tidy. ### And more… Under the hood, we’ve done misc. bugfixes and other small internal improvements+refactors, mostly aimed at composability and customizability for advanced use cases. (This does not impact 99% of users.) ## Plans for the future **rich-click** is not done evolving; 1.8 is just another step on the journey. We already have tons of things planned out for 1.9, which we want to release by the end of 2024. Before we get there, we are going to spend a little bit of time rewriting and reorganizing our unit tests and adding coverage requirements. Thank you once again for using **rich-click**! ❤️❤️❤️❤️❤️
+
+# v1.9 released!
+
+> rich-click 1.9 adds themes, panels, IDE autocomplete, Typer support in the CLI tool, help text for arguments and command aliases.
+
+Today we are excited to release version 1.9 of **rich-click**, our biggest release yet with lots of amazing new features! The big features of the 1.9 release are: * Themes * `rich-click` CLI support for Typer CLIs * Panels * IDE autocomplete support ## Themes The biggest theme (pun intended) of **rich-click** 1.9 is **themes**. These can be set with an environment variable (as an end user) or in the `@click.rich_config()` (as a developer). Here are some simple examples of themes: * nord-nu 
+  ```shell
+  export RICH_CLICK_THEME=nord-nu
+  python docs/code_snippets/themes/cli.py --help
+  ```
+ ![](/rich-click/1.9/_astro/themes_ex1.C709eWgO_Z1BVyRN.svg) * dracula-modern 
+  ```shell
+  export RICH_CLICK_THEME=dracula-modern
+  python docs/code_snippets/themes/cli.py --help
+  ```
+ ![](/rich-click/1.9/_astro/themes_ex2.CfaPuAKr_1gYLyK.svg) * cargo-slim 
+  ```shell
+  export RICH_CLICK_THEME=cargo-slim
+  python docs/code_snippets/themes/cli.py --help
+  ```
+ ![](/rich-click/1.9/_astro/themes_ex3.DZvf_ziE_AdE6M.svg) * forest-robo 
+  ```shell
+  export RICH_CLICK_THEME=forest-robo
+  python docs/code_snippets/themes/cli.py --help
+  ```
+ ![](/rich-click/1.9/_astro/themes_ex4.eVSZGSTk_Z1XNWNG.svg) As you can see, themes are not *just* colors, they can also completely change the formatting, too! Themes are defined as `{color_palette}-{format}`. Overall, there are over **100 themes** to choose from. Our first adopter of **rich-click** themes is [Litestar](https://litestar.dev/), the ASGI API framework. They have their own official color palette called `star`. (Of course, you can use this theme for your own CLI, too!) Here’s what it looks like! ![](/rich-click/1.9/_astro/litestar.CUHLmlc0_oEbnE.svg) If you want to see all the options available to you, you can run the CLI command `rich-click --themes`: If you are interested in learning more about themes, read about them in [the **Themes** docs](https://ewels.github.io/rich-click/1.9/documentation/themes/). ## `rich-click` CLI support for Typer CLIs If you thought themes are cool in **rich-click**, wait until you see them in Typer! The `rich-click` CLI now supports Typer, which also means that `rich-click` themes are available to Typer. Even cooler, you can patch Typer **directly in your code** to use **rich-click**’s themes. This means you don’t need to rely on users to run `rich-click your-cli-tool` to get access to these themes. In the below example, we patch typer to use the `star-slim` theme directly in the CLI code: Under the hood, we are doing metaclass [dark magic](https://github.com/ewels/rich-click/blob/e57aa800555bb8f3e3c46582f61fb22080802f4b/src/rich_click/patch.py) to prevent needing to preemptively import Typer, and to prevent requiring users to specify that a CLI is a Typer CLI. This keeps the runtime as slim and as fast as possible for non-Typer CLIs. (As of Typer version 0.17.0 released August 30, 2025, lazy loading Typer for improved performance is [less necessary](https://github.com/fastapi/typer/pull/1128), but it’s still nice to have.) This feature is still experimental, so please let us know if you encounter any bugs. ## Panels Panels are a big new feature of **rich-click**, and bring along with it an intuitive and powerful API for customization. Panels replace the old “groups” feature of previous **rich-click** versions. (Don’t worry, your old code will still work just fine.) This is something I’ve wanted in **rich-click** for a long time, as I’ve always found the old groups API powerful but a little hard to use. With the new API, defining a panel is as simple as adding a decorator. 
+```python
+import rich_click as click
+
+
+@click.command()
+@click.argument("src", help="Source", panel="Main")
+@click.argument("dest", help="Destination", panel="Main")
+@click.option("--env", "-e", help="Environment", panel="Extra")
+@click.option("--log-level", "-l", help="Log level", panel="Extra")
+@click.version_option("1.2.3", "--version", "-V", panel="Extra")
+@click.help_option("--help", "-h", panel="Extra")
+@click.option_panel("Main")
+@click.option_panel("Extra")
+@click.rich_config({"theme": "star-nu", "max_width": 80})
+def move_item(src, dest, env, log_level):
+    """Move an item from a src location to a dest location"""
+    pass
+
+
+if __name__ == "__main__":
+    move_item()
+```
+ ![](/rich-click/1.9/_astro/panels_simple.DDVG94TW_Z7P3B.svg) You can also define the objects mapped to a panel in the panel itself. The below code is effectively equivalent to the above code: 
+```python
+import rich_click as click
+
+
+@click.command(context_settings={"help_option_names": ["--help", "-h"]})
+@click.argument("src", help="Source")
+@click.argument("dest", help="Destination")
+@click.option("--env", "-e", help="Environment")
+@click.option("--log-level", "-l", help="Log level")
+@click.version_option("1.2.3", "--version", "-V")
+@click.help_option("--help", "-h")
+@click.option_panel("Main",
+                    options=["src", "dest"])
+@click.option_panel("Extra",
+                    options=["--env", "--log-level", "--version", "--help"])
+@click.rich_config({"theme": "star-nu", "max_width": 80})
+def move_item(src, dest, env, log_level):
+    """Move an item from a src location to a dest location"""
+    pass
+
+
+if __name__ == "__main__":
+    move_item()
+```
+ The below is a fairly convoluted example of panels, which shows off the level of customizability available: 
+```python
+import rich_click as click
+
+
+@click.command()
+@click.argument("src", help="Source", panel="Main")
+@click.argument("dest", help="Destination", panel="Main")
+@click.option("--env", "-e", help="Environment", panel="Extra")
+@click.option("--log-level", "-l", help="Log level", panel="Extra")
+@click.version_option("1.2.3", "--version", "-V", panel="Extra")
+@click.help_option("--help", "-h", panel="Extra")
+@click.option_panel("Main",
+                    title_style="bold red",
+                    help="Required arguments",
+                    help_style="dim red",
+                    columns=["opt_all", "metavar", "help"],
+                    panel_styles={"border_style": "dim red"})
+@click.option_panel("Extra",
+                    title_style="bold blue",
+                    help="Optional settings",
+                    help_style="dim blue",
+                    columns=["opt_all", "metavar", "help"],
+                    panel_styles={"border_style": "dim blue"})
+@click.rich_config({"theme": "star-nu", "max_width": 80})
+def move_item(src, dest, env, log_level):
+    """Move an item from a src location to a dest location"""
+    pass
+
+
+if __name__ == "__main__":
+    move_item()
+```
+ ![](/rich-click/1.9/_astro/panels_complex.BHmOZY9w_Z1NxaWf.svg) Neat, huh? If you are interested in learning more, read about panels in [the **Panels** docs](https://ewels.github.io/rich-click/1.9/documentation/panels/overview). ## IDE autocomplete support I love Click! That’s why we maintain this repo, after all. That said, one thing that is a nuisance with Click is that it doesn’t have great type annotations for its core API, meaning your IDE doesn’t autocomplete args for Click decorators. Well, we have fixed this issue in **rich-click** 1.9.0: ![](/rich-click/1.9/_astro/ide1.DziqkAS-_1gIaOY.webp) We even typed the more opaque dicts, such as `context_settings`: ![](/rich-click/1.9/_astro/ide2.DHVy9V93_Z2lwyPY.webp) Everything should be type-hinted, and we’ve tested this against both pyright and mypy to good results. ## Other cool features ### Help for arguments: `@click.argument(..., help=)` That’s right! We now support a `help` kwarg for arguments. ### Aliases: `@Group().command(..., aliases=[...])` **rich-click** commands can now be given **aliases**, similar to other Click extensions ([click-aliases](https://github.com/click-contrib/click-aliases/tree/master), [click-extra](https://kdeldycke.github.io/click-extra/), [cloup](https://cloup.readthedocs.io/en/stable/)). ### `rich-click` CLI supports `path/to/file.py` Now, all the following ways of invoking the `rich-click` CLI are supported: * `rich-click hello:cli --help` * `rich-click hello.py --help` * `rich-click hello --help` In prior versions, only the first way worked. ### Smarter newline handling in command help text We are now a little more careful and practical with how we handle newlines in help text. You can see a demo of rich-click 1.9’s newline handling below: ### Stderr help: `context_settings={"help_to_stderr": True}` Print help text to stderr with a context setting! ### Deferred help text rendering Like normal Click, now help text is pushed to a buffer and rendered at the very end of the help text generation context. Most users won’t notice a difference, but it makes help text rendering atomic (e.g. in the event of an error), and also assists with integrating into tools such as [mkdocs-click](https://github.com/mkdocs/mkdocs-click). ### Many other minor improvements There have been so many tiny changes to **rich-click** over the past few months that I’ve lost count. We’ve added more than a dozen different config options, we’ve fixed a few minor bugs, we’ve improved performance slightly, and we’ve made everything more composable for the really advanced users who want to subclass **rich-click**’s objects. ## Dropped support In **rich-click** 1.9, we finally pulled the plug on Python 3.7, Click 7, and Rich 10+11. We are being a little more conservative than we perhaps need to: Click 8 came out in 2021, Rich 12 came out in 2022, and Python 3.8 came out in 2019 and hit end-of-life in 2024. That said, we don’t believe there is a major cost to supporting these other than some slightly ugly backend code here and there, so we’ll continue to be conservative with dropping support. Additionally, there are a handful of additional pending deprecations introduced to config options: * `show_metavars_column` * `append_metavars_help` * `option_envvar_first` * `use_markdown_emoji` Of these config options being deprecated, the most popular is the combination of `append_metavars_help=True` and `show_metavars_column=False`. We deprecated support for these because in 1.9, this is handled via declaring order of elements explicitly with the config options `options_table_column_types` and `options_table_help_sections`. An example of this approach can be seen below: ## Plans for the future Our short term plan is to monitor issues aggressively over the next month to patch any problems people encounter with **rich-click** 1.9. Please submit issues on Github if you encounter any strange behavior! We appreciate your assistance in making **rich-click** as robust as it can be. In [the 1.8 release blog post](https://ewels.github.io/rich-click/latest/blog/2024/04/30/version-1.8/), we said we anticipated 1.9 coming out by end of year 2024. Oops! Making promises about when things will happen is hard, especially when work and personal obligations get in the way. So, I won’t make the same mistake again: we have no promises or hints for when a 1.10 (or a 2.0?) will release. We do have [a roadmap](https://github.com/ewels/rich-click/issues/275) in place for **1.10**, so we have a good sense of what we want out of future releases. Will that be next year, or the year after? Will the roadmap change substantially when that time comes? It’s tough to say! The ultimate goal of **rich-click** is to become the most beautiful CLI help text generator out there. Nearing the end of development for 1.9, I couldn’t help but think of all the ways we can continue to improve on that. For example, a big limitation of themes are that they mostly use ANSI colors; and the ones which use hex values do not detect the terminal background color. We’d love to have background color detection and intelligently apply colors so that beautiful themes like `nord` and `dracula` look good regardless of the terminal environment. But, why spend so much time dwelling on the future, when the present state of things is so great and we’ve barely had time to enjoy it? We’re ***extremely*** happy with where 1.9 leaves **rich-click**! And we hope you agree! Thank you once again for using **rich-click**! ❤️❤️❤️❤️❤️

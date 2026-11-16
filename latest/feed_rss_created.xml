@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>rich-click</title><description>Richly rendered command line interfaces in Click.</description><link>https://ewels.github.io/rich-click/latest/</link><item><title>v1.9 released!</title><link>https://ewels.github.io/rich-click/latest/blog/version-1.9/</link><guid isPermaLink="true">https://ewels.github.io/rich-click/latest/blog/version-1.9/</guid><description>Today we are excited to release version 1.9 of rich-click, our biggest release yet with lots of amazing new features!</description><pubDate>Tue, 16 Sep 2025 00:00:00 GMT</pubDate></item><item><title>PyCon Sweden 2024</title><link>https://ewels.github.io/rich-click/latest/blog/pycon-sweden-2024/</link><guid isPermaLink="true">https://ewels.github.io/rich-click/latest/blog/pycon-sweden-2024/</guid><description>I had the great pleasure of presenting rich-click at
+PyCon Sweden 2024 today.
+It was my first time attending and a lot of fun!
+
+You can find my slides below:</description><pubDate>Fri, 15 Nov 2024 00:00:00 GMT</pubDate></item><item><title>Three cool pre-made styles for your CLI</title><link>https://ewels.github.io/rich-click/latest/blog/three-pre-made-styles/</link><guid isPermaLink="true">https://ewels.github.io/rich-click/latest/blog/three-pre-made-styles/</guid><description>rich-click&apos;s default style is nice, and naturally it&apos;s what most of our users end up using.
+But we won&apos;t be offended if you want to change things up!
+
+rich-click is flexible in terms of the custimisation options it gives you.
+In this blog post, we want to highlight a few neat design ideas for your CLI that you can do with rich-click.</description><pubDate>Wed, 13 Nov 2024 00:00:00 GMT</pubDate></item><item><title>New blog + v1.8 released!</title><link>https://ewels.github.io/rich-click/latest/blog/version-1.8/</link><guid isPermaLink="true">https://ewels.github.io/rich-click/latest/blog/version-1.8/</guid><description>Today we are very happy to release version 1.8 of rich-click,
+and along with it - this blog!</description><pubDate>Tue, 30 Apr 2024 00:00:00 GMT</pubDate></item></channel></rss>

@@ -1,0 +1,19 @@
+# rich-click
+
+> rich-click is a shim around the Python Click library that formats command line help text and error messages with Rich: colours, boxed option panels, Markdown and Rich markup in docstrings, and configurable styles.
+
+## Documentation Sets
+
+- [Abridged documentation](https://ewels.github.io/rich-click/1.9/llms-small.txt): a compact version of the documentation for rich-click, with non-essential content removed
+- [Complete documentation](https://ewels.github.io/rich-click/1.9/llms-full.txt): the full documentation for rich-click
+- [Documentation](https://ewels.github.io/rich-click/1.9/_llms-txt/documentation.txt): the prose guides: configuration, panels, styles, markup, CLI, Typer
+- [Blog](https://ewels.github.io/rich-click/1.9/_llms-txt/blog.txt): release announcements and articles
+
+## Notes
+
+- The complete documentation includes all content from the official documentation
+- The content is automatically generated from the same source as the official documentation
+
+## Optional
+
+- [rich_click API reference (Markdown)](https://ewels.github.io/rich-click/1.9/api/rich_click/llms.txt): Every documented module, class and function in rich_click.

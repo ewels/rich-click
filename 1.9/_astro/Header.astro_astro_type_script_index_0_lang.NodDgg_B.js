@@ -1,0 +1,1 @@
+import{t as e}from"./preload-helper.Dnt4dqPZ.js";var t=document.querySelectorAll(`.sl-markdown-content img:not(a img)`);t.length>0&&e(async()=>{let{default:e}=await import(`./medium-zoom.esm.yQNNNwvc.js`);return{default:e}},[]).then(({default:e})=>e(t,{margin:32,background:getComputedStyle(document.documentElement).getPropertyValue(`--rc-zoom-backdrop`)}));
