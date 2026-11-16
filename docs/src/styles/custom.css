@@ -30,6 +30,15 @@
 
   /* Footer.astro's band sits on the bottom of the page instead. */
   --sl-main-pad: 0;
+
+  /* Terminal colours, for Rich-style panels and blog tags. */
+  --rc-color-panel-border: #555a70;
+  --rc-color-ansi-cyan: #5fd7d7;
+  --rc-color-ansi-green: #7fd18b;
+  --rc-color-ansi-magenta: #d3a4f2;
+  --rc-color-rss: #f0b35a;
+
+  --rc-icon-rss: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M4 11a9 9 0 0 1 9 9'/%3E%3Cpath d='M4 4a16 16 0 0 1 16 16'/%3E%3Ccircle cx='5' cy='19' r='1'/%3E%3C/svg%3E");
 }
 
 :root[data-theme='light'] {
@@ -40,6 +49,11 @@
   --rc-color-surface: var(--sl-color-gray-6);
   --rc-color-panel: #f7f8fa;
   --rc-color-card: var(--rc-color-panel);
+  --rc-color-panel-border: #b4b8c8;
+  --rc-color-ansi-cyan: #0b7373;
+  --rc-color-ansi-green: #2b7a3a;
+  --rc-color-ansi-magenta: #8a3bb5;
+  --rc-color-rss: #b86e00;
 }
 
 /* The header is black in both colour schemes: force light-on-dark colours for
@@ -205,7 +219,7 @@ main:has(.pyd-module) h1 {
 }
 
 /* Content images are mostly terminal screenshots: centre them and cap their width. */
-.sl-markdown-content img {
+.sl-markdown-content img:not(:where(.not-content *)) {
   max-width: min(700px, 100%);
   margin: 2em auto 0.8em;
   display: block;
@@ -363,4 +377,166 @@ pre.mermaid:not([data-processed]) {
 
 .sl-markdown-content details:not(:where(.pyd-fold))[open] > summary {
   margin-bottom: 0.5rem;
+}
+
+/* Blog. Tag colours, used by components/BlogPosts.astro and PageTitle.astro. */
+[data-tag] {
+  --rc-tag-color: var(--rc-color-ansi-magenta);
+}
+
+[data-tag='release-notes'] {
+  --rc-tag-color: var(--rc-color-ansi-green);
+}
+
+/* Shown in the post header instead (components/PageTitle.astro). Specific
+   enough to beat starlight-blog's scoped `display: flex` in any load order. */
+.sl-markdown-content .sl-blog-metadata {
+  display: none;
+}
+
+/* Blog post header (components/PageTitle.astro). The page actions render after
+   the whole PageTitle; put them under the title, as on every other page. */
+.content-panel:has(.rc-post-meta) > .sl-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.content-panel:has(.rc-post-meta) > .sl-container > * {
+  order: 2;
+}
+
+.content-panel:has(.rc-post-meta) > .sl-container > h1 {
+  order: 0;
+}
+
+.content-panel:has(.rc-post-meta) > .sl-container > .actions-container {
+  order: 1;
+}
+
+/* Blog sidebar sections as Rich panels, titled in their top border. Marked by
+   .rc-blog-sidebar on its first link (starlight-route-data.ts). */
+.sidebar-content:has(.rc-blog-sidebar) {
+  font-family: var(--rc-mono-font);
+  font-size: var(--sl-text-sm);
+
+  & .top-level > li > details {
+    position: relative;
+    margin-top: 1.5rem;
+    padding: 1rem 0.75rem 0.5rem;
+    border: 1px solid var(--rc-color-panel-border);
+    border-radius: 0.25rem;
+  }
+
+  & details > summary {
+    position: absolute;
+    top: -0.8em;
+    left: 0.625rem;
+    padding: 0 0.375rem;
+    background: var(--sl-color-bg-sidebar);
+  }
+
+  & details > summary > svg {
+    display: none;
+  }
+
+  & details > summary .large {
+    font-size: var(--sl-text-sm);
+    font-weight: 400;
+    color: var(--sl-color-gray-3);
+  }
+
+  & details :is(ul, li) {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  & details a {
+    position: relative;
+    padding: 0.2rem 0 0.2rem 1.125rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-2);
+  }
+
+  & details a:hover {
+    color: var(--sl-color-white);
+  }
+
+  & a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  & details a[aria-current='page'] {
+    background: none;
+    color: var(--sl-color-white);
+    font-weight: 700;
+  }
+
+  /* Avatar URL set by starlight-route-data.ts. ::after, as the current page's
+     marker uses ::before. */
+  & .rc-sidebar-author {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  & .rc-sidebar-author::after {
+    content: '';
+    order: -1;
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background: var(--rc-avatar) center / cover;
+  }
+
+  & details a[aria-current='page']::before {
+    content: '›';
+    position: absolute;
+    left: 0.25rem;
+    color: var(--rc-color-ansi-cyan);
+  }
+
+  & a[href*='/blog/tags/']:is(*, :hover) {
+    color: var(--rc-color-ansi-magenta);
+  }
+
+  & a[href*='/blog/tags/release-notes']:is(*, :hover) {
+    color: var(--rc-color-ansi-green);
+  }
+
+  & .top-level > li > a.large {
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-text-accent);
+  }
+
+  & .top-level > li > a[href$='/blog/']::before {
+    content: '← ';
+  }
+
+  & .top-level > li > a[href$='/rss.xml'] {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    color: var(--rc-color-rss);
+  }
+
+  & .top-level > li > a[href$='/rss.xml']::before {
+    content: '';
+    width: 0.875rem;
+    height: 0.875rem;
+    background: currentColor;
+    mask: var(--rc-icon-rss) center / contain no-repeat;
+  }
+}
+
+/* starlight-blog hides the table of contents on its listing pages; the blog
+   index fills it with its posts (starlight-route-data.ts). From 98.5rem only,
+   like every other page. */
+@media (min-width: 98.5rem) {
+  :root:has(.rc-blog[data-blog-page='posts']) .right-sidebar-panel {
+    display: block;
+  }
 }

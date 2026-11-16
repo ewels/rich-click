@@ -9,6 +9,9 @@ authors:
   - ewels
 tags:
   - Release notes
+cover:
+  alt: Help text from a rich-click 1.8 example
+  image: ../images/blog/version-1.8/phils_example.svg
 ---
 
 Today we are very happy to release version 1.8 of rich-click,

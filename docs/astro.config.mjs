@@ -14,7 +14,7 @@ import starlightPageActions from 'starlight-page-actions';
 import starlightPydocs, { pydocsSidebarGroup } from 'starlight-pydocs';
 
 import { satteriMermaid } from './plugins/satteri-mermaid.mjs';
-import { API_PATH, DEFAULT_BASE, REPO, REPO_URL, sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
+import { API_PATH, BLOG_AUTHORS, DEFAULT_BASE, REPO, REPO_URL, sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
 
 // Each docs version is deployed to its own directory (e.g. /rich-click/1.9/,
 // /rich-click/latest/): docs/_deploy.py builds once per directory, setting the base.
@@ -84,11 +84,27 @@ const pageTitleWithCode = {
   },
 };
 
+// starlight-blog has no overrides for its post lists (blog index, tag and author
+// pages) or a post's cover image, so swap the components that render them.
+/** @type {import('vite').Plugin} */
+const blogComponents = {
+  name: 'rich-click:blog-components',
+  enforce: 'pre',
+  resolveId(source, importer) {
+    if (source === '../components/Posts.astro' && importer?.includes('/starlight-blog/routes/')) {
+      return fileURLToPath(new URL('./src/components/BlogPosts.astro', import.meta.url));
+    }
+    if (source === '../Cover.astro' && importer?.includes('/starlight-blog/components/starlight/')) {
+      return fileURLToPath(new URL('./src/components/PostCover.astro', import.meta.url));
+    }
+  },
+};
+
 export default defineConfig({
   site,
   base,
   vite: {
-    plugins: [pageTitleWithCode],
+    plugins: [pageTitleWithCode, blogComponents],
     resolve: {
       // Only matters when starlight-pydocs is symlinked in from a local
       // checkout: without this its own copies of these get loaded too.
@@ -177,20 +193,9 @@ export default defineConfig({
         starlightBlog({
           // The header link is handled by the custom Header component tabs.
           navigation: 'none',
-          authors: {
-            ewels: {
-              name: 'Phil Ewels',
-              title: 'rich-click creator',
-              picture: 'https://github.com/ewels.png',
-              url: 'https://github.com/ewels',
-            },
-            dwreeves: {
-              name: 'Daniel Reeves',
-              title: 'Co-maintainer',
-              picture: 'https://github.com/dwreeves.png',
-              url: 'https://github.com/dwreeves',
-            },
-          },
+          // The index groups every post by year (components/BlogPosts.astro).
+          postCount: Infinity,
+          authors: BLOG_AUTHORS,
         }),
         starlightLinksValidator({
           errorOnRelativeLinks: false,

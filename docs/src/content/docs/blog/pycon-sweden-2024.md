@@ -8,6 +8,9 @@ authors:
   - ewels
 tags:
   - Miscellaneous
+cover:
+  alt: 'Title slide: Accidentally popular: Beautiful CLI interfaces with rich-click'
+  image: ../images/blog/pycon-sweden-2024/cover.png
 ---
 
 I had the great pleasure of presenting **rich-click** at

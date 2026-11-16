@@ -1,0 +1,506 @@
+---
+// Blog post lists: the index (featured latest post, then the rest by year) and
+// the tag and author pages (all by year). Stands in for starlight-blog's
+// Posts.astro via the resolver in astro.config.mjs.
+import type { StarlightBlogPostData } from 'starlight-blog/data';
+import { base } from '../base';
+import { isoDate, postAnchor, shortDate, slug } from '../blog';
+import { authorAvatars } from '../avatars';
+import BlogCover from './BlogCover.astro';
+
+interface Props {
+  entries: StarlightBlogPostData['entry'][];
+  page: 'author' | 'posts' | 'tag';
+}
+
+const { entries, page } = Astro.props;
+const allPosts = Astro.locals.starlightBlog.posts;
+const avatars = await authorAvatars();
+const byId = new Map(allPosts.map((post) => [post.entry.id, post]));
+const posts = entries.map((entry) => byId.get(entry.id)!);
+
+const featured = page === 'posts' ? posts[0] : undefined;
+const listed = featured ? posts.slice(1) : posts;
+
+const years = Map.groupBy(listed, (post) => post.createdAt.getUTCFullYear());
+
+const tags = new Map<string, { href: string; count: number }>();
+for (const post of allPosts) {
+  for (const { label, href } of post.tags) {
+    tags.set(label, { href, count: (tags.get(label)?.count ?? 0) + 1 });
+  }
+}
+---
+
+<div class="rc-blog not-content" data-blog-page={page}>
+  {
+    featured && (
+      <>
+        <div class="rc-blog-intro">
+          <div>
+            <h1 id="_top">Blog</h1>
+            <p>Release notes, guides and talks from the rich-click maintainers.</p>
+          </div>
+          <nav class="rc-blog-filters" aria-label="Tags">
+            <a href={`${base}/blog/`} aria-current="page">
+              All posts <span class="rc-count">{allPosts.length}</span>
+            </a>
+            {[...tags].map(([label, { href, count }]) => (
+              <a href={href} data-tag={slug(label)}>
+                <span class="rc-tag-square" />
+                {label} <span class="rc-count">{count}</span>
+              </a>
+            ))}
+            <a href={`${base}/blog/rss.xml`} class="rc-rss">
+              RSS
+            </a>
+          </nav>
+        </div>
+
+        <article class="rc-featured">
+          <div class="rc-featured-text">
+            <div class="rc-meta">
+              <span class="rc-latest">LATEST</span>
+              <time class="rc-mono" datetime={featured.createdAt.toISOString()}>
+                {isoDate(featured.createdAt)}
+              </time>
+              <span aria-hidden="true">·</span>
+              <span>{featured.metrics.readingTime.minutes} min read</span>
+              {featured.tags.map(({ label }) => (
+                <span class="rc-tag" data-tag={slug(label)}>
+                  <span class="rc-tag-square" />
+                  {label}
+                </span>
+              ))}
+            </div>
+            <h2 id={postAnchor(featured.entry.id)}>
+              <a href={featured.href}>{featured.title}</a>
+            </h2>
+            <p class="rc-description">{featured.entry.data.description}</p>
+            <div class="rc-featured-footer">
+              <div class="rc-authors">
+                {featured.authors.map((author) => (
+                  <span class="rc-author">
+                    <img src={avatars.get(author.name)} alt="" width="36" height="36" />
+                    <span>
+                      <strong>{author.name}</strong>
+                      {author.title && <span>{author.title}</span>}
+                    </span>
+                  </span>
+                ))}
+              </div>
+              <a class="rc-read" href={featured.href}>
+                Read post <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+          <a class="rc-featured-cover" href={featured.href} tabindex="-1" aria-hidden="true">
+            {featured.cover ? (
+              <BlogCover cover={featured.cover} />
+            ) : (
+              <span class="rc-ansi-squares" />
+            )}
+          </a>
+        </article>
+      </>
+    )
+  }
+
+  {
+    [...years].map(([year, yearPosts]) => (
+      <section class="rc-year">
+        <div class="rc-year-heading">
+          <h2>{year}</h2>
+          <span class="rc-mono">
+            {yearPosts.length} {yearPosts.length === 1 ? 'post' : 'posts'}
+          </span>
+        </div>
+        {yearPosts.map((post) => (
+          <a class="rc-row" href={post.href}>
+            <time class="rc-mono" datetime={post.createdAt.toISOString()}>
+              {shortDate(post.createdAt)}
+            </time>
+            <div class="rc-row-body">
+              <h3 class="rc-row-title" id={postAnchor(post.entry.id)}>
+                {post.title}
+              </h3>
+              <span class="rc-description">{post.entry.data.description}</span>
+              <span class="rc-meta">
+                {post.tags.map(({ label }) => (
+                  <span class="rc-tag" data-tag={slug(label)}>
+                    <span class="rc-tag-square" />
+                    {label}
+                  </span>
+                ))}
+                <span aria-hidden="true">·</span>
+                <span>{post.metrics.readingTime.minutes} min read</span>
+              </span>
+            </div>
+            <span class="rc-avatars">
+              {post.authors.map((author) => (
+                <img src={avatars.get(author.name)} alt={author.name} title={author.name} width="30" height="30" />
+              ))}
+            </span>
+          </a>
+        ))}
+      </section>
+    ))
+  }
+</div>
+
+<style>
+  .rc-blog {
+    --rc-blog-border: var(--sl-color-hairline-light);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .rc-mono {
+    font-family: var(--rc-mono-font);
+  }
+
+  .rc-blog a {
+    text-decoration: none;
+  }
+
+  .rc-blog-intro {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin: 1.5rem 0 2.5rem;
+  }
+
+  .rc-blog-intro h1 {
+    margin: 0 0 0.75rem;
+    font-size: 4rem;
+    line-height: 1;
+    color: var(--sl-color-white);
+  }
+
+  .rc-blog-intro p {
+    margin: 0;
+    font-size: var(--sl-text-lg);
+    color: var(--sl-color-gray-2);
+  }
+
+  .rc-blog-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .rc-blog-filters a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2.25rem;
+    padding: 0 0.875rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 999px;
+    color: var(--sl-color-text);
+    font-size: var(--sl-text-sm);
+  }
+
+  .rc-blog-filters a:hover {
+    border-color: var(--sl-color-gray-3);
+  }
+
+  .rc-blog-filters a[aria-current='page'] {
+    background: var(--sl-color-accent-low);
+    border-color: var(--sl-color-accent);
+    color: var(--sl-color-white);
+    font-weight: 600;
+  }
+
+  .rc-count {
+    font-family: var(--rc-mono-font);
+    color: var(--sl-color-gray-3);
+  }
+
+  .rc-blog-filters .rc-rss::before {
+    content: '';
+    width: 0.875rem;
+    height: 0.875rem;
+    background: var(--rc-color-rss);
+    mask: var(--rc-icon-rss) center / contain no-repeat;
+  }
+
+  .rc-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--rc-tag-color);
+  }
+
+  .rc-tag-square {
+    width: 0.4375rem;
+    height: 0.4375rem;
+    background: var(--rc-tag-color);
+  }
+
+  .rc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.625rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+
+  .rc-description {
+    color: var(--sl-color-gray-2);
+  }
+
+  /* Featured latest post */
+  .rc-featured {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    background: var(--rc-color-surface);
+    border: 1px solid var(--rc-blog-border);
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .rc-featured-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1.125rem;
+    padding: clamp(1.5rem, 4vw, 2.75rem);
+  }
+
+  .rc-latest {
+    font-family: var(--rc-mono-font);
+    font-size: var(--sl-text-xs);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--sl-color-text-accent);
+    background: var(--sl-color-accent-low);
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+
+  .rc-featured h2 {
+    margin: 0;
+    font-family: var(--rc-pixel-font);
+    font-weight: 400;
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    line-height: 1.15;
+    text-shadow: var(--rc-pixel-shadow);
+  }
+
+  .rc-featured h2 a {
+    color: var(--sl-color-white);
+  }
+
+  .rc-featured h2 a:hover {
+    color: var(--sl-color-text-accent);
+  }
+
+  .rc-featured .rc-description {
+    margin: 0;
+    font-size: var(--sl-text-lg);
+  }
+
+  .rc-featured-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+  }
+
+  .rc-authors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .rc-author {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    line-height: 1.3;
+  }
+
+  .rc-author img {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+  }
+
+  .rc-author > span {
+    display: flex;
+    flex-direction: column;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+
+  .rc-author strong {
+    color: var(--sl-color-white);
+  }
+
+  /* Not Starlight's LinkButton: importing it renders this component before
+     starlight-blog's middleware has set Astro.locals.starlightBlog. */
+  .rc-read {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2.875rem;
+    padding: 0 1.375rem;
+    border-radius: 0.625rem;
+    background: var(--sl-color-accent);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .rc-read:hover {
+    background: var(--sl-color-accent-high);
+    color: var(--sl-color-black);
+  }
+
+  .rc-featured-cover {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 16rem;
+    max-height: 26rem;
+    overflow: hidden;
+    background: var(--rc-color-panel);
+    border-left: 1px solid var(--rc-blog-border);
+  }
+
+  .rc-featured-cover :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top left;
+  }
+
+  /* The logo's ANSI colours, for posts without a cover image. */
+  .rc-ansi-squares {
+    align-self: flex-end;
+    margin: 1.5rem;
+    width: calc(7 * 0.625rem + 6 * 0.375rem);
+    height: 0.625rem;
+    background: linear-gradient(
+      to right,
+      #800000 0 0.625rem,
+      transparent 0 1rem,
+      #008000 0 1.625rem,
+      transparent 0 2rem,
+      #808000 0 2.625rem,
+      transparent 0 3rem,
+      #008080 0 3.625rem,
+      transparent 0 4rem,
+      #000080 0 4.625rem,
+      transparent 0 5rem,
+      #800080 0 5.625rem,
+      transparent 0 6rem,
+      #c0c0c0 0 6.625rem
+    );
+  }
+
+  /* Posts by year */
+  .rc-year {
+    margin-top: 4rem;
+  }
+
+  .rc-year:first-child {
+    margin-top: 0;
+  }
+
+  .rc-year-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 0.875rem;
+    padding-bottom: 0.875rem;
+    border-bottom: 1px solid var(--rc-blog-border);
+  }
+
+  .rc-year-heading h2 {
+    margin: 0;
+    font-family: var(--rc-pixel-font);
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: var(--sl-color-white);
+  }
+
+  .rc-year-heading span {
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+
+  .rc-row {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr) auto;
+    gap: 1.5rem;
+    align-items: start;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--rc-blog-border);
+    color: inherit;
+  }
+
+  .rc-row > time {
+    padding-top: 0.2rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+
+  .rc-row-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .rc-row-title {
+    margin: 0;
+    font-size: var(--sl-text-xl);
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--sl-color-white);
+  }
+
+  .rc-row:hover .rc-row-title {
+    color: var(--sl-color-text-accent);
+  }
+
+  .rc-row .rc-meta {
+    margin-top: 0.25rem;
+  }
+
+  .rc-avatars {
+    display: flex;
+    padding-top: 0.125rem;
+  }
+
+  .rc-avatars img {
+    width: 1.875rem;
+    height: 1.875rem;
+    border-radius: 50%;
+    border: 2px solid var(--sl-color-bg);
+  }
+
+  .rc-avatars img + img {
+    margin-left: -0.625rem;
+  }
+
+  @media (max-width: 40rem) {
+    .rc-row {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.25rem 1rem;
+    }
+
+    .rc-row > time {
+      grid-column: 1 / -1;
+    }
+
+    .rc-featured-cover {
+      border-left: 0;
+      border-top: 1px solid var(--rc-blog-border);
+    }
+  }
+</style>
