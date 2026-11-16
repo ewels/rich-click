@@ -14,7 +14,7 @@ const { showCover } = Astro.locals.starlightRoute.entry.data;
 
 {
   showCover && (
-    <figure class="rc-post-cover">
+    <figure>
       <BlogCover cover={Astro.props.cover} />
     </figure>
   )

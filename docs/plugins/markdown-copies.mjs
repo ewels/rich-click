@@ -53,7 +53,7 @@ function frontMatter(html) {
       lines.push(`${key}: ${key === 'date' ? value : JSON.stringify(value)}`);
     }
   }
-  return lines.length ? `---\n${lines.join('\n')}\n---\n\n` : '';
+  return `---\n${lines.join('\n')}\n---\n\n`;
 }
 
 /** @type {import('astro').AstroIntegration} */

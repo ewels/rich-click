@@ -32,7 +32,7 @@ for (const post of allPosts) {
 }
 ---
 
-<div class="rc-blog not-content" data-blog-page={page}>
+<div class="rc-blog not-content">
   {
     featured && (
       <>
@@ -89,14 +89,14 @@ for (const post of allPosts) {
                   </span>
                 ))}
               </div>
-              <a class="rc-read" href={featured.href}>
+              <a class="rc-link-button primary" href={featured.href}>
                 Read post <span aria-hidden="true">→</span>
               </a>
             </div>
           </div>
           <a class="rc-featured-cover" href={featured.href} tabindex="-1" aria-hidden="true">
             {featured.cover ? (
-              <BlogCover cover={featured.cover} />
+              <BlogCover cover={featured.cover} widths={[480, 960]} sizes="(min-width: 50rem) 27.5rem, 100vw" />
             ) : (
               <span class="rc-ansi-squares" />
             )}
@@ -226,14 +226,6 @@ for (const post of allPosts) {
     color: var(--sl-color-gray-3);
   }
 
-  .rc-blog-filters .rc-rss::before {
-    content: '';
-    width: 0.875rem;
-    height: 0.875rem;
-    background: var(--rc-color-rss);
-    mask: var(--rc-icon-rss) center / contain no-repeat;
-  }
-
   .rc-tag {
     display: inline-flex;
     align-items: center;
@@ -348,25 +340,6 @@ for (const post of allPosts) {
 
   .rc-author strong {
     color: var(--sl-color-white);
-  }
-
-  /* Not Starlight's LinkButton: importing it renders this component before
-     starlight-blog's middleware has set Astro.locals.starlightBlog. */
-  .rc-read {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    height: 2.875rem;
-    padding: 0 1.375rem;
-    border-radius: 0.625rem;
-    background: var(--sl-color-accent);
-    color: #fff;
-    font-weight: 600;
-  }
-
-  .rc-read:hover {
-    background: var(--sl-color-accent-high);
-    color: var(--sl-color-black);
   }
 
   .rc-featured-cover {

@@ -253,34 +253,36 @@ main:has(.pyd-module) h1 {
   color: var(--sl-color-bg);
 }
 
-/* Homepage buttons (Hero.astro, pages/index.astro): Starlight's LinkButton,
-   squarer and bolder. */
-.sl-link-button.rc-link-button {
+/* Buttons on the homepage (Hero.astro, pages/index.astro) and blog index
+   (components/BlogPosts.astro). Not Starlight's LinkButton, which BlogPosts
+   can't import: it would render before starlight-blog's middleware has set
+   Astro.locals.starlightBlog. */
+.rc-link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   height: 2.875rem;
   padding: 0 1.375rem;
+  border: 1px solid transparent;
   border-radius: 0.625rem;
   font-size: var(--sl-text-base);
   font-weight: 600;
-}
-
-.rc-link-button svg {
-  font-size: 1.125rem;
+  text-decoration: none;
 }
 
 .rc-link-button.primary {
-  border-color: var(--sl-color-accent);
   background: var(--sl-color-accent);
   color: #fff;
 }
 
 .rc-link-button.primary:hover {
-  border-color: var(--sl-color-accent-high);
   background: var(--sl-color-accent-high);
   color: var(--sl-color-black);
 }
 
 .rc-link-button.secondary {
   border-color: var(--sl-color-gray-4);
+  color: var(--sl-color-white);
 }
 
 .rc-link-button.secondary:hover {
@@ -288,16 +290,13 @@ main:has(.pyd-module) h1 {
 }
 
 /* On the accent-coloured call-to-action band, in both site themes. */
-.rc-link-button.rc-link-button-inverse {
-  border-color: #fff;
+.rc-link-button.inverse {
   background: #fff;
   color: #1c2456;
 }
 
-.rc-link-button.rc-link-button-inverse:hover {
-  border-color: #dee3fb;
+.rc-link-button.inverse:hover {
   background: #dee3fb;
-  color: #1c2456;
 }
 
 /* The homepage has no sidebar and lays out wider than a docs page. */
@@ -388,15 +387,19 @@ pre.mermaid:not([data-processed]) {
   --rc-tag-color: var(--rc-color-ansi-green);
 }
 
-/* Shown in the post header instead (components/PageTitle.astro). Specific
-   enough to beat starlight-blog's scoped `display: flex` in any load order. */
-.sl-markdown-content .sl-blog-metadata {
-  display: none;
+.rc-rss::before,
+.sidebar-content:has(.rc-blog-sidebar) .top-level > li > a[href$='/rss.xml']::before {
+  content: '';
+  width: 0.875rem;
+  height: 0.875rem;
+  background: var(--rc-color-rss);
+  mask: var(--rc-icon-rss) center / contain no-repeat;
 }
 
-/* Replaced by Starlight's own pagination in the page footer, as on docs pages
-   (starlight-route-data.ts). */
-.sl-markdown-content .sl-blog-pagination {
+/* Replaced by the post header (components/PageTitle.astro) and Starlight's own
+   pagination (starlight-route-data.ts). Specific enough to beat
+   starlight-blog's scoped `display: flex` in any load order. */
+.sl-markdown-content :is(.sl-blog-metadata, .sl-blog-pagination) {
   display: none;
 }
 
@@ -407,16 +410,12 @@ pre.mermaid:not([data-processed]) {
   flex-direction: column;
 }
 
-.content-panel:has(.rc-post-meta) > .sl-container > * {
-  order: 2;
-}
-
 .content-panel:has(.rc-post-meta) > .sl-container > h1 {
-  order: 0;
+  order: -2;
 }
 
 .content-panel:has(.rc-post-meta) > .sl-container > .actions-container {
-  order: 1;
+  order: -1;
 }
 
 /* Blog sidebar sections as Rich panels, titled in their top border. Marked by
@@ -504,12 +503,8 @@ pre.mermaid:not([data-processed]) {
     color: var(--rc-color-ansi-cyan);
   }
 
-  & a[href*='/blog/tags/']:is(*, :hover) {
-    color: var(--rc-color-ansi-magenta);
-  }
-
-  & a[href*='/blog/tags/release-notes']:is(*, :hover) {
-    color: var(--rc-color-ansi-green);
+  & a[data-tag]:is(*, :hover) {
+    color: var(--rc-tag-color);
   }
 
   & .top-level > li > a.large {
@@ -528,21 +523,13 @@ pre.mermaid:not([data-processed]) {
     margin-top: 1rem;
     color: var(--rc-color-rss);
   }
-
-  & .top-level > li > a[href$='/rss.xml']::before {
-    content: '';
-    width: 0.875rem;
-    height: 0.875rem;
-    background: currentColor;
-    mask: var(--rc-icon-rss) center / contain no-repeat;
-  }
 }
 
 /* starlight-blog hides the table of contents on its listing pages; the blog
    index fills it with its posts (starlight-route-data.ts). From 98.5rem only,
    like every other page. */
 @media (min-width: 98.5rem) {
-  :root:has(.rc-blog[data-blog-page='posts']) .right-sidebar-panel {
+  :root:has(.rc-featured) .right-sidebar-panel {
     display: block;
   }
 }

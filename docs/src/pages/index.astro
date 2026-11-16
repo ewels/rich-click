@@ -1,7 +1,7 @@
 ---
 // The homepage. The `hero` frontmatter makes Starlight render components/Hero.astro above the content.
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
-import { Code, LinkButton } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
 import { base } from '../base';
 import { API_PATH, EDITOR_PAGE, SITE_TAGLINE, SITE_TITLE } from '../site.mjs';
 import themeCounts from '../generated/theme-counts.json';
@@ -152,9 +152,9 @@ def hello(count, name):
       <h2>Design your own theme</h2>
       <p>Tweak colours and box styles in the browser, then copy the config straight into your CLI.</p>
     </div>
-    <LinkButton class="rc-link-button rc-link-button-inverse" href={`${base}${EDITOR_PAGE.link}`} icon="right-arrow">
-      Open the Live Style Editor
-    </LinkButton>
+    <a class="rc-link-button inverse" href={`${base}${EDITOR_PAGE.link}`}>
+      Open the Live Style Editor <span aria-hidden="true">→</span>
+    </a>
   </section>
 </div>
 </StarlightPage>

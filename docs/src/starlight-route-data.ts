@@ -14,9 +14,13 @@ import pixelmix from './fonts/pixelmix.ttf?url';
 const preloadFonts = [
   [notoSans400, 'font/woff2'],
   [notoSans700, 'font/woff2'],
+  [pixelmix, 'font/ttf'],
+] as const;
+// Only on pages that show it: the homepage and blog (--rc-mono-font), and the
+// output of `runnable` code blocks (astro.config.mjs).
+const firaCodeFonts = [
   [firaCode400, 'font/woff2'],
   [firaCode700, 'font/woff2'],
-  [pixelmix, 'font/ttf'],
 ] as const;
 
 export const onRequest = defineRouteMiddleware(async (context, next) => {
@@ -45,6 +49,20 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
         post && { type: 'link' as const, label: post.title, href: post.href, isCurrent: false, badge: undefined, attrs: {} };
       route.pagination = { prev: link(posts[i - 1]), next: link(posts[i + 1]) };
     }
+
+    // starlight-blog's author links are text only: add avatars. Tag links get
+    // their colour from `[data-tag]` (custom.css), keyed by their URL slug.
+    const avatars = await authorAvatars();
+    for (const group of route.sidebar) {
+      if (group.type !== 'group') continue;
+      for (const link of group.entries) {
+        if (link.type !== 'link') continue;
+        const tag = link.href.match(/\/blog\/tags\/([^/]+)\/$/)?.[1];
+        if (tag) link.attrs = { ...link.attrs, 'data-tag': tag };
+        const name = [...avatars.keys()].find((n) => link.href.endsWith(`/blog/authors/${slug(n)}/`));
+        if (name) link.attrs = { ...link.attrs, class: 'rc-sidebar-author', style: `--rc-avatar: url(${avatars.get(name)})` };
+      }
+    }
   }
   if (path === '/blog/') {
     route.sidebar = siteSidebar;
@@ -62,17 +80,6 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
     }
   }
 
-  // starlight-blog's author links are text only: add avatars (custom.css).
-  const avatars = await authorAvatars();
-  for (const group of route.sidebar) {
-    if (group.type !== 'group') continue;
-    for (const link of group.entries) {
-      if (link.type !== 'link') continue;
-      const name = [...avatars.keys()].find((n) => link.href.endsWith(`/blog/authors/${slug(n)}/`));
-      if (name) link.attrs = { ...link.attrs, class: 'rc-sidebar-author', style: `--rc-avatar: url(${avatars.get(name)})` };
-    }
-  }
-
   // Splash pages have no sidebar, so no mobile menu button either, and the
   // header tabs only show from 72rem. Give them the sidebar, but hide it (with
   // Starlight's no-sidebar layout) once the tabs are there.
@@ -86,7 +93,9 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
     });
   }
 
-  for (const [href, type] of preloadFonts) {
+  const usesFiraCode = path === '/' || path.startsWith('/blog/') || /\brunnable\b/.test(entry?.body ?? '');
+  const fonts = usesFiraCode ? [...preloadFonts, ...firaCodeFonts] : preloadFonts;
+  for (const [href, type] of fonts) {
     head.push({ tag: 'link', attrs: { rel: 'preload', as: 'font', type, href, crossorigin: '' } });
   }
 
