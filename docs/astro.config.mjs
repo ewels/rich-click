@@ -1,6 +1,5 @@
 // @ts-check
 import { execFileSync } from 'node:child_process';
-import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
@@ -13,6 +12,7 @@ import starlightLlmsTxt from 'starlight-llms-txt';
 import starlightPageActions from 'starlight-page-actions';
 import starlightPydocs, { pydocsSidebarGroup } from 'starlight-pydocs';
 
+import { markdownCopies } from './plugins/markdown-copies.mjs';
 import { satteriMermaid } from './plugins/satteri-mermaid.mjs';
 import { API_PATH, BLOG_AUTHORS, DEFAULT_BASE, REPO, REPO_URL, sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
 
@@ -44,31 +44,6 @@ const inventories = [
   { url: 'https://anyio.readthedocs.io/en/stable/objects.inv' },
   { url: 'https://maxludden.github.io/rich-gradient/objects.inv' },
 ];
-
-// starlight-page-actions publishes each page's source verbatim as `.md`. Strip
-// the `{/* RICH-CODEX ... */}` image-generation blocks from those copies, where
-// they are noise to whoever reads the Markdown, but not from code examples.
-// Closing fences may be followed by text: tidymd renders inline `<Code>` that way.
-const FENCE_OR_MDX_COMMENT = /^ {0,3}(`{3,}|~{3,})[^\n]*\n[\s\S]*?^ {0,3}\1|\{\/\*[\s\S]*?\*\/\}\n?/gm;
-/** @param {string} markdown */
-const stripMdxComments = (markdown) =>
-  markdown.replace(FENCE_OR_MDX_COMMENT, (match, fence) => (fence ? match : ''));
-
-/** @type {import('astro').AstroIntegration} */
-const stripMarkdownCopyComments = {
-  name: 'rich-click:strip-mdx-comments',
-  hooks: {
-    'astro:build:done': async ({ dir }) => {
-      const entries = await readdir(fileURLToPath(dir), { recursive: true });
-      for (const entry of entries.filter((name) => name.endsWith('.md'))) {
-        const path = fileURLToPath(new URL(entry, dir));
-        const original = await readFile(path, 'utf8');
-        const stripped = stripMdxComments(original);
-        if (stripped !== original) await writeFile(path, stripped);
-      }
-    },
-  },
-};
 
 // Starlight's default PageTitle shows `backticks` in titles literally. It can't
 // be overridden through `components` without losing starlight-page-actions' own
@@ -136,7 +111,7 @@ export default defineConfig({
     '/blog/archive/2025': `${base}/blog/`,
   },
   integrations: [
-    stripMarkdownCopyComments,
+    markdownCopies,
     starlight({
       title: SITE_TITLE,
       description: SITE_TAGLINE,
