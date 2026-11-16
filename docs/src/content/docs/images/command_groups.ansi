@@ -1,0 +1,32 @@
+
+  [1;35mUsage:[0m [1m03_groups_sorting.py[0m [[35mOPTIONS[0m] [35mCOMMAND[0m [[35mARGS[0m]...
+
+  My amazing tool does all the things.
+  [2mThis is a minimal example based on documentation from the 'click' package.[0m
+  [2mYou can try using [0m[2;35m--help[0m[2m at the top level and also for specific subcommands.[0m
+
+[2m  [0mBasic usage[2m                                                                 [0m[2m  [0m
+[2m [0m[2m ──────────────────────────────────────────────────────────────────────────── [0m[2m [0m
+[2m [0m[2m [0m[35m--type[0m [2m [0m [2;35mTEXT[0m [2m [0m [35m[required][0m[39m [0m[39mType of file to sync[0m[39m [0m[2;39m[default=files][0m             [2m [0m[2m [0m
+[2m [0m[2m                                                                              [0m[2m [0m
+[2m                                                                                [0m
+[2m  [0mAdvanced options[2m                                                            [0m[2m  [0m
+[2m [0m[2m ──────────────────────────────────────────────────────────────────────────── [0m[2m [0m
+[2m [0m[2m [0m[1;35m-h     [0m [2m [0m [35m--help              [0m [2m [0m [39mShow this message and exit.[0m                [2m [0m[2m [0m
+[2m [0m[2m [0m        [2m [0m [35m--version           [0m [2m [0m [39mShow the version and exit.[0m                 [2m [0m[2m [0m
+[2m [0m[2m [0m[1;35m-d[0m[39m / [0m[1;35m-n[0m [2m [0m [35m--debug[0m[39m / [0m[35m--no-debug[0m [2m [0m [39mShow the debug log messages[0m[39m [0m[39m               [0m[2m [0m[2m [0m
+[2m [0m[2m [0m        [2m [0m                      [2m [0m [2;39m[default=no-debug][0m[39m                         [0m[2m [0m[2m [0m
+[2m [0m[2m                                                                              [0m[2m [0m
+[2m                                                                                [0m
+[2m  [0mMain usage[2m                                                                  [0m[2m  [0m
+[2m [0m[2m ──────────────────────────────────────────────────────────────────────────── [0m[2m [0m
+[2m [0m[2m [0m[35msync        [0m[35m [0m[2m [0m [39mSynchronise all your files between two places.               [0m[2m [0m[2m [0m
+[2m [0m[2m [0m[35mdownload    [0m[35m [0m[2m [0m [39mPretend to download some files from somewhere.               [0m[2m [0m[2m [0m
+[2m [0m[2m                                                                              [0m[2m [0m
+[2m                                                                                [0m
+[2m  [0mConfiguration[2m                                                               [0m[2m  [0m
+[2m [0m[2m ──────────────────────────────────────────────────────────────────────────── [0m[2m [0m
+[2m [0m[2m [0m[35mconfig         [0m[35m [0m[2m [0m [39mSet up the configuration.                                 [0m[2m [0m[2m [0m
+[2m [0m[2m [0m[35mauth           [0m[35m [0m[2m [0m [39mAuthenticate the app.                                     [0m[2m [0m[2m [0m
+[2m [0m[2m                                                                              [0m[2m [0m
+[2m                                                                                [0m

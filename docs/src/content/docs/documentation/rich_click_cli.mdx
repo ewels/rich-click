@@ -12,24 +12,35 @@ import typerExampleRaw from '@code_snippets/rich_click_cli/typer_example.py?raw'
 **rich-click** comes with a CLI tool that allows you to format the Click help output for any CLI that uses Click.
 
 {/* RICH-CODEX head: 12 */}
-![`rich-click --help`](../images/code_snippets/rich_click_cli/rich_click.svg)
+```sh runnable.outputFile="../images/code_snippets/rich_click_cli/rich_click.ansi"
+$ rich-click --help
+```
 
 To use, simply prefix `rich-click` to the command. Here are a few real world examples:
 
 <Tabs>
 <TabItem label="flask">
 
-![](../images/rich_click_cli_examples/flask.svg "flask --help")
+{/* RICH-CODEX command: uv run --quiet --with flask==3.1.3 rich-click flask --help 2>/dev/null */}
+```sh runnable.outputFile="../images/rich_click_cli_examples/flask.ansi"
+$ rich-click flask --help
+```
 </TabItem>
 
 <TabItem label="celery">
 
-![](../images/rich_click_cli_examples/celery.svg "celery --help")
+{/* RICH-CODEX command: uv run --quiet --with celery==5.7.0 rich-click celery --help 2>/dev/null */}
+```sh runnable.outputFile="../images/rich_click_cli_examples/celery.ansi"
+$ rich-click celery --help
+```
 </TabItem>
 
 <TabItem label="dagster">
 
-![](../images/rich_click_cli_examples/dagster.svg "dagster --help")
+{/* RICH-CODEX command: uv run --quiet --with dagster==1.13.30 rich-click dagster --help 2>/dev/null */}
+```sh runnable.outputFile="../images/rich_click_cli_examples/dagster.ansi"
+$ rich-click dagster --help
+```
 </TabItem>
 </Tabs>
 
@@ -59,22 +70,26 @@ SVG example:
 {/* RICH-CODEX
 extra_env:
   PYTHONPATH: .
-fake_command: rich-click --output svg app:main --help
 working_dir: docs/code_snippets/rich_click_cli
 head: 12
+command: "rich-click --output svg app:main --help | grep -Eo '.{1,120}'"
 */}
-![`rich-click --output svg app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_svg.svg)
+```sh runnable.outputFile="../images/code_snippets/rich_click_cli/output_to_svg.ansi"
+$ rich-click --output svg app:main --help
+```
 
 HTML example:
 
 {/* RICH-CODEX
 extra_env:
   PYTHONPATH: .
-fake_command: rich-click --output html app:main --help
 working_dir: docs/code_snippets/rich_click_cli
 head: 12
+command: "rich-click --output html app:main --help | grep -Eo '.{1,120}'"
 */}
-![`rich-click --output html app:main --help | grep -Eo '.{1,120}'`](../images/code_snippets/rich_click_cli/output_to_html.svg)
+```sh runnable.outputFile="../images/code_snippets/rich_click_cli/output_to_html.ansi"
+$ rich-click --output html app:main --help
+```
 
 _SVG and HTML generated from [`docs/code_snippets/rich_click_cli/app.py`](https://github.com/ewels/rich-click/blob/main/docs/code_snippets/rich_click_cli/app.py)_
 
@@ -101,7 +116,9 @@ Here is an example of overriding a Typer CLI with a **rich-click** theme:
 
 
 {/* RICH-CODEX working_dir: docs/code_snippets/rich_click_cli */}
-![`rich-click --theme magenta1-nu typer_example.py --help`](../images/code_snippets/rich_click_cli/typer_example.svg)
+```sh runnable.outputFile="../images/code_snippets/rich_click_cli/typer_example.ansi"
+$ rich-click --theme magenta1-nu typer_example.py --help
+```
 
 </details>
 

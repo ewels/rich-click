@@ -1,0 +1,10 @@
+Usage: hello_v3.py [OPTIONS] COMMAND [ARGS]...
+
+  CLI for greetings.
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  english  Greet in English
+  french   Greet in French

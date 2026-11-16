@@ -37,7 +37,9 @@ click.rich_click.GROUP_ARGUMENTS_OPTIONS = True
 </Tabs>
 
 {/* RICH-CODEX working_dir: . */}
-![`python examples/06_arguments.py --help`](../images/arguments.svg "Positional arguments example")
+```sh runnable.outputFile="../images/arguments.ansi" title="Positional arguments example"
+$ python examples/06_arguments.py --help
+```
 
 > See [`examples/06_arguments.py`](https://github.com/ewels/rich-click/blob/main/examples/06_arguments.py) for an example.
 
@@ -51,7 +53,9 @@ By default, rich-click shows metavars in their own column.
 However, if you have a long list of choices, this column can be quite wide and result in a lot of white space:
 
 {/* RICH-CODEX working_dir: . */}
-![`python examples/08_metavars_default.py --help`](../images/metavars_default.svg "Default metavar display")
+```sh runnable.outputFile="../images/metavars_default.ansi" title="Default metavar display"
+$ python examples/08_metavars_default.py --help
+```
 
 It may look better to show metavars appended to the help text, instead of in their own column.
 For this, use the following:
@@ -75,7 +79,9 @@ click.rich_click.APPEND_METAVARS_HELP = True
 </Tabs>
 
 {/* RICH-CODEX working_dir: . */}
-![`python examples/08_metavars.py --help`](../images/metavars_appended.svg "Appended metavar")
+```sh runnable.outputFile="../images/metavars_appended.ansi" title="Appended metavar"
+$ python examples/08_metavars.py --help
+```
 
 > See [`examples/08_metavars.py`](https://github.com/ewels/rich-click/blob/main/examples/08_metavars.py) for an example.
 
@@ -84,7 +90,9 @@ click.rich_click.APPEND_METAVARS_HELP = True
 By default, rich-click gives some nice formatting to error messages:
 
 {/* RICH-CODEX working_dir: . */}
-![`python examples/01_simple.py --hep || true`](../images/error.svg "Error message")
+```sh runnable.outputFile="../images/error.ansi" title="Error message"
+$ python examples/01_simple.py --hep
+```
 
 You can customize the _Try 'command --help' for help._ message with `ERRORS_SUGGESTION`
 using rich-click though, and add some text after the error with `ERRORS_EPILOGUE`.
@@ -113,7 +121,9 @@ click.rich_click.ERRORS_EPILOGUE = "To find out more, visit [link=https://mytool
 </Tabs>
 
 {/* RICH-CODEX working_dir: . */}
-![`python examples/07_custom_errors.py --hep || true`](../images/custom_error.svg "Custom error message")
+```sh runnable.outputFile="../images/custom_error.ansi" title="Custom error message"
+$ python examples/07_custom_errors.py --hep
+```
 
 > See [`examples/07_custom_errors.py`](https://github.com/ewels/rich-click/blob/main/examples/07_custom_errors.py) for an example.
 
@@ -164,7 +174,9 @@ working_dir: .
 extra_env:
     TERMINAL_WIDTH: 160
 */}
-![`python examples/10_table_styles.py --help`](../images/style_tables.svg "Rich markup example")
+```sh runnable.outputFile="../images/style_tables.ansi" title="Rich markup example"
+$ python examples/10_table_styles.py --help
+```
 
 
 > See [`examples/10_table_styles.py`](https://github.com/ewels/rich-click/blob/main/examples/10_table_styles.py) for an example.

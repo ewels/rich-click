@@ -32,10 +32,14 @@ For example, the `@click.command` decorator creates a `Command` object that call
 You can run the file like normal, or you can run `--help` to render the function's docstring:
 
 {/* RICH-CODEX working_dir: docs/code_snippets/introduction_to_click */}
-![`python hello.py`](../images/code_snippets/introduction_to_click/hello.svg)
+```sh runnable.outputFile="../images/code_snippets/introduction_to_click/hello.ansi"
+$ python hello.py
+```
 
 {/* RICH-CODEX working_dir: docs/code_snippets/introduction_to_click */}
-![`python hello.py --help`](../images/code_snippets/introduction_to_click/hello_help.svg)
+```sh runnable.outputFile="../images/code_snippets/introduction_to_click/hello_help.ansi"
+$ python hello.py --help
+```
 
 ### Arguments and Options
 
@@ -49,10 +53,14 @@ The below code shows some of the features available with options and arguments:
 <Code code={helloV2Raw} lang="python" title="docs/code_snippets/introduction_to_click/hello_v2.py" />
 
 {/* RICH-CODEX working_dir: docs/code_snippets/introduction_to_click */}
-![`python hello_v2.py --say-goodbye --times 3 Edward`](../images/code_snippets/introduction_to_click/hello_v2.svg)
+```sh runnable.outputFile="../images/code_snippets/introduction_to_click/hello_v2.ansi"
+$ python hello_v2.py --say-goodbye --times 3 Edward
+```
 
 {/* RICH-CODEX working_dir: docs/code_snippets/introduction_to_click */}
-![`python hello_v2.py --help`](../images/code_snippets/introduction_to_click/hello_v2_help.svg)
+```sh runnable.outputFile="../images/code_snippets/introduction_to_click/hello_v2_help.ansi"
+$ python hello_v2.py --help
+```
 
 Click is able to parse the new arguments and options, e.g. it knows that `--times [number]` maps to the function argument `times`.
 Additionally, Click also knows to render these new arguments in the help text.
@@ -66,15 +74,21 @@ Last but not least, Click allows for command groups and sub-commands, which allo
 Running `python hello.py --help` gives you the help text for the group and lists the subcommands:
 
 {/* RICH-CODEX working_dir: docs/code_snippets/introduction_to_click */}
-![`python hello_v3.py --help`](../images/code_snippets/introduction_to_click/hello_v3_help.svg)
+```sh runnable.outputFile="../images/code_snippets/introduction_to_click/hello_v3_help.ansi"
+$ python hello_v3.py --help
+```
 
 And you can run any of the subcommands like so:
 
 {/* RICH-CODEX working_dir: docs/code_snippets/introduction_to_click */}
-![`python hello_v3.py french Jennifer`](../images/code_snippets/introduction_to_click/hello_v3_subcommand.svg)
+```sh runnable.outputFile="../images/code_snippets/introduction_to_click/hello_v3_subcommand.ansi"
+$ python hello_v3.py french Jennifer
+```
 
 {/* RICH-CODEX working_dir: docs/code_snippets/introduction_to_click */}
-![`python hello_v3.py french --help`](../images/code_snippets/introduction_to_click/hello_v3_subcommand_help.svg)
+```sh runnable.outputFile="../images/code_snippets/introduction_to_click/hello_v3_subcommand_help.ansi"
+$ python hello_v3.py french --help
+```
 
 ## Next Steps
 
@@ -99,7 +113,9 @@ import rich_click as click
 That's the **_only_** change needed to use **rich-click**! And now we get the following beautiful help text:
 
 {/* RICH-CODEX working_dir: docs/code_snippets/introduction_to_click */}
-![`python hello_rich.py --help`](../images/code_snippets/introduction_to_click/hello_rich.svg)
+```sh runnable.outputFile="../images/code_snippets/introduction_to_click/hello_rich.ansi"
+$ python hello_rich.py --help
+```
 
 ## Other CLI libraries
 

@@ -1,0 +1,25 @@
+Usage: newline_control_base_click.py [OPTIONS]
+
+  Newline control
+
+  Double newlines are always preserved. But single newlines are usually not.
+
+  There are however a few situations where we preserve single newlines.
+
+  Indented lines with 4+ spaces are preserved:     ```python     from foo
+  import bar          bar.action()     ```
+
+  Unordered lists are preserved:
+
+  - like - this
+
+  also:
+
+  * newlines within unordered lists   are collapsed   down. * pretty neat!
+
+  Last but not least, we preserve:
+
+  > block > quotes
+
+Options:
+  --help  Show this message and exit.

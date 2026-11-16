@@ -18,7 +18,13 @@ import panelsDefaultsOverrideConfigRaw from '@code_snippets/panels/panels_defaul
 **rich-click** lets you configure grouping and sorting of command options and subcommands.
 The containers which contain grouped options and subcommands are called panels:
 
-![](../../images/panels.svg)
+{/* RICH-CODEX
+working_dir: docs/code_snippets/panels
+command: python panels_overview.py --help | tail -n 8
+*/}
+```sh runnable.outputFile="../../images/panels.ansi"
+$ python panels_overview.py --help
+```
 
 By default, `RichCommand`s have a single panel for options named "Options", and `RichGroup`s have an additional panel for commands named "Commands".
 
@@ -55,7 +61,9 @@ Options panels handle parameters for your command:
 
 
 {/* RICH-CODEX working_dir: docs/code_snippets/panels */}
-![`python panels_simple_decorators.py --help`](../../images/code_snippets/panels/panels_simple_decorators.svg)
+```sh runnable.outputFile="../../images/code_snippets/panels/panels_simple_decorators.ansi"
+$ python panels_simple_decorators.py --help
+```
 
 </details>
 
@@ -72,7 +80,9 @@ The following code generates the same output as the example above:
 
 Note that this output is the same as the previous example, even though it was defined differently.
 {/* RICH-CODEX working_dir: docs/code_snippets/panels */}
-![`python panels_simple_kwargs.py --help`](../../images/code_snippets/panels/panels_simple_kwargs.svg)
+```sh runnable.outputFile="../../images/code_snippets/panels/panels_simple_kwargs.ansi"
+$ python panels_simple_kwargs.py --help
+```
 
 </details>
 
@@ -89,7 +99,9 @@ Arguments can be given their own panel with the `show_arguments` config option:
 
 
 {/* RICH-CODEX working_dir: docs/code_snippets/panels */}
-![`python panels_simple_arguments.py --help`](../../images/code_snippets/panels/panels_simple_arguments.svg)
+```sh runnable.outputFile="../../images/code_snippets/panels/panels_simple_arguments.ansi"
+$ python panels_simple_arguments.py --help
+```
 
 </details>
 
@@ -102,7 +114,9 @@ Arguments can also be included in the options panel with the `group_arguments_op
 
 
 {/* RICH-CODEX working_dir: docs/code_snippets/panels */}
-![`python panels_simple_arguments_combined.py --help`](../../images/code_snippets/panels/panels_simple_arguments_combined.svg)
+```sh runnable.outputFile="../../images/code_snippets/panels/panels_simple_arguments_combined.ansi"
+$ python panels_simple_arguments_combined.py --help
+```
 
 </details>
 
@@ -116,7 +130,9 @@ If `help=` if set for arguments, then the argument panel is automatically shown:
 
 
 {/* RICH-CODEX working_dir: docs/code_snippets/panels */}
-![`python panels_simple_arguments_help.py --help`](../../images/code_snippets/panels/panels_simple_arguments_help.svg)
+```sh runnable.outputFile="../../images/code_snippets/panels/panels_simple_arguments_help.ansi"
+$ python panels_simple_arguments_help.py --help
+```
 
 </details>
 
@@ -131,7 +147,9 @@ Sub-commands also have panels that are defined similarly to option panels:
 
 
 {/* RICH-CODEX working_dir: docs/code_snippets/panels */}
-![`python panels_commands.py --help`](../../images/code_snippets/panels/panels_commands.svg)
+```sh runnable.outputFile="../../images/code_snippets/panels/panels_commands.ansi"
+$ python panels_commands.py --help
+```
 
 </details>
 
@@ -150,7 +168,9 @@ The below example shows both of these things:
 
 
 {/* RICH-CODEX working_dir: docs/code_snippets/panels */}
-![`python panels_extra_kwargs.py --help`](../../images/code_snippets/panels/panels_extra_kwargs.svg)
+```sh runnable.outputFile="../../images/code_snippets/panels/panels_extra_kwargs.ansi"
+$ python panels_extra_kwargs.py --help
+```
 
 </details>
 
@@ -174,7 +194,9 @@ Renamed panels can still have their panel-level configurations modified.
 
 
 {/* RICH-CODEX working_dir: docs/code_snippets/panels */}
-![`python panels_defaults_renamed.py --help`](../../images/code_snippets/panels/panels_defaults_renamed.svg)
+```sh runnable.outputFile="../../images/code_snippets/panels/panels_defaults_renamed.ansi"
+$ python panels_defaults_renamed.py --help
+```
 
 </details>
 
@@ -186,7 +208,9 @@ So running `move-item --help` from the above example _will_ rename the children'
 
 
 {/* RICH-CODEX working_dir: docs/code_snippets/panels */}
-![`python panels_defaults_renamed.py move-item --help`](../../images/code_snippets/panels/panels_defaults_renamed_move_item.svg)
+```sh runnable.outputFile="../../images/code_snippets/panels/panels_defaults_renamed_move_item.ansi"
+$ python panels_defaults_renamed.py move-item --help
+```
 
 </details>
 
@@ -199,6 +223,8 @@ Default panel styles are also handled by the config, and will be overridden when
 
 
 {/* RICH-CODEX working_dir: docs/code_snippets/panels */}
-![`python panels_defaults_override_config.py --help`](../../images/code_snippets/panels/panels_defaults_override_config.svg)
+```sh runnable.outputFile="../../images/code_snippets/panels/panels_defaults_override_config.ansi"
+$ python panels_defaults_override_config.py --help
+```
 
 </details>

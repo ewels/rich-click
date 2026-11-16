@@ -56,6 +56,18 @@ function rewriteGithubAlerts(markdown) {
   return out.join('\n');
 }
 
+/**
+ * The README's screenshots as terminal blocks. The README keeps SVGs for GitHub and PyPI, and rich-codex saves the
+ * same output as text next to each SVG.
+ */
+function screenshotsAsText(markdown) {
+  return markdown.replace(/^!\[`([^`]+)`\]\((images\/[^)\s]+)\.svg\)[ \t\r]*$/gm, (image, command, file) =>
+    fs.existsSync(path.join(contentRoot, `${file}.ansi`))
+      ? `\`\`\`sh runnable.outputFile="./${file}.ansi"\n$ ${command}\n\`\`\``
+      : image,
+  );
+}
+
 function write(relPath, content) {
   const target = path.join(contentRoot, relPath);
   // Skip identical rewrites so mtimes (and Astro's content cache) stay stable.
@@ -70,11 +82,14 @@ const readme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
 const marker = '<!--include-start-->';
 const markerIndex = readme.indexOf(marker);
 if (markerIndex === -1) throw new Error(`marker ${marker} not found in README.md`);
-const readmeTail = readme
-  .slice(markerIndex + marker.length)
-  // Image paths in the README are relative to the repository root; the landing
-  // page lives at the content root, next to the images directory.
-  .replaceAll('docs/src/content/docs/images/', 'images/')
+const readmeTail = screenshotsAsText(
+  readme
+    .slice(markerIndex + marker.length)
+    // Image paths in the README are relative to the repository root; the landing
+    // page lives at the content root, next to the images directory.
+    .replaceAll('docs/src/content/docs/images/', 'images/'),
+)
+  .replaceAll('_Screenshot from ', '_Output of ')
   .trim();
 
 // The links validator doesn't cover images, so fail loudly here if a relative

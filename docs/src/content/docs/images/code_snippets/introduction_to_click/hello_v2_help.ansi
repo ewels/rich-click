@@ -1,0 +1,8 @@
+Usage: hello_v2.py [OPTIONS] NAME
+
+  Prints 'hello, [name]!' into the terminal N times.
+
+Options:
+  -t, --times INTEGER  Number of times to print the greeting.  [default: 1]
+  --say-goodbye        After saying hello, say goodbye.
+  --help               Show this message and exit.

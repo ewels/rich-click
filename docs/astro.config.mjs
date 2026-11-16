@@ -129,6 +129,13 @@ export default defineConfig({
         alt: 'rich-click logo',
       },
       favicon: '/images/favicon.svg',
+      expressiveCode: {
+        styleOverrides: {
+          // Roboto Mono has no box-drawing characters, which Rich draws its panels with,
+          // and the tighter line height joins their vertical lines.
+          codeblocksRunnable: { outputFontFamily: "'Fira Code', monospace", outputLineHeight: '1.25' },
+        },
+      },
       // Replaced by src/pages/404.astro, which isn't a content entry so it stays
       // out of llms.txt and the [...slug] route.
       disable404Route: true,
@@ -142,6 +149,8 @@ export default defineConfig({
         '@fontsource/noto-sans/700.css',
         '@fontsource/roboto-mono/400.css',
         '@fontsource/roboto-mono/700.css',
+        '@fontsource/fira-code/400.css',
+        '@fontsource/fira-code/700.css',
         './src/styles/custom.css',
       ],
       components: {

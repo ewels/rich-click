@@ -1,0 +1,23 @@
+ [1;31mUsage:[0m [1mflask[0m [OPTIONS] COMMAND [ARGS]...
+
+ A general utility script for Flask applications.
+ [2mAn application to load must be given with the '[0m[2m--app[0m[2m' option, 'FLASK_APP' environment variable, or[0m
+ [2mwith a 'wsgi.py' or 'app.py' file in the current directory.[0m
+
+[2;31m ═[0m[2;31m [0m[1;31mCommands[0m[2;31m [0m[2;31m══════════════════════════════════════════════════════════════════════════════════════[0m[2;31m═ [0m
+[2;31m [0mroutes  [39mShow the routes for the app.   [0m                                                           [2;31m [0m
+[2;31m [0mrun     [39mRun a development server.      [0m                                                           [2;31m [0m
+[2;31m [0mshell   [39mRun a shell in the app context.[0m                                                           [2;31m [0m
+[2;31m                                                                                                    [0m
+[2;31m ═[0m[2;31m [0m[1;31mOptions[0m[2;31m [0m[2;31m═══════════════════════════════════════════════════════════════════════════════════════[0m[2;31m═ [0m
+[2;31m [0m--env-file          -e  [39mLoad environment variables from this file, taking precedence over those [0m[39m  [0m[2;31m [0m
+[2;31m [0m                        [39mset by '.env' and '.flaskenv'. Variables set directly in the environment [0m[39m [0m[2;31m [0m
+[2;31m [0m                        [39mtake highest precedence. python-dotenv must be installed.[0m[39m [0m[2;39m[FILE][0m[39m          [0m[2;31m [0m
+[2;31m [0m--app               -A  [39mThe Flask application or factory function to load, in the form [0m[39m           [0m[2;31m [0m
+[2;31m [0m                        [39m'module:name'. Module can be a dotted import or file path. Name is not [0m[39m   [0m[2;31m [0m
+[2;31m [0m                        [39mrequired if it is 'app', 'application', 'create_app', or 'make_app', and [0m[39m [0m[2;31m [0m
+[2;31m [0m                        [39mcan be 'name(args)' to pass arguments.[0m[39m [0m[2;39m[IMPORT][0m[39m                           [0m[2;31m [0m
+[2;31m [0m--debug[39m/[0m--no-debug      [39mSet debug mode.[0m                                                           [2;31m [0m
+[2;31m [0m--version               [39mShow the Flask version.[0m                                                   [2;31m [0m
+[2;31m [0m--help                  [39mShow this message and exit.[0m                                               [2;31m [0m
+[2;31m                                                                                                    [0m
