@@ -70,3 +70,69 @@ def test_rst_missing_dependency(
     result = cli_runner.invoke(cli, "--help")
     assert isinstance(result.exception, ImportError)
     assert "pip install 'rich-click[rst]'" in str(result.exception)
+
+
+def test_rst_edge_cases(cli_runner: CliRunner) -> None:
+    pytest.importorskip("rich_rst")
+
+    @rich_click.group(context_settings={"help_option_names": ["-h"]})
+    @rich_click.rich_config(help_config={"text_markup": "rst", "text_kwargs": {"style": "italic"}})
+    def cli() -> None:
+        """
+        Example usage::
+
+            $ cli run
+
+        \b
+        Commands:
+          foo     Do the foo
+        After the block.
+        """
+
+    @cli.command()
+    @rich_click.option("--opt", help="\b\nline a\n  line b\n\nAfter.")
+    def nowrap(opt: str) -> None:
+        """
+        \b
+        First line
+        Second line
+
+        Rest.
+        """
+
+    @cli.command()
+    def refs() -> None:
+        """
+        Uses a footnote [#f1]_ and a `link`_.
+
+        .. [#f1] Footnote.
+        .. _link: https://example.com
+        """
+
+    result = cli_runner.invoke(cli, "-h")
+    assert result.exit_code == 0
+    assert "│ nowrap  First line   " in result.stdout
+    assert "│         Second line   " in result.stdout
+    assert "│ refs    Uses a footnote and a link.   " in result.stdout
+    assert "\n Commands:   " in result.stdout and "\n   foo     Do the foo   " in result.stdout
+
+    result = cli_runner.invoke(cli, ["nowrap", "-h"])
+    assert " line a   " in result.stdout
+    assert "   line b   " in result.stdout
+    assert " After.   " in result.stdout
+
+
+def test_rst_styles() -> None:
+    pytest.importorskip("rich_rst")
+    from rich.console import Console
+
+    from rich_click._rst import RichClickRST
+
+    console = Console(force_terminal=True, color_system="standard", width=40)
+    with console.capture() as capture:
+        console.print(RichClickRST("Example::\n\n    code\n\nMore *here*.\n\n- item", "red", "green bold"))
+    out = capture.get()
+    assert "\x1b[1;32mExample:" in out
+    assert "\x1b[31;3mhere" in out or "\x1b[3;31mhere" in out
+    assert "\x1b[31mMore " in out
+    assert "\x1b[31mitem" in out

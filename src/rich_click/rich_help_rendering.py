@@ -37,9 +37,6 @@ if TYPE_CHECKING:
 
 RichPanelRow = list[RenderableType | None]
 
-# Markups that parse newlines themselves, so rich-click must not collapse them.
-_DOCUMENT_MARKUPS = ("markdown", "rst")
-
 
 class RichClickRichPanel(Panel):
     """
@@ -127,12 +124,13 @@ def _get_help_text(
     help_text = help_text.partition("\f")[0]
 
     if config.text_markup == "rst":
+        from rich_click._rst import RichClickRST
+
         # One document, so references and literal blocks can span the first paragraph.
         rst = formatter.rich_text(help_text, config.style_helptext)
-        if TYPE_CHECKING:  # pragma: no cover
-            assert isinstance(rst, RichClickRST)
-        rst.first_block_style = config.style_helptext_first_line
-        yield rst
+        if isinstance(rst, RichClickRST):
+            rst.first_block_style = config.style_helptext_first_line
+        yield Padding(rst, config.padding_helptext_first_line, style=config.style_padding_helptext)
     else:
         yield from _get_split_help_text(help_text, formatter)
 
@@ -715,7 +713,7 @@ def get_help_parameter(
 
     # Use Columns - this allows us to group different renderable types
     # (Text, Markdown) onto a single line.
-    if formatter.config.text_markup in _DOCUMENT_MARKUPS or not all(
+    if formatter.config.text_markup in ("markdown", "rst") or not all(
         [isinstance(i, Text) or i is None for i in sections]
     ):
         return Columns([i for i in sections if i])
@@ -953,13 +951,18 @@ def _get_command_help(
 
     deprecated = command.deprecated
 
-    paragraphs = inspect.cleandoc(help_text).split("\n\n")
-    # Remove single linebreaks
-    if formatter.config.text_markup not in _DOCUMENT_MARKUPS and not paragraphs[0].startswith("\b"):
-        paragraphs[0] = paragraphs[0].replace("\n", " ")
-    elif paragraphs[0].startswith("\b"):
-        paragraphs[0] = paragraphs[0].replace("\b\n", "")
-    help_text = paragraphs[0].strip()
+    if formatter.config.text_markup == "rst":
+        from rich_click._rst import first_paragraph
+
+        help_text = first_paragraph(inspect.cleandoc(help_text))
+    else:
+        paragraphs = inspect.cleandoc(help_text).split("\n\n")
+        # Remove single linebreaks
+        if formatter.config.text_markup != "markdown" and not paragraphs[0].startswith("\b"):
+            paragraphs[0] = paragraphs[0].replace("\n", " ")
+        elif paragraphs[0].startswith("\b"):
+            paragraphs[0] = paragraphs[0].replace("\b\n", "")
+        help_text = paragraphs[0].strip()
     renderable: Text | Markdown | RichClickRST | Columns
     renderable = formatter.rich_text(help_text, formatter.config.style_command_help)
     if deprecated:
@@ -1039,7 +1042,7 @@ def get_rich_epilog(
     if self.epilog:
         if isinstance(self.epilog, JupyterMixin):  # Handles Text and Markdown
             epilog = self.epilog
-        elif formatter.config.text_markup in _DOCUMENT_MARKUPS:
+        elif formatter.config.text_markup == "rst":
             epilog = formatter.rich_text(self.epilog, formatter.config.style_epilog_text)  # type: ignore[assignment]
         else:
             # Remove single linebreaks, replace double with single

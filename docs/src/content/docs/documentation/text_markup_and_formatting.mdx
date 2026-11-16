@@ -132,7 +132,8 @@ click.rich_click.TEXT_MARKUP = "rst"
 
 Admonitions (`.. note::`, `.. warning::`, etc.) are rendered compactly by default to suit help text,
 and `::` literal blocks are highlighted as shell sessions (`default_lexer="console"`).
-Click's `\b` no-rewrap paragraphs become rST line blocks.
+Click's `\b` no-rewrap paragraphs keep their line breaks and indentation, though inline markup in them shows as plain text.
+The help text is rendered as one document, so `padding_helptext_first_line` pads all of it.
 Any `text_kwargs` are passed to `rich_rst.RestructuredText()`, for example
 `text_kwargs={"admonition_style": "panel", "code_theme": "github-dark"}`.
 

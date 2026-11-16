@@ -260,7 +260,7 @@ class RichHelpFormatter(click.HelpFormatter):
             # Lazy load rich-rst because it slows down rendering
             from rich_click._rst import RichClickRST
 
-            return RichClickRST(text, style, **(self.config.text_kwargs or {}))
+            return RichClickRST(text, **{"style": style, **(self.config.text_kwargs or {})})
 
         kw.update(self.config.text_kwargs or {})
 

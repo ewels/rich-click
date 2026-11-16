@@ -2,15 +2,15 @@
  [33mUsage:[0m [1m14_rst.py[0m [[1;36mOPTIONS[0m]
 
  [39mMy amazing tool does [0m[3;39mall the things[0m[39m.[0m
- [2m                                                                              [0m
- [2;39mThis is a [0m[2;38;5;251;48;5;233mminimal example[0m[2;39m based on documentation from the [0m[2;4;34;49mclick package[0m[2;39m.[0m[2m      [0m
- [2m                                                                              [0m
- [1;2;33m • [0m[2;39mYou can try using [0m[2;38;5;251;48;5;233m--help[0m[2;39m at the top level[0m[2m                                  [0m
- [1;2;33m • [0m[2;39mAlso for specific group subcommands.[0m[2m                                       [0m
- [2m                                                                              [0m
- [1;2;37mNote: [0m[2;39mAdmonitions are rendered compactly.[0m[2m                                     [0m
- [2m                                                                              [0m
- [2;39mExample:[0m[2m                                                                      [0m
+
+ [2;39mThis is a [0m[2;38;5;251;48;5;233mminimal example[0m[2;39m based on documentation from the [0m[2;4;34;49mclick package[0m[2;39m.[0m
+
+ [1;2;33m • [0m[2;39mYou can try using [0m[2;38;5;251;48;5;233m--help[0m[2;39m at the top level[0m
+ [1;2;33m • [0m[2;39mAlso for specific group subcommands.[0m
+
+ [1;2;37mNote: [0m[2;39mAdmonitions are rendered compactly.[0m
+
+ [2;39mExample:[0m
  [2;38;5;246m┌─[0m[2;38;5;246m───────────────────────────[0m[2;38;5;246m console (default) [0m[2;38;5;246m────────────────────────────[0m[2;38;5;246m─┐[0m
  [2;38;5;246m│[0m[2m [0m[1;2;38;2;255;70;137;48;2;39;40;34m$ [0m[2;38;2;248;248;242;48;2;39;40;34mcli[0m[2;38;2;248;248;242;48;2;39;40;34m [0m[2;38;2;248;248;242;48;2;39;40;34m--all[0m[2;38;2;248;248;242;48;2;39;40;34m [0m[2;38;2;248;248;242;48;2;39;40;34m--debug[0m[2;48;2;39;40;34m                                                       [0m[2m [0m[2;38;5;246m│[0m
  [2;38;5;246m└────────────────────────────────────────────────────────────────────────────┘[0m
