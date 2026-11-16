@@ -156,13 +156,6 @@ header.header :is(starlight-theme-select, .social-icons, button[data-open-modal]
   width: auto;
 }
 
-/* Badge rows on the landing page stay inline. */
-.sl-markdown-content p[align='center'] img {
-  display: inline-block;
-  cursor: default;
-  margin: 0;
-}
-
 /* Pixel display font for the site title and page headings. */
 .site-title,
 .site-title span,
@@ -298,7 +291,7 @@ main:has(.pyd-module) h1 {
   --rc-zoom-backdrop: rgba(255, 255, 255, 0.95);
 }
 
-.sl-markdown-content img:not(a img):not(p[align='center'] img) {
+.sl-markdown-content img:not(a img) {
   cursor: zoom-in;
 }
 

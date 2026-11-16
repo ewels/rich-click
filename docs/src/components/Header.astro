@@ -4,6 +4,7 @@
 import Default from '@astrojs/starlight/components/Header.astro';
 import { base } from '../base';
 import { entryPath, sidebar } from '../site.mjs';
+import initPy from '@rich_click/__init__.py?raw';
 
 // One tab per top-level sidebar entry, active for any URL under its section.
 const tabs = sidebar.map((entry) => {
@@ -37,10 +38,24 @@ const versionLinks = versions.map(({ version, title, aliases }) => ({
   current: version === currentVersion || aliases.includes(currentVersion),
 }));
 const currentLabel = versionLinks.find((v) => v.current)?.label ?? currentVersion;
+
+// The rich-click version being documented. Development versions have no release yet.
+const packageVersion = /^__version__ = "([^"]+)"/m.exec(initPy)?.[1];
+const releaseUrl =
+  packageVersion && /^\d+\.\d+\.\d+$/.test(packageVersion)
+    ? `https://github.com/ewels/rich-click/releases/tag/v${packageVersion}`
+    : 'https://github.com/ewels/rich-click/releases';
 ---
 
 <div class="rc-header-main">
   <div class="rc-header-default"><Default><slot /></Default></div>
+  {
+    packageVersion && (
+      <a class="rc-release-link sl-hidden md:sl-flex" href={releaseUrl} title="rich-click release notes on GitHub">
+        v{packageVersion}
+      </a>
+    )
+  }
   {
     versionLinks.length > 0 && (
       <details class="rc-version-select">
@@ -150,6 +165,17 @@ const currentLabel = versionLinks.find((v) => v.current)?.label ?? currentVersio
     font-weight: 600;
   }
 
+  .rc-release-link {
+    color: var(--sl-color-gray-2);
+    font-size: var(--sl-text-xs);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .rc-release-link:hover {
+    color: var(--sl-color-header-text);
+  }
+
   .rc-version-select {
     position: relative;
     color: var(--sl-color-header-text, var(--sl-color-white));
@@ -212,11 +238,8 @@ const currentLabel = versionLinks.find((v) => v.current)?.label ?? currentVersio
   // works purely client-side, so it is processor-agnostic.
   import mediumZoom from 'medium-zoom';
 
-  // Skip linked images and the landing page badge rows (which custom.css
-  // deliberately styles as non-clickable).
-  const images = document.querySelectorAll<HTMLImageElement>(
-    '.sl-markdown-content img:not(a img):not(p[align="center"] img)'
-  );
+  // Linked images keep their link.
+  const images = document.querySelectorAll<HTMLImageElement>('.sl-markdown-content img:not(a img)');
   if (images.length > 0) {
     mediumZoom(images, {
       margin: 32,
