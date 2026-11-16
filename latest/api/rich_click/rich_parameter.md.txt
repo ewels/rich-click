@@ -1,8 +1,15 @@
+---
+project: "rich-click"
+title: "rich_click.rich_parameter"
+description: "Richly rendered command line interfaces in Click."
+url: "https://ewels.github.io/rich-click/latest/api/rich_click/rich_parameter/"
+---
+
 # rich_click.rich_parameter
 
 *module* · *Added in 1.9.0*
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L1-L1)
 
 ## rich_click.rich_parameter.RichArgument
 
@@ -20,7 +27,7 @@ and are required by default.
 
 All parameters are passed onwards to the constructor of :class:`Parameter`.
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L81-L88)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L81-L88)
 
 ### rich_click.rich_parameter.RichArgument.help
 
@@ -32,7 +39,7 @@ help = help
 
 Inherited from: `rich_click.rich_parameter.RichParameter`
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L47-L47)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L47-L47)
 
 ### rich_click.rich_parameter.RichArgument.help_style
 
@@ -44,7 +51,7 @@ help_style = help_style
 
 Inherited from: `rich_click.rich_parameter.RichParameter`
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L49-L49)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L49-L49)
 
 ### rich_click.rich_parameter.RichArgument.panel
 
@@ -56,7 +63,7 @@ panel = panel
 
 Inherited from: `rich_click.rich_parameter.RichParameter`
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L37-L37)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L37-L37)
 
 ### rich_click.rich_parameter.RichArgument.get_rich_help
 
@@ -70,7 +77,7 @@ Inherited from: `rich_click.rich_parameter.RichParameter`
 
 Get the rich help text for this parameter.
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L63-L67)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L63-L67)
 
 ### rich_click.rich_parameter.RichArgument.get_rich_table_row
 
@@ -84,7 +91,7 @@ Inherited from: `rich_click.rich_parameter.RichParameter`
 
 Create a row for the rich table corresponding with this parameter.
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L69-L78)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L69-L78)
 
 ### rich_click.rich_parameter.RichArgument.to_info_dict
 
@@ -102,7 +109,7 @@ user-facing documentation.
 Use :meth:`click.Context.to_info_dict` to traverse the entire
 CLI structure.
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L51-L61)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L51-L61)
 
 ## rich_click.rich_parameter.RichOption
 
@@ -119,7 +126,7 @@ have some extra features that arguments don't have.
 
 All other parameters are passed onwards to the parameter constructor.
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L91-L97)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L91-L97)
 
 ### rich_click.rich_parameter.RichOption.help
 
@@ -131,7 +138,7 @@ help = help
 
 Inherited from: `rich_click.rich_parameter.RichParameter`
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L47-L47)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L47-L47)
 
 ### rich_click.rich_parameter.RichOption.help_style
 
@@ -143,7 +150,7 @@ help_style = help_style
 
 Inherited from: `rich_click.rich_parameter.RichParameter`
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L49-L49)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L49-L49)
 
 ### rich_click.rich_parameter.RichOption.panel
 
@@ -155,7 +162,7 @@ panel = panel
 
 Inherited from: `rich_click.rich_parameter.RichParameter`
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L37-L37)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L37-L37)
 
 ### rich_click.rich_parameter.RichOption.get_rich_help
 
@@ -169,7 +176,7 @@ Inherited from: `rich_click.rich_parameter.RichParameter`
 
 Get the rich help text for this parameter.
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L63-L67)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L63-L67)
 
 ### rich_click.rich_parameter.RichOption.get_rich_table_row
 
@@ -183,7 +190,7 @@ Inherited from: `rich_click.rich_parameter.RichParameter`
 
 Create a row for the rich table corresponding with this parameter.
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L69-L78)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L69-L78)
 
 ### rich_click.rich_parameter.RichOption.to_info_dict
 
@@ -201,7 +208,7 @@ user-facing documentation.
 Use :meth:`click.Context.to_info_dict` to traverse the entire
 CLI structure.
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L51-L61)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L51-L61)
 
 ## rich_click.rich_parameter.RichParameter
 
@@ -218,7 +225,7 @@ A parameter to a command comes in two versions: they are either
 not supported by design as some of the internals for parsing are
 intentionally not finalized.
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L19-L78)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L19-L78)
 
 ### rich_click.rich_parameter.RichParameter.help
 
@@ -228,7 +235,7 @@ intentionally not finalized.
 help = help
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L47-L47)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L47-L47)
 
 ### rich_click.rich_parameter.RichParameter.help_style
 
@@ -238,7 +245,7 @@ help = help
 help_style = help_style
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L49-L49)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L49-L49)
 
 ### rich_click.rich_parameter.RichParameter.panel
 
@@ -248,7 +255,7 @@ help_style = help_style
 panel = panel
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L37-L37)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L37-L37)
 
 ### rich_click.rich_parameter.RichParameter.get_rich_help
 
@@ -260,7 +267,7 @@ def get_rich_help(ctx: RichContext, formatter: RichHelpFormatter) -> Columns
 
 Get the rich help text for this parameter.
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L63-L67)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L63-L67)
 
 ### rich_click.rich_parameter.RichParameter.get_rich_table_row
 
@@ -272,7 +279,7 @@ def get_rich_table_row(ctx: RichContext, formatter: RichHelpFormatter, panel: Ri
 
 Create a row for the rich table corresponding with this parameter.
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L69-L78)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L69-L78)
 
 ### rich_click.rich_parameter.RichParameter.to_info_dict
 
@@ -288,4 +295,4 @@ user-facing documentation.
 Use :meth:`click.Context.to_info_dict` to traverse the entire
 CLI structure.
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/rich_parameter.py#L51-L61)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/rich_parameter.py#L51-L61)

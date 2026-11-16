@@ -1,3 +1,16 @@
+---
+project: "rich-click"
+title: "New blog + v1.8 released!"
+description: "rich-click 1.8 lands alongside a new documentation site and Live Style Editor: SVG and HTML output from the CLI, an easier decorator API, more style options and better performance."
+url: "https://ewels.github.io/rich-click/latest/blog/version-1.8/"
+date: 2024-04-30
+authors:
+  - "Daniel Reeves"
+  - "Phil Ewels"
+tags:
+  - "Release notes"
+---
+
 # New blog + v1.8 released!
 
 Today we are very happy to release version 1.8 of rich-click,

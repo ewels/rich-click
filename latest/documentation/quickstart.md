@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "Quickstart"
+description: "A cheat sheet for getting started with rich-click: install it, swap one import, then pick a theme and group options into panels."
+url: "https://ewels.github.io/rich-click/latest/documentation/quickstart/"
+---
+
 # Quickstart
 
 ## Install

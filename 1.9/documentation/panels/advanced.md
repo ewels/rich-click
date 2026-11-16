@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "Panels - Advanced"
+description: "Advanced rich-click panel control: explicit panel ordering, custom column types, help section types, and subclassing RichPanel."
+url: "https://ewels.github.io/rich-click/latest/documentation/panels/advanced/"
+---
+
 # Panels - Advanced
 
 :::danger[Advanced]

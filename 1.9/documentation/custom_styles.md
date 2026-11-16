@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "Formatting & Styles"
+description: "Style rich-click output yourself: showing positional arguments, metavars, error messages, tables and boxes, with a generated example for each option."
+url: "https://ewels.github.io/rich-click/latest/documentation/custom_styles/"
+---
+
 # Formatting & Styles
 
 :::note[Info]

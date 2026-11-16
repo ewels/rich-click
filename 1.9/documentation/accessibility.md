@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "Accessibility"
+description: "Accessibility in rich-click CLIs for both users and developers: colourblind-safe palettes, disabling colour, and testing your own output."
+url: "https://ewels.github.io/rich-click/latest/documentation/accessibility/"
+---
+
 # Accessibility
 
 This page goes over information relevant to both developers and users relating to accessibility considerations.

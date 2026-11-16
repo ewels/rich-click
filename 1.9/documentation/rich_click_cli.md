@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "rich-click CLI tool"
+description: "The rich-click command line tool, which reformats the help output of any existing Click CLI without changing its code."
+url: "https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/"
+---
+
 # `rich-click` CLI tool
 
 ## Usage

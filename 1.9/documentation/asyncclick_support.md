@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "Asyncclick Support"
+description: "Using rich-click with asyncclick, the asynchronous fork of Click: patching, async classes, running and testing."
+url: "https://ewels.github.io/rich-click/latest/documentation/asyncclick_support/"
+---
+
 # Asyncclick Support
 
 [Asyncclick](https://github.com/python-trio/asyncclick) is an asynchronous fork of Click. **rich-click** supports

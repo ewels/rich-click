@@ -1,4 +1,119 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:fh="http://purl.org/syndication/history/1.0"><channel><title>rich-click | Blog</title><description>Richly rendered command line interfaces in Click.</description><link>https://ewels.github.io/</link><language>en</language><fh:complete/><atom:link rel="self" href="https://ewels.github.io/rich-click/1.9/blog/rss.xml"/><item><title>v1.9 released!</title><link>https://ewels.github.io/rich-click/1.9/blog/version-1.9/</link><guid isPermaLink="true">https://ewels.github.io/rich-click/1.9/blog/version-1.9/</guid><description>rich-click 1.9 adds themes, panels, IDE autocomplete, Typer support in the CLI tool, help text for arguments and command aliases.</description><pubDate>Tue, 16 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Today we are excited to release version 1.9 of &lt;strong&gt;rich-click&lt;/strong&gt;, our biggest release yet with lots of amazing new features!&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:fh="http://purl.org/syndication/history/1.0"><channel><title>rich-click | Blog</title><description>Richly rendered command line interfaces in Click.</description><link>https://ewels.github.io/</link><language>en</language><fh:complete/><atom:link rel="self" href="https://ewels.github.io/rich-click/1.9/blog/rss.xml"/><item><title>A new website for rich-click</title><link>https://ewels.github.io/rich-click/1.9/blog/new-website/</link><guid isPermaLink="true">https://ewels.github.io/rich-click/1.9/blog/new-website/</guid><description>The rich-click docs now run on Astro Starlight, with two new Starlight plugins and terminal output as text from rich-codex.</description><pubDate>Mon, 16 Nov 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Today we launched a new website for &lt;code dir=&quot;auto&quot;&gt;rich-click&lt;/code&gt; 🎉
+It is built with &lt;a href=&quot;https://starlight.astro.build/&quot;&gt;Astro Starlight&lt;/a&gt; instead of MkDocs.
+It’s beautiful, fast and modern.&lt;/p&gt;
+&lt;p&gt;The site took a little time due to several detours, notably updates to &lt;a href=&quot;https://github.com/ewels/rich-codex&quot;&gt;rich-codex&lt;/a&gt; and the creation of two new Starlight plugins: &lt;a href=&quot;https://ewels.github.io/starlight-pydocs/&quot;&gt;Starlight Pydocs&lt;/a&gt; and &lt;a href=&quot;https://ewels.github.io/starlight-codeblocks/&quot;&gt;Starlight Codeblocks&lt;/a&gt;.
+In this blog post I dive into what changed, and why.&lt;/p&gt;
+
+&lt;p&gt;The main changes that you’ll be able to see in the new site are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A redesigned homepage which is hopefully more interesting to look at and that does a better job at conveying what &lt;code dir=&quot;auto&quot;&gt;rich-click&lt;/code&gt; does.&lt;/li&gt;
+&lt;li&gt;A new &lt;a href=&quot;../../documentation/quickstart/&quot;&gt;Quickstart&lt;/a&gt; page.&lt;/li&gt;
+&lt;li&gt;Terminal output is now text, not screenshots. You can select it, search it and copy it, and it follows the light or dark theme.&lt;/li&gt;
+&lt;li&gt;An auto-generated &lt;a href=&quot;../../api/rich_click/&quot;&gt;API reference&lt;/a&gt;, generated from the &lt;code dir=&quot;auto&quot;&gt;rich_click&lt;/code&gt; source. A badge on each object tells you which release added it.&lt;/li&gt;
+&lt;li&gt;Names in code examples link to the Click, Rich and Typer docs, with a card that opens when you hover.&lt;/li&gt;
+&lt;li&gt;Every page is also served as Markdown, and the site publishes &lt;code dir=&quot;auto&quot;&gt;llms.txt&lt;/code&gt;. You can give the docs to an AI assistant with one click.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure&gt;&lt;img src=&quot;https://ewels.github.io/rich-click/1.9/_astro/homepage.CpxqgE-g_Z1xEwHV.webp&quot; alt=&quot;The new rich-click homepage: the logo and tagline on the left, and a terminal on the right showing rich-click help text, with buttons to switch colour scheme and format.&quot; loading=&quot;lazy&quot; decoding=&quot;async&quot; width=&quot;1440&quot; height=&quot;765&quot;&gt;&lt;figcaption&gt;&lt;p&gt;The new homepage. Pick a colour scheme and a format, and the terminal on the right updates. Psst: try clicking the
+logo.&lt;/p&gt;&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;div&gt;&lt;h2 id=&quot;why-move-off-mkdocs&quot;&gt;Why move off MkDocs&lt;/h2&gt;&lt;/div&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.mkdocs.org/&quot;&gt;MkDocs&lt;/a&gt; has had no maintainer since August 2024.
+Its planned v2 drops support for existing themes, plugins and config files.
+&lt;a href=&quot;https://squidfunk.github.io/mkdocs-material/&quot;&gt;Material for MkDocs&lt;/a&gt;, the theme we used, reaches &lt;a href=&quot;https://squidfunk.github.io/mkdocs-material/blog/2026/02/18/mkdocs-2.0/&quot;&gt;end of life&lt;/a&gt; on 5 November 2026.&lt;/p&gt;
+&lt;p&gt;In August I moved the rich-click website to build using &lt;a href=&quot;https://properdocs.org/&quot;&gt;ProperDocs&lt;/a&gt;, a fork of MkDocs 1.x, in PR &lt;a href=&quot;https://github.com/ewels/rich-click/pull/341&quot;&gt;&lt;code dir=&quot;auto&quot;&gt;#341&lt;/code&gt;&lt;/a&gt;.
+That kept the site building, but only really as a stopgap.
+&lt;a href=&quot;https://zensical.org/&quot;&gt;Zensical&lt;/a&gt; is the official successor to Material for MkDocs, but it’s still at a fairly early stage of development and is missing functionality such as supporting blogs, our RSS feeds or custom plugins.&lt;/p&gt;
+&lt;p&gt;I have been a big fan of &lt;a href=&quot;https://astro.build/&quot;&gt;Astro&lt;/a&gt; for a while now, including its official documentation theme, &lt;a href=&quot;https://starlight.astro.build/&quot;&gt;Starlight&lt;/a&gt;.
+It’s fast and modern, with good developer tooling.
+It looks good out of the box and has a lot of clever tricks with how it bundles outputs, resulting in exceptionally &lt;a href=&quot;https://starlight.astro.build/environmental-impact/&quot;&gt;eco-friendly&lt;/a&gt; websites: a first visit to a Starlight page typically downloads less than 50 KB of compressed data, about 2.5% of the median web page.&lt;/p&gt;
+&lt;p&gt;On the same day as PR &lt;code dir=&quot;auto&quot;&gt;#341&lt;/code&gt;, I asked Claude to rebuild the whole site using Astro Starlight, with the same URLs, styles and features.
+The first build was pretty decent:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Every page, blog post, redirect and old feed URL still resolved.&lt;/li&gt;
+&lt;li&gt;Versioned deploys kept the &lt;code dir=&quot;auto&quot;&gt;gh-pages&lt;/code&gt; methodology that &lt;a href=&quot;https://github.com/jimporter/mike&quot;&gt;&lt;code dir=&quot;auto&quot;&gt;mike&lt;/code&gt;&lt;/a&gt; used. The 1.8 docs, built with MkDocs, stay as they are and stay in the version picker.&lt;/li&gt;
+&lt;li&gt;A full build only takes about 15 seconds.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I opened the result as a proof of concept in &lt;a href=&quot;https://github.com/ewels/rich-click/pull/342&quot;&gt;#342&lt;/a&gt; and asked my &lt;code dir=&quot;auto&quot;&gt;rich-click&lt;/code&gt; co-maintainer &lt;a href=&quot;https://github.com/dwreeves&quot;&gt;Daniel Reeves&lt;/a&gt; for his thoughts, with no plan to merge it soon.
+He liked it, but had a few suggestions..&lt;/p&gt;
+&lt;div&gt;&lt;h2 id=&quot;starlight-pydocs-api-docs-from-docstrings&quot;&gt;starlight-pydocs: API docs from docstrings&lt;/h2&gt;&lt;/div&gt;
+&lt;p&gt;Daniel had wanted API docs for a long time - we’d discussed it previously but never got around to putting the time in to figure them out.
+On MkDocs the obvious tool is &lt;a href=&quot;https://mkdocstrings.github.io/&quot;&gt;mkdocstrings&lt;/a&gt;, but there was no Astro / Starlight equivalent.
+To make matters worse, whilst MkDocs is built in Python, Astro / Starlight are NodeJS projects, requiring a totally different tool chain.
+However, there was a glimpse of hope: in &lt;a href=&quot;https://github.com/ewels/rich-click/pull/342#issuecomment-5247648331&quot;&gt;his review&lt;/a&gt; he pointed out that mkdocstrings keeps its Python parsing in a separate library, &lt;a href=&quot;https://mkdocstrings.github.io/griffe/&quot;&gt;Griffe&lt;/a&gt;.
+He suggested that a general Starlight plugin on top of Griffe could be a good open source project.
+I was well and truly nerd-sniped 🎯&lt;/p&gt;
+&lt;p&gt;Four days later I published &lt;a href=&quot;https://ewels.github.io/starlight-pydocs/&quot;&gt;starlight-pydocs&lt;/a&gt; 0.1.0, and the &lt;code dir=&quot;auto&quot;&gt;rich-click&lt;/code&gt; branch had an API reference.
+Like the site itself, I built it with Claude Code.
+Claude first read how other Starlight plugins work, such as &lt;a href=&quot;https://starlight-openapi.vercel.app/&quot;&gt;starlight-openapi&lt;/a&gt; and &lt;a href=&quot;https://starlight-typedoc.vercel.app/&quot;&gt;starlight-typedoc&lt;/a&gt;.
+It wrote a plan from that, and then built the plugin step by step.&lt;/p&gt;
+&lt;p&gt;The plugin runs Griffe either as a prerequisite step, or as a subprocess during the website build.
+Griffe reads the source by static analysis, so nothing is imported and your package does not need to be installed.
+You only need &lt;code dir=&quot;auto&quot;&gt;uv&lt;/code&gt; on your path.
+The plugin takes the Griffe output JSON and uses it to render one page per module, with a sidebar tree that follows the package layout.
+It reads Google, NumPy and Sphinx docstrings, and it renders their prose with your site’s own Markdown pipeline.&lt;/p&gt;
+&lt;p&gt;Two pretty neat features are &lt;em&gt;type links&lt;/em&gt; and &lt;em&gt;version badges&lt;/em&gt;.
+For type links, the plugin reads Sphinx inventories, so &lt;code dir=&quot;auto&quot;&gt;click.Command&lt;/code&gt; in a rich-click signature links to the Click docs.
+For version badges you give the plugin a list of git refs, and it extracts the API at each ref and badges every object with the release that added it.
+The plugin also publishes an &lt;code dir=&quot;auto&quot;&gt;objects.inv&lt;/code&gt; and an &lt;code dir=&quot;auto&quot;&gt;llms.txt&lt;/code&gt; for each package, so other sites and AI tools can link to your API.
+It is on the &lt;a href=&quot;https://starlight.astro.build/resources/plugins/&quot;&gt;Starlight plugins list&lt;/a&gt;, and it also works on Astro sites that do not use Starlight.&lt;/p&gt;
+&lt;div&gt;&lt;h2 id=&quot;starlight-codeblocks-code-blocks-that-do-more&quot;&gt;starlight-codeblocks: code blocks that do more&lt;/h2&gt;&lt;/div&gt;
+&lt;p&gt;Starlight renders code blocks with &lt;a href=&quot;https://expressive-code.com/&quot;&gt;Expressive Code&lt;/a&gt;.
+It gives you titles, line highlights and diff markers.
+But now that I’d written one Starlight plugin, I started to dream about what else I could build.
+Code examples are the heart of any documentation site, and I started thinking about all the cool things I’ve seen across my favourite websites over the years: notes on lines, links from code to API docs, and output under a command.&lt;/p&gt;
+&lt;p&gt;And so, &lt;a href=&quot;https://ewels.github.io/starlight-codeblocks/&quot;&gt;starlight-codeblocks&lt;/a&gt; started as a separate project in late September.
+This time I wrote a design pack before any code: a spec for 24 features, with HTML mockups that showed how each one should look and behave.
+I gave the pack to Claude with a kick-off prompt that said to work through the plan without stopping to ask questions.
+Version 1.0.0 came out on 5 October, and the plugin now has 27 distinct features.
+It builds on Expressive Code, so the code blocks you already have keep working.&lt;/p&gt;
+&lt;p&gt;This plugin also handles API auto-linking.
+Names in any Python code blocks link to their docs, with a hover card.
+The plugin uses the same Sphinx inventories as Starlight Pydocs, so now all free-form code blocks in the docs also link to their API docs.
+It also has features for annotations (see the new &lt;a href=&quot;../../documentation/quickstart/&quot;&gt;Quickstart&lt;/a&gt; page) and some cool tricks up its sleeve such as being able to use WebAssembly to run Python code in the browser for examples.&lt;/p&gt;
+&lt;p&gt;When both plugins are installed, they find each other with no configuration.
+The generated API pages get the hover cards, and long docstring examples collapse.&lt;/p&gt;
+&lt;div&gt;&lt;h2 id=&quot;rich-codex-terminal-output-as-text&quot;&gt;rich-codex: terminal output as text&lt;/h2&gt;&lt;/div&gt;
+&lt;p&gt;The final piece in the puzzle was &lt;a href=&quot;https://github.com/ewels/rich-codex&quot;&gt;rich-codex&lt;/a&gt;.
+It’s a project I wrote a while back which finds commands in your Markdown, runs them, and saves the terminal output as an image.
+It has made the terminal screenshots for rich-click since 2022.
+A GitHub Action runs it on every push, so the screenshots stay in step with the code.&lt;/p&gt;
+&lt;p&gt;It had three releases to support the new rich-click website build as I went along:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;MDX support. Starlight pages that use tabs or other components are MDX, and MDX does not allow HTML comments. Since August, rich-codex also reads its config from JSX comments: &lt;code dir=&quot;auto&quot;&gt;{/* RICH-CODEX ... */}&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Embedded fonts. An SVG inside an &lt;code dir=&quot;auto&quot;&gt;&amp;#x3C;img&gt;&lt;/code&gt; tag cannot load a web font. If you did not have Fira Code installed, the box lines of a rich-click panel came apart. A user had actually reported this in &lt;a href=&quot;https://github.com/ewels/rich-codex/issues/65&quot;&gt;rich-codex #65&lt;/a&gt;, and this was the nudge I needed to solve it. Since rich-codex version 1.4.0 in September each SVG carries a subset of Fira Code.&lt;/li&gt;
+&lt;li&gt;Output as text. Now that I had Starlight Codeblocks working so well with WebAssembly output, it seemed strange to be embedding SVGs everywhere. I didn’t want to run hundreds of examples in the browser, so instead as of version 1.5.0 (released today), rich-codex can save output as an &lt;code dir=&quot;auto&quot;&gt;.ansi&lt;/code&gt; file instead of an image: plain text with the ANSI colour codes kept.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The third change was a fun one.
+It required changes across rich-codex, Starlight Codeblocks and the rich-click docs, all in unison.
+The rich-click docs now have examples in their markdown files that look like this:&lt;/p&gt;
+&lt;div&gt;&lt;figure&gt;&lt;figcaption&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;span&gt;{&lt;/span&gt;&lt;span&gt;/* RICH-CODEX working_dir: docs/code_snippets/introduction_to_click */&lt;/span&gt;&lt;span&gt;}&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;span&gt;```&lt;/span&gt;&lt;span&gt;sh&lt;/span&gt;&lt;span&gt; runnable.outputFile=&quot;../images/code_snippets/introduction_to_click/hello_help.ansi&quot;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;span&gt;$&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;python&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;hello.py&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;--help&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div&gt;&lt;span&gt;```&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;&lt;/div&gt;
+&lt;p&gt;rich-codex reads the comment, runs &lt;code dir=&quot;auto&quot;&gt;python hello.py --help&lt;/code&gt;, and writes the coloured output to the &lt;code dir=&quot;auto&quot;&gt;.ansi&lt;/code&gt; file.
+Starlight Codeblocks then reads that file at build time and shows the output under the command.
+It converts the ANSI codes to colours based on the site theme, and adjusts any colour that has less than &lt;code dir=&quot;auto&quot;&gt;4.5:1&lt;/code&gt; contrast against the output background.&lt;/p&gt;
+&lt;p&gt;Here is the example from our README, as the new text output and as the old SVG screenshot:&lt;/p&gt;
+&lt;starlight-tabs&gt;&lt;div&gt;&lt;ul role=&quot;tablist&quot;&gt;&lt;li role=&quot;presentation&quot;&gt;&lt;a role=&quot;tab&quot; href=&quot;#tab-panel-0-0&quot; id=&quot;tab-0-0&quot; aria-selected=&quot;true&quot; tabindex=&quot;0&quot;&gt;New: text output&lt;/a&gt;&lt;/li&gt;&lt;li role=&quot;presentation&quot;&gt;&lt;a role=&quot;tab&quot; href=&quot;#tab-panel-0-1&quot; id=&quot;tab-0-1&quot; aria-selected=&quot;false&quot; tabindex=&quot;-1&quot;&gt;Old: SVG screenshot&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;div id=&quot;tab-panel-0-0&quot; aria-labelledby=&quot;tab-0-0&quot; role=&quot;tabpanel&quot;&gt;&lt;div&gt;&lt;figure data-scb-shell-copy=&quot;&quot; aria-label=&quot;Terminal window&quot;&gt;&lt;figcaption&gt;&lt;span&gt;&lt;/span&gt;&lt;/figcaption&gt;&lt;pre&gt;&lt;code&gt;&lt;div&gt;&lt;div&gt;&lt;span&gt;$ &lt;/span&gt;&lt;span&gt;python&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;examples/11_hello.py&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;--help&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div tabindex=&quot;0&quot; role=&quot;region&quot; aria-label=&quot;Output&quot;&gt;&lt;span data-pagefind-ignore=&quot;&quot;&gt;Output&lt;/span&gt;&lt;pre&gt;&lt;span data-scb-run-line=&quot;0&quot;&gt;&lt;/span&gt;
+&lt;span data-scb-run-line=&quot;1&quot;&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;Usage:&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;11_hello.py&lt;/span&gt;&lt;span&gt; [&lt;/span&gt;&lt;span&gt;OPTIONS&lt;/span&gt;&lt;span&gt;]&lt;/span&gt;&lt;/span&gt;
+&lt;span data-scb-run-line=&quot;2&quot;&gt;&lt;/span&gt;
+&lt;span data-scb-run-line=&quot;3&quot;&gt;&lt;span&gt;&lt;span&gt; &lt;/span&gt;&lt;/span&gt;&lt;span&gt;Simple program that greets &lt;/span&gt;&lt;span&gt;NAME&lt;/span&gt;&lt;span&gt; for a total of &lt;/span&gt;&lt;span&gt;COUNT&lt;/span&gt;&lt;/span&gt;
+&lt;span data-scb-run-line=&quot;4&quot;&gt;&lt;span&gt;&lt;span&gt; &lt;/span&gt;&lt;/span&gt;&lt;span&gt;times.&lt;/span&gt;&lt;/span&gt;
+&lt;span data-scb-run-line=&quot;5&quot;&gt;&lt;/span&gt;
+&lt;span data-scb-run-line=&quot;6&quot;&gt;&lt;span&gt;╭─&lt;/span&gt;&lt;span&gt; Options &lt;/span&gt;&lt;span&gt;───────────────────────────────────────────────&lt;/span&gt;&lt;span&gt;─╮&lt;/span&gt;&lt;/span&gt;
+&lt;span data-scb-run-line=&quot;7&quot;&gt;&lt;span&gt;│&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;--count&lt;/span&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;INTEGER&lt;/span&gt;&lt;span&gt;  Number of greetings.                   &lt;/span&gt;&lt;span&gt;│&lt;/span&gt;&lt;/span&gt;
+&lt;span data-scb-run-line=&quot;8&quot;&gt;&lt;span&gt;│&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;--name &lt;/span&gt;&lt;span&gt;  &lt;/span&gt;&lt;span&gt;TEXT   &lt;/span&gt;&lt;span&gt;  The person to greet.                   &lt;/span&gt;&lt;span&gt;│&lt;/span&gt;&lt;/span&gt;
+&lt;span data-scb-run-line=&quot;9&quot;&gt;&lt;span&gt;│&lt;/span&gt;&lt;span&gt; &lt;/span&gt;&lt;span&gt;--help &lt;/span&gt;&lt;span&gt;           Show this message and exit.            &lt;/span&gt;&lt;span&gt;│&lt;/span&gt;&lt;/span&gt;
+&lt;span data-scb-run-line=&quot;10&quot;&gt;&lt;span&gt;╰──────────────────────────────────────────────────────────╯&lt;/span&gt;&lt;/span&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/figure&gt;&lt;/div&gt;&lt;/div&gt;&lt;div id=&quot;tab-panel-0-1&quot; aria-labelledby=&quot;tab-0-1&quot; role=&quot;tabpanel&quot; tabindex=&quot;0&quot; hidden&gt;&lt;p&gt;&lt;img src=&quot;https://ewels.github.io/rich-click/1.9/_astro/hello.DIVhSJ2q_ZnIMtk.svg&quot; alt=&quot;SVG screenshot of the help text from python examples/11_hello.py –help&quot; loading=&quot;lazy&quot; decoding=&quot;async&quot; width=&quot;994&quot; height=&quot;343&quot;&gt;&lt;/p&gt;&lt;/div&gt;&lt;/starlight-tabs&gt;
+&lt;p&gt;The rich-click site now has 96 of these &lt;code dir=&quot;auto&quot;&gt;.ansi&lt;/code&gt; files in place of SVG screenshots - hopefully you’ll agree they look great, and should be quite a bit easier to maintain.&lt;/p&gt;
+&lt;div&gt;&lt;h2 id=&quot;use-them-on-your-own-site&quot;&gt;Use them on your own site&lt;/h2&gt;&lt;/div&gt;
+&lt;p&gt;I finally merged the site rewrite PR today, three months after I opened it as an experiment.
+Thanks to Daniel for the review, and for the idea that became Starlight Pydocs.&lt;/p&gt;
+&lt;p&gt;None of the three tools mentioned is specific to rich-click:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://ewels.github.io/starlight-pydocs/&quot;&gt;starlight-pydocs&lt;/a&gt; works for any Python package. Install it with &lt;code dir=&quot;auto&quot;&gt;npm install starlight-pydocs&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://ewels.github.io/starlight-codeblocks/&quot;&gt;starlight-codeblocks&lt;/a&gt; works on any Starlight or Astro site. Install it with &lt;code dir=&quot;auto&quot;&gt;npm install starlight-codeblocks&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/ewels/rich-codex&quot;&gt;rich-codex&lt;/a&gt; runs as a GitHub Action or from the command line, and its &lt;code dir=&quot;auto&quot;&gt;.ansi&lt;/code&gt; output works with any tool that reads ANSI colour codes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Both the Starlight plugins ship an agent skill, so you can ask your coding agent to set them up.&lt;/p&gt;
+&lt;p&gt;I hope you like how the new site looks, and perhaps find the tools that spun off to be useful.
+If something breaks, or if you want a feature, please open an issue on GitHub.&lt;/p&gt;</content:encoded><category>Miscellaneous</category></item><item><title>v1.9 released!</title><link>https://ewels.github.io/rich-click/1.9/blog/version-1.9/</link><guid isPermaLink="true">https://ewels.github.io/rich-click/1.9/blog/version-1.9/</guid><description>rich-click 1.9 adds themes, panels, IDE autocomplete, Typer support in the CLI tool, help text for arguments and command aliases.</description><pubDate>Tue, 16 Sep 2025 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Today we are excited to release version 1.9 of &lt;strong&gt;rich-click&lt;/strong&gt;, our biggest release yet with lots of amazing new features!&lt;/p&gt;
 
 &lt;p&gt;The big features of the 1.9 release are:&lt;/p&gt;
 &lt;ul&gt;

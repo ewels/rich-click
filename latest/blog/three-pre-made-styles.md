@@ -1,3 +1,15 @@
+---
+project: "rich-click"
+title: "Three cool pre-made styles for your CLI"
+description: "Three copy-and-paste rich-click style configurations, with generated example output for each."
+url: "https://ewels.github.io/rich-click/latest/blog/three-pre-made-styles/"
+date: 2024-11-13
+authors:
+  - "Daniel Reeves"
+tags:
+  - "Miscellaneous"
+---
+
 # Three cool pre-made styles for your CLI
 
 **rich-click**'s default style is nice, and naturally it's what most of our users end up using.

@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "Comparison of Click and rich-click"
+description: "What rich-click changes relative to Click, and what it leaves alone: the overridden decorators, the extra API surface, and the Click features that still work unmodified."
+url: "https://ewels.github.io/rich-click/latest/documentation/comparison_of_click_and_rich_click/"
+---
+
 # Comparison of Click and rich-click
 
 **rich-click** is a thin wrapper around Click. The **rich-click** API is designed to mirror the Click API and intercept some of the calls to slightly different functions.

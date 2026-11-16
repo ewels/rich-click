@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "Text Markup & Formatting"
+description: "The four text_markup modes rich-click supports (Rich markup, Markdown, ANSI and plain), plus emoji, newline handling and help text styling."
+url: "https://ewels.github.io/rich-click/latest/documentation/text_markup_and_formatting/"
+---
+
 # Text Markup & Formatting
 
 ## Markup

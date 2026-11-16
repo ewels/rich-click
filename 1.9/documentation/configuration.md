@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "Configuration"
+description: "The two ways to configure rich-click: the rich_config decorator with RichHelpConfiguration, and the module-level global variables."
+url: "https://ewels.github.io/rich-click/latest/documentation/configuration/"
+---
+
 # Configuration
 
 There are two methods to configure **rich-click**:

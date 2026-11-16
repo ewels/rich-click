@@ -1,3 +1,15 @@
+---
+project: "rich-click"
+title: "PyCon Sweden 2024"
+description: "Slides and notes from presenting rich-click at PyCon Sweden 2024."
+url: "https://ewels.github.io/rich-click/latest/blog/pycon-sweden-2024/"
+date: 2024-11-15
+authors:
+  - "Phil Ewels"
+tags:
+  - "Miscellaneous"
+---
+
 # PyCon Sweden 2024
 
 I had the great pleasure of presenting **rich-click** at

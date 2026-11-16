@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "Typer Support"
+description: "Experimental support for rendering Typer applications with rich-click via patch_typer(), and its version constraints."
+url: "https://ewels.github.io/rich-click/latest/documentation/typer_support/"
+---
+
 # Typer Support
 
 :::caution[Experimental]

@@ -1,3 +1,16 @@
+---
+project: "rich-click"
+title: "v1.9 released!"
+description: "rich-click 1.9 adds themes, panels, IDE autocomplete, Typer support in the CLI tool, help text for arguments and command aliases."
+url: "https://ewels.github.io/rich-click/latest/blog/version-1.9/"
+date: 2025-09-16
+authors:
+  - "Daniel Reeves"
+  - "Phil Ewels"
+tags:
+  - "Release notes"
+---
+
 # v1.9 released!
 
 Today we are excited to release version 1.9 of **rich-click**, our biggest release yet with lots of amazing new features!

@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "rich_click"
+description: "rich-click is a minimal Python module to combine the efforts of the excellent packages 'rich' and 'click'."
+url: "https://ewels.github.io/rich-click/latest/api/rich_click/"
+---
+
 # rich_click
 
 *module*
@@ -7,7 +14,7 @@ rich-click is a minimal Python module to combine the efforts of the excellent pa
 The intention is to provide attractive help output from Click, formatted with Rich, with minimal
 customization required.
 
-[View source](https://github.com/ewels/rich-click/blob/51156e20b2c1db867c83444c7bbed1c9dc610580/src/rich_click/__init__.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/__init__.py#L1-L1)
 
 **Modules**
 

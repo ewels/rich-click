@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "Panels - Overview"
+description: "Group options, arguments and subcommands into named Rich panels, using either the decorators or the panel keyword arguments."
+url: "https://ewels.github.io/rich-click/latest/documentation/panels/overview/"
+---
+
 # Panels - Overview
 
 **rich-click** lets you configure grouping and sorting of command options and subcommands.

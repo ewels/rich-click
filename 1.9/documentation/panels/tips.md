@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "Panels - Tips"
+description: "Practical advice for rich-click panels: where the --help option lands, controlling row order, and the mistakes that are easy to make."
+url: "https://ewels.github.io/rich-click/latest/documentation/panels/tips/"
+---
+
 # Panels - Tips
 
 There are a few things to keep in mind when using RichPanels.

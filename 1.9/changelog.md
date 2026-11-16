@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "Changelog"
+description: "Release notes for every rich-click version, newest first."
+url: "https://ewels.github.io/rich-click/latest/changelog/"
+---
+
 # Changelog
 
 <!-- GENERATED FILE — built by docs/scripts/prepare-content.mjs; edit the source file instead. -->

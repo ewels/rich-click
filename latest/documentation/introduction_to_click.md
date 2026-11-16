@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "Introduction to Click"
+description: "A short introduction to Click, the Python CLI framework that rich-click wraps: commands, options, arguments and groups."
+url: "https://ewels.github.io/rich-click/latest/documentation/introduction_to_click/"
+---
+
 # Introduction to Click
 
 :::note

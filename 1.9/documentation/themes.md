@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "Themes"
+description: "Ready-made rich-click themes, how to apply one as a developer, and how end users override it with the RICH_CLICK_THEME environment variable."
+url: "https://ewels.github.io/rich-click/latest/documentation/themes/"
+---
+
 # Themes
 
 **Themes** are a simple way to customize the style of CLI help text as both an end-user and as a developer.

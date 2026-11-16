@@ -1,3 +1,10 @@
+---
+project: "rich-click"
+title: "Contributing"
+description: "How to set up a rich-click development environment, run the tests and open a pull request."
+url: "https://ewels.github.io/rich-click/latest/contributing/"
+---
+
 # Contributing
 
 <!-- GENERATED FILE — built by docs/scripts/prepare-content.mjs; edit the source file instead. -->
