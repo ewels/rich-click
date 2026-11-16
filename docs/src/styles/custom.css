@@ -13,6 +13,7 @@
 }
 
 :root {
+  --sl-content-width: 55rem;
   --sl-font: 'Noto Sans';
   --sl-font-mono: 'Roboto Mono';
   --rc-pixel-font: 'pixelmix', 'Noto Sans', sans-serif;
@@ -74,6 +75,43 @@ header.header {
 
   .rc-header-default .header > :has(> site-search) {
     justify-content: flex-end;
+  }
+}
+
+/* Starlight shows the "On this page" column from 72rem, but the content column
+   only reaches full --sl-content-width from 98.5rem (two 18.75rem sidebars plus
+   55rem of content and its padding, laid out by Starlight's TwoColumnContent).
+   In between, keep the content full width and use the small-screen dropdown.
+   Must be updated if --sl-content-width or --sl-sidebar-width change. */
+@media (72rem <= width < 98.5rem) {
+  :root[data-has-toc] {
+    --sl-mobile-toc-height: 3rem;
+  }
+
+  .right-sidebar-container {
+    width: auto;
+    margin: 0;
+  }
+
+  .right-sidebar {
+    position: static;
+    height: auto;
+    padding: 0;
+    border: 0;
+  }
+
+  .right-sidebar-panel {
+    display: none;
+  }
+
+  .right-sidebar div:has(> mobile-starlight-toc) {
+    display: block;
+  }
+
+  [data-has-sidebar][data-has-toc] .main-pane {
+    /* Left-aligned, so the text doesn't move when the column appears. */
+    --sl-content-margin-inline: 0;
+    width: 100%;
   }
 }
 

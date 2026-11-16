@@ -27,6 +27,19 @@ const canonicalBase = base.replace(/\/[^/]+$/, '/latest');
 
 export const onRequest = defineRouteMiddleware((context) => {
   const { head, entry } = context.locals.starlightRoute;
+  // Splash pages have no sidebar, and so no mobile menu button either, and the
+  // header tabs only show from 72rem. Give them the sidebar, but hide it (with
+  // Starlight's no-sidebar layout) once the tabs are there.
+  if (entry?.data.template === 'splash') {
+    context.locals.starlightRoute.hasSidebar = true;
+    head.push({
+      tag: 'style',
+      content:
+        ':root[data-has-sidebar]{--sl-content-width:67.5rem}' +
+        '@media (min-width:72rem){:root[data-has-sidebar]{--sl-content-inline-start:0}.sidebar-pane{display:none}}',
+    });
+  }
+
   const id = entry?.id && entry.id in ogPages ? entry.id : 'index';
   const imageUrl = new URL(`${base}/og/${id}.png`, context.site).href;
   for (const [href, type] of preloadFonts) {
