@@ -2,6 +2,7 @@
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { CardGrid, LinkCard } from '@astrojs/starlight/components';
 import { base } from '../base';
+import { API_PATH } from '../site.mjs';
 ---
 
 <StarlightPage
@@ -28,7 +29,7 @@ import { base } from '../base';
     />
     <LinkCard
       title="API Reference"
-      href={`${base}/api/rich_click/`}
+      href={`${base}${API_PATH}`}
       description="Every public class and function"
     />
     <LinkCard title="Changelog" href={`${base}/changelog/`} description="What changed in each release" />

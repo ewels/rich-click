@@ -1,18 +1,16 @@
 ---
 // Live Style Editor: interactive playground for rich-click style options.
-// Port of the previous mkdocs-material page (docs/overrides/editor.html),
-// rebuilt as an Astro page with vanilla JavaScript instead of jQuery.
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { TabItem, Tabs } from '@astrojs/starlight/components';
 import '@fontsource/fira-code/500.css';
-import '../styles/termynal.css';
 import '../styles/editor.css';
 import { COLORS, DEFAULT_STYLES, cls, options, terminalHtml, configCode, globalCode } from '../editor-data';
+import { EDITOR_PAGE } from '../site.mjs';
 ---
 
 <StarlightPage
   frontmatter={{
-    title: 'Live Style Editor',
+    title: EDITOR_PAGE.label,
     template: 'splash',
     tableOfContents: false,
     editUrl: false,
@@ -49,10 +47,10 @@ import { COLORS, DEFAULT_STYLES, cls, options, terminalHtml, configCode, globalC
                   <label title={option.toUpperCase()}>{option.toUpperCase()}</label>
                 </td>
                 <td>
-                  <div class={`${cls(option)} color-grid`} data-target={cls(option)}>
+                  <div class="color-grid" data-target={cls(option)}>
                     {COLORS.map((color) => (
                       <div
-                        class={`color-option${color === DEFAULT_STYLES[option]?.color ? ' selected-color' : ''}`}
+                        class={`color-option${color === DEFAULT_STYLES[option]!.color ? ' selected-color' : ''}`}
                         data-color={color}
                       />
                     ))}
@@ -61,7 +59,7 @@ import { COLORS, DEFAULT_STYLES, cls, options, terminalHtml, configCode, globalC
                 <td>
                   {(['bold', 'dim', 'italic'] as const).map((flag) => (
                     <button
-                      class={`rc-button ${cls(option)} rccfg-${flag}-button${DEFAULT_STYLES[option]?.[flag] ? ' button-selected' : ''}`}
+                      class={`rc-button${DEFAULT_STYLES[option]![flag] ? ' button-selected' : ''}`}
                       data-target={cls(option)}
                       data-flag={flag}
                     >
@@ -76,20 +74,20 @@ import { COLORS, DEFAULT_STYLES, cls, options, terminalHtml, configCode, globalC
       </table>
     </div>
     <div class="right-column">
-      <div data-termynal style="height: 500px;">
-        <div><pre set:html={terminalHtml} /></div>
+      <div data-termynal>
+        <pre set:html={terminalHtml} />
       </div>
     </div>
   </div>
 
   <Tabs syncKey="config-style">
     <TabItem label="RichHelpConfiguration()">
-      <div class="editor-code highlight">
+      <div class="editor-code">
         <pre><code set:html={configCode} /></pre>
       </div>
     </TabItem>
     <TabItem label="Global config">
-      <div class="editor-code highlight">
+      <div class="editor-code">
         <pre><code set:html={globalCode} /></pre>
       </div>
     </TabItem>
@@ -99,7 +97,7 @@ import { COLORS, DEFAULT_STYLES, cls, options, terminalHtml, configCode, globalC
 <script>
   // Interactive behaviour: clicking a colour swatch or style-flag button
   // updates the terminal preview elements and the generated code in sync.
-  import { styleString } from '../editor-data';
+  import { styleString } from '../editor-style';
 
   const terminalElements = (target: string) => document.querySelectorAll(`.rc-element.${target}`);
 

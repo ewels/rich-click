@@ -1,15 +1,9 @@
 // Data and HTML generation for the Live Style Editor page (pages/editor.astro).
-// Kept in a TypeScript module because the generated markup strings confuse the
-// Astro compiler when defined in component frontmatter.
+// Kept out of component frontmatter, where the markup strings confuse the
+// Astro compiler.
+import { styleString, type StyleFlags } from './editor-style';
 
 export const COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white'];
-
-export interface StyleFlags {
-  color: string | null;
-  bold: boolean;
-  dim: boolean;
-  italic: boolean;
-}
 
 /** Default style flags for each configurable rich-click style option. */
 export const DEFAULT_STYLES: Record<string, StyleFlags> = {
@@ -49,7 +43,7 @@ const el = (option: string, text: string): string =>
   `<span class="${elClasses(option)}">${text}</span>`;
 
 // The sample terminal output (mirrors docs/live_style_editor.py).
-const liveTerminal = ` ${el('style_usage', 'Usage:')} ${el('style_usage_command', 'docs')} [${el('style_argument', 'OPTIONS')}] ${el('style_argument', 'FOO')} ${el('style_argument', 'COMMAND')} [${el('style_argument', 'ARGS')}]...
+export const terminalHtml = ` ${el('style_usage', 'Usage:')} ${el('style_usage_command', 'docs')} [${el('style_argument', 'OPTIONS')}] ${el('style_argument', 'FOO')} ${el('style_argument', 'COMMAND')} [${el('style_argument', 'ARGS')}]...
 
  ${el('style_helptext_first_line', 'Help text for CLI')}
  ${el('style_helptext', 'Second line of help text.')}
@@ -62,17 +56,6 @@ ${el('style_options_panel_border', '╰─────────────�
 ${el('style_commands_panel_border', '╭─ Commands ───────────────────────────────────────────────────────────╮')}
 ${el('style_commands_panel_border', '│')} ${el('style_command', 'subcommand           ')} Help text for subcommand                       ${el('style_commands_panel_border', '│')}
 ${el('style_commands_panel_border', '╰──────────────────────────────────────────────────────────────────────╯')}`;
-
-export const terminalHtml = liveTerminal
-  .split('\n')
-  .map((row) => `<span class="go">${row}</span>`)
-  .join('\n');
-
-/** Render style flags as a rich style string, e.g. `bold dim cyan`. */
-export const styleString = (style: StyleFlags): string =>
-  [style.bold && 'bold', style.dim && 'dim', style.italic && 'italic', style.color]
-    .filter(Boolean)
-    .join(' ');
 
 /** The editable style string span inside generated code. */
 const styleSpans = (option: string): string =>

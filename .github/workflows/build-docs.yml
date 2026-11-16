@@ -52,9 +52,8 @@ jobs:
           cache: npm
           cache-dependency-path: docs/package-lock.json
 
-      # The API reference badges each object with the release it appeared in, by
-      # extracting every v1.* tag with griffe. The dumps are keyed by commit, so
-      # they only need generating once per tag across all builds.
+      # Griffe dumps of every v1.* tag, for the API reference's "added in"
+      # badges. Each only ever needs generating once.
       - name: Key the API version cache on the tag list
         id: pydocs_refs
         run: echo "key=$(git tag --list 'v1.*' | sha256sum | cut -c1-16)" >> "$GITHUB_OUTPUT"

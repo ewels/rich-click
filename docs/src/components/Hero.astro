@@ -3,8 +3,7 @@
 import { LinkButton } from '@astrojs/starlight/components';
 import { base } from '../base';
 import { ansiToHtmlLines } from '../ansi';
-// @ts-expect-error -- untyped project-local JavaScript module.
-import { SITE_TAGLINE } from '../site.mjs';
+import { EDITOR_PAGE, SITE_TAGLINE } from '../site.mjs';
 import themeCounts from '../generated/theme-counts.json';
 // Inlined rather than <img> so the CSS below can move the text apart from its shadow.
 import lightLogo from '../../public/images/rich-click-light-animated.svg?raw';
@@ -16,7 +15,6 @@ const captures = import.meta.glob<string>('../content/docs/images/code_snippets/
   import: 'default',
   eager: true,
 });
-
 
 const formats = ['box', 'nu', 'slim', 'modern', 'robo', 'square'].map((name) => ({
   name,
@@ -55,7 +53,7 @@ const installCommand = 'pip install rich-click';
       <LinkButton class="rc-link-button" href={`${base}/documentation/quickstart/`} icon="right-arrow">
         Get started
       </LinkButton>
-      <LinkButton class="rc-link-button" href={`${base}/editor/`} variant="secondary">
+      <LinkButton class="rc-link-button" href={`${base}${EDITOR_PAGE.link}`} variant="secondary">
         Try the Live Style Editor
       </LinkButton>
     </div>
@@ -111,32 +109,33 @@ const installCommand = 'pip install rich-click';
     let spin = 0;
     logo.addEventListener('click', () => {
       if (reduceMotion.matches) return;
+      const svg = [...logo.querySelectorAll('svg')].find((el) => el.getClientRects().length > 0);
+      if (!svg) return;
       const id = ++spin;
-      for (const svg of logo.querySelectorAll('svg')) {
-        const squares = [...svg.querySelectorAll<SVGRectElement>('rect')];
-        const colours = squares.map((square) => square.getAttribute('fill')!);
-        const start = performance.now();
-        squares.forEach((square, i) => {
-          const stop = SPIN_MS * (0.55 + (0.45 * i) / (squares.length - 1));
-          let next = 0;
-          const tick = (now: number) => {
-            if (id !== spin) return;
-            const elapsed = now - start;
-            if (elapsed >= stop) {
-              square.style.removeProperty('fill');
-              return;
-            }
-            if (elapsed >= next) {
-              const others = colours.filter((colour) => colour !== square.style.fill);
-              square.style.fill = others[Math.floor(Math.random() * others.length)];
-              // Changes every 30ms at first, easing out to every 180ms by the stop.
-              next = elapsed + 30 + 150 * (elapsed / stop) ** 2;
-            }
-            requestAnimationFrame(tick);
-          };
-          requestAnimationFrame(tick);
-        });
-      }
+      const rects = [...svg.querySelectorAll<SVGRectElement>('rect')];
+      const colours = rects.map((rect) => rect.getAttribute('fill')!);
+      const reels = rects.map((rect, i) => ({
+        rect,
+        stop: SPIN_MS * (0.55 + (0.45 * i) / (rects.length - 1)),
+        next: 0,
+      }));
+      const start = performance.now();
+      const tick = (now: number) => {
+        if (id !== spin) return;
+        const elapsed = now - start;
+        for (const reel of reels) {
+          if (elapsed >= reel.stop) {
+            reel.rect.style.removeProperty('fill');
+          } else if (elapsed >= reel.next) {
+            const others = colours.filter((colour) => colour !== reel.rect.style.fill);
+            reel.rect.style.fill = others[Math.floor(Math.random() * others.length)];
+            // Changes every 30ms at first, easing out to every 180ms by the stop.
+            reel.next = elapsed + 30 + 150 * (elapsed / reel.stop) ** 2;
+          }
+        }
+        if (elapsed < SPIN_MS) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
     });
   }
 

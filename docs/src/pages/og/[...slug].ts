@@ -1,8 +1,7 @@
-// Build-time social card images (1200x630) for every page, replacing the
-// mkdocs-material "social" plugin. Cards use the same Kode Mono font the old
-// cards were configured with, on the site's black/indigo palette.
+// Build-time social card images for every page.
 import { OGImageRoute } from 'astro-og-canvas';
 import { ogPages } from '../../og';
+import { OG_CARD } from '../../site.mjs';
 
 export const { getStaticPaths, GET } = await OGImageRoute({
   pages: ogPages,
@@ -12,20 +11,15 @@ export const { getStaticPaths, GET } = await OGImageRoute({
   getImageOptions: (_path, page) => ({
     title: page.title,
     description: page.description,
-    // The full logotype, not the square icon. Sized and centred by
-    // scripts/prepare-content.mjs, which pads it out to the width between the
-    // card paddings below — so no `size` here, or that padding gets rescaled.
-    logo: {
-      path: './src/generated/og-logo.png',
-    },
+    // Already sized and centred by scripts/prepare-content.mjs: a `size` here
+    // would rescale its padding.
+    logo: { path: `./${OG_CARD.logo}` },
     bgGradient: [
       [0, 0, 0],
       [30, 32, 41],
     ],
     border: { color: [64, 81, 181], width: 16, side: 'block-end' },
-    // Kept in sync with CARD_PADDING in scripts/prepare-content.mjs, which pads
-    // the logo out to the width this leaves.
-    padding: 36,
+    padding: OG_CARD.padding,
     font: {
       title: {
         families: ['Kode Mono'],

@@ -4,27 +4,35 @@
 
 export const SITE_TITLE = 'rich-click';
 export const SITE_TAGLINE = 'Richly rendered command line interfaces in Click.';
-export const REPO_URL = 'https://github.com/ewels/rich-click';
+export const REPO = 'ewels/rich-click';
+export const REPO_URL = `https://github.com/${REPO}`;
 
 // The Live Style Editor is a custom page (src/pages/editor.astro) outside the
 // content collection, so pieces like social cards need its metadata here.
 export const EDITOR_PAGE = {
   label: 'Live Style Editor',
+  link: '/editor/',
   description: 'A live editor for rich-click styles.',
 };
 
-// Base path when ASTRO_BASE isn't set. Keep in sync with BASE_PREFIX/DEFAULT_ALIAS
-// in docs/_deploy.py.
-export const DEFAULT_BASE = '/rich-click/latest';
+// Keep in sync with BASE_PREFIX/DEFAULT_ALIAS in docs/_deploy.py.
+export const BASE_PREFIX = '/rich-click';
+export const DEFAULT_ALIAS = 'latest';
+/** Base path when ASTRO_BASE isn't set. */
+export const DEFAULT_BASE = `${BASE_PREFIX}/${DEFAULT_ALIAS}`;
 
 // Root of the generated API reference pages (starlight-pydocs `base` default).
 export const API_PATH = '/api/rich_click/';
+
+// Social cards: the logo is pre-padded to the width between the card paddings
+// by scripts/prepare-content.mjs, and drawn by src/pages/og/[...slug].ts.
+export const OG_CARD = { width: 1200, padding: 36, logo: 'src/generated/og-logo.png' };
 
 // Starlight sidebar config; the header tabs row (components/Header.astro) is
 // derived from the same top-level entries.
 export const sidebar = [
   { label: 'Home', link: '/' },
-  { label: EDITOR_PAGE.label, link: '/editor/' },
+  { label: EDITOR_PAGE.label, link: EDITOR_PAGE.link },
   {
     label: 'Documentation',
     items: [

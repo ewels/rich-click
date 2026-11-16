@@ -6,15 +6,14 @@
 # ]
 # ///
 """
-Build and deploy the Astro docs site to GitHub Pages.
+Build and deploy the docs site to GitHub Pages.
 
-Replaces the previous mike-based deploy while keeping the same gh-pages layout:
-each X.Y version lives in its own directory, with `latest` (and `prerelease`)
-as additional deployed copies, tracked in a mike-format versions.json. Old
-mkdocs-built versions are left untouched.
+Each X.Y version lives in its own directory, with `latest` (and `prerelease`)
+as additional copies, tracked in a mike-format versions.json. Older mkdocs-built
+versions are left untouched.
 
-The site is built once per deployed directory because the Astro `base` path is
-baked into every URL at build time (see ASTRO_BASE in docs/astro.config.mjs).
+The site is built once per directory because the base path is baked into every
+URL at build time.
 """
 import json
 import os
@@ -28,8 +27,7 @@ import packaging.version
 
 
 DOCS_DIR = Path(__file__).parent.resolve()
-# Must stay in sync with DEFAULT_BASE in docs/src/site.mjs
-# (BASE_PREFIX/DEFAULT_ALIAS compose the ASTRO_BASE passed to each build).
+# Keep in sync with docs/src/site.mjs.
 BASE_PREFIX = "/rich-click"
 DEFAULT_ALIAS = "latest"
 PRERELEASE_ALIAS = "prerelease"
@@ -118,7 +116,7 @@ def deploy() -> None:
                     retired.add(PRERELEASE_ALIAS)
 
             # Update the version list first: the header's version dropdown is
-            # rendered at build time from DOCS_VERSIONS (see Header.astro).
+            # rendered at build time from DOCS_VERSIONS (see SocialIcons.astro).
             versions = [e for e in versions if e["version"] != version_id]
             for entry in versions:
                 entry["aliases"] = [a for a in entry["aliases"] if a not in aliases | retired]

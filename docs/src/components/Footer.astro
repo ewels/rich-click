@@ -1,19 +1,15 @@
 ---
-// Starlight's footer, plus a band pointing at the machine-readable copies of
-// these docs. Generating llms.txt without linking to it is the usual way the
-// file goes unused, and a link is the only discovery signal a static host on a
-// GitHub project page can offer (no HTTP `Link:` headers, and a robots.txt at
-// /rich-click/latest/ is never fetched by a crawler).
+// Starlight's footer, plus links to the machine-readable copies of these docs:
+// on a GitHub project page a link is the only way to advertise llms.txt (no
+// HTTP `Link:` headers, and crawlers never fetch a robots.txt below the root).
 import Default from '@astrojs/starlight/components/Footer.astro';
 import { Icon } from '@astrojs/starlight/components';
 import { base } from '../base';
-// @ts-expect-error -- untyped project-local JavaScript module.
-import { REPO_URL } from '../site.mjs';
+import { REPO, REPO_URL } from '../site.mjs';
 
-const { entry } = Astro.locals.starlightRoute;
-// Custom pages (StarlightPage) have an empty body and no Markdown copy.
-const repoName = new URL(REPO_URL).pathname.slice(1);
-const markdownUrl = entry.body ? `${Astro.url.pathname.replace(/\/$/, '')}.md` : undefined;
+const markdownUrl = Astro.locals.starlightRoute.head.find(
+  ({ tag, attrs }) => tag === 'link' && attrs?.rel === 'alternate' && attrs.type === 'text/markdown'
+)?.attrs?.href;
 ---
 
 <Default><slot /></Default>
@@ -30,7 +26,7 @@ const markdownUrl = entry.body ? `${Astro.url.pathname.replace(/\/$/, '')}.md` :
   </p>
   <a class="rc-footer-github" href={REPO_URL}>
     <Icon name="github" size="1.25rem" />
-    {repoName}
+    {REPO}
   </a>
 </footer>
 

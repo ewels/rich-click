@@ -14,20 +14,16 @@ import starlightPageActions from 'starlight-page-actions';
 import starlightPydocs, { pydocsSidebarGroup } from 'starlight-pydocs';
 
 import { satteriMermaid } from './plugins/satteri-mermaid.mjs';
-import { API_PATH, DEFAULT_BASE, REPO_URL, sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
+import { API_PATH, DEFAULT_BASE, REPO, REPO_URL, sidebar, SITE_TAGLINE, SITE_TITLE } from './src/site.mjs';
 
-// The site is deployed to versioned directories on GitHub Pages, mirroring the
-// layout previously managed by `mike` (e.g. /rich-click/latest/, /rich-click/1.9/).
-// docs/_deploy.py builds once per deployed alias, overriding the base path.
+// Each docs version is deployed to its own directory (e.g. /rich-click/1.9/,
+// /rich-click/latest/): docs/_deploy.py builds once per directory, setting the base.
 const site = 'https://ewels.github.io';
 const base = process.env.ASTRO_BASE ?? DEFAULT_BASE;
 
-// Every 1.x release tag, oldest first: starlight-pydocs extracts each one and
-// badges each API object with the release it first appeared in. Features land in
-// patch releases, so patches are listed too — one extraction costs ~0.3s, cached
-// per commit afterwards. The oldest tag is the baseline and gets no badge.
-// Read from git rather than listed by hand so new releases need no edit here; a
-// clone without tags yields no badges (see fetch-depth in build-docs.yml).
+// Every 1.x release tag, oldest first, patches included: starlight-pydocs badges
+// each API object with the release it first appeared in. The oldest tag is the
+// baseline and gets no badge; a clone without tags yields no badges at all.
 const releaseTags = execFileSync('git', ['tag', '--list', 'v1.*', '--sort=v:refname'], {
   cwd: fileURLToPath(new URL('..', import.meta.url)),
   encoding: 'utf8',
@@ -49,12 +45,17 @@ const inventories = [
   { url: 'https://maxludden.github.io/rich-gradient/objects.inv' },
 ];
 
-// starlight-page-actions publishes each page as raw `.md` by copying the source
-// file, so the `{/* RICH-CODEX ... */}` blocks that drive image generation are
-// copied along with it — 30+ of them on one page, and pure noise to whoever or
-// whatever reads the Markdown. Strip them from the copies only; the sources keep
-// them, and the rendered HTML never showed them.
-const stripMdxComments = {
+// starlight-page-actions publishes each page's source verbatim as `.md`. Strip
+// the `{/* RICH-CODEX ... */}` image-generation blocks from those copies, where
+// they are noise to whoever reads the Markdown, but not from code examples.
+// Closing fences may be followed by text: tidymd renders inline `<Code>` that way.
+const FENCE_OR_MDX_COMMENT = /^ {0,3}(`{3,}|~{3,})[^\n]*\n[\s\S]*?^ {0,3}\1|\{\/\*[\s\S]*?\*\/\}\n?/gm;
+/** @param {string} markdown */
+const stripMdxComments = (markdown) =>
+  markdown.replace(FENCE_OR_MDX_COMMENT, (match, fence) => (fence ? match : ''));
+
+/** @type {import('astro').AstroIntegration} */
+const stripMarkdownCopyComments = {
   name: 'rich-click:strip-mdx-comments',
   hooks: {
     'astro:build:done': async ({ dir }) => {
@@ -62,7 +63,7 @@ const stripMdxComments = {
       for (const entry of entries.filter((name) => name.endsWith('.md'))) {
         const path = fileURLToPath(new URL(entry, dir));
         const original = await readFile(path, 'utf8');
-        const stripped = original.replace(/\{\/\*[\s\S]*?\*\/\}\n?/g, '');
+        const stripped = stripMdxComments(original);
         if (stripped !== original) await writeFile(path, stripped);
       }
     },
@@ -72,6 +73,7 @@ const stripMdxComments = {
 // Starlight's default PageTitle shows `backticks` in titles literally. It can't
 // be overridden through `components` without losing starlight-page-actions' own
 // PageTitle override, which imports the default by path, so swap that path.
+/** @type {import('vite').Plugin} */
 const pageTitleWithCode = {
   name: 'rich-click:page-title-with-code',
   enforce: 'pre',
@@ -105,10 +107,9 @@ export default defineConfig({
     }),
   },
   redirects: {
-    // Carried over from the mkdocs-redirects plugin.
     '/documentation/groups_and_sorting': `${base}/documentation/panels/overview/`,
     '/documentation/formatting_and_styles': `${base}/documentation/text_markup_and_formatting/`,
-    // The mkdocs-material blog used date-based URLs; starlight-blog uses flat slugs.
+    // Old date-based blog URLs.
     '/blog/2024/04/30/version-1.8': `${base}/blog/version-1.8/`,
     '/blog/2024/11/13/three-pre-made-styles': `${base}/blog/three-pre-made-styles/`,
     '/blog/2024/11/15/pycon-sweden-2024': `${base}/blog/pycon-sweden-2024/`,
@@ -119,7 +120,7 @@ export default defineConfig({
     '/blog/archive/2025': `${base}/blog/`,
   },
   integrations: [
-    stripMdxComments,
+    stripMarkdownCopyComments,
     starlight({
       title: SITE_TITLE,
       description: SITE_TAGLINE,
@@ -160,10 +161,8 @@ export default defineConfig({
       },
       // Adds the auto-generated social card meta tags (see src/pages/og/).
       routeMiddleware: './src/starlight-route-data.ts',
-      // site.mjs can't import starlight-pydocs (it is also loaded by plain
-      // `node` scripts, which can't strip types), so the API Reference entry is
-      // a plain link there — for the header tab — and becomes the placeholder
-      // group here, which the plugin fills with the generated module tree.
+      // site.mjs is also loaded by plain `node`, so can't import starlight-pydocs:
+      // swap its API Reference link for the plugin's generated module tree.
       sidebar: sidebar.map((entry) =>
         entry.link === API_PATH
           ? { label: entry.label, collapsed: true, items: [pydocsSidebarGroup] }
@@ -256,7 +255,7 @@ export default defineConfig({
               ...(releaseTags.length > 0 && { versions: { refs: releaseTags } }),
               sourceLink: {
                 host: 'github',
-                repo: 'ewels/rich-click',
+                repo: REPO,
                 // Docs are built from the checkout being released, so pin the
                 // links to that commit rather than a moving branch.
                 ref: process.env.GITHUB_SHA ?? 'main',

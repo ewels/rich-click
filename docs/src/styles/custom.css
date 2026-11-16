@@ -1,9 +1,3 @@
-/*
- * Theme port of the previous mkdocs-material configuration:
- * black header, indigo accent, Noto Sans body font, slate dark scheme, and the
- * pixelmix display font (with offset text shadow) for the site title and h1s.
- */
-
 @font-face {
   font-family: 'pixelmix';
   src:
@@ -20,12 +14,10 @@
   --rc-mono-font: 'Fira Code', var(--sl-font-mono);
   --rc-pixel-shadow: -4px 4px rgba(128, 128, 128, 0.1);
 
-  /* Indigo accent (Material's link colour with a black primary palette). */
   --sl-color-accent-low: #1c2456;
   --sl-color-accent: #4051b5;
   --sl-color-accent-high: #aab4f1;
 
-  /* Material "slate" scheme background. */
   --sl-color-bg: hsl(232, 15%, 15%);
   --sl-color-bg-sidebar: var(--sl-color-bg);
   /* Panels set off from the page; Starlight's gray-6 is too close to the dark background. */
@@ -34,7 +26,6 @@
   --rc-color-panel: #0f1017;
   --rc-color-card: var(--sl-color-gray-6);
 
-  /* Black header, as with Material's `primary: black`. */
   --sl-color-bg-nav: #000;
 
   /* Footer.astro's band sits on the bottom of the page instead. */
@@ -121,11 +112,11 @@ header.header button[data-open-modal] > kbd {
 /* Starlight widens the title column on sidebar pages so search lines up with
    the content; right-align it on every page instead. */
 @media (min-width: 50rem) {
-  .rc-header-default .header {
+  .rc-header-main .header {
     grid-template-columns: auto 1fr auto;
   }
 
-  .rc-header-default .header > :has(> site-search) {
+  .rc-header-main .header > :has(> site-search) {
     justify-content: flex-end;
   }
 }
@@ -183,7 +174,7 @@ main:has(.pyd-module) h1 {
   text-shadow: none;
 }
 
-/* Square list bullets with accent hover, as on the old site. */
+/* Square list bullets with accent hover. */
 .sl-markdown-content ul:not([class]) {
   list-style: none;
   padding-inline-start: 0;
@@ -213,15 +204,14 @@ main:has(.pyd-module) h1 {
   opacity: 100%;
 }
 
-/* Content images are mostly terminal screenshots: centre them and cap their
-   width, as the old site's `.screenshot` styling did. */
+/* Content images are mostly terminal screenshots: centre them and cap their width. */
 .sl-markdown-content img {
   max-width: min(700px, 100%);
   margin: 2em auto 0.8em;
   display: block;
 }
 
-/* Material-style buttons (`{ .md-button }` links). */
+/* Outlined button links (`<a class="md-button">` in blog posts). */
 .sl-markdown-content a.md-button {
   display: inline-block;
   padding: 0.625em 2em;

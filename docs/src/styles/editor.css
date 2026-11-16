@@ -1,5 +1,41 @@
 /* Styles for the Live Style Editor page (src/pages/editor.astro). */
 
+/* Terminal window, with its three buttons drawn by one pseudo-element.
+   Adapted from termynal.js by Ines Montani (MIT). */
+[data-termynal] {
+  --color-text: #eee;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  height: 500px;
+  padding: 75px 25px 25px;
+  overflow-x: hidden;
+  color: var(--color-text);
+  font-size: 14px;
+  border-radius: 4px;
+  box-shadow: 0 3px 10px 1px rgba(87, 87, 87, 0.6);
+}
+
+[data-termynal]::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #d9515d;
+  box-shadow:
+    25px 0 0 #f4c025,
+    50px 0 0 #3ec930;
+}
+
+/* The terminal has no background of its own, so its text follows the theme. */
+:root[data-theme='light'] [data-termynal] {
+  --color-text: #24292e;
+}
+
 [data-termynal] pre {
   font-family: 'Fira Code', monospace;
   font-optical-sizing: auto;
@@ -11,18 +47,6 @@
   border: none;
   padding: 0;
   font-size: inherit;
-}
-
-/* The terminal has no background of its own, so its text follows the theme. */
-:root[data-theme='light'] [data-termynal] {
-  --color-text: #24292e;
-  --color-text-subtle: #6a737d;
-}
-
-[data-termynal] {
-  width: 100%;
-  padding: 75px 25px 25px;
-  overflow-x: hidden;
 }
 
 .container {
@@ -117,36 +141,48 @@
 
   @media (max-width: 600px) {
     #option-table th:first-child,
-    td:first-child {
+    #option-table td:first-child {
       max-width: 15em;
       overflow: hidden;
     }
   }
 }
 
-.rc-element.c-black {
-  color: #000000;
+.c-black,
+[data-color='black'] {
+  --term-color: #000000;
 }
-.rc-element.c-blue {
-  color: #0088cc;
+.c-blue,
+[data-color='blue'] {
+  --term-color: #0088cc;
 }
-.rc-element.c-green {
-  color: #338022;
+.c-green,
+[data-color='green'] {
+  --term-color: #338022;
 }
-.rc-element.c-yellow {
-  color: #aa8800;
+.c-yellow,
+[data-color='yellow'] {
+  --term-color: #aa8800;
 }
-.rc-element.c-cyan {
-  color: #009090;
+.c-cyan,
+[data-color='cyan'] {
+  --term-color: #009090;
 }
-.rc-element.c-white {
-  color: #c0c0c0;
+.c-white,
+[data-color='white'] {
+  --term-color: #c0c0c0;
 }
-.rc-element.c-magenta {
-  color: #9966aa;
+.c-magenta,
+[data-color='magenta'] {
+  --term-color: #9966aa;
 }
-.rc-element.c-red {
-  color: #ee5555;
+.c-red,
+[data-color='red'] {
+  --term-color: #ee5555;
+}
+/* Uncoloured elements inherit, as the unset variable leaves `color` unset. */
+.rc-element {
+  color: var(--term-color);
 }
 .rc-element.s-italic {
   font-style: italic;
@@ -157,36 +193,13 @@
 .rc-element.s-dim {
   opacity: 50%;
 }
-.color-option[data-color='black'] {
-  background-color: #000000;
-}
-.color-option[data-color='blue'] {
-  background-color: #0088cc;
-}
-.color-option[data-color='green'] {
-  background-color: #338022;
-}
-.color-option[data-color='yellow'] {
-  background-color: #aa8800;
-}
-.color-option[data-color='cyan'] {
-  background-color: #009090;
-}
-.color-option[data-color='white'] {
-  background-color: #c0c0c0;
-}
-.color-option[data-color='magenta'] {
-  background-color: #9966aa;
-}
-.color-option[data-color='red'] {
-  background-color: #ee5555;
-}
 .color-grid {
   display: grid;
   grid-template-columns: repeat(4, 1.1em);
   grid-gap: 0.2em;
 }
 .color-option {
+  background-color: var(--term-color);
   width: 1.1em;
   height: 1.1em;
   cursor: pointer;

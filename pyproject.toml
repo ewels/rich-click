@@ -67,9 +67,7 @@ dev = [
     "typer>=0.15,<0.26",
     "types-setuptools>=75.8.0.20250110",
 ]
-# The docs site itself is built with Astro Starlight (see docs/package.json);
-# this group only covers the Python tooling used alongside it: rich-codex for
-# regenerating terminal screenshots, and typer for the typer code snippets.
+# Python tooling for the docs (built from docs/package.json): rich-codex and the typer snippets.
 docs = [
     "rich-codex>=1.5",
     "typer>=0.15,<0.26",

@@ -1,8 +1,7 @@
 ---
-// Wraps Starlight's default header with a Material-for-MkDocs style tabs row
-// linking the top-level site sections, plus a docs version dropdown.
+// Starlight's header, plus a row of tabs linking the top-level site sections.
 import Default from '@astrojs/starlight/components/Header.astro';
-import { base } from '../base';
+import { base, sitePath } from '../base';
 import { entryPath, sidebar } from '../site.mjs';
 
 // One tab per top-level sidebar entry, active for any URL under its section.
@@ -16,51 +15,10 @@ const tabs = sidebar.map((entry) => {
   };
 });
 
-const currentPath = Astro.url.pathname.slice(base.length) || '/';
-
-// Deployed docs versions, injected at build time by docs/_deploy.py (absent in
-// local development). Rendered as static per-page links: same mike-format data
-// that is also written to versions.json at the deployment root.
-interface VersionEntry {
-  version: string;
-  title: string;
-  aliases: string[];
-}
-const versions: VersionEntry[] = JSON.parse(process.env.DOCS_VERSIONS ?? '[]');
-const parts = base.split('/');
-const currentVersion = parts.at(-1) ?? '';
-const deployRoot = parts.slice(0, -1).join('/');
-const pagePath = Astro.url.pathname.slice(base.length + 1);
-const versionLinks = versions.map(({ version, title, aliases }) => ({
-  label: aliases.length > 0 ? `${title} (${aliases.join(', ')})` : title,
-  href: `${deployRoot}/${version}/${pagePath}`,
-  current: version === currentVersion || aliases.includes(currentVersion),
-}));
-const currentLabel = versionLinks.find((v) => v.current)?.label ?? currentVersion;
+const currentPath = sitePath(Astro.url);
 ---
 
-<div class="rc-header-main">
-  <div class="rc-header-default"><Default><slot /></Default></div>
-  {
-    versionLinks.length > 0 && (
-      <details class="rc-version-select">
-        <summary>
-          <span class="sr-only">Documentation version: </span>
-          {currentLabel} ▾
-        </summary>
-        <ul>
-          {versionLinks.map((link) => (
-            <li>
-              <a href={link.href} aria-current={link.current ? 'true' : undefined}>
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </details>
-    )
-  }
-</div>
+<div class="rc-header-main"><Default><slot /></Default></div>
 <nav class="rc-header-tabs sl-hidden lg:sl-flex" aria-label="Site sections">
   <ul>
     {
@@ -82,15 +40,6 @@ const currentLabel = versionLinks.find((v) => v.current)?.label ?? currentVersio
 <style>
   .rc-header-main {
     height: 100%;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .rc-header-default {
-    flex: 1;
-    min-width: 0;
-    height: 100%;
   }
 
   /* On large screens the header grows (see custom.css) to fit the tabs row. */
@@ -103,7 +52,6 @@ const currentLabel = versionLinks.find((v) => v.current)?.label ?? currentVersio
   .rc-header-tabs {
     height: var(--rc-tabs-height);
     align-items: center;
-    gap: 1rem;
   }
 
   .rc-header-tabs ul {
@@ -149,76 +97,20 @@ const currentLabel = versionLinks.find((v) => v.current)?.label ?? currentVersio
     border-bottom-color: currentColor;
     font-weight: 600;
   }
-
-  .rc-version-select {
-    position: relative;
-    color: var(--sl-color-header-text, var(--sl-color-white));
-    font-size: var(--sl-text-xs);
-  }
-
-  .rc-version-select > summary {
-    list-style: none;
-    cursor: pointer;
-    user-select: none;
-    white-space: nowrap;
-    border: 1px solid color-mix(in srgb, currentColor 40%, transparent);
-    border-radius: 0.25rem;
-    padding: 0.15rem 0.5rem;
-  }
-
-  .rc-version-select > summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .rc-version-select ul {
-    position: absolute;
-    right: 0;
-    top: calc(100% + 0.25rem);
-    z-index: 10;
-    margin: 0;
-    padding: 0.25rem;
-    list-style: none;
-    min-width: 100%;
-    background-color: var(--sl-color-black, #181818);
-    border: 1px solid var(--sl-color-gray-5, #444);
-    border-radius: 0.25rem;
-    box-shadow: var(--sl-shadow-md);
-  }
-
-  .rc-version-select a {
-    display: block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.2rem;
-    color: var(--sl-color-gray-2, #ccc);
-    text-decoration: none;
-    white-space: nowrap;
-  }
-
-  .rc-version-select a:hover {
-    background-color: color-mix(in srgb, currentColor 15%, transparent);
-  }
-
-  .rc-version-select a[aria-current='true'] {
-    font-weight: 600;
-    color: var(--sl-color-header-text, var(--sl-color-white));
-  }
 </style>
 
 <script>
-  // Click-to-zoom for content images (replaces mkdocs-glightbox).
-  // starlight-image-zoom can't be used here: it wraps images with a rehype
-  // plugin, which the Sätteri Markdown processor doesn't run
-  // (https://github.com/HiDeoo/starlight-image-zoom/issues/63). medium-zoom
-  // works purely client-side, so it is processor-agnostic.
-  import mediumZoom from 'medium-zoom';
-
-  // Linked images keep their link.
+  // Click-to-zoom for content images; linked images keep their link.
+  // starlight-image-zoom needs rehype, which the Sätteri Markdown processor
+  // doesn't run (https://github.com/HiDeoo/starlight-image-zoom/issues/63).
   const images = document.querySelectorAll<HTMLImageElement>('.sl-markdown-content img:not(a img)');
   if (images.length > 0) {
-    mediumZoom(images, {
-      margin: 32,
-      background: getComputedStyle(document.documentElement).getPropertyValue('--rc-zoom-backdrop'),
-    });
+    import('medium-zoom').then(({ default: mediumZoom }) =>
+      mediumZoom(images, {
+        margin: 32,
+        background: getComputedStyle(document.documentElement).getPropertyValue('--rc-zoom-backdrop'),
+      })
+    );
   }
 </script>
 
@@ -231,7 +123,7 @@ const currentLabel = versionLinks.find((v) => v.current)?.label ?? currentVersio
       diagram.dataset.source = diagram.textContent ?? '';
     }
 
-    const render = async () => {
+    const renderAll = async () => {
       const { default: mermaid } = await import('mermaid');
       const dark = document.documentElement.dataset.theme === 'dark';
       let count = 0;
@@ -248,13 +140,10 @@ const currentLabel = versionLinks.find((v) => v.current)?.label ?? currentVersio
       await mermaid.run({ nodes: diagrams });
     };
 
+    // Queued, so a quick theme toggle can't start a run on nodes still rendering.
+    let rendering = Promise.resolve();
+    const render = () => (rendering = rendering.then(renderAll).catch(console.error));
     render();
-
-    const observer = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.attributeName === 'data-theme') render();
-      }
-    });
-    observer.observe(document.documentElement, { attributes: true });
+    new MutationObserver(render).observe(document.documentElement, { attributeFilter: ['data-theme'] });
   }
 </script>

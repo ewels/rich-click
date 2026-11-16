@@ -1,13 +1,14 @@
 import rss from '@astrojs/rss';
 import type { APIContext } from 'astro';
-import { FEED_DESCRIPTION, FEED_TITLE, getBlogPosts, postExcerpt, postPath } from '../feeds';
+import { feedMeta, getBlogPosts, postExcerpt, postPath } from '../feeds';
 
 export async function GET(context: APIContext) {
+  const { title, description, homeUrl } = feedMeta(context.site);
   const posts = await getBlogPosts();
   return rss({
-    title: FEED_TITLE,
-    description: FEED_DESCRIPTION,
-    site: new URL(import.meta.env.BASE_URL, context.site),
+    title,
+    description,
+    site: homeUrl,
     items: posts.map((entry) => ({
       title: entry.data.title,
       link: postPath(entry),

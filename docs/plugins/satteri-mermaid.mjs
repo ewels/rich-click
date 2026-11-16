@@ -1,7 +1,6 @@
-// Turns ```mermaid fenced code blocks into `<pre class="mermaid">` elements
-// that are rendered client-side by the script in src/components/Header.astro.
-// Running as an mdast plugin means the block never reaches the syntax
-// highlighter, mirroring how mkdocs-material handled mermaid superfences.
+// Turns ```mermaid fenced code blocks into `<pre class="mermaid">` elements,
+// rendered client-side by the script in src/components/Header.astro. As an
+// mdast plugin it runs before the blocks reach the syntax highlighter.
 export function satteriMermaid() {
   return {
     name: 'rich-click-mermaid',

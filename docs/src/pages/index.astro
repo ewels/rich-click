@@ -3,8 +3,7 @@
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { Code, LinkButton } from '@astrojs/starlight/components';
 import { base } from '../base';
-// @ts-expect-error -- untyped project-local JavaScript module.
-import { SITE_TAGLINE, SITE_TITLE } from '../site.mjs';
+import { API_PATH, EDITOR_PAGE, SITE_TAGLINE, SITE_TITLE } from '../site.mjs';
 import themeCounts from '../generated/theme-counts.json';
 
 const features = [
@@ -12,55 +11,55 @@ const features = [
     colour: '#56b6c2',
     title: 'Rich formatting',
     text: 'Click help and error messages rendered with colour, panels and tables.',
-    href: 'documentation/introduction_to_click/',
+    href: '/documentation/introduction_to_click/',
   },
   {
     colour: '#98c379',
     title: 'Same API as Click',
     text: 'Usage is simply <code>import rich_click as click</code>.',
-    href: 'documentation/comparison_of_click_and_rich_click/',
+    href: '/documentation/comparison_of_click_and_rich_click/',
   },
   {
     colour: '#e5c07b',
     title: `${themeCounts.colours} colour schemes, ${themeCounts.formats} formats`,
     text: 'Mix any scheme with any format. Set it in code, or let users pick with <code>RICH_CLICK_THEME</code>.',
-    href: 'documentation/themes/',
+    href: '/documentation/themes/',
   },
   {
     colour: '#c678dd',
     title: 'Panels',
     text: 'Group commands and options into named panels.',
-    href: 'documentation/panels/overview/',
+    href: '/documentation/panels/overview/',
   },
   {
     colour: '#e06c75',
     title: 'Clear errors',
     text: 'Well formatted error messages that point users to the fix.',
-    href: 'documentation/custom_styles/#error-messages',
+    href: '/documentation/custom_styles/#error-messages',
   },
   {
     colour: '#61afef',
     title: 'rich-click CLI tool',
     text: 'Prefix any Click or Typer command to richify someone else’s CLI.',
-    href: 'documentation/rich_click_cli/',
+    href: '/documentation/rich_click_cli/',
   },
   {
     colour: '#abb2bf',
     title: 'Export HTML and SVG',
     text: 'Drop real help output straight into your docs.',
-    href: 'documentation/rich_click_cli/#render-help-text-as-html-or-svg',
+    href: '/documentation/rich_click_cli/#render-help-text-as-html-or-svg',
   },
   {
     colour: '#56b6c2',
     title: 'Extensive customisation',
     text: 'Styles, text, layout and box formats are all configurable.',
-    href: 'documentation/configuration/',
+    href: '/documentation/configuration/',
   },
   {
     colour: '#98c379',
     title: 'IDE autocomplete',
     text: 'Typed Click decorators for a smooth developer experience.',
-    href: 'api/rich_click/',
+    href: API_PATH,
   },
 ];
 
@@ -104,7 +103,7 @@ def hello(count, name):
     <div class="rc-features">
       {
         features.map(({ colour, title, text, href }) => (
-          <a class="rc-feature" href={`${base}/${href}`}>
+          <a class="rc-feature" href={`${base}${href}`}>
             <h3>
               <span class="rc-feature-swatch" style={`background: ${colour}`} aria-hidden="true" />
               {title}
@@ -153,7 +152,7 @@ def hello(count, name):
       <h2>Design your own theme</h2>
       <p>Tweak colours and box styles in the browser, then copy the config straight into your CLI.</p>
     </div>
-    <LinkButton class="rc-link-button rc-link-button-inverse" href={`${base}/editor/`} icon="right-arrow">
+    <LinkButton class="rc-link-button rc-link-button-inverse" href={`${base}${EDITOR_PAGE.link}`} icon="right-arrow">
       Open the Live Style Editor
     </LinkButton>
   </section>

@@ -1,24 +1,11 @@
-// Generates the docs pages that mirror repo-root Markdown files, replacing the
-// mkdocs include-markdown plugin:
-//
-//   src/content/docs/changelog.md    <- CHANGELOG.md
-//   src/content/docs/contributing.md <- CONTRIBUTING.md
-//
-// ...and the trimmed logotype the social cards are drawn with:
-//
-//   src/generated/og-logo.png        <- public/images/rich-click-dark.svg
-//
-// ...and the theme counts the homepage quotes:
-//
-//   src/generated/theme-counts.json  <- src/rich_click/rich_click_theme.py
-//
-// The generated files are gitignored and rebuilt on every `npm run dev` /
-// `npm run build` (see the predev/prebuild scripts in package.json).
+// Generates the gitignored files the site builds from, out of sources elsewhere
+// in the repo. Run before every `npm run dev` / `npm run build`.
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
+import { OG_CARD, REPO_URL } from '../src/site.mjs';
 
 const docsRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const repoRoot = path.resolve(docsRoot, '..');
@@ -58,10 +45,13 @@ function rewriteGithubAlerts(markdown) {
   return out.join('\n');
 }
 
-function write(relPath, content) {
-  const target = path.join(contentRoot, relPath);
+function write(target, content) {
   // Skip identical rewrites so mtimes (and Astro's content cache) stay stable.
-  if (fs.existsSync(target) && fs.readFileSync(target, 'utf8') === content) return;
+  try {
+    if (fs.readFileSync(target).equals(Buffer.from(content))) return;
+  } catch {
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+  }
   fs.writeFileSync(target, content);
   console.log(`generated ${path.relative(repoRoot, target)}`);
 }
@@ -74,11 +64,11 @@ function rootPage(sourceFile, title, description, outFile) {
   content = content.replace(/^# .+\n/, '').trim();
   content = rewriteGithubAlerts(content);
   write(
-    outFile,
+    path.join(contentRoot, outFile),
     `---
 title: ${title}
 description: ${description}
-editUrl: https://github.com/ewels/rich-click/edit/main/${sourceFile}
+editUrl: ${REPO_URL}/edit/main/${sourceFile}
 ---
 
 ${GENERATED_NOTICE}
@@ -117,44 +107,31 @@ const themeCounts = execFileSync(
   ['run', '--no-project', '--quiet', 'python', '-c', themeCountsScript, path.join(repoRoot, 'src/rich_click/rich_click_theme.py')],
   { encoding: 'utf8' }
 );
-const themeCountsOut = path.join(docsRoot, 'src/generated/theme-counts.json');
-fs.mkdirSync(path.dirname(themeCountsOut), { recursive: true });
-fs.writeFileSync(themeCountsOut, themeCounts);
-console.log(`generated ${path.relative(repoRoot, themeCountsOut)}`);
+write(path.join(docsRoot, 'src/generated/theme-counts.json'), themeCounts);
 
 // --- Social card logotype -----------------------------------------------------
 
-// astro-og-canvas draws the logo from the left padding edge at whatever size it
-// is given: it has no alignment option, and the shipped logotype sits on a
-// 960x360 canvas with the artwork occupying only 656x147 of it. So both the
-// size and the centring are baked in here — trim the transparent margin, scale
-// the wordmark to 60% of the card, and re-pad it symmetrically to the full
-// width between the card's paddings. The card route then draws the file at its
-// own dimensions and needs no numbers of its own (see src/pages/og/[...slug].ts).
-const CARD_WIDTH = 1200;
-const CARD_PADDING = 36;
+// astro-og-canvas can't align the logo: it draws it from the left padding edge,
+// at its own size. So trim the logotype's transparent margin, scale it to 60%
+// of the card width and pad it back out, centred, to the width between the
+// card's paddings. Rasterised well above that size so the downscale stays sharp.
 const WORDMARK_SHARE = 0.6;
 const TRANSPARENT = { r: 0, g: 0, b: 0, alpha: 0 };
 
-const contentWidth = CARD_WIDTH - CARD_PADDING * 2;
-const wordmarkWidth = Math.round(CARD_WIDTH * WORDMARK_SHARE);
+const contentWidth = OG_CARD.width - OG_CARD.padding * 2;
+const wordmarkWidth = Math.round(OG_CARD.width * WORDMARK_SHARE);
 const ogLogoSource = path.join(docsRoot, 'public/images/rich-click-dark.svg');
-const ogLogoOut = path.join(docsRoot, 'src/generated/og-logo.png');
-fs.mkdirSync(path.dirname(ogLogoOut), { recursive: true });
-// Unconditional: the output depends on the constants above as well as on the
-// source file, and it costs tens of milliseconds. astro-og-canvas keys its own
-// cache on the logo's contents, so an unchanged result still costs nothing.
-// Rasterised well above the target size so the downscale stays sharp.
 const wordmark = await sharp(ogLogoSource, { density: 72 * 4 })
   .trim({ threshold: 0 })
   .resize({ width: wordmarkWidth })
   .toBuffer();
 const sideMargin = Math.round((contentWidth - wordmarkWidth) / 2);
-await sharp(wordmark)
+const ogLogo = await sharp(wordmark)
   .extend({
     left: sideMargin,
     right: contentWidth - wordmarkWidth - sideMargin,
     background: TRANSPARENT,
   })
-  .toFile(ogLogoOut);
-console.log(`generated ${path.relative(repoRoot, ogLogoOut)}`);
+  .png()
+  .toBuffer();
+write(path.join(docsRoot, OG_CARD.logo), ogLogo);
