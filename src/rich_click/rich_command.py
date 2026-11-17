@@ -88,12 +88,10 @@ class RichCommandMixin(_CommandMixinBase):
     @property
     def console(self) -> Console | None:
         """
-        Rich Console.
+        Rich console of this command. Set it with the `rich_config` decorator.
 
-        This is a separate instance from the help formatter that allows full control of the
-        console configuration.
-
-        See `rich_config` decorator for how to apply the settings.
+        Deprecated:
+            Since 1.9. Use the console of the context, `ctx.console`.
         """
         warnings.warn(
             "RichCommand.console is deprecated. Please use the click.Context's console instead.",
@@ -104,7 +102,12 @@ class RichCommandMixin(_CommandMixinBase):
 
     @property
     def help_config(self) -> RichHelpConfiguration | None:
-        """Rich Help Configuration."""
+        """
+        Help configuration of this command. Set it with the `rich_config` decorator.
+
+        Deprecated:
+            Since 1.9. Use the help configuration of the context, `ctx.help_config`.
+        """
         warnings.warn(
             "RichCommand.help_config is deprecated. Please use the click.Context's help config instead.",
             DeprecationWarning,
@@ -173,6 +176,17 @@ class RichCommandMixin(_CommandMixinBase):
     # We opt to ignore mypy here.
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        """
+        Write the help: the usage, the help text, the options and the epilog.
+
+        Each part has its own `format_*` method, so a subclass can override one part.
+
+        Warning:
+            After `rich_click.patch.patch()`, rich-click ignores overrides of `format_usage`,
+            `format_help_text`, `format_options` and `format_epilog` in subclasses of the patched
+            click classes. These overrides expect click's plain help formatter, so rich-click
+            writes those parts itself.
+        """
         if OVERRIDES_GUARD:
             prevent_incompatible_overrides(self, "RichCommand", ctx, formatter)
         else:
@@ -230,14 +244,7 @@ class RichCommandMixin(_CommandMixinBase):
         return self.params.pop()  # type: ignore[return-value]
 
     def get_help_option(self, ctx: click.Context) -> click.Option | None:
-        """
-        Return the help option object.
-
-        Skipped if :attr:`add_help_option` is ``False``.
-
-        .. versionchanged:: 8.1.8
-            The help option is now cached to avoid creating it multiple times.
-        """
+        """Return the help option, or `None` if `add_help_option` is false. Every call returns the same object."""
         help_option_names = self.get_help_option_names(ctx)
 
         if not help_option_names or not self.add_help_option:
@@ -254,12 +261,7 @@ class RichCommandMixin(_CommandMixinBase):
 
 
 class RichCommand(RichCommandMixin, Command):
-    """
-    Richly formatted click Command.
-
-    Inherits click.Command and overrides help and error methods
-    to print richly formatted output.
-    """
+    """A click Command that prints its help and errors with Rich. The `command` decorator creates one."""
 
     context_class: type[RichContext] = RichContext
 
@@ -429,20 +431,11 @@ class RichGroupMixin(RichCommandMixin, _GroupMixinBase):
 
     def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichCommand] | RichCommand:
         """
-        A shortcut decorator for declaring and attaching a command to
-        the group. This takes the same arguments as :func:`command` and
-        immediately registers the created command with this group by
-        calling :meth:`add_command`.
+        Create a command and add it to this group.
 
-        To customize the command class used, set the
-        :attr:`command_class` attribute.
-
-        .. versionchanged:: 8.1
-            This decorator can be applied without parentheses.
-
-        .. versionchanged:: 8.0
-            Added the :attr:`command_class` attribute.
-        """  # noqa: D401
+        Takes the same arguments as the `command` decorator, and works with or without
+        parentheses. The class of the command is `command_class`, unless you set `cls`.
+        """
         from rich_click.decorators import command
 
         func: Callable[..., Any] | None = None
@@ -481,20 +474,11 @@ class RichGroupMixin(RichCommandMixin, _GroupMixinBase):
 
     def group(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichGroup] | RichGroup:
         """
-        A shortcut decorator for declaring and attaching a group to
-        the group. This takes the same arguments as :func:`group` and
-        immediately registers the created group with this group by
-        calling :meth:`add_command`.
+        Create a subgroup and add it to this group.
 
-        To customize the group class used, set the :attr:`group_class`
-        attribute.
-
-        .. versionchanged:: 8.1
-            This decorator can be applied without parentheses.
-
-        .. versionchanged:: 8.0
-            Added the :attr:`group_class` attribute.
-        """  # noqa: D401
+        Takes the same arguments as the `group` decorator, and works with or without
+        parentheses. The subgroup has the same class as this group, unless you set `group_class` or `cls`.
+        """
         from rich_click.decorators import group
 
         func: Callable[..., Any] | None = None
@@ -569,8 +553,13 @@ class RichGroupMixin(RichCommandMixin, _GroupMixinBase):
         panel: str | list[str] | None = None,
     ) -> None:
         """
-        Register another :class:`Command` with this group. If the name
-        is not provided, the name of the command is used.
+        Add a command to this group.
+
+        Args:
+            cmd: The command to add.
+            name: Name of the command in this group. Defaults to the name of the command.
+            aliases: Other names that run the command.
+            panel: Panel or panels to show the command in, by panel title.
         """
         super().add_command(cmd, name)
         _name: str = name or cmd.name  # type: ignore[assignment]
@@ -592,12 +581,7 @@ class RichGroupMixin(RichCommandMixin, _GroupMixinBase):
 
 
 class RichGroup(RichGroupMixin, RichCommand, Group):
-    """
-    Richly formatted click Group.
-
-    Inherits click.Group and overrides help and error methods
-    to print richly formatted output.
-    """
+    """A click Group that prints its help and errors with Rich. The `group` decorator creates one."""
 
     command_class: type[RichCommand] | None = RichCommand
     group_class: type[Group] | type[type] | None = type
@@ -607,12 +591,7 @@ RichMultiCommand = RichGroup
 
 
 class RichCommandCollection(CommandCollection, RichGroup):
-    """
-    Richly formatted click CommandCollection.
-
-    Inherits click.CommandCollection and overrides help and error methods
-    to print richly formatted output.
-    """
+    """A click CommandCollection that prints its help and errors with Rich."""
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         if OVERRIDES_GUARD:

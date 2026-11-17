@@ -51,7 +51,6 @@ class RichClickRichPanel(Panel):
         Create RichClickRichPanel instance.
 
         Args:
-        ----
             *args: Args that get passed to rich.panel.Panel.
             title_padding: Controls padding on panel title.
             **kwargs: Kwargs that get passed to rich.panel.Panel.
@@ -87,12 +86,10 @@ def _get_help_text(
     If the command is marked as depreciated, the depreciated string will be prepended.
 
     Args:
-    ----
         obj (click.Command or click.Group): Command or group to build help text for.
         formatter: formatter object.
 
     Yields:
-    ------
         Text or Markdown: Multiple styled objects (depreciated, usage)
 
     """
@@ -683,13 +680,11 @@ def get_help_parameter(
     Additional elements are appended to show the default and required status if applicable.
 
     Args:
-    ----
         param (click.Argument or click.Option): Parameter to build help text for.
         ctx (click.Context): Click Context object.
         formatter (RichHelpFormatter): formatter object.
 
     Returns:
-    -------
         Columns: A columns element with multiple styled objects (help, default, required)
 
     """
@@ -939,8 +934,7 @@ def _get_command_help(
     Rich Text object or as Markdown.
     Ignores single newlines as paragraph markers, looks for double only.
 
-    Returns
-    -------
+    Returns:
         Text or Markdown: Styled object
 
     """
@@ -1076,7 +1070,6 @@ def rich_format_error(
     Mimics original click.ClickException.echo() function but with rich formatting.
 
     Args:
-    ----
         self (click.ClickException): Click exception to format.
         formatter: formatter object.
         export_console_as: If set, outputs error message as HTML or SVG.

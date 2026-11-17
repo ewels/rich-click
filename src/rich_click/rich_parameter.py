@@ -17,12 +17,7 @@ if TYPE_CHECKING:
 
 
 class RichParameter(click.Parameter):
-    r"""
-    A parameter to a command comes in two versions: they are either
-    :class:`Option`\s or :class:`Argument`\s.  Other subclasses are currently
-    not supported by design as some of the internals for parsing are
-    intentionally not finalized.
-    """
+    """Base class of `RichOption` and `RichArgument`: a click Parameter that rich-click formats in help."""
 
     def __init__(
         self,
@@ -80,18 +75,11 @@ class RichParameter(click.Parameter):
 
 class RichArgument(RichParameter, click.Argument):
     """
-    Arguments are positional parameters to a command.  They generally
-    provide fewer features than options but can have infinite ``nargs``
-    and are required by default.
+    A positional argument of a command, formatted by rich-click. The `argument` decorator creates one.
 
-    All parameters are passed onwards to the constructor of :class:`Parameter`.
+    Arguments are required by default. With `nargs=-1`, an argument takes any number of values.
     """
 
 
 class RichOption(RichParameter, click.Option):
-    """
-    Options are usually optional values on the command line and
-    have some extra features that arguments don't have.
-
-    All other parameters are passed onwards to the parameter constructor.
-    """
+    """An option of a command, formatted by rich-click. The `option` decorator creates one."""

@@ -119,6 +119,7 @@ lint.per-file-ignores."tests/**/*.py" = [
 ]
 lint.isort.known-first-party = [ "rich_click" ]
 lint.isort.lines-after-imports = 2
+lint.pydocstyle.convention = "google"
 
 [tool.pyproject-fmt]
 indent = 4

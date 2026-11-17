@@ -1,4 +1,4 @@
-"""The command line interface."""
+"""Patch click, Typer or asyncclick so that their commands print help and errors with rich-click."""
 
 from __future__ import annotations
 
@@ -349,7 +349,6 @@ def patch(
     Patch Click internals to use rich-click types.
 
     Args:
-    ----
         rich_config: Rich help configuration to apply globally. Defaults to None.
         patch_rich_click: Also patch the ``rich_click`` namespace. Defaults to True.
         patch_typer: Also patch Typer. Defaults to False.
@@ -419,6 +418,16 @@ _TYPER_SUPPORT_DOCS_URL = "https://ewels.github.io/rich-click/latest/documentati
 
 
 def patch_typer(rich_config: RichHelpConfiguration | None = None) -> None:
+    """
+    Patch Typer so that its commands print help and errors with rich-click.
+
+    Args:
+        rich_config: Help configuration for every command.
+
+    Warning:
+        On Typer 0.26 and later, the patch can fail. The function then shows a warning and leaves Typer unpatched.
+        See [Typer support](https://ewels.github.io/rich-click/latest/documentation/typer_support/#typer-026-support).
+    """
     import typer.core
     import typer.main
 

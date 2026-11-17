@@ -48,7 +48,6 @@ def register_click_impl(module: Any) -> None:
     once with the same module is a no-op (idempotent).
 
     Args:
-    ----
         module: A module exposing ``Argument``, ``Command``, ``Group``,
             ``Option`` and ``Parameter`` (e.g. ``asyncclick``).
 
