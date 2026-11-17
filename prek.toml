@@ -51,6 +51,17 @@ hooks = [
 ]
 
 [[repos]]
+repo = "https://github.com/jsh9/pydoclint"
+rev = "23559aa13b43576987f1bcdf28c533f74fd30c56"  # frozen: 0.12.0
+hooks = [
+  {
+    id = "pydoclint",
+    name = "pydoclint - Docstrings match signatures",
+    files = "^src/"
+  }
+]
+
+[[repos]]
 repo = "local"
 hooks = [
   {

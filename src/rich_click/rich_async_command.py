@@ -1,18 +1,16 @@
 """
 Rich-formatted command classes for asyncclick.
 
-`asyncclick <https://github.com/python-trio/asyncclick>`_ is a fork of click whose
-command machinery (``main``/``invoke``/``make_context``/``parse_args``) is asynchronous.
-rich-click's formatting behavior lives in baseless mixins (:class:`RichCommandMixin`,
-:class:`RichGroupMixin`, :class:`RichContextMixin`), so it composes with asyncclick's
-async bases just as it does with click's synchronous ones.
+[asyncclick](https://github.com/python-trio/asyncclick) is a fork of click with async command
+methods (`main`, `invoke`, `make_context` and `parse_args`). The rich-click mixins
+(`RichCommandMixin`, `RichGroupMixin` and `RichContextMixin`) have no click base class, so these
+classes combine them with the asyncclick classes.
 
-This module is only importable when ``asyncclick`` is installed (``pip install
-rich-click[async]``). rich-click's core never imports it, so the dependency stays
-optional. Most users do not import these classes directly; instead they call
-:func:`rich_click.patch.patch` with ``module=asyncclick`` (see that function), which
-installs these classes into the asyncclick namespace so plain ``@asyncclick.command``
-CLIs render richly with no further changes.
+Most code does not import these classes. Call `rich_click.patch.patch(module=asyncclick)` instead.
+It puts these classes into the asyncclick namespace, so `@asyncclick.command` CLIs get rich-click help.
+
+Note:
+    This module needs asyncclick: install `rich-click[async]`. The rest of rich-click never imports it.
 """
 
 from __future__ import annotations
@@ -36,15 +34,15 @@ register_click_impl(asyncclick)
 
 
 class RichAsyncContext(RichContextMixin, asyncclick.Context):
-    """asyncclick Context endowed with rich-click's Rich help formatting."""
+    """An asyncclick Context that formats help and errors with Rich."""
 
 
 class RichAsyncCommand(RichCommandMixin, asyncclick.Command):
     """
     Richly formatted asyncclick Command.
 
-    Combines rich-click's :class:`RichCommandMixin` (help/error formatting) with
-    asyncclick's asynchronous :class:`asyncclick.Command` (async ``main``/``invoke``).
+    Combines the help and error formatting of `RichCommandMixin` with the
+    asynchronous `asyncclick.Command` (async `main` and `invoke`).
     """
 
     context_class: type[RichAsyncContext] = RichAsyncContext
@@ -125,7 +123,7 @@ class RichAsyncGroup(RichGroupMixin, RichAsyncCommand, asyncclick.Group):
     Richly formatted asyncclick Group.
 
     Subcommands and subgroups created from this group inherit the async rich classes
-    via ``command_class``/``group_class``, so the whole command tree renders richly.
+    via `command_class` and `group_class`, so the whole command tree renders richly.
     """
 
     context_class: type[RichAsyncContext] = RichAsyncContext

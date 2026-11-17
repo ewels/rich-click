@@ -56,16 +56,16 @@ def create_console(
     max_width: int | None = None,
 ) -> Console:
     """
-    Create a Rich Console configured from Rich Help Configuration.
+    Create a Rich console from a help configuration.
 
     Args:
-    ----
-        config: Rich Help Configuration instance
-        file: Optional IO stream to write Rich Console output
-            Defaults to None.
-        width: Width of the Console; overrides config.width if set.
-        max_width: Max width of the Console; overrides config.max_width if set.
+        config: Help configuration to take the console settings from.
+        file: Stream to write to. If not set, the console records its output to an in-memory buffer.
+        width: Width of the console. Overrides `config.width`.
+        max_width: Maximum width of the console. Overrides `config.max_width`.
 
+    Returns:
+        The new console.
     """
     from rich.console import Console
     from rich.theme import Theme
@@ -133,14 +133,12 @@ class RichHelpFormatter(click.HelpFormatter):
         Create Rich Help Formatter.
 
         Args:
-        ----
             indent_increment: Passed to click.HelpFormatter.
             width: Passed to click.HelpFormatter. Overrides config.width if not None.
             max_width: Passed to click.HelpFormatter. Overrides config.max_width if not None.
             *args: Args passed to click.HelpFormatter.
             console: Use an external console.
             config: RichHelpConfiguration. If None, then build config from globals.
-            file: Stream to output to in the Rich Console. If None, use stdout.
             export_console_as: How output is rendered by getvalue(). Default of None renders output normally.
             export_kwargs: Any kwargs passed to the export method of the Console in getvalue().
             **kwargs: Kwargs passed to click.HelpFormatter.
@@ -226,12 +224,10 @@ class RichHelpFormatter(click.HelpFormatter):
         rendering works.
 
         Args:
-        ----
-            text (str): Text to style.
-            style (StyleType): Rich style to apply.
+            text: Text to style.
+            style: Rich style to apply.
 
         Returns:
-        -------
             Text, Markdown, or RichClickRST: Styled text object
 
         """

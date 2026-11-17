@@ -155,7 +155,7 @@ class RichPanel(Generic[CT, ColT]):
 
 
 class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
-    """Panel for parameters."""
+    """Panel of options and arguments in the help output."""
 
     _highlight: ClassVar[bool] = True
     _object_attr: ClassVar[str] = "options"
@@ -291,7 +291,7 @@ class RichOptionPanel(RichPanel[Parameter, OptionColumnType]):
 
 
 class RichCommandPanel(RichPanel[Command, CommandColumnType]):
-    """Panel for parameters."""
+    """Panel of subcommands in the help output."""
 
     _object_attr: ClassVar[str] = "commands"
 

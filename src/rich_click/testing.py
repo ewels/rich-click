@@ -32,17 +32,17 @@ _RICH_ENV: dict[str, str | None] = {
 
 class CliRunner(click.testing.CliRunner):
     """
-    A drop-in replacement for :class:`click.testing.CliRunner` that also isolates Rich.
+    A drop-in replacement for `click.testing.CliRunner` that also isolates Rich.
 
     While a command runs:
 
-    - Rich prompts (:class:`rich.prompt.Prompt`, :class:`rich.prompt.Confirm`, and ``Console.input()``)
-      read from the runner's ``input``, including password prompts, which would otherwise call
-      :func:`getpass.getpass` and read from the terminal.
-    - Rich's global console (used by ``rich.print()`` and prompts without an explicit console) is
-      reset in place to follow the runner's ``color`` setting, and is not interactive.
-    - Environment variables that change Rich output (``FORCE_COLOR``, ``NO_COLOR``, ``COLUMNS``, ...)
-      are unset or pinned, unless given in ``env``.
+    - Rich prompts (`rich.prompt.Prompt`, `rich.prompt.Confirm`, and `Console.input()`)
+      read from the runner's `input`, including password prompts, which would otherwise call
+      `getpass.getpass` and read from the terminal.
+    - Rich's global console (used by `rich.print()` and prompts without an explicit console) is
+      reset in place to follow the runner's `color` setting, and is not interactive.
+    - Environment variables that change Rich output (`FORCE_COLOR`, `NO_COLOR`, `COLUMNS`, ...)
+      are unset or pinned, unless given in `env`.
     """
 
     @contextmanager

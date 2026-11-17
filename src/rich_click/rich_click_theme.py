@@ -15,7 +15,7 @@ ThemeType = Literal["color", "format", "combined"]
 
 
 class RichClickTheme:
-    """Rich theme. This sets defaults styling for the CLI."""
+    """A named set of styles for the help output. Select one with `--theme` or the `theme` setting."""
 
     def __init__(
         self,
@@ -31,7 +31,6 @@ class RichClickTheme:
         Create RichTheme instance.
 
         Args:
-        ----
             name: Name of the theme.
             description: Description for the theme.
             hidden: If true, hide from rich-click --themes.
