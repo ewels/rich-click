@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
+import sys
 from collections.abc import Iterator, Mapping
 from contextlib import contextmanager
 from typing import IO, Any, TextIO
 
 import click.testing
 import rich
-from click import termui
 from rich.console import Console
 from rich.text import TextType
 
@@ -34,6 +34,7 @@ class CliRunner(click.testing.CliRunner):
         color: bool = False,
     ) -> Iterator[Any]:
         original_input = Console.input
+        echo_stdin = self.echo_stdin
 
         def runner_input(
             console: Console,
@@ -43,23 +44,35 @@ class CliRunner(click.testing.CliRunner):
             emoji: bool = True,
             password: bool = False,
             stream: TextIO | None = None,
+            **kwargs: Any,
         ) -> str:
-            if stream is not None:
-                return original_input(console, prompt, markup=markup, emoji=emoji, password=password, stream=stream)
+            # getpass ignores `stream` for reading, so passwords always come from the runner.
+            if stream is not None and not password:
+                return original_input(console, prompt, markup=markup, emoji=emoji, stream=stream, **kwargs)
             if prompt:
                 console.print(prompt, markup=markup, emoji=emoji, end="")
-            # Inside isolation these are Click's stand-ins that read the runner's input.
-            read = termui.hidden_prompt_func if password else termui.visible_prompt_func
-            return read("")
+            # Read stdin directly: Click < 8.2's prompt stand-ins return "" at EOF, so Rich prompts would loop forever.
+            line = sys.stdin.readline()
+            if not line:
+                raise EOFError
+            value = line.rstrip("\r\n")
+            if not echo_stdin:
+                console.out("" if password else value, highlight=False)
+            return value
 
         with super().isolation(input=input, env=env, color=color) as streams:
-            # reconfigure() swaps the global console's __dict__, so apps holding a reference to it see the change.
+            had_console = rich._console is not None
             global_console = rich.get_console()
-            original_state = global_console.__dict__
-            rich.reconfigure(force_terminal=color)
+            original_state = global_console.__dict__.copy()
+            # A fresh Console applies Rich's own FORCE_COLOR / TTY checks against the isolated env and streams.
+            probe = Console(force_terminal=True if color else None)
+            global_console._force_terminal = probe._force_terminal
+            global_console._color_system = probe._color_system
             Console.input = runner_input  # type: ignore[method-assign,assignment]
             try:
                 yield streams
             finally:
                 Console.input = original_input  # type: ignore[method-assign]
                 global_console.__dict__ = original_state
+                if not had_console:
+                    rich._console = None
