@@ -1,7 +1,7 @@
 ---
 project: "rich-click"
 title: "rich_click.patch"
-description: "The command line interface."
+description: "Patch click, Typer or asyncclick so that their commands print help and errors with rich-click."
 url: "https://ewels.github.io/rich-click/latest/api/rich_click/patch/"
 ---
 
@@ -9,9 +9,9 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/patch/"
 
 *module* · *Added in 1.8.0*
 
-The command line interface.
+Patch click, Typer or asyncclick so that their commands print help and errors with rich-click.
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/patch.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/patch.py#L1-L1)
 
 ## rich_click.patch.patch
 
@@ -23,15 +23,18 @@ def patch(rich_config: RichHelpConfiguration | None = None, *, patch_rich_click:
 
 Patch Click internals to use rich-click types.
 
-----
-    rich_config: Rich help configuration to apply globally. Defaults to None.
-    patch_rich_click: Also patch the ``rich_click`` namespace. Defaults to True.
-    patch_typer: Also patch Typer. Defaults to False.
-    module: An async click fork (e.g. ``asyncclick``) to patch instead of ``click``.
-        When provided, rich-click's async command classes are installed into that
-        module's namespace. Requires ``rich-click[async]``. Defaults to None (click).
+**Parameters**
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/patch.py#L341-L415)
+- `rich_config` (`RichHelpConfiguration | None`) (default: `None`) — Help configuration to apply globally.
+- `patch_rich_click` (`bool`) (default: `True`) — Also patch the `rich_click` namespace. Ignored when `module` is set.
+- `patch_typer` (`bool`) (default: `False`) — Also patch Typer. Ignored when `module` is set.
+- `module` (`Any | None`) (default: `None`) — An asynchronous click fork, such as `asyncclick`, to patch instead of click. rich-click then installs its async command classes into the namespace of that module. Requires `rich-click[async]`.
+
+**Raises**
+
+- `TypeError` — `module` is not an asynchronous click fork, such as asyncclick.
+
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/patch.py#L340-L415)
 
 ## rich_click.patch.patch_typer
 
@@ -41,4 +44,16 @@ Patch Click internals to use rich-click types.
 def patch_typer(rich_config: RichHelpConfiguration | None = None) -> None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/patch.py#L421-L491)
+Patch Typer so that its commands print help and errors with rich-click.
+
+**Parameters**
+
+- `rich_config` (`RichHelpConfiguration | None`) (default: `None`) — Help configuration for every command.
+
+> **Warning**
+>
+> Typer 0.26 and later may not support the patch, so the function always shows a warning on those versions.
+> If a Typer class cannot be patched, it shows a second warning and leaves Typer unpatched.
+> See [Typer support](https://ewels.github.io/rich-click/latest/documentation/typer_support/#typer-026-support).
+
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/patch.py#L421-L502)

@@ -9,7 +9,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/rich_help_configu
 
 *module* · *Added in 1.7.0*
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L1-L1)
 
 ## rich_click.rich_help_configuration.ColumnType
 
@@ -19,7 +19,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/rich_help_configu
 ColumnType = OptionColumnType | CommandColumnType | str
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L47-L47)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L47-L47)
 
 ## rich_click.rich_help_configuration.CommandColumnType
 
@@ -29,7 +29,7 @@ ColumnType = OptionColumnType | CommandColumnType | str
 CommandColumnType = Literal['name', 'aliases', 'name_with_aliases', 'help']
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L39-L39)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L39-L39)
 
 ## rich_click.rich_help_configuration.CommandHelpSectionType
 
@@ -39,7 +39,7 @@ CommandColumnType = Literal['name', 'aliases', 'name_with_aliases', 'help']
 CommandHelpSectionType = Literal['aliases', 'help', 'deprecated']
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L45-L45)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L45-L45)
 
 ## rich_click.rich_help_configuration.FROM_THEME
 
@@ -49,7 +49,7 @@ CommandHelpSectionType = Literal['aliases', 'help', 'deprecated']
 FROM_THEME: Any = FromTheme(default='default-box')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L68-L68)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L68-L68)
 
 ## rich_click.rich_help_configuration.OptionColumnType
 
@@ -59,7 +59,7 @@ FROM_THEME: Any = FromTheme(default='default-box')
 OptionColumnType = Literal['required', 'opt_primary', 'opt_secondary', 'opt_long', 'opt_short', 'opt_all', 'opt_all_metavar', 'opt_long_metavar', 'metavar', 'metavar_short', 'help']
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L23-L37)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L23-L37)
 
 ## rich_click.rich_help_configuration.OptionHelpSectionType
 
@@ -69,7 +69,7 @@ OptionColumnType = Literal['required', 'opt_primary', 'opt_secondary', 'opt_long
 OptionHelpSectionType = Literal['help', 'required', 'envvar', 'default', 'range', 'metavar', 'metavar_short', 'deprecated']
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L41-L43)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L41-L43)
 
 ## rich_click.rich_help_configuration.T
 
@@ -79,7 +79,7 @@ OptionHelpSectionType = Literal['help', 'required', 'envvar', 'default', 'range'
 T = TypeVar('T', bound='RichHelpConfiguration')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L21-L21)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L21-L21)
 
 ## rich_click.rich_help_configuration.FromTheme
 
@@ -91,7 +91,7 @@ class FromTheme
 
 Sentinel value for unset config options.
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L50-L65)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L50-L65)
 
 ### rich_click.rich_help_configuration.FromTheme.default
 
@@ -101,7 +101,7 @@ Sentinel value for unset config options.
 default = default
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L55-L55)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L55-L55)
 
 ### rich_click.rich_help_configuration.FromTheme.get_default
 
@@ -113,7 +113,7 @@ def get_default(key: str) -> Any
 
 Get the default value from the default theme.
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L60-L65)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L60-L65)
 
 ## rich_click.rich_help_configuration.RichHelpConfiguration
 
@@ -129,7 +129,7 @@ When merging multiple RichHelpConfigurations together, user-defined values alway
 take precedence over the class's defaults. When there are multiple user-defined values
 for a given field, the right-most field is used.
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L97-L516)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L97-L516)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.aborted_text
 
@@ -139,7 +139,7 @@ for a given field, the right-most field is used.
 aborted_text: str = field(default='Aborted.')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L218-L218)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L218-L218)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.align_commands_panel
 
@@ -149,7 +149,7 @@ aborted_text: str = field(default='Aborted.')
 align_commands_panel: AlignMethod = field(default='left')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L161-L161)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L161-L161)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.align_errors_panel
 
@@ -159,7 +159,7 @@ align_commands_panel: AlignMethod = field(default='left')
 align_errors_panel: AlignMethod = field(default='left')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L175-L175)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L175-L175)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.align_options_panel
 
@@ -169,7 +169,7 @@ align_errors_panel: AlignMethod = field(default='left')
 align_options_panel: AlignMethod = field(default='left')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L144-L144)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L144-L144)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.append_metavars_help
 
@@ -181,7 +181,7 @@ append_metavars_help: bool | None = field(default=None)
 
 Append metavar (eg. [TEXT]) after the help text
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L240-L240)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L240-L240)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.append_metavars_help_string
 
@@ -191,7 +191,7 @@ Append metavar (eg. [TEXT]) after the help text
 append_metavars_help_string: str = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L206-L206)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L206-L206)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.append_range_help_string
 
@@ -201,7 +201,7 @@ append_metavars_help_string: str = field(default=FROM_THEME)
 append_range_help_string: str = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L207-L207)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L207-L207)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.arguments_panel_title
 
@@ -211,7 +211,7 @@ append_range_help_string: str = field(default=FROM_THEME)
 arguments_panel_title: str = field(default='Arguments')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L209-L209)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L209-L209)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.color_system
 
@@ -221,7 +221,7 @@ arguments_panel_title: str = field(default='Arguments')
 color_system: Literal['auto', 'standard', '256', 'truecolor', 'windows'] | None = field(default='auto')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L187-L187)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L187-L187)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.command_groups
 
@@ -233,7 +233,7 @@ command_groups: dict[str, list[CommandGroupDict]] = field(default_factory=lambda
 
 Define sorted groups of panels to display subcommands
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L259-L259)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L259-L259)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.commands_before_options
 
@@ -245,7 +245,7 @@ commands_before_options: bool = field(default=False)
 
 If set, the commands panel show above the options panel.
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L236-L236)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L236-L236)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.commands_panel_title
 
@@ -255,7 +255,7 @@ If set, the commands panel show above the options panel.
 commands_panel_title: str = field(default='Commands')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L211-L211)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L211-L211)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.commands_table_column_types
 
@@ -265,7 +265,7 @@ commands_panel_title: str = field(default='Commands')
 commands_table_column_types: list[CommandColumnType] = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L191-L191)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L191-L191)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.commands_table_help_sections
 
@@ -275,7 +275,7 @@ commands_table_column_types: list[CommandColumnType] = field(default=FROM_THEME)
 commands_table_help_sections: list[CommandHelpSectionType] = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L193-L193)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L193-L193)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.default_panels_first
 
@@ -287,7 +287,7 @@ default_panels_first: bool = field(default=False)
 
 If set, default panels appear before custom panels of the same type.
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L238-L238)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L238-L238)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.default_string
 
@@ -297,7 +297,7 @@ If set, default panels appear before custom panels of the same type.
 default_string: str = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L201-L201)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L201-L201)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.delimiter_comma
 
@@ -307,7 +307,7 @@ default_string: str = field(default=FROM_THEME)
 delimiter_comma: str = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L213-L213)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L213-L213)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.delimiter_slash
 
@@ -317,7 +317,7 @@ delimiter_comma: str = field(default=FROM_THEME)
 delimiter_slash: str = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L214-L214)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L214-L214)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.deprecated_string
 
@@ -327,7 +327,7 @@ delimiter_slash: str = field(default=FROM_THEME)
 deprecated_string: str = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L199-L199)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L199-L199)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.deprecated_with_reason_string
 
@@ -337,7 +337,7 @@ deprecated_string: str = field(default=FROM_THEME)
 deprecated_with_reason_string: str = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L200-L200)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L200-L200)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.enable_theme_env_var
 
@@ -347,7 +347,7 @@ deprecated_with_reason_string: str = field(default=FROM_THEME)
 enable_theme_env_var: bool = field(default=True)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L108-L108)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L108-L108)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.envvar_string
 
@@ -357,7 +357,7 @@ enable_theme_env_var: bool = field(default=True)
 envvar_string: str = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L202-L202)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L202-L202)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.errors_epilogue
 
@@ -367,7 +367,7 @@ envvar_string: str = field(default=FROM_THEME)
 errors_epilogue: str | Text | None = field(default=None)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L217-L217)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L217-L217)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.errors_panel_title
 
@@ -377,7 +377,7 @@ errors_epilogue: str | Text | None = field(default=None)
 errors_panel_title: str = field(default='Error')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L212-L212)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L212-L212)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.errors_suggestion
 
@@ -389,7 +389,7 @@ errors_suggestion: str | Text | None = field(default=None)
 
 Defaults to Try 'cmd -h' for help. Set to False to disable.
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L215-L215)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L215-L215)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.footer_text
 
@@ -399,7 +399,7 @@ Defaults to Try 'cmd -h' for help. Set to False to disable.
 footer_text: str | Text | None = field(default=None)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L197-L197)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L197-L197)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.force_terminal
 
@@ -409,7 +409,7 @@ footer_text: str | Text | None = field(default=None)
 force_terminal: bool | None = field(default_factory=force_terminal_default)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L188-L188)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L188-L188)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.group_arguments_options
 
@@ -421,7 +421,7 @@ group_arguments_options: bool = field(default=False)
 
 Show arguments with options instead of in own panel
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L242-L242)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L242-L242)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.header_text
 
@@ -431,7 +431,7 @@ Show arguments with options instead of in own panel
 header_text: str | Text | None = field(default=None)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L196-L196)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L196-L196)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.helptext_aliases_string
 
@@ -441,7 +441,7 @@ header_text: str | Text | None = field(default=None)
 helptext_aliases_string: str = field(default='Aliases: {}')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L208-L208)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L208-L208)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.helptext_show_aliases
 
@@ -451,7 +451,7 @@ helptext_aliases_string: str = field(default='Aliases: {}')
 helptext_show_aliases: bool = field(default=True)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L265-L265)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L265-L265)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.highlighter
 
@@ -463,7 +463,7 @@ highlighter: Highlighter | None = field(default=None, repr=False, compare=False)
 
 (Deprecated) Rich regex highlighter for help highlighting
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L266-L266)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L266-L266)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.highlighter_patterns
 
@@ -475,7 +475,7 @@ highlighter_patterns: list[str] = field(default_factory=lambda : ['(^|[^\\w\\-])
 
 Patterns to use with the option highlighter.
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L269-L276)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L269-L276)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.legacy_windows
 
@@ -485,7 +485,7 @@ Patterns to use with the option highlighter.
 legacy_windows: bool | None = field(default=None)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L279-L279)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L279-L279)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.max_width
 
@@ -495,7 +495,7 @@ legacy_windows: bool | None = field(default=None)
 max_width: int | None = field(default_factory=terminal_width_default)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L186-L186)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L186-L186)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.option_envvar_first
 
@@ -507,7 +507,7 @@ option_envvar_first: bool | None = field(default=None)
 
 Show env vars before option help text instead of after
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L244-L244)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L244-L244)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.option_groups
 
@@ -519,7 +519,7 @@ option_groups: dict[str, list[OptionGroupDict]] = field(default_factory=lambda :
 
 Define sorted groups of panels to display options and arguments
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L261-L261)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L261-L261)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.options_panel_title
 
@@ -529,7 +529,7 @@ Define sorted groups of panels to display options and arguments
 options_panel_title: str = field(default='Options')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L210-L210)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L210-L210)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.options_table_column_types
 
@@ -539,7 +539,7 @@ options_panel_title: str = field(default='Options')
 options_table_column_types: list[OptionColumnType] = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L190-L190)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L190-L190)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.options_table_help_sections
 
@@ -549,7 +549,7 @@ options_table_column_types: list[OptionColumnType] = field(default=FROM_THEME)
 options_table_help_sections: list[OptionHelpSectionType] = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L192-L192)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L192-L192)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.padding_epilog
 
@@ -559,7 +559,7 @@ options_table_help_sections: list[OptionHelpSectionType] = field(default=FROM_TH
 padding_epilog: PaddingDimensions = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L225-L225)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L225-L225)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.padding_errors_epilogue
 
@@ -569,7 +569,7 @@ padding_epilog: PaddingDimensions = field(default=FROM_THEME)
 padding_errors_epilogue: PaddingDimensions = field(default=(0, 1, 1, 1))
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L229-L229)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L229-L229)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.padding_errors_panel
 
@@ -579,7 +579,7 @@ padding_errors_epilogue: PaddingDimensions = field(default=(0, 1, 1, 1))
 padding_errors_panel: PaddingDimensions = field(default=(0, 0, 1, 0))
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L227-L227)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L227-L227)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.padding_errors_suggestion
 
@@ -589,7 +589,7 @@ padding_errors_panel: PaddingDimensions = field(default=(0, 0, 1, 0))
 padding_errors_suggestion: PaddingDimensions = field(default=(0, 1, 0, 1))
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L228-L228)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L228-L228)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.padding_footer_text
 
@@ -599,7 +599,7 @@ padding_errors_suggestion: PaddingDimensions = field(default=(0, 1, 0, 1))
 padding_footer_text: PaddingDimensions = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L226-L226)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L226-L226)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.padding_header_text
 
@@ -609,7 +609,7 @@ padding_footer_text: PaddingDimensions = field(default=FROM_THEME)
 padding_header_text: PaddingDimensions = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L220-L220)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L220-L220)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.padding_helptext
 
@@ -619,7 +619,7 @@ padding_header_text: PaddingDimensions = field(default=FROM_THEME)
 padding_helptext: PaddingDimensions = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L222-L222)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L222-L222)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.padding_helptext_deprecated
 
@@ -629,7 +629,7 @@ padding_helptext: PaddingDimensions = field(default=FROM_THEME)
 padding_helptext_deprecated: PaddingDimensions = field(default=0)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L223-L223)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L223-L223)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.padding_helptext_first_line
 
@@ -639,7 +639,7 @@ padding_helptext_deprecated: PaddingDimensions = field(default=0)
 padding_helptext_first_line: PaddingDimensions = field(default=0)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L224-L224)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L224-L224)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.padding_usage
 
@@ -649,7 +649,7 @@ padding_helptext_first_line: PaddingDimensions = field(default=0)
 padding_usage: PaddingDimensions = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L221-L221)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L221-L221)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.panel_inline_help_delimiter
 
@@ -659,7 +659,7 @@ padding_usage: PaddingDimensions = field(default=FROM_THEME)
 panel_inline_help_delimiter: str = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L155-L155)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L155-L155)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.panel_inline_help_in_title
 
@@ -669,7 +669,7 @@ panel_inline_help_delimiter: str = field(default=FROM_THEME)
 panel_inline_help_in_title: bool = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L154-L154)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L154-L154)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.panel_title_padding
 
@@ -679,7 +679,7 @@ panel_inline_help_in_title: bool = field(default=FROM_THEME)
 panel_title_padding: int = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L184-L184)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L184-L184)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.panel_title_string
 
@@ -689,7 +689,7 @@ panel_title_padding: int = field(default=FROM_THEME)
 panel_title_string: str = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L198-L198)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L198-L198)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.range_string
 
@@ -699,7 +699,7 @@ panel_title_string: str = field(default=FROM_THEME)
 range_string: str = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L205-L205)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L205-L205)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.required_long_string
 
@@ -709,7 +709,7 @@ range_string: str = field(default=FROM_THEME)
 required_long_string: str = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L204-L204)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L204-L204)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.required_short_string
 
@@ -719,7 +719,7 @@ required_long_string: str = field(default=FROM_THEME)
 required_short_string: str = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L203-L203)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L203-L203)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.show_arguments
 
@@ -731,7 +731,7 @@ show_arguments: bool | None = field(default=None)
 
 Show positional arguments
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L232-L232)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L232-L232)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.show_metavars_column
 
@@ -743,7 +743,7 @@ show_metavars_column: bool | None = field(default=None)
 
 Show a column with the option metavar (eg. INTEGER)
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L234-L234)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L234-L234)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_aborted
 
@@ -753,7 +753,7 @@ Show a column with the option metavar (eg. INTEGER)
 style_aborted: StyleType = field(default='red')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L179-L179)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L179-L179)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_argument
 
@@ -763,7 +763,7 @@ style_aborted: StyleType = field(default='red')
 style_argument: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L113-L113)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L113-L113)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_command
 
@@ -773,7 +773,7 @@ style_argument: StyleType = field(default=FROM_THEME)
 style_command: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L114-L114)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L114-L114)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_command_aliases
 
@@ -783,7 +783,7 @@ style_command: StyleType = field(default=FROM_THEME)
 style_command_aliases: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L115-L115)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L115-L115)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_command_help
 
@@ -793,7 +793,7 @@ style_command_aliases: StyleType = field(default=FROM_THEME)
 style_command_help: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L133-L133)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L133-L133)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_commands_panel_border
 
@@ -803,7 +803,7 @@ style_command_help: StyleType = field(default=FROM_THEME)
 style_commands_panel_border: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L153-L153)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L153-L153)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_commands_panel_box
 
@@ -813,7 +813,7 @@ style_commands_panel_border: StyleType = field(default=FROM_THEME)
 style_commands_panel_box: str | Box | None = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L156-L156)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L156-L156)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_commands_panel_help_style
 
@@ -823,7 +823,7 @@ style_commands_panel_box: str | Box | None = field(default=FROM_THEME)
 style_commands_panel_help_style: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L157-L157)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L157-L157)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_commands_panel_padding
 
@@ -833,7 +833,7 @@ style_commands_panel_help_style: StyleType = field(default=FROM_THEME)
 style_commands_panel_padding: PaddingDimensions = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L159-L159)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L159-L159)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_commands_panel_style
 
@@ -843,7 +843,7 @@ style_commands_panel_padding: PaddingDimensions = field(default=FROM_THEME)
 style_commands_panel_style: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L160-L160)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L160-L160)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_commands_panel_title_style
 
@@ -853,7 +853,7 @@ style_commands_panel_style: StyleType = field(default=FROM_THEME)
 style_commands_panel_title_style: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L158-L158)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L158-L158)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_commands_table_border_style
 
@@ -863,7 +863,7 @@ style_commands_panel_title_style: StyleType = field(default=FROM_THEME)
 style_commands_table_border_style: StyleType | None = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L169-L169)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L169-L169)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_commands_table_box
 
@@ -873,7 +873,7 @@ style_commands_table_border_style: StyleType | None = field(default=FROM_THEME)
 style_commands_table_box: str | Box | None = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L167-L167)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L167-L167)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_commands_table_column_width_ratio
 
@@ -883,7 +883,7 @@ style_commands_table_box: str | Box | None = field(default=FROM_THEME)
 style_commands_table_column_width_ratio: tuple[None, None] | tuple[int, int] | None = field(default_factory=lambda : (None, None))
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L170-L172)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L170-L172)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_commands_table_expand
 
@@ -893,7 +893,7 @@ style_commands_table_column_width_ratio: tuple[None, None] | tuple[int, int] | N
 style_commands_table_expand: bool = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L166-L166)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L166-L166)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_commands_table_leading
 
@@ -903,7 +903,7 @@ style_commands_table_expand: bool = field(default=FROM_THEME)
 style_commands_table_leading: int = field(default=0)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L163-L163)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L163-L163)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_commands_table_pad_edge
 
@@ -913,7 +913,7 @@ style_commands_table_leading: int = field(default=0)
 style_commands_table_pad_edge: bool = field(default=False)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L164-L164)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L164-L164)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_commands_table_padding
 
@@ -923,7 +923,7 @@ style_commands_table_pad_edge: bool = field(default=False)
 style_commands_table_padding: PaddingDimensions = field(default_factory=lambda : (0, 1))
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L165-L165)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L165-L165)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_commands_table_row_styles
 
@@ -933,7 +933,7 @@ style_commands_table_padding: PaddingDimensions = field(default_factory=lambda :
 style_commands_table_row_styles: list[StyleType] | None = field(default=None)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L168-L168)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L168-L168)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_commands_table_show_lines
 
@@ -943,7 +943,7 @@ style_commands_table_row_styles: list[StyleType] | None = field(default=None)
 style_commands_table_show_lines: bool = field(default=False)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L162-L162)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L162-L162)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_deprecated
 
@@ -953,7 +953,7 @@ style_commands_table_show_lines: bool = field(default=False)
 style_deprecated: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L128-L128)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L128-L128)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_epilog_text
 
@@ -963,7 +963,7 @@ style_deprecated: StyleType = field(default=FROM_THEME)
 style_epilog_text: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L123-L123)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L123-L123)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_errors_panel_border
 
@@ -973,7 +973,7 @@ style_epilog_text: StyleType = field(default=FROM_THEME)
 style_errors_panel_border: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L173-L173)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L173-L173)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_errors_panel_box
 
@@ -983,7 +983,7 @@ style_errors_panel_border: StyleType = field(default=FROM_THEME)
 style_errors_panel_box: str | Box | None = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L174-L174)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L174-L174)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_errors_suggestion
 
@@ -993,7 +993,7 @@ style_errors_panel_box: str | Box | None = field(default=FROM_THEME)
 style_errors_suggestion: StyleType | None = field(default=None)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L176-L176)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L176-L176)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_errors_suggestion_command
 
@@ -1003,7 +1003,7 @@ style_errors_suggestion: StyleType | None = field(default=None)
 style_errors_suggestion_command: StyleType | None = field(default=None)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L177-L177)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L177-L177)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_footer_text
 
@@ -1013,7 +1013,7 @@ style_errors_suggestion_command: StyleType | None = field(default=None)
 style_footer_text: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L124-L124)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L124-L124)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_header_text
 
@@ -1023,7 +1023,7 @@ style_footer_text: StyleType = field(default=FROM_THEME)
 style_header_text: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L122-L122)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L122-L122)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_helptext
 
@@ -1033,7 +1033,7 @@ style_header_text: StyleType = field(default=FROM_THEME)
 style_helptext: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L130-L130)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L130-L130)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_helptext_aliases
 
@@ -1043,7 +1043,7 @@ style_helptext: StyleType = field(default=FROM_THEME)
 style_helptext_aliases: StyleType | None = field(default=None)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L131-L131)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L131-L131)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_helptext_first_line
 
@@ -1053,7 +1053,7 @@ style_helptext_aliases: StyleType | None = field(default=None)
 style_helptext_first_line: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L129-L129)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L129-L129)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_metavar
 
@@ -1063,7 +1063,7 @@ style_helptext_first_line: StyleType = field(default=FROM_THEME)
 style_metavar: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L118-L118)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L118-L118)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_metavar_append
 
@@ -1073,7 +1073,7 @@ style_metavar: StyleType = field(default=FROM_THEME)
 style_metavar_append: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L119-L119)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L119-L119)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_metavar_separator
 
@@ -1083,7 +1083,7 @@ style_metavar_append: StyleType = field(default=FROM_THEME)
 style_metavar_separator: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L120-L120)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L120-L120)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_option
 
@@ -1093,7 +1093,7 @@ style_metavar_separator: StyleType = field(default=FROM_THEME)
 style_option: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L111-L111)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L111-L111)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_option_default
 
@@ -1103,7 +1103,7 @@ style_option: StyleType = field(default=FROM_THEME)
 style_option_default: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L134-L134)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L134-L134)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_option_envvar
 
@@ -1113,7 +1113,7 @@ style_option_default: StyleType = field(default=FROM_THEME)
 style_option_envvar: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L135-L135)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L135-L135)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_option_help
 
@@ -1123,7 +1123,7 @@ style_option_envvar: StyleType = field(default=FROM_THEME)
 style_option_help: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L132-L132)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L132-L132)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_option_negative
 
@@ -1133,7 +1133,7 @@ style_option_help: StyleType = field(default=FROM_THEME)
 style_option_negative: StyleType | None = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L112-L112)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L112-L112)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_options_panel_border
 
@@ -1143,7 +1143,7 @@ style_option_negative: StyleType | None = field(default=FROM_THEME)
 style_options_panel_border: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L138-L138)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L138-L138)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_options_panel_box
 
@@ -1153,7 +1153,7 @@ style_options_panel_border: StyleType = field(default=FROM_THEME)
 style_options_panel_box: str | Box | None = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L139-L139)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L139-L139)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_options_panel_help_style
 
@@ -1163,7 +1163,7 @@ style_options_panel_box: str | Box | None = field(default=FROM_THEME)
 style_options_panel_help_style: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L140-L140)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L140-L140)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_options_panel_padding
 
@@ -1173,7 +1173,7 @@ style_options_panel_help_style: StyleType = field(default=FROM_THEME)
 style_options_panel_padding: PaddingDimensions = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L142-L142)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L142-L142)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_options_panel_style
 
@@ -1183,7 +1183,7 @@ style_options_panel_padding: PaddingDimensions = field(default=FROM_THEME)
 style_options_panel_style: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L143-L143)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L143-L143)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_options_panel_title_style
 
@@ -1193,7 +1193,7 @@ style_options_panel_style: StyleType = field(default=FROM_THEME)
 style_options_panel_title_style: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L141-L141)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L141-L141)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_options_table_border_style
 
@@ -1203,7 +1203,7 @@ style_options_panel_title_style: StyleType = field(default=FROM_THEME)
 style_options_table_border_style: StyleType | None = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L152-L152)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L152-L152)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_options_table_box
 
@@ -1213,7 +1213,7 @@ style_options_table_border_style: StyleType | None = field(default=FROM_THEME)
 style_options_table_box: str | Box | None = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L150-L150)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L150-L150)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_options_table_expand
 
@@ -1223,7 +1223,7 @@ style_options_table_box: str | Box | None = field(default=FROM_THEME)
 style_options_table_expand: bool = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L149-L149)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L149-L149)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_options_table_leading
 
@@ -1233,7 +1233,7 @@ style_options_table_expand: bool = field(default=FROM_THEME)
 style_options_table_leading: int = field(default=0)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L146-L146)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L146-L146)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_options_table_pad_edge
 
@@ -1243,7 +1243,7 @@ style_options_table_leading: int = field(default=0)
 style_options_table_pad_edge: bool = field(default=False)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L147-L147)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L147-L147)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_options_table_padding
 
@@ -1253,7 +1253,7 @@ style_options_table_pad_edge: bool = field(default=False)
 style_options_table_padding: PaddingDimensions = field(default_factory=lambda : (0, 1))
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L148-L148)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L148-L148)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_options_table_row_styles
 
@@ -1263,7 +1263,7 @@ style_options_table_padding: PaddingDimensions = field(default_factory=lambda : 
 style_options_table_row_styles: list[StyleType] | None = field(default=None)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L151-L151)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L151-L151)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_options_table_show_lines
 
@@ -1273,7 +1273,7 @@ style_options_table_row_styles: list[StyleType] | None = field(default=None)
 style_options_table_show_lines: bool = field(default=False)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L145-L145)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L145-L145)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_padding_epilog
 
@@ -1283,7 +1283,7 @@ style_options_table_show_lines: bool = field(default=False)
 style_padding_epilog: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L182-L182)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L182-L182)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_padding_errors
 
@@ -1293,7 +1293,7 @@ style_padding_epilog: StyleType = field(default=FROM_THEME)
 style_padding_errors: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L178-L178)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L178-L178)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_padding_helptext
 
@@ -1303,7 +1303,7 @@ style_padding_errors: StyleType = field(default=FROM_THEME)
 style_padding_helptext: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L181-L181)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L181-L181)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_padding_usage
 
@@ -1313,7 +1313,7 @@ style_padding_helptext: StyleType = field(default=FROM_THEME)
 style_padding_usage: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L180-L180)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L180-L180)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_range_append
 
@@ -1323,7 +1323,7 @@ style_padding_usage: StyleType = field(default=FROM_THEME)
 style_range_append: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L121-L121)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L121-L121)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_required_long
 
@@ -1333,7 +1333,7 @@ style_range_append: StyleType = field(default=FROM_THEME)
 style_required_long: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L137-L137)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L137-L137)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_required_short
 
@@ -1343,7 +1343,7 @@ style_required_long: StyleType = field(default=FROM_THEME)
 style_required_short: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L136-L136)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L136-L136)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_switch
 
@@ -1353,7 +1353,7 @@ style_required_short: StyleType = field(default=FROM_THEME)
 style_switch: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L116-L116)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L116-L116)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_switch_negative
 
@@ -1363,7 +1363,7 @@ style_switch: StyleType = field(default=FROM_THEME)
 style_switch_negative: StyleType | None = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L117-L117)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L117-L117)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_usage
 
@@ -1373,7 +1373,7 @@ style_switch_negative: StyleType | None = field(default=FROM_THEME)
 style_usage: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L125-L125)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L125-L125)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_usage_command
 
@@ -1383,7 +1383,7 @@ style_usage: StyleType = field(default=FROM_THEME)
 style_usage_command: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L126-L126)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L126-L126)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.style_usage_separator
 
@@ -1393,7 +1393,7 @@ style_usage_command: StyleType = field(default=FROM_THEME)
 style_usage_separator: StyleType = field(default=FROM_THEME)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L127-L127)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L127-L127)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.text_emojis
 
@@ -1405,7 +1405,7 @@ text_emojis: bool = field(default=notset)
 
 If set, parse emoji codes and replace with actual emojis, e.g. :smiley_cat: -> 😺
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L251-L251)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L251-L251)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.text_kwargs
 
@@ -1417,7 +1417,7 @@ text_kwargs: dict[str, Any] | None = field(default=None)
 
 Additional kwargs to pass to Rich text rendering. Kwargs differ by text_markup chosen.
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L248-L248)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L248-L248)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.text_markup
 
@@ -1429,7 +1429,7 @@ text_markup: Literal['ansi', 'rich', 'markdown', 'rst', None] = field(default=no
 
 What engine to use to render the text. Default is 'ansi'.
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L246-L246)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L246-L246)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.text_paragraph_linebreaks
 
@@ -1439,7 +1439,7 @@ What engine to use to render the text. Default is 'ansi'.
 text_paragraph_linebreaks: Literal['\n', '\n\n'] | None = field(default=None)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L250-L250)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L250-L250)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.theme
 
@@ -1449,7 +1449,7 @@ text_paragraph_linebreaks: Literal['\n', '\n\n'] | None = field(default=None)
 theme: str | RichClickTheme | None = field(default=None)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L107-L107)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L107-L107)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.use_click_short_help
 
@@ -1461,7 +1461,7 @@ use_click_short_help: bool = field(default=False)
 
 Use click's default function to truncate help text
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L263-L263)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L263-L263)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.use_markdown
 
@@ -1473,7 +1473,7 @@ use_markdown: bool | None = field(default=None)
 
 Silently deprecated; use `text_markup` field instead.
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L253-L253)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L253-L253)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.use_markdown_emoji
 
@@ -1485,7 +1485,7 @@ use_markdown_emoji: bool | None = field(default=None)
 
 Silently deprecated; use `text_emojis` instead.
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L255-L255)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L255-L255)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.use_rich_markup
 
@@ -1497,7 +1497,7 @@ use_rich_markup: bool | None = field(default=None)
 
 Silently deprecated; use `text_markup` field instead.
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L257-L257)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L257-L257)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.width
 
@@ -1507,7 +1507,7 @@ Silently deprecated; use `text_markup` field instead.
 width: int | None = field(default_factory=terminal_width_default)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L185-L185)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L185-L185)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.apply_theme
 
@@ -1517,7 +1517,7 @@ width: int | None = field(default_factory=terminal_width_default)
 def apply_theme(force_default: bool = False) -> None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L411-L496)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L411-L496)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.dump_to_globals
 
@@ -1527,7 +1527,7 @@ def apply_theme(force_default: bool = False) -> None
 def dump_to_globals(module: ModuleType | None = None) -> None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L508-L516)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L508-L516)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.load_from_globals
 
@@ -1542,7 +1542,7 @@ Build a RichHelpConfiguration from globals in rich_click.rich_click.
 When building from globals, all fields are treated as having been set by the user,
 meaning they will overwrite other fields when "merged".
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L389-L409)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L389-L409)
 
 ### rich_click.rich_help_configuration.RichHelpConfiguration.to_theme
 
@@ -1552,7 +1552,7 @@ meaning they will overwrite other fields when "merged".
 def to_theme(**kwargs: Any) -> RichClickTheme
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L498-L506)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L498-L506)
 
 ## rich_click.rich_help_configuration.force_terminal_default
 
@@ -1564,7 +1564,7 @@ def force_terminal_default() -> bool | None
 
 Use as the default factory for `force_terminal`.
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L71-L78)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L71-L78)
 
 ## rich_click.rich_help_configuration.terminal_width_default
 
@@ -1576,4 +1576,4 @@ def terminal_width_default() -> int | None
 
 Use as the default factory for `width` and `max_width`.
 
-[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_help_configuration.py#L81-L94)
+[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_configuration.py#L81-L94)
