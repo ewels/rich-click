@@ -142,9 +142,9 @@ def get_current_context(silent: bool = False) -> RichContext | None:
     Use it in helper functions that need the context but do not get it from the `pass_context` decorator.
 
     Args:
-        silent: Return `None` when no command runs, not raise an error.
+        silent: If true, return `None` when no command runs. If false, raise a `RuntimeError`.
 
-    Raises:
-        RuntimeError: No command runs and `silent` is false.
+    Returns:
+        The context, or `None` if no command runs and `silent` is true.
     """
     return click_get_current_context(silent=silent)  # type: ignore[return-value]

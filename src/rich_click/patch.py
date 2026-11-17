@@ -356,6 +356,9 @@ def patch(
             When provided, rich-click's async command classes are installed into that
             module's namespace. Requires ``rich-click[async]``. Defaults to None (click).
 
+    Raises:
+        TypeError: `module` is not an asynchronous click fork, such as asyncclick.
+
     """
     import warnings
 

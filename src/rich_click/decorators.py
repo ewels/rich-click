@@ -206,6 +206,9 @@ def rich_config(
     Args:
         help_config: How to format help and errors, as a `RichHelpConfiguration` or a dict of its fields.
         console: Rich console to print help and errors with. The context makes it available as `ctx.console`.
+
+    Returns:
+        A decorator that applies the settings to a command or group.
     """
     # Avoid importing rich eagerly: a Console instance can only exist if rich.console is already imported.
     rich_console_module = sys.modules.get("rich.console")
@@ -261,6 +264,9 @@ def option_panel(
         name: Title of the panel.
         cls: Panel class. Defaults to `RichOptionPanel`.
         **attrs: Other arguments for the panel class, such as `options` and `help`.
+
+    Returns:
+        A decorator that adds the panel to a command or group.
     """
     return _panel(name, cls, **attrs)
 
@@ -277,6 +283,9 @@ def command_panel(
         name: Title of the panel.
         cls: Panel class. Defaults to `RichCommandPanel`.
         **attrs: Other arguments for the panel class, such as `commands` and `help`.
+
+    Returns:
+        A decorator that adds the panel to a group.
     """
     return _panel(name, cls, **attrs)
 
@@ -307,6 +316,9 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     Args:
         *param_decls: Option names. Defaults to `--help`.
         **kwargs: Other arguments for `option`.
+
+    Returns:
+        A decorator that adds the option to a command.
     """
 
     def show_help(ctx: Context, param: Parameter, value: bool) -> None:
@@ -343,6 +355,9 @@ def argument(*param_decls: str, cls: type[Argument] | None = None, **attrs: Any)
         *param_decls: Name of the argument.
         cls: Argument class. Defaults to `RichArgument`.
         **attrs: Other arguments for the `cls` constructor, such as `nargs` and `type`. See `click.Argument`.
+
+    Returns:
+        A decorator that adds the argument to a command.
     """
     if cls is None:
         cls = RichArgument
@@ -360,6 +375,9 @@ def option(*param_decls: str, cls: type[Option] | None = None, **attrs: Any) -> 
         *param_decls: Names of the option, such as `"--count"` and `"-c"`.
         cls: Option class. Defaults to `RichOption`.
         **attrs: Other arguments for the `cls` constructor, such as `default` and `help`. See `click.Option`.
+
+    Returns:
+        A decorator that adds the option to a command.
     """
     if cls is None:
         cls = RichOption
@@ -374,6 +392,9 @@ def confirmation_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     Args:
         *param_decls: Option names. Defaults to `--yes`.
         **kwargs: Other arguments for `option`.
+
+    Returns:
+        A decorator that adds the option to a command.
     """
     kwargs.setdefault("cls", RichOption)
     return click_confirmation_option(*param_decls, **kwargs)
@@ -386,6 +407,9 @@ def password_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     Args:
         *param_decls: Option names. Defaults to `--password`.
         **kwargs: Other arguments for `option`.
+
+    Returns:
+        A decorator that adds the option to a command.
     """
     if not param_decls:
         param_decls = ("--password",)
@@ -410,6 +434,7 @@ def version_option(
 
     Args:
         version: Version to print. If not set, Click reads it from the metadata of the installed `package_name`.
+            If Click cannot find the version, `--version` raises a `RuntimeError`.
         *param_decls: Option names. Defaults to `--version`.
         package_name: Installed package to read the version from. If not set, Click finds it from the
             stack frames, so the module name must match the name of the installed package.
@@ -418,8 +443,8 @@ def version_option(
             Defaults to `"%(prog)s, version %(version)s"`.
         **kwargs: Other arguments for `option`.
 
-    Raises:
-        RuntimeError: Click cannot find the version.
+    Returns:
+        A decorator that adds the option to a command.
     """
     kwargs.setdefault("cls", RichOption)
     return click_version_option(

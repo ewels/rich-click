@@ -56,15 +56,16 @@ def create_console(
     max_width: int | None = None,
 ) -> Console:
     """
-    Create a Rich Console configured from Rich Help Configuration.
+    Create a Rich console from a help configuration.
 
     Args:
-        config: Rich Help Configuration instance
-        file: Optional IO stream to write Rich Console output
-            Defaults to None.
-        width: Width of the Console; overrides config.width if set.
-        max_width: Max width of the Console; overrides config.max_width if set.
+        config: Help configuration to take the console settings from.
+        file: Stream to write to. Defaults to stdout.
+        width: Width of the console. Overrides `config.width`.
+        max_width: Maximum width of the console. Overrides `config.max_width`.
 
+    Returns:
+        The new console.
     """
     from rich.console import Console
     from rich.theme import Theme
@@ -223,8 +224,8 @@ class RichHelpFormatter(click.HelpFormatter):
         rendering works.
 
         Args:
-            text (str): Text to style.
-            style (StyleType): Rich style to apply.
+            text: Text to style.
+            style: Rich style to apply.
 
         Returns:
             Text, Markdown, or RichClickRST: Styled text object
