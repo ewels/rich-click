@@ -8,19 +8,19 @@
 [2m│[0m [1;36m--help   [0m  [1;32m-h[0m  Show this message and exit.                                   [2m│[0m
 [2m╰──────────────────────────────────────────────────────────────────────────────╯[0m
 [2m╭─[0m[2m Commands [0m[2m──────────────────────────────────────────────────────────────────[0m[2m─╮[0m
-[2m│[0m [1;36masset      [0m[1;36m [0m Commands for working with Dagster assets.                       [2m│[0m
-[2m│[0m [1;36mcode-server[0m[1;36m [0m Commands for working with Dagster code servers.                 [2m│[0m
-[2m│[0m [1;36mdebug      [0m[1;36m [0m Commands for helping debug Dagster issues by dumping or loading [2m│[0m
-[2m│[0m [1;36m            [0m artifacts from specific runs.                                   [2m│[0m
-[2m│[0m [1;36mdefinitions[0m[1;36m [0m Commands for working with Dagster definitions.                  [2m│[0m
-[2m│[0m [1;36mdev        [0m[1;36m [0m Start a local deployment of Dagster, including                  [2m│[0m
-[2m│[0m [1;36m            [0m dagster-webserver running on localhost and the dagster-daemon   [2m│[0m
-[2m│[0m [1;36m            [0m running in the background                                       [2m│[0m
-[2m│[0m [1;36minstance   [0m[1;36m [0m Commands for working with the current Dagster instance.         [2m│[0m
-[2m│[0m [1;36mjob        [0m[1;36m [0m Commands for working with Dagster jobs.                         [2m│[0m
-[2m│[0m [1;36mproject    [0m[1;36m [0m Commands for bootstrapping new Dagster projects and code        [2m│[0m
-[2m│[0m [1;36m            [0m locations.                                                      [2m│[0m
-[2m│[0m [1;36mrun        [0m[1;36m [0m Commands for working with Dagster job runs.                     [2m│[0m
-[2m│[0m [1;36mschedule   [0m[1;36m [0m Commands for working with Dagster schedules.                    [2m│[0m
-[2m│[0m [1;36msensor     [0m[1;36m [0m Commands for working with Dagster sensors.                      [2m│[0m
+[2m│[0m [1;36masset        [0m[1;36m  [0mCommands for working with Dagster assets.                     [2m│[0m
+[2m│[0m [1;36mcode-server  [0m[1;36m  [0mCommands for working with Dagster code servers.               [2m│[0m
+[2m│[0m [1;36mdebug        [0m[1;36m  [0mCommands for helping debug Dagster issues by dumping or       [2m│[0m
+[2m│[0m [1;36m               [0mloading artifacts from specific runs.                         [2m│[0m
+[2m│[0m [1;36mdefinitions  [0m[1;36m  [0mCommands for working with Dagster definitions.                [2m│[0m
+[2m│[0m [1;36mdev          [0m[1;36m  [0mStart a local deployment of Dagster, including                [2m│[0m
+[2m│[0m [1;36m               [0mdagster-webserver running on localhost and the dagster-daemon [2m│[0m
+[2m│[0m [1;36m               [0mrunning in the background                                     [2m│[0m
+[2m│[0m [1;36minstance     [0m[1;36m  [0mCommands for working with the current Dagster instance.       [2m│[0m
+[2m│[0m [1;36mjob          [0m[1;36m  [0mCommands for working with Dagster jobs.                       [2m│[0m
+[2m│[0m [1;36mproject      [0m[1;36m  [0mCommands for bootstrapping new Dagster projects and code      [2m│[0m
+[2m│[0m [1;36m               [0mlocations.                                                    [2m│[0m
+[2m│[0m [1;36mrun          [0m[1;36m  [0mCommands for working with Dagster job runs.                   [2m│[0m
+[2m│[0m [1;36mschedule     [0m[1;36m  [0mCommands for working with Dagster schedules.                  [2m│[0m
+[2m│[0m [1;36msensor       [0m[1;36m  [0mCommands for working with Dagster sensors.                    [2m│[0m
 [2m╰──────────────────────────────────────────────────────────────────────────────╯[0m

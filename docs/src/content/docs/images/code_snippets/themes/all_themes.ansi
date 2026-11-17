@@ -26,9 +26,9 @@
   │ [2m ────────────────────────────────────────────────────────────────────────────────────────────── [0m │
   │ [2m [0m *  [2m [0m[1m [0m[1mdefault    [0m[1m [0m[2m [0m [36m▓▓[0m [33m▓▓[0m [32m▓▓[0m   [2m [0m [1m(Default)[0m Original rich-click colors                         [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1msolarized  [0m[1m [0m[2m [0m [36m▓▓[0m [36m▓▓[0m [91m▓▓[0m   [2m [0m Bright, colorful, vibrant accents                            [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1msolarized  [0m[1m [0m[2m [0m [38;2;42;161;152m▓▓[0m [38;2;38;139;210m▓▓[0m [38;2;211;54;130m▓▓[0m   [2m [0m Bright, colorful, vibrant accents                            [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mnord       [0m[1m [0m[2m [0m [37m▓▓[0m [37m▓▓[0m [37m▓▓[0m   [2m [0m Many shades of cool colors                                   [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mnord       [0m[1m [0m[2m [0m [38;2;94;129;172m▓▓[0m [38;2;129;161;193m▓▓[0m [38;2;180;142;173m▓▓[0m   [2m [0m Many shades of cool colors                                   [2m [0m │
   │ [2m                                                                                                [0m │
   │ [2m [0m    [2m [0m[1m [0m[1mdracula    [0m[1m [0m[2m [0m [35m▓▓[0m [31m▓▓[0m [33m▓▓[0m   [2m [0m Vibrant high-contract dark theme                             [2m [0m │
   │ [2m                                                                                                [0m │

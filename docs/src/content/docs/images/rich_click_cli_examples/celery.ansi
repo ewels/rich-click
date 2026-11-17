@@ -19,22 +19,25 @@
 [2m│[0m [1;36m--help          [0m            Show this message and exit.                      [2m│[0m
 [2m╰──────────────────────────────────────────────────────────────────────────────╯[0m
 [2m╭─[0m[2m Commands [0m[2m──────────────────────────────────────────────────────────────────[0m[2m─╮[0m
-[2m│[0m [1;36mamqp    [0m[1;36m [0m AMQP Administration Shell.                                         [2m│[0m
-[2m│[0m [1;36mbeat    [0m[1;36m [0m Start the beat periodic task scheduler.                            [2m│[0m
-[2m│[0m [1;36mcall    [0m[1;36m [0m Call a task by name.                                               [2m│[0m
-[2m│[0m [1;36mcontrol [0m[1;36m [0m Send the COMMAND control command to the workers.                   [2m│[0m
-[2m│[0m [1;36mevents  [0m[1;36m [0m Event-stream utilities.                                            [2m│[0m
-[2m│[0m [1;36mgraph   [0m[1;36m [0m The ``celery graph`` command.                                      [2m│[0m
-[2m│[0m [1;36minspect [0m[1;36m [0m Inspect the workers by sending them the COMMAND inspect command.   [2m│[0m
-[2m│[0m [1;36mlist    [0m[1;36m [0m Get info from broker.                                              [2m│[0m
-[2m│[0m [1;36mlogtool [0m[1;36m [0m The ``celery logtool`` command.                                    [2m│[0m
-[2m│[0m [1;36mmigrate [0m[1;36m [0m Migrate tasks from one broker to another.                          [2m│[0m
-[2m│[0m [1;36mmulti   [0m[1;36m [0m Start multiple worker instances.                                   [2m│[0m
-[2m│[0m [1;36mpurge   [0m[1;36m [0m Erase all messages from all known task queues.                     [2m│[0m
-[2m│[0m [1;36mreport  [0m[1;36m [0m Shows information useful to include in bug-reports.                [2m│[0m
-[2m│[0m [1;36mresult  [0m[1;36m [0m Print the return value for a given task id.                        [2m│[0m
-[2m│[0m [1;36mshell   [0m[1;36m [0m Start shell session with convenient access to celery symbols.      [2m│[0m
-[2m│[0m [1;36mstatus  [0m[1;36m [0m Show list of workers that are online.                              [2m│[0m
-[2m│[0m [1;36mupgrade [0m[1;36m [0m Perform upgrade between versions.                                  [2m│[0m
-[2m│[0m [1;36mworker  [0m[1;36m [0m Start worker instance.                                             [2m│[0m
+[2m│[0m [1;36mamqp                      [0m[1;36m  [0mAMQP Administration Shell.                       [2m│[0m
+[2m│[0m [1;36mbeat                      [0m[1;36m  [0mStart the beat periodic task scheduler.          [2m│[0m
+[2m│[0m [1;36mcall                      [0m[1;36m  [0mCall a task by name.                             [2m│[0m
+[2m│[0m [1;36mcontrol                   [0m[1;36m  [0mSend the COMMAND control command to the workers. [2m│[0m
+[2m│[0m [1;36mevents                    [0m[1;36m  [0mEvent-stream utilities.                          [2m│[0m
+[2m│[0m [1;36mgraph                     [0m[1;36m  [0mThe ``celery graph`` command.                    [2m│[0m
+[2m│[0m [1;36minspect                   [0m[1;36m  [0mInspect the workers by sending them the COMMAND  [2m│[0m
+[2m│[0m [1;36m                            [0minspect command.                                 [2m│[0m
+[2m│[0m [1;36mlist                      [0m[1;36m  [0mGet info from broker.                            [2m│[0m
+[2m│[0m [1;36mlogtool                   [0m[1;36m  [0mThe ``celery logtool`` command.                  [2m│[0m
+[2m│[0m [1;36mmigrate                   [0m[1;36m  [0mMigrate tasks from one broker to another.        [2m│[0m
+[2m│[0m [1;36mmulti                     [0m[1;36m  [0mStart multiple worker instances.                 [2m│[0m
+[2m│[0m [1;36mpurge                     [0m[1;36m  [0mErase all messages from all known task queues.   [2m│[0m
+[2m│[0m [1;36mreport                    [0m[1;36m  [0mShows information useful to include in           [2m│[0m
+[2m│[0m [1;36m                            [0mbug-reports.                                     [2m│[0m
+[2m│[0m [1;36mresult                    [0m[1;36m  [0mPrint the return value for a given task id.      [2m│[0m
+[2m│[0m [1;36mshell                     [0m[1;36m  [0mStart shell session with convenient access to    [2m│[0m
+[2m│[0m [1;36m                            [0mcelery symbols.                                  [2m│[0m
+[2m│[0m [1;36mstatus                    [0m[1;36m  [0mShow list of workers that are online.            [2m│[0m
+[2m│[0m [1;36mupgrade                   [0m[1;36m  [0mPerform upgrade between versions.                [2m│[0m
+[2m│[0m [1;36mworker                    [0m[1;36m  [0mStart worker instance.                           [2m│[0m
 [2m╰──────────────────────────────────────────────────────────────────────────────╯[0m

@@ -28,7 +28,7 @@ def test_header_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> None
 │ --help              Show this message and exit.                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ subcommand                        Subcommand help text                                           │
+│ subcommand          Subcommand help text                                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -70,7 +70,7 @@ def test_header_help_turn_off_rich_markup(cli_runner: CliRunner, cli: rich_click
 │ --help              Show this message and exit.                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ subcommand                        Subcommand help text                                           │
+│ subcommand          Subcommand help text                                                         │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

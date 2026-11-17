@@ -6,7 +6,7 @@
  [2mEmojis can be set independently of markup. ☝ 🤓[0m
 
 [2m╭─[0m[2m Options [0m[2m───────────────────────────────────────────────────────────────────[0m[2m─╮[0m
-[2m│[0m [1;36m--foo [0m  [1;32m-f[0m  [1;33mTEXT[0m  Boo! 👻 Oops, I mean... foo! 😅                            [2m│[0m
-[2m│[0m [1;36m--bar [0m  [1;32m-b[0m  [1;33mTEXT[0m  Bar - 📊                                                   [2m│[0m
-[2m│[0m [1;36m--help[0m            Show this message and exit.                                [2m│[0m
+[2m│[0m [1;36m--foo[0m  [1;32m-f[0m  [1;33mTEXT[0m  Boo! 👻 Oops, I mean... foo! 😅                             [2m│[0m
+[2m│[0m [1;36m--bar[0m  [1;32m-b[0m  [1;33mTEXT[0m  Bar - 📊                                                    [2m│[0m
+[2m│[0m [1;36m--help         [0m  Show this message and exit.                                 [2m│[0m
 [2m╰──────────────────────────────────────────────────────────────────────────────╯[0m

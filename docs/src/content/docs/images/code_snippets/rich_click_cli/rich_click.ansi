@@ -1,7 +1,7 @@
 
  [33mUsage:[0m [1mrich-click[0m [[1;36mOPTIONS[0m] [1;36mSCRIPT[0m | [1;36mMODULE[0m[:[1;36mCLICK_COMMAND[0m] ...
 
- The rich-click CLI provides [1;91mr[0m[1;91mi[0m[1;93mc[0m[1;96mh[0m[1;36ml[0m[1;96my[0m formatted help output from any tool using
+ The rich-click CLI provides [1;38;2;255;107;107mr[0m[1;38;2;255;142;83mi[0m[1;38;2;255;179;71mc[0m[1;38;2;78;205;196mh[0m[1;38;2;69;183;209ml[0m[1;38;2;116;185;255my[0m formatted help output from any tool using
  click, formatted with rich.
  [2mFull docs here: [0m
  [2mhttps://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[0m

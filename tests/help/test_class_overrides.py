@@ -25,7 +25,7 @@ def test_class_overrides_command_panel(cli_runner: CliRunner, cli: rich_click.Ri
  (Also test that callback name identifies a command, not just the name of the command.)             \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Rich Click Panel ───────────────────────────────────────────────────────────────────────────────╮
 │ click-command  Test that RichParameters can be used with base click Commands.                    │
@@ -33,8 +33,8 @@ def test_class_overrides_command_panel(cli_runner: CliRunner, cli: rich_click.Ri
 │                RichParameters.                                                                   │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Rich Click Panel 2 ─────────────────────────────────────────────────────────────────────────────╮
-│ cmd1   Test that command is assigned to Rich Click Panel 2 via the decorator argument.           │
-│ grp1   Test that group is assigned to Rich Click Panel 2 via the decorator argument.             │
+│ cmd1           Test that command is assigned to Rich Click Panel 2 via the decorator argument.   │
+│ grp1           Test that group is assigned to Rich Click Panel 2 via the decorator argument.     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -99,7 +99,7 @@ def test_class_overrides_click_parameters(cli_runner: CliRunner, cli: rich_click
 │                          [default: foo] [required]                                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│    --help                Show this message and exit.                                             │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

@@ -61,41 +61,51 @@ def test_table_styles_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -
 │                                                                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ ╔══════════╦═══════════════════════════════════════════════════════════════════════════════════╗ │
-│ ║ auth     ║ Authenticate the app. Duis lacus nibh, feugiat a nibh a, commodo dictum libero.   ║ │
-│ ║          ║ Ut ac nulla tincidunt, bibendum nisi vitae, sodales ex. Vestibulum efficitur,     ║ │
-│ ║          ║ lectus quis venenatis porta, dolor elit varius mauris, consequat interdum lectus  ║ │
-│ ║          ║ est quis mi. Vestibulum imperdiet sed dolor eget semper. Cras ut mauris ac libero ║ │
-│ ║          ║ hendrerit congue. Vivamus pretium nunc turpis, eget imperdiet sapien tempor       ║ │
-│ ║          ║ auctor. Phasellus risus nisi, laoreet in posuere sit amet, sodales non diam.      ║ │
-│ ║          ║ Aliquam non malesuada urna, a faucibus risus.                                     ║ │
-│ ╠══════════╬═══════════════════════════════════════════════════════════════════════════════════╣ │
-│ ║ config   ║ Set up the configuration. Sed accumsan ornare odio dictum aliquam. Pellentesque   ║ │
-│ ║          ║ habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.  ║ │
-│ ║          ║ Curabitur in pellentesque mauris. Nulla mollis dui finibus, dictum neque id,      ║ │
-│ ║          ║ suscipit nisl. Nunc mauris ex, laoreet nec tincidunt ut, pellentesque ut tortor.  ║ │
-│ ║          ║ Mauris fermentum diam at porttitor tempor. Aliquam euismod nisi massa, nec        ║ │
-│ ║          ║ placerat ante euismod quis.                                                       ║ │
-│ ╠══════════╬═══════════════════════════════════════════════════════════════════════════════════╣ │
-│ ║ download ║ Pretend to download some files from somewhere. Integer bibendum libero nunc, sed  ║ │
-│ ║          ║ aliquet ex tincidunt vel. Duis vitae sem vel odio luctus suscipit nec vitae enim. ║ │
-│ ║          ║ Curabitur vel lectus nec quam maximus dapibus. Phasellus eros velit, maximus non  ║ │
-│ ║          ║ hendrerit nec, tempor fringilla urna. Vivamus vel nibh quis sapien consectetur    ║ │
-│ ║          ║ fermentum. Curabitur at ultrices quam, vel molestie justo. Nunc lobortis orci vel ║ │
-│ ║          ║ nibh sagittis pretium. Morbi rhoncus sapien luctus, ultrices urna vel, convallis  ║ │
-│ ║          ║ tortor.                                                                           ║ │
-│ ╠══════════╬═══════════════════════════════════════════════════════════════════════════════════╣ │
-│ ║ sync     ║ Synchronise all your files between two places. Curabitur congue eget lorem in     ║ │
-│ ║          ║ lacinia. Praesent tempus nunc nec nulla dignissim, et lacinia ipsum accumsan.     ║ │
-│ ║          ║ Duis sodales, sapien at fermentum condimentum, diam metus porttitor lacus, nec    ║ │
-│ ║          ║ gravida mi diam eget ligula. Pellentesque elementum at justo a luctus. Mauris a   ║ │
-│ ║          ║ interdum odio. Maecenas in consectetur velit. Ut tristique congue felis at        ║ │
-│ ║          ║ tempus. Donec pulvinar tortor ut odio posuere imperdiet. Fusce lacinia iaculis    ║ │
-│ ║          ║ diam in scelerisque. Pellentesque in lorem est. Nulla efficitur luctus lacus,     ║ │
-│ ║          ║ auctor auctor dui hendrerit a. Ut nec iaculis dolor. Morbi metus lectus, aliquet  ║ │
-│ ║          ║ et sapien nec, congue euismod lorem. Pellentesque tristique tempus augue at       ║ │
-│ ║          ║ convallis.                                                                        ║ │
-│ ╚══════════╩═══════════════════════════════════════════════════════════════════════════════════╝ │
+│ ╔═════════════════════════════════╦════════════════════════════════════════════════════════════╗ │
+│ ║ auth                            ║ Authenticate the app. Duis lacus nibh, feugiat a nibh a,   ║ │
+│ ║                                 ║ commodo dictum libero. Ut ac nulla tincidunt, bibendum     ║ │
+│ ║                                 ║ nisi vitae, sodales ex. Vestibulum efficitur, lectus quis  ║ │
+│ ║                                 ║ venenatis porta, dolor elit varius mauris, consequat       ║ │
+│ ║                                 ║ interdum lectus est quis mi. Vestibulum imperdiet sed      ║ │
+│ ║                                 ║ dolor eget semper. Cras ut mauris ac libero hendrerit      ║ │
+│ ║                                 ║ congue. Vivamus pretium nunc turpis, eget imperdiet sapien ║ │
+│ ║                                 ║ tempor auctor. Phasellus risus nisi, laoreet in posuere    ║ │
+│ ║                                 ║ sit amet, sodales non diam. Aliquam non malesuada urna, a  ║ │
+│ ║                                 ║ faucibus risus.                                            ║ │
+│ ╠═════════════════════════════════╬════════════════════════════════════════════════════════════╣ │
+│ ║ config                          ║ Set up the configuration. Sed accumsan ornare odio dictum  ║ │
+│ ║                                 ║ aliquam. Pellentesque habitant morbi tristique senectus et ║ │
+│ ║                                 ║ netus et malesuada fames ac turpis egestas. Curabitur in   ║ │
+│ ║                                 ║ pellentesque mauris. Nulla mollis dui finibus, dictum      ║ │
+│ ║                                 ║ neque id, suscipit nisl. Nunc mauris ex, laoreet nec       ║ │
+│ ║                                 ║ tincidunt ut, pellentesque ut tortor. Mauris fermentum     ║ │
+│ ║                                 ║ diam at porttitor tempor. Aliquam euismod nisi massa, nec  ║ │
+│ ║                                 ║ placerat ante euismod quis.                                ║ │
+│ ╠═════════════════════════════════╬════════════════════════════════════════════════════════════╣ │
+│ ║ download                        ║ Pretend to download some files from somewhere. Integer     ║ │
+│ ║                                 ║ bibendum libero nunc, sed aliquet ex tincidunt vel. Duis   ║ │
+│ ║                                 ║ vitae sem vel odio luctus suscipit nec vitae enim.         ║ │
+│ ║                                 ║ Curabitur vel lectus nec quam maximus dapibus. Phasellus   ║ │
+│ ║                                 ║ eros velit, maximus non hendrerit nec, tempor fringilla    ║ │
+│ ║                                 ║ urna. Vivamus vel nibh quis sapien consectetur fermentum.  ║ │
+│ ║                                 ║ Curabitur at ultrices quam, vel molestie justo. Nunc       ║ │
+│ ║                                 ║ lobortis orci vel nibh sagittis pretium. Morbi rhoncus     ║ │
+│ ║                                 ║ sapien luctus, ultrices urna vel, convallis tortor.        ║ │
+│ ╠═════════════════════════════════╬════════════════════════════════════════════════════════════╣ │
+│ ║ sync                            ║ Synchronise all your files between two places. Curabitur   ║ │
+│ ║                                 ║ congue eget lorem in lacinia. Praesent tempus nunc nec     ║ │
+│ ║                                 ║ nulla dignissim, et lacinia ipsum accumsan. Duis sodales,  ║ │
+│ ║                                 ║ sapien at fermentum condimentum, diam metus porttitor      ║ │
+│ ║                                 ║ lacus, nec gravida mi diam eget ligula. Pellentesque       ║ │
+│ ║                                 ║ elementum at justo a luctus. Mauris a interdum odio.       ║ │
+│ ║                                 ║ Maecenas in consectetur velit. Ut tristique congue felis   ║ │
+│ ║                                 ║ at tempus. Donec pulvinar tortor ut odio posuere           ║ │
+│ ║                                 ║ imperdiet. Fusce lacinia iaculis diam in scelerisque.      ║ │
+│ ║                                 ║ Pellentesque in lorem est. Nulla efficitur luctus lacus,   ║ │
+│ ║                                 ║ auctor auctor dui hendrerit a. Ut nec iaculis dolor. Morbi ║ │
+│ ║                                 ║ metus lectus, aliquet et sapien nec, congue euismod lorem. ║ │
+│ ║                                 ║ Pellentesque tristique tempus augue at convallis.          ║ │
+│ ╚═════════════════════════════════╩════════════════════════════════════════════════════════════╝ │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
