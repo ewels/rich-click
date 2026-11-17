@@ -36,6 +36,17 @@ def test_login() -> None:
 ```
 
 Prompts on every Rich `Console` read from `input`, and typed text is echoed as with `click.prompt()`, except for
-passwords. Use `invoke(..., color=True)` to keep colour codes from Rich's global console. A separate `Console()`
-that your app creates keeps the colour setting it detected when it was created. Everything is put back after each
-invocation.
+passwords. If your tests already patch `Console.input`, the runner keeps your patch.
+
+Rich output does not depend on the terminal that runs the tests:
+
+- Rich's global console follows the runner's `color` setting, even if your app set a colour system on it. Use
+  `invoke(..., color=True)` to keep colour codes. A separate `Console()` that your app creates keeps the colour
+  setting it detected when it was created.
+- The global console is not interactive, so progress bars and `Live` displays print only their final state.
+- The runner unsets `FORCE_COLOR`, `NO_COLOR`, `TTY_COMPATIBLE`, `TTY_INTERACTIVE`, `TERM` and `COLORTERM`. It
+  sets `COLUMNS=80` and `LINES=25`, the width that Click uses. With `color=True`, Rich uses its 16 standard colours.
+  Pass any of these variables in `env` to test with them.
+- A width that your app sets on the global console is kept.
+
+Changes that a command makes to the global console, such as `push_theme()`, are undone after each invocation.
