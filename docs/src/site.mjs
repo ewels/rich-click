@@ -75,6 +75,7 @@ export const sidebar = [
       { label: 'Asyncclick Support', slug: 'documentation/asyncclick_support' },
       { label: 'Typer Support', slug: 'documentation/typer_support' },
       { label: 'Accessibility', slug: 'documentation/accessibility' },
+      { label: 'Testing', slug: 'documentation/testing' },
     ],
   },
   // A link here so the header tab has somewhere to point; astro.config.mjs
