@@ -1,0 +1,149 @@
+---
+// Starlight's header, plus a row of tabs linking the top-level site sections.
+import Default from '@astrojs/starlight/components/Header.astro';
+import { base, sitePath } from '../base';
+import { entryPath, sidebar } from '../site.mjs';
+
+// One tab per top-level sidebar entry, active for any URL under its section.
+const tabs = sidebar.map((entry) => {
+  const rootPath = entryPath(entry);
+  const section = rootPath.split('/').filter(Boolean)[0];
+  return {
+    label: entry.label,
+    href: `${base}${rootPath}`,
+    match: section === undefined ? /^\/$/ : new RegExp(`^/${section}/`),
+  };
+});
+
+const currentPath = sitePath(Astro.url);
+---
+
+<div class="rc-header-main"><Default><slot /></Default></div>
+<nav class="rc-header-tabs sl-hidden lg:sl-flex" aria-label="Site sections">
+  <ul>
+    {
+      tabs.map((tab) => (
+        <li>
+          <a
+            href={tab.href}
+            data-label={tab.label}
+            aria-current={tab.match.test(currentPath) ? 'true' : undefined}
+          >
+            {tab.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .rc-header-main {
+    height: 100%;
+  }
+
+  /* On large screens the header grows (see custom.css) to fit the tabs row. */
+  @media (min-width: 72rem) {
+    .rc-header-main {
+      height: calc(100% - var(--rc-tabs-height));
+    }
+  }
+
+  .rc-header-tabs {
+    height: var(--rc-tabs-height);
+    align-items: center;
+  }
+
+  .rc-header-tabs ul {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+  }
+
+  .rc-header-tabs a {
+    color: var(--sl-color-header-text, var(--sl-color-white));
+    opacity: 0.7;
+    text-decoration: none;
+    font-size: var(--sl-text-sm);
+    padding: 0.35rem 0;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Invisible bold copy of the label, so every tab is as wide as its active
+     (bold) state and the row doesn't shift when the active tab changes. */
+  .rc-header-tabs a::after {
+    content: attr(data-label);
+    content: attr(data-label) / '';
+    font-weight: 600;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .rc-header-tabs a:hover {
+    opacity: 1;
+  }
+
+  .rc-header-tabs a[aria-current='true'] {
+    opacity: 1;
+    border-bottom-color: currentColor;
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  // Click-to-zoom for content images; linked images keep their link.
+  // starlight-image-zoom needs rehype, which the Sätteri Markdown processor
+  // doesn't run (https://github.com/HiDeoo/starlight-image-zoom/issues/63).
+  const images = document.querySelectorAll<HTMLImageElement>('.sl-markdown-content img:not(a img, .not-content img)');
+  if (images.length > 0) {
+    import('medium-zoom').then(({ default: mediumZoom }) =>
+      mediumZoom(images, {
+        margin: 32,
+        background: getComputedStyle(document.documentElement).getPropertyValue('--rc-zoom-backdrop'),
+      })
+    );
+  }
+</script>
+
+<script>
+  // Client-side mermaid rendering for `<pre class="mermaid">` diagrams
+  // (produced by plugins/satteri-mermaid.mjs), re-rendered on theme change.
+  const diagrams = document.querySelectorAll<HTMLPreElement>('pre.mermaid');
+  if (diagrams.length > 0) {
+    for (const diagram of diagrams) {
+      diagram.dataset.source = diagram.textContent ?? '';
+    }
+
+    const renderAll = async () => {
+      const { default: mermaid } = await import('mermaid');
+      const dark = document.documentElement.dataset.theme === 'dark';
+      let count = 0;
+      for (const diagram of diagrams) {
+        diagram.textContent = diagram.dataset.source ?? '';
+        diagram.removeAttribute('data-processed');
+        diagram.id = `rc-mermaid-${++count}`;
+      }
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: dark ? 'dark' : 'default',
+        fontFamily: 'var(--sl-font-system)',
+      });
+      await mermaid.run({ nodes: diagrams });
+    };
+
+    // Queued, so a quick theme toggle can't start a run on nodes still rendering.
+    let rendering = Promise.resolve();
+    const render = () => (rendering = rendering.then(renderAll).catch(console.error));
+    render();
+    new MutationObserver(render).observe(document.documentElement, { attributeFilter: ['data-theme'] });
+  }
+</script>

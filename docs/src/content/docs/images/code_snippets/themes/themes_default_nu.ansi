@@ -1,0 +1,31 @@
+ [33mUsage:[0m [1mcli.py[0m [[1;36mOPTIONS[0m] [1;36mCOMMAND[0m [[1;36mARGS[0m]...
+
+ CLI for app
+ [2mThis is a production-ready application.[0m
+
+[2m ═[0m[2m [0mRuntime options[2m [0m[2m═══════════════════════════════════════════════════════════════════════════════════════════════════[0m[2m═ [0m
+[2m [0m[2mOptions specifying the runtime[0m                                                                                        [2m [0m
+[2m [0m[31m#[0m  [1;36m--environment       [0m  [1;32m-e   [0m  Environment to run in [2;33m[dev|staging|prod][0m [2;31m(Required)[0m [2;33m(Env: APP_ENV)[0m                    [2m [0m
+[2m [0m   [1;36m--env-file          [0m         .env file [2;33m[PATH][0m                                                                      [2m [0m
+[2m [0m   [1;36m--retries           [0m  [1;32m-r   [0m  Num retries for failed tasks [2;33m[INTEGER RANGE 0<=x<=10][0m                                 [2m [0m
+[2m [0m   [1;36m--vcpu              [0m  [1;32m-c   [0m  Num vCPUs [2;33m[INTEGER RANGE 1<=x<=32][0m [2m(Default: 4)[0m                                       [2m [0m
+[2m                                                                                                                        [0m
+[2m ═[0m[2m [0mLogging options[2m [0m[2m═══════════════════════════════════════════════════════════════════════════════════════════════════[0m[2m═ [0m
+[2m [0m[2mLogging config options[0m                                                                                                [2m [0m
+[2m [0m   [1;36m--log-level         [0m  [1;32m-l   [0m  Log level [2;33m[debug|info|warning|error][0m [2m(Default: info)[0m [2;33m(Env: APP_LOG_LEVEL)[0m             [2m [0m
+[2m [0m   [1;36m--colors[0m/[1;36m--no-colors[0m  [1;32m-C[0m/[1;32m-n[0m  Whether to show colors in logs [2m(Default: colors)[0m                                      [2m [0m
+[2m [0m   [1;36m--log-format        [0m         Log format [2;33m[TEXT][0m [31m(Deprecated)[0m                                                        [2m [0m
+[2m [0m   [1;36m--quiet[0m/[1;36m--no-quiet[0m    [1;32m-q   [0m  Print text [31m(Deprecated: use --log-level instead)[0m                                      [2m [0m
+[2m                                                                                                                        [0m
+[2m ═[0m[2m [0mMisc. options[2m [0m[2m═════════════════════════════════════════════════════════════════════════════════════════════════════[0m[2m═ [0m
+[2m [0m   [1;36m--version           [0m  [1;32m-v   [0m  Show the version and exit.                                                            [2m [0m
+[2m [0m   [1;36m--help              [0m  [1;32m-h   [0m  Show this message and exit.                                                           [2m [0m
+[2m                                                                                                                        [0m
+[2m ═[0m[2m [0mCommands[2m [0m[2m══════════════════════════════════════════════════════════════════════════════════════════════════════════[0m[2m═ [0m
+[2m [0m[2mAll subcommands[0m                                                                                                       [2m [0m
+[2m [0m[1;36madmin                         [0m[1;36m  [0mAdministrative commands                                                               [2m [0m
+[2m [0m[1;36mdb                            [0m[1;36m  [0mDatabase commands for app                                                             [2m [0m
+[2m [0m[1;36mdeploy                        [0m[1;36m  [0mDeploy app                                                                            [2m [0m
+[2m [0m[1;36mself                          [0m[1;36m  [0mManage app [31m(Deprecated: Use admin commands)[0m                                           [2m [0m
+[2m                                                                                                                        [0m
+ For more assistance, visit https://example.com/

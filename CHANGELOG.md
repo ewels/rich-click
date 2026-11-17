@@ -2,8 +2,19 @@
 
 ## Unreleased
 
+- Rewrote the API docstrings in consistent Google style, so the API reference shows parameter tables, notes, warnings and deprecations. Ruff now checks docstrings against the Google convention. Docstrings copied from Click no longer show Click's version notes.
+- Fixed `version_option()` without a `version` or `package_name` showing rich-click's own version instead of the version of the package that uses it.
+- Fixed `RichGroup.add_command()` ignoring the command's own `aliases` and `panel` unless `aliases` or `panel` was also passed to `add_command()`.
+- Fixed `RichContext` ignoring a `parent` context passed as a positional argument.
+- Added `rich_click.testing.CliRunner`, a drop-in replacement for Click's `CliRunner` that feeds `input` to Rich prompts (including password prompts) and isolates Rich's global console. [[#232](https://github.com/ewels/rich-click/issues/232)]
+- Added reStructuredText support with `text_markup="rst"`, via the optional `rich-click[rst]` extra ([rich-rst](https://github.com/wasi-master/rich-rst)). [[#172](https://github.com/ewels/rich-click/issues/172)]
+- Added a `UserWarning` when markup options conflict: both `use_markdown` and `use_rich_markup` set, or either one set alongside `text_markup`.
+- Fixed `rich_config()` eagerly importing `rich` during normal (non-help) execution, slowing CLI startup.
+- Added a new `square` theme format: the default `box` format with square corners instead of rounded ones.
 - Dropped support for Python 3.8 and 3.9; the minimum supported version is now Python 3.10.
 - Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python <3.10.
+- Docs are now built with [Astro Starlight](https://starlight.astro.build/) instead of ProperDocs, using Astro's Rust-based Sätteri Markdown processor for faster builds. The site keeps the same URLs, versioned deploys, styling and features as before.
+- Fixed some broken docs links; broken links and anchors now fail the docs build (via `starlight-links-validator`).
 - Fixed docs versioning, so that a released version no longer keeps the `prerelease` alias alongside `latest`. [[#343](https://github.com/ewels/rich-click/pull/343)] ([@dwreeves](https://github.com/dwreeves))
 - Redesigned `__init__.py` to avoid surfacing click's `DeprecationWarning` going forward.
 - Added `align_columns_across_panels` config option, on by default, which lines up the columns of every panel with each other instead of sizing each panel's table on its own. A column is sized by the entries that reach past it, so an option with no short form or metavar runs on under those columns rather than widening the one it is in. Set it to `False` for the previous layout. [[#34](https://github.com/ewels/rich-click/issues/34)]
@@ -13,6 +24,7 @@
 - Fixed per-panel column types being ignored when picking table headers.
 - Removed dead option-string formatting left over in `get_parameter_rich_table_row()`.
 - Fixed `patch_typer()` crashing on `typer>=0.26.0`; it now warns and leaves Typer unpatched instead of raising. [[#330](https://github.com/ewels/rich-click/issues/330)]
+- Added optional support for asyncclick 8.2.2.2 and newer on Python 3.11+, and 8.3.0.3 and newer on Python 3.10, including rich help, errors, panels, aliases, and configuration decorators. [[#336](https://github.com/ewels/rich-click/pull/336)] ([@gabloe](https://github.com/gabloe))
 
 ## Version 1.9.9 (2026-09-05)
 

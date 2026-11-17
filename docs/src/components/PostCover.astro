@@ -1,0 +1,21 @@
+---
+// The cover image at the top of a blog post, only when its frontmatter sets
+// `showCover: true`: covers are mainly for the blog index. Stands in for
+// starlight-blog's Cover.astro via the resolver in astro.config.mjs.
+import type { StarlightBlogPostData } from 'starlight-blog/data';
+import BlogCover from './BlogCover.astro';
+
+interface Props {
+  cover: NonNullable<StarlightBlogPostData['cover']>;
+}
+
+const { showCover } = Astro.locals.starlightRoute.entry.data;
+---
+
+{
+  showCover && (
+    <figure>
+      <BlogCover cover={Astro.props.cover} />
+    </figure>
+  )
+}

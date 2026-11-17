@@ -17,7 +17,7 @@ from rich.padding import Padding
 from rich.panel import Panel
 from rich.text import Text
 
-from rich_click._click_types_cache import Argument, Command, Group, Option
+from rich_click._click_types_cache import Command, Group, Option, is_argument, is_group
 from rich_click._compat_click import (
     CLICK_IS_BEFORE_VERSION_82,
     CLICK_IS_VERSION_80,
@@ -30,6 +30,7 @@ from rich_click.rich_parameter import RichParameter
 if TYPE_CHECKING:
     from rich.markdown import Markdown
 
+    from rich_click._rst import RichClickRST
     from rich_click.rich_help_configuration import CommandColumnType, OptionColumnType, OptionHelpSectionType
     from rich_click.rich_panel import RichCommandPanel, RichOptionPanel
 
@@ -50,7 +51,6 @@ class RichClickRichPanel(Panel):
         Create RichClickRichPanel instance.
 
         Args:
-        ----
             *args: Args that get passed to rich.panel.Panel.
             title_padding: Controls padding on panel title.
             **kwargs: Kwargs that get passed to rich.panel.Panel.
@@ -76,7 +76,9 @@ class RichClickRichPanel(Panel):
 
 
 @group()
-def _get_help_text(obj: Command | Group, formatter: RichHelpFormatter) -> Iterable[Padding | Markdown | Text]:
+def _get_help_text(
+    obj: Command | Group, formatter: RichHelpFormatter
+) -> Iterable[Padding | Markdown | RichClickRST | Text]:
     """
     Build primary help text for a click command or group.
     Returns the prose help text for a command or group, rendered either as a
@@ -84,12 +86,10 @@ def _get_help_text(obj: Command | Group, formatter: RichHelpFormatter) -> Iterab
     If the command is marked as depreciated, the depreciated string will be prepended.
 
     Args:
-    ----
-        obj (click.Command or click.Group): Command or group to build help text for.
+        obj: Command or group to build help text for.
         formatter: formatter object.
 
     Yields:
-    ------
         Text or Markdown: Multiple styled objects (depreciated, usage)
 
     """
@@ -120,10 +120,36 @@ def _get_help_text(obj: Command | Group, formatter: RichHelpFormatter) -> Iterab
     # Trim off anything that comes after \f on its own line
     help_text = help_text.partition("\f")[0]
 
+    if config.text_markup == "rst":
+        from rich_click._rst import RichClickRST
+
+        # One document, so references and literal blocks can span the first paragraph.
+        rst = formatter.rich_text(help_text, config.style_helptext)
+        if isinstance(rst, RichClickRST):
+            rst.first_block_style = config.style_helptext_first_line
+        yield Padding(rst, config.padding_helptext_first_line, style=config.style_padding_helptext)
+    else:
+        yield from _get_split_help_text(help_text, formatter)
+
+    if getattr(obj, "aliases", None) and formatter.config.helptext_show_aliases:
+        yield Text.from_markup(
+            formatter.config.helptext_aliases_string.format(", ".join(obj.aliases)),  # type: ignore[attr-defined]
+            style=(
+                formatter.config.style_helptext_aliases
+                if formatter.config.style_helptext_aliases is not None
+                else formatter.config.style_helptext
+            ),
+        )
+
+
+def _get_split_help_text(
+    help_text: str, formatter: RichHelpFormatter
+) -> Iterable[Padding | Markdown | RichClickRST | Text]:
+    config = formatter.config
     # Get the first paragraph
     first_line = help_text.split("\n\n")[0]
     # Remove single linebreaks
-    if not config.text_markup == "markdown":
+    if config.text_markup != "markdown":
         if not first_line.startswith("\b"):
             first_line = first_line.replace("\n", " ")
     yield Padding(
@@ -183,18 +209,8 @@ def _get_help_text(obj: Command | Group, formatter: RichHelpFormatter) -> Iterab
             # Join back together
             remaining_lines = "".join(help_text_buf)
         else:
-            # Join with double linebreaks if markdown
             remaining_lines = lb.join(remaining_paragraphs)
         yield formatter.rich_text(remaining_lines, formatter.config.style_helptext)
-    if getattr(obj, "aliases", None) and formatter.config.helptext_show_aliases:
-        yield Text.from_markup(
-            formatter.config.helptext_aliases_string.format(", ".join(obj.aliases)),  # type: ignore[attr-defined]
-            style=(
-                formatter.config.style_helptext_aliases
-                if formatter.config.style_helptext_aliases is not None
-                else formatter.config.style_helptext
-            ),
-        )
 
 
 def _get_deprecated_text(
@@ -250,7 +266,7 @@ def _get_parameter_help(
     param: click.Argument | click.Option | RichParameter,
     ctx: RichContext,
     formatter: RichHelpFormatter,
-) -> Markdown | Text | None:
+) -> Markdown | RichClickRST | Text | None:
     base_help_txt = getattr(param, "help", None)
     if not base_help_txt:
         return None
@@ -260,15 +276,17 @@ def _get_parameter_help(
         assert hasattr(param, "help")
         assert isinstance(param.help, str)
 
-    paragraphs = base_help_txt.split("\n\n")
-
-    # Remove single linebreaks
-    if not formatter.config.use_markdown and not formatter.config.text_markup == "markdown":
-        paragraphs = [
-            x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
-            for x in paragraphs
-        ]
-    help_text = "\n".join(paragraphs).strip()
+    if formatter.config.text_markup == "rst":
+        help_text = base_help_txt.strip()
+    else:
+        paragraphs = base_help_txt.split("\n\n")
+        # Remove single linebreaks
+        if not formatter.config.use_markdown and formatter.config.text_markup != "markdown":
+            paragraphs = [
+                x.replace("\n", " ").strip() if not x.startswith("\b") else "{}\n".format(x.strip("\b\n"))
+                for x in paragraphs
+            ]
+        help_text = "\n".join(paragraphs).strip()
 
     # `Deprecated` is included in base help text; remove it here.
     if getattr(param, "deprecated", None):
@@ -309,7 +327,7 @@ def _get_parameter_range(
     mode: Literal["metavar_append", "metavar_column", "help"],
 ) -> Text | str | None:
     # Range - from
-    # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706  # noqa: E501
+    # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
     # skip count with default range type
     if (
         hasattr(param, "count")
@@ -338,6 +356,21 @@ def _get_parameter_range(
     return None
 
 
+def _make_param_metavar(param: Any, ctx: RichContext) -> str:
+    # click >= 8.2 and asyncclick require a ctx argument to make_metavar; older click
+    # does not. The installed click version does not determine a fork's
+    # Parameter.make_metavar signature (an asyncclick param keeps asyncclick's signature
+    # even when click < 8.2 is installed), so inspect the actual method instead of
+    # branching on the global click version.
+    try:
+        accepts_ctx = len(inspect.signature(param.make_metavar).parameters) > 0
+    except (TypeError, ValueError):
+        accepts_ctx = not CLICK_IS_BEFORE_VERSION_82
+    if accepts_ctx:
+        return str(param.make_metavar(ctx))
+    return str(param.make_metavar())
+
+
 def _get_parameter_metavar(
     param: click.Argument | click.Option | RichParameter,
     ctx: RichContext,
@@ -345,12 +378,12 @@ def _get_parameter_metavar(
     append: bool = True,
     show_range: bool = False,
 ) -> Text | None:
-    metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
+    metavar_str = _make_param_metavar(param, ctx)
     # Do it ourselves if this is a positional argument
-    if isinstance(param, Argument) and param.name is not None and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
+    if is_argument(param) and param.name is not None and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
         metavar_str = param.type.name.upper()
     # Attach metavar if param is a positional argument, or if it is a non boolean and non flag option
-    if isinstance(param, Argument) or (metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag):
+    if is_argument(param) or (metavar_str != "BOOLEAN" and hasattr(param, "is_flag") and not param.is_flag):
         metavar_str = metavar_str.replace("[", "").replace("]", "")
 
         if show_range:
@@ -374,22 +407,22 @@ def _get_parameter_help_metavar_col(
 ) -> Text | None:
     # Column for a metavar, if we have one
     metavar = Text(style=formatter.config.style_metavar, overflow="fold")
-    metavar_str = param.make_metavar() if CLICK_IS_BEFORE_VERSION_82 else param.make_metavar(ctx)  # type: ignore
+    metavar_str = _make_param_metavar(param, ctx)
 
     if TYPE_CHECKING:  # pragma: no cover
         assert isinstance(param.name, str)
         assert isinstance(param, Option)
 
     # Do it ourselves if this is a positional argument
-    if isinstance(param, Argument) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
+    if is_argument(param) and re.match(rf"\[?{param.name.upper()}]?", metavar_str):
         metavar_str = param.type.name.upper()
 
     # Attach metavar if param is a positional argument, or if it is a non-boolean and non flag option
-    if isinstance(param, Argument) or (metavar_str != "BOOLEAN" and not getattr(param, "is_flag", None)):
+    if is_argument(param) or (metavar_str != "BOOLEAN" and not getattr(param, "is_flag", None)):
         metavar.append(metavar_str)
 
     # Range - from
-    # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706  # noqa: E501
+    # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
     try:
         # skip count with default range type
         if isinstance(param.type, click.types._NumberRangeBase) and not (
@@ -444,14 +477,14 @@ def _get_parameter_help_opt(
     opt_short_secondary = []
 
     for opt in param.opts:
-        if isinstance(param, Argument):
+        if is_argument(param):
             opt_long_primary.append(opt.upper())
         elif "--" in opt:
             opt_long_primary.append(opt)
         else:
             opt_short_primary.append(opt)
     for opt in param.secondary_opts:
-        if isinstance(param, Argument):
+        if is_argument(param):
             opt_long_secondary.append(opt.upper())
         elif "--" in opt:
             opt_long_secondary.append(opt)
@@ -647,13 +680,11 @@ def get_help_parameter(
     Additional elements are appended to show the default and required status if applicable.
 
     Args:
-    ----
-        param (click.Argument or click.Option): Parameter to build help text for.
-        ctx (click.Context): Click Context object.
-        formatter (RichHelpFormatter): formatter object.
+        param: Parameter to build help text for.
+        ctx: Click Context object.
+        formatter: Formatter object.
 
     Returns:
-    -------
         Columns: A columns element with multiple styled objects (help, default, required)
 
     """
@@ -677,7 +708,9 @@ def get_help_parameter(
 
     # Use Columns - this allows us to group different renderable types
     # (Text, Markdown) onto a single line.
-    if formatter.config.text_markup == "markdown" or not all([isinstance(i, Text) or i is None for i in sections]):
+    if formatter.config.text_markup in ("markdown", "rst") or not all(
+        [isinstance(i, Text) or i is None for i in sections]
+    ):
         return Columns([i for i in sections if i])
     else:
         # Weird but necessary--
@@ -771,7 +804,7 @@ def _get_command_name_help(
     # most notably, when a user registers the same command twice.
     # We do not care to solve this edge case.
     command_name = None
-    if isinstance(ctx.command, Group):
+    if is_group(ctx.command):
         if command.name not in ctx.command.commands:
             for k, v in ctx.command.commands.items():
                 if command is v:
@@ -840,7 +873,7 @@ def _get_command_help(
     command: click.Command,
     ctx: RichContext,
     formatter: RichHelpFormatter,
-) -> Text | Markdown | Columns:
+) -> Text | Markdown | RichClickRST | Columns:
     """
     Build cli help text for a click group command.
     That is, when calling help on groups with multiple subcommands
@@ -849,8 +882,12 @@ def _get_command_help(
     Rich Text object or as Markdown.
     Ignores single newlines as paragraph markers, looks for double only.
 
-    Returns
-    -------
+    Args:
+        command: The subcommand.
+        ctx: Context of the group.
+        formatter: Formatter object.
+
+    Returns:
         Text or Markdown: Styled object
 
     """
@@ -861,14 +898,19 @@ def _get_command_help(
 
     deprecated = command.deprecated
 
-    paragraphs = inspect.cleandoc(help_text).split("\n\n")
-    # Remove single linebreaks
-    if not formatter.config.text_markup == "markdown" and not paragraphs[0].startswith("\b"):
-        paragraphs[0] = paragraphs[0].replace("\n", " ")
-    elif paragraphs[0].startswith("\b"):
-        paragraphs[0] = paragraphs[0].replace("\b\n", "")
-    help_text = paragraphs[0].strip()
-    renderable: Text | Markdown | Columns
+    if formatter.config.text_markup == "rst":
+        from rich_click._rst import first_paragraph
+
+        help_text = first_paragraph(inspect.cleandoc(help_text))
+    else:
+        paragraphs = inspect.cleandoc(help_text).split("\n\n")
+        # Remove single linebreaks
+        if formatter.config.text_markup != "markdown" and not paragraphs[0].startswith("\b"):
+            paragraphs[0] = paragraphs[0].replace("\n", " ")
+        elif paragraphs[0].startswith("\b"):
+            paragraphs[0] = paragraphs[0].replace("\b\n", "")
+        help_text = paragraphs[0].strip()
+    renderable: Text | Markdown | RichClickRST | Columns
     renderable = formatter.rich_text(help_text, formatter.config.style_command_help)
     if deprecated:
         dep_txt = _get_deprecated_text(
@@ -945,11 +987,13 @@ def get_rich_epilog(
 ) -> None:
     """Richly render a click Command's epilog if it exists."""
     if self.epilog:
-        # Remove single linebreaks, replace double with single
-        lines = self.epilog.split("\n\n")
         if isinstance(self.epilog, JupyterMixin):  # Handles Text and Markdown
             epilog = self.epilog
+        elif formatter.config.text_markup == "rst":
+            epilog = formatter.rich_text(self.epilog, formatter.config.style_epilog_text)  # type: ignore[assignment]
         else:
+            # Remove single linebreaks, replace double with single
+            lines = self.epilog.split("\n\n")
             epilog = "\n".join([x.replace("\n", " ").strip() for x in lines])  # type: ignore[assignment]
             epilog = formatter.rich_text(epilog, formatter.config.style_epilog_text)  # type: ignore[assignment]
         formatter.write(
@@ -979,8 +1023,7 @@ def rich_format_error(
     Mimics original click.ClickException.echo() function but with rich formatting.
 
     Args:
-    ----
-        self (click.ClickException): Click exception to format.
+        self: Click exception to format.
         formatter: formatter object.
         export_console_as: If set, outputs error message as HTML or SVG.
 

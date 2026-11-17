@@ -1,0 +1,21 @@
+---
+// A blog post's cover image, with its light-theme variant when it has one.
+// starlight-blog doesn't export its own Cover component.
+import { Image } from 'astro:assets';
+import type { StarlightBlogPostData } from 'starlight-blog/data';
+
+interface Props {
+  cover: NonNullable<StarlightBlogPostData['cover']>;
+  widths?: number[];
+  sizes?: string;
+}
+
+const { cover, ...sizing } = Astro.props;
+const dark = 'dark' in cover ? cover.dark : cover.image;
+const light = 'light' in cover ? cover.light : undefined;
+const props = (src: typeof dark) =>
+  typeof src === 'string' ? { src, inferSize: true as const } : { src };
+---
+
+<Image {...props(dark)} {...sizing} alt={cover.alt} class:list={{ 'light:sl-hidden': light }} />
+{light && <Image {...props(light)} {...sizing} alt={cover.alt} class="dark:sl-hidden" />}

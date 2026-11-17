@@ -21,7 +21,7 @@ import click
 # or else rich_click.cli.patch() causes a recursion error.
 from click import Command, CommandCollection, Group
 
-from rich_click.rich_context import RichContext
+from rich_click.rich_context import RichContext, RichContextMixin
 from rich_click.rich_help_configuration import RichHelpConfiguration
 from rich_click.rich_help_formatter import RichHelpFormatter
 from rich_click.utils import _PacifyFlushWrapper
@@ -33,24 +33,41 @@ if TYPE_CHECKING:  # pragma: no cover
     from rich_click.rich_help_rendering import RichPanelRow
     from rich_click.rich_panel import RichCommandPanel, RichPanel
 
+    # At runtime the mixins are baseless (object) so they can be composed with
+    # either click's or a fork's command classes (e.g. asyncclick). For
+    # type-checking we give them click bases so static analysis sees the inherited
+    # attributes (params, commands, context_settings, etc.).
+    _CommandMixinBase = Command
+    _GroupMixinBase = Group
+else:
+    _CommandMixinBase = object
+    _GroupMixinBase = object
+
+
 # TLDR: if a subcommand overrides one of the methods called by `RichCommand.format_help`,
 # then the text won't render properly. The fix is to not rely on the composability of the API,
 # and to instead force everything to use RichCommand's methods.
 OVERRIDES_GUARD: bool = False
 
 
-class RichCommand(Command):
+class RichCommandMixin(_CommandMixinBase):
     """
-    Richly formatted click Command.
+    Mixin providing Rich help-formatting behavior for click Commands.
 
-    Inherits click.Command and overrides help and error methods
-    to print richly formatted output.
+    Contains only formatting/help behavior and Rich-specific instance state, with
+    no click base of its own, so it can be composed with either `click.Command`
+    (see `RichCommand`) or a click-compatible fork's Command (e.g.
+    `asyncclick.Command`) without dragging click's synchronous execution methods
+    (`main`, `make_context`, `scope`, etc.) into the MRO.
 
-    This class can be used as a mixin for other click command objects.
+    Execution-flow methods (`main` and `to_info_dict`) deliberately live on the
+    concrete `RichCommand` instead of here, so that async forks can inherit
+    their own async equivalents. Help and error formatting, including
+    `get_help_option` and `_error_formatter`, is shared here.
     """
 
-    context_class: type[RichContext] = RichContext
     _formatter: RichHelpFormatter | None = None
+    context_class: type[RichContextMixin]
 
     def __init__(
         self,
@@ -71,12 +88,10 @@ class RichCommand(Command):
     @property
     def console(self) -> Console | None:
         """
-        Rich Console.
+        Rich console of this command. Set it with the `rich_config` decorator.
 
-        This is a separate instance from the help formatter that allows full control of the
-        console configuration.
-
-        See `rich_config` decorator for how to apply the settings.
+        Deprecated:
+            Since 1.9. Use the console of the context, `ctx.console`.
         """
         warnings.warn(
             "RichCommand.console is deprecated. Please use the click.Context's console instead.",
@@ -85,15 +100,14 @@ class RichCommand(Command):
         )
         return self.context_settings.get("rich_console")
 
-    def to_info_dict(self, ctx: click.Context) -> dict[str, Any]:
-        info = super().to_info_dict(ctx)
-        info["panels"] = [p.to_info_dict(ctx) for p in self.panels]
-        info["aliases"] = list(self.aliases) if self.aliases is not None else None
-        return info
-
     @property
     def help_config(self) -> RichHelpConfiguration | None:
-        """Rich Help Configuration."""
+        """
+        Help configuration of this command. Set it with the `rich_config` decorator.
+
+        Deprecated:
+            Since 1.8. Use the help configuration of the context, `ctx.help_config`.
+        """
         warnings.warn(
             "RichCommand.help_config is deprecated. Please use the click.Context's help config instead.",
             DeprecationWarning,
@@ -123,8 +137,6 @@ class RichCommand(Command):
         return RichHelpConfiguration()
 
     def _error_formatter(self) -> RichHelpFormatter:
-        from click import get_current_context
-
         def _get_formatter() -> RichHelpFormatter:
             config = self._generate_rich_help_config()
             formatter = self.context_class.formatter_class(
@@ -136,15 +148,128 @@ class RichCommand(Command):
             return formatter
 
         try:
-            ctx: RichContext = get_current_context()  # type: ignore[assignment]
+            ctx = click.get_current_context()
         except RuntimeError:
             formatter = _get_formatter()
         else:
-            if not isinstance(ctx, RichContext):
+            if not isinstance(ctx, RichContextMixin):
                 formatter = _get_formatter()
             else:
                 formatter = ctx.make_formatter(error_mode=True)
         return formatter
+
+    def _print_error(self, e: click.ClickException) -> None:
+        formatter = self._error_formatter()
+        formatter.write_error(e)
+        print(formatter.getvalue(), file=sys.stderr, end="")
+
+    def _print_abort(self) -> None:
+        try:
+            formatter = self._error_formatter()
+        except Exception:
+            click.echo("Aborted!", file=sys.stderr)
+        else:
+            formatter.write_abort()
+            print(formatter.getvalue(), file=sys.stderr, end="")
+
+    # Mypy complains about Liskov substitution principle violations.
+    # We opt to ignore mypy here.
+
+    def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        """
+        Write the help: the usage, the help text, the options and the epilog.
+
+        Each part has its own `format_*` method, so a subclass can override one part.
+
+        Warning:
+            After `rich_click.patch.patch()`, rich-click ignores overrides of `format_usage`,
+            `format_help_text`, `format_options` and `format_epilog` in subclasses of the patched
+            click classes. These overrides expect click's plain help formatter, so rich-click
+            writes those parts itself.
+        """
+        if OVERRIDES_GUARD:
+            prevent_incompatible_overrides(self, "RichCommand", ctx, formatter)
+        else:
+            self.format_usage(ctx, formatter)
+            self.format_help_text(ctx, formatter)
+            self.format_options(ctx, formatter)
+            self.format_epilog(ctx, formatter)
+
+    def format_help_text(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        from rich_click.rich_help_rendering import get_rich_help_text
+
+        get_rich_help_text(self, ctx, formatter)
+
+    # TODO:
+    #  Switching from base click to rich click causes mypy problems.
+    #  Either we: (a) swap MRO (incompatible with click 9, without handling 8 and 9 differently)
+    #  or (b) we allow issues when users attempt multiple inheritance with a RichCommand
+    #  or (c) we use incorrect types here.
+    #  We are looking for a solution that fixes all 3. For now, we opt for (c).
+    def format_options(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
+        from rich.table import Table
+
+        from rich_click.rich_panel import construct_panels
+
+        panels = construct_panels(self, ctx, formatter)  # type: ignore[arg-type]
+        for panel in panels:
+            p = panel.render(self, ctx, formatter)  # type: ignore[arg-type]
+            if not isinstance(p.renderable, Table) or len(p.renderable.rows) > 0:
+                formatter.write(p)  # type: ignore[arg-type]
+
+    def format_epilog(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
+        from rich_click.rich_help_rendering import get_rich_epilog
+
+        get_rich_epilog(self, ctx, formatter)
+
+    def get_rich_table_row(
+        self,
+        ctx: RichContext,
+        formatter: RichHelpFormatter,
+        panel: RichCommandPanel | None = None,
+    ) -> RichPanelRow:
+        """Create a row for the rich table corresponding with this parameter."""
+        from rich_click.rich_help_rendering import get_command_rich_table_row
+
+        return get_command_rich_table_row(self, ctx, formatter, panel)
+
+    def add_panel(self, panel: RichPanel[Any, Any]) -> None:
+        """Add a RichPanel to the RichCommand."""
+        self.panels.append(panel)
+
+    def _make_help_option(self, *help_option_names: str) -> click.Option:
+        from rich_click.decorators import help_option
+
+        help_option(*help_option_names)(self)
+        return self.params.pop()  # type: ignore[return-value]
+
+    def get_help_option(self, ctx: click.Context) -> click.Option | None:
+        """Return the help option, or `None` if `add_help_option` is false. Every call returns the same object."""
+        help_option_names = self.get_help_option_names(ctx)
+
+        if not help_option_names or not self.add_help_option:
+            return None
+
+        # Cache the help option object in private _help_option attribute to
+        # avoid creating it multiple times. Not doing this will break the
+        # callback ordering by iter_params_for_processing(), which relies on
+        # object comparison.
+        if self._help_option is None:
+            self._help_option = self._make_help_option(*help_option_names)
+
+        return self._help_option
+
+
+class RichCommand(RichCommandMixin, Command):
+    """A click Command that prints its help and errors with Rich. The `command` decorator creates one."""
+
+    context_class: type[RichContext] = RichContext
+
+    def to_info_dict(self, ctx: click.Context) -> dict[str, Any]:
+        info = super().to_info_dict(ctx)
+        info["panels"] = [p.to_info_dict(ctx) for p in self.panels]
+        info["aliases"] = list(self.aliases) if self.aliases is not None else None
+        return info
 
     @overload
     def main(
@@ -228,9 +353,7 @@ class RichCommand(Command):
                         sys.exit(e.exit_code)
                 if not standalone_mode:
                     raise
-                formatter = self._error_formatter()
-                formatter.write_error(e)
-                print(formatter.getvalue(), file=sys.stderr, end="")
+                self._print_error(e)
                 sys.exit(e.exit_code)
             except OSError as e:
                 if e.errno == errno.EPIPE:
@@ -247,109 +370,17 @@ class RichCommand(Command):
         except click.exceptions.Abort:
             if not standalone_mode:
                 raise
-            try:
-                formatter = self._error_formatter()
-            except Exception:
-                click.echo("Aborted!", file=sys.stderr)
-            else:
-                formatter.write_abort()
-                print(formatter.getvalue(), file=sys.stderr, end="")
-            finally:
-                sys.exit(1)
-
-    # Mypy complains about Liskov substitution principle violations.
-    # We opt to ignore mypy here.
-
-    def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        if OVERRIDES_GUARD:
-            prevent_incompatible_overrides(self, "RichCommand", ctx, formatter)
-        else:
-            self.format_usage(ctx, formatter)
-            self.format_help_text(ctx, formatter)
-            self.format_options(ctx, formatter)
-            self.format_epilog(ctx, formatter)
-
-    def format_help_text(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        from rich_click.rich_help_rendering import get_rich_help_text
-
-        get_rich_help_text(self, ctx, formatter)
-
-    # TODO:
-    #  Switching from base click to rich click causes mypy problems.
-    #  Either we: (a) swap MRO (incompatible with click 9, without handling 8 and 9 differently)
-    #  or (b) we allow issues when users attempt multiple inheritance with a RichCommand
-    #  or (c) we use incorrect types here.
-    #  We are looking for a solution that fixes all 3. For now, we opt for (c).
-    def format_options(self, ctx: click.Context, formatter: click.HelpFormatter) -> None:
-        from rich.table import Table
-
-        from rich_click.rich_panel import construct_panels
-
-        panels = construct_panels(self, ctx, formatter)  # type: ignore[arg-type]
-        for panel in panels:
-            p = panel.render(self, ctx, formatter)  # type: ignore[arg-type]
-            if not isinstance(p.renderable, Table) or len(p.renderable.rows) > 0:
-                formatter.write(p)  # type: ignore[arg-type]
-
-    def format_epilog(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
-        from rich_click.rich_help_rendering import get_rich_epilog
-
-        get_rich_epilog(self, ctx, formatter)
-
-    def get_help_option(self, ctx: click.Context) -> click.Option | None:
-        """
-        Return the help option object.
-
-        Skipped if :attr:`add_help_option` is ``False``.
-
-        .. versionchanged:: 8.1.8
-            The help option is now cached to avoid creating it multiple times.
-        """
-        help_option_names = self.get_help_option_names(ctx)
-
-        if not help_option_names or not self.add_help_option:
-            return None
-
-        # Cache the help option object in private _help_option attribute to
-        # avoid creating it multiple times. Not doing this will break the
-        # callback ordering by iter_params_for_processing(), which relies on
-        # object comparison.
-        if self._help_option is None:
-            # Avoid circular import.
-            from rich_click.decorators import help_option
-
-            # Apply help_option decorator and pop resulting option
-            help_option(*help_option_names)(self)
-            self._help_option = self.params.pop()  # type: ignore[assignment]
-
-        return self._help_option
-
-    def get_rich_table_row(
-        self,
-        ctx: RichContext,
-        formatter: RichHelpFormatter,
-        panel: RichCommandPanel | None = None,
-    ) -> RichPanelRow:
-        """Create a row for the rich table corresponding with this parameter."""
-        from rich_click.rich_help_rendering import get_command_rich_table_row
-
-        return get_command_rich_table_row(self, ctx, formatter, panel)
-
-    def add_panel(self, panel: RichPanel[Any, Any]) -> None:
-        """Add a RichPanel to the RichCommand."""
-        self.panels.append(panel)
+            self._print_abort()
+            sys.exit(1)
 
 
-class RichGroup(RichCommand, Group):
+class RichGroupMixin(RichCommandMixin, _GroupMixinBase):
     """
-    Richly formatted click Group.
+    Mixin providing Rich help-formatting behavior for click Groups.
 
-    Inherits click.Group and overrides help and error methods
-    to print richly formatted output.
+    Like `RichCommandMixin`, this has no click base of its own so it can be
+    composed with either `click.Group` (see `RichGroup`) or a fork's Group.
     """
-
-    command_class: type[RichCommand] | None = RichCommand
-    group_class: type[Group] | type[type] | None = type
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Create RichGroup instance."""
@@ -386,7 +417,7 @@ class RichGroup(RichCommand, Group):
             self.format_epilog(ctx, formatter)
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
-        """Alias for :meth:`main`."""
+        """Alias for `main`."""
         # Include this here because I run into a false warning
         # in the PyCharm IDE otherwise; for some reason PyCharm doesn't
         # seem to think RichGroups are callable. (No issues with Mypy, though.)
@@ -400,20 +431,11 @@ class RichGroup(RichCommand, Group):
 
     def command(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichCommand] | RichCommand:
         """
-        A shortcut decorator for declaring and attaching a command to
-        the group. This takes the same arguments as :func:`command` and
-        immediately registers the created command with this group by
-        calling :meth:`add_command`.
+        Create a command and add it to this group.
 
-        To customize the command class used, set the
-        :attr:`command_class` attribute.
-
-        .. versionchanged:: 8.1
-            This decorator can be applied without parentheses.
-
-        .. versionchanged:: 8.0
-            Added the :attr:`command_class` attribute.
-        """  # noqa: D401
+        Takes the same arguments as the `command` decorator, and works with or without
+        parentheses. The class of the command is `command_class`, unless you set `cls`.
+        """
         from rich_click.decorators import command
 
         func: Callable[..., Any] | None = None
@@ -428,7 +450,7 @@ class RichGroup(RichCommand, Group):
             kwargs["cls"] = cls = self.command_class
 
         def decorator(f: Callable[..., Any]) -> RichCommand:
-            if cls and not issubclass(cls, RichCommand):
+            if cls and not issubclass(cls, RichCommandMixin):
                 panel = kwargs.pop("panel", None)
                 aliases = kwargs.pop("aliases", None)
             else:
@@ -452,20 +474,11 @@ class RichGroup(RichCommand, Group):
 
     def group(self, *args: Any, **kwargs: Any) -> Callable[[Callable[..., Any]], RichGroup] | RichGroup:
         """
-        A shortcut decorator for declaring and attaching a group to
-        the group. This takes the same arguments as :func:`group` and
-        immediately registers the created group with this group by
-        calling :meth:`add_command`.
+        Create a subgroup and add it to this group.
 
-        To customize the group class used, set the :attr:`group_class`
-        attribute.
-
-        .. versionchanged:: 8.1
-            This decorator can be applied without parentheses.
-
-        .. versionchanged:: 8.0
-            Added the :attr:`group_class` attribute.
-        """  # noqa: D401
+        Takes the same arguments as the `group` decorator, and works with or without
+        parentheses. The subgroup has the same class as this group, unless you set `group_class` or `cls`.
+        """
         from rich_click.decorators import group
 
         func: Callable[..., Any] | None = None
@@ -483,7 +496,7 @@ class RichGroup(RichCommand, Group):
                 kwargs["cls"] = cls = self.group_class
 
         def decorator(f: Callable[..., Any]) -> RichGroup:
-            if cls and not issubclass(cls, RichCommand):
+            if cls and not issubclass(cls, RichCommandMixin):
                 panel = kwargs.pop("panel", None)
                 aliases = kwargs.pop("aliases", None)
             else:
@@ -540,13 +553,16 @@ class RichGroup(RichCommand, Group):
         panel: str | list[str] | None = None,
     ) -> None:
         """
-        Register another :class:`Command` with this group. If the name
-        is not provided, the name of the command is used.
+        Add a command to this group.
+
+        Args:
+            cmd: The command to add.
+            name: Name of the command in this group. Defaults to the name of the command.
+            aliases: Other names that run the command, in addition to the aliases of the command.
+            panel: Panel or panels to show the command in, by panel title.
         """
         super().add_command(cmd, name)
-        _name: str = name or cmd.name  # type: ignore[assignment]
-        if aliases or panel:
-            self._handle_extras_add_command(cmd, name=name, aliases=aliases, panel=panel)
+        self._handle_extras_add_command(cmd, name=name, aliases=aliases, panel=panel)
 
     def add_command_to_panel(
         self,
@@ -555,23 +571,24 @@ class RichGroup(RichCommand, Group):
     ) -> None:
         if not command.name:
             return
-        self._panel_command_mapping.setdefault(command.name, [])
-        if isinstance(panel_name, str):
-            self._panel_command_mapping[command.name].append(panel_name)
-        else:
-            self._panel_command_mapping[command.name].extend(panel_name)
+        panels = self._panel_command_mapping.setdefault(command.name, [])
+        for panel in [panel_name] if isinstance(panel_name, str) else panel_name:
+            if panel not in panels:
+                panels.append(panel)
+
+
+class RichGroup(RichGroupMixin, RichCommand, Group):
+    """A click Group that prints its help and errors with Rich. The `group` decorator creates one."""
+
+    command_class: type[RichCommand] | None = RichCommand
+    group_class: type[Group] | type[type] | None = type
 
 
 RichMultiCommand = RichGroup
 
 
 class RichCommandCollection(CommandCollection, RichGroup):
-    """
-    Richly formatted click CommandCollection.
-
-    Inherits click.CommandCollection and overrides help and error methods
-    to print richly formatted output.
-    """
+    """A click CommandCollection that prints its help and errors with Rich."""
 
     def format_help(self, ctx: RichContext, formatter: RichHelpFormatter) -> None:  # type: ignore[override]
         if OVERRIDES_GUARD:
@@ -584,7 +601,7 @@ class RichCommandCollection(CommandCollection, RichGroup):
 
 
 def prevent_incompatible_overrides(
-    cmd: RichCommand, class_name: str, ctx: RichContext, formatter: RichHelpFormatter
+    cmd: RichCommandMixin, class_name: str, ctx: RichContext, formatter: RichHelpFormatter
 ) -> None:
     """For use by the rich-click CLI."""
     import rich_click.patch

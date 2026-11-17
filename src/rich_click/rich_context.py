@@ -11,11 +11,29 @@ from rich_click.rich_help_formatter import RichHelpFormatter
 
 
 if TYPE_CHECKING:  # pragma: no cover
+    from types import TracebackType
+
     from rich.console import Console
 
+    # At runtime the mixin is baseless (object) so it can be composed with either
+    # click's or a fork's Context. For type-checking we give it click.Context as a
+    # base so static analysis sees the inherited attributes (terminal_width, etc.).
+    _ContextBase = click.Context
+else:
+    _ContextBase = object
 
-class RichContext(click.Context):
-    """Click Context class endowed with Rich superpowers."""
+
+class RichContextMixin(_ContextBase):
+    """
+    Rich help formatting for a click Context, as a mixin with no click base class.
+
+    `RichContext` combines this mixin with `click.Context`. A click fork combines it
+    with its own Context class, such as `asyncclick.Context`. Because the mixin has
+    no click base class, it does not add click's synchronous methods to the fork.
+
+    Note:
+        To customize the context of a click CLI, subclass `RichContext`, not this mixin.
+    """
 
     formatter_class: type[RichHelpFormatter] = RichHelpFormatter
     console: Console | None = None
@@ -34,21 +52,20 @@ class RichContext(click.Context):
         **kwargs: Any,
     ) -> None:
         """
-        Create Rich Context instance.
+        Create a context. An argument that is not set takes its value from the parent context.
 
         Args:
-        ----
-            *args: Args that get passed to click.Context.
-            rich_console: Rich Console. Defaults to None.
-            rich_help_config: Rich help configuration.  Defaults to None.
-            export_console_as: Arg is passed to RichHelpFormatter().
-            errors_in_output_format: Arg is passed to RichHelpFormatter().
-            help_to_stderr: If set, help is printed to stderr.
-            **kwargs: Kwargs that get passed to click.Context.
-
+            *args: Positional arguments for the click Context.
+            rich_console: Rich console to print help and errors with.
+            rich_help_config: How to format help and errors, as a `RichHelpConfiguration` or a dict of
+                its fields. A dict changes only the fields it names.
+            export_console_as: Export help as `"html"`, `"svg"` or `"text"`, not as terminal output.
+            errors_in_output_format: Export errors in the `export_console_as` format too.
+            help_to_stderr: Print help to stderr, not stdout.
+            **kwargs: Keyword arguments for the click Context.
         """
         super().__init__(*args, **kwargs)
-        parent: RichContext | None = kwargs.pop("parent", None)
+        parent: RichContextMixin | None = self.parent  # type: ignore[assignment]
 
         if help_to_stderr is None and hasattr(parent, "help_to_stderr"):
             self.help_to_stderr = parent.help_to_stderr  # type: ignore[union-attr]
@@ -100,20 +117,34 @@ class RichContext(click.Context):
         return formatter
 
 
+class RichContext(RichContextMixin, click.Context):
+    """The context of a rich-click command: a click Context that formats help and errors with Rich."""
+
+    if TYPE_CHECKING:  # pragma: no cover
+
+        def __enter__(self) -> RichContext:
+            super().__enter__()
+            return self
+
+        def __exit__(
+            self,
+            exc_type: type[BaseException] | None,
+            exc_value: BaseException | None,
+            tb: TracebackType | None,
+        ) -> None:
+            super().__exit__(exc_type, exc_value, tb)
+
+
 def get_current_context(silent: bool = False) -> RichContext | None:
     """
-    Return the current click context.  This can be used as a way to
-    access the current context object from anywhere.  This is a more implicit
-    alternative to the :func:`pass_context` decorator.  This function is
-    primarily useful for helpers such as :func:`echo` which might be
-    interested in changing its behavior based on the current context.
+    Return the context of the command that runs now.
 
-    To push the current context, :meth:`Context.scope` can be used.
+    Use it in helper functions that need the context but do not get it from the `pass_context` decorator.
 
-    .. versionadded:: 5.0
+    Args:
+        silent: If true, return `None` when no command runs. If false, raise a `RuntimeError`.
 
-    :param silent: if set to `True` the return value is `None` if no context
-                   is available.  The default behavior is to raise a
-                   :exc:`RuntimeError`.
+    Returns:
+        The context, or `None` if no command runs and `silent` is true.
     """
     return click_get_current_context(silent=silent)  # type: ignore[return-value]

@@ -1,0 +1,37 @@
+
+  [1;34mUsage:[0m [1mcli.py[0m [[34mOPTIONS[0m] [34mCOMMAND[0m [[34mARGS[0m]...
+
+  CLI for app
+  [2mThis is a production-ready application.[0m
+
+[2m  [0mRuntime options[2m - [0m[2;3mOptions specifying the runtime[0m[2m                                                                    [0m[2m  [0m
+[2m [0m[2m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────── [0m[2m [0m
+[2m [0m[2m [0m[1;34m-e     [0m  [2m [0m[34m--environment         [0m  [2m [0m[2;34m[[0m[2;34mdev[0m[2;34m|[0m[2;34mstaging[0m[2;34m|[0m[2;34mprod[0m[2;34m][0m[2;34m        [0m  [2m [0m[34m[required][0m[39m [0m[39mEnvironment to run in[0m[39m [0m[2;39m[env=APP_ENV][0m      [2m [0m[2m [0m
+[2m [0m[2m [0m         [2m [0m[34m--env-file            [0m  [2m [0m[2;34mPATH                      [0m  [2m [0m[39m.env file[0m                                           [2m [0m[2m [0m
+[2m [0m[2m [0m[1;34m-r     [0m  [2m [0m[34m--retries             [0m  [2m [0m[2;34mINTEGER RANGE [0m[2;34m[[0m[2;34m0<=x<=10[0m[2;34m][0m[2;34m  [0m  [2m [0m[39mNum retries for failed tasks[0m                        [2m [0m[2m [0m
+[2m [0m[2m [0m[1;34m-c     [0m  [2m [0m[34m--vcpu                [0m  [2m [0m[2;34mINTEGER RANGE [0m[2;34m[[0m[2;34m1<=x<=32[0m[2;34m][0m[2;34m  [0m  [2m [0m[39mNum vCPUs[0m[39m [0m[2;39m[default=4][0m                               [2m [0m[2m [0m
+[2m [0m[2m                                                                                                                      [0m[2m [0m
+[2m                                                                                                                        [0m
+[2m  [0mLogging options[2m - [0m[2;3mLogging config options[0m[2m                                                                            [0m[2m  [0m
+[2m [0m[2m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────── [0m[2m [0m
+[2m [0m[2m [0m[1;34m-l     [0m  [2m [0m[34m--log-level           [0m  [2m [0m[2;34m[[0m[2;34mdebug[0m[2;34m|[0m[2;34minfo[0m[2;34m|[0m[2;34mwarning[0m[2;34m|[0m[2;34merror[0m[2;34m][0m  [2m [0m[39mLog level[0m[39m [0m[2;39m[env=APP_LOG_LEVEL][0m[39m [0m[2;39m[default=info][0m        [2m [0m[2m [0m
+[2m [0m[2m [0m[1;34m-C[0m[39m / [0m[1;34m-n[0m  [2m [0m[34m--colors[0m[39m / [0m[34m--no-colors[0m  [2m [0m                            [2m [0m[39mWhether to show colors in logs[0m[39m [0m[2;39m[default=colors][0m     [2m [0m[2m [0m
+[2m [0m[2m [0m         [2m [0m[34m--log-format          [0m  [2m [0m[2;34m[[0m[2;34mTEXT[0m[2;34m][0m[2;34m                    [0m  [2m [0m[39mLog format[0m[39m [0m[34m[deprecated][0m                             [2m [0m[2m [0m
+[2m [0m[2m [0m[1;34m-q     [0m  [2m [0m[34m--quiet[0m[39m / [0m[34m--no-quiet[0m    [2m [0m                            [2m [0m[39mPrint text[0m[39m [0m[34m[deprecated: use --log-level instead][0m    [2m [0m[2m [0m
+[2m [0m[2m                                                                                                                      [0m[2m [0m
+[2m                                                                                                                        [0m
+[2m  [0mMisc. options[2m                                                                                                       [0m[2m  [0m
+[2m [0m[2m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────── [0m[2m [0m
+[2m [0m[2m [0m[1;34m-v     [0m  [2m [0m[34m--version                                         [0m  [2m [0m[39mShow the version and exit.[0m                           [2m [0m[2m [0m
+[2m [0m[2m [0m[1;34m-h     [0m  [2m [0m[34m--help                                            [0m  [2m [0m[39mShow this message and exit.[0m                          [2m [0m[2m [0m
+[2m [0m[2m                                                                                                                      [0m[2m [0m
+[2m                                                                                                                        [0m
+[2m  [0mCommands[2m - [0m[2;3mAll subcommands[0m[2m                                                                                          [0m[2m  [0m
+[2m [0m[2m ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────── [0m[2m [0m
+[2m [0m[2m [0m[34madmin                                                      [0m[34m  [0m[2m [0m[39mAdministrative commands                               [0m[2m [0m[2m [0m
+[2m [0m[2m [0m[34mdb                                                         [0m[34m  [0m[2m [0m[39mDatabase commands for app                             [0m[2m [0m[2m [0m
+[2m [0m[2m [0m[34mdeploy                                                     [0m[34m  [0m[2m [0m[39mDeploy app                                            [0m[2m [0m[2m [0m
+[2m [0m[2m [0m[34mself                                                       [0m[34m  [0m[2m [0m[39mManage app [0m[34m[deprecated: Use admin commands][0m[39m           [0m[2m [0m[2m [0m
+[2m [0m[2m                                                                                                                      [0m[2m [0m
+[2m                                                                                                                        [0m
+  For more assistance, visit https://example.com/

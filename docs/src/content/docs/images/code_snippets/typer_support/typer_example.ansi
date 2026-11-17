@@ -1,0 +1,14 @@
+[1;33mUsage:[0m [33mtyper_example.py[0m [[94mOPTIONS[0m] [94mID[0m
+
+[39mArguments:[0m[2m                                                                      [0m
+[2m [0m [33mID[0m[39m [0m[34m<INTEGER RANGE>[0m[39m                 [0m  [2;31m[required][0m                              [2m [0m
+[2m                                                                                [0m
+[39mOptions:[0m[2m                                                                        [0m
+[2m [0m [33m--age[0m[39m [0m[34m<INTEGER RANGE>[0m[39m              [0m  [34m[range: x>=18][0m[39m [0m[2;39m[default=20][0m             [2m [0m
+[2m [0m [33m--score[0m[39m [0m[34m<FLOAT RANGE>[0m[39m              [0m  [34m[range: x<=100][0m[39m [0m[2;39m[default=0][0m             [2m [0m
+[2m [0m [33m--help                             [0m  [39mShow this message and exit.[0m             [2m [0m
+[2m                                                                                [0m
+[39mLogging:[0m[2m                                                                        [0m
+[2m [0m [33m--log-level[0m[39m [0m[34m<debug|info|warn|error>[0m  [2;39m[default=info][0m                          [2m [0m
+[2m [0m [33m--color[0m[39m/[0m[33m--no-color[0m                   [2;39m[default=color][0m                         [2m [0m
+[2m                                                                                [0m

@@ -1,0 +1,6 @@
+Usage: hello_v3.py french [OPTIONS] NAME
+
+  Greet in French
+
+Options:
+  --help  Show this message and exit.

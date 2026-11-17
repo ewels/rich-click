@@ -1,7 +1,7 @@
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich-click-logo-darkmode.png">
-        <img alt="rich-click logo" src="https://raw.githubusercontent.com/ewels/rich-click/main/docs/images/rich-click-logo.png">
+        <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ewels/rich-click/main/docs/public/images/rich-click-dark-animated.svg">
+        <img alt="rich-click logo" src="https://raw.githubusercontent.com/ewels/rich-click/main/docs/public/images/rich-click-light-animated.svg">
     </picture>
 </p>
 <p align="center">
@@ -21,7 +21,6 @@
 
 ---
 
-<!--include-start-->
 **rich-click** is a wrapper around [Click](https://click.palletsprojects.com/) that renders help output nicely using [Rich](https://github.com/Textualize/rich).
 
 - Click is a _"Python package for creating beautiful command line interfaces"_.
@@ -38,6 +37,7 @@ Click, formatted with Rich, with minimal customization required.
 - 💻 CLI tool to run on _other people's_ Click and Typer CLIs (prefix the command with `rich-click`)
 - 📦 Export help text as HTML or SVG
 - 🎁 Group commands and options into named panels
+- 📝 Write help text in Rich markup, Markdown or reStructuredText
 - ❌ Well formatted error messages
 - 💫 Extensive customization
 - 🤖 IDE autocomplete of Click decorators for smooth developer experience
@@ -48,6 +48,8 @@ Click, formatted with Rich, with minimal customization required.
 pip install rich-click
 ```
 
+To write help text in reStructuredText, install the optional `rst` extra: `pip install 'rich-click[rst]'`
+
 ## Examples
 
 ### Simple Example
@@ -57,6 +59,7 @@ To use rich-click in your code, replace `import click` with `import rich_click a
 ```python
 import rich_click as click
 
+
 @click.command()
 @click.option("--count", default=1, help="Number of greetings.")
 @click.option("--name", prompt="Your name", help="The person to greet.")
@@ -65,11 +68,12 @@ def hello(count, name):
     for _ in range(count):
         click.echo(f"Hello, {name}!")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     hello()
 ```
 
-![`python examples/11_hello.py --help`](docs/images/hello.svg)
+![`python examples/11_hello.py --help`](docs/src/content/docs/images/hello.svg)
 
 _Screenshot from [`examples/11_hello.py`](https://github.com/ewels/rich-click/blob/main/examples/11_hello.py)_
 
@@ -79,7 +83,7 @@ _Screenshot from [`examples/11_hello.py`](https://github.com/ewels/rich-click/bl
 
 Below is a more complex example of what **rich-click** is capable of, utilizing **themes** and **panels**:
 
-![`python examples/03_groups_sorting.py --help`](docs/images/command_groups.svg)
+![`python examples/03_groups_sorting.py --help`](docs/src/content/docs/images/command_groups.svg)
 
 _Screenshot from [`examples/03_groups_sorting.py`](https://github.com/ewels/rich-click/blob/main/examples/03_groups_sorting.py)_
 
@@ -109,6 +113,7 @@ This means that you can continue to use the unmodified `click` package in parall
 ```python
 import click
 from rich_click import RichCommand
+
 
 @click.command(cls=RichCommand)
 def main():

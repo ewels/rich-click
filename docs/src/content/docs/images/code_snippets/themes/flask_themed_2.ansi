@@ -1,0 +1,23 @@
+[1;33mUsage:[0m [33mflask[0m [[94mOPTIONS[0m] [94mCOMMAND[0m [[94mARGS[0m]...
+
+[39mA general utility script for Flask applications.[0m
+[39mAn application to load must be given with the '[0m[33m--app[0m[39m' option, 'FLASK_APP' environment variable, or [0m
+[39mwith a 'wsgi.py' or 'app.py' file in the current directory.[0m
+
+[39mOptions:[0m[2m                                                                                            [0m
+[2m [0m [33m-e[0m  [33m--env-file[0m[39m [0m[34m<FILE>[0m[39m [0m  [39mLoad environment variables from this file, taking precedence over those [0m[39m [0m[2m [0m
+[2m [0m                         [39mset by '.env' and '.flaskenv'. Variables set directly in the environment [0m[2m [0m
+[2m [0m                         [39mtake highest precedence. python-dotenv must be installed.[0m[39m                [0m[2m [0m
+[2m [0m [33m-A[0m  [33m--app[0m[39m [0m[34m<IMPORT>[0m[39m    [0m  [39mThe Flask application or factory function to load, in the form [0m[39m          [0m[2m [0m
+[2m [0m                         [39m'module:name'. Module can be a dotted import or file path. Name is not [0m[39m  [0m[2m [0m
+[2m [0m                         [39mrequired if it is 'app', 'application', 'create_app', or 'make_app', and [0m[2m [0m
+[2m [0m                         [39mcan be 'name(args)' to pass arguments.[0m[39m                                   [0m[2m [0m
+[2m [0m     [33m--debug[0m[39m/[0m[33m--no-debug[0m  [39mSet debug mode.[0m                                                          [2m [0m
+[2m [0m     [33m--version         [0m  [39mShow the Flask version.[0m                                                  [2m [0m
+[2m [0m     [33m--help            [0m  [39mShow this message and exit.[0m                                              [2m [0m
+[2m                                                                                                    [0m
+[39mCommands:[0m[2m                                                                                           [0m
+[2m [0m [33mroutes                [0m[33m  [0m[39mShow the routes for the app.   [0m                                          [2m [0m
+[2m [0m [33mrun                   [0m[33m  [0m[39mRun a development server.      [0m                                          [2m [0m
+[2m [0m [33mshell                 [0m[33m  [0m[39mRun a shell in the app context.[0m                                          [2m [0m
+[2m                                                                                                    [0m

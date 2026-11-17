@@ -1,0 +1,33 @@
+
+ [1mUsage:[0m [1;39mcli.py[0m [OPTIONS] COMMAND [ARGS]...
+
+ CLI for app
+ [2mThis is a production-ready application.[0m
+
+[2m╭─[0m[2m [0m[1mRuntime options[0m[2m [0m[2m───────────────────────────────────────────────────────────────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m [2;3mOptions specifying the runtime[0m                                                                                       [2m│[0m
+[2m│[0m [1;2m*[0m  --environment         -e  [2m[[0m[2mdev[0m[2m|[0m[2mstaging[0m[2m|[0m[2mprod[0m[2m][0m[2m        [0m  [39mEnvironment to run in[0m[39m [0m[2;39m[env var: APP_ENV][0m[39m [0m[1;39m[required][0m         [2m│[0m
+[2m│[0m    --env-file                [2mPATH                      [0m  [39m.env file[0m                                                   [2m│[0m
+[2m│[0m    --retries             -r  [2mINTEGER RANGE [0m[2m[[0m[2m0<=x<=10[0m[2m][0m[2m  [0m  [39mNum retries for failed tasks[0m                                [2m│[0m
+[2m│[0m    --vcpu                -c  [2mINTEGER RANGE [0m[2m[[0m[2m1<=x<=32[0m[2m][0m[2m  [0m  [39mNum vCPUs[0m[39m [0m[2;39m[default: 4][0m                                      [2m│[0m
+[2m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+[2m╭─[0m[2m [0m[1mLogging options[0m[2m [0m[2m───────────────────────────────────────────────────────────────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m [2;3mLogging config options[0m                                                                                               [2m│[0m
+[2m│[0m    --log-level           -l  [2m[[0m[2mdebug[0m[2m|[0m[2minfo[0m[2m|[0m[2mwarning[0m[2m|[0m[2merror[0m[2m][0m  [39mLog level[0m[39m [0m[2;39m[env var: APP_LOG_LEVEL][0m[39m [0m[2;39m[default: info][0m          [2m│[0m
+[2m│[0m    --colors[39m / [0m--no-colors  -C[39m / [0m-n                         [39mWhether to show colors in logs[0m[39m [0m[2;39m[default: colors][0m          [2m│[0m
+[2m│[0m    --log-format              [2m[[0m[2mTEXT[0m[2m][0m[2m                    [0m  [39mLog format[0m[39m [0m[1;39m[deprecated][0m                                     [2m│[0m
+[2m│[0m    --quiet[39m / [0m--no-quiet  -q                              [39mPrint text[0m[39m [0m[1;39m[deprecated: use --log-level instead][0m            [2m│[0m
+[2m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+[2m╭─[0m[2m [0m[1mMisc. options[0m[2m [0m[2m─────────────────────────────────────────────────────────────────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m    --version             -v                              [39mShow the version and exit.[0m                                  [2m│[0m
+[2m│[0m    --help                -h                              [39mShow this message and exit.[0m                                 [2m│[0m
+[2m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+[2m╭─[0m[2m [0m[1mCommands[0m[2m [0m[2m──────────────────────────────────────────────────────────────────────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m [2;3mAll subcommands[0m                                                                                                      [2m│[0m
+[2m│[0m admin                                                    [39mAdministrative commands                                    [0m [2m│[0m
+[2m│[0m db                                                       [39mDatabase commands for app                                  [0m [2m│[0m
+[2m│[0m deploy                                                   [39mDeploy app                                                 [0m [2m│[0m
+[2m│[0m self                                                     [39mManage app [0m[1;39m[deprecated: Use admin commands][0m[39m                [0m [2m│[0m
+[2m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
+
+ For more assistance, visit https://example.com/

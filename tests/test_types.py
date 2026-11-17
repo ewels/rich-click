@@ -2,7 +2,7 @@ import importlib
 import sys
 from typing import Any
 
-from rich_click.rich_command import RichCommand
+from rich_click.rich_command import RichCommand, RichCommandMixin, RichGroupMixin
 from tests.conftest import WriteScript
 
 
@@ -13,9 +13,11 @@ else:
 
 
 def eval_type(t: Any, globalns: dict[str, Any], localns: dict[str, Any]) -> Any:
+    import inspect
     import typing
 
-    if sys.version_info >= (3, 12):
+    # type_params arrived in 3.12.4, not 3.12.0
+    if "type_params" in inspect.signature(typing._eval_type).parameters:  # type: ignore[attr-defined]
         return typing._eval_type(t, globalns, localns, type_params=None)  # type: ignore[attr-defined]
     else:
         return typing._eval_type(t, globalns, localns)  # type: ignore[attr-defined]
@@ -93,3 +95,20 @@ def test_all_rich_command_attrs_in_annotation(mock_script_writer: WriteScript) -
 
     for i in dir(RichCommand):
         assert i in dir(AnnotatedRichCommand)
+
+
+def test_mixins_exist_in_annotation(mock_script_writer: WriteScript) -> None:
+    with open("src/rich_click/rich_command.pyi") as f:
+        mock_script_writer(f.read(), "_rich_command_pyi.py")
+
+    rich_command_pyi_mod = importlib.import_module("_rich_command_pyi")
+
+    def class_attrs(cls: type[Any]) -> set[str]:
+        attrs = set(dir(cls))
+        for base in cls.__mro__:
+            attrs.update(getattr(base, "__annotations__", {}))
+        return attrs
+
+    for mixin in (RichCommandMixin, RichGroupMixin):
+        annotated_mixin = getattr(rich_command_pyi_mod, mixin.__name__)
+        assert class_attrs(mixin) <= class_attrs(annotated_mixin)

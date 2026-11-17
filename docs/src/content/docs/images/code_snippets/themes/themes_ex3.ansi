@@ -1,0 +1,29 @@
+[1;32mUsage:[0m [1;36mcli.py[0m [36m[[0m[36mOPTIONS[0m[36m] [0m[36mCOMMAND[0m[36m [[0m[36mARGS[0m[36m]...[0m
+
+CLI for app
+This is a production-ready application.
+
+[1;32mRuntime options:[0m[32m [0m[3;39mOptions specifying the runtime[0m[32m                                                                         [0m
+[32m [0m [1;36m-e   [0m  [1;36m--environment[0m[39m [0m[36m<dev|staging|prod>[0m  [39mEnvironment to run in[0m[39m [0m[39m[required][0m[39m [0m[39m[env: APP_ENV=][0m                            [32m [0m
+[32m [0m        [1;36m--env-file[0m[39m [0m[36m<PATH>[0m[39m               [0m  [39m.env file[0m                                                                   [32m [0m
+[32m [0m [1;36m-r   [0m  [1;36m--retries[0m[39m [0m[36m<INTEGER RANGE>[0m[39m       [0m  [39mNum retries for failed tasks[0m[39m [0m[36m[range: 0<=x<=10][0m                              [32m [0m
+[32m [0m [1;36m-c   [0m  [1;36m--vcpu[0m[39m [0m[36m<INTEGER RANGE>[0m[39m          [0m  [39mNum vCPUs[0m[39m [0m[36m[range: 1<=x<=32][0m[39m [0m[39m[default=4][0m                                     [32m [0m
+[32m                                                                                                                        [0m
+[1;32mLogging options:[0m[32m [0m[3;39mLogging config options[0m[32m                                                                                 [0m
+[32m [0m [1;36m-l   [0m  [1;36m--log-level[0m[39m [0m[36m<debug|info|warning|error>[0m                                                                        [32m [0m
+[32m [0m                                          [39mLog level[0m[39m [0m[39m[default=info][0m[39m [0m[39m[env: APP_LOG_LEVEL=][0m                              [32m [0m
+[32m [0m [1;36m-C[0m[39m/[0m[1;36m-n[0m  [1;36m--colors[0m[39m/[0m[1;36m--no-colors[0m              [39mWhether to show colors in logs[0m[39m [0m[39m[default=colors][0m                             [32m [0m
+[32m [0m        [1;36m--log-format[0m[39m [0m[36m<TEXT>[0m[39m             [0m  [39mLog format[0m[39m [0m[2;39m[deprecated][0m                                                     [32m [0m
+[32m [0m [1;36m-q   [0m  [1;36m--quiet[0m[39m/[0m[1;36m--no-quiet[0m                [39mPrint text[0m[39m [0m[2;39m[deprecated: use --log-level instead][0m                            [32m [0m
+[32m                                                                                                                        [0m
+[1;32mMisc. options:[0m[32m                                                                                                          [0m
+[32m [0m [1;36m-v   [0m  [1;36m--version                       [0m  [39mShow the version and exit.[0m                                                  [32m [0m
+[32m [0m [1;36m-h   [0m  [1;36m--help                          [0m  [39mShow this message and exit.[0m                                                 [32m [0m
+[32m                                                                                                                        [0m
+[1;32mCommands:[0m[32m [0m[3;39mAll subcommands[0m[32m                                                                                               [0m
+[32m [0m [1;36madmin                                  [0m[1;36m  [0m[39mAdministrative commands                    [0m                                 [32m [0m
+[32m [0m [1;36mdb                                     [0m[1;36m  [0m[39mDatabase commands for app                  [0m                                 [32m [0m
+[32m [0m [1;36mdeploy                                 [0m[1;36m  [0m[39mDeploy app                                 [0m                                 [32m [0m
+[32m [0m [1;36mself                                   [0m[1;36m  [0m[39mManage app [0m[2;39m[deprecated: Use admin commands][0m                                 [32m [0m
+[32m                                                                                                                        [0m
+For more assistance, visit https://example.com/
