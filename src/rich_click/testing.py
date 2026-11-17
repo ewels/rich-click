@@ -23,7 +23,7 @@ class CliRunner(click.testing.CliRunner):
       read from the runner's ``input``, including password prompts, which would otherwise call
       :func:`getpass.getpass` and read from the terminal.
     - Rich's global console (used by ``rich.print()`` and prompts without an explicit console) is
-      replaced by a fresh one that follows the runner's ``color`` setting.
+      reset in place to follow the runner's ``color`` setting.
     """
 
     @contextmanager
@@ -33,9 +33,7 @@ class CliRunner(click.testing.CliRunner):
         env: Mapping[str, str | None] | None = None,
         color: bool = False,
     ) -> Iterator[Any]:
-        """Set up Click's isolation, then route Rich's console and prompts through it."""
         original_input = Console.input
-        original_console = rich._console
 
         def runner_input(
             console: Console,
@@ -55,10 +53,13 @@ class CliRunner(click.testing.CliRunner):
             return read("")
 
         with super().isolation(input=input, env=env, color=color) as streams:
-            rich._console = Console(force_terminal=color)
+            # reconfigure() swaps the global console's __dict__, so apps holding a reference to it see the change.
+            global_console = rich.get_console()
+            original_state = global_console.__dict__
+            rich.reconfigure(force_terminal=color)
             Console.input = runner_input  # type: ignore[method-assign,assignment]
             try:
                 yield streams
             finally:
                 Console.input = original_input  # type: ignore[method-assign]
-                rich._console = original_console
+                global_console.__dict__ = original_state

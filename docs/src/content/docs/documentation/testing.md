@@ -35,11 +35,7 @@ def test_login() -> None:
     assert result.output == "Username: jane\nPassword: \nRemember me? [y/n]: y\nSaved login for jane\n"
 ```
 
-While a command runs, the runner:
-
-- Reads all Rich prompts from `input`, the same way Click's runner reads `click.prompt()`. Typed text is echoed
-  into the output, except for password prompts. This applies to every Rich `Console`, not only the global one.
-- Replaces Rich's global console with a fresh one that follows the runner's `color` option. Use
-  `invoke(..., color=True)` to keep Rich's colour codes in the output.
-
-Everything is put back after each invocation.
+Prompts on every Rich `Console` read from `input`, and typed text is echoed as with `click.prompt()`, except for
+passwords. Use `invoke(..., color=True)` to keep colour codes from Rich's global console. A separate `Console()`
+that your app creates keeps the colour setting it detected when it was created. Everything is put back after each
+invocation.

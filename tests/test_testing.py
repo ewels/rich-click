@@ -22,30 +22,25 @@ def test_rich_prompts_read_runner_input(monkeypatch: pytest.MonkeyPatch) -> None
         raise AssertionError("getpass reads the terminal, not the runner input")
 
     monkeypatch.setattr(getpass, "getpass", no_getpass)
+    original_input = Console.input
 
     result = CliRunner().invoke(greet, input="Jane\ny\nhunter2\n")
 
     assert result.exception is None
     assert result.output == "Name: Jane\nSure? [y/n]: y\nPassword: \nHello Jane True hunter2\n"
+    assert Console.input is original_input
 
 
 def test_global_console_follows_runner_color(monkeypatch: pytest.MonkeyPatch) -> None:
     # A global console first created in a real terminal keeps emitting ANSI codes.
-    monkeypatch.setattr(rich, "_console", Console(force_terminal=True))
+    terminal_console = Console(force_terminal=True)
+    monkeypatch.setattr(rich, "_console", terminal_console)
 
     @click.command()
     def cli() -> None:
-        rich.print("[bold]hi[/]")
+        terminal_console.print("[bold]hi[/]")
 
     assert CliRunner().invoke(cli).output == "hi\n"
     assert CliRunner().invoke(cli, color=True).output == "\x1b[1mhi\x1b[0m\n"
-
-
-def test_rich_state_restored_after_invoke() -> None:
-    original_input = Console.input
-    original_console = rich.get_console()
-
-    CliRunner().invoke(greet, input="Jane\ny\nhunter2\n")
-
-    assert Console.input is original_input
-    assert rich.get_console() is original_console
+    assert rich.get_console() is terminal_console
+    assert terminal_console.is_terminal
