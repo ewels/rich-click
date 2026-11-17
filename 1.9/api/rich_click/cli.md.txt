@@ -11,7 +11,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/cli/"
 
 The command line interface.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/cli.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/cli.py#L1-L1)
 
 ## rich_click.cli.DISABLE_WARNINGS_NOTE
 
@@ -21,7 +21,7 @@ The command line interface.
 DISABLE_WARNINGS_NOTE = '[red]You can pass [b]--suppress-warnings[/b] to the rich-click CLI or set the [b]RICH_CLICK_CLI_SUPPRESS_WARNINGS[/b] environment variable to disable this message.[/red]'
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/cli.py#L32-L36)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/cli.py#L32-L36)
 
 ## rich_click.cli.list_themes
 
@@ -33,7 +33,7 @@ def list_themes(ctx: RichContext, param: click.Parameter, value: bool) -> None
 
 Print all themes.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/cli.py#L141-L282)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/cli.py#L141-L282)
 
 ## rich_click.cli.main
 
@@ -64,7 +64,7 @@ so it is safe to replace calls to the tool with [command]rich-click[/] in front,
 
 >>> [command]rich-click[/] [argument]my_package[/] [argument]cmd[/] [option]--foo[/] 3
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/cli.py#L285-L521)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/cli.py#L285-L521)
 
 ## rich_click.cli.patch
 
@@ -74,4 +74,4 @@ so it is safe to replace calls to the tool with [command]rich-click[/] in front,
 def patch(*args: Any, **kwargs: Any) -> None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/cli.py#L39-L50)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/cli.py#L39-L50)

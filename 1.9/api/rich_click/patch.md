@@ -11,7 +11,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/patch/"
 
 The command line interface.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/patch.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/patch.py#L1-L1)
 
 ## rich_click.patch.patch
 
@@ -31,7 +31,7 @@ Patch Click internals to use rich-click types.
         When provided, rich-click's async command classes are installed into that
         module's namespace. Requires ``rich-click[async]``. Defaults to None (click).
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/patch.py#L341-L415)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/patch.py#L341-L415)
 
 ## rich_click.patch.patch_typer
 
@@ -41,4 +41,4 @@ Patch Click internals to use rich-click types.
 def patch_typer(rich_config: RichHelpConfiguration | None = None) -> None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/patch.py#L421-L491)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/patch.py#L421-L491)

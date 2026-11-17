@@ -9,7 +9,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/rich_box/"
 
 *module* · *Added in 1.9.0*
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_box.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_box.py#L1-L1)
 
 ## rich_click.rich_box.BLANK
 
@@ -19,7 +19,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/rich_box/"
 BLANK: Box = Box('    \n    \n    \n    \n    \n    \n    \n    \n')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_box.py#L29-L38)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_box.py#L29-L38)
 
 ## rich_click.rich_box.HORIZONTALS_DOUBLE_TOP
 
@@ -29,7 +29,7 @@ BLANK: Box = Box('    \n    \n    \n    \n    \n    \n    \n    \n')
 HORIZONTALS_DOUBLE_TOP: Box = Box(' ══ \n    \n    \n    \n    \n    \n    \n    \n')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_box.py#L18-L27)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_box.py#L18-L27)
 
 ## rich_click.rich_box.HORIZONTALS_TOP
 
@@ -39,7 +39,7 @@ HORIZONTALS_DOUBLE_TOP: Box = Box(' ══ \n    \n    \n    \n    \n    \n    \
 HORIZONTALS_TOP: Box = Box(' ── \n    \n    \n    \n    \n    \n    \n    \n')
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_box.py#L7-L16)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_box.py#L7-L16)
 
 ## rich_click.rich_box.get_box
 
@@ -51,4 +51,4 @@ def get_box(box: str | Box) -> Box
 
 Retrieve a Rich Box by name.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_box.py#L45-L51)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_box.py#L45-L51)

@@ -24,7 +24,7 @@ optional. Most users do not import these classes directly; instead they call
 installs these classes into the asyncclick namespace so plain ``@asyncclick.command``
 CLIs render richly with no further changes.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L1-L1)
 
 ## rich_click.rich_async_command.RichAsyncCommand
 
@@ -41,7 +41,7 @@ Richly formatted asyncclick Command.
 Combines rich-click's :class:`RichCommandMixin` (help/error formatting) with
 asyncclick's asynchronous :class:`asyncclick.Command` (async ``main``/``invoke``).
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L42-L120)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L42-L120)
 
 ### rich_click.rich_async_command.RichAsyncCommand.context_class
 
@@ -51,7 +51,7 @@ asyncclick's asynchronous :class:`asyncclick.Command` (async ``main``/``invoke``
 context_class: type[RichAsyncContext] = RichAsyncContext
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L50-L50)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L50-L50)
 
 ### rich_click.rich_async_command.RichAsyncCommand.aliases
 
@@ -63,7 +63,7 @@ aliases: Iterable[str] = aliases or []
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L84-L84)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L84-L84)
 
 ### rich_click.rich_async_command.RichAsyncCommand.panel
 
@@ -75,7 +75,7 @@ panel: str | list[str] | None = panel
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L82-L82)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L82-L82)
 
 ### rich_click.rich_async_command.RichAsyncCommand.panels
 
@@ -87,7 +87,7 @@ panels: list[RichPanel[Any, Any]] = panels or []
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L83-L83)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L83-L83)
 
 ### rich_click.rich_async_command.RichAsyncCommand.console
 
@@ -106,7 +106,7 @@ console configuration.
 
 See `rich_config` decorator for how to apply the settings.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L89-L103)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L89-L103)
 
 ### rich_click.rich_async_command.RichAsyncCommand.help_config
 
@@ -120,7 +120,7 @@ Inherited from: `rich_click.rich_command.RichCommandMixin`
 
 Rich Help Configuration.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L106-L117)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L106-L117)
 
 ### rich_click.rich_async_command.RichAsyncCommand.invoke
 
@@ -130,7 +130,7 @@ Rich Help Configuration.
 async def invoke(ctx: asyncclick.Context) -> Any
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L99-L101)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L99-L101)
 
 ### rich_click.rich_async_command.RichAsyncCommand.main
 
@@ -140,7 +140,7 @@ async def invoke(ctx: asyncclick.Context) -> Any
 async def main(args: Sequence[str] | None = None, prog_name: str | None = None, complete_var: str | None = None, standalone_mode: bool = True, **extra: Any) -> Any
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L79-L91)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L79-L91)
 
 ### rich_click.rich_async_command.RichAsyncCommand.make_context
 
@@ -150,7 +150,7 @@ async def main(args: Sequence[str] | None = None, prog_name: str | None = None, 
 async def make_context(*args: Any, **kwargs: Any) -> Any
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L95-L97)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L95-L97)
 
 ### rich_click.rich_async_command.RichAsyncCommand.to_info_dict
 
@@ -160,7 +160,7 @@ async def make_context(*args: Any, **kwargs: Any) -> Any
 async def to_info_dict(ctx: asyncclick.Context) -> dict[str, Any]
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L71-L75)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L71-L75)
 
 ### rich_click.rich_async_command.RichAsyncCommand.add_panel
 
@@ -174,7 +174,7 @@ Inherited from: `rich_click.rich_command.RichCommandMixin`
 
 Add a RichPanel to the RichCommand.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L222-L224)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L222-L224)
 
 ### rich_click.rich_async_command.RichAsyncCommand.format_epilog
 
@@ -186,7 +186,7 @@ def format_epilog(ctx: click.Context, formatter: click.HelpFormatter) -> None
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L206-L209)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L206-L209)
 
 ### rich_click.rich_async_command.RichAsyncCommand.format_help
 
@@ -198,7 +198,7 @@ def format_help(ctx: click.Context, formatter: click.HelpFormatter) -> None
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L175-L182)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L175-L182)
 
 ### rich_click.rich_async_command.RichAsyncCommand.format_help_text
 
@@ -210,7 +210,7 @@ def format_help_text(ctx: click.Context, formatter: click.HelpFormatter) -> None
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L184-L187)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L184-L187)
 
 ### rich_click.rich_async_command.RichAsyncCommand.format_options
 
@@ -222,7 +222,7 @@ def format_options(ctx: click.Context, formatter: click.HelpFormatter) -> None
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L195-L204)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L195-L204)
 
 ### rich_click.rich_async_command.RichAsyncCommand.get_help_option
 
@@ -241,7 +241,7 @@ Skipped if :attr:`add_help_option` is ``False``.
 .. versionchanged:: 8.1.8
     The help option is now cached to avoid creating it multiple times.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L232-L253)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L232-L253)
 
 ### rich_click.rich_async_command.RichAsyncCommand.get_rich_table_row
 
@@ -255,7 +255,7 @@ Inherited from: `rich_click.rich_command.RichCommandMixin`
 
 Create a row for the rich table corresponding with this parameter.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L211-L220)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L211-L220)
 
 ## rich_click.rich_async_command.RichAsyncCommandCollection
 
@@ -269,7 +269,7 @@ Bases: `asyncclick.CommandCollection`, `rich_click.rich_async_command.RichAsyncG
 
 Richly formatted asyncclick CommandCollection.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L136-L137)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L136-L137)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.command_class
 
@@ -281,7 +281,7 @@ command_class: type[RichAsyncCommand] | None = RichAsyncCommand
 
 Inherited from: `rich_click.rich_async_command.RichAsyncGroup`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L132-L132)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L132-L132)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.context_class
 
@@ -293,7 +293,7 @@ context_class: type[RichAsyncContext] = RichAsyncContext
 
 Inherited from: `rich_click.rich_async_command.RichAsyncGroup`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L131-L131)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L131-L131)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.group_class
 
@@ -305,7 +305,7 @@ group_class: Any | None = type
 
 Inherited from: `rich_click.rich_async_command.RichAsyncGroup`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L133-L133)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L133-L133)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.aliases
 
@@ -317,7 +317,7 @@ aliases: Iterable[str] = aliases or []
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L84-L84)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L84-L84)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.panel
 
@@ -329,7 +329,7 @@ panel: str | list[str] | None = panel
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L82-L82)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L82-L82)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.panels
 
@@ -341,7 +341,7 @@ panels: list[RichPanel[Any, Any]] = panels or []
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L83-L83)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L83-L83)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.console
 
@@ -360,7 +360,7 @@ console configuration.
 
 See `rich_config` decorator for how to apply the settings.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L89-L103)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L89-L103)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.help_config
 
@@ -374,7 +374,7 @@ Inherited from: `rich_click.rich_command.RichCommandMixin`
 
 Rich Help Configuration.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L106-L117)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L106-L117)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.add_command
 
@@ -389,7 +389,7 @@ Inherited from: `rich_click.rich_command.RichGroupMixin`
 Register another :class:`Command` with this group. If the name
 is not provided, the name of the command is used.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L564-L578)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L564-L578)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.add_command_to_panel
 
@@ -401,7 +401,7 @@ def add_command_to_panel(command: click.Command, panel_name: str | Iterable[str]
 
 Inherited from: `rich_click.rich_command.RichGroupMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L580-L591)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L580-L591)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.command
 
@@ -427,7 +427,7 @@ To customize the command class used, set the
 .. versionchanged:: 8.0
     Added the :attr:`command_class` attribute.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L430-L474)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L430-L474)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.format_commands
 
@@ -439,7 +439,7 @@ def format_commands(ctx: click.Context, formatter: click.HelpFormatter) -> None
 
 Inherited from: `rich_click.rich_command.RichGroupMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L404-L406)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L404-L406)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.format_help
 
@@ -451,7 +451,7 @@ def format_help(ctx: RichContext, formatter: RichHelpFormatter) -> None
 
 Inherited from: `rich_click.rich_command.RichGroupMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L408-L415)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L408-L415)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.get_command
 
@@ -463,7 +463,7 @@ def get_command(ctx: click.Context, cmd_name: str) -> click.Command | None
 
 Inherited from: `rich_click.rich_command.RichGroupMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L560-L562)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L560-L562)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.group
 
@@ -489,7 +489,7 @@ attribute.
 .. versionchanged:: 8.0
     Added the :attr:`group_class` attribute.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L482-L529)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L482-L529)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.invoke
 
@@ -501,7 +501,7 @@ async def invoke(ctx: asyncclick.Context) -> Any
 
 Inherited from: `rich_click.rich_async_command.RichAsyncCommand`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L99-L101)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L99-L101)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.main
 
@@ -513,7 +513,7 @@ async def main(args: Sequence[str] | None = None, prog_name: str | None = None, 
 
 Inherited from: `rich_click.rich_async_command.RichAsyncCommand`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L79-L91)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L79-L91)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.make_context
 
@@ -525,7 +525,7 @@ async def make_context(*args: Any, **kwargs: Any) -> Any
 
 Inherited from: `rich_click.rich_async_command.RichAsyncCommand`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L95-L97)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L95-L97)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.to_info_dict
 
@@ -537,7 +537,7 @@ async def to_info_dict(ctx: asyncclick.Context) -> dict[str, Any]
 
 Inherited from: `rich_click.rich_async_command.RichAsyncCommand`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L71-L75)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L71-L75)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.add_panel
 
@@ -551,7 +551,7 @@ Inherited from: `rich_click.rich_command.RichCommandMixin`
 
 Add a RichPanel to the RichCommand.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L222-L224)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L222-L224)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.format_epilog
 
@@ -563,7 +563,7 @@ def format_epilog(ctx: click.Context, formatter: click.HelpFormatter) -> None
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L206-L209)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L206-L209)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.format_help_text
 
@@ -575,7 +575,7 @@ def format_help_text(ctx: click.Context, formatter: click.HelpFormatter) -> None
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L184-L187)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L184-L187)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.format_options
 
@@ -587,7 +587,7 @@ def format_options(ctx: click.Context, formatter: click.HelpFormatter) -> None
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L195-L204)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L195-L204)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.get_help_option
 
@@ -606,7 +606,7 @@ Skipped if :attr:`add_help_option` is ``False``.
 .. versionchanged:: 8.1.8
     The help option is now cached to avoid creating it multiple times.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L232-L253)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L232-L253)
 
 ### rich_click.rich_async_command.RichAsyncCommandCollection.get_rich_table_row
 
@@ -620,7 +620,7 @@ Inherited from: `rich_click.rich_command.RichCommandMixin`
 
 Create a row for the rich table corresponding with this parameter.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L211-L220)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L211-L220)
 
 ## rich_click.rich_async_command.RichAsyncContext
 
@@ -634,7 +634,7 @@ Bases: `rich_click.rich_context.RichContextMixin`, `asyncclick.Context`
 
 asyncclick Context endowed with rich-click's Rich help formatting.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L38-L39)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L38-L39)
 
 ### rich_click.rich_async_command.RichAsyncContext.console
 
@@ -646,7 +646,7 @@ console: Console | None = None
 
 Inherited from: `rich_click.rich_context.RichContextMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_context.py#L37-L37)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_context.py#L37-L37)
 
 ### rich_click.rich_async_command.RichAsyncContext.errors_in_output_format
 
@@ -658,7 +658,7 @@ errors_in_output_format: bool = False
 
 Inherited from: `rich_click.rich_context.RichContextMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_context.py#L39-L39)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_context.py#L39-L39)
 
 ### rich_click.rich_async_command.RichAsyncContext.export_console_as
 
@@ -670,7 +670,7 @@ export_console_as: Literal['html', 'svg', 'text'] | None = None
 
 Inherited from: `rich_click.rich_context.RichContextMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_context.py#L38-L38)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_context.py#L38-L38)
 
 ### rich_click.rich_async_command.RichAsyncContext.formatter_class
 
@@ -682,7 +682,7 @@ formatter_class: type[RichHelpFormatter] = RichHelpFormatter
 
 Inherited from: `rich_click.rich_context.RichContextMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_context.py#L36-L36)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_context.py#L36-L36)
 
 ### rich_click.rich_async_command.RichAsyncContext.help_config
 
@@ -694,7 +694,7 @@ help_config = parent.help_config
 
 Inherited from: `rich_click.rich_context.RichContextMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_context.py#L92-L92)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_context.py#L92-L92)
 
 ### rich_click.rich_async_command.RichAsyncContext.help_to_stderr
 
@@ -706,7 +706,7 @@ help_to_stderr: bool = False
 
 Inherited from: `rich_click.rich_context.RichContextMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_context.py#L40-L40)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_context.py#L40-L40)
 
 ### rich_click.rich_async_command.RichAsyncContext.make_formatter
 
@@ -720,7 +720,7 @@ Inherited from: `rich_click.rich_context.RichContextMixin`
 
 Create the Rich Help Formatter.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_context.py#L107-L116)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_context.py#L107-L116)
 
 ## rich_click.rich_async_command.RichAsyncGroup
 
@@ -737,7 +737,7 @@ Richly formatted asyncclick Group.
 Subcommands and subgroups created from this group inherit the async rich classes
 via ``command_class``/``group_class``, so the whole command tree renders richly.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L123-L133)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L123-L133)
 
 ### rich_click.rich_async_command.RichAsyncGroup.command_class
 
@@ -747,7 +747,7 @@ via ``command_class``/``group_class``, so the whole command tree renders richly.
 command_class: type[RichAsyncCommand] | None = RichAsyncCommand
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L132-L132)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L132-L132)
 
 ### rich_click.rich_async_command.RichAsyncGroup.context_class
 
@@ -757,7 +757,7 @@ command_class: type[RichAsyncCommand] | None = RichAsyncCommand
 context_class: type[RichAsyncContext] = RichAsyncContext
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L131-L131)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L131-L131)
 
 ### rich_click.rich_async_command.RichAsyncGroup.group_class
 
@@ -767,7 +767,7 @@ context_class: type[RichAsyncContext] = RichAsyncContext
 group_class: Any | None = type
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L133-L133)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L133-L133)
 
 ### rich_click.rich_async_command.RichAsyncGroup.aliases
 
@@ -779,7 +779,7 @@ aliases: Iterable[str] = aliases or []
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L84-L84)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L84-L84)
 
 ### rich_click.rich_async_command.RichAsyncGroup.panel
 
@@ -791,7 +791,7 @@ panel: str | list[str] | None = panel
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L82-L82)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L82-L82)
 
 ### rich_click.rich_async_command.RichAsyncGroup.panels
 
@@ -803,7 +803,7 @@ panels: list[RichPanel[Any, Any]] = panels or []
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L83-L83)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L83-L83)
 
 ### rich_click.rich_async_command.RichAsyncGroup.console
 
@@ -822,7 +822,7 @@ console configuration.
 
 See `rich_config` decorator for how to apply the settings.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L89-L103)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L89-L103)
 
 ### rich_click.rich_async_command.RichAsyncGroup.help_config
 
@@ -836,7 +836,7 @@ Inherited from: `rich_click.rich_command.RichCommandMixin`
 
 Rich Help Configuration.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L106-L117)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L106-L117)
 
 ### rich_click.rich_async_command.RichAsyncGroup.add_command
 
@@ -851,7 +851,7 @@ Inherited from: `rich_click.rich_command.RichGroupMixin`
 Register another :class:`Command` with this group. If the name
 is not provided, the name of the command is used.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L564-L578)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L564-L578)
 
 ### rich_click.rich_async_command.RichAsyncGroup.add_command_to_panel
 
@@ -863,7 +863,7 @@ def add_command_to_panel(command: click.Command, panel_name: str | Iterable[str]
 
 Inherited from: `rich_click.rich_command.RichGroupMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L580-L591)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L580-L591)
 
 ### rich_click.rich_async_command.RichAsyncGroup.command
 
@@ -889,7 +889,7 @@ To customize the command class used, set the
 .. versionchanged:: 8.0
     Added the :attr:`command_class` attribute.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L430-L474)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L430-L474)
 
 ### rich_click.rich_async_command.RichAsyncGroup.format_commands
 
@@ -901,7 +901,7 @@ def format_commands(ctx: click.Context, formatter: click.HelpFormatter) -> None
 
 Inherited from: `rich_click.rich_command.RichGroupMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L404-L406)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L404-L406)
 
 ### rich_click.rich_async_command.RichAsyncGroup.format_help
 
@@ -913,7 +913,7 @@ def format_help(ctx: RichContext, formatter: RichHelpFormatter) -> None
 
 Inherited from: `rich_click.rich_command.RichGroupMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L408-L415)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L408-L415)
 
 ### rich_click.rich_async_command.RichAsyncGroup.get_command
 
@@ -925,7 +925,7 @@ def get_command(ctx: click.Context, cmd_name: str) -> click.Command | None
 
 Inherited from: `rich_click.rich_command.RichGroupMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L560-L562)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L560-L562)
 
 ### rich_click.rich_async_command.RichAsyncGroup.group
 
@@ -951,7 +951,7 @@ attribute.
 .. versionchanged:: 8.0
     Added the :attr:`group_class` attribute.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L482-L529)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L482-L529)
 
 ### rich_click.rich_async_command.RichAsyncGroup.invoke
 
@@ -963,7 +963,7 @@ async def invoke(ctx: asyncclick.Context) -> Any
 
 Inherited from: `rich_click.rich_async_command.RichAsyncCommand`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L99-L101)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L99-L101)
 
 ### rich_click.rich_async_command.RichAsyncGroup.main
 
@@ -975,7 +975,7 @@ async def main(args: Sequence[str] | None = None, prog_name: str | None = None, 
 
 Inherited from: `rich_click.rich_async_command.RichAsyncCommand`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L79-L91)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L79-L91)
 
 ### rich_click.rich_async_command.RichAsyncGroup.make_context
 
@@ -987,7 +987,7 @@ async def make_context(*args: Any, **kwargs: Any) -> Any
 
 Inherited from: `rich_click.rich_async_command.RichAsyncCommand`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L95-L97)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L95-L97)
 
 ### rich_click.rich_async_command.RichAsyncGroup.to_info_dict
 
@@ -999,7 +999,7 @@ async def to_info_dict(ctx: asyncclick.Context) -> dict[str, Any]
 
 Inherited from: `rich_click.rich_async_command.RichAsyncCommand`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_async_command.py#L71-L75)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_async_command.py#L71-L75)
 
 ### rich_click.rich_async_command.RichAsyncGroup.add_panel
 
@@ -1013,7 +1013,7 @@ Inherited from: `rich_click.rich_command.RichCommandMixin`
 
 Add a RichPanel to the RichCommand.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L222-L224)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L222-L224)
 
 ### rich_click.rich_async_command.RichAsyncGroup.format_epilog
 
@@ -1025,7 +1025,7 @@ def format_epilog(ctx: click.Context, formatter: click.HelpFormatter) -> None
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L206-L209)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L206-L209)
 
 ### rich_click.rich_async_command.RichAsyncGroup.format_help_text
 
@@ -1037,7 +1037,7 @@ def format_help_text(ctx: click.Context, formatter: click.HelpFormatter) -> None
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L184-L187)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L184-L187)
 
 ### rich_click.rich_async_command.RichAsyncGroup.format_options
 
@@ -1049,7 +1049,7 @@ def format_options(ctx: click.Context, formatter: click.HelpFormatter) -> None
 
 Inherited from: `rich_click.rich_command.RichCommandMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L195-L204)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L195-L204)
 
 ### rich_click.rich_async_command.RichAsyncGroup.get_help_option
 
@@ -1068,7 +1068,7 @@ Skipped if :attr:`add_help_option` is ``False``.
 .. versionchanged:: 8.1.8
     The help option is now cached to avoid creating it multiple times.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L232-L253)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L232-L253)
 
 ### rich_click.rich_async_command.RichAsyncGroup.get_rich_table_row
 
@@ -1082,4 +1082,4 @@ Inherited from: `rich_click.rich_command.RichCommandMixin`
 
 Create a row for the rich table corresponding with this parameter.
 
-[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/rich_command.py#L211-L220)
+[View source](https://github.com/ewels/rich-click/blob/da645c7fb7c3b8823220e33e62ff00a262d994da/src/rich_click/rich_command.py#L211-L220)
