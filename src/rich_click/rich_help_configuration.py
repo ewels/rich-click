@@ -243,7 +243,7 @@ class RichHelpConfiguration:
     """Show arguments with options instead of in own panel"""
     option_envvar_first: bool | None = field(default=None)
     """Show env vars before option help text instead of after"""
-    text_markup: Literal["ansi", "rich", "markdown", None] = field(default=notset)
+    text_markup: Literal["ansi", "rich", "markdown", "rst", None] = field(default=notset)
     """What engine to use to render the text. Default is 'ansi'."""
     text_kwargs: dict[str, Any] | None = field(default=None)
     """Additional kwargs to pass to Rich text rendering. Kwargs differ by text_markup chosen."""
@@ -308,6 +308,25 @@ class RichHelpConfiguration:
                 "`use_rich_markup=` will be deprecated in a future version of rich-click."
                 " Please use `text_markup=` instead.",
                 PendingDeprecationWarning,
+                stacklevel=2,
+            )
+
+        if self.use_markdown and self.use_rich_markup:
+            import warnings
+
+            warnings.warn(
+                "Both `use_markdown=` and `use_rich_markup=` are set; only one markup can be used."
+                " Markdown will be used. Please set `text_markup=` instead.",
+                UserWarning,
+                stacklevel=2,
+            )
+        elif (self.use_markdown or self.use_rich_markup) and self.text_markup is not notset:
+            import warnings
+
+            warnings.warn(
+                f"`text_markup={self.text_markup!r}` overrides `use_markdown=` and `use_rich_markup=`."
+                " Please remove them.",
+                UserWarning,
                 stacklevel=2,
             )
 

@@ -37,6 +37,7 @@ Click, formatted with Rich, with minimal customization required.
 - 💻 CLI tool to run on _other people's_ Click and Typer CLIs (prefix the command with `rich-click`)
 - 📦 Export help text as HTML or SVG
 - 🎁 Group commands and options into named panels
+- 📝 Write help text in Rich markup, Markdown or reStructuredText
 - ❌ Well formatted error messages
 - 💫 Extensive customization
 - 🤖 IDE autocomplete of Click decorators for smooth developer experience
@@ -46,6 +47,8 @@ Click, formatted with Rich, with minimal customization required.
 ```shell
 pip install rich-click
 ```
+
+To write help text in reStructuredText, install the optional `rst` extra: `pip install 'rich-click[rst]'`
 
 ## Examples
 

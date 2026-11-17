@@ -29,6 +29,7 @@ jobs:
             echo -e "\n\n$f"
             uv run \
               --no-default-groups \
+              --extra rst \
               --with "click==$CLICK_VERSION" \
               python "${f}" --help || exit 1;
           done
