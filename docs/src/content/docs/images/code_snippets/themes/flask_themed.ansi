@@ -1,0 +1,30 @@
+
+  [1;33mUsage:[0m [33mflask[0m [[94mOPTIONS[0m] [94mCOMMAND[0m [[94mARGS[0m]...
+
+  [39mA general utility script for Flask applications.[0m
+  [39mAn application to load must be given with the '[0m[33m--app[0m[39m' option, 'FLASK_APP' environment variable, [0m
+  [39mor with a 'wsgi.py' or 'app.py' file in the current directory.[0m
+
+[2m  [0m[39mOptions[0m[2m                                                                                         [0m[2m  [0m
+[2m [0m ──────────────────────────────────────────────────────────────────────────────────────────────── [2m [0m
+[2m [0m [33m-e[0m   [33m--env-file          [0m   [34mFILE  [0m   [39mLoad environment variables from this file, taking [0m[39m         [0m [2m [0m
+[2m [0m                                      [39mprecedence over those set by '.env' and '.flaskenv'. [0m[39m      [0m [2m [0m
+[2m [0m                                      [39mVariables set directly in the environment take highest [0m[39m    [0m [2m [0m
+[2m [0m                                      [39mprecedence. python-dotenv must be installed.[0m[39m               [0m [2m [0m
+[2m [0m [33m-A[0m   [33m--app               [0m   [34mIMPORT[0m   [39mThe Flask application or factory function to load, in the [0m[39m [0m [2m [0m
+[2m [0m                                      [39mform 'module:name'. Module can be a dotted import or file [0m[39m [0m [2m [0m
+[2m [0m                                      [39mpath. Name is not required if it is 'app', 'application', [0m[39m [0m [2m [0m
+[2m [0m                                      [39m'create_app', or 'make_app', and can be 'name(args)' to [0m[39m   [0m [2m [0m
+[2m [0m                                      [39mpass arguments.[0m[39m                                            [0m [2m [0m
+[2m [0m      [33m--debug[0m[39m / [0m[33m--no-debug[0m            [39mSet debug mode.[0m                                             [2m [0m
+[2m [0m      [33m--version           [0m            [39mShow the Flask version.[0m                                     [2m [0m
+[2m [0m      [33m--help              [0m            [39mShow this message and exit.[0m                                 [2m [0m
+[2m [0m                                                                                                  [2m [0m
+[2m                                                                                                    [0m
+[2m  [0m[39mCommands[0m[2m                                                                                        [0m[2m  [0m
+[2m [0m ──────────────────────────────────────────────────────────────────────────────────────────────── [2m [0m
+[2m [0m [33mroutes           [0m[33m [0m  [39mShow the routes for the app.                                                [0m [2m [0m
+[2m [0m [33mrun              [0m[33m [0m  [39mRun a development server.                                                   [0m [2m [0m
+[2m [0m [33mshell            [0m[33m [0m  [39mRun a shell in the app context.                                             [0m [2m [0m
+[2m [0m                                                                                                  [2m [0m
+[2m                                                                                                    [0m

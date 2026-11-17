@@ -1,0 +1,14 @@
+
+ [33mUsage:[0m [1mpanels_simple_arguments_help.py[0m [[1;36mOPTIONS[0m] [1;36mSRC[0m [1;36mDEST[0m
+
+ Move an item from a src location to a dest location
+
+[2m╭─[0m[2m Arguments [0m[2m─────────────────────────────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m [31m*[0m  [1;36mSRC [0m  [1;33mTEXT[0m  Source [2;31m[required][0m                                             [2m│[0m
+[2m│[0m [31m*[0m  [1;36mDEST[0m  [1;33mTEXT[0m  Destination [2;31m[required][0m                                        [2m│[0m
+[2m╰──────────────────────────────────────────────────────────────────────────────╯[0m
+[2m╭─[0m[2m Options [0m[2m───────────────────────────────────────────────────────────────────[0m[2m─╮[0m
+[2m│[0m [1;36m--env      [0m  [1;33mTEXT[0m  Environment                                               [2m│[0m
+[2m│[0m [1;36m--log-level[0m  [1;33mTEXT[0m  Log level                                                 [2m│[0m
+[2m│[0m [1;36m--help     [0m        Show this message and exit.                               [2m│[0m
+[2m╰──────────────────────────────────────────────────────────────────────────────╯[0m

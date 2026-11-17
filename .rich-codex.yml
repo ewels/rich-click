@@ -1,3 +1,24 @@
 terminal_width: 80
 working_dir: "."
-outputs: []
+# Homepage terminal (docs/src/components/Hero.astro): one capture per format.
+outputs:
+  - &homepage
+    command: python sync_tool.py --help
+    working_dir: docs/code_snippets/homepage
+    img_paths: [docs/src/content/docs/images/code_snippets/homepage/sync_tool_box.ansi]
+    extra_env: { TERMINAL_WIDTH: 62, RICH_CLICK_THEME: default-box }
+  - <<: *homepage
+    img_paths: [docs/src/content/docs/images/code_snippets/homepage/sync_tool_nu.ansi]
+    extra_env: { TERMINAL_WIDTH: 62, RICH_CLICK_THEME: default-nu }
+  - <<: *homepage
+    img_paths: [docs/src/content/docs/images/code_snippets/homepage/sync_tool_slim.ansi]
+    extra_env: { TERMINAL_WIDTH: 62, RICH_CLICK_THEME: default-slim }
+  - <<: *homepage
+    img_paths: [docs/src/content/docs/images/code_snippets/homepage/sync_tool_modern.ansi]
+    extra_env: { TERMINAL_WIDTH: 62, RICH_CLICK_THEME: default-modern }
+  - <<: *homepage
+    img_paths: [docs/src/content/docs/images/code_snippets/homepage/sync_tool_robo.ansi]
+    extra_env: { TERMINAL_WIDTH: 62, RICH_CLICK_THEME: default-robo }
+  - <<: *homepage
+    img_paths: [docs/src/content/docs/images/code_snippets/homepage/sync_tool_square.ansi]
+    extra_env: { TERMINAL_WIDTH: 62, RICH_CLICK_THEME: default-square }

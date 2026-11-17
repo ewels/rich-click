@@ -4,9 +4,14 @@
 
 - Added light/dark terminal background detection. Themes can now be given as a pair, e.g. `RICH_CLICK_THEME="dark:nord-modern,light:solarized-modern"`, and `rich_click.detect_background()` is available for custom styles. Detection only runs when help or errors are rendered; set `RICH_CLICK_BACKGROUND=dark|light` to override it.
 - Added `nord_light` and `dracula_light` color palettes. The `nord` and `dracula` palettes switch to these automatically on light terminal backgrounds.
+- Added reStructuredText support with `text_markup="rst"`, via the optional `rich-click[rst]` extra ([rich-rst](https://github.com/wasi-master/rich-rst)). [[#172](https://github.com/ewels/rich-click/issues/172)]
+- Added a `UserWarning` when markup options conflict: both `use_markdown` and `use_rich_markup` set, or either one set alongside `text_markup`.
+- Fixed `rich_config()` eagerly importing `rich` during normal (non-help) execution, slowing CLI startup.
 - Added a new `square` theme format: the default `box` format with square corners instead of rounded ones.
 - Dropped support for Python 3.8 and 3.9; the minimum supported version is now Python 3.10.
 - Modernised the codebase to Python 3.10+ syntax (PEP 604 unions, built-in generics) and removed version-conditional shims for Python <3.10.
+- Docs are now built with [Astro Starlight](https://starlight.astro.build/) instead of ProperDocs, using Astro's Rust-based Sätteri Markdown processor for faster builds. The site keeps the same URLs, versioned deploys, styling and features as before.
+- Fixed some broken docs links; broken links and anchors now fail the docs build (via `starlight-links-validator`).
 - Fixed docs versioning, so that a released version no longer keeps the `prerelease` alias alongside `latest`. [[#343](https://github.com/ewels/rich-click/pull/343)] ([@dwreeves](https://github.com/dwreeves))
 - Redesigned `__init__.py` to avoid surfacing click's `DeprecationWarning` going forward.
 - Fixed `patch_typer()` crashing on `typer>=0.26.0`; it now warns and leaves Typer unpatched instead of raising. [[#330](https://github.com/ewels/rich-click/issues/330)]

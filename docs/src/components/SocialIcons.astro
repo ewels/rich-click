@@ -1,0 +1,146 @@
+---
+// Starlight's social icons, preceded by the docs version picker.
+import Default from '@astrojs/starlight/components/SocialIcons.astro';
+import { Icon } from '@astrojs/starlight/components';
+import { currentVersion, deployRoot, docsVersions, sitePath } from '../base';
+
+const currentPath = sitePath(Astro.url);
+const versionLinks = docsVersions.map(({ version, title, aliases }) => ({
+  label: aliases.length > 0 ? `${title} (${aliases.join(', ')})` : title,
+  href: `${deployRoot}/${version}${currentPath}`,
+  root: `${deployRoot}/${version}/`,
+  current: version === currentVersion || aliases.includes(currentVersion),
+}));
+const currentLabel = versionLinks.find((v) => v.current)?.label ?? currentVersion;
+---
+
+{
+  versionLinks.length > 0 && (
+    <details class="rc-version-select">
+      <summary>
+        <span class="sr-only">Documentation version: </span>
+        {currentLabel}
+        <Icon name="down-caret" class="caret" />
+      </summary>
+      <ul>
+        {versionLinks.map((link) => (
+          <li>
+            <a href={link.href} data-version-root={link.root} aria-current={link.current ? 'true' : undefined}>
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </details>
+  )
+}
+<Default />
+
+<style>
+  /* Matches Starlight's theme select beside it. */
+  .rc-version-select {
+    position: relative;
+    color: var(--sl-color-gray-2);
+  }
+
+  .rc-version-select > summary {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .rc-version-select > summary:hover {
+    color: var(--sl-color-white);
+  }
+
+  .rc-version-select > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .caret {
+    font-size: 1.25rem;
+  }
+
+  @media (min-width: 50rem) {
+    .rc-version-select {
+      font-size: var(--sl-text-sm);
+    }
+  }
+
+  .rc-version-select ul {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.25rem);
+    z-index: 10;
+    margin: 0;
+    padding: 0.25rem;
+    list-style: none;
+    min-width: 100%;
+    background-color: var(--sl-color-black);
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.25rem;
+    box-shadow: var(--sl-shadow-md);
+  }
+
+  .rc-version-select a {
+    display: block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.2rem;
+    color: var(--sl-color-gray-2);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .rc-version-select a:hover {
+    background-color: color-mix(in srgb, currentColor 15%, transparent);
+  }
+
+  .rc-version-select a[aria-current='true'] {
+    font-weight: 600;
+    color: var(--sl-color-header-text, var(--sl-color-white));
+  }
+
+  /* Mobile menu footer: open upwards, left-aligned. */
+  :global(.mobile-preferences) .rc-version-select ul {
+    top: auto;
+    bottom: calc(100% + 0.25rem);
+    right: auto;
+    left: 0;
+  }
+</style>
+
+<script>
+  const pickers = document.querySelectorAll<HTMLDetailsElement>('.rc-version-select');
+  const closeAll = () => pickers.forEach((picker) => (picker.open = false));
+
+  if (pickers.length > 0) {
+    // <details> only closes from its own summary; also close on an outside click or Escape.
+    document.addEventListener('click', (event) => {
+      for (const picker of pickers) {
+        if (picker.open && !picker.contains(event.target as Node)) picker.open = false;
+      }
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const focused = [...pickers].find((picker) => picker.open && picker.contains(document.activeElement));
+      closeAll();
+      focused?.querySelector('summary')?.focus();
+    });
+    // Otherwise still open after coming Back from the version that was picked.
+    window.addEventListener('pageshow', closeAll);
+  }
+
+  // Older versions may not have the current page: go to their homepage instead.
+  for (const link of document.querySelectorAll<HTMLAnchorElement>('a[data-version-root]:not([aria-current])')) {
+    link.addEventListener('click', async (event) => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      const exists = await fetch(link.href, { method: 'HEAD' }).then((r) => r.ok, () => true);
+      location.href = exists ? link.href : link.dataset.versionRoot!;
+    });
+  }
+</script>

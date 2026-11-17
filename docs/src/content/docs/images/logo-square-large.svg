@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>rich-click</title>
+  <rect x="2" y="2" width="4" height="4" fill="#000000"/>
+  <rect x="10" y="2" width="4" height="4" fill="#800000"/>
+  <rect x="18" y="2" width="4" height="4" fill="#008000"/>
+  <rect x="26" y="2" width="4" height="4" fill="#808000"/>
+  <rect x="2" y="10" width="4" height="4" fill="#008080"/>
+  <rect x="10" y="10" width="4" height="4" fill="#000080"/>
+  <rect x="18" y="10" width="4" height="4" fill="#800080"/>
+  <rect x="26" y="10" width="4" height="4" fill="#000000"/>
+  <rect x="2" y="18" width="4" height="4" fill="#c0c0c0"/>
+  <rect x="10" y="18" width="4" height="4" fill="#008000"/>
+  <rect x="18" y="18" width="4" height="4" fill="#808000"/>
+  <rect x="26" y="18" width="4" height="4" fill="#800000"/>
+  <rect x="2" y="26" width="4" height="4" fill="#000080"/>
+  <rect x="10" y="26" width="4" height="4" fill="#800080"/>
+  <rect x="18" y="26" width="4" height="4" fill="#008080"/>
+  <rect x="26" y="26" width="4" height="4" fill="#c0c0c0"/>
+</svg>
