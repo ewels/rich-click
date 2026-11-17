@@ -1,3 +1,4 @@
+import re
 from collections.abc import Callable
 from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Literal
@@ -26,6 +27,7 @@ class RichClickTheme:
         styles: dict[str, Any] | None = None,
         primary_colors: list["StyleType"] | None = None,
         post_combine_callback: Callable[[dict[str, Any]], dict[str, Any]] | None = None,
+        light_variant: str | None = None,
     ) -> None:
         """
         Create RichTheme instance.
@@ -40,6 +42,8 @@ class RichClickTheme:
                 just serves as documentation.
             post_combine_callback: After combining two themes, function is called which adjusts
                 the styles.
+            light_variant: Name of a color palette to use instead of this one when the terminal
+                has a light background.
 
         """
         self.name = name
@@ -48,6 +52,7 @@ class RichClickTheme:
         self.styles = styles or {}
         self.primary_colors = primary_colors or []
         self.post_combine_callback = post_combine_callback
+        self.light_variant = light_variant
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} {self.name}>"
@@ -235,6 +240,7 @@ COLORS: dict[str, RichClickTheme] = {
     "nord": RichClickTheme(
         name="nord",
         description="Many shades of cool colors",
+        light_variant="nord_light",
         primary_colors=["#5e81ac", "#81a1c1", "#b48ead"],
         styles={
             "style_option": "#5e81ac",
@@ -332,6 +338,7 @@ COLORS: dict[str, RichClickTheme] = {
     "dracula": RichClickTheme(
         name="dracula",
         description="Vibrant high-contract dark theme",
+        light_variant="dracula_light",
         primary_colors=["magenta", "red", "yellow"],
         styles={
             "style_option": "#FF79C6",  # topink
@@ -871,6 +878,75 @@ COLORS: dict[str, RichClickTheme] = {
     ),
 }
 
+
+def _recolor(base: RichClickTheme, name: str, description: str, colors: dict[str, str]) -> RichClickTheme:
+    """Copy a color palette, swapping hex colors using the ``colors`` mapping."""
+    mapping = {k.lower(): v for k, v in colors.items()}
+    pattern = re.compile(r"#[0-9a-fA-F]{6}")
+
+    def swap(value: Any) -> Any:
+        if isinstance(value, str):
+            return pattern.sub(lambda m: mapping.get(m.group(0).lower(), m.group(0)), value)
+        return value
+
+    return RichClickTheme(
+        name=name,
+        description=description,
+        styles={k: swap(v) for k, v in base.styles.items()},
+        primary_colors=[swap(c) for c in base.primary_colors],
+        post_combine_callback=base.post_combine_callback,
+    )
+
+
+# Light background versions of palettes that use hex colors designed for dark backgrounds.
+# These are used automatically in place of the dark palettes when a light background is detected.
+_LIGHT_VARIANTS = {
+    # Nord has no official light palette.
+    # These keep each Nord color's hue, darkened to at least 4.5:1 contrast on white.
+    "nord_light": _recolor(
+        COLORS["nord"],
+        name="nord_light",
+        description="Nord colors darkened for light backgrounds",
+        colors={
+            "#5e81ac": "#41648f",
+            "#81a1c1": "#5079a3",
+            "#8fbcbb": "#4c7f7e",
+            "#88c0d0": "#3a7e92",
+            "#b48ead": "#98658f",
+            "#d08770": "#b95b3d",
+            "#bf616a": "#bb5660",
+            "#a3be8c": "#617e47",
+            "#ebcb8b": "#9a6f1a",
+            "#434c5e": "#aab4c6",
+        },
+    ),
+    # Dracula's official light palette, Alucard: https://draculatheme.com/spec
+    "dracula_light": _recolor(
+        COLORS["dracula"],
+        name="dracula_light",
+        description="Alucard, the official light Dracula palette",
+        colors={
+            "#FF79C6": "#A3144D",
+            "#8BE9FD": "#036A96",
+            "#F1FA8C": "#846E15",
+            "#BD93F9": "#644AC9",
+            "#50FA7B": "#14710A",
+            "#44475A": "#6C664B",
+            "#6272A4": "#635D97",
+            "#FF5555": "#CB3A2A",
+            "#FFB86C": "#A34D14",
+        },
+    ),
+}
+# Place each light palette right after its dark counterpart.
+_colors: dict[str, RichClickTheme] = {}
+for _name, _theme in COLORS.items():
+    _colors[_name] = _theme
+    if _theme.light_variant:
+        _colors[_theme.light_variant] = _LIGHT_VARIANTS[_theme.light_variant]
+COLORS = _colors
+del _colors, _name, _theme
+
 _BOX_STYLES: dict[str, Any] = {
     "style_options_panel_box": "ROUNDED",
     "style_commands_panel_box": "ROUNDED",
@@ -1102,8 +1178,74 @@ class RichClickThemeNotFound(KeyError):
     """Raise when a theme is not found."""
 
 
-def get_theme(theme: str, raise_key_error: bool = True) -> RichClickTheme:
-    """Get the theme based on the string name."""
+def parse_background_theme(theme: str) -> dict[str, str] | None:
+    """
+    Parse a light/dark theme pair such as ``"dark:nord-modern,light:solarized-modern"``.
+
+    Returns None if the string is not a theme pair.
+    """
+    if ":" not in theme:
+        return None
+    pair: dict[str, str] = {}
+    for part in theme.split(","):
+        key, sep, value = part.partition(":")
+        key, value = key.strip(), value.strip()
+        if not sep or key not in ("dark", "light") or not value or key in pair:
+            raise RichClickThemeNotFound(
+                f"RichClickTheme '{theme}' not found."
+                " Light/dark theme pairs must look like 'dark:<theme>,light:<theme>'"
+            )
+        pair[key] = value
+    if len(pair) != 2:
+        raise RichClickThemeNotFound(
+            f"RichClickTheme '{theme}' not found. Light/dark theme pairs must set both 'dark:' and 'light:'"
+        )
+    return pair
+
+
+def _light_variant(theme: str) -> str | None:
+    """Get the light version of a theme name, if its color palette has one."""
+    clr, sep, fmt = theme.partition("-")
+    palette = COLORS.get(clr)
+    if palette is None or palette.light_variant is None or (sep and fmt not in FORMATS):
+        return None
+    return palette.light_variant + sep + fmt
+
+
+def theme_needs_background(theme: str) -> bool:
+    """Whether picking this theme depends on the terminal background."""
+    return ":" in theme or _light_variant(theme) is not None
+
+
+def resolve_background_theme(theme: str) -> str:
+    """
+    Pick a theme name based on the terminal background.
+
+    - Light/dark pairs (``"dark:nord-modern,light:solarized-modern"``) resolve to one of the two themes.
+      If the background cannot be detected, the first theme listed is used.
+    - Palettes with a light variant (e.g. ``nord``) switch to it (``nord_light``) on light backgrounds.
+    - All other theme names are returned unchanged.
+    """
+    pair = parse_background_theme(theme)
+    light = None if pair else _light_variant(theme)
+    if pair is None and light is None:
+        return theme
+    # Imported here so that the detection code is only loaded when it is needed.
+    from rich_click.terminal_background import detect_background
+
+    background = detect_background()
+    if pair is not None:
+        return pair[background] if background else next(iter(pair.values()))
+    return light if background == "light" and light else theme
+
+
+def get_theme(theme: str, raise_key_error: bool = True, resolve_background: bool = True) -> RichClickTheme:
+    """
+    Get the theme based on the string name.
+
+    If ``resolve_background`` is true, the terminal background may be detected
+    to pick from a light/dark pair, or to use a palette's light variant.
+    """
     clr: str | None = None
     fmt: str | None = None
 
@@ -1115,6 +1257,16 @@ def get_theme(theme: str, raise_key_error: bool = True) -> RichClickTheme:
 
         rich_click_theme = _THEME_CACHE[f"{clr}-{fmt}"] = COLORS[clr] + FORMATS[fmt]
         return rich_click_theme
+    if resolve_background and theme_needs_background(theme):
+        try:
+            resolved = resolve_background_theme(theme)
+        except RichClickThemeNotFound:
+            # Malformed pair: raise, or fall through to the warning below.
+            if raise_key_error:
+                raise
+        else:
+            # Themes picked from a pair are used as-is, so e.g. 'dark:nord,light:nord' never switches palettes.
+            return get_theme(resolved, raise_key_error=raise_key_error, resolve_background=False)
     if theme in _THEME_CACHE:
         return _THEME_CACHE[theme]
     try:

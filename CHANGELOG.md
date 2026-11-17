@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added light/dark terminal background detection. Themes can now be given as a pair, e.g. `RICH_CLICK_THEME="dark:nord-modern,light:solarized-modern"`, and `rich_click.detect_background()` is available for custom styles. Detection only runs when help or errors are rendered; set `RICH_CLICK_BACKGROUND=dark|light` to override it.
+- Added `nord_light` and `dracula_light` color palettes. The `nord` and `dracula` palettes switch to these automatically on light terminal backgrounds.
 - Added reStructuredText support with `text_markup="rst"`, via the optional `rich-click[rst]` extra ([rich-rst](https://github.com/wasi-master/rich-rst)). [[#172](https://github.com/ewels/rich-click/issues/172)]
 - Added a `UserWarning` when markup options conflict: both `use_markdown` and `use_rich_markup` set, or either one set alongside `text_markup`.
 - Fixed `rich_config()` eagerly importing `rich` during normal (non-help) execution, slowing CLI startup.
