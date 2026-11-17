@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-# ruff: noqa: D103
 from abc import ABCMeta
 from typing import TYPE_CHECKING, Any
 
@@ -69,7 +68,7 @@ class _PatchedTyperContext(RichContext):
         """
         Format the help into a string and returns it.
 
-        Calls :meth:`format_help` internally.
+        Calls `format_help` internally.
         """
         import typer.core
         from typer.models import DefaultPlaceholder
@@ -290,8 +289,8 @@ def _patch_async_module(module: Any, rich_config: RichHelpConfiguration | None =
     """
     Install rich-click's async command classes into an async click fork's namespace.
 
-    This is the asyncclick counterpart of :func:`patch`. After it runs, plain
-    ``@module.command`` / ``@module.group`` decorators produce rich-formatted commands,
+    This is the asyncclick counterpart of `patch`. After it runs, plain
+    `@module.command` and `@module.group` decorators produce rich-formatted commands,
     so an existing asyncclick CLI renders richly with no other changes.
     """
     import inspect
@@ -349,20 +348,19 @@ def patch(
     Patch Click internals to use rich-click types.
 
     Args:
-        rich_config: Rich help configuration to apply globally. Defaults to None.
-        patch_rich_click: Also patch the ``rich_click`` namespace. Defaults to True.
-        patch_typer: Also patch Typer. Defaults to False.
-        module: An async click fork (e.g. ``asyncclick``) to patch instead of ``click``.
-            When provided, rich-click's async command classes are installed into that
-            module's namespace. Requires ``rich-click[async]``. Defaults to None (click).
+        rich_config: Help configuration to apply globally.
+        patch_rich_click: Also patch the `rich_click` namespace. Ignored when `module` is set.
+        patch_typer: Also patch Typer. Ignored when `module` is set.
+        module: An asynchronous click fork, such as `asyncclick`, to patch instead of click.
+            rich-click then installs its async command classes into the namespace of that module.
+            Requires `rich-click[async]`.
 
     Raises:
         TypeError: `module` is not an asynchronous click fork, such as asyncclick.
-
     """
     import warnings
 
-    import rich_click._click_types_cache  # noqa: F401
+    import rich_click._click_types_cache
 
     if module is not None:
         import inspect
@@ -428,7 +426,8 @@ def patch_typer(rich_config: RichHelpConfiguration | None = None) -> None:
         rich_config: Help configuration for every command.
 
     Warning:
-        On Typer 0.26 and later, the patch can fail. The function then shows a warning and leaves Typer unpatched.
+        Typer 0.26 and later may not support the patch, so the function always shows a warning on those versions.
+        If a Typer class cannot be patched, it shows a second warning and leaves Typer unpatched.
         See [Typer support](https://ewels.github.io/rich-click/latest/documentation/typer_support/#typer-026-support).
     """
     import typer.core

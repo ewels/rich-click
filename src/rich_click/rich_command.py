@@ -55,15 +55,15 @@ class RichCommandMixin(_CommandMixinBase):
     Mixin providing Rich help-formatting behavior for click Commands.
 
     Contains only formatting/help behavior and Rich-specific instance state, with
-    no click base of its own, so it can be composed with either ``click.Command``
-    (see :class:`RichCommand`) or a click-compatible fork's Command (e.g.
-    ``asyncclick.Command``) without dragging click's synchronous execution methods
-    (``main``, ``make_context``, ``scope``, etc.) into the MRO.
+    no click base of its own, so it can be composed with either `click.Command`
+    (see `RichCommand`) or a click-compatible fork's Command (e.g.
+    `asyncclick.Command`) without dragging click's synchronous execution methods
+    (`main`, `make_context`, `scope`, etc.) into the MRO.
 
-    Execution-flow methods (``main`` and ``to_info_dict``) deliberately live on the
-    concrete :class:`RichCommand` instead of here, so that async forks can inherit
+    Execution-flow methods (`main` and `to_info_dict`) deliberately live on the
+    concrete `RichCommand` instead of here, so that async forks can inherit
     their own async equivalents. Help and error formatting, including
-    :meth:`get_help_option` and :meth:`_error_formatter`, is shared here.
+    `get_help_option` and `_error_formatter`, is shared here.
     """
 
     _formatter: RichHelpFormatter | None = None
@@ -106,7 +106,7 @@ class RichCommandMixin(_CommandMixinBase):
         Help configuration of this command. Set it with the `rich_config` decorator.
 
         Deprecated:
-            Since 1.9. Use the help configuration of the context, `ctx.help_config`.
+            Since 1.8. Use the help configuration of the context, `ctx.help_config`.
         """
         warnings.warn(
             "RichCommand.help_config is deprecated. Please use the click.Context's help config instead.",
@@ -378,8 +378,8 @@ class RichGroupMixin(RichCommandMixin, _GroupMixinBase):
     """
     Mixin providing Rich help-formatting behavior for click Groups.
 
-    Like :class:`RichCommandMixin`, this has no click base of its own so it can be
-    composed with either ``click.Group`` (see :class:`RichGroup`) or a fork's Group.
+    Like `RichCommandMixin`, this has no click base of its own so it can be
+    composed with either `click.Group` (see `RichGroup`) or a fork's Group.
     """
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -417,7 +417,7 @@ class RichGroupMixin(RichCommandMixin, _GroupMixinBase):
             self.format_epilog(ctx, formatter)
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
-        """Alias for :meth:`main`."""
+        """Alias for `main`."""
         # Include this here because I run into a false warning
         # in the PyCharm IDE otherwise; for some reason PyCharm doesn't
         # seem to think RichGroups are callable. (No issues with Mypy, though.)
@@ -558,13 +558,11 @@ class RichGroupMixin(RichCommandMixin, _GroupMixinBase):
         Args:
             cmd: The command to add.
             name: Name of the command in this group. Defaults to the name of the command.
-            aliases: Other names that run the command.
+            aliases: Other names that run the command, in addition to the aliases of the command.
             panel: Panel or panels to show the command in, by panel title.
         """
         super().add_command(cmd, name)
-        _name: str = name or cmd.name  # type: ignore[assignment]
-        if aliases or panel:
-            self._handle_extras_add_command(cmd, name=name, aliases=aliases, panel=panel)
+        self._handle_extras_add_command(cmd, name=name, aliases=aliases, panel=panel)
 
     def add_command_to_panel(
         self,
@@ -573,11 +571,10 @@ class RichGroupMixin(RichCommandMixin, _GroupMixinBase):
     ) -> None:
         if not command.name:
             return
-        self._panel_command_mapping.setdefault(command.name, [])
-        if isinstance(panel_name, str):
-            self._panel_command_mapping[command.name].append(panel_name)
-        else:
-            self._panel_command_mapping[command.name].extend(panel_name)
+        panels = self._panel_command_mapping.setdefault(command.name, [])
+        for panel in [panel_name] if isinstance(panel_name, str) else panel_name:
+            if panel not in panels:
+                panels.append(panel)
 
 
 class RichGroup(RichGroupMixin, RichCommand, Group):

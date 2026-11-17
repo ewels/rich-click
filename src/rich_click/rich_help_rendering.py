@@ -327,7 +327,7 @@ def _get_parameter_range(
     mode: Literal["metavar_append", "metavar_column", "help"],
 ) -> Text | str | None:
     # Range - from
-    # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706  # noqa: E501
+    # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
     # skip count with default range type
     if (
         hasattr(param, "count")
@@ -422,7 +422,7 @@ def _get_parameter_help_metavar_col(
         metavar.append(metavar_str)
 
     # Range - from
-    # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706  # noqa: E501
+    # https://github.com/pallets/click/blob/c63c70dabd3f86ca68678b4f00951f78f52d0270/src/click/core.py#L2698-L2706
     try:
         # skip count with default range type
         if isinstance(param.type, click.types._NumberRangeBase) and not (

@@ -65,7 +65,7 @@ class RichContextMixin(_ContextBase):
             **kwargs: Keyword arguments for the click Context.
         """
         super().__init__(*args, **kwargs)
-        parent: RichContextMixin | None = kwargs.pop("parent", None)
+        parent: RichContextMixin | None = self.parent  # type: ignore[assignment]
 
         if help_to_stderr is None and hasattr(parent, "help_to_stderr"):
             self.help_to_stderr = parent.help_to_stderr  # type: ignore[union-attr]

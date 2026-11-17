@@ -106,7 +106,6 @@ lint.ignore = [
     "D100", # Missing docstring in public module
     "D102", # Missing docstring in public method
     "D105", # Missing docstring in magic method
-    "D203", # 1 blank line required before class docstring
     "D205", # 1 blank line required between summary line and description
     "D212", # Multi-line docstring summary should start at the first line
     "E731", # Do not assign a lambda expression, use a def

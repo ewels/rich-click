@@ -304,7 +304,6 @@ R = TypeVar("R")
 
 
 def pass_context(f: Callable[Concatenate[RichContext, P], R]) -> Callable[P, R]:
-    # flake8: noqa: D400,D401
     """Marks a callback as wanting to receive the current context object as first argument."""
     return click_pass_context(f)  # type: ignore[arg-type,unused-ignore]
 
@@ -322,7 +321,7 @@ def help_option(*param_decls: str, **kwargs: Any) -> Callable[[FC], FC]:
     """
 
     def show_help(ctx: Context, param: Parameter, value: bool) -> None:
-        """Callback that print the help page on ``<stdout>`` and exits."""
+        """Print the help page and exit."""
         if value and not ctx.resilient_parsing:
             # Avoid click.echo() because it ignores console settings like force_terminal.
             # Also, do not print() if empty string; assume console was record=False.
@@ -436,8 +435,8 @@ def version_option(
         version: Version to print. If not set, Click reads it from the metadata of the installed `package_name`.
             If Click cannot find the version, `--version` raises a `RuntimeError`.
         *param_decls: Option names. Defaults to `--version`.
-        package_name: Installed package to read the version from. If not set, Click finds it from the
-            stack frames, so the module name must match the name of the installed package.
+        package_name: Installed package to read the version from. If not set, it is the top-level package
+            of the module that calls `version_option`.
         prog_name: Name of the CLI in the message. If not set, Click uses the name of the command.
         message: Message to print. It can use `%(prog)s`, `%(package)s` and `%(version)s`.
             Defaults to `"%(prog)s, version %(version)s"`.
@@ -446,6 +445,14 @@ def version_option(
     Returns:
         A decorator that adds the option to a command.
     """
+    if version is None and package_name is None:
+        # Click looks up the package from its caller's frame, which would be this module.
+        f_globals = sys._getframe(1).f_globals
+        package_name = f_globals.get("__name__")
+        if package_name == "__main__":
+            package_name = f_globals.get("__package__")
+        if package_name:
+            package_name = package_name.partition(".")[0]
     kwargs.setdefault("cls", RichOption)
     return click_version_option(
         version, *param_decls, package_name=package_name, prog_name=prog_name, message=message, **kwargs

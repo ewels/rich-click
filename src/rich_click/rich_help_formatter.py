@@ -60,7 +60,7 @@ def create_console(
 
     Args:
         config: Help configuration to take the console settings from.
-        file: Stream to write to. Defaults to stdout.
+        file: Stream to write to. If not set, the console records its output to an in-memory buffer.
         width: Width of the console. Overrides `config.width`.
         max_width: Maximum width of the console. Overrides `config.max_width`.
 

@@ -41,8 +41,8 @@ class RichAsyncCommand(RichCommandMixin, asyncclick.Command):
     """
     Richly formatted asyncclick Command.
 
-    Combines rich-click's :class:`RichCommandMixin` (help/error formatting) with
-    asyncclick's asynchronous :class:`asyncclick.Command` (async ``main``/``invoke``).
+    Combines the help and error formatting of `RichCommandMixin` with the
+    asynchronous `asyncclick.Command` (async `main` and `invoke`).
     """
 
     context_class: type[RichAsyncContext] = RichAsyncContext
@@ -123,7 +123,7 @@ class RichAsyncGroup(RichGroupMixin, RichAsyncCommand, asyncclick.Group):
     Richly formatted asyncclick Group.
 
     Subcommands and subgroups created from this group inherit the async rich classes
-    via ``command_class``/``group_class``, so the whole command tree renders richly.
+    via `command_class` and `group_class`, so the whole command tree renders richly.
     """
 
     context_class: type[RichAsyncContext] = RichAsyncContext

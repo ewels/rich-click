@@ -138,3 +138,37 @@ def test_make_param_metavar_signature_fallback(
 
     assert _make_param_metavar(param, "ctx") == "VALUE"  # type: ignore[arg-type]
     param.make_metavar.assert_called_once_with(*expected_args)
+
+
+def test_child_context_inherits_from_positional_parent() -> None:
+    cmd = RichCommand("cli")
+    parent = RichContext(cmd, help_to_stderr=True, export_console_as="html")
+    child = RichContext(cmd, parent)
+    assert child.help_to_stderr is True
+    assert child.export_console_as == "html"
+    assert child.help_config is parent.help_config
+
+
+def test_add_command_registers_command_aliases_and_panel(cli_runner: CliRunner) -> None:
+    @rich_click.group()
+    def cli() -> None:
+        pass
+
+    cli.add_command(RichCommand("sub", aliases=["s"], panel="Tools", callback=lambda: print("ran sub")))
+    cli.add_command(RichCommand("other", panel="Tools"), panel="Tools")
+
+    res = cli_runner.invoke(cli, ["s"])
+    assert res.exit_code == 0, res.output
+    assert res.output == "ran sub\n"
+    assert cli._panel_command_mapping == {"sub": ["Tools"], "other": ["Tools"]}
+
+
+def test_version_option_finds_caller_package(cli_runner: CliRunner) -> None:
+    @rich_click.command()
+    @rich_click.version_option()
+    def cli() -> None:
+        pass
+
+    res = cli_runner.invoke(cli, ["--version"])
+    assert isinstance(res.exception, RuntimeError)
+    assert "'tests' is not installed" in str(res.exception)

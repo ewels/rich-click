@@ -3,6 +3,9 @@
 ## Unreleased
 
 - Rewrote the API docstrings in consistent Google style, so the API reference shows parameter tables, notes, warnings and deprecations. Ruff now checks docstrings against the Google convention. Docstrings copied from Click no longer show Click's version notes.
+- Fixed `version_option()` without a `version` or `package_name` showing rich-click's own version instead of the version of the package that uses it.
+- Fixed `RichGroup.add_command()` ignoring the command's own `aliases` and `panel` unless `aliases` or `panel` was also passed to `add_command()`.
+- Fixed `RichContext` ignoring a `parent` context passed as a positional argument.
 - Added `rich_click.testing.CliRunner`, a drop-in replacement for Click's `CliRunner` that feeds `input` to Rich prompts (including password prompts) and isolates Rich's global console. [[#232](https://github.com/ewels/rich-click/issues/232)]
 - Added reStructuredText support with `text_markup="rst"`, via the optional `rich-click[rst]` extra ([rich-rst](https://github.com/wasi-master/rich-rst)). [[#172](https://github.com/ewels/rich-click/issues/172)]
 - Added a `UserWarning` when markup options conflict: both `use_markdown` and `use_rich_markup` set, or either one set alongside `text_markup`.

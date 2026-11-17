@@ -48,7 +48,7 @@ class RichParameter(click.Parameter):
         Gather information that could be useful for a tool generating
         user-facing documentation.
 
-        Use :meth:`click.Context.to_info_dict` to traverse the entire
+        Use `click.Context.to_info_dict` to traverse the entire
         CLI structure.
         """
         info = super().to_info_dict()
