@@ -1,7 +1,7 @@
 ---
 project: "rich-click"
 title: "Text Markup & Formatting"
-description: "The four text_markup modes rich-click supports (Rich markup, Markdown, ANSI and plain), plus emoji, newline handling and help text styling."
+description: "The five text_markup modes rich-click supports (Rich markup, Markdown, reStructuredText, ANSI and plain), plus emoji, newline handling and help text styling."
 url: "https://ewels.github.io/rich-click/latest/documentation/text_markup_and_formatting/"
 ---
 
@@ -9,11 +9,12 @@ url: "https://ewels.github.io/rich-click/latest/documentation/text_markup_and_fo
 
 ## Markup
 
-**rich-click** supports 4 different values for `text_markup`, which determines how text is rendered:
+**rich-click** supports 5 different values for `text_markup`, which determines how text is rendered:
 
 - `'ansi'`: **(Default)** Rendered as plain text with ANSI escape codes handled.
 - `'rich'`: Rendered using Rich's markup syntax.
 - `'markdown'`: Rendered with markdown.
+- `'rst'`: Rendered as reStructuredText (requires the `rst` extra).
 - `None`: Rendered as plain text, ANSI escape codes are not handled.
 
 <details open>
@@ -70,6 +71,38 @@ $ python examples/05_markdown.py --help
 ```
 
 > See [`examples/05_markdown.py`](https://github.com/ewels/rich-click/blob/main/examples/05_markdown.py) for an example.
+
+### reStructuredText
+
+You can also write help text in [reStructuredText](https://docutils.sourceforge.io/rst.html),
+which is handy if your docstrings are also used by Sphinx.
+Rendering is done by [rich-rst](https://github.com/wasi-master/rich-rst), which is an optional dependency:
+
+```shell
+pip install 'rich-click[rst]'
+```
+
+```python
+help_config = {"text_markup": "rst"}
+```
+```python
+help_config = click.RichHelpConfiguration(text_markup="rst")
+```
+```python
+click.rich_click.TEXT_MARKUP = "rst"
+```
+Admonitions (`.. note::`, `.. warning::`, etc.) are rendered compactly by default to suit help text,
+and `::` literal blocks are highlighted as shell sessions (`default_lexer="console"`).
+Click's `\b` no-rewrap paragraphs keep their line breaks and indentation, though inline markup in them shows as plain text.
+The help text is rendered as one document, so `padding_helptext_first_line` pads all of it.
+Any `text_kwargs` are passed to `rich_rst.RestructuredText()`, for example
+`text_kwargs={"admonition_style": "panel", "code_theme": "github-dark"}`.
+
+```sh runnable.outputFile="../images/rst.ansi" title="reStructuredText example"
+$ python examples/14_rst.py --help
+```
+
+> See [`examples/14_rst.py`](https://github.com/ewels/rich-click/blob/main/examples/14_rst.py) for an example.
 
 ## Markup in text
 
@@ -140,7 +173,8 @@ uvx --from rich -- python3 -m rich.emoji
 
 Handling newlines on **rich-click**'s end involves discretion because in a docstring, newlines can represent a softwrap; they are not necessarily genuine new lines.
 
-For `'markdown'` mode, we send all newline handling directly to `rich.markdown.Markdown()`
+For `'markdown'` mode, we send all newline handling directly to `rich.markdown.Markdown()`.
+Likewise, `'rst'` mode sends newline handling to `rich_rst.RestructuredText()`.
 
 For other modes, we implement the following rules:
 
@@ -198,7 +232,7 @@ $ python newline_control_double.py --help
 <details open>
 <summary>Info</summary>
 
-This default behavior of collapsing newlines is not true when `text_markup='markdown'`.
-For markdown, we do not do any newline manipulation.
+This default behavior of collapsing newlines is not true when `text_markup='markdown'` or `text_markup='rst'`.
+For these modes, we do not do any newline manipulation.
 
 </details>

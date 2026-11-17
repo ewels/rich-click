@@ -1919,9 +1919,9 @@ Under construction This page is still under construction
 
 # Text Markup & Formatting
 
-> The four text_markup modes rich-click supports (Rich markup, Markdown, ANSI and plain), plus emoji, newline handling and help text styling.
+> The five text_markup modes rich-click supports (Rich markup, Markdown, reStructuredText, ANSI and plain), plus emoji, newline handling and help text styling.
 
-## Markup **rich-click** supports 4 different values for `text_markup`, which determines how text is rendered: * `'ansi'`: **(Default)** Rendered as plain text with ANSI escape codes handled. * `'rich'`: Rendered using Rich’s markup syntax. * `'markdown'`: Rendered with markdown. * `None`: Rendered as plain text, ANSI escape codes are not handled. ### Rich markup In order to be as widely compatible as possible with a simple import, **rich-click** does *not* parse rich formatting markup (eg. `[red]`) by default. You need to opt-in to this behaviour. Remember that you’ll need to escape any regular square brackets using a back slash in your help texts, for example: `[dim]\[my-default: foo][\]` For more information, read the Rich docs on [markup](https://rich.readthedocs.io/en/stable/markup.html) and [styles](https://rich.readthedocs.io/en/stable/style.html). * {} 
+## Markup **rich-click** supports 5 different values for `text_markup`, which determines how text is rendered: * `'ansi'`: **(Default)** Rendered as plain text with ANSI escape codes handled. * `'rich'`: Rendered using Rich’s markup syntax. * `'markdown'`: Rendered with markdown. * `'rst'`: Rendered as reStructuredText (requires the `rst` extra). * `None`: Rendered as plain text, ANSI escape codes are not handled. ### Rich markup In order to be as widely compatible as possible with a simple import, **rich-click** does *not* parse rich formatting markup (eg. `[red]`) by default. You need to opt-in to this behaviour. Remember that you’ll need to escape any regular square brackets using a back slash in your help texts, for example: `[dim]\[my-default: foo][\]` For more information, read the Rich docs on [markup](https://rich.readthedocs.io/en/stable/markup.html) and [styles](https://rich.readthedocs.io/en/stable/style.html). * {} 
   ```python
   help_config = {"text_markup": "rich"}
   ```
@@ -1996,7 +1996,64 @@ $ python examples/05_markdown.py --help
 │ --help         Show this message and exit.                                   │
 ╰──────────────────────────────────────────────────────────────────────────────╯
 ```
- > See [`examples/05_markdown.py`](https://github.com/ewels/rich-click/blob/main/examples/05_markdown.py) for an example. ## Markup in text The selected `text_markup` is used to render all text in your CLI help that can be set in the high-level API: * The command’s `help` * Each subcommand’s `help` * Each parameter’s `help` * Each panel’s `help` * Header text, footer text, and epilog text. 
+ > See [`examples/05_markdown.py`](https://github.com/ewels/rich-click/blob/main/examples/05_markdown.py) for an example. ### reStructuredText You can also write help text in [reStructuredText](https://docutils.sourceforge.io/rst.html), which is handy if your docstrings are also used by Sphinx. Rendering is done by [rich-rst](https://github.com/wasi-master/rich-rst), which is an optional dependency: 
+```shell
+pip install 'rich-click[rst]'
+```
+ * {} 
+  ```python
+  help_config = {"text_markup": "rst"}
+  ```
+ * RichHelpConfiguration() 
+  ```python
+  help_config = click.RichHelpConfiguration(text_markup="rst")
+  ```
+ * Global config 
+  ```python
+  click.rich_click.TEXT_MARKUP = "rst"
+  ```
+ Admonitions (`.. note::`, `.. warning::`, etc.) are rendered compactly by default to suit help text, and `::` literal blocks are highlighted as shell sessions (`default_lexer="console"`). Click’s `\b` no-rewrap paragraphs keep their line breaks and indentation, though inline markup in them shows as plain text. The help text is rendered as one document, so `padding_helptext_first_line` pads all of it. Any `text_kwargs` are passed to `rich_rst.RestructuredText()`, for example `text_kwargs={"admonition_style": "panel", "code_theme": "github-dark"}`. reStructuredText example 
+```sh
+$ python examples/14_rst.py --help
+```
+ 
+```
+
+ Usage: 14_rst.py [OPTIONS]
+
+ My amazing tool does all the things.
+
+ This is a minimal example based on documentation from the click package.
+
+  • You can try using --help at the top level
+  • Also for specific group subcommands.
+
+ Note: Admonitions are rendered compactly.
+
+ Example:
+ ┌──────────────────────────── console (default) ─────────────────────────────┐
+ │ $ cli --all --debug                                                        │
+ └────────────────────────────────────────────────────────────────────────────┘
+
+╭─ Options ────────────────────────────────────────────────────────────────────╮
+│ --input  PATH  Input file. [default: a custom default]                       │
+│ --type   TEXT  Type of file to sync                                          │
+│                [default: files]                                              │
+│ --all          Sync                                                          │
+│                                                                              │
+│                 1. all                                                       │
+│                 2. the                                                       │
+│                 3. things?                                                   │
+│ --debug        Enable debug mode                                             │
+│ --help         Show this message and exit.                                   │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+ See the rich-click docs for more.
+
+  • Epilog lists
+  • stay intact
+```
+ > See [`examples/14_rst.py`](https://github.com/ewels/rich-click/blob/main/examples/14_rst.py) for an example. ## Markup in text The selected `text_markup` is used to render all text in your CLI help that can be set in the high-level API: * The command’s `help` * Each subcommand’s `help` * Each parameter’s `help` * Each panel’s `help` * Header text, footer text, and epilog text. 
 ```python
 # /// script
 # dependencies = ["rich-click>=1.9"]
@@ -2015,7 +2072,7 @@ def cli():
 
 
     This is a demonstration of
-    [#FF6B6B bold]r[/][#FF8E53 bold]i[/][#FFB347 bold]c[/][#4ECDC4 bold]h[/]
+    [bright_red bold]r[/][bright_yellow bold]i[/][bright_green bold]c[/][bright_cyan bold]h[/]
     markup in CLI help text.
     """
 
@@ -2043,7 +2100,7 @@ def cli():
 
 
     This is a demonstration of
-    [#FF6B6B bold]r[/][#FF8E53 bold]i[/][#FFB347 bold]c[/][#4ECDC4 bold]h[/]
+    [bright_red bold]r[/][bright_yellow bold]i[/][bright_green bold]c[/][bright_cyan bold]h[/]
     markup in CLI help text.
     """
 
@@ -2081,7 +2138,7 @@ if __name__ == "__main__":
 ```shell
 uvx --from rich -- python3 -m rich.emoji
 ```
- ## Newlines Handling newlines on **rich-click**’s end involves discretion because in a docstring, newlines can represent a softwrap; they are not necessarily genuine new lines. For `'markdown'` mode, we send all newline handling directly to `rich.markdown.Markdown()` For other modes, we implement the following rules: * Double newlines collapse to single newlines by default. * Single newlines are not preserved, unless… * The line starts with `'- '`, `'* '`, `'> '` or `‘ ’` (4 spaces). The following code snippet demonstrates this: 
+ ## Newlines Handling newlines on **rich-click**’s end involves discretion because in a docstring, newlines can represent a softwrap; they are not necessarily genuine new lines. For `'markdown'` mode, we send all newline handling directly to `rich.markdown.Markdown()`. Likewise, `'rst'` mode sends newline handling to `rich_rst.RestructuredText()`. For other modes, we implement the following rules: * Double newlines collapse to single newlines by default. * Single newlines are not preserved, unless… * The line starts with `'- '`, `'* '`, `'> '` or `‘ ’` (4 spaces). The following code snippet demonstrates this: 
 ````python
 # /// script
 # dependencies = ["rich-click>=1.9"]

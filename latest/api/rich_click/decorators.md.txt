@@ -9,7 +9,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/decorators/"
 
 *module* · *Added in 1.7.0*
 
-[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/decorators.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/decorators.py#L1-L1)
 
 ## rich_click.decorators.argument
 
@@ -34,7 +34,7 @@ For the default argument class, refer to :class:`Argument` and
     ``cls``.
 :param attrs: Passed as keyword arguments to the constructor of ``cls``.
 
-[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/decorators.py#L345-L365)
+[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/decorators.py#L345-L365)
 
 ## rich_click.decorators.command
 
@@ -48,7 +48,7 @@ Command decorator function.
 
 Defines the command() function so that it uses the RichCommand class by default.
 
-[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/decorators.py#L128-L175)
+[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/decorators.py#L128-L175)
 
 ## rich_click.decorators.command_panel
 
@@ -65,7 +65,7 @@ Use decorator to create a RichCommandPanel.
     cls: The class of the RichPanel; defaults to RichCommandPanel.
     attrs: Additional attributes to pass to the RichCommandPanel.
 
-[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/decorators.py#L274-L289)
+[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/decorators.py#L274-L289)
 
 ## rich_click.decorators.confirmation_option
 
@@ -82,7 +82,7 @@ not passed. If the prompt is declined, the program will exit.
     value ``"--yes"``.
 :param kwargs: Extra arguments are passed to :func:`option`.
 
-[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/decorators.py#L391-L401)
+[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/decorators.py#L391-L401)
 
 ## rich_click.decorators.group
 
@@ -96,7 +96,7 @@ Group decorator function.
 
 Defines the group() function so that it uses the RichGroup class by default.
 
-[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/decorators.py#L76-L92)
+[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/decorators.py#L76-L92)
 
 ## rich_click.decorators.help_option
 
@@ -113,7 +113,7 @@ and exits the program.
     value ``"--help"``.
 :param kwargs: Extra arguments are passed to :func:`option`.
 
-[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/decorators.py#L311-L342)
+[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/decorators.py#L311-L342)
 
 ## rich_click.decorators.option
 
@@ -138,7 +138,7 @@ For the default option class, refer to :class:`Option` and
     ``cls``.
 :param attrs: Passed as keyword arguments to the constructor of ``cls``.
 
-[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/decorators.py#L368-L388)
+[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/decorators.py#L368-L388)
 
 ## rich_click.decorators.option_panel
 
@@ -155,7 +155,7 @@ Use decorator to create a RichOptionPanel.
     cls: The class of the RichPanel; defaults to RichOptionPanel.
     attrs: Additional attributes to pass to the RichOptionPanel.
 
-[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/decorators.py#L256-L271)
+[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/decorators.py#L256-L271)
 
 ## rich_click.decorators.pass_context
 
@@ -167,7 +167,7 @@ def pass_context(f: Callable[Concatenate[RichContext, PSpec], R]) -> Callable[PS
 
 Marks a callback as wanting to receive the current context object as first argument.
 
-[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/decorators.py#L305-L308)
+[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/decorators.py#L305-L308)
 
 ## rich_click.decorators.password_option
 
@@ -184,7 +184,7 @@ input and asking to enter the value again for confirmation.
     value ``"--password"``.
 :param kwargs: Extra arguments are passed to :func:`option`.
 
-[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/decorators.py#L404-L420)
+[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/decorators.py#L404-L420)
 
 ## rich_click.decorators.rich_config
 
@@ -202,7 +202,7 @@ Use decorator to configure Rich Click settings.
     console: A Rich Console that will be accessible from the `RichContext`, `RichCommand`, and `RichGroup` instances
         Defaults to None.
 
-[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/decorators.py#L198-L238)
+[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/decorators.py#L198-L238)
 
 ## rich_click.decorators.version_option
 
@@ -238,4 +238,4 @@ version, so it must match the name of the installed package.
 :param kwargs: Extra arguments are passed to :func:`option`.
 :raise RuntimeError: ``version`` could not be detected.
 
-[View source](https://github.com/ewels/rich-click/blob/356c2764769a2bcd92aa67c3ed8f18b42bf9f5ed/src/rich_click/decorators.py#L423-L461)
+[View source](https://github.com/ewels/rich-click/blob/a968231b54ca97b6b99dbd23dfac04a17163557a/src/rich_click/decorators.py#L423-L461)
