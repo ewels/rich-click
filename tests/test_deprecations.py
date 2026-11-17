@@ -153,3 +153,27 @@ def test_lazy_click_reexports_still_resolve() -> None:
             assert callable(rich_click.get_binary_stream)
         with pytest.warns(DeprecationWarning):
             assert callable(rich_click.get_text_stream)
+
+
+@pytest.mark.filterwarnings("ignore::PendingDeprecationWarning")
+@pytest.mark.parametrize(
+    ("kwargs", "match"),
+    [
+        ({"use_markdown": True, "use_rich_markup": True}, "Markdown will be used"),
+        ({"use_markdown": True, "text_markup": "rst"}, "text_markup='rst'` overrides"),
+        ({"use_rich_markup": True, "text_markup": "ansi"}, "text_markup='ansi'` overrides"),
+    ],
+)
+def test_conflicting_markup_options_warn(kwargs: dict[str, object], match: str) -> None:
+    with pytest.warns(UserWarning, match=match):
+        rich_click.RichHelpConfiguration(**kwargs)  # type: ignore[arg-type]
+
+
+@pytest.mark.filterwarnings("ignore::PendingDeprecationWarning")
+def test_single_markup_option_does_not_warn_conflict() -> None:
+    import warnings
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", UserWarning)
+        rich_click.RichHelpConfiguration(use_markdown=True)
+        rich_click.RichHelpConfiguration(text_markup="markdown", use_rich_markup=False)

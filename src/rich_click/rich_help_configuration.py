@@ -311,6 +311,25 @@ class RichHelpConfiguration:
                 stacklevel=2,
             )
 
+        if self.use_markdown and self.use_rich_markup:
+            import warnings
+
+            warnings.warn(
+                "Both `use_markdown=` and `use_rich_markup=` are set; only one markup can be used."
+                " Markdown will be used. Please set `text_markup=` instead.",
+                UserWarning,
+                stacklevel=2,
+            )
+        elif (self.use_markdown or self.use_rich_markup) and self.text_markup is not notset:
+            import warnings
+
+            warnings.warn(
+                f"`text_markup={self.text_markup!r}` overrides `use_markdown=` and `use_rich_markup=`."
+                " Please remove them.",
+                UserWarning,
+                stacklevel=2,
+            )
+
         if self.show_metavars_column is not None:
             import warnings
 
