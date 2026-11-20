@@ -9,7 +9,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/rich_help_formatt
 
 *module* · *Added in 1.7.0*
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L1-L1)
 
 ## rich_click.rich_help_formatter.RP
 
@@ -19,7 +19,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/rich_help_formatt
 RP = TypeVar('RP', bound=RichPanel[Any, Any])
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L32-L32)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L32-L32)
 
 ## rich_click.rich_help_formatter.RichHelpFormatter
 
@@ -36,7 +36,21 @@ Rich Help Formatter.
 This class is a container for the help configuration and Rich Console that
 are used internally by the help and error printing methods.
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L101-L381)
+Create Rich Help Formatter.
+
+**Parameters**
+
+- `indent_increment` (`int`) (default: `2`) — Passed to click.HelpFormatter.
+- `width` (`int | None`) (default: `None`) — Passed to click.HelpFormatter. Overrides config.width if not None.
+- `max_width` (`int | None`) (default: `None`) — Passed to click.HelpFormatter. Overrides config.max_width if not None.
+- `*args` (`Any`) (default: `()`) — Args passed to click.HelpFormatter.
+- `console` (`Console | None`) (default: `None`) — Use an external console.
+- `config` (`RichHelpConfiguration | None`) (default: `None`) — RichHelpConfiguration. If None, then build config from globals.
+- `export_console_as` (`Literal[None, 'html', 'svg', 'text']`) (default: `None`) — How output is rendered by getvalue(). Default of None renders output normally.
+- `export_kwargs` (`dict[str, Any] | None`) (default: `None`) — Any kwargs passed to the export method of the Console in getvalue().
+- `**kwargs` (`Any`) (default: `{}`) — Kwargs passed to click.HelpFormatter.
+
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L101-L381)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.command_panel_class
 
@@ -46,7 +60,7 @@ are used internally by the help and error printing methods.
 command_panel_class: type[RichCommandPanel] = RichCommandPanel
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L118-L118)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L118-L118)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.config
 
@@ -56,7 +70,7 @@ command_panel_class: type[RichCommandPanel] = RichCommandPanel
 config = config
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L148-L148)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L148-L148)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.console
 
@@ -71,7 +85,7 @@ Rich Console created from the help configuration.
 This console is meant only for use with the formatter and should
 not be created directly
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L109-L109)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L109-L109)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.export_console_as
 
@@ -81,7 +95,7 @@ not be created directly
 export_console_as: Literal[None, 'html', 'svg', 'text'] = export_console_as
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L172-L172)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L172-L172)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.export_kwargs
 
@@ -91,7 +105,7 @@ export_console_as: Literal[None, 'html', 'svg', 'text'] = export_console_as
 export_kwargs = export_kwargs or {}
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L173-L173)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L173-L173)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.option_panel_class
 
@@ -101,7 +115,7 @@ export_kwargs = export_kwargs or {}
 option_panel_class: type[RichOptionPanel] = RichOptionPanel
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L117-L117)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L117-L117)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.highlighter
 
@@ -111,7 +125,7 @@ option_panel_class: type[RichOptionPanel] = RichOptionPanel
 highlighter: Highlighter
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L186-L195)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L186-L195)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.width
 
@@ -121,7 +135,7 @@ highlighter: Highlighter
 width: int
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L178-L179)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L178-L179)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.dedent
 
@@ -131,7 +145,7 @@ width: int
 def dedent() -> None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L339-L342)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L339-L342)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.getvalue
 
@@ -141,7 +155,7 @@ def dedent() -> None
 def getvalue() -> str
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L275-L332)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L275-L332)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.indent
 
@@ -151,7 +165,7 @@ def getvalue() -> str
 def indent() -> None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L334-L337)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L334-L337)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.indentation
 
@@ -161,7 +175,7 @@ def indent() -> None
 def indentation() -> Iterator[None]
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L376-L381)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L376-L381)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.rich_text
 
@@ -186,7 +200,7 @@ rendering works.
 
 - (`Text | Markdown | RichClickRST`) — Text, Markdown, or RichClickRST: Styled text object
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L214-L273)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L214-L273)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.section
 
@@ -196,7 +210,7 @@ rendering works.
 def section(name: str) -> Iterator[None]
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L369-L374)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L369-L374)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.write
 
@@ -206,7 +220,7 @@ def section(name: str) -> Iterator[None]
 def write(*objects: Any, **kwargs: Any) -> None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L197-L198)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L197-L198)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.write_abort
 
@@ -218,7 +232,7 @@ def write_abort() -> None
 
 Print richly formatted abort error.
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L210-L212)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L210-L212)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.write_dl
 
@@ -228,7 +242,7 @@ Print richly formatted abort error.
 def write_dl(rows: Iterable[tuple[str, str]], col_max: int = 30, col_spacing: int = 2) -> None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L359-L367)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L359-L367)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.write_error
 
@@ -238,7 +252,7 @@ def write_dl(rows: Iterable[tuple[str, str]], col_max: int = 30, col_spacing: in
 def write_error(e: click.ClickException) -> None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L205-L208)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L205-L208)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.write_heading
 
@@ -248,7 +262,7 @@ def write_error(e: click.ClickException) -> None
 def write_heading(heading: str) -> None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L344-L347)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L344-L347)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.write_paragraph
 
@@ -258,7 +272,7 @@ def write_heading(heading: str) -> None
 def write_paragraph() -> None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L349-L352)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L349-L352)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.write_text
 
@@ -268,7 +282,7 @@ def write_paragraph() -> None
 def write_text(text: str) -> None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L354-L357)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L354-L357)
 
 ### rich_click.rich_help_formatter.RichHelpFormatter.write_usage
 
@@ -278,7 +292,7 @@ def write_text(text: str) -> None
 def write_usage(prog: str, args: str = '', prefix: str | None = None) -> None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L200-L203)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L200-L203)
 
 ## rich_click.rich_help_formatter.create_console
 
@@ -301,4 +315,4 @@ Create a Rich console from a help configuration.
 
 - (`Console`) — The new console.
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_help_formatter.py#L52-L98)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_help_formatter.py#L52-L98)

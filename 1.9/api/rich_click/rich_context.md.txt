@@ -9,7 +9,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/rich_context/"
 
 *module* · *Added in 1.7.0*
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L1-L1)
 
 ## rich_click.rich_context.RichContext
 
@@ -23,7 +23,7 @@ Bases: `rich_click.rich_context.RichContextMixin`, `click.Context`
 
 The context of a rich-click command: a click Context that formats help and errors with Rich.
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L120-L135)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L120-L135)
 
 ### rich_click.rich_context.RichContext.console
 
@@ -35,7 +35,7 @@ console: Console | None = None
 
 Inherited from: `rich_click.rich_context.RichContextMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L39-L39)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L39-L39)
 
 ### rich_click.rich_context.RichContext.errors_in_output_format
 
@@ -47,7 +47,7 @@ errors_in_output_format: bool = False
 
 Inherited from: `rich_click.rich_context.RichContextMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L41-L41)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L41-L41)
 
 ### rich_click.rich_context.RichContext.export_console_as
 
@@ -59,7 +59,7 @@ export_console_as: Literal['html', 'svg', 'text'] | None = None
 
 Inherited from: `rich_click.rich_context.RichContextMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L40-L40)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L40-L40)
 
 ### rich_click.rich_context.RichContext.formatter_class
 
@@ -71,7 +71,7 @@ formatter_class: type[RichHelpFormatter] = RichHelpFormatter
 
 Inherited from: `rich_click.rich_context.RichContextMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L38-L38)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L38-L38)
 
 ### rich_click.rich_context.RichContext.help_config
 
@@ -83,7 +83,7 @@ help_config = parent.help_config
 
 Inherited from: `rich_click.rich_context.RichContextMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L93-L93)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L93-L93)
 
 ### rich_click.rich_context.RichContext.help_to_stderr
 
@@ -95,7 +95,7 @@ help_to_stderr: bool = False
 
 Inherited from: `rich_click.rich_context.RichContextMixin`
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L42-L42)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L42-L42)
 
 ### rich_click.rich_context.RichContext.make_formatter
 
@@ -109,7 +109,7 @@ Inherited from: `rich_click.rich_context.RichContextMixin`
 
 Create the Rich Help Formatter.
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L108-L117)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L108-L117)
 
 ## rich_click.rich_context.RichContextMixin
 
@@ -131,7 +131,19 @@ no click base class, it does not add click's synchronous methods to the fork.
 >
 > To customize the context of a click CLI, subclass `RichContext`, not this mixin.
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L26-L117)
+Create a context. An argument that is not set takes its value from the parent context.
+
+**Parameters**
+
+- `*args` (`Any`) (default: `()`) — Positional arguments for the click Context.
+- `rich_console` (`Console | None`) (default: `None`) — Rich console to print help and errors with.
+- `rich_help_config` (`Mapping[str, Any] | RichHelpConfiguration | None`) (default: `None`) — How to format help and errors, as a `RichHelpConfiguration` or a dict of its fields. A dict changes only the fields it names.
+- `export_console_as` (`Literal['html', 'svg', 'text'] | None`) (default: `None`) — Export help as `"html"`, `"svg"` or `"text"`, not as terminal output.
+- `errors_in_output_format` (`bool | None`) (default: `None`) — Export errors in the `export_console_as` format too.
+- `help_to_stderr` (`bool | None`) (default: `None`) — Print help to stderr, not stdout.
+- `**kwargs` (`Any`) (default: `{}`) — Keyword arguments for the click Context.
+
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L26-L117)
 
 ### rich_click.rich_context.RichContextMixin.console
 
@@ -141,7 +153,7 @@ no click base class, it does not add click's synchronous methods to the fork.
 console: Console | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L39-L39)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L39-L39)
 
 ### rich_click.rich_context.RichContextMixin.errors_in_output_format
 
@@ -151,7 +163,7 @@ console: Console | None = None
 errors_in_output_format: bool = False
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L41-L41)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L41-L41)
 
 ### rich_click.rich_context.RichContextMixin.export_console_as
 
@@ -161,7 +173,7 @@ errors_in_output_format: bool = False
 export_console_as: Literal['html', 'svg', 'text'] | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L40-L40)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L40-L40)
 
 ### rich_click.rich_context.RichContextMixin.formatter_class
 
@@ -171,7 +183,7 @@ export_console_as: Literal['html', 'svg', 'text'] | None = None
 formatter_class: type[RichHelpFormatter] = RichHelpFormatter
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L38-L38)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L38-L38)
 
 ### rich_click.rich_context.RichContextMixin.help_config
 
@@ -181,7 +193,7 @@ formatter_class: type[RichHelpFormatter] = RichHelpFormatter
 help_config = parent.help_config
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L93-L93)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L93-L93)
 
 ### rich_click.rich_context.RichContextMixin.help_to_stderr
 
@@ -191,7 +203,7 @@ help_config = parent.help_config
 help_to_stderr: bool = False
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L42-L42)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L42-L42)
 
 ### rich_click.rich_context.RichContextMixin.make_formatter
 
@@ -203,7 +215,7 @@ def make_formatter(error_mode: bool = False) -> RichHelpFormatter
 
 Create the Rich Help Formatter.
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L108-L117)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L108-L117)
 
 ## rich_click.rich_context.get_current_context
 
@@ -225,4 +237,4 @@ Use it in helper functions that need the context but do not get it from the `pas
 
 - (`RichContext | None`) — The context, or `None` if no command runs and `silent` is true.
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/rich_context.py#L138-L150)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_context.py#L138-L150)

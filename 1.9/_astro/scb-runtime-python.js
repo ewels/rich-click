@@ -1,6 +1,6 @@
 var e=`https://cdn.jsdelivr.net/pyodide/v314.0.7/full/`,t=`
 let ready;
-let interactive;
+let runCode;
 let missing;
 let queue = Promise.resolve();
 onmessage = ({ data }) => {
@@ -10,22 +10,49 @@ const install = async (py, names) => {
   await py.loadPackage('micropip');
   await py.pyimport('micropip').install(names);
 };
-const handle = async ({ id, url, code, session, prepare, packages = [] }) => {
+const handle = async ({ id, url, code, session, args = [], file, columns, color, prepare, packages = [] }) => {
   try {
     ready ??= import(url + 'pyodide.mjs')
       .then((m) => m.loadPyodide({ indexURL: url }))
       .then((py) => {
-        interactive = py.runPython(${JSON.stringify(`
-import ast, traceback
+        // Not the reader's \`<exec>\`, so that the trimming of the traceback drops these frames.
+        runCode = py.runPython(${JSON.stringify(`
+import ast, os, sys, traceback
+from pyodide.code import eval_code_async
+def _scb_exit(e):
+    if e.code is not None and not isinstance(e.code, int):
+        print(e.code, file=sys.stderr)
 def _scb_session(src, g):
     try:
         for node in ast.parse(src, '<stdin>').body:
             exec(compile(ast.Interactive([node]), '<stdin>', 'single'), g)
+    except SystemExit as e:
+        _scb_exit(e)
     except BaseException as e:
         tb = None if isinstance(e, SyntaxError) else e.__traceback__.tb_next
         traceback.print_exception(e.with_traceback(tb))
-_scb_session
-`)});
+async def _scb_run(src, g, session, argv, columns, color):
+    sys.argv = list(argv)
+    if columns:
+        os.environ['COLUMNS'] = str(columns)
+    else:
+        os.environ.pop('COLUMNS', None)
+    # Rich and other libraries print colours only to a terminal, unless FORCE_COLOR is set.
+    if color:
+        os.environ['FORCE_COLOR'] = '1'
+    else:
+        os.environ.pop('FORCE_COLOR', None)
+    # Rich reads COLUMNS and FORCE_COLOR once, for the console that it keeps.
+    if 'rich' in sys.modules:
+        sys.modules['rich']._console = None
+    if session:
+        return _scb_session(src, g)
+    try:
+        await eval_code_async(src, g)
+    except SystemExit as e:
+        _scb_exit(e)
+_scb_run
+`)}, { filename: '<scb>' });
         missing = py.runPython(${JSON.stringify(`
 import importlib.util, sys
 from pyodide.code import find_imports
@@ -64,8 +91,7 @@ _scb_missing
     globals.set('__name__', '__main__');
     let failure;
     try {
-      if (session) interactive(code, globals);
-      else await py.runPythonAsync(code, { globals });
+      await runCode(code, globals, !!session, [file ?? 'main.py', ...args], columns, !!color);
     } catch (e) {
       failure = e;
     } finally {
@@ -80,4 +106,4 @@ _scb_missing
     ready = undefined;
     postMessage({ id, error: String(e?.message ?? e) });
   }
-};`;function n({url:n=e}={}){let r,i=0,a=new Map,o=new Map;function s(){let e=URL.createObjectURL(new Blob([t],{type:`text/javascript`})),n=new Worker(e,{type:`module`});return n.onmessage=({data:e})=>{let t=o.get(e.id);o.delete(e.id),e.error===void 0?t?.resolve(e):t?.reject(Error(e.error))},n.onerror=e=>{c();for(let t of o.values())t.reject(Error(e.message||`The worker did not start.`));o.clear()},n}function c(){r?.terminate(),r=void 0}function l(e,t){r??=s(),r.postMessage({id:e,url:new URL(n,globalThis.location?.href).href,...t})}function u(e,t){let n=o.get(e);if(n){o.delete(e),c(),n.reject(t);for(let[e,{message:t}]of o)`code`in t&&l(i++,{prepare:t.code,packages:t.packages}),l(e,t)}}function d(e,t){return new Promise((n,r)=>{if(t?.aborted)return r(t.reason);let a=i++;t?.addEventListener(`abort`,()=>u(a,t.reason),{once:!0}),o.set(a,{message:e,resolve:n,reject:r}),l(a,e)})}return{load:async(e,{packages:t=[]}={})=>{a.set(e,t),await d({prepare:e,packages:t})},run:async(e,{signal:t,session:n=!1})=>{let{stdout:r=``,stderr:i=``}=await d({code:e,session:n,packages:a.get(e)??[]},t);return{stdout:r,stderr:i}}}}var r=n();export{e as PYODIDE_URL,r as default,n as pyodide};
+};`;function n({url:n=e}={}){let r,i=0,a=new Map,o=new Map;function s(){let e=URL.createObjectURL(new Blob([t],{type:`text/javascript`})),n=new Worker(e,{type:`module`});return n.onmessage=({data:e})=>{let t=o.get(e.id);o.delete(e.id),e.error===void 0?t?.resolve(e):t?.reject(Error(e.error))},n.onerror=e=>{c();for(let t of o.values())t.reject(Error(e.message||`The worker did not start.`));o.clear()},n}function c(){r?.terminate(),r=void 0}function l(e,t){r??=s(),r.postMessage({id:e,url:new URL(n,globalThis.location?.href).href,...t})}function u(e,t){let n=o.get(e);if(n){o.delete(e),c(),n.reject(t);for(let[e,{message:t}]of o)`code`in t&&l(i++,{prepare:t.code,packages:t.packages}),l(e,t)}}function d(e,t){return new Promise((n,r)=>{if(t?.aborted)return r(t.reason);let a=i++;t?.addEventListener(`abort`,()=>u(a,t.reason),{once:!0}),o.set(a,{message:e,resolve:n,reject:r}),l(a,e)})}return{load:async(e,{packages:t=[]}={})=>{a.set(e,t),await d({prepare:e,packages:t})},run:async(e,{signal:t,session:n=!1,args:r,file:i,columns:o,color:s})=>{let{stdout:c=``,stderr:l=``}=await d({code:e,session:n,args:r,file:i,columns:o,color:s,packages:a.get(e)??[]},t);return{stdout:c,stderr:l}}}}var r=n();export{e as PYODIDE_URL,r as default,n as pyodide};

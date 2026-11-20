@@ -11,7 +11,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/testing/"
 
 Test helpers for CLIs that use Rich for output and prompts.
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/testing.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/testing.py#L1-L1)
 
 ## rich_click.testing.CliRunner
 
@@ -35,7 +35,7 @@ While a command runs:
 - Environment variables that change Rich output (`FORCE_COLOR`, `NO_COLOR`, `COLUMNS`, ...)
   are unset or pinned, unless given in `env`.
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/testing.py#L33-L113)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/testing.py#L33-L113)
 
 ### rich_click.testing.CliRunner.isolation
 
@@ -45,4 +45,4 @@ While a command runs:
 def isolation(input: str | bytes | IO[Any] | None = None, env: Mapping[str, str | None] | None = None, color: bool = False) -> Iterator[Any]
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/4505e60065c35d2ec66a57eb8c768c7b41cc1e3f/src/rich_click/testing.py#L48-L113)
+[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/testing.py#L48-L113)
