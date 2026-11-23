@@ -4,6 +4,11 @@
 
 - Added light/dark terminal background detection. Themes can now be given as a pair, e.g. `RICH_CLICK_THEME="dark:nord-modern,light:solarized-modern"`, and `rich_click.detect_background()` is available for custom styles. Detection only runs when help or errors are rendered; set `RICH_CLICK_BACKGROUND=dark|light` to override it.
 - Added `nord_light` and `dracula_light` color palettes. The `nord` and `dracula` palettes switch to these automatically on light terminal backgrounds.
+- Rewrote the API docstrings in consistent Google style, so the API reference shows parameter tables, notes, warnings and deprecations. Ruff now checks docstrings against the Google convention. Docstrings copied from Click no longer show Click's version notes.
+- Fixed `version_option()` without a `version` or `package_name` showing rich-click's own version instead of the version of the package that uses it.
+- Fixed `RichGroup.add_command()` ignoring the command's own `aliases` and `panel` unless `aliases` or `panel` was also passed to `add_command()`.
+- Fixed `RichContext` ignoring a `parent` context passed as a positional argument.
+- Added `rich_click.testing.CliRunner`, a drop-in replacement for Click's `CliRunner` that feeds `input` to Rich prompts (including password prompts) and isolates Rich's global console. [[#232](https://github.com/ewels/rich-click/issues/232)]
 - Added reStructuredText support with `text_markup="rst"`, via the optional `rich-click[rst]` extra ([rich-rst](https://github.com/wasi-master/rich-rst)). [[#172](https://github.com/ewels/rich-click/issues/172)]
 - Added a `UserWarning` when markup options conflict: both `use_markdown` and `use_rich_markup` set, or either one set alongside `text_markup`.
 - Fixed `rich_config()` eagerly importing `rich` during normal (non-help) execution, slowing CLI startup.

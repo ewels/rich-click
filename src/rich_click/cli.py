@@ -412,7 +412,7 @@ https://ewels.github.io/rich-click/latest/documentation/rich_click_cli/[/]
     so it is safe to replace calls to the tool with [command]rich-click[/] in front, e.g.:
 
     >>> [command]rich-click[/] [argument]my_package[/] [argument]cmd[/] [option]--foo[/] 3
-    """  # noqa: D401
+    """
     try:
         if rich_config:
             if theme:

@@ -27,9 +27,9 @@ if TYPE_CHECKING:  # pragma: no cover
 #
 # rich-click's renderer needs to recognize commands/groups/parameters by type.
 # click-compatible forks (e.g. asyncclick) ship a *parallel* class tree that does
-# not subclass click's, so a plain ``isinstance(x, click.Group)`` returns ``False``
-# for them. These tuples back the ``is_*`` helpers below; a fork registers its
-# classes once via :func:`register_click_impl` and detection then works for both.
+# not subclass click's, so a plain `isinstance(x, click.Group)` returns `False`
+# for them. These tuples back the `is_*` helpers below; a fork registers its
+# classes once via `register_click_impl` and detection then works for both.
 
 _ARGUMENT_TYPES: tuple[type, ...] = (Argument,)
 _COMMAND_TYPES: tuple[type, ...] = (Command,)
@@ -43,15 +43,13 @@ def register_click_impl(module: Any) -> None:
     """
     Register a click-compatible fork's classes so rich-click can detect them.
 
-    Allows forks such as ``asyncclick`` to opt in to rich-click's type detection
+    Allows forks such as `asyncclick` to opt in to rich-click's type detection
     without rich-click taking a hard dependency on them. Calling this more than
     once with the same module is a no-op (idempotent).
 
     Args:
-    ----
-        module: A module exposing ``Argument``, ``Command``, ``Group``,
-            ``Option`` and ``Parameter`` (e.g. ``asyncclick``).
-
+        module: A module exposing `Argument`, `Command`, `Group`,
+            `Option` and `Parameter` (e.g. `asyncclick`).
     """
     global _ARGUMENT_TYPES, _COMMAND_TYPES, _GROUP_TYPES, _OPTION_TYPES, _PARAMETER_TYPES, _COMMAND_DECORATORS
 
@@ -82,25 +80,25 @@ def get_command_decorator(cls: type[Any]) -> Callable[..., Any] | None:
 
 
 def is_argument(obj: Any) -> TypeIs[Argument]:
-    """Return whether ``obj`` is a click (or registered fork) Argument."""
+    """Return whether `obj` is a click (or registered fork) Argument."""
     return isinstance(obj, _ARGUMENT_TYPES)
 
 
 def is_command(obj: Any) -> TypeIs[Command]:
-    """Return whether ``obj`` is a click (or registered fork) Command."""
+    """Return whether `obj` is a click (or registered fork) Command."""
     return isinstance(obj, _COMMAND_TYPES)
 
 
 def is_group(obj: Any) -> TypeIs[Group]:
-    """Return whether ``obj`` is a click (or registered fork) Group."""
+    """Return whether `obj` is a click (or registered fork) Group."""
     return isinstance(obj, _GROUP_TYPES)
 
 
 def is_option(obj: Any) -> TypeIs[Option]:
-    """Return whether ``obj`` is a click (or registered fork) Option."""
+    """Return whether `obj` is a click (or registered fork) Option."""
     return isinstance(obj, _OPTION_TYPES)
 
 
 def is_parameter(obj: Any) -> TypeIs[Parameter]:
-    """Return whether ``obj`` is a click (or registered fork) Parameter."""
+    """Return whether `obj` is a click (or registered fork) Parameter."""
     return isinstance(obj, _PARAMETER_TYPES)
