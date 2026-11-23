@@ -27,12 +27,12 @@ def test_typer_markdown(typer_cli_runner: CliRunner, cli: typer.Typer) -> None:
 │ --help                Show this message and exit.                                                │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Utils and Configs ──────────────────────────────────────────────────────────────────────────────╮
-│ config  Configure the system. 🔧                                                                 │
-│ sync    Synchronize the system or something fancy like that. ♻                                   │
+│ config                Configure the system. 🔧                                                   │
+│ sync                  Synchronize the system or something fancy like that. ♻                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Help and Others ────────────────────────────────────────────────────────────────────────────────╮
-│ help    Get help with the system. ❓                                                             │
-│ report  Report an issue. 🐛                                                                      │
+│ help                  Get help with the system. ❓                                               │
+│ report                Report an issue. 🐛                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -53,12 +53,12 @@ def test_typer_markdown_with_theme(typer_cli_runner: CliRunner, cli: typer.Typer
  --help                Show this message and exit.                                                  \n\
                                                                                                     \n\
  ═ Utils and Configs ══════════════════════════════════════════════════════════════════════════════ \n\
- config  Configure the system. 🔧                                                                   \n\
- sync    Synchronize the system or something fancy like that. ♻                                     \n\
+ config                Configure the system. 🔧                                                     \n\
+ sync                  Synchronize the system or something fancy like that. ♻                       \n\
                                                                                                     \n\
  ═ Help and Others ════════════════════════════════════════════════════════════════════════════════ \n\
- help    Get help with the system. ❓                                                               \n\
- report  Report an issue. 🐛                                                                        \n\
+ help                  Get help with the system. ❓                                                 \n\
+ report                Report an issue. 🐛                                                          \n\
                                                                                                     \n\
 """)
     assert result.stderr == snapshot("")

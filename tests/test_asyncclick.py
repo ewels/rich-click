@@ -184,7 +184,7 @@ def test_async_command_collection_renders_rich_help() -> None:
 │ --help  Show this message and exit.                                                              │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ status                Show the current status.                                                   │
+│ status  Show the current status.                                                                 │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == ""
@@ -246,11 +246,11 @@ def test_subcommand_help_classifies_arguments_and_options(monkeypatch: pytest.Mo
  Usage: cli greet [OPTIONS] NAME                                                                    \n\
                                                                                                     \n\
 ╭─ Arguments ──────────────────────────────────────────────────────────────────────────────────────╮
-│ *  NAME  TEXT  [required]                                                                        │
+│ *  NAME     TEXT     [required]                                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --count  INTEGER  How many greetings.                                                            │
-│ --help            Show this message and exit.                                                    │
+│    --count  INTEGER  How many greetings.                                                         │
+│    --help            Show this message and exit.                                                 │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result2.stderr == snapshot("")
@@ -430,10 +430,10 @@ def test_async_command_row_override_is_used() -> None:
  Usage: cli [OPTIONS] COMMAND [ARGS]...                                                             \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help      Show this message and exit.                                                          │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ custom-row                    Rendered by the override.                                          │
+│ custom-row  Rendered by the override.                                                            │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -530,13 +530,13 @@ def test_patch_module_renders_rich_help(tmp_path: Path) -> None:
 │ --token  TEXT  Shared token.                                                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Utilities ──────────────────────────────────────────────────────────────────────────────────────╮
-│ status                             Show status.                                                  │
+│ status         Show status.                                                                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Custom Panel ───────────────────────────────────────────────────────────────────────────────────╮
-│ greet            g       Greet NAME asynchronously.                                              │
+│ greet  g       Greet NAME asynchronously.                                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ MY OPTIONS ─────────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert res.stderr.decode() == snapshot("")
@@ -552,13 +552,13 @@ def test_patch_module_applies_metadata_above_group(tmp_path: Path) -> None:
  Metadata decorators applied above the patched group.                                               \n\
                                                                                                     \n\
 ╭─ Outer Commands ─────────────────────────────────────────────────────────────────────────────────╮
-│ status                             Show status.                                                  │
+│ status         Show status.                                                                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Outer Credentials ──────────────────────────────────────────────────────────────────────────────╮
 │ --token  TEXT  Shared token.                                                                     │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ OUTER OPTIONS ──────────────────────────────────────────────────────────────────────────────────╮
-│ --help  Show this message and exit.                                                              │
+│ --help         Show this message and exit.                                                       │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert res.stderr.decode() == snapshot("")

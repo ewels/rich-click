@@ -26,7 +26,7 @@ def test_declarative_help(cli_runner: CliRunner, cli: rich_click.RichCommand) ->
 │ --help              Show this message and exit.                                                  │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-│ check                Check the context type.                                                     │
+│ check               Check the context type.                                                      │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

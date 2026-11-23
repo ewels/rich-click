@@ -23,8 +23,8 @@
 [2m                                                                                                    [0m
 [2m  [0m[39mCommands[0m[2m                                                                                        [0m[2m  [0m
 [2m [0m ──────────────────────────────────────────────────────────────────────────────────────────────── [2m [0m
-[2m [0m [33mroutes           [0m[33m [0m  [39mShow the routes for the app.                                                [0m [2m [0m
-[2m [0m [33mrun              [0m[33m [0m  [39mRun a development server.                                                   [0m [2m [0m
-[2m [0m [33mshell            [0m[33m [0m  [39mRun a shell in the app context.                                             [0m [2m [0m
+[2m [0m [33mroutes                          [0m[33m  [0m [39mShow the routes for the app.                                 [0m [2m [0m
+[2m [0m [33mrun                             [0m[33m  [0m [39mRun a development server.                                    [0m [2m [0m
+[2m [0m [33mshell                           [0m[33m  [0m [39mRun a shell in the app context.                              [0m [2m [0m
 [2m [0m                                                                                                  [2m [0m
 [2m                                                                                                    [0m

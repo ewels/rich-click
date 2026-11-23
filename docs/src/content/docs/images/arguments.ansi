@@ -13,8 +13,8 @@
 [2m│[0m    [1;36mFLAVOUR[0m  [1;33mTEXT       [0m                                                      [2m│[0m
 [2m╰──────────────────────────────────────────────────────────────────────────────╯[0m
 [2m╭─[0m[2m Options [0m[2m───────────────────────────────────────────────────────────────────[0m[2m─╮[0m
-[2m│[0m [1;36m--type [0m  [1;33mTEXT[0m  Type of file to sync [2m[default: files][0m                         [2m│[0m
-[2m│[0m [1;36m--all  [0m        Sync all the things?                                          [2m│[0m
-[2m│[0m [1;36m--debug[0m        Enable debug mode                                             [2m│[0m
-[2m│[0m [1;36m--help [0m        Show this message and exit.                                   [2m│[0m
+[2m│[0m    [1;36m--type [0m  [1;33mTEXT       [0m  Type of file to sync [2m[default: files][0m               [2m│[0m
+[2m│[0m    [1;36m--all  [0m               Sync all the things?                                [2m│[0m
+[2m│[0m    [1;36m--debug[0m               Enable debug mode                                   [2m│[0m
+[2m│[0m    [1;36m--help [0m               Show this message and exit.                         [2m│[0m
 [2m╰──────────────────────────────────────────────────────────────────────────────╯[0m

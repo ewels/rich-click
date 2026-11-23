@@ -7,14 +7,14 @@
 [2;35m [0m--help                [39mShow this message and exit.[0m                             [2;35m [0m
 [2;35m                                                                                [0m
 [2;35m ═[0m[2;35m [0m[1;35mCommands[0m[2;35m [0m[2;35m══════════════════════════════════════════════════════════════════[0m[2;35m═ [0m
-[2;35m [0mcreate  [32mCreate[0m[39m a new user. ✨[0m                                                 [2;35m [0m
-[2;35m [0mdelete  [31mDelete[0m[39m a user. 🔥    [0m                                                 [2;35m [0m
+[2;35m [0mcreate                [32mCreate[0m[39m a new user. ✨[0m                                   [2;35m [0m
+[2;35m [0mdelete                [31mDelete[0m[39m a user. 🔥    [0m                                   [2;35m [0m
 [2;35m                                                                                [0m
 [2;35m ═[0m[2;35m [0m[1;35mUtils and Configs[0m[2;35m [0m[2;35m═════════════════════════════════════════════════════════[0m[2;35m═ [0m
-[2;35m [0mconfig  [34mConfigure[0m[39m the system. 🔧                              [0m                [2;35m [0m
-[2;35m [0msync    [34mSynchronize[0m[39m the system or something fancy like that. ♻[0m                [2;35m [0m
+[2;35m [0mconfig                [34mConfigure[0m[39m the system. 🔧                              [0m  [2;35m [0m
+[2;35m [0msync                  [34mSynchronize[0m[39m the system or something fancy like that. ♻[0m  [2;35m [0m
 [2;35m                                                                                [0m
 [2;35m ═[0m[2;35m [0m[1;35mHelp and Others[0m[2;35m [0m[2;35m═══════════════════════════════════════════════════════════[0m[2;35m═ [0m
-[2;35m [0mhelp    [39mGet [0m[33mhelp[0m[39m with the system. ❓[0m                                          [2;35m [0m
-[2;35m [0mreport  [33mReport[0m[39m an issue. 🐛         [0m                                          [2;35m [0m
+[2;35m [0mhelp                  [39mGet [0m[33mhelp[0m[39m with the system. ❓[0m                            [2;35m [0m
+[2;35m [0mreport                [33mReport[0m[39m an issue. 🐛         [0m                            [2;35m [0m
 [2;35m                                                                                [0m

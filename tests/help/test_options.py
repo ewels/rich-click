@@ -29,16 +29,16 @@ def test_options_help(cli_runner: CliRunner, cli: rich_click.RichCommand) -> Non
  My amazing tool does all the things.                                                               \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ *  --number              INTEGER RANGE [1<=x<=6]  Pick a number [default: 4] [required]          │
-│    --name                TEXT                     Provide a name                                 │
-│    --location            LOCATION                 Provide a name [deprecated]                    │
-│    --flag/--no-flag                               Set the flag (or not!).                        │
-│    --password            TEXT                     Password to login with                         │
-│ *  --loaded          -l  INTEGER RANGE [x>=0]     This option is loaded with everything (assert  │
-│                                                   preservation of order) [env var: IS_LOADED]    │
-│                                                   [default: (Random number)] [required]          │
-│    --help            -h                           Show help.                                     │
-│    --version         -v                           Show version.                                  │
+│ *  --number        INTEGER RANGE [1<=x<=6]  Pick a number [default: 4] [required]                │
+│    --name          TEXT                     Provide a name                                       │
+│    --location      LOCATION                 Provide a name [deprecated]                          │
+│    --flag/--no-flag                         Set the flag (or not!).                              │
+│    --password      TEXT                     Password to login with                               │
+│ *  --loaded    -l  INTEGER RANGE [x>=0]     This option is loaded with everything (assert        │
+│                                             preservation of order) [env var: IS_LOADED]          │
+│                                             [default: (Random number)] [required]                │
+│    --help      -h                           Show help.                                           │
+│    --version   -v                           Show version.                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -56,16 +56,16 @@ def test_options_help_envvar_first(cli_runner: CliRunner, cli: rich_click.RichCo
  My amazing tool does all the things.                                                               \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ *  --number              INTEGER RANGE [1<=x<=6]  Pick a number [default: 4] [required]          │
-│    --name                TEXT                     Provide a name                                 │
-│    --location            LOCATION                 Provide a name [deprecated]                    │
-│    --flag/--no-flag                               Set the flag (or not!).                        │
-│    --password            TEXT                     Password to login with                         │
-│ *  --loaded          -l  INTEGER RANGE [x>=0]     [env var: IS_LOADED] This option is loaded     │
-│                                                   with everything (assert preservation of order) │
-│                                                   [default: (Random number)] [required]          │
-│    --help            -h                           Show help.                                     │
-│    --version         -v                           Show version.                                  │
+│ *  --number        INTEGER RANGE [1<=x<=6]  Pick a number [default: 4] [required]                │
+│    --name          TEXT                     Provide a name                                       │
+│    --location      LOCATION                 Provide a name [deprecated]                          │
+│    --flag/--no-flag                         Set the flag (or not!).                              │
+│    --password      TEXT                     Password to login with                               │
+│ *  --loaded    -l  INTEGER RANGE [x>=0]     [env var: IS_LOADED] This option is loaded with      │
+│                                             everything (assert preservation of order) [default:  │
+│                                             (Random number)] [required]                          │
+│    --help      -h                           Show help.                                           │
+│    --version   -v                           Show version.                                        │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")
@@ -83,15 +83,15 @@ def test_options_help_dont_show_metavars(cli_runner: CliRunner, cli: rich_click.
  My amazing tool does all the things.                                                               \n\
                                                                                                     \n\
 ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-│ *  --number              Pick a number [default: 4] [required]                                   │
-│    --name                Provide a name                                                          │
-│    --location            Provide a name [deprecated]                                             │
-│    --flag/--no-flag      Set the flag (or not!).                                                 │
-│    --password            Password to login with                                                  │
-│ *  --loaded          -l  This option is loaded with everything (assert preservation of order)    │
-│                          [env var: IS_LOADED] [default: (Random number)] [required]              │
-│    --help            -h  Show help.                                                              │
-│    --version         -v  Show version.                                                           │
+│ *  --number          Pick a number [default: 4] [required]                                       │
+│    --name            Provide a name                                                              │
+│    --location        Provide a name [deprecated]                                                 │
+│    --flag/--no-flag  Set the flag (or not!).                                                     │
+│    --password        Password to login with                                                      │
+│ *  --loaded   -l     This option is loaded with everything (assert preservation of order) [env   │
+│                      var: IS_LOADED] [default: (Random number)] [required]                       │
+│    --help     -h     Show help.                                                                  │
+│    --version  -v     Show version.                                                               │
 ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
 """)
     assert result.stderr == snapshot("")

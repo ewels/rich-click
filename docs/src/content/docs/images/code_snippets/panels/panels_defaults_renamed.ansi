@@ -9,5 +9,5 @@
 [2;34m│[0m [1;36m--help     [0m        Show this message and exit.                               [2;34m│[0m
 [2;34m╰──────────────────────────────────────────────────────────────────────────────╯[0m
 [2;35m╭─[0m[2;35m My Tool's Subcommands [0m[2;35m─────────────────────────────────────────────────────[0m[2;35m─╮[0m
-[2;35m│[0m [1;36mmove-item   [0m[1;36m [0m Move an item from a src location to a dest location            [2;35m│[0m
+[2;35m│[0m [1;36mmove-item        [0m[1;36m  [0mMove an item from a src location to a dest location       [2;35m│[0m
 [2;35m╰──────────────────────────────────────────────────────────────────────────────╯[0m

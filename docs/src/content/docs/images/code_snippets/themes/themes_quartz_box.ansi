@@ -6,28 +6,28 @@
 
 [2;35m╭─[0m[2;35m Runtime options [0m[2;35m───────────────────────────────────────────────────────────────────────────────────────────────────[0m[2;35m─╮[0m
 [2;35m│[0m [2mOptions specifying the runtime[0m                                                                                       [2;35m│[0m
-[2;35m│[0m [2;31m*[0m  [1;35m--environment[0m  [1;35m-e[0m  [2m[[0m[2mdev[0m[2m|[0m[2mstaging[0m[2m|[0m[2mprod[0m[2m][0m[2m      [0m  [39mEnvironment to run in[0m[39m [0m[2;95m[env var: APP_ENV][0m[39m [0m[2;31m[required][0m                  [2;35m│[0m
-[2;35m│[0m    [1;35m--env-file   [0m      [2mPATH                    [0m  [39m.env file[0m                                                            [2;35m│[0m
-[2;35m│[0m    [1;35m--retries    [0m  [1;35m-r[0m  [2mINTEGER RANGE [0m[2m[[0m[2m0<=x<=10[0m[2m][0m  [39mNum retries for failed tasks[0m                                         [2;35m│[0m
-[2;35m│[0m    [1;35m--vcpu       [0m  [1;35m-c[0m  [2mINTEGER RANGE [0m[2m[[0m[2m1<=x<=32[0m[2m][0m  [39mNum vCPUs[0m[39m [0m[2;39m[default: 4][0m                                               [2;35m│[0m
+[2;35m│[0m [2;31m*[0m  [1;35m--environment     [0m  [1;35m-e[0m  [2m[[0m[2mdev[0m[2m|[0m[2mstaging[0m[2m|[0m[2mprod[0m[2m][0m[2m        [0m  [39mEnvironment to run in[0m[39m [0m[2;95m[env var: APP_ENV][0m[39m [0m[2;31m[required][0m           [2;35m│[0m
+[2;35m│[0m    [1;35m--env-file        [0m      [2mPATH                      [0m  [39m.env file[0m                                                     [2;35m│[0m
+[2;35m│[0m    [1;35m--retries         [0m  [1;35m-r[0m  [2mINTEGER RANGE [0m[2m[[0m[2m0<=x<=10[0m[2m][0m[2m  [0m  [39mNum retries for failed tasks[0m                                  [2;35m│[0m
+[2;35m│[0m    [1;35m--vcpu            [0m  [1;35m-c[0m  [2mINTEGER RANGE [0m[2m[[0m[2m1<=x<=32[0m[2m][0m[2m  [0m  [39mNum vCPUs[0m[39m [0m[2;39m[default: 4][0m                                        [2;35m│[0m
 [2;35m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
 [2;35m╭─[0m[2;35m Logging options [0m[2;35m───────────────────────────────────────────────────────────────────────────────────────────────────[0m[2;35m─╮[0m
 [2;35m│[0m [2mLogging config options[0m                                                                                               [2;35m│[0m
-[2;35m│[0m [1;35m--log-level         [0m  [1;35m-l   [0m  [2m[[0m[2mdebug[0m[2m|[0m[2minfo[0m[2m|[0m[2mwarning[0m[2m|[0m[2merror[0m[2m][0m  [39mLog level[0m[39m [0m[2;95m[env var: APP_LOG_LEVEL][0m[39m [0m[2;39m[default: info][0m          [2;35m│[0m
-[2;35m│[0m [1;35m--colors[0m[39m/[0m[1;35m--no-colors[0m  [1;35m-C[0m[39m/[0m[1;35m-n[0m                              [39mWhether to show colors in logs[0m[39m [0m[2;39m[default: colors][0m            [2;35m│[0m
-[2;35m│[0m [1;35m--log-format        [0m         [2m[[0m[2mTEXT[0m[2m][0m[2m                    [0m  [39mLog format[0m[39m [0m[2;31m[deprecated][0m                                     [2;35m│[0m
-[2;35m│[0m [1;35m--quiet[0m[39m/[0m[1;35m--no-quiet[0m    [1;35m-q   [0m                              [39mPrint text[0m[39m [0m[2;31m[deprecated: use --log-level instead][0m            [2;35m│[0m
+[2;35m│[0m    [1;35m--log-level       [0m  [1;35m-l[0m  [2m[[0m[2mdebug[0m[2m|[0m[2minfo[0m[2m|[0m[2mwarning[0m[2m|[0m[2merror[0m[2m][0m  [39mLog level[0m[39m [0m[2;95m[env var: APP_LOG_LEVEL][0m[39m [0m[2;39m[default: info][0m            [2;35m│[0m
+[2;35m│[0m    [1;35m--colors[0m[39m/[0m[1;35m--no-colors[0m  [1;35m-C[0m[39m/[0m[1;35m-n[0m                           [39mWhether to show colors in logs[0m[39m [0m[2;39m[default: colors][0m            [2;35m│[0m
+[2;35m│[0m    [1;35m--log-format      [0m      [2m[[0m[2mTEXT[0m[2m][0m[2m                    [0m  [39mLog format[0m[39m [0m[2;31m[deprecated][0m                                       [2;35m│[0m
+[2;35m│[0m    [1;35m--quiet[0m[39m/[0m[1;35m--no-quiet[0m  [1;35m-q[0m                              [39mPrint text[0m[39m [0m[2;31m[deprecated: use --log-level instead][0m              [2;35m│[0m
 [2;35m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
 [2;35m╭─[0m[2;35m Misc. options [0m[2;35m─────────────────────────────────────────────────────────────────────────────────────────────────────[0m[2;35m─╮[0m
-[2;35m│[0m [1;35m--version[0m  [1;35m-v[0m  [39mShow the version and exit.[0m                                                                            [2;35m│[0m
-[2;35m│[0m [1;35m--help   [0m  [1;35m-h[0m  [39mShow this message and exit.[0m                                                                           [2;35m│[0m
+[2;35m│[0m    [1;35m--version         [0m  [1;35m-v                            [0m  [39mShow the version and exit.[0m                                    [2;35m│[0m
+[2;35m│[0m    [1;35m--help            [0m  [1;35m-h                            [0m  [39mShow this message and exit.[0m                                   [2;35m│[0m
 [2;35m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
 [2;34m╭─[0m[2;34m Commands [0m[2;34m──────────────────────────────────────────────────────────────────────────────────────────────────────────[0m[2;34m─╮[0m
 [2;34m│[0m [2mAll subcommands[0m                                                                                                      [2;34m│[0m
-[2;34m│[0m [1;34madmin          [0m[1;34m [0m [39mAdministrative commands                                                                            [0m [2;34m│[0m
-[2;34m│[0m [1;34mdb             [0m[1;34m [0m [39mDatabase commands for app                                                                          [0m [2;34m│[0m
-[2;34m│[0m [1;34mdeploy         [0m[1;34m [0m [39mDeploy app                                                                                         [0m [2;34m│[0m
-[2;34m│[0m [1;34mself           [0m[1;34m [0m [39mManage app [0m[2;31m[deprecated: Use admin commands][0m[39m                                                        [0m [2;34m│[0m
+[2;34m│[0m [1;34madmin                                                [0m[1;34m  [0m[39mAdministrative commands                                      [0m [2;34m│[0m
+[2;34m│[0m [1;34mdb                                                   [0m[1;34m  [0m[39mDatabase commands for app                                    [0m [2;34m│[0m
+[2;34m│[0m [1;34mdeploy                                               [0m[1;34m  [0m[39mDeploy app                                                   [0m [2;34m│[0m
+[2;34m│[0m [1;34mself                                                 [0m[1;34m  [0m[39mManage app [0m[2;31m[deprecated: Use admin commands][0m[39m                  [0m [2;34m│[0m
 [2;34m╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯[0m
 
  [2mFor more assistance, visit https://example.com/[0m
