@@ -297,9 +297,11 @@ The background is only detected when help text or an error is shown, so running 
 Detection checks, in order:
 
 1. The `RICH_CLICK_BACKGROUND` env var (`dark` or `light`). Set this to override detection.
-2. The `COLORFGBG` env var, which some terminals set.
+2. The `COLORFGBG` env var, which some terminals set (e.g. iTerm2, Konsole, rxvt).
+   It is set when the terminal session starts, so it can be out of date if you change the terminal's colors afterwards, for example when it follows your system's light/dark mode.
+   If rich-click picks the wrong theme, open a new session, or run `unset COLORFGBG` so that rich-click asks the terminal instead.
 3. Asking the terminal for its background color. This only happens on macOS/Linux, when input and output are both an interactive terminal.
-   Most modern terminals answer (iTerm2, Terminal.app, kitty, WezTerm, Alacritty, GNOME Terminal, Ghostty, xterm); rich-click waits at most 0.1 seconds.
+   Most modern terminals answer (iTerm2, Terminal.app, kitty, WezTerm, Alacritty, GNOME Terminal, Ghostty, xterm); rich-click waits at most 0.1 seconds, or 0.5 seconds over SSH.
 
 If the background can't be detected (e.g. on Windows, or when output is piped), the first theme in a pair is used, and `nord` and `dracula` keep their dark colors.
 Themes picked from a pair are used exactly as given, so `dark:nord-modern,light:nord-modern` always uses the dark `nord` colors.

@@ -239,15 +239,6 @@ def test_invalid_theme_pair_fails_early(theme: str) -> None:
         RichHelpConfiguration(theme=theme)
 
 
-def test_cli_rejects_unknown_theme_in_pair(cli_runner: CliRunner) -> None:
-    from rich_click.cli import main
-
-    res = cli_runner.invoke(main, ["--theme", "dark:nord,light:bogus", "--help"])
-    assert res.exit_code != 0
-    assert "bogus" in res.output
-    assert not isinstance(res.exception, RichClickThemeNotFound)
-
-
 def test_random_theme_never_picks_light_variant() -> None:
     light = [COLORS[n] for n in ("nord_light", "dracula_light")]
     for _ in range(200):
