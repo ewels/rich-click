@@ -1,0 +1,5 @@
+# Pin Rich's colour detection to the 16 colours it picks on GitHub Actions,
+# so local runs don't regenerate outputs with 256 or truecolor codes.
+extra_env:
+  COLORTERM: ""
+  TERM: xterm-16color

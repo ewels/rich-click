@@ -336,7 +336,7 @@ COLORS: dict[str, RichClickTheme] = {
     ),
     "dracula": RichClickTheme(
         name="dracula",
-        description="Vibrant high-contract dark theme",
+        description="Vibrant high-contrast dark theme",
         light_variant="dracula_light",
         primary_colors=["magenta", "red", "yellow"],
         styles={
