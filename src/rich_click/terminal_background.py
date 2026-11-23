@@ -117,7 +117,7 @@ def detect_background() -> Background | None:
     """
     Detect whether the terminal has a dark or light background.
 
-    Returns
+    Returns:
     -------
         ``"dark"``, ``"light"``, or ``None`` if the background could not be detected.
 
