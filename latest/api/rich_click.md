@@ -14,7 +14,7 @@ rich-click is a minimal Python module to combine the efforts of the excellent pa
 The intention is to provide attractive help output from Click, formatted with Rich, with minimal
 customization required.
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/__init__.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/__init__.py#L1-L1)
 
 **Modules**
 

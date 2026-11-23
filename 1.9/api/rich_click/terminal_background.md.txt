@@ -35,7 +35,7 @@ How the terminal query works:
 - If no DA1 reply arrives before the timeout, we give up and discard any unread input. A reply
   that arrives after that is left for the shell to read, and shows up as garbage at the prompt.
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/terminal_background.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/terminal_background.py#L1-L1)
 
 ## rich_click.terminal_background.Background
 
@@ -45,7 +45,7 @@ How the terminal query works:
 Background = Literal['dark', 'light']
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/terminal_background.py#L38-L38)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/terminal_background.py#L38-L38)
 
 ## rich_click.terminal_background.QUERY_TIMEOUT
 
@@ -55,7 +55,7 @@ Background = Literal['dark', 'light']
 QUERY_TIMEOUT = 0.1
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/terminal_background.py#L40-L40)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/terminal_background.py#L40-L40)
 
 ## rich_click.terminal_background.QUERY_TIMEOUT_SSH
 
@@ -65,7 +65,7 @@ QUERY_TIMEOUT = 0.1
 QUERY_TIMEOUT_SSH = 0.5
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/terminal_background.py#L41-L41)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/terminal_background.py#L41-L41)
 
 ## rich_click.terminal_background.detect_background
 
@@ -81,7 +81,7 @@ Detect whether the terminal has a dark or light background.
 
 - (`Background | None`) — ``"dark"``, ``"light"``, or ``None`` if the background could not be detected.
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/terminal_background.py#L141-L148)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/terminal_background.py#L141-L148)
 
 ## rich_click.terminal_background.parse_osc11_reply
 
@@ -93,4 +93,4 @@ def parse_osc11_reply(reply: bytes) -> Background | None
 
 Parse a terminal's OSC 11 reply, e.g. ``ESC ] 11 ; rgb:ffff/ffff/ffff BEL``.
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/terminal_background.py#L68-L75)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/terminal_background.py#L68-L75)

@@ -9,7 +9,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/rich_help_renderi
 
 *module* · *Added in 1.8.0*
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/rich_help_rendering.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/rich_help_rendering.py#L1-L1)
 
 ## rich_click.rich_help_rendering.RichPanelRow
 
@@ -19,7 +19,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/rich_help_renderi
 RichPanelRow = list[RenderableType | None]
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/rich_help_rendering.py#L38-L38)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/rich_help_rendering.py#L38-L38)
 
 ## rich_click.rich_help_rendering.RichClickRichPanel
 
@@ -44,7 +44,7 @@ Create RichClickRichPanel instance.
 - `title_padding` (`int`) (default: `1`) — Controls padding on panel title.
 - `**kwargs` (`Any`) (default: `{}`) — Kwargs that get passed to rich.panel.Panel.
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/rich_help_rendering.py#L41-L75)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/rich_help_rendering.py#L41-L75)
 
 ### rich_click.rich_help_rendering.RichClickRichPanel.title_padding
 
@@ -54,7 +54,7 @@ Create RichClickRichPanel instance.
 title_padding = title_padding
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/rich_help_rendering.py#L60-L60)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/rich_help_rendering.py#L60-L60)
 
 ## rich_click.rich_help_rendering.get_command_rich_table_row
 
@@ -66,7 +66,7 @@ def get_command_rich_table_row(command: click.Command, ctx: RichContext, formatt
 
 Create a row for the rich table corresponding with this command.
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/rich_help_rendering.py#L895-L921)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/rich_help_rendering.py#L895-L921)
 
 ## rich_click.rich_help_rendering.get_help_parameter
 
@@ -91,7 +91,7 @@ Additional elements are appended to show the default and required status if appl
 
 - `Columns` (`Columns`) — A columns element with multiple styled objects (help, default, required)
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/rich_help_rendering.py#L673-L727)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/rich_help_rendering.py#L673-L727)
 
 ## rich_click.rich_help_rendering.get_parameter_rich_table_row
 
@@ -103,7 +103,7 @@ def get_parameter_rich_table_row(param: click.Argument | click.Option | RichPara
 
 Create a row for the rich table corresponding with this parameter.
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/rich_help_rendering.py#L730-L843)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/rich_help_rendering.py#L730-L843)
 
 ## rich_click.rich_help_rendering.get_rich_epilog
 
@@ -115,7 +115,7 @@ def get_rich_epilog(ctx: RichContext, formatter: RichHelpFormatter) -> None
 
 Richly render a click Command's epilog if it exists.
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/rich_help_rendering.py#L1035-L1065)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/rich_help_rendering.py#L1035-L1065)
 
 ## rich_click.rich_help_rendering.get_rich_help_text
 
@@ -127,7 +127,7 @@ def get_rich_help_text(ctx: RichContext, formatter: RichHelpFormatter) -> None
 
 Write rich help text to the formatter if it exists.
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/rich_help_rendering.py#L1021-L1032)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/rich_help_rendering.py#L1021-L1032)
 
 ## rich_click.rich_help_rendering.get_rich_usage
 
@@ -139,7 +139,7 @@ def get_rich_usage(formatter: RichHelpFormatter, prog: str, args: str = '', pref
 
 Richly render usage text.
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/rich_help_rendering.py#L980-L1018)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/rich_help_rendering.py#L980-L1018)
 
 ## rich_click.rich_help_rendering.rich_format_error
 
@@ -160,4 +160,4 @@ Mimics original click.ClickException.echo() function but with rich formatting.
 - `formatter` (`RichHelpFormatter`) — formatter object.
 - `export_console_as` (`Literal[None, 'html', 'svg']`) (default: `None`) — If set, outputs error message as HTML or SVG.
 
-[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/rich_help_rendering.py#L1068-L1149)
+[View source](https://github.com/ewels/rich-click/blob/c66e11c798d1341c346cd82fb22834478340726b/src/rich_click/rich_help_rendering.py#L1068-L1149)
