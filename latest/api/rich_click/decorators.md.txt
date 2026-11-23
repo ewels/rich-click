@@ -9,7 +9,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/decorators/"
 
 *module* · *Added in 1.7.0*
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/decorators.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/decorators.py#L1-L1)
 
 ## rich_click.decorators.argument
 
@@ -33,7 +33,7 @@ The same as `click.argument`, but the argument is a `RichArgument` unless you se
 
 - (`Callable[[FC], FC]`) — A decorator that adds the argument to a command.
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/decorators.py#L347-L364)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/decorators.py#L347-L364)
 
 ## rich_click.decorators.command
 
@@ -47,7 +47,7 @@ Create a command.
 
 The same as `click.command`, but the command is a `RichCommand` unless you set `cls`.
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/decorators.py#L128-L175)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/decorators.py#L128-L175)
 
 ## rich_click.decorators.command_panel
 
@@ -69,7 +69,7 @@ Show a group of subcommands in a panel of its own in the help output.
 
 - (`Callable[[FC], FC]`) — A decorator that adds the panel to a group.
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/decorators.py#L274-L290)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/decorators.py#L274-L290)
 
 ## rich_click.decorators.confirmation_option
 
@@ -90,7 +90,7 @@ Add a `--yes` option. Without it, the command asks the user to confirm, and exit
 
 - (`Callable[[FC], FC]`) — A decorator that adds the option to a command.
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/decorators.py#L387-L399)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/decorators.py#L387-L399)
 
 ## rich_click.decorators.group
 
@@ -104,7 +104,7 @@ Create a group of subcommands.
 
 The same as `click.group`, but the group is a `RichGroup` unless you set `cls`.
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/decorators.py#L76-L92)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/decorators.py#L76-L92)
 
 ## rich_click.decorators.help_option
 
@@ -125,7 +125,7 @@ Add a `--help` option that prints the help and exits.
 
 - (`Callable[[FC], FC]`) — A decorator that adds the option to a command.
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/decorators.py#L311-L344)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/decorators.py#L311-L344)
 
 ## rich_click.decorators.option
 
@@ -149,7 +149,7 @@ The same as `click.option`, but the option is a `RichOption` unless you set `cls
 
 - (`Callable[[FC], FC]`) — A decorator that adds the option to a command.
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/decorators.py#L367-L384)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/decorators.py#L367-L384)
 
 ## rich_click.decorators.option_panel
 
@@ -171,7 +171,7 @@ Show a group of options in a panel of its own in the help output.
 
 - (`Callable[[FC], FC]`) — A decorator that adds the panel to a command or group.
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/decorators.py#L255-L271)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/decorators.py#L255-L271)
 
 ## rich_click.decorators.pass_context
 
@@ -183,7 +183,7 @@ def pass_context(f: Callable[Concatenate[RichContext, PSpec], R]) -> Callable[PS
 
 Marks a callback as wanting to receive the current context object as first argument.
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/decorators.py#L306-L308)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/decorators.py#L306-L308)
 
 ## rich_click.decorators.password_option
 
@@ -204,7 +204,7 @@ Add a `--password` option that prompts for the password two times and hides the 
 
 - (`Callable[[FC], FC]`) — A decorator that adds the option to a command.
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/decorators.py#L402-L420)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/decorators.py#L402-L420)
 
 ## rich_click.decorators.rich_config
 
@@ -225,7 +225,7 @@ Set the help configuration and the Rich console of one command or group.
 
 - (`Callable[[FC], FC]`) — A decorator that applies the settings to a command or group.
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/decorators.py#L198-L237)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/decorators.py#L198-L237)
 
 ## rich_click.decorators.version_option
 
@@ -250,4 +250,4 @@ Add a `--version` option that prints the version and exits.
 
 - (`Callable[[FC], FC]`) — A decorator that adds the option to a command.
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/decorators.py#L423-L459)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/decorators.py#L423-L459)

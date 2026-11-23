@@ -9,7 +9,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/rich_click/"
 
 *module*
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L1-L1)
 
 ## rich_click.rich_click.ABORTED_TEXT
 
@@ -19,7 +19,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/rich_click/"
 ABORTED_TEXT: str = 'Aborted.'
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L139-L139)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L139-L139)
 
 ## rich_click.rich_click.ALIGN_COMMANDS_PANEL
 
@@ -29,7 +29,7 @@ ABORTED_TEXT: str = 'Aborted.'
 ALIGN_COMMANDS_PANEL: AlignMethod = 'left'
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L79-L79)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L79-L79)
 
 ## rich_click.rich_click.ALIGN_ERRORS_PANEL
 
@@ -39,7 +39,7 @@ ALIGN_COMMANDS_PANEL: AlignMethod = 'left'
 ALIGN_ERRORS_PANEL: AlignMethod = 'left'
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L91-L91)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L91-L91)
 
 ## rich_click.rich_click.ALIGN_OPTIONS_PANEL
 
@@ -49,7 +49,7 @@ ALIGN_ERRORS_PANEL: AlignMethod = 'left'
 ALIGN_OPTIONS_PANEL: AlignMethod = 'left'
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L62-L62)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L62-L62)
 
 ## rich_click.rich_click.APPEND_METAVARS_HELP
 
@@ -59,7 +59,7 @@ ALIGN_OPTIONS_PANEL: AlignMethod = 'left'
 APPEND_METAVARS_HELP: bool | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L157-L157)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L157-L157)
 
 ## rich_click.rich_click.APPEND_METAVARS_HELP_STRING
 
@@ -69,7 +69,7 @@ APPEND_METAVARS_HELP: bool | None = None
 APPEND_METAVARS_HELP_STRING: str = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L128-L128)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L128-L128)
 
 ## rich_click.rich_click.APPEND_RANGE_HELP_STRING
 
@@ -79,7 +79,7 @@ APPEND_METAVARS_HELP_STRING: str = FROM_THEME
 APPEND_RANGE_HELP_STRING: str = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L129-L129)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L129-L129)
 
 ## rich_click.rich_click.ARGUMENTS_PANEL_TITLE
 
@@ -89,7 +89,7 @@ APPEND_RANGE_HELP_STRING: str = FROM_THEME
 ARGUMENTS_PANEL_TITLE: str = 'Arguments'
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L131-L131)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L131-L131)
 
 ## rich_click.rich_click.COLOR_SYSTEM
 
@@ -99,7 +99,7 @@ ARGUMENTS_PANEL_TITLE: str = 'Arguments'
 COLOR_SYSTEM: Literal['auto', 'standard', '256', 'truecolor', 'windows'] | None = 'auto'
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L106-L108)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L106-L108)
 
 ## rich_click.rich_click.COMMANDS_BEFORE_OPTIONS
 
@@ -109,7 +109,7 @@ COLOR_SYSTEM: Literal['auto', 'standard', '256', 'truecolor', 'windows'] | None 
 COMMANDS_BEFORE_OPTIONS: bool = False
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L155-L155)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L155-L155)
 
 ## rich_click.rich_click.COMMANDS_PANEL_TITLE
 
@@ -119,7 +119,7 @@ COMMANDS_BEFORE_OPTIONS: bool = False
 COMMANDS_PANEL_TITLE: str = 'Commands'
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L133-L133)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L133-L133)
 
 ## rich_click.rich_click.COMMANDS_TABLE_COLUMN_TYPES
 
@@ -129,7 +129,7 @@ COMMANDS_PANEL_TITLE: str = 'Commands'
 COMMANDS_TABLE_COLUMN_TYPES: list[CommandColumnType] = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L112-L112)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L112-L112)
 
 ## rich_click.rich_click.COMMANDS_TABLE_HELP_SECTIONS
 
@@ -139,7 +139,7 @@ COMMANDS_TABLE_COLUMN_TYPES: list[CommandColumnType] = FROM_THEME
 COMMANDS_TABLE_HELP_SECTIONS: list[CommandHelpSectionType] = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L115-L115)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L115-L115)
 
 ## rich_click.rich_click.COMMAND_GROUPS
 
@@ -149,7 +149,7 @@ COMMANDS_TABLE_HELP_SECTIONS: list[CommandHelpSectionType] = FROM_THEME
 COMMAND_GROUPS: dict[str, list[CommandGroupDict]] = {}
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L169-L169)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L169-L169)
 
 ## rich_click.rich_click.DEFAULT_PANELS_FIRST
 
@@ -159,7 +159,7 @@ COMMAND_GROUPS: dict[str, list[CommandGroupDict]] = {}
 DEFAULT_PANELS_FIRST: bool = False
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L156-L156)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L156-L156)
 
 ## rich_click.rich_click.DEFAULT_STRING
 
@@ -169,7 +169,7 @@ DEFAULT_PANELS_FIRST: bool = False
 DEFAULT_STRING: str = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L123-L123)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L123-L123)
 
 ## rich_click.rich_click.DELIMITER_COMMA
 
@@ -179,7 +179,7 @@ DEFAULT_STRING: str = FROM_THEME
 DELIMITER_COMMA: str = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L135-L135)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L135-L135)
 
 ## rich_click.rich_click.DELIMITER_SLASH
 
@@ -189,7 +189,7 @@ DELIMITER_COMMA: str = FROM_THEME
 DELIMITER_SLASH: str = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L136-L136)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L136-L136)
 
 ## rich_click.rich_click.DEPRECATED_STRING
 
@@ -199,7 +199,7 @@ DELIMITER_SLASH: str = FROM_THEME
 DEPRECATED_STRING: str = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L121-L121)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L121-L121)
 
 ## rich_click.rich_click.DEPRECATED_WITH_REASON_STRING
 
@@ -209,7 +209,7 @@ DEPRECATED_STRING: str = FROM_THEME
 DEPRECATED_WITH_REASON_STRING: str = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L122-L122)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L122-L122)
 
 ## rich_click.rich_click.ENABLE_THEME_ENV_VAR
 
@@ -219,7 +219,7 @@ DEPRECATED_WITH_REASON_STRING: str = FROM_THEME
 ENABLE_THEME_ENV_VAR: bool = True
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L30-L30)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L30-L30)
 
 ## rich_click.rich_click.ENVVAR_STRING
 
@@ -229,7 +229,7 @@ ENABLE_THEME_ENV_VAR: bool = True
 ENVVAR_STRING: str = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L124-L124)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L124-L124)
 
 ## rich_click.rich_click.ERRORS_EPILOGUE
 
@@ -239,7 +239,7 @@ ENVVAR_STRING: str = FROM_THEME
 ERRORS_EPILOGUE: str | Text | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L138-L138)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L138-L138)
 
 ## rich_click.rich_click.ERRORS_PANEL_TITLE
 
@@ -249,7 +249,7 @@ ERRORS_EPILOGUE: str | Text | None = None
 ERRORS_PANEL_TITLE: str = 'Error'
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L134-L134)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L134-L134)
 
 ## rich_click.rich_click.ERRORS_SUGGESTION
 
@@ -259,7 +259,7 @@ ERRORS_PANEL_TITLE: str = 'Error'
 ERRORS_SUGGESTION: str | Text | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L137-L137)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L137-L137)
 
 ## rich_click.rich_click.FOOTER_TEXT
 
@@ -269,7 +269,7 @@ ERRORS_SUGGESTION: str | Text | None = None
 FOOTER_TEXT: str | Text | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L119-L119)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L119-L119)
 
 ## rich_click.rich_click.FORCE_TERMINAL
 
@@ -279,7 +279,7 @@ FOOTER_TEXT: str | Text | None = None
 FORCE_TERMINAL: bool | None = force_terminal_default()
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L109-L109)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L109-L109)
 
 ## rich_click.rich_click.GROUP_ARGUMENTS_OPTIONS
 
@@ -289,7 +289,7 @@ FORCE_TERMINAL: bool | None = force_terminal_default()
 GROUP_ARGUMENTS_OPTIONS: bool = False
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L158-L158)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L158-L158)
 
 ## rich_click.rich_click.HEADER_TEXT
 
@@ -299,7 +299,7 @@ GROUP_ARGUMENTS_OPTIONS: bool = False
 HEADER_TEXT: str | Text | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L118-L118)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L118-L118)
 
 ## rich_click.rich_click.HELPTEXT_ALIASES_STRING
 
@@ -309,7 +309,7 @@ HEADER_TEXT: str | Text | None = None
 HELPTEXT_ALIASES_STRING: str = 'Aliases: {}'
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L130-L130)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L130-L130)
 
 ## rich_click.rich_click.HELPTEXT_SHOW_ALIASES
 
@@ -319,7 +319,7 @@ HELPTEXT_ALIASES_STRING: str = 'Aliases: {}'
 HELPTEXT_SHOW_ALIASES: bool = True
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L173-L173)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L173-L173)
 
 ## rich_click.rich_click.MAX_WIDTH
 
@@ -329,7 +329,7 @@ HELPTEXT_SHOW_ALIASES: bool = True
 MAX_WIDTH: int | None = terminal_width_default()
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L105-L105)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L105-L105)
 
 ## rich_click.rich_click.OPTIONS_PANEL_TITLE
 
@@ -339,7 +339,7 @@ MAX_WIDTH: int | None = terminal_width_default()
 OPTIONS_PANEL_TITLE: str = 'Options'
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L132-L132)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L132-L132)
 
 ## rich_click.rich_click.OPTIONS_TABLE_COLUMN_TYPES
 
@@ -349,7 +349,7 @@ OPTIONS_PANEL_TITLE: str = 'Options'
 OPTIONS_TABLE_COLUMN_TYPES: list[OptionColumnType] = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L111-L111)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L111-L111)
 
 ## rich_click.rich_click.OPTIONS_TABLE_HELP_SECTIONS
 
@@ -359,7 +359,7 @@ OPTIONS_TABLE_COLUMN_TYPES: list[OptionColumnType] = FROM_THEME
 OPTIONS_TABLE_HELP_SECTIONS: list[OptionHelpSectionType] = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L114-L114)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L114-L114)
 
 ## rich_click.rich_click.OPTION_ENVVAR_FIRST
 
@@ -369,7 +369,7 @@ OPTIONS_TABLE_HELP_SECTIONS: list[OptionHelpSectionType] = FROM_THEME
 OPTION_ENVVAR_FIRST: bool | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L159-L159)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L159-L159)
 
 ## rich_click.rich_click.OPTION_GROUPS
 
@@ -379,7 +379,7 @@ OPTION_ENVVAR_FIRST: bool | None = None
 OPTION_GROUPS: dict[str, list[OptionGroupDict]] = {}
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L171-L171)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L171-L171)
 
 ## rich_click.rich_click.PADDING_EPILOG
 
@@ -389,7 +389,7 @@ OPTION_GROUPS: dict[str, list[OptionGroupDict]] = {}
 PADDING_EPILOG: PaddingDimensions = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L146-L146)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L146-L146)
 
 ## rich_click.rich_click.PADDING_ERRORS_EPILOGUE
 
@@ -399,7 +399,7 @@ PADDING_EPILOG: PaddingDimensions = FROM_THEME
 PADDING_ERRORS_EPILOGUE: PaddingDimensions = (0, 1, 1, 1)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L150-L150)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L150-L150)
 
 ## rich_click.rich_click.PADDING_ERRORS_PANEL
 
@@ -409,7 +409,7 @@ PADDING_ERRORS_EPILOGUE: PaddingDimensions = (0, 1, 1, 1)
 PADDING_ERRORS_PANEL: PaddingDimensions = (0, 0, 1, 0)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L148-L148)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L148-L148)
 
 ## rich_click.rich_click.PADDING_ERRORS_SUGGESTION
 
@@ -419,7 +419,7 @@ PADDING_ERRORS_PANEL: PaddingDimensions = (0, 0, 1, 0)
 PADDING_ERRORS_SUGGESTION: PaddingDimensions = (0, 1, 0, 1)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L149-L149)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L149-L149)
 
 ## rich_click.rich_click.PADDING_FOOTER_TEXT
 
@@ -429,7 +429,7 @@ PADDING_ERRORS_SUGGESTION: PaddingDimensions = (0, 1, 0, 1)
 PADDING_FOOTER_TEXT: PaddingDimensions = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L147-L147)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L147-L147)
 
 ## rich_click.rich_click.PADDING_HEADER_TEXT
 
@@ -439,7 +439,7 @@ PADDING_FOOTER_TEXT: PaddingDimensions = FROM_THEME
 PADDING_HEADER_TEXT: PaddingDimensions = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L141-L141)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L141-L141)
 
 ## rich_click.rich_click.PADDING_HELPTEXT
 
@@ -449,7 +449,7 @@ PADDING_HEADER_TEXT: PaddingDimensions = FROM_THEME
 PADDING_HELPTEXT: PaddingDimensions = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L143-L143)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L143-L143)
 
 ## rich_click.rich_click.PADDING_HELPTEXT_DEPRECATED
 
@@ -459,7 +459,7 @@ PADDING_HELPTEXT: PaddingDimensions = FROM_THEME
 PADDING_HELPTEXT_DEPRECATED: PaddingDimensions = 0
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L144-L144)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L144-L144)
 
 ## rich_click.rich_click.PADDING_HELPTEXT_FIRST_LINE
 
@@ -469,7 +469,7 @@ PADDING_HELPTEXT_DEPRECATED: PaddingDimensions = 0
 PADDING_HELPTEXT_FIRST_LINE: PaddingDimensions = 0
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L145-L145)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L145-L145)
 
 ## rich_click.rich_click.PADDING_USAGE
 
@@ -479,7 +479,7 @@ PADDING_HELPTEXT_FIRST_LINE: PaddingDimensions = 0
 PADDING_USAGE: PaddingDimensions = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L142-L142)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L142-L142)
 
 ## rich_click.rich_click.PANEL_INLINE_HELP_DELIMITER
 
@@ -489,7 +489,7 @@ PADDING_USAGE: PaddingDimensions = FROM_THEME
 PANEL_INLINE_HELP_DELIMITER: str = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L73-L73)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L73-L73)
 
 ## rich_click.rich_click.PANEL_INLINE_HELP_IN_TITLE
 
@@ -499,7 +499,7 @@ PANEL_INLINE_HELP_DELIMITER: str = FROM_THEME
 PANEL_INLINE_HELP_IN_TITLE: bool = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L72-L72)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L72-L72)
 
 ## rich_click.rich_click.PANEL_TITLE_PADDING
 
@@ -509,7 +509,7 @@ PANEL_INLINE_HELP_IN_TITLE: bool = FROM_THEME
 PANEL_TITLE_PADDING: int = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L103-L103)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L103-L103)
 
 ## rich_click.rich_click.PANEL_TITLE_STRING
 
@@ -519,7 +519,7 @@ PANEL_TITLE_PADDING: int = FROM_THEME
 PANEL_TITLE_STRING: str = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L120-L120)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L120-L120)
 
 ## rich_click.rich_click.RANGE_STRING
 
@@ -529,7 +529,7 @@ PANEL_TITLE_STRING: str = FROM_THEME
 RANGE_STRING: str = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L127-L127)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L127-L127)
 
 ## rich_click.rich_click.REQUIRED_LONG_STRING
 
@@ -539,7 +539,7 @@ RANGE_STRING: str = FROM_THEME
 REQUIRED_LONG_STRING: str = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L126-L126)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L126-L126)
 
 ## rich_click.rich_click.REQUIRED_SHORT_STRING
 
@@ -549,7 +549,7 @@ REQUIRED_LONG_STRING: str = FROM_THEME
 REQUIRED_SHORT_STRING: str = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L125-L125)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L125-L125)
 
 ## rich_click.rich_click.SHOW_ARGUMENTS
 
@@ -559,7 +559,7 @@ REQUIRED_SHORT_STRING: str = FROM_THEME
 SHOW_ARGUMENTS: bool | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L153-L153)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L153-L153)
 
 ## rich_click.rich_click.SHOW_METAVARS_COLUMN
 
@@ -569,7 +569,7 @@ SHOW_ARGUMENTS: bool | None = None
 SHOW_METAVARS_COLUMN: bool | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L154-L154)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L154-L154)
 
 ## rich_click.rich_click.STYLE_ABORTED
 
@@ -579,7 +579,7 @@ SHOW_METAVARS_COLUMN: bool | None = None
 STYLE_ABORTED: StyleType = 'red'
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L95-L95)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L95-L95)
 
 ## rich_click.rich_click.STYLE_ARGUMENT
 
@@ -589,7 +589,7 @@ STYLE_ABORTED: StyleType = 'red'
 STYLE_ARGUMENT: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L34-L34)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L34-L34)
 
 ## rich_click.rich_click.STYLE_COMMAND
 
@@ -599,7 +599,7 @@ STYLE_ARGUMENT: StyleType = FROM_THEME
 STYLE_COMMAND: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L35-L35)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L35-L35)
 
 ## rich_click.rich_click.STYLE_COMMANDS_PANEL_BORDER
 
@@ -609,7 +609,7 @@ STYLE_COMMAND: StyleType = FROM_THEME
 STYLE_COMMANDS_PANEL_BORDER: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L71-L71)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L71-L71)
 
 ## rich_click.rich_click.STYLE_COMMANDS_PANEL_BOX
 
@@ -619,7 +619,7 @@ STYLE_COMMANDS_PANEL_BORDER: StyleType = FROM_THEME
 STYLE_COMMANDS_PANEL_BOX: str | Box | None = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L74-L74)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L74-L74)
 
 ## rich_click.rich_click.STYLE_COMMANDS_PANEL_HELP_STYLE
 
@@ -629,7 +629,7 @@ STYLE_COMMANDS_PANEL_BOX: str | Box | None = FROM_THEME
 STYLE_COMMANDS_PANEL_HELP_STYLE: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L75-L75)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L75-L75)
 
 ## rich_click.rich_click.STYLE_COMMANDS_PANEL_PADDING
 
@@ -639,7 +639,7 @@ STYLE_COMMANDS_PANEL_HELP_STYLE: StyleType = FROM_THEME
 STYLE_COMMANDS_PANEL_PADDING: PaddingDimensions = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L77-L77)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L77-L77)
 
 ## rich_click.rich_click.STYLE_COMMANDS_PANEL_STYLE
 
@@ -649,7 +649,7 @@ STYLE_COMMANDS_PANEL_PADDING: PaddingDimensions = FROM_THEME
 STYLE_COMMANDS_PANEL_STYLE: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L78-L78)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L78-L78)
 
 ## rich_click.rich_click.STYLE_COMMANDS_PANEL_TITLE_STYLE
 
@@ -659,7 +659,7 @@ STYLE_COMMANDS_PANEL_STYLE: StyleType = FROM_THEME
 STYLE_COMMANDS_PANEL_TITLE_STYLE: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L76-L76)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L76-L76)
 
 ## rich_click.rich_click.STYLE_COMMANDS_TABLE_BORDER_STYLE
 
@@ -669,7 +669,7 @@ STYLE_COMMANDS_PANEL_TITLE_STYLE: StyleType = FROM_THEME
 STYLE_COMMANDS_TABLE_BORDER_STYLE: StyleType | None = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L87-L87)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L87-L87)
 
 ## rich_click.rich_click.STYLE_COMMANDS_TABLE_BOX
 
@@ -679,7 +679,7 @@ STYLE_COMMANDS_TABLE_BORDER_STYLE: StyleType | None = FROM_THEME
 STYLE_COMMANDS_TABLE_BOX: str | Box | None = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L85-L85)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L85-L85)
 
 ## rich_click.rich_click.STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO
 
@@ -689,7 +689,7 @@ STYLE_COMMANDS_TABLE_BOX: str | Box | None = FROM_THEME
 STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO: tuple[None, None] | tuple[int, int] | None = (None, None)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L88-L88)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L88-L88)
 
 ## rich_click.rich_click.STYLE_COMMANDS_TABLE_EXPAND
 
@@ -699,7 +699,7 @@ STYLE_COMMANDS_TABLE_COLUMN_WIDTH_RATIO: tuple[None, None] | tuple[int, int] | N
 STYLE_COMMANDS_TABLE_EXPAND: bool = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L84-L84)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L84-L84)
 
 ## rich_click.rich_click.STYLE_COMMANDS_TABLE_LEADING
 
@@ -709,7 +709,7 @@ STYLE_COMMANDS_TABLE_EXPAND: bool = FROM_THEME
 STYLE_COMMANDS_TABLE_LEADING: int = 0
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L81-L81)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L81-L81)
 
 ## rich_click.rich_click.STYLE_COMMANDS_TABLE_PADDING
 
@@ -719,7 +719,7 @@ STYLE_COMMANDS_TABLE_LEADING: int = 0
 STYLE_COMMANDS_TABLE_PADDING: PaddingDimensions = (0, 1)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L83-L83)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L83-L83)
 
 ## rich_click.rich_click.STYLE_COMMANDS_TABLE_PAD_EDGE
 
@@ -729,7 +729,7 @@ STYLE_COMMANDS_TABLE_PADDING: PaddingDimensions = (0, 1)
 STYLE_COMMANDS_TABLE_PAD_EDGE: bool = False
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L82-L82)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L82-L82)
 
 ## rich_click.rich_click.STYLE_COMMANDS_TABLE_ROW_STYLES
 
@@ -739,7 +739,7 @@ STYLE_COMMANDS_TABLE_PAD_EDGE: bool = False
 STYLE_COMMANDS_TABLE_ROW_STYLES: list[StyleType] | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L86-L86)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L86-L86)
 
 ## rich_click.rich_click.STYLE_COMMANDS_TABLE_SHOW_LINES
 
@@ -749,7 +749,7 @@ STYLE_COMMANDS_TABLE_ROW_STYLES: list[StyleType] | None = None
 STYLE_COMMANDS_TABLE_SHOW_LINES: bool = False
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L80-L80)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L80-L80)
 
 ## rich_click.rich_click.STYLE_COMMAND_ALIASES
 
@@ -759,7 +759,7 @@ STYLE_COMMANDS_TABLE_SHOW_LINES: bool = False
 STYLE_COMMAND_ALIASES: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L36-L36)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L36-L36)
 
 ## rich_click.rich_click.STYLE_COMMAND_HELP
 
@@ -769,7 +769,7 @@ STYLE_COMMAND_ALIASES: StyleType = FROM_THEME
 STYLE_COMMAND_HELP: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L51-L51)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L51-L51)
 
 ## rich_click.rich_click.STYLE_DEPRECATED
 
@@ -779,7 +779,7 @@ STYLE_COMMAND_HELP: StyleType = FROM_THEME
 STYLE_DEPRECATED: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L46-L46)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L46-L46)
 
 ## rich_click.rich_click.STYLE_EPILOG_TEXT
 
@@ -789,7 +789,7 @@ STYLE_DEPRECATED: StyleType = FROM_THEME
 STYLE_EPILOG_TEXT: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L100-L100)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L100-L100)
 
 ## rich_click.rich_click.STYLE_ERRORS_PANEL_BORDER
 
@@ -799,7 +799,7 @@ STYLE_EPILOG_TEXT: StyleType = FROM_THEME
 STYLE_ERRORS_PANEL_BORDER: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L89-L89)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L89-L89)
 
 ## rich_click.rich_click.STYLE_ERRORS_PANEL_BOX
 
@@ -809,7 +809,7 @@ STYLE_ERRORS_PANEL_BORDER: StyleType = FROM_THEME
 STYLE_ERRORS_PANEL_BOX: str | Box | None = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L90-L90)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L90-L90)
 
 ## rich_click.rich_click.STYLE_ERRORS_SUGGESTION
 
@@ -819,7 +819,7 @@ STYLE_ERRORS_PANEL_BOX: str | Box | None = FROM_THEME
 STYLE_ERRORS_SUGGESTION: StyleType | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L92-L92)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L92-L92)
 
 ## rich_click.rich_click.STYLE_ERRORS_SUGGESTION_COMMAND
 
@@ -829,7 +829,7 @@ STYLE_ERRORS_SUGGESTION: StyleType | None = None
 STYLE_ERRORS_SUGGESTION_COMMAND: StyleType | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L93-L93)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L93-L93)
 
 ## rich_click.rich_click.STYLE_FOOTER_TEXT
 
@@ -839,7 +839,7 @@ STYLE_ERRORS_SUGGESTION_COMMAND: StyleType | None = None
 STYLE_FOOTER_TEXT: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L101-L101)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L101-L101)
 
 ## rich_click.rich_click.STYLE_HEADER_TEXT
 
@@ -849,7 +849,7 @@ STYLE_FOOTER_TEXT: StyleType = FROM_THEME
 STYLE_HEADER_TEXT: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L99-L99)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L99-L99)
 
 ## rich_click.rich_click.STYLE_HELPTEXT
 
@@ -859,7 +859,7 @@ STYLE_HEADER_TEXT: StyleType = FROM_THEME
 STYLE_HELPTEXT: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L48-L48)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L48-L48)
 
 ## rich_click.rich_click.STYLE_HELPTEXT_ALIASES
 
@@ -869,7 +869,7 @@ STYLE_HELPTEXT: StyleType = FROM_THEME
 STYLE_HELPTEXT_ALIASES: StyleType | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L49-L49)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L49-L49)
 
 ## rich_click.rich_click.STYLE_HELPTEXT_FIRST_LINE
 
@@ -879,7 +879,7 @@ STYLE_HELPTEXT_ALIASES: StyleType | None = None
 STYLE_HELPTEXT_FIRST_LINE: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L47-L47)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L47-L47)
 
 ## rich_click.rich_click.STYLE_METAVAR
 
@@ -889,7 +889,7 @@ STYLE_HELPTEXT_FIRST_LINE: StyleType = FROM_THEME
 STYLE_METAVAR: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L39-L39)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L39-L39)
 
 ## rich_click.rich_click.STYLE_METAVAR_APPEND
 
@@ -899,7 +899,7 @@ STYLE_METAVAR: StyleType = FROM_THEME
 STYLE_METAVAR_APPEND: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L40-L40)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L40-L40)
 
 ## rich_click.rich_click.STYLE_METAVAR_SEPARATOR
 
@@ -909,7 +909,7 @@ STYLE_METAVAR_APPEND: StyleType = FROM_THEME
 STYLE_METAVAR_SEPARATOR: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L41-L41)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L41-L41)
 
 ## rich_click.rich_click.STYLE_OPTION
 
@@ -919,7 +919,7 @@ STYLE_METAVAR_SEPARATOR: StyleType = FROM_THEME
 STYLE_OPTION: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L32-L32)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L32-L32)
 
 ## rich_click.rich_click.STYLE_OPTIONS_PANEL_BORDER
 
@@ -929,7 +929,7 @@ STYLE_OPTION: StyleType = FROM_THEME
 STYLE_OPTIONS_PANEL_BORDER: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L56-L56)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L56-L56)
 
 ## rich_click.rich_click.STYLE_OPTIONS_PANEL_BOX
 
@@ -939,7 +939,7 @@ STYLE_OPTIONS_PANEL_BORDER: StyleType = FROM_THEME
 STYLE_OPTIONS_PANEL_BOX: str | Box | None = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L57-L57)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L57-L57)
 
 ## rich_click.rich_click.STYLE_OPTIONS_PANEL_HELP_STYLE
 
@@ -949,7 +949,7 @@ STYLE_OPTIONS_PANEL_BOX: str | Box | None = FROM_THEME
 STYLE_OPTIONS_PANEL_HELP_STYLE: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L58-L58)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L58-L58)
 
 ## rich_click.rich_click.STYLE_OPTIONS_PANEL_PADDING
 
@@ -959,7 +959,7 @@ STYLE_OPTIONS_PANEL_HELP_STYLE: StyleType = FROM_THEME
 STYLE_OPTIONS_PANEL_PADDING: PaddingDimensions = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L60-L60)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L60-L60)
 
 ## rich_click.rich_click.STYLE_OPTIONS_PANEL_STYLE
 
@@ -969,7 +969,7 @@ STYLE_OPTIONS_PANEL_PADDING: PaddingDimensions = FROM_THEME
 STYLE_OPTIONS_PANEL_STYLE: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L61-L61)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L61-L61)
 
 ## rich_click.rich_click.STYLE_OPTIONS_PANEL_TITLE_STYLE
 
@@ -979,7 +979,7 @@ STYLE_OPTIONS_PANEL_STYLE: StyleType = FROM_THEME
 STYLE_OPTIONS_PANEL_TITLE_STYLE: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L59-L59)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L59-L59)
 
 ## rich_click.rich_click.STYLE_OPTIONS_TABLE_BORDER_STYLE
 
@@ -989,7 +989,7 @@ STYLE_OPTIONS_PANEL_TITLE_STYLE: StyleType = FROM_THEME
 STYLE_OPTIONS_TABLE_BORDER_STYLE: StyleType | None = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L70-L70)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L70-L70)
 
 ## rich_click.rich_click.STYLE_OPTIONS_TABLE_BOX
 
@@ -999,7 +999,7 @@ STYLE_OPTIONS_TABLE_BORDER_STYLE: StyleType | None = FROM_THEME
 STYLE_OPTIONS_TABLE_BOX: str | Box | None = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L68-L68)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L68-L68)
 
 ## rich_click.rich_click.STYLE_OPTIONS_TABLE_EXPAND
 
@@ -1009,7 +1009,7 @@ STYLE_OPTIONS_TABLE_BOX: str | Box | None = FROM_THEME
 STYLE_OPTIONS_TABLE_EXPAND: bool = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L67-L67)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L67-L67)
 
 ## rich_click.rich_click.STYLE_OPTIONS_TABLE_LEADING
 
@@ -1019,7 +1019,7 @@ STYLE_OPTIONS_TABLE_EXPAND: bool = FROM_THEME
 STYLE_OPTIONS_TABLE_LEADING: int = 0
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L64-L64)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L64-L64)
 
 ## rich_click.rich_click.STYLE_OPTIONS_TABLE_PADDING
 
@@ -1029,7 +1029,7 @@ STYLE_OPTIONS_TABLE_LEADING: int = 0
 STYLE_OPTIONS_TABLE_PADDING: PaddingDimensions = (0, 1)
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L66-L66)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L66-L66)
 
 ## rich_click.rich_click.STYLE_OPTIONS_TABLE_PAD_EDGE
 
@@ -1039,7 +1039,7 @@ STYLE_OPTIONS_TABLE_PADDING: PaddingDimensions = (0, 1)
 STYLE_OPTIONS_TABLE_PAD_EDGE: bool = False
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L65-L65)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L65-L65)
 
 ## rich_click.rich_click.STYLE_OPTIONS_TABLE_ROW_STYLES
 
@@ -1049,7 +1049,7 @@ STYLE_OPTIONS_TABLE_PAD_EDGE: bool = False
 STYLE_OPTIONS_TABLE_ROW_STYLES: list[StyleType] | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L69-L69)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L69-L69)
 
 ## rich_click.rich_click.STYLE_OPTIONS_TABLE_SHOW_LINES
 
@@ -1059,7 +1059,7 @@ STYLE_OPTIONS_TABLE_ROW_STYLES: list[StyleType] | None = None
 STYLE_OPTIONS_TABLE_SHOW_LINES: bool = False
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L63-L63)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L63-L63)
 
 ## rich_click.rich_click.STYLE_OPTION_DEFAULT
 
@@ -1069,7 +1069,7 @@ STYLE_OPTIONS_TABLE_SHOW_LINES: bool = False
 STYLE_OPTION_DEFAULT: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L52-L52)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L52-L52)
 
 ## rich_click.rich_click.STYLE_OPTION_ENVVAR
 
@@ -1079,7 +1079,7 @@ STYLE_OPTION_DEFAULT: StyleType = FROM_THEME
 STYLE_OPTION_ENVVAR: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L53-L53)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L53-L53)
 
 ## rich_click.rich_click.STYLE_OPTION_HELP
 
@@ -1089,7 +1089,7 @@ STYLE_OPTION_ENVVAR: StyleType = FROM_THEME
 STYLE_OPTION_HELP: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L50-L50)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L50-L50)
 
 ## rich_click.rich_click.STYLE_OPTION_NEGATIVE
 
@@ -1099,7 +1099,7 @@ STYLE_OPTION_HELP: StyleType = FROM_THEME
 STYLE_OPTION_NEGATIVE: StyleType | None = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L33-L33)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L33-L33)
 
 ## rich_click.rich_click.STYLE_PADDING_EPILOG
 
@@ -1109,7 +1109,7 @@ STYLE_OPTION_NEGATIVE: StyleType | None = FROM_THEME
 STYLE_PADDING_EPILOG: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L98-L98)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L98-L98)
 
 ## rich_click.rich_click.STYLE_PADDING_ERRORS
 
@@ -1119,7 +1119,7 @@ STYLE_PADDING_EPILOG: StyleType = FROM_THEME
 STYLE_PADDING_ERRORS: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L94-L94)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L94-L94)
 
 ## rich_click.rich_click.STYLE_PADDING_HELPTEXT
 
@@ -1129,7 +1129,7 @@ STYLE_PADDING_ERRORS: StyleType = FROM_THEME
 STYLE_PADDING_HELPTEXT: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L97-L97)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L97-L97)
 
 ## rich_click.rich_click.STYLE_PADDING_USAGE
 
@@ -1139,7 +1139,7 @@ STYLE_PADDING_HELPTEXT: StyleType = FROM_THEME
 STYLE_PADDING_USAGE: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L96-L96)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L96-L96)
 
 ## rich_click.rich_click.STYLE_RANGE_APPEND
 
@@ -1149,7 +1149,7 @@ STYLE_PADDING_USAGE: StyleType = FROM_THEME
 STYLE_RANGE_APPEND: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L42-L42)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L42-L42)
 
 ## rich_click.rich_click.STYLE_REQUIRED_LONG
 
@@ -1159,7 +1159,7 @@ STYLE_RANGE_APPEND: StyleType = FROM_THEME
 STYLE_REQUIRED_LONG: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L55-L55)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L55-L55)
 
 ## rich_click.rich_click.STYLE_REQUIRED_SHORT
 
@@ -1169,7 +1169,7 @@ STYLE_REQUIRED_LONG: StyleType = FROM_THEME
 STYLE_REQUIRED_SHORT: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L54-L54)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L54-L54)
 
 ## rich_click.rich_click.STYLE_SWITCH
 
@@ -1179,7 +1179,7 @@ STYLE_REQUIRED_SHORT: StyleType = FROM_THEME
 STYLE_SWITCH: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L37-L37)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L37-L37)
 
 ## rich_click.rich_click.STYLE_SWITCH_NEGATVE
 
@@ -1189,7 +1189,7 @@ STYLE_SWITCH: StyleType = FROM_THEME
 STYLE_SWITCH_NEGATVE: StyleType | None = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L38-L38)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L38-L38)
 
 ## rich_click.rich_click.STYLE_USAGE
 
@@ -1199,7 +1199,7 @@ STYLE_SWITCH_NEGATVE: StyleType | None = FROM_THEME
 STYLE_USAGE: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L43-L43)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L43-L43)
 
 ## rich_click.rich_click.STYLE_USAGE_COMMAND
 
@@ -1209,7 +1209,7 @@ STYLE_USAGE: StyleType = FROM_THEME
 STYLE_USAGE_COMMAND: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L44-L44)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L44-L44)
 
 ## rich_click.rich_click.STYLE_USAGE_SEPARATOR
 
@@ -1219,7 +1219,7 @@ STYLE_USAGE_COMMAND: StyleType = FROM_THEME
 STYLE_USAGE_SEPARATOR: StyleType = FROM_THEME
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L45-L45)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L45-L45)
 
 ## rich_click.rich_click.TEXT_EMOJIS
 
@@ -1229,7 +1229,7 @@ STYLE_USAGE_SEPARATOR: StyleType = FROM_THEME
 TEXT_EMOJIS: bool = notset
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L162-L162)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L162-L162)
 
 ## rich_click.rich_click.TEXT_KWARGS
 
@@ -1239,7 +1239,7 @@ TEXT_EMOJIS: bool = notset
 TEXT_KWARGS: dict[str, Any] | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L161-L161)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L161-L161)
 
 ## rich_click.rich_click.TEXT_MARKUP
 
@@ -1249,7 +1249,7 @@ TEXT_KWARGS: dict[str, Any] | None = None
 TEXT_MARKUP: Literal['ansi', 'rich', 'markdown', 'rst', None] = notset
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L160-L160)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L160-L160)
 
 ## rich_click.rich_click.TEXT_PARAGRAPH_LINEBREAKS
 
@@ -1259,7 +1259,7 @@ TEXT_MARKUP: Literal['ansi', 'rich', 'markdown', 'rst', None] = notset
 TEXT_PARAGRAPH_LINEBREAKS: Literal['\n', '\n\n'] | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L163-L163)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L163-L163)
 
 ## rich_click.rich_click.THEME
 
@@ -1269,7 +1269,7 @@ TEXT_PARAGRAPH_LINEBREAKS: Literal['\n', '\n\n'] | None = None
 THEME: str | RichClickTheme | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L29-L29)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L29-L29)
 
 ## rich_click.rich_click.USE_CLICK_SHORT_HELP
 
@@ -1279,7 +1279,7 @@ THEME: str | RichClickTheme | None = None
 USE_CLICK_SHORT_HELP: bool = False
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L172-L172)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L172-L172)
 
 ## rich_click.rich_click.USE_MARKDOWN
 
@@ -1289,7 +1289,7 @@ USE_CLICK_SHORT_HELP: bool = False
 USE_MARKDOWN: bool | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L165-L165)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L165-L165)
 
 ## rich_click.rich_click.USE_MARKDOWN_EMOJI
 
@@ -1299,7 +1299,7 @@ USE_MARKDOWN: bool | None = None
 USE_MARKDOWN_EMOJI: bool | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L166-L166)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L166-L166)
 
 ## rich_click.rich_click.USE_RICH_MARKUP
 
@@ -1309,7 +1309,7 @@ USE_MARKDOWN_EMOJI: bool | None = None
 USE_RICH_MARKUP: bool | None = None
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L167-L167)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L167-L167)
 
 ## rich_click.rich_click.WIDTH
 
@@ -1319,4 +1319,4 @@ USE_RICH_MARKUP: bool | None = None
 WIDTH: int | None = terminal_width_default()
 ```
 
-[View source](https://github.com/ewels/rich-click/blob/022f47e9f25a36a3d4301fed1e2272df54ed4688/src/rich_click/rich_click.py#L104-L104)
+[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/rich_click.py#L104-L104)
