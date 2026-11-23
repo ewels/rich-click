@@ -24,16 +24,13 @@ from rich_click.rich_click_theme import (
 from rich_click.rich_help_configuration import FromTheme, RichHelpConfiguration
 
 
-_detect_background = tb.detect_background
-
-
 @pytest.fixture(autouse=True)
 def clean_background_env(monkeypatch: pytest.MonkeyPatch) -> Generator[None, None, None]:
     monkeypatch.delenv("RICH_CLICK_BACKGROUND", raising=False)
     monkeypatch.delenv("COLORFGBG", raising=False)
-    _detect_background.cache_clear()
+    tb._from_terminal.cache_clear()
     yield
-    _detect_background.cache_clear()
+    tb._from_terminal.cache_clear()
 
 
 @pytest.mark.parametrize(
@@ -57,6 +54,8 @@ def test_env_override(monkeypatch: pytest.MonkeyPatch, value: str, expected: str
         ("15;default;0", "dark"),
         ("12;8", "dark"),
         ("0;7", "light"),
+        ("15;16", None),  # 256-color black
+        ("0;255", None),
         ("15;default", None),
         ("", None),
     ],
@@ -81,6 +80,12 @@ def test_colorfgbg(monkeypatch: pytest.MonkeyPatch, value: str, expected: str | 
 )
 def test_parse_osc11_reply(reply: bytes, expected: str | None) -> None:
     assert tb.parse_osc11_reply(reply) == expected
+
+
+def test_env_read_after_first_detection(monkeypatch: pytest.MonkeyPatch) -> None:
+    assert tb.detect_background() is None
+    monkeypatch.setenv("RICH_CLICK_BACKGROUND", "light")
+    assert tb.detect_background() == "light"
 
 
 def test_no_query_without_tty() -> None:
@@ -228,9 +233,45 @@ def test_lazy_public_export() -> None:
     assert click.detect_background is tb.detect_background
 
 
-def test_invalid_theme_pair_fails_early() -> None:
+@pytest.mark.parametrize("theme", ["dark:nord", "dark:nord,light:bogus", "dark:bogus-modern,light:forest"])
+def test_invalid_theme_pair_fails_early(theme: str) -> None:
     with pytest.raises(RichClickThemeNotFound):
-        RichHelpConfiguration(theme="dark:nord")
+        RichHelpConfiguration(theme=theme)
+
+
+def test_cli_rejects_unknown_theme_in_pair(cli_runner: CliRunner) -> None:
+    from rich_click.cli import main
+
+    res = cli_runner.invoke(main, ["--theme", "dark:nord,light:bogus", "--help"])
+    assert res.exit_code != 0
+    assert "bogus" in res.output
+    assert not isinstance(res.exception, RichClickThemeNotFound)
+
+
+def test_random_theme_never_picks_light_variant() -> None:
+    light = [COLORS[n] for n in ("nord_light", "dracula_light")]
+    for _ in range(200):
+        styles = get_theme("random").styles
+        assert not any(styles["style_option"] == t.styles["style_option"] for t in light)
+
+
+@pytest.mark.parametrize("parent_theme", ["nord-box", "forest-box"])
+def test_subcommand_theme_overrides_parent_theme(cli_runner: CliRunner, parent_theme: str) -> None:
+    seen: dict[str, Any] = {}
+
+    @click.group(context_settings={"rich_help_config": RichHelpConfiguration(theme=parent_theme)})
+    def cli() -> None:
+        pass
+
+    @cli.command()
+    @click.rich_config({"theme": "cargo-box"})
+    @click.pass_context
+    def sub(ctx: click.RichContext) -> None:
+        seen["style_option"] = ctx.help_config.style_option
+
+    res = cli_runner.invoke(cli, ["sub"])
+    assert res.exit_code == 0, res.output
+    assert seen["style_option"] == get_theme("cargo-box", resolve_background=False).styles["style_option"]
 
 
 @pytest.mark.parametrize(

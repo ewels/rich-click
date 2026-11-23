@@ -22,8 +22,8 @@ from typing import Literal
 
 Background = Literal["dark", "light"]
 
-# Max seconds to wait for the terminal to reply.
 QUERY_TIMEOUT = 0.1
+QUERY_TIMEOUT_SSH = 0.5
 
 # ANSI colors 0-6 and 8 are dark; 7 and 9-15 are light.
 _DARK_ANSI_COLORS = {0, 1, 2, 3, 4, 5, 6, 8}
@@ -44,7 +44,8 @@ def _from_colorfgbg() -> Background | None:
     if not value:
         return None
     bg = value.split(";")[-1]
-    if not bg.isdigit():
+    # 256-color indices above 15 can be dark or light, so treat them as unknown.
+    if not bg.isdigit() or int(bg) > 15:
         return None
     return "dark" if int(bg) in _DARK_ANSI_COLORS else "light"
 
@@ -59,7 +60,10 @@ def parse_osc11_reply(reply: bytes) -> Background | None:
     return "dark" if luminance < 0.5 else "light"
 
 
-def _query_terminal(timeout: float = QUERY_TIMEOUT) -> bytes:
+def _query_terminal(timeout: float | None = None) -> bytes:
+    if timeout is None:
+        remote = "SSH_TTY" in os.environ or "SSH_CONNECTION" in os.environ
+        timeout = QUERY_TIMEOUT_SSH if remote else QUERY_TIMEOUT
     if os.name != "posix" or os.environ.get("TERM") == "dumb":
         return b""
     try:
@@ -102,6 +106,10 @@ def _query_terminal(timeout: float = QUERY_TIMEOUT) -> bytes:
             if not chunk:
                 break
             buf += chunk
+        if not _RE_DA1_REPLY.search(buf):
+            # Discard a late reply so the shell doesn't receive it as typed input.
+            # ponytail: a reply slower than the timeout can still leak; raise QUERY_TIMEOUT_SSH if seen.
+            termios.tcflush(fd_in, termios.TCIFLUSH)
     except (OSError, termios.error):
         pass
     finally:
@@ -113,13 +121,15 @@ def _query_terminal(timeout: float = QUERY_TIMEOUT) -> bytes:
 
 
 @lru_cache(maxsize=1)
+def _from_terminal() -> Background | None:
+    return parse_osc11_reply(_query_terminal())
+
+
 def detect_background() -> Background | None:
     """
     Detect whether the terminal has a dark or light background.
 
     Returns:
-    -------
         ``"dark"``, ``"light"``, or ``None`` if the background could not be detected.
-
     """
-    return _from_env_override() or _from_colorfgbg() or parse_osc11_reply(_query_terminal())
+    return _from_env_override() or _from_colorfgbg() or _from_terminal()

@@ -937,7 +937,6 @@ _LIGHT_VARIANTS = {
         },
     ),
 }
-# Place each light palette right after its dark counterpart.
 _colors: dict[str, RichClickTheme] = {}
 for _name, _theme in COLORS.items():
     _colors[_name] = _theme
@@ -1199,6 +1198,8 @@ def parse_background_theme(theme: str) -> dict[str, str] | None:
         raise RichClickThemeNotFound(
             f"RichClickTheme '{theme}' not found. Light/dark theme pairs must set both 'dark:' and 'light:'"
         )
+    for value in pair.values():
+        get_theme(value, resolve_background=False)
     return pair
 
 
@@ -1251,7 +1252,7 @@ def get_theme(theme: str, raise_key_error: bool = True, resolve_background: bool
     if theme == "random":
         import random
 
-        clr = random.choice(list(COLORS.keys()))
+        clr = random.choice([k for k in COLORS if k not in _LIGHT_VARIANTS])
         fmt = random.choice(list(FORMATS.keys()))
 
         rich_click_theme = _THEME_CACHE[f"{clr}-{fmt}"] = COLORS[clr] + FORMATS[fmt]
@@ -1260,7 +1261,6 @@ def get_theme(theme: str, raise_key_error: bool = True, resolve_background: bool
         try:
             resolved = resolve_background_theme(theme)
         except RichClickThemeNotFound:
-            # Malformed pair: raise, or fall through to the warning below.
             if raise_key_error:
                 raise
         else:

@@ -98,6 +98,10 @@ class RichContextMixin(_ContextBase):
                 if TYPE_CHECKING:  # pragma: no cover
                     assert parent is not None
                 kw = parent.help_config.__dict__.copy()
+                theme_fields = kw.pop("_theme_fields")
+                if "theme" in rich_help_config:
+                    for k in theme_fields:
+                        del kw[k]
                 kw.update(rich_help_config)
                 self.help_config = RichHelpConfiguration(**kw)
             else:
