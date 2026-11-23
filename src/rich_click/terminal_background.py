@@ -1,4 +1,4 @@
-"""
+r"""
 Detect whether the terminal has a dark or light background.
 
 Detection runs in this order, stopping at the first answer:
@@ -9,6 +9,21 @@ Detection runs in this order, stopping at the first answer:
 
 The OSC 11 query is only sent when stdin and stdout are both an interactive terminal on POSIX,
 and the process is in the foreground. Otherwise, the result is ``None`` (unknown).
+
+How the terminal query works:
+
+- We write two escape sequences to the terminal. The terminal answers them by "typing" its
+  replies into our stdin, so we switch stdin to cbreak mode and read them back.
+- ``ESC ] 11 ; ? ESC \`` (OSC 11) asks for the background color. A terminal that supports it
+  replies ``ESC ] 11 ; rgb:RRRR/GGGG/BBBB``, which we convert to dark or light by its luminance.
+  Terminals that don't support it stay silent.
+- ``ESC [ c`` (DA1, "Primary Device Attributes") asks what kind of terminal this is. Nearly every
+  terminal replies, with something like ``ESC [ ? 62 ; 22 c``. We don't care about its contents.
+- Terminals reply in the order they were asked, so once the DA1 reply (``_RE_DA1_REPLY``) has
+  arrived, any OSC 11 reply has already arrived too. That lets us stop reading straight away,
+  rather than waiting out the timeout on terminals that never answer OSC 11.
+- If no DA1 reply arrives before the timeout, we give up and discard any unread input. A reply
+  that arrives after that is left for the shell to read, and shows up as garbage at the prompt.
 """
 
 from __future__ import annotations
@@ -91,8 +106,6 @@ def _query_terminal(timeout: float | None = None) -> bytes:
     try:
         tty.setcbreak(fd_in, termios.TCSANOW)
         sys.stdout.flush()
-        # Send the OSC 11 query followed by a DA1 query. Almost every terminal answers DA1,
-        # so its reply tells us to stop waiting even if OSC 11 is unsupported.
         os.write(fd_out, b"\x1b]11;?\x1b\\\x1b[c")
         deadline = time.monotonic() + timeout
         while not _RE_DA1_REPLY.search(buf):
