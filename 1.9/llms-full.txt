@@ -4671,6 +4671,50 @@ You can set a theme for your CLI by setting it in the config:
 
 For more advanced CLIs, with lots of other customization options, there are additional considerations with themes and how they interact with your config that you may want to consider, especially in relation to end users being able to override the theme. For more information on this, read [the **Configuration** docs](../../documentation/configuration/).
 
+## Light and dark terminals
+
+Most color palettes use your terminal’s own colors, so they work on both dark and light backgrounds. The `nord` and `dracula` palettes use fixed colors designed for dark backgrounds, so they each have a light version: `nord_light` and `dracula_light` (Dracula’s official light palette, Alucard). **rich-click** switches to these automatically when it detects a light background, e.g. `nord-modern` becomes `nord_light-modern`. You can also use the light versions directly, like any other palette.
+
+Instead of a single theme name, you can give a pair of themes: one for dark terminal backgrounds and one for light ones. This works everywhere a theme name does: `RICH_CLICK_THEME`, `rich-click --theme`, and your CLI’s config.
+
+* End-user
+
+  ```shell
+  export RICH_CLICK_THEME="dark:nord-modern,light:solarized-modern"
+  ```
+
+* Developer
+
+  ```python
+  import rich_click as click
+
+
+  @click.group("cli")
+  @click.rich_config({"theme": "dark:nord-modern,light:solarized-modern"})
+  def cli():
+      """My CLI help text"""
+  ```
+
+The background is only detected when help text or an error is shown, so running your CLI normally is not slowed down. Detection checks, in order:
+
+1. The `RICH_CLICK_BACKGROUND` env var (`dark` or `light`). Set this to override detection.
+2. The `COLORFGBG` env var, which some terminals set (e.g. iTerm2, Konsole, rxvt). It is set when the terminal session starts, so it can be out of date if you change the terminal’s colors afterwards, for example when it follows your system’s light/dark mode. If rich-click picks the wrong theme, open a new session, or run `unset COLORFGBG` so that rich-click asks the terminal instead.
+3. Asking the terminal for its background color. This only happens on macOS/Linux, when input and output are both an interactive terminal. Most modern terminals answer (iTerm2, Terminal.app, kitty, WezTerm, Alacritty, GNOME Terminal, Ghostty, xterm); rich-click waits at most 0.1 seconds, or 0.5 seconds over SSH.
+
+If the background can’t be detected (e.g. on Windows, or when output is piped), the first theme in a pair is used, and `nord` and `dracula` keep their dark colors. Themes picked from a pair are used exactly as given, so `dark:nord-modern,light:nord-modern` always uses the dark `nord` colors.
+
+You can also use the detection yourself, for example to pick custom colors:
+
+```python
+import rich_click as click
+
+
+if click.detect_background() == "light":
+    primary_color = "#2b569c"
+else:  # "dark" or None (unknown)
+    primary_color = "#99bbf2"
+```
+
 ## All themes
 
 ### Formats
@@ -5050,11 +5094,51 @@ There are currently over a dozen different **color palettes**.
 
 * nord
 
-  Many shades of cool colors.
+  Many shades of cool colors. Showing the dark mode variant.Showing the light mode variant, `nord_light`.
 
   ```shell
   export RICH_CLICK_THEME=nord-box
   python docs/code_snippets/themes/cli.py --help
+  ```
+
+  ```sh
+  $ python cli.py --help
+  ```
+
+  ```
+
+   Usage: cli.py [OPTIONS] COMMAND [ARGS]...
+
+   CLI for app
+   This is a production-ready application.
+
+  ╭─ Runtime options ────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ Options specifying the runtime                                                                                       │
+  │ *  --environment  -e  [dev|staging|prod]        Environment to run in [env var: APP_ENV] [required]                  │
+  │    --env-file         PATH                      .env file                                                            │
+  │    --retries      -r  INTEGER RANGE [0<=x<=10]  Num retries for failed tasks                                         │
+  │    --vcpu         -c  INTEGER RANGE [1<=x<=32]  Num vCPUs [default: 4]                                               │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+  ╭─ Logging options ────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ Logging config options                                                                                               │
+  │ --log-level           -l     [debug|info|warning|error]  Log level [env var: APP_LOG_LEVEL] [default: info]          │
+  │ --colors/--no-colors  -C/-n                              Whether to show colors in logs [default: colors]            │
+  │ --log-format                 [TEXT]                      Log format [deprecated]                                     │
+  │ --quiet/--no-quiet    -q                                 Print text [deprecated: use --log-level instead]            │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+  ╭─ Misc. options ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ --version  -v  Show the version and exit.                                                                            │
+  │ --help     -h  Show this message and exit.                                                                           │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+  ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ All subcommands                                                                                                      │
+  │ admin            Administrative commands                                                                             │
+  │ db               Database commands for app                                                                           │
+  │ deploy           Deploy app                                                                                          │
+  │ self             Manage app [deprecated: Use admin commands]                                                         │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+   For more assistance, visit https://example.com/
   ```
 
   ```sh
@@ -5344,7 +5428,7 @@ There are currently over a dozen different **color palettes**.
 
 * dracula
 
-  Vibrant high-contract dark theme.
+  Vibrant high-contrast dark theme. Showing the dark mode variant.Showing the light mode variant, `dracula_light`.
 
   ```shell
   export RICH_CLICK_THEME=dracula-box
@@ -5391,32 +5475,51 @@ There are currently over a dozen different **color palettes**.
    For more assistance, visit https://example.com/
   ```
 
-Warning
+  ```sh
+  $ python cli.py --help
+  ```
 
-The `dracula`, `nord`, and `solarized` themes use hex values, and **rich-click** currently does not detect background colors for users’ terminals.
+  ```
 
-So although these themes are beautiful and work well as an end-user with `export RICH_CLICK_THEME=`, this also makes these themes risky to use as a developer.
+   Usage: cli.py [OPTIONS] COMMAND [ARGS]...
 
-All of the other themes use ANSI colors exclusively, and therefore users’ environments are more likely to match these themes well.
+   CLI for app
+   This is a production-ready application.
 
-The `dracula`, `nord`, and `solarized` all have variants that force dark-backgrounds: `dracula_darkbg`, `nord_darkbg`, and `solarized_darkbg`. You can apply this with something like [`term-background`](https://pypi.org/project/term-background/):
+  ╭─ Runtime options ────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ Options specifying the runtime                                                                                       │
+  │ *  --environment  -e  [dev|staging|prod]        Environment to run in [env var: APP_ENV] [required]                  │
+  │    --env-file         PATH                      .env file                                                            │
+  │    --retries      -r  INTEGER RANGE [0<=x<=10]  Num retries for failed tasks                                         │
+  │    --vcpu         -c  INTEGER RANGE [1<=x<=32]  Num vCPUs [default: 4]                                               │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+  ╭─ Logging options ────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ Logging config options                                                                                               │
+  │ --log-level           -l     [debug|info|warning|error]  Log level [env var: APP_LOG_LEVEL] [default: info]          │
+  │ --colors/--no-colors  -C/-n                              Whether to show colors in logs [default: colors]            │
+  │ --log-format                 [TEXT]                      Log format [deprecated]                                     │
+  │ --quiet/--no-quiet    -q                                 Print text [deprecated: use --log-level instead]            │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+  ╭─ Misc. options ──────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ --version  -v  Show the version and exit.                                                                            │
+  │ --help     -h  Show this message and exit.                                                                           │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+  ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ All subcommands                                                                                                      │
+  │ admin            Administrative commands                                                                             │
+  │ db               Database commands for app                                                                           │
+  │ deploy           Deploy app                                                                                          │
+  │ self             Manage app [deprecated: Use admin commands]                                                         │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
-```python
-import rich_click as click
-from term_background import is_dark_background
+   For more assistance, visit https://example.com/
+  ```
 
+Note
 
-if is_dark_background():
-    click.rich_click.THEME = "dracula"
-else:
-    click.rich_click.THEME = "dracula_darkbg"
-```
+The `dracula`, `nord`, and `solarized` themes use fixed hex colors rather than your terminal’s own colors. `nord` and `dracula` switch to their light versions on light backgrounds (see [Light and dark terminals](#light-and-dark-terminals)), and `solarized` is designed to work on both. If the background can’t be detected, they keep their dark colors. To always draw them on a dark background, use `dracula_darkbg`, `nord_darkbg` or `solarized_darkbg`.
 
-Some of these themes are riskier than others to apply as a developer. For example, the `solarized` theme is designed for both light and dark backgrounds. The `nord` theme has been tested on light terminals and, in practice, is legible. The `dracula` theme, however, is not user-friendly on a light background terminal.
-
-Additionally, the `solarized` theme in particular is quite legible on both dark and light backgrounds, so it is a relatively safe theme to use as a developer.
-
-In a later version of **rich-click**, we intend on adding background color detection and styling conditional on background color, which will make these themes safe to use as a developer.
+The examples above follow this site’s light/dark mode setting, so you can switch it to see how each palette looks on light and dark terminals.
 
 #### Simple palettes
 
@@ -6245,53 +6348,57 @@ $ rich-click --themes
   ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
   ╭───────────────────────────────────────── Color Palettes ─────────────────────────────────────────╮
   │                                                                                                  │
-  │        Name          Colors       Description                                                    │
+  │        Name              Colors      Description                                                 │
   │  ──────────────────────────────────────────────────────────────────────────────────────────────  │
-  │   *    default       ▓▓ ▓▓ ▓▓     (Default) Original rich-click colors                           │
+  │   *    default           ▓▓ ▓▓ ▓▓    (Default) Original rich-click colors                        │
   │                                                                                                  │
-  │        solarized     ▓▓ ▓▓ ▓▓     Bright, colorful, vibrant accents                              │
+  │        solarized         ▓▓ ▓▓ ▓▓    Bright, colorful, vibrant accents                           │
   │                                                                                                  │
-  │        nord          ▓▓ ▓▓ ▓▓     Many shades of cool colors                                     │
+  │        nord              ▓▓ ▓▓ ▓▓    Many shades of cool colors                                  │
   │                                                                                                  │
-  │        dracula       ▓▓ ▓▓ ▓▓     Vibrant high-contract dark theme                               │
+  │        nord_light        ▓▓ ▓▓ ▓▓    Nord colors darkened for light backgrounds                  │
   │                                                                                                  │
-  │        star          ▓▓ ▓▓ ▓▓     Litestar official theme                                        │
+  │        dracula           ▓▓ ▓▓ ▓▓    Vibrant high-contrast dark theme                            │
   │                                                                                                  │
-  │        quartz        ▓▓ ▓▓ ▓▓     Dark and radiant                                               │
+  │        dracula_light     ▓▓ ▓▓ ▓▓    Alucard, the official light Dracula palette                 │
   │                                                                                                  │
-  │        quartz2       ▓▓ ▓▓ ▓▓     Remix of 'quartz' with accents                                 │
+  │        star              ▓▓ ▓▓ ▓▓    Litestar official theme                                     │
   │                                                                                                  │
-  │        forest        ▓▓ ▓▓ ▓▓     Earthy tones with analogous colors                             │
+  │        quartz            ▓▓ ▓▓ ▓▓    Dark and radiant                                            │
   │                                                                                                  │
-  │        cargo         ▓▓ ▓▓ ▓▓     Cargo CLI theme; legible and bold                              │
+  │        quartz2           ▓▓ ▓▓ ▓▓    Remix of 'quartz' with accents                              │
   │                                                                                                  │
-  │        red1          ▓▓ ▓▓ ▓▓     Simple theme with red accents on section headers               │
+  │        forest            ▓▓ ▓▓ ▓▓    Earthy tones with analogous colors                          │
   │                                                                                                  │
-  │        green1        ▓▓ ▓▓ ▓▓     Simple theme with green accents on section headers             │
+  │        cargo             ▓▓ ▓▓ ▓▓    Cargo CLI theme; legible and bold                           │
   │                                                                                                  │
-  │        yellow1       ▓▓ ▓▓ ▓▓     Simple theme with yellow accents on section headers            │
+  │        red1              ▓▓ ▓▓ ▓▓    Simple theme with red accents on section headers            │
   │                                                                                                  │
-  │        blue1         ▓▓ ▓▓ ▓▓     Simple theme with blue accents on section headers              │
+  │        green1            ▓▓ ▓▓ ▓▓    Simple theme with green accents on section headers          │
   │                                                                                                  │
-  │        magenta1      ▓▓ ▓▓ ▓▓     Simple theme with magenta accents on section headers           │
+  │        yellow1           ▓▓ ▓▓ ▓▓    Simple theme with yellow accents on section headers         │
   │                                                                                                  │
-  │        cyan1         ▓▓ ▓▓ ▓▓     Simple theme with cyan accents on section headers              │
+  │        blue1             ▓▓ ▓▓ ▓▓    Simple theme with blue accents on section headers           │
   │                                                                                                  │
-  │        red2          ▓▓ ▓▓ ▓▓     Simple theme with red accents on object names                  │
+  │        magenta1          ▓▓ ▓▓ ▓▓    Simple theme with magenta accents on section headers        │
   │                                                                                                  │
-  │        green2        ▓▓ ▓▓ ▓▓     Simple theme with green accents on object names                │
+  │        cyan1             ▓▓ ▓▓ ▓▓    Simple theme with cyan accents on section headers           │
   │                                                                                                  │
-  │        yellow2       ▓▓ ▓▓ ▓▓     Simple theme with yellow accents on object names               │
+  │        red2              ▓▓ ▓▓ ▓▓    Simple theme with red accents on object names               │
   │                                                                                                  │
-  │        blue2         ▓▓ ▓▓ ▓▓     Simple theme with blue accents on object names                 │
+  │        green2            ▓▓ ▓▓ ▓▓    Simple theme with green accents on object names             │
   │                                                                                                  │
-  │        magenta2      ▓▓ ▓▓ ▓▓     Simple theme with magenta accents on object names              │
+  │        yellow2           ▓▓ ▓▓ ▓▓    Simple theme with yellow accents on object names            │
   │                                                                                                  │
-  │        cyan2         ▓▓ ▓▓ ▓▓     Simple theme with cyan accents on object names                 │
+  │        blue2             ▓▓ ▓▓ ▓▓    Simple theme with blue accents on object names              │
   │                                                                                                  │
-  │        mono          ▓▓ ▓▓        Monochromatic theme with no colors                             │
+  │        magenta2          ▓▓ ▓▓ ▓▓    Simple theme with magenta accents on object names           │
   │                                                                                                  │
-  │        plain         ▓▓           No style at all                                                │
+  │        cyan2             ▓▓ ▓▓ ▓▓    Simple theme with cyan accents on object names              │
+  │                                                                                                  │
+  │        mono              ▓▓ ▓▓       Monochromatic theme with no colors                          │
+  │                                                                                                  │
+  │        plain             ▓▓          No style at all                                             │
   │                                                                                                  │
   ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
   ╭──────────────────────────────────────────── Formats ─────────────────────────────────────────────╮
@@ -6433,6 +6540,9 @@ If you need `patch_typer()` to actually apply **rich-click**’s theming, pin `t
 
 ## Unreleased
 
+* Added light/dark terminal background detection. Themes can now be given as a pair, e.g. `RICH_CLICK_THEME="dark:nord-modern,light:solarized-modern"`, and `rich_click.detect_background()` is available for custom styles. Detection only runs when help or errors are rendered; set `RICH_CLICK_BACKGROUND=dark|light` to override it.
+* Added `nord_light` and `dracula_light` color palettes. The `nord` and `dracula` palettes switch to these automatically on light terminal backgrounds.
+* Fixed a subcommand’s own `theme` in `rich_config()` being ignored when the parent command also had a theme.
 * Rewrote the API docstrings in consistent Google style, so the API reference shows parameter tables, notes, warnings and deprecations. Ruff now checks docstrings against the Google convention. Docstrings copied from Click no longer show Click’s version notes.
 * Fixed `version_option()` without a `version` or `package_name` showing rich-click’s own version instead of the version of the package that uses it.
 * Fixed `RichGroup.add_command()` ignoring the command’s own `aliases` and `panel` unless `aliases` or `panel` was also passed to `add_command()`.
@@ -7108,6 +7218,10 @@ Here is an example of such a tool you can use:
   rye add term-background
   rye sync
   ```
+
+Caution
+
+`term-background` might not work as expected. It never asks the terminal for its color, so it reports “dark” in most terminals, and it gets the `COLORFGBG` env var backwards when that is set. **rich-click** now has built-in detection: use `click.detect_background()`, or a theme pair like `dark:nord-modern,light:solarized-modern`. See [Light and dark terminals](../../documentation/themes/#light-and-dark-terminals).
 
 The following example looks great in both dark and light terminals!
 

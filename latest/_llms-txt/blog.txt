@@ -54,7 +54,7 @@ I had the great pleasure of presenting **rich-click** at [PyCon Sweden 2024](htt
   rye add term-background
   rye sync
   ```
- The following example looks great in both dark and light terminals! * Dark mode ![](/rich-click/latest/_astro/example-2-dark.C_T82-FZ_1spUqm.webp) * Light mode ![](/rich-click/latest/_astro/example-2-light.DxSlBRBo_1e0TXq.webp) ## 3. Gradient art header The following example combines ideas from the first two examples, and then adds in `text2art` from the `art` package with `Gradient` from the `rich-gradient` package. The below example requires `rich-click>=1.8.4`, as previous versions do not support `Gradient()` objects for the `header_text`. * pip 
+ Caution `term-background` might not work as expected. It never asks the terminal for its color, so it reports “dark” in most terminals, and it gets the `COLORFGBG` env var backwards when that is set. **rich-click** now has built-in detection: use `click.detect_background()`, or a theme pair like `dark:nord-modern,light:solarized-modern`. See [Light and dark terminals](../../documentation/themes/#light-and-dark-terminals). The following example looks great in both dark and light terminals! * Dark mode ![](/rich-click/latest/_astro/example-2-dark.C_T82-FZ_1spUqm.webp) * Light mode ![](/rich-click/latest/_astro/example-2-light.DxSlBRBo_1e0TXq.webp) ## 3. Gradient art header The following example combines ideas from the first two examples, and then adds in `text2art` from the `art` package with `Gradient` from the `rich-gradient` package. The below example requires `rich-click>=1.8.4`, as previous versions do not support `Gradient()` objects for the `header_text`. * pip 
   ```shell
   pip install term-background art rich-gradient
   ```

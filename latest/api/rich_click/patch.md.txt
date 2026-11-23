@@ -11,7 +11,7 @@ url: "https://ewels.github.io/rich-click/latest/api/rich_click/patch/"
 
 Patch click, Typer or asyncclick so that their commands print help and errors with rich-click.
 
-[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/patch.py#L1-L1)
+[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/patch.py#L1-L1)
 
 ## rich_click.patch.patch
 
@@ -34,7 +34,7 @@ Patch Click internals to use rich-click types.
 
 - `TypeError` — `module` is not an asynchronous click fork, such as asyncclick.
 
-[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/patch.py#L340-L415)
+[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/patch.py#L340-L415)
 
 ## rich_click.patch.patch_typer
 
@@ -56,4 +56,4 @@ Patch Typer so that its commands print help and errors with rich-click.
 > If a Typer class cannot be patched, it shows a second warning and leaves Typer unpatched.
 > See [Typer support](https://ewels.github.io/rich-click/latest/documentation/typer_support/#typer-026-support).
 
-[View source](https://github.com/ewels/rich-click/blob/31048949e2a464cb225175dc0aa84afa990bacb6/src/rich_click/patch.py#L421-L502)
+[View source](https://github.com/ewels/rich-click/blob/520af5d995a2fb4611f2af73df5e09e6a358d866/src/rich_click/patch.py#L421-L502)

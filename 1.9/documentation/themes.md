@@ -153,6 +153,51 @@ def cli():
 ```
 For more advanced CLIs, with lots of other customization options, there are additional considerations with themes and how they interact with your config that you may want to consider, especially in relation to end users being able to override the theme. For more information on this, read [the **Configuration** docs](../../documentation/configuration/).
 
+## Light and dark terminals
+
+Most color palettes use your terminal's own colors, so they work on both dark and light backgrounds.
+The `nord` and `dracula` palettes use fixed colors designed for dark backgrounds, so they each have a light version: `nord_light` and `dracula_light` (Dracula's official light palette, Alucard).
+**rich-click** switches to these automatically when it detects a light background, e.g. `nord-modern` becomes `nord_light-modern`.
+You can also use the light versions directly, like any other palette.
+
+Instead of a single theme name, you can give a pair of themes: one for dark terminal backgrounds and one for light ones.
+This works everywhere a theme name does: `RICH_CLICK_THEME`, `rich-click --theme`, and your CLI's config.
+
+```shell
+export RICH_CLICK_THEME="dark:nord-modern,light:solarized-modern"
+```
+```python
+import rich_click as click
+
+@click.group("cli")
+@click.rich_config({"theme": "dark:nord-modern,light:solarized-modern"})
+def cli():
+    """My CLI help text"""
+```
+The background is only detected when help text or an error is shown, so running your CLI normally is not slowed down.
+Detection checks, in order:
+
+1. The `RICH_CLICK_BACKGROUND` env var (`dark` or `light`). Set this to override detection.
+2. The `COLORFGBG` env var, which some terminals set (e.g. iTerm2, Konsole, rxvt).
+   It is set when the terminal session starts, so it can be out of date if you change the terminal's colors afterwards, for example when it follows your system's light/dark mode.
+   If rich-click picks the wrong theme, open a new session, or run `unset COLORFGBG` so that rich-click asks the terminal instead.
+3. Asking the terminal for its background color. This only happens on macOS/Linux, when input and output are both an interactive terminal.
+   Most modern terminals answer (iTerm2, Terminal.app, kitty, WezTerm, Alacritty, GNOME Terminal, Ghostty, xterm); rich-click waits at most 0.1 seconds, or 0.5 seconds over SSH.
+
+If the background can't be detected (e.g. on Windows, or when output is piped), the first theme in a pair is used, and `nord` and `dracula` keep their dark colors.
+Themes picked from a pair are used exactly as given, so `dark:nord-modern,light:nord-modern` always uses the dark `nord` colors.
+
+You can also use the detection yourself, for example to pick custom colors:
+
+```python
+import rich_click as click
+
+if click.detect_background() == "light":
+    primary_color = "#2b569c"
+else:  # "dark" or None (unknown)
+    primary_color = "#99bbf2"
+```
+
 ## All themes
 
 ### Formats
@@ -215,16 +260,24 @@ python docs/code_snippets/themes/cli.py --help
 ```sh runnable.outputFile="../images/code_snippets/themes/themes_solarized_box.ansi"
 $ python cli.py --help
 ```
-Many shades of cool colors.
+Many shades of cool colors. <span class="light:sl-hidden">Showing the dark mode variant.</span><span class="dark:sl-hidden">Showing the light mode variant, `nord_light`.</span>
 
 ```shell
 export RICH_CLICK_THEME=nord-box
 python docs/code_snippets/themes/cli.py --help
 ```
 
+<div class="light:sl-hidden">
 ```sh runnable.outputFile="../images/code_snippets/themes/themes_nord_box.ansi"
 $ python cli.py --help
 ```
+</div>
+
+<div class="dark:sl-hidden">
+```sh runnable.outputFile="../images/code_snippets/themes/themes_nord_light_box.ansi"
+$ python cli.py --help
+```
+</div>
 [Litestar](https://litestar.dev/) official theme.
 
 ```shell
@@ -275,44 +328,30 @@ python docs/code_snippets/themes/cli.py --help
 ```sh runnable.outputFile="../images/code_snippets/themes/themes_forest_box.ansi"
 $ python cli.py --help
 ```
-Vibrant high-contract dark theme.
+Vibrant high-contrast dark theme. <span class="light:sl-hidden">Showing the dark mode variant.</span><span class="dark:sl-hidden">Showing the light mode variant, `dracula_light`.</span>
 
 ```shell
 export RICH_CLICK_THEME=dracula-box
 python docs/code_snippets/themes/cli.py --help
 ```
 
+<div class="light:sl-hidden">
 ```sh runnable.outputFile="../images/code_snippets/themes/themes_dracula_box.ansi"
 $ python cli.py --help
 ```
-:::caution[Warning]
-The `dracula`, `nord`, and `solarized` themes use hex values,
-and **rich-click** currently does not detect background colors for users' terminals.
+</div>
 
-So although these themes are beautiful and work well as an end-user with `export RICH_CLICK_THEME=`, this also makes these themes risky to use as a developer.
-
-All of the other themes use ANSI colors exclusively, and therefore users' environments are more likely to match these themes well.
-
-The `dracula`, `nord`, and `solarized` all have variants that force dark-backgrounds: `dracula_darkbg`, `nord_darkbg`, and `solarized_darkbg`.
-You can apply this with something like [`term-background`](https://pypi.org/project/term-background/):
-
-```python
-import rich_click as click
-from term_background import is_dark_background
-
-if is_dark_background():
-    click.rich_click.THEME = "dracula"
-else:
-    click.rich_click.THEME = "dracula_darkbg"
+<div class="dark:sl-hidden">
+```sh runnable.outputFile="../images/code_snippets/themes/themes_dracula_light_box.ansi"
+$ python cli.py --help
 ```
+</div>
+:::note
+The `dracula`, `nord`, and `solarized` themes use fixed hex colors rather than your terminal's own colors.
+`nord` and `dracula` switch to their light versions on light backgrounds (see [Light and dark terminals](#light-and-dark-terminals)), and `solarized` is designed to work on both.
+If the background can't be detected, they keep their dark colors. To always draw them on a dark background, use `dracula_darkbg`, `nord_darkbg` or `solarized_darkbg`.
 
-Some of these themes are riskier than others to apply as a developer. For example, the `solarized` theme is designed for both light and dark backgrounds. The `nord` theme has been tested on light terminals and, in practice, is legible. The `dracula` theme, however, is not user-friendly on a light background terminal.
-
-Additionally, the `solarized` theme in particular is quite legible on both dark and light backgrounds,
-so it is a relatively safe theme to use as a developer.
-
-In a later version of **rich-click**, we intend on adding background color detection and styling conditional on background color,
-which will make these themes safe to use as a developer.
+The examples above follow this site's light/dark mode setting, so you can switch it to see how each palette looks on light and dark terminals.
 :::
 
 #### Simple palettes
