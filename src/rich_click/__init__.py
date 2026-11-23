@@ -77,6 +77,7 @@ if _t.TYPE_CHECKING:
     )
     from rich_click.rich_async_command import RichAsyncContext as RichAsyncContext  # pragma: no cover
     from rich_click.rich_async_command import RichAsyncGroup as RichAsyncGroup  # pragma: no cover
+    from rich_click.terminal_background import detect_background as detect_background
 
 from rich_click.decorators import argument as argument
 from rich_click.decorators import command as command
@@ -117,6 +118,10 @@ def __getattr__(name: str) -> object:
             raise AttributeError(f"module {__name__!r} has no attribute {name!r}") from e
 
         return getattr(rich_async_command, name)
+    elif name == "detect_background":
+        from rich_click.terminal_background import detect_background
+
+        return detect_background
     elif name == "RichMultiCommand" and CLICK_IS_BEFORE_VERSION_9X:
         import warnings
 
@@ -152,6 +157,7 @@ def __dir__() -> list[str]:
         "MissingParameter",
         "NoSuchOption",
         "UsageError",
+        "detect_background",
         "HelpFormatter",
         "wrap_text",
         "clear",

@@ -33,5 +33,6 @@ def test_all_themes_have_from_theme_objs_replaced_on_resolution() -> None:
         return True
 
     for theme in all_themes():
-        cfg = RichHelpConfiguration(theme=theme)
+        # Pass the theme object, as some theme names are only resolved when help is rendered.
+        cfg = RichHelpConfiguration(theme=get_theme(theme))
         assert _no_from_themes(cfg)

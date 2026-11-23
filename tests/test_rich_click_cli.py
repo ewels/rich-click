@@ -837,13 +837,16 @@ def test_cli_output_text(mock_script_writer: Callable[[str], Path]) -> None:
 """)
 
 
-@pytest.mark.parametrize("theme", ["nope", "dark:nord"])
-def test_invalid_theme_error_is_clean(theme: str) -> None:
+@pytest.mark.parametrize(
+    ("theme", "missing"),
+    [("nope", "nope"), ("dark:nord", "dark:nord"), ("dark:nord,light:bogus", "bogus")],
+)
+def test_invalid_theme_error_is_clean(theme: str, missing: str) -> None:
     res = run_as_subprocess([sys.executable, "-m", "src.rich_click", "-t", theme, "--help"])
     stderr = res.stderr.decode()
     assert res.returncode == 1
     assert "Traceback" not in stderr
-    assert f"RichClickTheme '{theme}' not found" in stderr
+    assert f"RichClickTheme '{missing}' not found" in stderr
 
 
 def test_rich_config_missing_file(cli_runner: "CliRunner") -> None:
