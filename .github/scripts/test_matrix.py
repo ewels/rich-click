@@ -21,9 +21,9 @@ TYPER = ["0.17", "0.25"]
 
 PASS = "\033[30;42m PASS \033[0m"
 FAIL = "\033[97;41m FAIL \033[0m"
-# ANSI colours for the counts in pytest's summary line: green, red, dim and yellow.
+# ANSI colours for the counts in pytest's summary line: green, red, grey and yellow.
 # Plurals ("3 warnings") match the singular keys once the trailing s is stripped.
-COLOURS = {"passed": "32", "failed": "31", "error": "31", "skipped": "2", "warning": "33"}
+COLOURS = {"passed": "32", "failed": "31", "error": "31", "skipped": "90", "warning": "33"}
 
 Combo = tuple[str, str, str]
 
@@ -63,7 +63,9 @@ def run_combo(combo: Combo) -> tuple[Combo, int, str]:
 
 
 def summary(output: str) -> str:
-    """Colour the counts from pytest's last line, e.g. "207 passed, 21 skipped, 1 warning in 5.3s".
+    """Colour the counts from pytest's last line and move warnings to the front.
+
+    For example, "207 passed, 21 skipped, 1 warning in 5.3s" becomes "1 warning, 207 passed, 21 skipped."
 
     Args:
         output: pytest's output.
@@ -74,8 +76,9 @@ def summary(output: str) -> str:
     lines = [line for line in output.splitlines() if re.search(r"\d+ (passed|failed|errors?)\b", line)]
     if not lines:
         return ""
-    counts = re.sub(r" in [\d.]+s.*", "", lines[-1].strip("= "))
-    return re.sub(r"\d+ (\w+)", lambda m: f"\033[{COLOURS.get(m[1].rstrip('s'), '0')}m{m[0]}\033[0m", counts) + "."
+    counts = re.findall(r"(\d+) (\w+)", lines[-1])
+    counts.sort(key=lambda count: not count[1].startswith("warning"))
+    return ", ".join(f"\033[{COLOURS.get(word.rstrip('s'), '0')}m{n} {word}\033[0m" for n, word in counts) + "."
 
 
 def main() -> int:
