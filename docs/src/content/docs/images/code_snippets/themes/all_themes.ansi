@@ -22,53 +22,57 @@
   ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
   ╭───────────────────────────────────────── Color Palettes ─────────────────────────────────────────╮
   │ [2m                                                                                                [0m │
-  │ [2m [0m[1m [0m[1m  [0m[1m [0m[2m [0m[1m [0m[1mName       [0m[1m [0m[2m [0m[1m [0m[1mColors    [0m[1m [0m[2m [0m[1m [0m[1mDescription                                                 [0m[1m [0m[2m [0m │
+  │ [2m [0m[1m [0m[1m  [0m[1m [0m[2m [0m[1m [0m[1mName           [0m[1m [0m[2m [0m[1m [0m[1mColors   [0m[1m [0m[2m [0m[1m [0m[1mDescription                                              [0m[1m [0m[2m [0m │
   │ [2m ────────────────────────────────────────────────────────────────────────────────────────────── [0m │
-  │ [2m [0m *  [2m [0m[1m [0m[1mdefault    [0m[1m [0m[2m [0m [36m▓▓[0m [33m▓▓[0m [32m▓▓[0m   [2m [0m [1m(Default)[0m Original rich-click colors                         [2m [0m │
+  │ [2m [0m *  [2m [0m[1m [0m[1mdefault        [0m[1m [0m[2m [0m [36m▓▓[0m [33m▓▓[0m [32m▓▓[0m  [2m [0m [1m(Default)[0m Original rich-click colors                      [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1msolarized  [0m[1m [0m[2m [0m [36m▓▓[0m [36m▓▓[0m [91m▓▓[0m   [2m [0m Bright, colorful, vibrant accents                            [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1msolarized      [0m[1m [0m[2m [0m [36m▓▓[0m [36m▓▓[0m [91m▓▓[0m  [2m [0m Bright, colorful, vibrant accents                         [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mnord       [0m[1m [0m[2m [0m [37m▓▓[0m [37m▓▓[0m [37m▓▓[0m   [2m [0m Many shades of cool colors                                   [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mnord           [0m[1m [0m[2m [0m [37m▓▓[0m [37m▓▓[0m [37m▓▓[0m  [2m [0m Many shades of cool colors                                [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mdracula    [0m[1m [0m[2m [0m [35m▓▓[0m [31m▓▓[0m [33m▓▓[0m   [2m [0m Vibrant high-contract dark theme                             [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mnord_light     [0m[1m [0m[2m [0m [90m▓▓[0m [90m▓▓[0m [90m▓▓[0m  [2m [0m Nord colors darkened for light backgrounds                [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mstar       [0m[1m [0m[2m [0m [33m▓▓[0m [34m▓▓[0m [39m▓▓[0m   [2m [0m Litestar official theme                                      [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mdracula        [0m[1m [0m[2m [0m [35m▓▓[0m [31m▓▓[0m [33m▓▓[0m  [2m [0m Vibrant high-contrast dark theme                          [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mquartz     [0m[1m [0m[2m [0m [35m▓▓[0m [2;35m▓▓[0m [34m▓▓[0m   [2m [0m Dark and radiant                                             [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mdracula_light  [0m[1m [0m[2m [0m [35m▓▓[0m [31m▓▓[0m [33m▓▓[0m  [2m [0m Alucard, the official light Dracula palette               [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mquartz2    [0m[1m [0m[2m [0m [35m▓▓[0m [34m▓▓[0m [33m▓▓[0m   [2m [0m Remix of 'quartz' with accents                               [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mstar           [0m[1m [0m[2m [0m [33m▓▓[0m [34m▓▓[0m [39m▓▓[0m  [2m [0m Litestar official theme                                   [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mforest     [0m[1m [0m[2m [0m [32m▓▓[0m [33m▓▓[0m [36m▓▓[0m   [2m [0m Earthy tones with analogous colors                           [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mquartz         [0m[1m [0m[2m [0m [35m▓▓[0m [2;35m▓▓[0m [34m▓▓[0m  [2m [0m Dark and radiant                                          [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mcargo      [0m[1m [0m[2m [0m [32m▓▓[0m [36m▓▓[0m [39m▓▓[0m   [2m [0m Cargo CLI theme; legible and bold                            [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mquartz2        [0m[1m [0m[2m [0m [35m▓▓[0m [34m▓▓[0m [33m▓▓[0m  [2m [0m Remix of 'quartz' with accents                            [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mred1       [0m[1m [0m[2m [0m [39m▓▓[0m [31m▓▓[0m [2;31m▓▓[0m   [2m [0m Simple theme with red accents on section headers             [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mforest         [0m[1m [0m[2m [0m [32m▓▓[0m [33m▓▓[0m [36m▓▓[0m  [2m [0m Earthy tones with analogous colors                        [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mgreen1     [0m[1m [0m[2m [0m [39m▓▓[0m [32m▓▓[0m [2;32m▓▓[0m   [2m [0m Simple theme with green accents on section headers           [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mcargo          [0m[1m [0m[2m [0m [32m▓▓[0m [36m▓▓[0m [39m▓▓[0m  [2m [0m Cargo CLI theme; legible and bold                         [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1myellow1    [0m[1m [0m[2m [0m [39m▓▓[0m [33m▓▓[0m [2;33m▓▓[0m   [2m [0m Simple theme with yellow accents on section headers          [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mred1           [0m[1m [0m[2m [0m [39m▓▓[0m [31m▓▓[0m [2;31m▓▓[0m  [2m [0m Simple theme with red accents on section headers          [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mblue1      [0m[1m [0m[2m [0m [39m▓▓[0m [34m▓▓[0m [2;34m▓▓[0m   [2m [0m Simple theme with blue accents on section headers            [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mgreen1         [0m[1m [0m[2m [0m [39m▓▓[0m [32m▓▓[0m [2;32m▓▓[0m  [2m [0m Simple theme with green accents on section headers        [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mmagenta1   [0m[1m [0m[2m [0m [39m▓▓[0m [35m▓▓[0m [2;35m▓▓[0m   [2m [0m Simple theme with magenta accents on section headers         [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1myellow1        [0m[1m [0m[2m [0m [39m▓▓[0m [33m▓▓[0m [2;33m▓▓[0m  [2m [0m Simple theme with yellow accents on section headers       [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mcyan1      [0m[1m [0m[2m [0m [39m▓▓[0m [36m▓▓[0m [2;36m▓▓[0m   [2m [0m Simple theme with cyan accents on section headers            [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mblue1          [0m[1m [0m[2m [0m [39m▓▓[0m [34m▓▓[0m [2;34m▓▓[0m  [2m [0m Simple theme with blue accents on section headers         [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mred2       [0m[1m [0m[2m [0m [31m▓▓[0m [39m▓▓[0m [2m▓▓[0m   [2m [0m Simple theme with red accents on object names                [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mmagenta1       [0m[1m [0m[2m [0m [39m▓▓[0m [35m▓▓[0m [2;35m▓▓[0m  [2m [0m Simple theme with magenta accents on section headers      [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mgreen2     [0m[1m [0m[2m [0m [32m▓▓[0m [39m▓▓[0m [2m▓▓[0m   [2m [0m Simple theme with green accents on object names              [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mcyan1          [0m[1m [0m[2m [0m [39m▓▓[0m [36m▓▓[0m [2;36m▓▓[0m  [2m [0m Simple theme with cyan accents on section headers         [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1myellow2    [0m[1m [0m[2m [0m [33m▓▓[0m [39m▓▓[0m [2m▓▓[0m   [2m [0m Simple theme with yellow accents on object names             [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mred2           [0m[1m [0m[2m [0m [31m▓▓[0m [39m▓▓[0m [2m▓▓[0m  [2m [0m Simple theme with red accents on object names             [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mblue2      [0m[1m [0m[2m [0m [34m▓▓[0m [39m▓▓[0m [2m▓▓[0m   [2m [0m Simple theme with blue accents on object names               [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mgreen2         [0m[1m [0m[2m [0m [32m▓▓[0m [39m▓▓[0m [2m▓▓[0m  [2m [0m Simple theme with green accents on object names           [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mmagenta2   [0m[1m [0m[2m [0m [35m▓▓[0m [39m▓▓[0m [2m▓▓[0m   [2m [0m Simple theme with magenta accents on object names            [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1myellow2        [0m[1m [0m[2m [0m [33m▓▓[0m [39m▓▓[0m [2m▓▓[0m  [2m [0m Simple theme with yellow accents on object names          [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mcyan2      [0m[1m [0m[2m [0m [36m▓▓[0m [39m▓▓[0m [2m▓▓[0m   [2m [0m Simple theme with cyan accents on object names               [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mblue2          [0m[1m [0m[2m [0m [34m▓▓[0m [39m▓▓[0m [2m▓▓[0m  [2m [0m Simple theme with blue accents on object names            [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mmono       [0m[1m [0m[2m [0m [39m▓▓[0m [2m▓▓[0m      [2m [0m Monochromatic theme with no colors                           [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mmagenta2       [0m[1m [0m[2m [0m [35m▓▓[0m [39m▓▓[0m [2m▓▓[0m  [2m [0m Simple theme with magenta accents on object names         [2m [0m │
   │ [2m                                                                                                [0m │
-  │ [2m [0m    [2m [0m[1m [0m[1mplain      [0m[1m [0m[2m [0m [39m▓▓[0m         [2m [0m No style at all                                              [2m [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mcyan2          [0m[1m [0m[2m [0m [36m▓▓[0m [39m▓▓[0m [2m▓▓[0m  [2m [0m Simple theme with cyan accents on object names            [2m [0m │
+  │ [2m                                                                                                [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mmono           [0m[1m [0m[2m [0m [39m▓▓[0m [2m▓▓[0m     [2m [0m Monochromatic theme with no colors                        [2m [0m │
+  │ [2m                                                                                                [0m │
+  │ [2m [0m    [2m [0m[1m [0m[1mplain          [0m[1m [0m[2m [0m [39m▓▓[0m        [2m [0m No style at all                                           [2m [0m │
   │ [2m                                                                                                [0m │
   ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
   ╭──────────────────────────────────────────── Formats ─────────────────────────────────────────────╮

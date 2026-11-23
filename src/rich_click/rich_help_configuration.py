@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from types import ModuleType
 from typing import TYPE_CHECKING, Any, Literal, TypeVar
 
-from rich_click.rich_click_theme import RichClickTheme, get_theme
+from rich_click.rich_click_theme import RichClickTheme, get_theme, parse_background_theme, theme_needs_background
 from rich_click.utils import CommandGroupDict, OptionGroupDict, notset, truthy
 
 
@@ -279,6 +279,8 @@ class RichHelpConfiguration:
     legacy_windows: bool | None = field(default=None)
 
     def __post_init__(self) -> None:
+        # Not a dataclass field, so it stays out of serialization; tracks which styles came from a theme.
+        self._theme_fields: set[str] = set()
         if self.highlighter is not None:
             import warnings
 
@@ -452,6 +454,12 @@ class RichHelpConfiguration:
 
         if isinstance(theme, RichClickTheme):
             theme_styles = theme.styles
+        elif theme is not None and not force_default and theme_needs_background(theme):
+            # These themes may need to query the terminal, so only resolve them
+            # when help text is actually rendered (i.e. when force_default=True).
+            # Pairs are still validated now, so that bad theme names fail early.
+            if raise_key_error:
+                parse_background_theme(theme)
         elif theme is not None:
             theme_styles = get_theme(theme, raise_key_error=raise_key_error).styles
 
@@ -460,12 +468,14 @@ class RichHelpConfiguration:
                 current = getattr(self, k)
                 if isinstance(current, FromTheme):
                     setattr(self, k, v)
+                    self._theme_fields.add(k)
 
         if force_default:
             for k in self.__dataclass_fields__:
                 v = getattr(self, k)
                 if isinstance(v, FromTheme):
                     setattr(self, k, v.get_default(k))
+                    self._theme_fields.add(k)
 
         if force_default:
             # Handle deprecated fields here
