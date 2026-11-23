@@ -1,26 +1,29 @@
 """Run the test suite against every supported click / rich / typer combination.
 
-Each combination runs in its own throwaway uv environment, several at once, so one CI
-runner can work through the whole matrix for a Python version. Run it from the repo
-root after `uv sync`:
-
-    python .github/scripts/test_matrix.py
+Each combination runs in its own throwaway uv environment, one per CPU core, so one
+CI runner can work through the whole matrix for a Python version. Run it from the
+repo root after `uv sync`: `python .github/scripts/test_matrix.py`
 """
 
 from __future__ import annotations
 
-import argparse
 import itertools
 import os
+import re
 import subprocess
 import sys
-import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
-CLICK = ["8.0.*", "8.1.*", "8.2.*", "8.3.*", "8.4.*", "8.5.*"]
-RICH = ["12.*", "13.*", "14.*", "15.*"]
-TYPER = ["0.17.*", "0.25.*"]
+CLICK = ["8.0", "8.1", "8.2", "8.3", "8.4", "8.5"]
+RICH = ["12", "13", "14", "15"]
+TYPER = ["0.17", "0.25"]
+
+PASS = "\033[30;42m PASS \033[0m"
+FAIL = "\033[97;41m FAIL \033[0m"
+# ANSI colours for the counts in pytest's summary line: green, red, dim and yellow.
+# Plurals ("3 warnings") match the singular keys once the trailing s is stripped.
+COLOURS = {"passed": "32", "failed": "31", "error": "31", "skipped": "2", "warning": "33"}
 
 Combo = tuple[str, str, str]
 
@@ -29,48 +32,50 @@ def combos() -> list[Combo]:
     """List the click, rich and typer versions to test together.
 
     Returns:
-        One (click, rich, typer) version spec tuple per combination.
+        One (click, rich, typer) version tuple per combination.
     """
     result = []
     for click, rich, typer in itertools.product(CLICK, RICH, TYPER):
         # Typer 0.25 is only tested against click>=8.3 and rich>=13.
-        if typer == "0.25.*" and (rich == "12.*" or click in ("8.0.*", "8.1.*", "8.2.*")):
+        if typer == "0.25" and (rich == "12" or click in ("8.0", "8.1", "8.2")):
             continue
         result.append((click, rich, typer))
     return result
 
 
-def run_combo(combo: Combo) -> tuple[Combo, int, str, float]:
+def run_combo(combo: Combo) -> tuple[Combo, int, str]:
     """Run the test suite with one combination installed.
 
     Args:
-        combo: The click, rich and typer version specs to install.
+        combo: The click, rich and typer versions to install.
 
     Returns:
-        The combination, pytest's exit code, its combined output and the run time.
+        The combination, pytest's exit code and its output.
     """
     click, rich, typer = combo
-    cmd = [
-        "uv",
-        "run",
-        "--no-sync",
-        "--prerelease=allow",
-        f"--with=click=={click}",
-        f"--with=rich=={rich}",
-        f"--with=typer=={typer}",
-        "pytest",
-        # Override the verbose, coverage-enabled addopts from pyproject.toml.
-        "-o",
-        "addopts=",
-        "-q",
-        "--showlocals",
-        # Parallel runs share the working directory, so skip the shared cache.
-        "-p",
-        "no:cacheprovider",
-    ]
-    start = time.monotonic()
+    cmd = ["uv", "run", "--no-sync", "--prerelease=allow"]
+    cmd += [f"--with=click=={click}.*", f"--with=rich=={rich}.*", f"--with=typer=={typer}.*"]
+    # `-o addopts=` drops the verbose, coverage-enabled options in pyproject.toml.
+    # Parallel runs share the working directory, so skip pytest's cache too.
+    cmd += ["pytest", "-q", "-o", "addopts=", "--showlocals", "-p", "no:cacheprovider"]
     proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-    return combo, proc.returncode, proc.stdout, time.monotonic() - start
+    return combo, proc.returncode, proc.stdout
+
+
+def summary(output: str) -> str:
+    """Colour the counts from pytest's last line, e.g. "207 passed, 21 skipped, 1 warning in 5.3s".
+
+    Args:
+        output: pytest's output.
+
+    Returns:
+        The counts with ANSI colours, or an empty string if pytest didn't get that far.
+    """
+    lines = [line for line in output.splitlines() if re.search(r"\d+ (passed|failed|errors?)\b", line)]
+    if not lines:
+        return ""
+    counts = re.sub(r" in [\d.]+s.*", "", lines[-1].strip("= "))
+    return re.sub(r"\d+ (\w+)", lambda m: f"\033[{COLOURS.get(m[1].rstrip('s'), '0')}m{m[0]}\033[0m", counts) + "."
 
 
 def main() -> int:
@@ -79,38 +84,22 @@ def main() -> int:
     Returns:
         0 if every combination passed, otherwise 1.
     """
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("-j", "--jobs", type=int, default=os.cpu_count() or 1, help="combinations to run at once")
-    args = parser.parse_args()
-
-    in_actions = os.environ.get("GITHUB_ACTIONS") == "true"
     todo = combos()
-    failed: list[Combo] = []
-    print(f"Running {len(todo)} click / rich / typer combinations, {args.jobs} at a time", flush=True)
-
-    with ThreadPoolExecutor(max_workers=args.jobs) as pool:
-        for future in as_completed(pool.submit(run_combo, c) for c in todo):
-            combo, returncode, output, duration = future.result()
+    failed = []
+    print(f"Testing {len(todo)} click / rich / typer combinations", flush=True)
+    with ThreadPoolExecutor(max_workers=os.cpu_count()) as pool:
+        for future in as_completed(pool.submit(run_combo, combo) for combo in todo):
+            combo, returncode, output = future.result()
             label = "click {} / rich {} / typer {}".format(*combo)
             if returncode == 0:
-                summary = output.strip().splitlines()[-1] if output.strip() else ""
-                if in_actions:
-                    print(f"::group::PASS {label} ({duration:.1f}s) {summary}")
-                    print(output)
-                    print("::endgroup::", flush=True)
-                else:
-                    print(f"PASS {label} ({duration:.1f}s) {summary}", flush=True)
+                print(f"::group::{PASS} {summary(output)} {label}\n{output.rstrip()}\n::endgroup::", flush=True)
             else:
-                failed.append(combo)
-                print(f"\n{'=' * 30} FAIL {label} ({duration:.1f}s) {'=' * 30}")
-                print(output, flush=True)
-                if in_actions:
-                    print(f"::error title=Tests failed::{label}", flush=True)
+                failed.append(label)
+                print(f"{FAIL} {summary(output)} {label}\n{output.rstrip()}")
+                print(f"::error title=Tests failed::{label}", flush=True)
 
     if failed:
-        print(f"\n{len(failed)} of {len(todo)} combinations failed:")
-        for combo in sorted(failed):
-            print("  click {} / rich {} / typer {}".format(*combo))
+        print(f"\n{len(failed)} of {len(todo)} combinations failed:", *sorted(failed), sep="\n  ")
         return 1
     print(f"\nAll {len(todo)} combinations passed.")
     return 0
